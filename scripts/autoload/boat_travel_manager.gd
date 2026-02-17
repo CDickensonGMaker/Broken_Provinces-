@@ -31,7 +31,7 @@ enum JourneyState {
 ## All registered boat routes
 var routes: Dictionary = {}  # route_id -> BoatTravelData
 
-## Sea routes with hex waypoints (from hex_map_data.json)
+## Sea routes with waypoints (hardcoded defaults, can be extended)
 var sea_routes: Dictionary = {
 	"town_02_to_elven": {
 		"from_port": "Town-02",
@@ -51,7 +51,7 @@ var sea_routes: Dictionary = {
 	}
 }
 
-## Encounter zones from hex_map_data
+## Encounter zones for sea travel
 var encounter_zones: Dictionary = {}  # zone_id -> {q_center, r_center, radius, encounter_types}
 
 ## Current journey state
@@ -153,57 +153,11 @@ func _register_default_routes() -> void:
 	register_route(coastal_route)
 
 
-## Load sea routes and encounter zones from hex_map_data.json
+## Load additional sea routes from data files (placeholder for future expansion)
 func _load_sea_routes_from_hex_data() -> void:
-	var file_path := "res://data/world/hex_map_data.json"
-	if not FileAccess.file_exists(file_path):
-		return
-
-	var file := FileAccess.open(file_path, FileAccess.READ)
-	if not file:
-		return
-
-	var json_text: String = file.get_as_text()
-	file.close()
-
-	var json: Variant = JSON.parse_string(json_text)
-	if not json is Dictionary:
-		return
-
-	var hex_data: Dictionary = json as Dictionary
-
-	# Load encounter zones
-	if hex_data.has("water") and hex_data["water"] is Dictionary:
-		var water_data: Dictionary = hex_data["water"]
-		if water_data.has("encounter_zones"):
-			for zone: Dictionary in water_data["encounter_zones"]:
-				var zone_id: String = zone.get("id", "")
-				if not zone_id.is_empty():
-					encounter_zones[zone_id] = {
-						"q_center": zone.get("q_center", 0),
-						"r_center": zone.get("r_center", 0),
-						"radius": zone.get("radius", 3),
-						"encounter_types": zone.get("encounter_types", [])
-					}
-
-		# Load sea routes
-		if water_data.has("sea_routes"):
-			for route: Dictionary in water_data["sea_routes"]:
-				var route_id: String = route.get("id", "")
-				var waypoints: Array[Vector2i] = []
-				for wp: Array in route.get("waypoints", []):
-					waypoints.append(Vector2i(int(wp[0]), int(wp[1])))
-
-				sea_routes[route_id] = {
-					"from_port": route.get("from", ""),
-					"to_port": route.get("to", ""),
-					"waypoints": waypoints,
-					"danger_zones": [],  # Calculated based on waypoint positions
-					"travel_segments": waypoints.size(),
-					"base_cost": 50  # Default cost
-				}
-
-	print("[BoatTravelManager] Loaded %d encounter zones" % encounter_zones.size())
+	# Sea routes are now defined in the sea_routes dictionary above
+	# Additional routes can be loaded from data files when implemented
+	print("[BoatTravelManager] Using %d hardcoded sea routes" % sea_routes.size())
 
 
 ## Register a new boat route

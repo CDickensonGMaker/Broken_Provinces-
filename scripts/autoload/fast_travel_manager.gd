@@ -47,7 +47,7 @@ const CARAVAN_COSTS: Dictionary = {
 }
 
 ## Caravan route data - maps route_id to {from, to, road_id, danger_level}
-## Loaded from hex_map_data.json roads
+## Note: Caravan routes now come from WorldData road registry
 var caravan_routes: Dictionary = {}
 
 ## Current travel state
@@ -298,65 +298,15 @@ func from_dict(data: Dictionary) -> void:
 # =============================================================================
 
 func _ready() -> void:
-	# Load caravan routes from hex_map_data.json
+	# Caravan routes loaded from WorldData when available
 	_load_caravan_routes()
 
 
-## Load caravan routes from hex_map_data.json
+## Load caravan routes from WorldData road registry
 func _load_caravan_routes() -> void:
-	var file_path := "res://data/world/hex_map_data.json"
-	if not FileAccess.file_exists(file_path):
-		push_warning("[FastTravelManager] hex_map_data.json not found")
-		return
-
-	var file := FileAccess.open(file_path, FileAccess.READ)
-	if not file:
-		return
-
-	var json_text: String = file.get_as_text()
-	file.close()
-
-	var json: Variant = JSON.parse_string(json_text)
-	if not json is Dictionary:
-		return
-
-	var hex_data: Dictionary = json as Dictionary
-	if not hex_data.has("roads"):
-		return
-
-	# Build caravan routes from roads
-	for road: Dictionary in hex_data["roads"]:
-		var road_id: String = road.get("id", "")
-		var connects: Array = road.get("connects", [])
-		var danger_level: float = road.get("danger_level", 1.0)
-		var hexes: Array = road.get("hexes", [])
-
-		if connects.size() >= 2:
-			# Create route from first to second connection
-			var route_id: String = "%s_to_%s" % [connects[0], connects[1]]
-			caravan_routes[route_id] = {
-				"from": connects[0],
-				"to": connects[1],
-				"road_id": road_id,
-				"road_name": road.get("name", road_id),
-				"danger_level": danger_level,
-				"hexes": hexes
-			}
-
-			# Also add reverse route
-			var reverse_id: String = "%s_to_%s" % [connects[1], connects[0]]
-			var reversed_hexes: Array = hexes.duplicate()
-			reversed_hexes.reverse()
-			caravan_routes[reverse_id] = {
-				"from": connects[1],
-				"to": connects[0],
-				"road_id": road_id,
-				"road_name": road.get("name", road_id),
-				"danger_level": danger_level,
-				"hexes": reversed_hexes
-			}
-
-	print("[FastTravelManager] Loaded %d caravan routes" % caravan_routes.size())
+	# TODO: Implement caravan route loading from new square grid system
+	# For now, caravan routes are disabled until the new world system is complete
+	print("[FastTravelManager] Caravan routes not yet implemented for square grid system")
 
 
 ## Get available caravan destinations from a location

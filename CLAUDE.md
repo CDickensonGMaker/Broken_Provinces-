@@ -900,11 +900,11 @@ These locations exist in EVERY playthrough and are the anchors for quests and st
 | **Desert Camp** | Outpost | South, Desert | Nomadic/trading post. Town-11 terrain. |
 | **Elven City** | Major City | Across Lake | Requires boat travel to reach |
 
-### Hex World Map System
-- World uses axial hex coordinates (q, r)
-- Map data stored in `data/world/hex_map_data.json`
+### Square Grid World Map System
+- World uses a square grid coordinate system
+- Map data managed through WorldData autoload
 - Terrain types: plains, forest, hills, mountains, swamp, desert, water
-- 11 towns, 5 POIs (ruins/watchtowers), rivers, and roads defined
+- Towns, POIs (ruins/watchtowers), rivers, and roads defined in WorldData
 
 ### Procedural World Generation
 The world should be procedurally generated with these rules:

@@ -321,9 +321,9 @@ func _resolve_objective_location(obj: Objective) -> Dictionary:
 	return {}
 
 
-## Resolve enemy spawn location (from WorldData registry or hex_map_data)
+## Resolve enemy spawn location from WorldData registry
 func _resolve_enemy_location(enemy_type: String) -> Dictionary:
-	# First check WorldData enemy spawn registry
+	# Check WorldData enemy spawn registry
 	var spawns: Array = WorldData.get_enemy_spawn_locations(enemy_type)
 	if not spawns.is_empty():
 		var spawn: Dictionary = spawns[0]
@@ -332,24 +332,6 @@ func _resolve_enemy_location(enemy_type: String) -> Dictionary:
 			"zone_id": spawn.get("zone_id", ""),
 			"world_pos": WorldData.axial_to_world(spawn.get("hex", Vector2i.ZERO))
 		}
-
-	# Check biome regions in hex_map_data for dominant enemies
-	var hex_map: Dictionary = _load_hex_map_data()
-	if hex_map.has("biome_regions"):
-		for region: Dictionary in hex_map["biome_regions"]:
-			var enemies: Array = region.get("dominant_enemies", [])
-			for enemy: String in enemies:
-				if enemy == enemy_type or enemy_type.begins_with(enemy):
-					# Return center of region as approximate location
-					var bounds: Dictionary = region.get("hex_bounds", {})
-					var center_q: int = (bounds.get("q_min", 0) + bounds.get("q_max", 0)) / 2
-					var center_r: int = (bounds.get("r_min", 0) + bounds.get("r_max", 0)) / 2
-					return {
-						"hex": Vector2i(center_q, center_r),
-						"zone_id": "",
-						"world_pos": WorldData.axial_to_world(Vector2i(center_q, center_r)),
-						"approximate": true
-					}
 
 	return {}
 
@@ -361,7 +343,7 @@ func _resolve_item_location(item_id: String) -> Dictionary:
 	return {}
 
 
-## Resolve NPC location (from WorldData registry)
+## Resolve NPC location from WorldData registry
 func _resolve_npc_location(npc_id: String) -> Dictionary:
 	# Check WorldData NPC registry
 	var npc_data: Dictionary = WorldData.get_npc_location(npc_id)
@@ -373,48 +355,11 @@ func _resolve_npc_location(npc_id: String) -> Dictionary:
 			"world_pos": WorldData.axial_to_world(hex)
 		}
 
-	# Check hex_map_data towns for NPC
-	var hex_map: Dictionary = _load_hex_map_data()
-	if hex_map.has("towns"):
-		for town: Dictionary in hex_map["towns"]:
-			# Check if NPC ID matches town ID (common pattern)
-			if town.get("id", "") == npc_id or npc_id.begins_with(town.get("id", "")):
-				var hex := Vector2i(town.get("q", 0), town.get("r", 0))
-				return {
-					"hex": hex,
-					"zone_id": town.get("id", ""),
-					"world_pos": WorldData.axial_to_world(hex)
-				}
-
 	return {}
 
 
-## Resolve zone/location ID to hex coordinates
+## Resolve zone/location ID to coordinates
 func _resolve_zone_location(zone_id: String) -> Dictionary:
-	var hex_map: Dictionary = _load_hex_map_data()
-
-	# Check towns
-	if hex_map.has("towns"):
-		for town: Dictionary in hex_map["towns"]:
-			if town.get("id", "") == zone_id or town.get("hex_id", "") == zone_id:
-				var hex := Vector2i(town.get("q", 0), town.get("r", 0))
-				return {
-					"hex": hex,
-					"zone_id": town.get("id", ""),
-					"world_pos": WorldData.axial_to_world(hex)
-				}
-
-	# Check POIs
-	if hex_map.has("points_of_interest"):
-		for poi: Dictionary in hex_map["points_of_interest"]:
-			if poi.get("id", "") == zone_id:
-				var hex := Vector2i(poi.get("q", 0), poi.get("r", 0))
-				return {
-					"hex": hex,
-					"zone_id": poi.get("id", ""),
-					"world_pos": WorldData.axial_to_world(hex)
-				}
-
 	# Check WorldData world_grid for location IDs
 	for coords: Vector2i in WorldData.world_grid:
 		var cell: WorldData.CellData = WorldData.world_grid[coords]
@@ -461,24 +406,6 @@ func _resolve_turnin_location(quest: Quest) -> Dictionary:
 	return {}
 
 
-## Load hex map data from JSON
-func _load_hex_map_data() -> Dictionary:
-	var file_path := "res://data/world/hex_map_data.json"
-	if not FileAccess.file_exists(file_path):
-		return {}
-
-	var file := FileAccess.open(file_path, FileAccess.READ)
-	if not file:
-		return {}
-
-	var json_text: String = file.get_as_text()
-	file.close()
-
-	var json: Variant = JSON.parse_string(json_text)
-	if json is Dictionary:
-		return json as Dictionary
-
-	return {}
 
 
 ## Get cached hex coordinates for an objective
