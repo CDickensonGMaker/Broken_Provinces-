@@ -1,59 +1,19 @@
-[gd_scene load_steps=26 format=3]
+[gd_scene load_steps=26 format=3 uid="uid://c737ruduhya0r"]
 
-[ext_resource type="Script" path="res://scripts/levels/dusty_hollow.gd" id="1"]
+[ext_resource type="Script" uid="uid://df45vmaawgglq" path="res://scripts/levels/dusty_hollow.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
-[ext_resource type="Texture2D" path="res://Sprite folders grab bag/skulls_spike1.png" id="4"]
-[ext_resource type="Texture2D" path="res://Sprite folders grab bag/skulls_spike2.png" id="5"]
-[ext_resource type="Texture2D" path="res://Sprite folders grab bag/skulls_spike3.png" id="6"]
-[ext_resource type="Texture2D" path="res://Sprite folders grab bag/gore_pile1.png" id="7"]
-[ext_resource type="Texture2D" path="res://Sprite folders grab bag/gore_pile2.png" id="8"]
-[ext_resource type="Texture2D" path="res://Sprite folders grab bag/gore_totem1.png" id="9"]
-[ext_resource type="Texture2D" path="res://Sprite folders grab bag/gore_totem2.png" id="10"]
-[ext_resource type="Texture2D" path="res://Sprite folders grab bag/hanging_gore_totem1.png" id="11"]
-[ext_resource type="Texture2D" path="res://Sprite folders grab bag/hanging_gore_totem2.png" id="12"]
-[ext_resource type="Texture2D" path="res://Sprite folders grab bag/hanging_gore_totem3.png" id="13"]
-[ext_resource type="Texture2D" path="res://Sprite folders grab bag/tegner_flagman.png" id="14"]
-
-[sub_resource type="StandardMaterial3D" id="sand_mat"]
-albedo_color = Color(0.65, 0.55, 0.4, 1)
-roughness = 0.95
-
-[sub_resource type="StandardMaterial3D" id="dry_dirt_mat"]
-albedo_color = Color(0.5, 0.42, 0.32, 1)
-roughness = 1.0
-
-[sub_resource type="StandardMaterial3D" id="charred_mat"]
-albedo_color = Color(0.15, 0.12, 0.1, 1)
-roughness = 1.0
-
-[sub_resource type="StandardMaterial3D" id="adobe_mat"]
-albedo_color = Color(0.55, 0.45, 0.35, 1)
-roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="wood_mat"]
-albedo_color = Color(0.2, 0.15, 0.1, 1)
-roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="bone_mat"]
-albedo_color = Color(0.85, 0.8, 0.7, 1)
-roughness = 0.8
-
-[sub_resource type="StandardMaterial3D" id="blood_mat"]
-albedo_color = Color(0.22, 0.08, 0.05, 1)
-roughness = 0.75
-
-[sub_resource type="StandardMaterial3D" id="rock_mat"]
-albedo_color = Color(0.4, 0.38, 0.35, 1)
-roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="stone_mat"]
-albedo_color = Color(0.4, 0.38, 0.35, 1)
-roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="banner_mat"]
-albedo_color = Color(0.4, 0.15, 0.1, 1)
-roughness = 0.95
+[ext_resource type="Texture2D" uid="uid://bvnguohyrbl8g" path="res://Sprite folders grab bag/skulls_spike1.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://j8wnsce5j8kx" path="res://Sprite folders grab bag/skulls_spike2.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://ccskyp2wu0gvs" path="res://Sprite folders grab bag/skulls_spike3.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://c0xb88bv7vwmy" path="res://Sprite folders grab bag/gore_pile1.png" id="7"]
+[ext_resource type="Texture2D" uid="uid://16gs2epfq4iq" path="res://Sprite folders grab bag/gore_pile2.png" id="8"]
+[ext_resource type="Texture2D" uid="uid://bhwsqdvpi7nxt" path="res://Sprite folders grab bag/gore_totem1.png" id="9"]
+[ext_resource type="Texture2D" uid="uid://1xjlkpui02ro" path="res://Sprite folders grab bag/gore_totem2.png" id="10"]
+[ext_resource type="Texture2D" uid="uid://dilhhkx3xdfns" path="res://Sprite folders grab bag/hanging_gore_totem1.png" id="11"]
+[ext_resource type="Texture2D" uid="uid://bm7yidtuy4wyj" path="res://Sprite folders grab bag/hanging_gore_totem2.png" id="12"]
+[ext_resource type="Texture2D" uid="uid://b3o2chjxaj4k" path="res://Sprite folders grab bag/hanging_gore_totem3.png" id="13"]
+[ext_resource type="Texture2D" uid="uid://b4axsksl8emst" path="res://Sprite folders grab bag/tegner_flagman.png" id="14"]
 
 [sub_resource type="Environment" id="Environment_desert"]
 background_mode = 1
@@ -64,9 +24,45 @@ ambient_light_energy = 0.7
 fog_enabled = true
 fog_light_color = Color(0.75, 0.65, 0.5, 1)
 fog_density = 0.012
-volumetric_fog_enabled = true
-volumetric_fog_density = 0.02
-volumetric_fog_albedo = Color(0.7, 0.6, 0.45, 1)
+volumetric_fog_enabled = false
+
+[sub_resource type="StandardMaterial3D" id="sand_mat"]
+albedo_color = Color(0.65, 0.55, 0.4, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="dry_dirt_mat"]
+albedo_color = Color(0.5, 0.42, 0.32, 1)
+
+[sub_resource type="StandardMaterial3D" id="rock_mat"]
+albedo_color = Color(0.4, 0.38, 0.35, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="adobe_mat"]
+albedo_color = Color(0.55, 0.45, 0.35, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="charred_mat"]
+albedo_color = Color(0.15, 0.12, 0.1, 1)
+
+[sub_resource type="StandardMaterial3D" id="stone_mat"]
+albedo_color = Color(0.4, 0.38, 0.35, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="wood_mat"]
+albedo_color = Color(0.2, 0.15, 0.1, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="bone_mat"]
+albedo_color = Color(0.85, 0.8, 0.7, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="banner_mat"]
+albedo_color = Color(0.4, 0.15, 0.1, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="blood_mat"]
+albedo_color = Color(0.22, 0.08, 0.05, 1)
+roughness = 0.75
 
 [node name="DustyHollow" type="Node3D"]
 script = ExtResource("1")
@@ -90,7 +86,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 5)
 [node name="Terrain" type="Node3D" parent="."]
 
 [node name="Ground" type="CSGBox3D" parent="Terrain"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.052539825, -0.9346771, -0.09489536)
 use_collision = true
 size = Vector3(50, 2, 50)
 material = SubResource("sand_mat")
@@ -179,7 +175,7 @@ material = SubResource("adobe_mat")
 [node name="Wall_N" type="CSGBox3D" parent="Buildings/Farmhouse_1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, -2.25)
 use_collision = true
-size = Vector3(2.0, 0.8, 0.4)
+size = Vector3(2, 0.8, 0.4)
 material = SubResource("charred_mat")
 
 [node name="Beam_0" type="CSGBox3D" parent="Buildings/Farmhouse_1"]
@@ -221,7 +217,7 @@ material = SubResource("adobe_mat")
 [node name="Wall_W" type="CSGBox3D" parent="Buildings/Farmhouse_2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0.9, 0)
 use_collision = true
-size = Vector3(0.4, 1.3, 3.0)
+size = Vector3(0.4, 1.3, 3)
 material = SubResource("charred_mat")
 
 [node name="Wall_E" type="CSGBox3D" parent="Buildings/Farmhouse_2"]
@@ -231,9 +227,9 @@ size = Vector3(0.4, 0.8, 1.8)
 material = SubResource("adobe_mat")
 
 [node name="Wall_N" type="CSGBox3D" parent="Buildings/Farmhouse_2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -3.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -3)
 use_collision = true
-size = Vector3(2.8, 1.0, 0.4)
+size = Vector3(2.8, 1, 0.4)
 material = SubResource("adobe_mat")
 
 [node name="Beam_0" type="CSGBox3D" parent="Buildings/Farmhouse_2"]
@@ -243,7 +239,7 @@ size = Vector3(0.12, 0.08, 2.5)
 material = SubResource("charred_mat")
 
 [node name="Rubble_0" type="CSGBox3D" parent="Buildings/Farmhouse_2"]
-transform = Transform3D(0.966, 0, 0.259, 0, 1, 0, -0.259, 0, 0.966, -2.0, 0.15, 1.5)
+transform = Transform3D(0.966, 0, 0.259, 0, 1, 0, -0.259, 0, 0.966, -2, 0.15, 1.5)
 size = Vector3(0.45, 0.3, 0.4)
 material = SubResource("adobe_mat")
 
@@ -253,7 +249,7 @@ size = Vector3(0.35, 0.25, 0.5)
 material = SubResource("adobe_mat")
 
 [node name="Rubble_2" type="CSGBox3D" parent="Buildings/Farmhouse_2"]
-transform = Transform3D(0.642, 0, 0.766, 0, 1, 0, -0.766, 0, 0.642, 0.5, 0.2, 2.0)
+transform = Transform3D(0.642, 0, 0.766, 0, 1, 0, -0.766, 0, 0.642, 0.5, 0.2, 2)
 size = Vector3(0.55, 0.4, 0.35)
 material = SubResource("adobe_mat")
 
@@ -289,11 +285,11 @@ material = SubResource("adobe_mat")
 [node name="Wall_W" type="CSGBox3D" parent="Buildings/Barn"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0.7, 0)
 use_collision = true
-size = Vector3(0.4, 0.9, 3.0)
+size = Vector3(0.4, 0.9, 3)
 material = SubResource("charred_mat")
 
 [node name="Wall_N" type="CSGBox3D" parent="Buildings/Barn"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, -3.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, -3)
 use_collision = true
 size = Vector3(2.8, 1.2, 0.4)
 material = SubResource("adobe_mat")
@@ -305,18 +301,18 @@ size = Vector3(0.12, 0.08, 2.8)
 material = SubResource("charred_mat")
 
 [node name="Beam_1" type="CSGBox3D" parent="Buildings/Barn"]
-transform = Transform3D(0.96, 0.24, 0.14, -0.22, 0.97, -0.1, -0.16, 0.07, 0.99, 1.0, 0.15, -0.8)
+transform = Transform3D(0.96, 0.24, 0.14, -0.22, 0.97, -0.1, -0.16, 0.07, 0.99, 1, 0.15, -0.8)
 use_collision = true
 size = Vector3(0.12, 0.08, 2.2)
 material = SubResource("charred_mat")
 
 [node name="Rubble_0" type="CSGBox3D" parent="Buildings/Barn"]
-transform = Transform3D(0.707, 0, 0.707, 0, 1, 0, -0.707, 0, 0.707, -2.0, 0.2, 1.5)
+transform = Transform3D(0.707, 0, 0.707, 0, 1, 0, -0.707, 0, 0.707, -2, 0.2, 1.5)
 size = Vector3(0.5, 0.4, 0.45)
 material = SubResource("adobe_mat")
 
 [node name="Rubble_1" type="CSGBox3D" parent="Buildings/Barn"]
-transform = Transform3D(0.866, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866, 2.0, 0.15, -1.0)
+transform = Transform3D(0.866, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866, 2, 0.15, -1)
 size = Vector3(0.4, 0.3, 0.5)
 material = SubResource("adobe_mat")
 
@@ -378,17 +374,17 @@ material = SubResource("charred_mat")
 [node name="Wall_N" type="CSGBox3D" parent="Buildings/Farmhouse_4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -2.25)
 use_collision = true
-size = Vector3(2.0, 1.0, 0.4)
+size = Vector3(2, 1, 0.4)
 material = SubResource("adobe_mat")
 
 [node name="Beam_0" type="CSGBox3D" parent="Buildings/Farmhouse_4"]
 transform = Transform3D(0.94, 0.28, -0.18, -0.3, 0.95, -0.08, 0.15, 0.13, 0.98, 0.4, 0.2, -0.1)
 use_collision = true
-size = Vector3(0.12, 0.08, 2.0)
+size = Vector3(0.12, 0.08, 2)
 material = SubResource("charred_mat")
 
 [node name="Rubble_0" type="CSGBox3D" parent="Buildings/Farmhouse_4"]
-transform = Transform3D(0.94, 0, 0.34, 0, 1, 0, -0.34, 0, 0.94, -1.0, 0.18, 1.2)
+transform = Transform3D(0.94, 0, 0.34, 0, 1, 0, -0.34, 0, 0.94, -1, 0.18, 1.2)
 size = Vector3(0.45, 0.35, 0.4)
 material = SubResource("adobe_mat")
 
@@ -408,14 +404,39 @@ height = 0.6
 material = SubResource("stone_mat")
 
 [node name="WellInner" type="CSGCylinder3D" parent="Buildings/DestroyedWell/WellRing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.93232435, 0.98678017)
 operation = 2
 radius = 0.8
-height = 0.8
+height = 2.6646485
 
 [node name="CollapsedBeam" type="CSGBox3D" parent="Buildings/DestroyedWell"]
-transform = Transform3D(0.866, 0.433, 0.25, -0.354, 0.877, -0.326, -0.354, 0.203, 0.912, 0, 0.7, 0)
-size = Vector3(0.1, 0.08, 1.5)
+transform = Transform3D(0.5529778, 1.1570063, -0.06426702, -0.109850936, 0.09958266, -0.692466, -0.38759205, 1.6486335, 0.09335813, -0.18452668, 2.5791502, -1.8340015)
+size = Vector3(0.1, 0.08, 10.462402)
+material = SubResource("charred_mat")
+
+[node name="CollapsedBeam2" type="CSGBox3D" parent="Buildings/DestroyedWell"]
+transform = Transform3D(0.11810951, -0.082266286, 0.6914273, 0.55127287, 1.1583662, -0.074617006, -0.387592, 1.6486332, 0.093358114, 0.41470575, 4.8463106, -2.0600433)
+size = Vector3(0.1, 0.08, 6.336426)
+material = SubResource("charred_mat")
+
+[node name="CollapsedBeam3" type="CSGBox3D" parent="Buildings/DestroyedWell"]
+transform = Transform3D(0.5529778, 1.1570063, -0.06426702, -0.109850936, 0.09958266, -0.692466, -0.38759205, 1.6486335, 0.09335813, 7.708564, 2.5791502, -1.8340015)
+size = Vector3(0.1, 0.08, 10.462402)
+material = SubResource("charred_mat")
+
+[node name="CollapsedBeam4" type="CSGBox3D" parent="Buildings/DestroyedWell"]
+transform = Transform3D(0.11810951, -0.082266286, 0.6914273, 0.55127287, 1.1583662, -0.074617006, -0.387592, 1.6486332, 0.093358114, 8.3077965, 4.8463106, -2.0600433)
+size = Vector3(0.1, 0.08, 6.336426)
+material = SubResource("charred_mat")
+
+[node name="CollapsedBeam5" type="CSGBox3D" parent="Buildings/DestroyedWell"]
+transform = Transform3D(0.5529778, 1.1570063, -0.06426702, -0.109850936, 0.09958266, -0.692466, -0.38759205, 1.6486335, 0.09335813, -5.583104, 2.5791502, -6.6252804)
+size = Vector3(0.1, 0.08, 10.462402)
+material = SubResource("charred_mat")
+
+[node name="CollapsedBeam6" type="CSGBox3D" parent="Buildings/DestroyedWell"]
+transform = Transform3D(0.11810951, -0.082266286, 0.6914273, 0.55127287, 1.1583662, -0.074617006, -0.387592, 1.6486332, 0.093358114, -4.9838715, 4.8463106, -6.851322)
+size = Vector3(0.1, 0.08, 6.336426)
 material = SubResource("charred_mat")
 
 [node name="DeadCropPlots" type="Node3D" parent="."]
@@ -444,7 +465,7 @@ size = Vector3(0.04, 0.35, 0.04)
 material = SubResource("charred_mat")
 
 [node name="DeadStalk_3" type="CSGBox3D" parent="DeadCropPlots/DeadCropPlot_1"]
-transform = Transform3D(0.94, 0, -0.34, 0, 1, 0, 0.34, 0, 0.94, 2.8, 0.1, 2.0)
+transform = Transform3D(0.94, 0, -0.34, 0, 1, 0, 0.34, 0, 0.94, 2.8, 0.1, 2)
 size = Vector3(0.04, 0.2, 0.04)
 material = SubResource("charred_mat")
 
@@ -457,17 +478,17 @@ size = Vector3(10, 0.08, 8)
 material = SubResource("charred_mat")
 
 [node name="DeadStalk_0" type="CSGBox3D" parent="DeadCropPlots/DeadCropPlot_2"]
-transform = Transform3D(0.82, 0, 0.57, 0, 1, 0, -0.57, 0, 0.82, -3.5, 0.12, 2.2)
+transform = Transform3D(0.82, 0, 0.57, 0, 1, 0, -0.57, 0, 0.82, -3.5, 0.12, 2.1999998)
 size = Vector3(0.04, 0.25, 0.04)
 material = SubResource("charred_mat")
 
 [node name="DeadStalk_1" type="CSGBox3D" parent="DeadCropPlots/DeadCropPlot_2"]
-transform = Transform3D(0.64, 0, 0.77, 0, 1, 0, -0.77, 0, 0.64, 2.0, 0.15, -2.5)
+transform = Transform3D(0.64, 0, 0.77, 0, 1, 0, -0.77, 0, 0.64, 2, 3.097283, -2.5)
 size = Vector3(0.04, 0.3, 0.04)
 material = SubResource("charred_mat")
 
 [node name="DeadStalk_2" type="CSGBox3D" parent="DeadCropPlots/DeadCropPlot_2"]
-transform = Transform3D(0.91, 0, 0.42, 0, 1, 0, -0.42, 0, 0.91, 0, 0.18, 0)
+transform = Transform3D(0.91, 0, 0.42, 0, 1, 0, -0.42, 0, 0.91, 0, 3.1272829, 0)
 size = Vector3(0.04, 0.35, 0.04)
 material = SubResource("charred_mat")
 
@@ -480,7 +501,7 @@ size = Vector3(6, 0.08, 5)
 material = SubResource("charred_mat")
 
 [node name="DeadStalk_0" type="CSGBox3D" parent="DeadCropPlots/DeadCropPlot_3"]
-transform = Transform3D(0.77, 0, 0.64, 0, 1, 0, -0.64, 0, 0.77, 1.5, 0.12, 1.2)
+transform = Transform3D(0.77, 0, 0.64, 0, 1, 0, -0.64, 0, 0.77, 1.5, 0.12, 1.1999998)
 size = Vector3(0.04, 0.25, 0.04)
 material = SubResource("charred_mat")
 
@@ -520,7 +541,7 @@ radius = 0.15
 material = SubResource("bone_mat")
 
 [node name="Banner" type="CSGBox3D" parent="TengerMarkers/TengerMarker_1"]
-transform = Transform3D(0.985, 0.174, 0, -0.174, 0.985, 0, 0, 0, 1, 0.35, 2.0, 0)
+transform = Transform3D(0.985, 0.174, 0, -0.174, 0.985, 0, 0, 0, 1, 0.35, 2, 0)
 size = Vector3(0.6, 0.8, 0.02)
 material = SubResource("banner_mat")
 
@@ -539,7 +560,7 @@ radius = 0.15
 material = SubResource("bone_mat")
 
 [node name="Banner" type="CSGBox3D" parent="TengerMarkers/TengerMarker_2"]
-transform = Transform3D(0.993, 0.122, 0, -0.122, 0.993, 0, 0, 0, 1, 0.35, 2.0, 0)
+transform = Transform3D(0.993, 0.122, 0, -0.122, 0.993, 0, 0, 0, 1, 0.35, 2, 0)
 size = Vector3(0.6, 0.8, 0.02)
 material = SubResource("banner_mat")
 
@@ -711,9 +732,19 @@ material = SubResource("bone_mat")
 transform = Transform3D(0.423, 0, 0.906, 0, 1, 0, -0.906, 0, 0.423, -6, 0, -12)
 
 [node name="Body" type="CSGCapsule3D" parent="Bodies/FallenVillager_0"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.12, 0)
 radius = 0.18
 height = 0.7
+script = null
 
 [node name="Blood" type="CSGCylinder3D" parent="Bodies/FallenVillager_0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.008, -0.05)
@@ -725,12 +756,22 @@ material = SubResource("blood_mat")
 transform = Transform3D(0.574, 0, 0.819, 0, 1, 0, -0.819, 0, 0.574, 8, 0, 10)
 
 [node name="Body" type="CSGCapsule3D" parent="Bodies/FallenVillager_1"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.12, 0)
 radius = 0.18
 height = 0.7
+script = null
 
 [node name="Blood" type="CSGCylinder3D" parent="Bodies/FallenVillager_1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.08, 0.008, 0.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.080001354, 2.9552827, 0.10000038)
 radius = 0.4
 height = 0.015
 material = SubResource("blood_mat")
@@ -739,9 +780,19 @@ material = SubResource("blood_mat")
 transform = Transform3D(0.906, 0, 0.423, 0, 1, 0, -0.423, 0, 0.906, -14, 0, 5)
 
 [node name="Body" type="CSGCapsule3D" parent="Bodies/FallenVillager_2"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.12, 0)
 radius = 0.18
 height = 0.7
+script = null
 
 [node name="Blood" type="CSGCylinder3D" parent="Bodies/FallenVillager_2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.008, 0.08)
@@ -753,9 +804,19 @@ material = SubResource("blood_mat")
 transform = Transform3D(0.342, 0, 0.94, 0, 1, 0, -0.94, 0, 0.342, 5, 0, -5)
 
 [node name="Body" type="CSGCapsule3D" parent="Bodies/FallenVillager_3"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.12, 0)
 radius = 0.18
 height = 0.7
+script = null
 
 [node name="Blood" type="CSGCylinder3D" parent="Bodies/FallenVillager_3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, 0.008, -0.05)
@@ -767,9 +828,19 @@ material = SubResource("blood_mat")
 transform = Transform3D(0.819, 0, 0.574, 0, 1, 0, -0.574, 0, 0.819, -3, 0, 12)
 
 [node name="Body" type="CSGCapsule3D" parent="Bodies/FallenVillager_4"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.12, 0)
 radius = 0.18
 height = 0.7
+script = null
 
 [node name="Blood" type="CSGCylinder3D" parent="Bodies/FallenVillager_4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08, 0.008, 0.12)
@@ -781,12 +852,22 @@ material = SubResource("blood_mat")
 transform = Transform3D(0.707, 0, 0.707, 0, 1, 0, -0.707, 0, 0.707, 15, 0, 0)
 
 [node name="Body" type="CSGCapsule3D" parent="Bodies/FallenVillager_5"]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.12, 0)
 radius = 0.18
 height = 0.7
+script = null
 
 [node name="Blood" type="CSGCylinder3D" parent="Bodies/FallenVillager_5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.05, 0.008, -0.08)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.05000019, 0.008, -0.08000088)
 radius = 0.28
 height = 0.015
 material = SubResource("blood_mat")
@@ -812,7 +893,7 @@ height = 0.015
 material = SubResource("blood_mat")
 
 [node name="BloodStain_3" type="CSGCylinder3D" parent="BloodStains"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.008, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.9552827, 12)
 radius = 0.72
 height = 0.015
 material = SubResource("blood_mat")
@@ -885,7 +966,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0.1, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -22)
 
 [node name="SpawnPoint_from_south" type="Marker3D" parent="SpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 22)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0472827, 22)
 
 [node name="SpawnPoint_from_east" type="Marker3D" parent="SpawnPoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0.1, 0)
@@ -905,7 +986,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -12)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 10)
 
 [node name="Infantry_3" type="Marker3D" parent="EnemySpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 2.9472828, 6)
 
 [node name="Infantry_4" type="Marker3D" parent="EnemySpawnPoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
@@ -926,19 +1007,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0.8, -12)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 1.5, -16)
 
 [node name="Archer_2" type="Marker3D" parent="EnemySpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1.0, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 12)
 
 [node name="Archer_3" type="Marker3D" parent="EnemySpawnPoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 16)
 
 [node name="Cavalry_0" type="Marker3D" parent="EnemySpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Cavalry_1" type="Marker3D" parent="EnemySpawnPoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -10)
 
 [node name="Cavalry_2" type="Marker3D" parent="EnemySpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2.9472828, 5)
 
 [node name="Warbanner_0" type="Marker3D" parent="EnemySpawnPoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -6)
@@ -969,441 +1049,377 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -0.3, -13)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, -3)
 pixel_size = 0.025
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("4")
 
 [node name="SkullSpike_1" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, 3)
 pixel_size = 0.025
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("5")
 
 [node name="SkullSpike_2" type="Sprite3D" parent="GoreDecorations"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.787585, 0)
 pixel_size = 0.025
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("6")
 
 [node name="SkullSpike_3" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, -8)
 pixel_size = 0.025
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("4")
 
 [node name="SkullSpike_4" type="Sprite3D" parent="GoreDecorations"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.7606338, 0)
 pixel_size = 0.025
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("5")
 
 [node name="SkullSpike_5" type="Sprite3D" parent="GoreDecorations"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925509, -5)
 pixel_size = 0.025
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("6")
 
 [node name="SkullSpike_6" type="Sprite3D" parent="GoreDecorations"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.0052145, 5)
 pixel_size = 0.025
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("4")
 
 [node name="SkullSpike_7" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -3)
 pixel_size = 0.025
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("5")
 
 [node name="SkullSpike_8" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 0)
 pixel_size = 0.025
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("6")
 
 [node name="SkullSpike_9" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, -2)
 pixel_size = 0.025
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("4")
 
 [node name="SkullSpike_10" type="Sprite3D" parent="GoreDecorations"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0.9774015, 4)
 pixel_size = 0.025
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("5")
 
 [node name="SkullSpike_11" type="Sprite3D" parent="GoreDecorations"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0.7769779, 8)
 pixel_size = 0.025
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("6")
 
 [node name="SkullSpike_12" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, -8)
 pixel_size = 0.025
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("4")
 
 [node name="GorePile_0" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -6)
 pixel_size = 0.02
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("7")
 
 [node name="GorePile_1" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -3)
 pixel_size = 0.02
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("8")
 
 [node name="GorePile_2" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 4)
 pixel_size = 0.02
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("7")
 
 [node name="GorePile_3" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -8)
 pixel_size = 0.02
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("8")
 
 [node name="GorePile_4" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 2)
 pixel_size = 0.02
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("7")
 
 [node name="GorePile_5" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -5)
 pixel_size = 0.02
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("8")
 
 [node name="GorePile_6" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 8)
 pixel_size = 0.02
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("7")
 
 [node name="GorePile_7" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 10)
 pixel_size = 0.02
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("8")
 
 [node name="GorePile_8" type="Sprite3D" parent="GoreDecorations"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 pixel_size = 0.02
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("7")
 
 [node name="GorePile_9" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, -10)
 pixel_size = 0.02
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("8")
 
 [node name="GoreTotem_0" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0, 0)
 pixel_size = 0.035
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("9")
 
 [node name="GoreTotem_1" type="Sprite3D" parent="GoreDecorations"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 2.322231, 0)
 pixel_size = 0.035
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("10")
 
 [node name="GoreTotem_2" type="Sprite3D" parent="GoreDecorations"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -22)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9742851, -22)
 pixel_size = 0.035
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("9")
 
 [node name="GoreTotem_3" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 18)
 pixel_size = 0.035
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("10")
 
 [node name="GoreTotem_4" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, -12)
 pixel_size = 0.035
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("9")
 
 [node name="GoreTotem_5" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, -12)
 pixel_size = 0.035
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("10")
 
 [node name="GoreTotem_6" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 12)
 pixel_size = 0.035
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("9")
 
 [node name="GoreTotem_7" type="Sprite3D" parent="GoreDecorations"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.9472828, 12)
 pixel_size = 0.035
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("10")
 
 [node name="HangingTotem_0" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1.8, -5)
 pixel_size = 0.03
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("11")
 
 [node name="HangingTotem_1" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, -10)
 pixel_size = 0.03
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("12")
 
 [node name="HangingTotem_2" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1.5, 8)
 pixel_size = 0.03
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("13")
 
 [node name="HangingTotem_3" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.2, 3)
 pixel_size = 0.03
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("11")
 
 [node name="HangingTotem_4" type="Sprite3D" parent="GoreDecorations"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6766727, 2.8944592, -16.07584)
 pixel_size = 0.03
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
+texture = ExtResource("12")
+
+[node name="HangingTotem_6" type="Sprite3D" parent="GoreDecorations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5249617, 2.650989, -16.179302)
+pixel_size = 0.03
+billboard = 1
+alpha_cut = 2
+texture = ExtResource("12")
+
+[node name="HangingTotem_7" type="Sprite3D" parent="GoreDecorations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.569763, 2.8944592, -16.07584)
+pixel_size = 0.03
+billboard = 1
+alpha_cut = 2
+texture = ExtResource("12")
+
+[node name="HangingTotem_8" type="Sprite3D" parent="GoreDecorations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.418052, 2.650989, -16.179302)
+pixel_size = 0.03
+billboard = 1
+alpha_cut = 2
+texture = ExtResource("12")
+
+[node name="HangingTotem_9" type="Sprite3D" parent="GoreDecorations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.7219048, 2.8944592, -20.867119)
+pixel_size = 0.03
+billboard = 1
+alpha_cut = 2
+texture = ExtResource("12")
+
+[node name="HangingTotem_10" type="Sprite3D" parent="GoreDecorations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8736162, 2.650989, -20.970581)
+pixel_size = 0.03
+billboard = 1
+alpha_cut = 2
 texture = ExtResource("12")
 
 [node name="HangingTotem_5" type="Sprite3D" parent="GoreDecorations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 1.8, -5)
 pixel_size = 0.03
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("13")
 
 [node name="TengerWarFlags" type="Node3D" parent="."]
 
 [node name="WarFlag_Row1_0" type="Sprite3D" parent="TengerWarFlags"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 2.4108539, 10)
 pixel_size = 0.04
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("14")
 
 [node name="WarFlag_Row1_1" type="Sprite3D" parent="TengerWarFlags"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, 10)
 pixel_size = 0.04
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("14")
 
 [node name="WarFlag_Row1_2" type="Sprite3D" parent="TengerWarFlags"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 2.5770016, 10)
 pixel_size = 0.04
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("14")
 
 [node name="WarFlag_Row1_3" type="Sprite3D" parent="TengerWarFlags"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 2.376359, 10)
 pixel_size = 0.04
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("14")
 
 [node name="WarFlag_Row1_4" type="Sprite3D" parent="TengerWarFlags"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 2.4433794, 10)
 pixel_size = 0.04
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("14")
 
 [node name="WarFlag_Row1_5" type="Sprite3D" parent="TengerWarFlags"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 2.8952904, 10)
 pixel_size = 0.04
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("14")
 
 [node name="WarFlag_Row2_0" type="Sprite3D" parent="TengerWarFlags"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, 14)
 pixel_size = 0.04
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("14")
 
 [node name="WarFlag_Row2_1" type="Sprite3D" parent="TengerWarFlags"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, 14)
 pixel_size = 0.04
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("14")
 
 [node name="WarFlag_Row2_2" type="Sprite3D" parent="TengerWarFlags"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 14)
 pixel_size = 0.04
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("14")
 
 [node name="WarFlag_Row2_3" type="Sprite3D" parent="TengerWarFlags"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 14)
+transform = Transform3D(0.90860295, 0, 0.41766092, -0.18888628, 0.89189225, 0.4109138, -0.37250856, -0.45224792, 0.8103759, 1.5382862, 2.4498699, -2.864437)
 pixel_size = 0.04
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("14")
 
 [node name="WarFlag_Row2_4" type="Sprite3D" parent="TengerWarFlags"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 14)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 2.9472828, 14)
 pixel_size = 0.04
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("14")
 
 [node name="WarFlag_Row2_5" type="Sprite3D" parent="TengerWarFlags"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 14)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.976995, 3.9122834, 14)
 pixel_size = 0.04
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
 texture = ExtResource("14")

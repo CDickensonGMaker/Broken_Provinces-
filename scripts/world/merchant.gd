@@ -51,7 +51,21 @@ var merchant_material: StandardMaterial3D
 func _ready() -> void:
 	add_to_group("interactable")
 	add_to_group("merchants")
+	add_to_group("shops")
 	add_to_group("npcs")
+
+	# Add to specific shop type groups for minimap icons
+	match shop_type:
+		"blacksmith":
+			add_to_group("blacksmiths")
+		"weapon":
+			add_to_group("blacksmiths")  # Weapon shops show as blacksmith
+		"armor":
+			add_to_group("blacksmiths")  # Armor shops show as blacksmith
+		"alchemist":
+			add_to_group("alchemists")
+		"temple":
+			add_to_group("temples")
 
 	# Setup collision for player interaction detection
 	collision_layer = 1  # World layer for physics

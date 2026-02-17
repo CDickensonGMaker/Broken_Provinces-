@@ -32,6 +32,7 @@ const COLOR_TEMPLE := Color(0.9, 0.9, 1.0, 1.0)       # White/silver for temples
 const COLOR_GUILD := Color(0.6, 0.4, 0.8, 1.0)        # Purple for guilds
 const COLOR_INN := Color(0.8, 0.5, 0.2, 1.0)          # Orange for inns/taverns
 const COLOR_BLACKSMITH := Color(0.5, 0.5, 0.6, 1.0)   # Steel gray for blacksmiths
+const COLOR_ALCHEMIST := Color(0.4, 0.8, 0.4, 1.0)    # Green for alchemists/potion shops
 const COLOR_FIREPLACE := Color(1.0, 0.5, 0.2, 1.0)    # Warm orange for campfires/fireplaces
 const COLOR_FAST_TRAVEL := Color(0.4, 0.9, 1.0, 1.0)  # Cyan for fast travel shrines
 
@@ -202,8 +203,11 @@ func _draw_room_outlines(center: Vector2) -> void:
 	if MapTracker.current_map.rooms.is_empty():
 		return
 
+	# Check if fog of war is disabled (reveal all rooms)
+	var fog_disabled: bool = SceneManager and not SceneManager.fog_of_war_enabled
+
 	for room_data in MapTracker.current_map.rooms:
-		if not room_data.get("explored", false):
+		if not room_data.get("explored", false) and not fog_disabled:
 			continue
 
 		var bounds: Dictionary = room_data.get("bounds", {})
@@ -599,6 +603,7 @@ func _update_poi_markers() -> void:
 		{"group": "merchants", "icon": "$", "color": COLOR_SHOP},
 		{"group": "shops", "icon": "$", "color": COLOR_SHOP},
 		{"group": "blacksmiths", "icon": "⚒", "color": COLOR_BLACKSMITH},
+		{"group": "alchemists", "icon": "⚗", "color": COLOR_ALCHEMIST},
 		{"group": "temples", "icon": "†", "color": COLOR_TEMPLE},
 		{"group": "shrines", "icon": "†", "color": COLOR_TEMPLE},
 		{"group": "guilds", "icon": "⚔", "color": COLOR_GUILD},
@@ -607,6 +612,7 @@ func _update_poi_markers() -> void:
 		{"group": "innkeepers", "icon": "🏠", "color": COLOR_INN},
 		{"group": "fireplaces", "icon": "🔥", "color": COLOR_FIREPLACE},
 		{"group": "campfires", "icon": "🔥", "color": COLOR_FIREPLACE},
+		{"group": "rest_spots", "icon": "🔥", "color": COLOR_FIREPLACE},
 		{"group": "fast_travel", "icon": "◈", "color": COLOR_FAST_TRAVEL},
 		{"group": "fast_travel_shrines", "icon": "◈", "color": COLOR_FAST_TRAVEL},
 	]

@@ -72,23 +72,24 @@ func _spawn_zone_exits() -> void:
 	to_dusty_hollow.rotation.y = PI / 2
 	to_dusty_hollow.show_frame = false
 
-	# Exit to wilderness (north)
-	var to_wilderness_north := ZoneDoor.spawn_door(
+	# Exit to Elder Moor region (north)
+	var to_elder_moor := ZoneDoor.spawn_door(
 		self,
 		Vector3(0, 0, -29),
-		"res://scenes/levels/wilderness_room.tscn",
+		"res://scenes/levels/elder_moor.tscn",
 		"from_tenger_camp",
 		"Escape North"
 	)
-	to_wilderness_north.rotation.y = PI
-	to_wilderness_north.show_frame = false
+	to_elder_moor.rotation.y = PI
+	to_elder_moor.show_frame = false
 
 	# Exit deeper into desert (south - future expansion)
+	# TODO: Replace with actual desert region scene when created
 	var to_desert := ZoneDoor.spawn_door(
 		self,
 		Vector3(0, 0, 29),
-		"res://scenes/levels/wilderness_room.tscn",
-		"from_tenger_camp",
+		"res://scenes/levels/elder_moor.tscn",
+		"from_tenger_camp_south",
 		"Southern Desert"
 	)
 	to_desert.rotation.y = 0

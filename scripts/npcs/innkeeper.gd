@@ -54,8 +54,10 @@ func _ready() -> void:
 	# Call parent _ready for basic merchant setup
 	super._ready()
 
-	# Add to innkeeper group
+	# Add to innkeeper/tavern groups for minimap detection
 	add_to_group("innkeepers")
+	add_to_group("inns")
+	add_to_group("taverns")
 
 	# Override material color to be more tavern-like (warm brown)
 	if merchant_material:

@@ -20,9 +20,7 @@ ambient_light_energy = 0.4
 fog_enabled = true
 fog_light_color = Color(0.15, 0.15, 0.18, 1)
 fog_density = 0.025
-volumetric_fog_enabled = true
-volumetric_fog_density = 0.03
-volumetric_fog_albedo = Color(0.1, 0.1, 0.12, 1)
+volumetric_fog_enabled = false
 
 [node name="BorderWarsGraveyard" type="Node3D"]
 script = ExtResource("1")

@@ -18,6 +18,10 @@ var nav_region: NavigationRegion3D
 
 
 func _ready() -> void:
+	# Set current region for world map tracking
+	if SceneManager:
+		SceneManager.set_current_region(ZONE_ID)
+
 	SaveManager.set_current_zone(ZONE_ID, "Willow Dale Watchtower")
 
 	_create_materials()

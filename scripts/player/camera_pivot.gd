@@ -242,3 +242,10 @@ func update_fps_weapon() -> void:
 ## Get the FPS arms node for direct access
 func get_fps_arms() -> FirstPersonArms:
 	return _fps_arms
+
+
+## Set the camera yaw (horizontal rotation) directly
+## Used by SceneManager to sync camera with player facing direction after zone transitions
+func set_yaw(new_yaw: float) -> void:
+	yaw = new_yaw
+	_clamp_and_apply()

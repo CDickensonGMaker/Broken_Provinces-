@@ -603,10 +603,11 @@ func _on_travel_cancelled() -> void:
 
 func _update_player_position() -> void:
 	# Get player's current grid position from SceneManager
-	if SceneManager and SceneManager.is_in_wilderness():
-		player_coords = SceneManager.get_current_room_coords()
+	# In region-based system, current_room_coords tracks world map position
+	if SceneManager:
+		player_coords = SceneManager.current_room_coords
 	else:
-		# Default to Elder Moor if not in wilderness
+		# Default to Elder Moor
 		player_coords = WorldData.PLAYER_START
 
 	# Update info labels

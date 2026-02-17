@@ -786,10 +786,10 @@ func _create_atmosphere() -> void:
 	env.fog_light_color = Color(0.15, 0.15, 0.18)  # Gray-blue fog
 	env.fog_density = 0.025  # Thick fog
 
-	# Volumetric fog for extra atmosphere
-	env.volumetric_fog_enabled = true
-	env.volumetric_fog_density = 0.03
-	env.volumetric_fog_albedo = Color(0.1, 0.1, 0.12)
+	# Volumetric fog disabled - requires Forward+ renderer
+	# env.volumetric_fog_enabled = true
+	# env.volumetric_fog_density = 0.03
+	# env.volumetric_fog_albedo = Color(0.1, 0.1, 0.12)
 
 	var world_env := WorldEnvironment.new()
 	world_env.name = "WorldEnvironment"

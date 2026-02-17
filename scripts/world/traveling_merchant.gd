@@ -53,6 +53,7 @@ var region_id: String = ""  # Set by zone when spawned
 func _ready() -> void:
 	add_to_group("npcs")
 	add_to_group("merchants")
+	add_to_group("shops")
 	add_to_group("traveling_merchants")
 	add_to_group("interactable")
 

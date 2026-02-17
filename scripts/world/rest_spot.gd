@@ -32,6 +32,17 @@ func _ready() -> void:
 	add_to_group("interactable")
 	add_to_group("rest_spots")
 
+	# Add to specific groups for minimap icons
+	match rest_type:
+		RestSpotType.WILD_FIREPLACE:
+			add_to_group("fireplaces")
+			add_to_group("campfires")
+		RestSpotType.TAVERN_FIREPLACE:
+			add_to_group("fireplaces")
+			add_to_group("taverns")
+		RestSpotType.INN_BED:
+			add_to_group("inns")
+
 	# Only create visuals/areas if not already present (supports scene instancing)
 	if not get_node_or_null("FireplaceSprite") and not get_node_or_null("FallbackMesh"):
 		_create_visual()

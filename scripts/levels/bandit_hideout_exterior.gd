@@ -14,6 +14,10 @@ var nav_region: NavigationRegion3D
 
 
 func _ready() -> void:
+	# Set current region for world map tracking
+	if SceneManager:
+		SceneManager.set_current_region(ZONE_ID)
+
 	_setup_environment()
 	_spawn_enemies_from_markers()
 	_spawn_chests_from_markers()

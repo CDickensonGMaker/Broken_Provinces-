@@ -540,12 +540,7 @@ func _calculate_spawn_position() -> Vector3:
 
 ## Get the parent node to spawn enemies into
 func _get_spawn_parent() -> Node3D:
-	# First try to find wilderness room
-	var wilderness_rooms: Array[Node] = get_tree().get_nodes_in_group("wilderness_room")
-	if not wilderness_rooms.is_empty():
-		return wilderness_rooms[0] as Node3D
-
-	# Fall back to scene root
+	# Use scene root as parent for spawned enemies
 	var tree: SceneTree = get_tree()
 	if tree and tree.current_scene:
 		if tree.current_scene is Node3D:

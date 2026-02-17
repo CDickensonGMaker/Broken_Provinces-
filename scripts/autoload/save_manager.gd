@@ -406,6 +406,10 @@ func _collect_save_data():
 	if save_data.encounter_data:
 		_collect_encounter_data(save_data.encounter_data)
 
+	# Fog of war data (painted world map)
+	if save_data.fog_of_war_data:
+		_collect_fog_of_war_data(save_data.fog_of_war_data)
+
 	return save_data
 
 ## Collect player data
@@ -625,6 +629,10 @@ func _apply_save_data(save_data) -> void:
 	if save_data.encounter_data:
 		_apply_encounter_data(save_data.encounter_data)
 
+	# Restore fog of war data (painted world map)
+	if save_data.fog_of_war_data:
+		_apply_fog_of_war_data(save_data.fog_of_war_data)
+
 ## Apply player data
 func _apply_player_data(player_data) -> void:
 	if not GameManager.player_data:
@@ -839,6 +847,81 @@ func _apply_encounter_data(encounter_data) -> void:
 			em._last_check_hex = Vector2i.ZERO
 
 
+## Collect fog of war data from painted world map
+func _collect_fog_of_war_data(fog_data) -> void:
+	# Find the painted world map in the scene tree
+	# It's a child of GameMenu named MapPanelInstance
+	var hud := get_tree().get_first_node_in_group("hud")
+	if not hud:
+		return
+
+	# Use find_child to locate MapPanelInstance since it's nested in dynamic containers
+	var map_panel: MapPanel = hud.find_child("MapPanelInstance", true, false)
+	if not map_panel:
+		return
+
+	var painted_map: PaintedWorldMap = map_panel.get_painted_world_map()
+	if not painted_map:
+		return
+
+	var fog_of_war: MapFogOfWar = painted_map.get_fog_of_war()
+	if not fog_of_war:
+		return
+
+	var fog_dict: Dictionary = fog_of_war.to_dict()
+	fog_data.explored_hexes = fog_dict.get("explored_hexes", [])
+	fog_data.image_size = fog_dict.get("image_size", [798, 588])
+
+
+## Apply fog of war data to painted world map
+func _apply_fog_of_war_data(fog_data) -> void:
+	# Store fog data for deferred application (map panel may not exist yet)
+	_pending_fog_of_war_data = {
+		"explored_hexes": fog_data.explored_hexes,
+		"image_size": fog_data.image_size
+	}
+
+	# Try to apply immediately if map panel exists
+	_try_apply_fog_of_war()
+
+
+## Pending fog of war data to apply after scene loads
+var _pending_fog_of_war_data: Dictionary = {}
+
+
+## Try to apply pending fog of war data
+func _try_apply_fog_of_war() -> void:
+	if _pending_fog_of_war_data.is_empty():
+		return
+
+	var hud := get_tree().get_first_node_in_group("hud")
+	if not hud:
+		# Retry later
+		get_tree().create_timer(0.2).timeout.connect(_try_apply_fog_of_war)
+		return
+
+	# Use find_child to locate MapPanelInstance since it's nested in dynamic containers
+	var map_panel: MapPanel = hud.find_child("MapPanelInstance", true, false)
+	if not map_panel:
+		get_tree().create_timer(0.2).timeout.connect(_try_apply_fog_of_war)
+		return
+
+	var painted_map: PaintedWorldMap = map_panel.get_painted_world_map()
+	if not painted_map:
+		get_tree().create_timer(0.2).timeout.connect(_try_apply_fog_of_war)
+		return
+
+	var fog_of_war: MapFogOfWar = painted_map.get_fog_of_war()
+	if not fog_of_war:
+		get_tree().create_timer(0.2).timeout.connect(_try_apply_fog_of_war)
+		return
+
+	# Apply the fog data
+	fog_of_war.from_dict(_pending_fog_of_war_data)
+	print("[SaveManager] Applied fog of war data: %d explored hexes" % _pending_fog_of_war_data.get("explored_hexes", []).size())
+	_pending_fog_of_war_data.clear()
+
+
 ## Migrate old save data to current version
 func _migrate_save_data(data: Dictionary, from_version: int) -> Dictionary:
 	var migrated := data.duplicate(true)
@@ -904,28 +987,51 @@ func quick_load() -> bool:
 
 ## Called when scene finishes loading - apply pending data
 func _on_scene_load_completed(_scene_path: String) -> void:
-	# Apply pending known spells after a short delay to ensure player is ready
+	# Apply pending known spells with retry mechanism to ensure player is ready
 	if not pending_known_spells.is_empty():
-		call_deferred("_apply_pending_known_spells")
+		_apply_pending_known_spells_with_retry(0)
 
-## Apply pending known spells to player's SpellCaster
-func _apply_pending_known_spells() -> void:
+
+## Apply pending known spells to player's SpellCaster with retry mechanism
+## Retries up to 10 times with 0.1s delay between attempts
+func _apply_pending_known_spells_with_retry(attempt: int) -> void:
+	const MAX_RETRIES := 10
+	const RETRY_DELAY := 0.1
+
 	if pending_known_spells.is_empty():
 		return
 
+	if attempt >= MAX_RETRIES:
+		push_warning("[SaveManager] Failed to apply pending spells after %d attempts" % MAX_RETRIES)
+		pending_known_spells.clear()
+		return
+
 	var player := get_tree().get_first_node_in_group("player")
-	if not player:
+
+	# Check player validity
+	if not player or not is_instance_valid(player) or not player.is_inside_tree():
+		# Retry after delay
+		get_tree().create_timer(RETRY_DELAY).timeout.connect(
+			func(): _apply_pending_known_spells_with_retry(attempt + 1)
+		)
 		return
 
 	var spell_caster: SpellCaster = player.get_node_or_null("SpellCaster")
-	if not spell_caster:
+
+	# Check spell caster validity
+	if not spell_caster or not is_instance_valid(spell_caster):
+		# Retry after delay
+		get_tree().create_timer(RETRY_DELAY).timeout.connect(
+			func(): _apply_pending_known_spells_with_retry(attempt + 1)
+		)
 		return
 
-	# Clear existing and learn saved spells
+	# Successfully found player and spell caster - apply spells
 	spell_caster.known_spells.clear()
 	for spell_id in pending_known_spells:
 		spell_caster.learn_spell_by_id(spell_id)
 
+	print("[SaveManager] Applied %d pending spells (attempt %d)" % [pending_known_spells.size(), attempt + 1])
 	pending_known_spells.clear()
 
 ## World state tracking methods

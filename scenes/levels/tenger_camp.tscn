@@ -70,9 +70,7 @@ ambient_light_energy = 0.75
 fog_enabled = true
 fog_light_color = Color(0.78, 0.68, 0.52, 1)
 fog_density = 0.008
-volumetric_fog_enabled = true
-volumetric_fog_density = 0.015
-volumetric_fog_albedo = Color(0.72, 0.62, 0.48, 1)
+volumetric_fog_enabled = false
 
 [node name="TengerCamp" type="Node3D"]
 script = ExtResource("1")

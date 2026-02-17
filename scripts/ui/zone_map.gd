@@ -443,8 +443,11 @@ func _draw_room_outlines(center: Vector2, view_center: Vector2, pixel_size: floa
 	if MapTracker.current_map.rooms.is_empty():
 		return
 
+	# Check if fog of war is disabled (reveal all rooms)
+	var fog_disabled: bool = SceneManager and not SceneManager.fog_of_war_enabled
+
 	for room_data in MapTracker.current_map.rooms:
-		if not room_data.get("explored", false):
+		if not room_data.get("explored", false) and not fog_disabled:
 			continue
 
 		var bounds: Dictionary = room_data.get("bounds", {})

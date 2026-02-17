@@ -83,16 +83,16 @@ func _spawn_zone_exits() -> void:
 	to_tenger_camp.rotation.y = -PI / 2
 	to_tenger_camp.show_frame = false
 
-	# Exit to wilderness (north - retreat)
-	var to_wilderness := ZoneDoor.spawn_door(
+	# Exit to Elder Moor region (north - retreat)
+	var to_elder_moor := ZoneDoor.spawn_door(
 		self,
 		Vector3(0, 0, -24),
-		"res://scenes/levels/wilderness_room.tscn",
+		"res://scenes/levels/elder_moor.tscn",
 		"from_dusty_hollow",
-		"Retreat to Wilderness"
+		"Path to Elder Moor"
 	)
-	to_wilderness.rotation.y = PI
-	to_wilderness.show_frame = false
+	to_elder_moor.rotation.y = PI
+	to_elder_moor.show_frame = false
 
 	print("[Dusty Hollow] Spawned zone exits")
 

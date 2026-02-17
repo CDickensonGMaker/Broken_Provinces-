@@ -1567,39 +1567,113 @@ func _setup_minimap() -> void:
 
 
 ## Update minimap cell coordinates display
-## Shows: location_name if available, otherwise "Biome Wilderness", or zone name for dungeons/towns
+## Shows: zone name for current region/area
 func _update_minimap_coordinates() -> void:
 	if not minimap_coord_label or not _cached_player:
 		return
 
-	# Get current wilderness room if in open world
-	var wilderness_room := get_tree().get_first_node_in_group("wilderness_room")
-	if wilderness_room and "grid_coords" in wilderness_room:
-		var coords: Vector2i = wilderness_room.grid_coords
+	# Show zone name from MapTracker or SceneManager
+	var zone_id: String = ""
+	if MapTracker:
+		zone_id = MapTracker.get_current_zone()
 
-		# Get cell data from WorldData to show location name
-		var cell: WorldData.CellData = WorldData.get_cell(coords)
-		if cell:
-			if cell.location_name and not cell.location_name.is_empty():
-				# Show specific location name (e.g., "Elder Moor", "Dalhurst")
-				minimap_coord_label.text = cell.location_name
-			else:
-				# Show biome + "Wilderness" for unnamed cells
-				var biome_name: String = WorldData.Biome.keys()[cell.biome].capitalize()
-				minimap_coord_label.text = "%s Wilderness" % biome_name
-		else:
-			# Fallback if no cell data
-			minimap_coord_label.text = "Wilderness (%d, %d)" % [coords.x, coords.y]
+	if zone_id.is_empty() and SceneManager:
+		zone_id = SceneManager.get_current_region_id()
 
-		minimap_coord_label.visible = true
+	if zone_id.is_empty():
+		minimap_coord_label.visible = false
 	else:
-		# In a dungeon or town - show zone name instead
-		var zone_name: String = MapTracker.get_current_zone() if MapTracker else ""
-		if zone_name.is_empty():
-			minimap_coord_label.visible = false
-		else:
-			minimap_coord_label.text = zone_name.replace("_", " ").capitalize()
-			minimap_coord_label.visible = true
+		minimap_coord_label.text = _get_friendly_region_name(zone_id)
+		minimap_coord_label.visible = true
+
+
+## Convert zone ID to friendly display name
+func _get_friendly_region_name(zone_id: String) -> String:
+	# Map of zone IDs to friendly display names
+	var friendly_names: Dictionary = {
+		# Elder Moor variants
+		"village_elder_moor": "Elder Moor",
+		"elder_moor": "Elder Moor",
+		"region_elder_moor": "Elder Moor",
+		# Dalhurst variants
+		"city_dalhurst": "Dalhurst",
+		"dalhurst": "Dalhurst",
+		"region_dalhurst": "Dalhurst",
+		# Thornfield
+		"thornfield": "Thornfield",
+		"town_thornfield": "Thornfield",
+		# Millbrook
+		"millbrook": "Millbrook",
+		"town_millbrook": "Millbrook",
+		# Willow Dale
+		"willow_dale": "Willow Dale Ruins",
+		"dungeon_willow_dale": "Willow Dale Ruins",
+		# Sunken Crypt
+		"sunken_crypt": "Sunken Crypt",
+		"sunken_crypts": "Sunken Crypts",
+		# Bandit Hideout
+		"bandit_hideout": "Bandit Hideout",
+		"bandit_hideout_exterior": "Bandit Hideout",
+		# Kazer-Dun
+		"kazer_dun_entrance": "Kazer-Dun Entrance",
+		"kazan_dun": "Kazan-Dun",
+		"city_kazan_dun": "Kazan-Dun",
+		# Crossroads
+		"crossroads": "The Crossroads",
+		# Other locations
+		"falkenhaften": "Falkenhaften",
+		"capital_falkenhafen": "Falkenhaften",
+		"riverside_village": "Riverside Village",
+		"village_riverside": "Riverside Village",
+		"aberdeen": "Aberdeen",
+		"town_aberdeen": "Aberdeen",
+		"larton": "Larton",
+		"town_larton": "Larton",
+		"whalers_abyss": "Whaler's Abyss",
+		"town_whalers_abyss": "Whaler's Abyss",
+		"east_hollow": "East Hollow",
+		"town_east_hollow": "East Hollow",
+		"kings_watch": "King's Watch",
+		"outpost_kings_watch": "King's Watch",
+		"pola_perron": "Pola Perron",
+		"village_pola_perron": "Pola Perron",
+		"windmere": "Windmere",
+		"hamlet_windmere": "Windmere",
+		"stonehaven": "Stonehaven",
+		"village_stonehaven": "Stonehaven",
+		"duncaster": "Duncaster",
+		"town_duncaster": "Duncaster",
+		"dusty_hollow": "Dusty Hollow",
+		"hamlet_dusty_hollow": "Dusty Hollow",
+		"old_crossing": "Old Crossing",
+		"village_old_crossing": "Old Crossing",
+		"elven_outpost": "Elven Outpost",
+		"village_elven_outpost": "Elven Outpost",
+		"tenger_camp": "Tenger Camp",
+		"outpost_tenger_camp": "Tenger Camp",
+		# Dungeons
+		"vampire_crypt": "Vampire Crypt",
+		"dungeon_vampire_crypt": "Vampire Crypt",
+		"mosshall_tombs": "Mosshall Tombs",
+		"dungeon_mosshall_tombs": "Mosshall Tombs",
+		"goblin_cave": "Goblin Cave",
+		"random_cave": "Cave",
+		"dark_crypt": "Dark Crypt",
+		"test_dungeon": "Test Dungeon"
+	}
+
+	if friendly_names.has(zone_id):
+		return friendly_names[zone_id]
+
+	# Fallback: clean up the zone_id string
+	# Remove common prefixes and convert underscores to spaces
+	var clean_name: String = zone_id
+	for prefix in ["village_", "town_", "city_", "capital_", "dungeon_", "region_", "hamlet_", "outpost_"]:
+		if clean_name.begins_with(prefix):
+			clean_name = clean_name.substr(prefix.length())
+			break
+
+	return clean_name.replace("_", " ").capitalize()
 
 
 ## Handle cell entered signal from WorldManager for immediate location updates
@@ -2050,7 +2124,7 @@ func _update_compass_quest_marker(player: Node3D, yaw_degrees: float, ppd: float
 				if should_log:
 					print("[Compass] Objective type: %s, target: %s, target_zone: %s" % [target_objective.type, target_objective.target, target_zone])
 
-			# Fallback: if target_zone is empty and we're in town, point to wilderness
+			# Fallback: if target_zone is empty and we're in town, point to outdoor region
 			if target_zone.is_empty():
 				var current_zone := MapTracker.get_current_zone() if MapTracker else ""
 				if current_zone in ["town", "riverside_village", "elder_moor", "village_elder_moor"]:
@@ -2066,7 +2140,7 @@ func _update_compass_quest_marker(player: Node3D, yaw_degrees: float, ppd: float
 					target_name = "Exit: " + exit_door.door_name
 					if should_log:
 						print("[Compass] Found exit door: %s at %s" % [target_name, target_pos])
-				# Note: No error print here - in wilderness, it's normal to not find doors
+				# Note: No error print here - in outdoor regions, it's normal to not find doors
 				# The compass marker will be hidden until player approaches an exit
 
 	if not has_target:
@@ -2581,7 +2655,6 @@ func _get_objective_target_zone(objective: QuestManager.Objective) -> String:
 
 ## Find an exit door that leads to the target zone (or toward it)
 ## Now finds the NEAREST door when multiple exist
-## Also handles wilderness exits which use a special handler system
 func _find_exit_door_to_zone(target_zone: String) -> ZoneDoor:
 	var player := get_tree().get_first_node_in_group("player") as Node3D
 	var player_pos: Vector3 = player.global_position if player else Vector3.ZERO
@@ -2591,23 +2664,11 @@ func _find_exit_door_to_zone(target_zone: String) -> ZoneDoor:
 	# Get current zone to determine appropriate routing
 	var current_zone := MapTracker.get_current_zone() if MapTracker else ""
 
-	# SPECIAL CASE: Wilderness exits use a different system (wilderness_exit_handler)
-	# They're not in the "doors" group - look for them separately
-	if target_zone == "open_world":
-		var wilderness_exit := _find_nearest_wilderness_exit(player_pos)
-		if wilderness_exit:
-			return wilderness_exit
-
-	# SPECIAL CASE: When IN open_world and need to go to a town
-	# The wilderness uses edge triggers, not doors - find the closest town exit
-	if current_zone == "open_world" and _is_town_zone(target_zone):
-		# Look for wilderness exit POIs that lead to settlements
-		var wilderness_exit := _find_wilderness_exit_to_town(player_pos, target_zone)
-		if wilderness_exit:
-			return wilderness_exit
-		# If no specific exit found, return null - compass will hide marker
-		# Player needs to navigate via world map/exploration
-		return null
+	# Look for doors leading to the target zone
+	if target_zone == "open_world" or _is_town_zone(target_zone):
+		var region_exit := _find_door_to_zone(player_pos, target_zone)
+		if region_exit:
+			return region_exit
 
 	# Direct connection - check zone_connections first (now an array)
 	if zone_connections.has(target_zone):
@@ -2720,8 +2781,8 @@ func _find_exit_door_to_zone(target_zone: String) -> ZoneDoor:
 				if door_target_zone == intermediate_zone:
 					return zone_door
 
-	# Fallback: If we're in a town and looking for wilderness targets,
-	# return ANY door that leads outside (dungeon, wilderness, etc.)
+	# Fallback: If we're in a town and looking for external targets,
+	# return ANY door that leads outside (dungeon, other region, etc.)
 	if _is_town_zone(current_zone):
 		for door in doors:
 			if door is ZoneDoor:
@@ -2734,13 +2795,12 @@ func _find_exit_door_to_zone(target_zone: String) -> ZoneDoor:
 	return null
 
 
-## Cached fake door for wilderness exits (avoids creating new nodes each frame)
-var _cached_wilderness_door: ZoneDoor = null
-var _cached_town_exit_door: ZoneDoor = null
+## Cached door references for compass (avoids creating new nodes each frame)
+var _cached_region_door: ZoneDoor = null
 
-## Find wilderness exit that leads to a specific town
-## Used when player is in open_world and needs to go to a settlement
-func _find_wilderness_exit_to_town(player_pos: Vector3, target_town: String) -> ZoneDoor:
+## Find zone door that leads to a specific region/town
+## Used for quest compass navigation
+func _find_door_to_zone(player_pos: Vector3, target_zone: String) -> ZoneDoor:
 	# First check for direct POIs/doors to the target
 	var pois := get_tree().get_nodes_in_group("compass_poi")
 	var nearest_exit: Node3D = null
@@ -2750,7 +2810,7 @@ func _find_wilderness_exit_to_town(player_pos: Vector3, target_town: String) -> 
 		if poi is Node3D:
 			var poi_id: String = poi.get_meta("poi_id", "")
 			var poi_target: String = poi.get_meta("target_zone", "")
-			if poi_target == target_town or poi_id.contains(target_town):
+			if poi_target == target_zone or poi_id.contains(target_zone):
 				var dist: float = player_pos.distance_to(poi.global_position)
 				if dist < nearest_dist:
 					nearest_dist = dist
@@ -2761,75 +2821,28 @@ func _find_wilderness_exit_to_town(player_pos: Vector3, target_town: String) -> 
 		if door is ZoneDoor:
 			var zone_door := door as ZoneDoor
 			var door_target := _scene_path_to_zone_id(zone_door.target_scene)
-			if door_target == target_town:
+			if door_target == target_zone:
 				var dist: float = player_pos.distance_to(zone_door.global_position)
 				if dist < nearest_dist:
 					return zone_door
 
 	if nearest_exit:
-		if not _cached_town_exit_door:
-			_cached_town_exit_door = ZoneDoor.new()
-		_cached_town_exit_door.global_position = nearest_exit.global_position
-		_cached_town_exit_door.door_name = nearest_exit.get_meta("poi_name", "To " + target_town.capitalize())
-		_cached_town_exit_door.target_scene = target_town
-		return _cached_town_exit_door
+		if not _cached_region_door:
+			_cached_region_door = ZoneDoor.new()
+		_cached_region_door.global_position = nearest_exit.global_position
+		_cached_region_door.door_name = nearest_exit.get_meta("poi_name", "To " + target_zone.capitalize())
+		_cached_region_door.target_scene = target_zone
+		return _cached_region_door
 
-	# No direct exit found - calculate direction using world grid
-	return _calculate_direction_to_settlement(player_pos, target_town)
+	return null
 
 
-## Calculate direction to a settlement using the world grid system
-## Returns a fake door at the edge of the current cell pointing toward the target
-func _calculate_direction_to_settlement(player_pos: Vector3, target_zone: String) -> ZoneDoor:
-	# Get current wilderness room to find grid coordinates
-	var wilderness_room := get_tree().get_first_node_in_group("wilderness_room")
-	if not wilderness_room or not "grid_coords" in wilderness_room:
-		return null
-
-	var current_coords: Vector2i = wilderness_room.grid_coords
-
-	# Find target settlement coordinates from WorldData
-	var target_coords: Vector2i = _find_settlement_coords(target_zone)
-	if target_coords == Vector2i(-9999, -9999):  # Not found marker
-		return null
-
-	# Calculate direction from current cell to target
-	var delta: Vector2i = target_coords - current_coords
-
-	# Determine primary direction to travel
-	var direction_name: String = ""
-	var edge_offset: Vector3 = Vector3.ZERO
-	var cell_size: float = 140.0  # Navigation marker distance (increased for better visibility)
-
-	# Prioritize the axis with larger distance
-	if abs(delta.x) >= abs(delta.y):
-		# East/West movement primary
-		if delta.x > 0:
-			direction_name = "East"
-			edge_offset = Vector3(cell_size / 2.0, 0, 0)
-		else:
-			direction_name = "West"
-			edge_offset = Vector3(-cell_size / 2.0, 0, 0)
-	else:
-		# North/South movement primary (Y in grid = Z in world, negative Y = south)
-		if delta.y < 0:  # Negative Y in grid = south in world
-			direction_name = "South"
-			edge_offset = Vector3(0, 0, cell_size / 2.0)
-		else:
-			direction_name = "North"
-			edge_offset = Vector3(0, 0, -cell_size / 2.0)
-
-	# Create fake door at the edge of the cell
-	if not _cached_town_exit_door:
-		_cached_town_exit_door = ZoneDoor.new()
-
-	# Position at player position plus edge offset (points toward the edge of the cell)
-	# This gives a direction for the compass to point, not an actual door location
-	_cached_town_exit_door.global_position = player_pos + edge_offset
-	_cached_town_exit_door.door_name = "Go %s toward %s" % [direction_name, _zone_id_to_display_name(target_zone)]
-	_cached_town_exit_door.target_scene = target_zone
-
-	return _cached_town_exit_door
+## Calculate direction to a settlement - simplified for region-based system
+## Returns null - inter-region navigation should use zone doors
+func _calculate_direction_to_settlement(_player_pos: Vector3, _target_zone: String) -> ZoneDoor:
+	# In region-based system, navigation between zones is handled by zone doors
+	# The compass should point to actual doors in the scene, not virtual directions
+	return null
 
 
 ## Find settlement coordinates from WorldData by zone ID
@@ -2890,37 +2903,28 @@ func _zone_id_to_display_name(zone_id: String) -> String:
 	return zone_id.replace("_", " ").capitalize()
 
 
-## Find nearest wilderness exit (special handlers, not standard doors)
-## Returns a fake "door" node with global_position and door_name for compass compatibility
-func _find_nearest_wilderness_exit(player_pos: Vector3) -> ZoneDoor:
+## Find nearest region exit - looks for zone doors leading to other regions
+## Returns the nearest zone door for compass compatibility
+func _find_nearest_region_exit(player_pos: Vector3) -> ZoneDoor:
 	# Safety check - ensure tree is valid
 	if not is_inside_tree():
 		return null
 
-	var nearest_exit: Node3D = null
+	var nearest_door: ZoneDoor = null
 	var nearest_dist: float = INF
 
-	# Look for compass POIs that are wilderness exits
-	var pois := get_tree().get_nodes_in_group("compass_poi")
-	for poi in pois:
-		if poi is Node3D:
-			var poi_id: String = poi.get_meta("poi_id", "")
-			if poi_id.contains("wilderness_exit"):
-				var dist: float = player_pos.distance_to(poi.global_position)
+	# Look for zone doors in the scene
+	var doors := get_tree().get_nodes_in_group("doors")
+	for door in doors:
+		if door is ZoneDoor:
+			var zone_door := door as ZoneDoor
+			if zone_door.target_scene and not zone_door.target_scene.is_empty():
+				var dist: float = player_pos.distance_to(zone_door.global_position)
 				if dist < nearest_dist:
 					nearest_dist = dist
-					nearest_exit = poi
+					nearest_door = zone_door
 
-	# If found, update the cached fake door (reuse to avoid memory allocation)
-	if nearest_exit and is_instance_valid(nearest_exit) and nearest_exit.is_inside_tree():
-		if not _cached_wilderness_door:
-			_cached_wilderness_door = ZoneDoor.new()
-			_cached_wilderness_door.target_scene = "wilderness"
-		_cached_wilderness_door.global_position = nearest_exit.global_position
-		_cached_wilderness_door.door_name = nearest_exit.get_meta("poi_name", "To Wilderness")
-		return _cached_wilderness_door
-
-	return null
+	return nearest_door
 
 
 ## Setup bounty indicator (shows when player has active bounty)

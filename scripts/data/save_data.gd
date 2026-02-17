@@ -44,6 +44,9 @@ var world_manager_data = null  # WorldManagerSaveData
 ## Encounter manager section
 var encounter_data = null  # EncounterSaveData
 
+## Fog of war section (painted world map)
+var fog_of_war_data = null  # FogOfWarSaveData
+
 ## Audio settings section
 @export_group("Settings")
 @export var audio_settings: Dictionary = {}
@@ -60,6 +63,7 @@ func _init() -> void:
 	errand_data = ErrandSaveData.new()
 	world_manager_data = WorldManagerSaveData.new()
 	encounter_data = EncounterSaveData.new()
+	fog_of_war_data = FogOfWarSaveData.new()
 
 ## Convert to dictionary for JSON serialization
 func to_dict() -> Dictionary:
@@ -79,6 +83,7 @@ func to_dict() -> Dictionary:
 		"errands": errand_data.to_dict() if errand_data else {},
 		"world_manager": world_manager_data.to_dict() if world_manager_data else {},
 		"encounters": encounter_data.to_dict() if encounter_data else {},
+		"fog_of_war": fog_of_war_data.to_dict() if fog_of_war_data else {},
 		"audio_settings": audio_settings
 	}
 
@@ -111,6 +116,8 @@ func from_dict(data: Dictionary) -> void:
 		world_manager_data.from_dict(data.get("world_manager", {}))
 	if encounter_data:
 		encounter_data.from_dict(data.get("encounters", {}))
+	if fog_of_war_data:
+		fog_of_war_data.from_dict(data.get("fog_of_war", {}))
 
 	audio_settings = data.get("audio_settings", {})
 
@@ -310,6 +317,27 @@ class WorldSaveData:
 	## Rest manager state (diminishing returns, respawn tracking)
 	var rest_manager: Dictionary = {}
 
+	## ============================================================================
+	## HEX WORLD DATA
+	## ============================================================================
+
+	## Whether hex system is enabled
+	var use_hex_system: bool = true
+
+	## Current hex coordinates (q, r)
+	var current_hex_q: int = 31
+	var current_hex_r: int = 12
+
+	## Last hex coords before entering dungeon
+	var last_hex_q: int = 31
+	var last_hex_r: int = 12
+
+	## Hex cell discovery state ("q,r" -> {discovered, dungeon_discovered})
+	var hex_discovery: Dictionary = {}
+
+	## Room/hex seeds per character (char_id -> {"q,r" -> seed})
+	var hex_seeds: Dictionary = {}
+
 	func to_dict() -> Dictionary:
 		return {
 			"current_zone_id": current_zone_id,
@@ -321,7 +349,15 @@ class WorldSaveData:
 			"opened_containers": opened_containers,
 			"unlocked_shortcuts": unlocked_shortcuts,
 			"dungeon_seeds": dungeon_seeds,
-			"rest_manager": rest_manager
+			"rest_manager": rest_manager,
+			# Hex data
+			"use_hex_system": use_hex_system,
+			"current_hex_q": current_hex_q,
+			"current_hex_r": current_hex_r,
+			"last_hex_q": last_hex_q,
+			"last_hex_r": last_hex_r,
+			"hex_discovery": hex_discovery,
+			"hex_seeds": hex_seeds
 		}
 
 	func from_dict(data: Dictionary) -> void:
@@ -335,6 +371,14 @@ class WorldSaveData:
 		unlocked_shortcuts = data.get("unlocked_shortcuts", {})
 		dungeon_seeds = data.get("dungeon_seeds", {})
 		rest_manager = data.get("rest_manager", {})
+		# Hex data
+		use_hex_system = data.get("use_hex_system", true)
+		current_hex_q = data.get("current_hex_q", 31)
+		current_hex_r = data.get("current_hex_r", 12)
+		last_hex_q = data.get("last_hex_q", 31)
+		last_hex_r = data.get("last_hex_r", 12)
+		hex_discovery = data.get("hex_discovery", {})
+		hex_seeds = data.get("hex_seeds", {})
 
 
 ## Quest save data structure
@@ -582,3 +626,22 @@ class EncounterSaveData:
 		cooldown_remaining = data.get("cooldown_remaining", 0.0)
 		encounter_timer = data.get("encounter_timer", 0.0)
 		last_check_hex = data.get("last_check_hex", {"x": 0, "y": 0})
+
+
+## Fog of war save data structure (for painted world map)
+class FogOfWarSaveData:
+	## Explored hex cells as array of [q, r] coordinates
+	var explored_hexes: Array = []
+
+	## Image size (for validation)
+	var image_size: Array = [798, 588]
+
+	func to_dict() -> Dictionary:
+		return {
+			"explored_hexes": explored_hexes,
+			"image_size": image_size
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		explored_hexes = data.get("explored_hexes", [])
+		image_size = data.get("image_size", [798, 588])

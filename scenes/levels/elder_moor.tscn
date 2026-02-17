@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://75b8etq7ej45"]
+[gd_scene load_steps=35 format=3 uid="uid://75b8etq7ej45"]
 
 [ext_resource type="Script" uid="uid://ficltujgs2y" path="res://scripts/levels/elder_moor.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
@@ -31,15 +31,24 @@ ambient_light_color = Color(0.4, 0.45, 0.35, 1)
 ambient_light_energy = 0.6
 fog_enabled = true
 fog_light_color = Color(0.35, 0.4, 0.3, 1)
-fog_density = 0.008
+fog_density = 0.006
 fog_sky_affect = 0.3
 
 [sub_resource type="StandardMaterial3D" id="mat_ground"]
 albedo_color = Color(0.35, 0.3, 0.2, 1)
 albedo_texture = ExtResource("4")
 roughness = 0.95
-uv1_scale = Vector3(15, 15, 1)
+uv1_scale = Vector3(75, 75, 1)
 texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="mat_swamp_ground"]
+albedo_color = Color(0.25, 0.28, 0.2, 1)
+roughness = 0.98
+
+[sub_resource type="StandardMaterial3D" id="mat_murky_water"]
+albedo_color = Color(0.15, 0.2, 0.12, 0.8)
+roughness = 0.3
+metallic = 0.1
 
 [sub_resource type="StandardMaterial3D" id="mat_wood_floor"]
 albedo_color = Color(0.6, 0.5, 0.4, 1)
@@ -97,9 +106,21 @@ roughness = 0.4
 albedo_color = Color(0.4, 0.38, 0.35, 1)
 roughness = 0.95
 
-[sub_resource type="StandardMaterial3D" id="mat_fence_post"]
-albedo_color = Color(0.4, 0.32, 0.25, 1)
+[sub_resource type="StandardMaterial3D" id="mat_tree_trunk"]
+albedo_color = Color(0.35, 0.28, 0.2, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="mat_tree_leaves"]
+albedo_color = Color(0.2, 0.35, 0.15, 1)
 roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_dead_tree"]
+albedo_color = Color(0.3, 0.25, 0.2, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="mat_rock"]
+albedo_color = Color(0.4, 0.38, 0.35, 1)
+roughness = 0.95
 
 [node name="ElderMoor" type="Node3D"]
 script = ExtResource("1")
@@ -118,8 +139,61 @@ shadow_bias = 0.02
 [node name="Ground" type="CSGBox3D" parent="Terrain"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 use_collision = true
-size = Vector3(60, 1, 60)
+size = Vector3(300, 1, 300)
 material = SubResource("mat_ground")
+
+[node name="Hills" type="Node3D" parent="Terrain"]
+
+[node name="Hill_NW" type="CSGSphere3D" parent="Terrain/Hills"]
+transform = Transform3D(12, 0, 0, 0, 2.5, 0, 0, 0, 10, -100, 0, -90)
+radius = 1.0
+material = SubResource("mat_swamp_ground")
+
+[node name="Hill_NE" type="CSGSphere3D" parent="Terrain/Hills"]
+transform = Transform3D(10, 0, 0, 0, 2, 0, 0, 0, 8, 95, 0, -85)
+radius = 1.0
+material = SubResource("mat_swamp_ground")
+
+[node name="Hill_SE" type="CSGSphere3D" parent="Terrain/Hills"]
+transform = Transform3D(15, 0, 0, 0, 3, 0, 0, 0, 12, 90, 0, 100)
+radius = 1.0
+material = SubResource("mat_swamp_ground")
+
+[node name="Hill_SW" type="CSGSphere3D" parent="Terrain/Hills"]
+transform = Transform3D(8, 0, 0, 0, 1.8, 0, 0, 0, 9, -85, 0, 95)
+radius = 1.0
+material = SubResource("mat_swamp_ground")
+
+[node name="Hill_E" type="CSGSphere3D" parent="Terrain/Hills"]
+transform = Transform3D(10, 0, 0, 0, 2.2, 0, 0, 0, 8, 110, 0, 20)
+radius = 1.0
+material = SubResource("mat_swamp_ground")
+
+[node name="SwampyAreas" type="Node3D" parent="Terrain"]
+
+[node name="MurkyPond_NW" type="CSGCylinder3D" parent="Terrain/SwampyAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, -0.3, -70)
+radius = 12.0
+height = 0.4
+material = SubResource("mat_murky_water")
+
+[node name="MurkyPond_SE" type="CSGCylinder3D" parent="Terrain/SwampyAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 75, -0.3, 80)
+radius = 10.0
+height = 0.4
+material = SubResource("mat_murky_water")
+
+[node name="MurkyPond_E" type="CSGCylinder3D" parent="Terrain/SwampyAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, -0.3, -30)
+radius = 8.0
+height = 0.4
+material = SubResource("mat_murky_water")
+
+[node name="MurkyPond_SW" type="CSGCylinder3D" parent="Terrain/SwampyAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -90, -0.3, 60)
+radius = 9.0
+height = 0.4
+material = SubResource("mat_murky_water")
 
 [node name="Buildings" type="Node3D" parent="."]
 
@@ -400,186 +474,6 @@ height = 1.4
 sides = 6
 material = SubResource("mat_lumber")
 
-[node name="LumberPile1" type="Node3D" parent="Decorations"]
-transform = Transform3D(0.707, 0, 0.707, 0, 1, 0, -0.707, 0, 0.707, 8, 0, -3)
-
-[node name="Log0" type="CSGCylinder3D" parent="Decorations/LumberPile1"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.28, 0.12, 0)
-radius = 0.12
-height = 1.3
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log1" type="CSGCylinder3D" parent="Decorations/LumberPile1"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.12, 0)
-radius = 0.12
-height = 1.3
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log2" type="CSGCylinder3D" parent="Decorations/LumberPile1"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0.28, 0.12, 0)
-radius = 0.12
-height = 1.3
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log3" type="CSGCylinder3D" parent="Decorations/LumberPile1"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.14, 0.32, 0)
-radius = 0.12
-height = 1.3
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log4" type="CSGCylinder3D" parent="Decorations/LumberPile1"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0.14, 0.32, 0)
-radius = 0.12
-height = 1.3
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log5" type="CSGCylinder3D" parent="Decorations/LumberPile1"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.53, 0)
-radius = 0.12
-height = 1.3
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="LumberPile2" type="Node3D" parent="Decorations"]
-transform = Transform3D(0.866, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866, -3, 0, 10)
-
-[node name="Log0" type="CSGCylinder3D" parent="Decorations/LumberPile2"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.28, 0.12, 0)
-radius = 0.12
-height = 1.5
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log1" type="CSGCylinder3D" parent="Decorations/LumberPile2"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.12, 0)
-radius = 0.12
-height = 1.5
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log2" type="CSGCylinder3D" parent="Decorations/LumberPile2"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0.28, 0.12, 0)
-radius = 0.12
-height = 1.5
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log3" type="CSGCylinder3D" parent="Decorations/LumberPile2"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.14, 0.32, 0)
-radius = 0.12
-height = 1.5
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log4" type="CSGCylinder3D" parent="Decorations/LumberPile2"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0.14, 0.32, 0)
-radius = 0.12
-height = 1.5
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log5" type="CSGCylinder3D" parent="Decorations/LumberPile2"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.53, 0)
-radius = 0.12
-height = 1.5
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="LumberPile3" type="Node3D" parent="Decorations"]
-transform = Transform3D(0.5, 0, 0.866, 0, 1, 0, -0.866, 0, 0.5, 10, 0, 8)
-
-[node name="Log0" type="CSGCylinder3D" parent="Decorations/LumberPile3"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.28, 0.12, 0)
-radius = 0.12
-height = 1.2
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log1" type="CSGCylinder3D" parent="Decorations/LumberPile3"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.12, 0)
-radius = 0.12
-height = 1.2
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log2" type="CSGCylinder3D" parent="Decorations/LumberPile3"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0.28, 0.12, 0)
-radius = 0.12
-height = 1.2
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log3" type="CSGCylinder3D" parent="Decorations/LumberPile3"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.14, 0.32, 0)
-radius = 0.12
-height = 1.2
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log4" type="CSGCylinder3D" parent="Decorations/LumberPile3"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0.14, 0.32, 0)
-radius = 0.12
-height = 1.2
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log5" type="CSGCylinder3D" parent="Decorations/LumberPile3"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.53, 0)
-radius = 0.12
-height = 1.2
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="LumberPile4" type="Node3D" parent="Decorations"]
-transform = Transform3D(0.259, 0, -0.966, 0, 1, 0, 0.966, 0, 0.259, -10, 0, 12)
-
-[node name="Log0" type="CSGCylinder3D" parent="Decorations/LumberPile4"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.28, 0.12, 0)
-radius = 0.12
-height = 1.35
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log1" type="CSGCylinder3D" parent="Decorations/LumberPile4"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.12, 0)
-radius = 0.12
-height = 1.35
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log2" type="CSGCylinder3D" parent="Decorations/LumberPile4"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0.28, 0.12, 0)
-radius = 0.12
-height = 1.35
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log3" type="CSGCylinder3D" parent="Decorations/LumberPile4"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.14, 0.32, 0)
-radius = 0.12
-height = 1.35
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log4" type="CSGCylinder3D" parent="Decorations/LumberPile4"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0.14, 0.32, 0)
-radius = 0.12
-height = 1.35
-sides = 6
-material = SubResource("mat_lumber")
-
-[node name="Log5" type="CSGCylinder3D" parent="Decorations/LumberPile4"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.53, 0)
-radius = 0.12
-height = 1.35
-sides = 6
-material = SubResource("mat_lumber")
-
 [node name="TreeStump0" type="Node3D" parent="Decorations"]
 transform = Transform3D(0.866, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866, 6, 0, -8)
 
@@ -601,48 +495,6 @@ transform = Transform3D(1, 0, 0, 0, 0.955, 0.296, 0, -0.296, 0.955, 0, 0.45, -0.
 size = Vector3(0.2, 0.15, 0.05)
 material = SubResource("mat_metal")
 
-[node name="TreeStump1" type="Node3D" parent="Decorations"]
-transform = Transform3D(0.707, 0, -0.707, 0, 1, 0, 0.707, 0, 0.707, -6, 0, 8)
-
-[node name="Stump" type="CSGCylinder3D" parent="Decorations/TreeStump1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
-radius = 0.4
-height = 0.5
-material = SubResource("mat_stump")
-
-[node name="AxeHandle" type="CSGCylinder3D" parent="Decorations/TreeStump1"]
-transform = Transform3D(1, 0, 0, 0, 0.955, 0.296, 0, -0.296, 0.955, 0, 0.7, 0.1)
-radius = 0.04
-height = 0.6
-sides = 6
-material = SubResource("mat_stump")
-
-[node name="AxeHead" type="CSGBox3D" parent="Decorations/TreeStump1"]
-transform = Transform3D(1, 0, 0, 0, 0.955, 0.296, 0, -0.296, 0.955, 0, 0.45, -0.02)
-size = Vector3(0.2, 0.15, 0.05)
-material = SubResource("mat_metal")
-
-[node name="TreeStump2" type="Node3D" parent="Decorations"]
-transform = Transform3D(0.5, 0, 0.866, 0, 1, 0, -0.866, 0, 0.5, 12, 0, 2)
-
-[node name="Stump" type="CSGCylinder3D" parent="Decorations/TreeStump2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
-radius = 0.4
-height = 0.5
-material = SubResource("mat_stump")
-
-[node name="AxeHandle" type="CSGCylinder3D" parent="Decorations/TreeStump2"]
-transform = Transform3D(1, 0, 0, 0, 0.955, 0.296, 0, -0.296, 0.955, 0, 0.7, 0.1)
-radius = 0.04
-height = 0.6
-sides = 6
-material = SubResource("mat_stump")
-
-[node name="AxeHead" type="CSGBox3D" parent="Decorations/TreeStump2"]
-transform = Transform3D(1, 0, 0, 0, 0.955, 0.296, 0, -0.296, 0.955, 0, 0.45, -0.02)
-size = Vector3(0.2, 0.15, 0.05)
-material = SubResource("mat_metal")
-
 [node name="Firepit" type="Node3D" parent="Decorations"]
 
 [node name="StoneRing" type="CSGTorus3D" parent="Decorations/Firepit"]
@@ -658,270 +510,238 @@ light_color = Color(1, 0.6, 0.2, 1)
 light_energy = 2.5
 omni_range = 8.0
 
-[node name="Boundaries" type="Node3D" parent="."]
+[node name="WildernessTrees" type="Node3D" parent="."]
 
-[node name="FencePostN0" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 1, -30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="TreeCluster_N1" type="Node3D" parent="WildernessTrees"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 0, -130)
 
-[node name="FencePostN1" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 1, -30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Trunk" type="CSGCylinder3D" parent="WildernessTrees/TreeCluster_N1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+radius = 0.6
+height = 6.0
+material = SubResource("mat_tree_trunk")
 
-[node name="FencePostN2" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 1, -30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Canopy" type="CSGSphere3D" parent="WildernessTrees/TreeCluster_N1"]
+transform = Transform3D(3, 0, 0, 0, 4, 0, 0, 0, 3, 0, 8, 0)
+radius = 1.0
+material = SubResource("mat_tree_leaves")
 
-[node name="FencePostN3" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1, -30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="TreeCluster_N2" type="Node3D" parent="WildernessTrees"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0, -125)
 
-[node name="FencePostN4" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1, -30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Trunk" type="CSGCylinder3D" parent="WildernessTrees/TreeCluster_N2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
+radius = 0.7
+height = 7.0
+material = SubResource("mat_tree_trunk")
 
-[node name="FencePostN5" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Canopy" type="CSGSphere3D" parent="WildernessTrees/TreeCluster_N2"]
+transform = Transform3D(3.5, 0, 0, 0, 4.5, 0, 0, 0, 3.5, 0, 9, 0)
+radius = 1.0
+material = SubResource("mat_tree_leaves")
 
-[node name="FencePostN6" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1, -30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="TreeCluster_N3" type="Node3D" parent="WildernessTrees"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, -135)
 
-[node name="FencePostN7" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 1, -30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Trunk" type="CSGCylinder3D" parent="WildernessTrees/TreeCluster_N3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+radius = 0.5
+height = 5.0
+material = SubResource("mat_tree_trunk")
 
-[node name="FencePostN8" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, -30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Canopy" type="CSGSphere3D" parent="WildernessTrees/TreeCluster_N3"]
+transform = Transform3D(2.5, 0, 0, 0, 3.5, 0, 0, 0, 2.5, 0, 7, 0)
+radius = 1.0
+material = SubResource("mat_tree_leaves")
 
-[node name="FencePostN9" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 1, -30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="TreeCluster_N4" type="Node3D" parent="WildernessTrees"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -130)
 
-[node name="FencePostN10" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, -30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Trunk" type="CSGCylinder3D" parent="WildernessTrees/TreeCluster_N4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+radius = 0.6
+height = 6.0
+material = SubResource("mat_tree_trunk")
 
-[node name="FencePostW0" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 1, -24)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Canopy" type="CSGSphere3D" parent="WildernessTrees/TreeCluster_N4"]
+transform = Transform3D(3, 0, 0, 0, 4, 0, 0, 0, 3, 0, 8, 0)
+radius = 1.0
+material = SubResource("mat_tree_leaves")
 
-[node name="FencePostW1" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 1, -18)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="TreeCluster_N5" type="Node3D" parent="WildernessTrees"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 0, -128)
 
-[node name="FencePostW2" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 1, -12)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Trunk" type="CSGCylinder3D" parent="WildernessTrees/TreeCluster_N5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+radius = 0.65
+height = 6.0
+material = SubResource("mat_tree_trunk")
 
-[node name="FencePostW3" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 1, -6)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Canopy" type="CSGSphere3D" parent="WildernessTrees/TreeCluster_N5"]
+transform = Transform3D(3.2, 0, 0, 0, 4.2, 0, 0, 0, 3.2, 0, 8.5, 0)
+radius = 1.0
+material = SubResource("mat_tree_leaves")
 
-[node name="FencePostW4" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 1, 0)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="TreeCluster_N6" type="Node3D" parent="WildernessTrees"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, 0, -132)
 
-[node name="FencePostW5" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 1, 6)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Trunk" type="CSGCylinder3D" parent="WildernessTrees/TreeCluster_N6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 0)
+radius = 0.55
+height = 5.6
+material = SubResource("mat_tree_trunk")
 
-[node name="FencePostW6" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 1, 12)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Canopy" type="CSGSphere3D" parent="WildernessTrees/TreeCluster_N6"]
+transform = Transform3D(2.8, 0, 0, 0, 3.8, 0, 0, 0, 2.8, 0, 7.5, 0)
+radius = 1.0
+material = SubResource("mat_tree_leaves")
 
-[node name="FencePostW7" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 1, 18)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="TreeCluster_W1" type="Node3D" parent="WildernessTrees"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 0, -60)
 
-[node name="FencePostW8" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 1, 24)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Trunk" type="CSGCylinder3D" parent="WildernessTrees/TreeCluster_W1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 0)
+radius = 0.65
+height = 6.4
+material = SubResource("mat_tree_trunk")
 
-[node name="FencePostW9" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 1, 30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Canopy" type="CSGSphere3D" parent="WildernessTrees/TreeCluster_W1"]
+transform = Transform3D(3.3, 0, 0, 0, 4.3, 0, 0, 0, 3.3, 0, 8.7, 0)
+radius = 1.0
+material = SubResource("mat_tree_leaves")
 
-[node name="FencePostE0" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, -24)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="TreeCluster_W2" type="Node3D" parent="WildernessTrees"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -135, 0, -30)
 
-[node name="FencePostE1" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, -18)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Trunk" type="CSGCylinder3D" parent="WildernessTrees/TreeCluster_W2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 0)
+radius = 0.55
+height = 5.6
+material = SubResource("mat_tree_trunk")
 
-[node name="FencePostE2" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, -12)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Canopy" type="CSGSphere3D" parent="WildernessTrees/TreeCluster_W2"]
+transform = Transform3D(2.8, 0, 0, 0, 3.8, 0, 0, 0, 2.8, 0, 7.5, 0)
+radius = 1.0
+material = SubResource("mat_tree_leaves")
 
-[node name="FencePostE3" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, -6)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="TreeCluster_W3" type="Node3D" parent="WildernessTrees"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -128, 0, 10)
 
-[node name="FencePostE4" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, 0)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Trunk" type="CSGCylinder3D" parent="WildernessTrees/TreeCluster_W3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+radius = 0.6
+height = 6.0
+material = SubResource("mat_tree_trunk")
 
-[node name="FencePostE5" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, 6)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Canopy" type="CSGSphere3D" parent="WildernessTrees/TreeCluster_W3"]
+transform = Transform3D(3, 0, 0, 0, 4, 0, 0, 0, 3, 0, 8, 0)
+radius = 1.0
+material = SubResource("mat_tree_leaves")
 
-[node name="FencePostE6" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, 12)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="TreeCluster_W4" type="Node3D" parent="WildernessTrees"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -132, 0, 50)
 
-[node name="FencePostE7" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, 18)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Trunk" type="CSGCylinder3D" parent="WildernessTrees/TreeCluster_W4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
+radius = 0.7
+height = 7.0
+material = SubResource("mat_tree_trunk")
 
-[node name="FencePostE8" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, 24)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Canopy" type="CSGSphere3D" parent="WildernessTrees/TreeCluster_W4"]
+transform = Transform3D(3.5, 0, 0, 0, 4.5, 0, 0, 0, 3.5, 0, 9, 0)
+radius = 1.0
+material = SubResource("mat_tree_leaves")
 
-[node name="FencePostE9" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, 30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="DeadTrees" type="Node3D" parent="WildernessTrees"]
 
-[node name="FencePostS0" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 1, 30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="DeadTree1" type="CSGCylinder3D" parent="WildernessTrees/DeadTrees"]
+transform = Transform3D(0.98, 0, 0.2, 0, 1, 0, -0.2, 0, 0.98, -75, 2.5, -65)
+radius = 0.4
+height = 5.0
+material = SubResource("mat_dead_tree")
 
-[node name="FencePostS1" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 1, 30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="DeadTree2" type="CSGCylinder3D" parent="WildernessTrees/DeadTrees"]
+transform = Transform3D(0.95, 0, -0.3, 0, 1, 0, 0.3, 0, 0.95, 80, 2, 85)
+radius = 0.35
+height = 4.0
+material = SubResource("mat_dead_tree")
 
-[node name="FencePostS2" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 1, 30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="DeadTree3" type="CSGCylinder3D" parent="WildernessTrees/DeadTrees"]
+transform = Transform3D(0.97, 0, 0.25, 0, 1, 0, -0.25, 0, 0.97, -95, 2.2, 55)
+radius = 0.38
+height = 4.4
+material = SubResource("mat_dead_tree")
 
-[node name="FencePostS3" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1, 30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="DeadTree4" type="CSGCylinder3D" parent="WildernessTrees/DeadTrees"]
+transform = Transform3D(0.92, 0, -0.4, 0, 1, 0, 0.4, 0, 0.92, 105, 2.3, -25)
+radius = 0.42
+height = 4.6
+material = SubResource("mat_dead_tree")
 
-[node name="FencePostS4" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1, 30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="WildernessRocks" type="Node3D" parent="."]
 
-[node name="FencePostS5" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1, 30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Rock1" type="CSGSphere3D" parent="WildernessRocks"]
+transform = Transform3D(2.5, 0, 0, 0, 1.5, 0, 0, 0, 2, -70, 0.5, -80)
+radius = 1.0
+material = SubResource("mat_rock")
 
-[node name="FencePostS6" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 1, 30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Rock2" type="CSGSphere3D" parent="WildernessRocks"]
+transform = Transform3D(3, 0, 0, 0, 2, 0, 0, 0, 2.5, 85, 0.7, 75)
+radius = 1.0
+material = SubResource("mat_rock")
 
-[node name="FencePostS7" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Rock3" type="CSGSphere3D" parent="WildernessRocks"]
+transform = Transform3D(2, 0, 0, 0, 1.2, 0, 0, 0, 1.8, -85, 0.4, 70)
+radius = 1.0
+material = SubResource("mat_rock")
 
-[node name="FencePostS8" type="CSGBox3D" parent="Boundaries"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 1, 30)
-use_collision = true
-size = Vector3(0.2, 2, 0.2)
-material = SubResource("mat_fence_post")
+[node name="Rock4" type="CSGSphere3D" parent="WildernessRocks"]
+transform = Transform3D(2.2, 0, 0, 0, 1.3, 0, 0, 0, 2, 95, 0.5, -40)
+radius = 1.0
+material = SubResource("mat_rock")
+
+[node name="Rock5" type="CSGSphere3D" parent="WildernessRocks"]
+transform = Transform3D(1.8, 0, 0, 0, 1.1, 0, 0, 0, 1.5, -100, 0.4, -50)
+radius = 1.0
+material = SubResource("mat_rock")
+
+[node name="Rock6" type="CSGSphere3D" parent="WildernessRocks"]
+transform = Transform3D(2.8, 0, 0, 0, 1.8, 0, 0, 0, 2.3, 70, 0.6, 110)
+radius = 1.0
+material = SubResource("mat_rock")
+
+[node name="Rock7" type="CSGSphere3D" parent="WildernessRocks"]
+transform = Transform3D(2.3, 0, 0, 0, 1.4, 0, 0, 0, 2.1, -110, 0.5, 90)
+radius = 1.0
+material = SubResource("mat_rock")
+
+[node name="Rock8" type="CSGSphere3D" parent="WildernessRocks"]
+transform = Transform3D(1.9, 0, 0, 0, 1.2, 0, 0, 0, 1.7, 50, 0.4, -100)
+radius = 1.0
+material = SubResource("mat_rock")
 
 [node name="ForestBackdrops" type="Node3D" parent="."]
 
 [node name="EastForestBackdrop" type="Sprite3D" parent="ForestBackdrops"]
-transform = Transform3D(0, 0, -0.71447086, 0, 0.6423174, 0, 0.36035866, 0, 0, 32, 10.318401, 0)
+transform = Transform3D(0, 0, -1.5, 0, 1.2, 0, 0.75, 0, 0, 155, 20, 0)
 pixel_size = 0.08
 texture_filter = 0
 texture = ExtResource("12")
 
-[node name="westForestBackdrop2" type="Sprite3D" parent="ForestBackdrops"]
-transform = Transform3D(0, 0, -0.71447086, 0, 0.6423174, 0, 0.36035866, 0, 0, -31.13678, 10.318401, 0)
+[node name="WestForestBackdrop" type="Sprite3D" parent="ForestBackdrops"]
+transform = Transform3D(0, 0, -1.5, 0, 1.2, 0, 0.75, 0, 0, -155, 20, 0)
 pixel_size = 0.08
 texture_filter = 0
 texture = ExtResource("12")
 
-[node name="northForestBackdrop3" type="Sprite3D" parent="ForestBackdrops"]
-transform = Transform3D(-0.49560845, 0, 0.0030750972, 0, 0.64231735, 0, -0.0021365858, 0, -0.71330816, -6.306938, 10.318401, -32.96383)
+[node name="NorthForestBackdrop" type="Sprite3D" parent="ForestBackdrops"]
+transform = Transform3D(-1.0, 0, 0, 0, 1.2, 0, 0, 0, -1.5, 0, 20, -155)
 pixel_size = 0.08
 texture_filter = 0
 texture = ExtResource("12")
 
-[node name="southForestBackdrop4" type="Sprite3D" parent="ForestBackdrops"]
-transform = Transform3D(-0.56159216, 0, -0.008279274, 0, 0.64231735, 0, -0.002421044, 0, 1.9204835, -6.306938, 9.0041485, 30.580921)
+[node name="SouthForestBackdrop" type="Sprite3D" parent="ForestBackdrops"]
+transform = Transform3D(-1.0, 0, 0, 0, 1.2, 0, 0, 0, 1.5, 0, 20, 155)
 pixel_size = 0.08
 texture_filter = 0
 texture = ExtResource("12")
@@ -960,11 +780,18 @@ shrine_id = "elder_moor_shrine"
 
 [node name="Doors" type="Node3D" parent="."]
 
-[node name="WildernessExit" parent="Doors" instance=ExtResource("10")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 30)
-target_scene = "RETURN_TO_WILDERNESS"
+[node name="EastExit" parent="Doors" instance=ExtResource("10")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 140, 0, 0)
+target_scene = "res://scenes/levels/thornfield.tscn"
 spawn_point_id = "from_elder_moor"
-door_name = "Road to Falkenhaften"
+door_name = "Road to Thornfield"
+show_frame = false
+
+[node name="WestExit" parent="Doors" instance=ExtResource("10")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -140, 0, 0)
+target_scene = "res://scenes/regions/crossroads.tscn"
+spawn_point_id = "from_elder_moor"
+door_name = "Road to the Crossroads"
 show_frame = false
 
 [node name="SpawnPoints" type="Node3D" parent="."]
@@ -972,23 +799,66 @@ show_frame = false
 [node name="DefaultSpawn" type="Node3D" parent="SpawnPoints" groups=["default_spawn", "spawn_points"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 5)
 
-[node name="from_wilderness_south" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 25)
+[node name="from_thornfield" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 130, 0.1, 0)
 
-[node name="from_wilderness_north" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -25)
-
-[node name="from_wilderness_east" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0.1, 0)
-
-[node name="from_wilderness_west" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0.1, 0)
-
-[node name="from_open_world" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 25)
+[node name="from_crossroads" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130, 0.1, 0)
 
 [node name="from_fast_travel" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.1, -3)
+
+[node name="EnemySpawners" type="Node3D" parent="."]
+
+[node name="GoblinSpawner_NW" type="Node3D" parent="EnemySpawners"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -90, 0, -80)
+
+[node name="GoblinSpawner_NE" type="Node3D" parent="EnemySpawners"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 85, 0, -75)
+
+[node name="WolfDen_E" type="Node3D" parent="EnemySpawners"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 40)
+
+[node name="GoblinSpawner_SW" type="Node3D" parent="EnemySpawners"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0, 90)
+
+[node name="HarvestableHerbs" type="Node3D" parent="."]
+
+[node name="Herb_1" type="Node3D" parent="HarvestableHerbs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -65, 0, -55)
+
+[node name="Herb_2" type="Node3D" parent="HarvestableHerbs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -85, 0, -45)
+
+[node name="Herb_3" type="Node3D" parent="HarvestableHerbs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 75, 0, -60)
+
+[node name="Herb_4" type="Node3D" parent="HarvestableHerbs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 95, 0, -35)
+
+[node name="Herb_5" type="Node3D" parent="HarvestableHerbs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -70, 0, 55)
+
+[node name="Herb_6" type="Node3D" parent="HarvestableHerbs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -95, 0, 75)
+
+[node name="Herb_7" type="Node3D" parent="HarvestableHerbs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, 0, 65)
+
+[node name="Herb_8" type="Node3D" parent="HarvestableHerbs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 95)
+
+[node name="Herb_9" type="Node3D" parent="HarvestableHerbs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55, 0, 100)
+
+[node name="Herb_10" type="Node3D" parent="HarvestableHerbs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 0, -90)
+
+[node name="Herb_11" type="Node3D" parent="HarvestableHerbs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -100, 0, 20)
+
+[node name="Herb_12" type="Node3D" parent="HarvestableHerbs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 110, 0, 15)
 
 [node name="Player" parent="." instance=ExtResource("2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 5)
@@ -1016,15 +886,4 @@ alpha_cut = 2
 alpha_scissor_threshold = 0.5
 hframes = 5
 frame = 2
-texture = ExtResource("13")
-
-[node name="Cat_2" type="Sprite3D" parent="AmbientAnimals"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.3, 12)
-pixel_size = 0.01
-billboard = 1
-transparent = true
-alpha_cut = 2
-alpha_scissor_threshold = 0.5
-hframes = 5
-frame = 1
 texture = ExtResource("13")

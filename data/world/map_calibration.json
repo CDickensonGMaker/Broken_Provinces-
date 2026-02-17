@@ -1,0 +1,14 @@
+{
+    "image_size": [1080, 1080],
+    "grid_size": [20, 20],
+    "cell_size": 54,
+    "reference_points": [
+        {"id": "elder_moor", "grid": [12, 8], "pixel": [675, 459]},
+        {"id": "dalhurst", "grid": [4, 6], "pixel": [243, 351]},
+        {"id": "willow_dale", "grid": [7, 3], "pixel": [405, 189]},
+        {"id": "millbrook", "grid": [5, 12], "pixel": [297, 675]},
+        {"id": "crossroads", "grid": [7, 6], "pixel": [405, 351]},
+        {"id": "thornfield", "grid": [15, 6], "pixel": [837, 351]},
+        {"id": "kazer_dun_entrance", "grid": [7, 17], "pixel": [405, 945]}
+    ]
+}

@@ -185,3 +185,31 @@ static func _roll_random_quality() -> Enums.ItemQuality:
 	if roll < 0.95:
 		return Enums.ItemQuality.ABOVE_AVERAGE # 20% (0.75 to 0.95)
 	return Enums.ItemQuality.PERFECT           # 5%  (0.95 to 1.0)
+
+
+## Convert to dictionary for save system
+func to_save_dict() -> Dictionary:
+	return {
+		"item_id": item_id,
+		"quality": quality,
+		"quantity": quantity,
+		"position": {
+			"x": global_position.x,
+			"y": global_position.y,
+			"z": global_position.z
+		}
+	}
+
+
+## Create from save dictionary
+static func from_save_dict(parent: Node, data: Dictionary) -> WorldItem:
+	var pos := Vector3(
+		data.get("position", {}).get("x", 0.0),
+		data.get("position", {}).get("y", 0.0),
+		data.get("position", {}).get("z", 0.0)
+	)
+	var p_item_id: String = data.get("item_id", "")
+	var p_quality: int = data.get("quality", Enums.ItemQuality.AVERAGE)
+	var p_quantity: int = data.get("quantity", 1)
+
+	return spawn_item(parent, pos, p_item_id, p_quality as Enums.ItemQuality, p_quantity)

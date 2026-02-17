@@ -1,6 +1,5 @@
 ## town_generator.gd - Procedural town/city generator
 ## Generates settlements based on location type, biome, and population tier
-## Similar to wilderness_room.gd but for inhabited areas
 class_name TownGenerator
 extends Node3D
 

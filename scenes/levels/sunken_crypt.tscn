@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://sunken_crypt_scene"]
+
+[ext_resource type="Script" path="res://scripts/levels/sunken_crypt.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
+
+[node name="SunkenCrypt" type="Node3D"]
+script = ExtResource("1")
+
+[node name="Player" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3)
+
+[node name="HUD" parent="." instance=ExtResource("3")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 10, 0)
+light_color = Color(0.5, 0.6, 0.5, 1)
+light_energy = 0.3
+shadow_enabled = true

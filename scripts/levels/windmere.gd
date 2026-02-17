@@ -42,10 +42,10 @@ func _setup_environment() -> void:
 		env.fog_light_color = Color(0.45, 0.4, 0.35)
 		env.fog_density = 0.02
 
-		# Volumetric smoke
-		env.volumetric_fog_enabled = true
-		env.volumetric_fog_density = 0.04
-		env.volumetric_fog_albedo = Color(0.35, 0.32, 0.28)
+		# Volumetric fog disabled - requires Forward+ renderer
+		# env.volumetric_fog_enabled = true
+		# env.volumetric_fog_density = 0.04
+		# env.volumetric_fog_albedo = Color(0.35, 0.32, 0.28)
 
 		world_env.environment = env
 

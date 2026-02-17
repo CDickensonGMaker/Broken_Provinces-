@@ -39,6 +39,7 @@ WorldManager="*res://scripts/autoload/world_manager.gd"
 FastTravelManager="*res://scripts/autoload/fast_travel_manager.gd"
 BackgroundManager="*res://scripts/autoload/background_manager.gd"
 EncounterManager="*res://scripts/autoload/encounter_manager.gd"
+MapCoordinateSystem="*res://scripts/autoload/map_coordinate_system.gd"
 
 [display]
 

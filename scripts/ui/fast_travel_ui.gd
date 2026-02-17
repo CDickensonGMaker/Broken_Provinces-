@@ -251,8 +251,14 @@ func show_ui(zone_id: String = "") -> void:
 		if current_name == "Unknown Location":
 			current_name = zone_id.replace("_", " ").capitalize()
 	elif SceneManager:
-		var coords: Vector2i = SceneManager.get_current_room_coords()
-		current_name = WorldData.get_cell_name(coords)
+		# Try to get name from current region first
+		var region_id: String = SceneManager.get_current_region_id()
+		if not region_id.is_empty():
+			current_name = region_id.replace("_", " ").capitalize()
+		else:
+			# Fall back to world map coordinates
+			var coords: Vector2i = SceneManager.current_room_coords
+			current_name = WorldData.get_cell_name(coords)
 
 	current_location_label.text = "Current: " + current_name
 
