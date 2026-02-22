@@ -12,14 +12,11 @@ Aggregate findings and report only significant issues.
 |---------|-----------------|
 | After writing/editing GDScript | `gdscript-linter` |
 | After adding sprites or textures | `asset-validator` |
-| After modifying UI code | `ui-consistency-checker` |
 | After enemy/item stat changes | `balance-reviewer` |
-| After dungeon generation changes | `dungeon-validator` |
-| After quest system changes | `quest-validator` |
-| After combat system changes | `combat-flow-tester` |
-| After adding persistent data | `save-system-auditor` |
+| After quest system changes | `dialogue-quest-master` |
+| After adding/modifying WorldGrid locations | `scene-auditor` |
+| After adding new levels/regions | `scene-auditor` |
 | Before declaring task complete | `scene-auditor` + relevant domain agent |
-| When user reports bugs | `performance-profiler` + relevant agent |
 
 **Run agents in parallel when possible.** Multiple agents can analyze simultaneously.
 
@@ -641,11 +638,22 @@ metadata/loot_tier = "common"  # junk, common, uncommon, rare, epic, legendary
 
 The following agents work together to streamline development. Use them proactively.
 
+### Agent: gdscript-linter
+**Purpose:** Catches common GDScript issues before runtime.
+**When to use:** After writing new code, before testing.
+**Checks:**
+- Type safety (missing type hints on exports)
+- Null safety (potential null access)
+- Signal naming conventions
+- Function too long (>50 lines)
+- Dead code detection
+- Proper cleanup in _exit_tree
+
 ### Agent: asset-validator
 **Purpose:** Validates game assets (sprites, textures, audio) and their references in code.
 **When to use:** After adding new sprites, before committing art changes, when sprites display incorrectly.
 **Checks:**
-- Sprite sheet dimensions match h_frames × v_frames in code
+- Sprite sheet dimensions match h_frames x v_frames in code
 - All referenced asset paths exist
 - Image dimensions are power-of-2 friendly for PS1 aesthetic
 - No orphan assets (files not referenced anywhere)
@@ -659,6 +667,7 @@ The following agents work together to streamline development. Use them proactive
 - All preload/load paths resolve
 - Scene inheritance is correct
 - No circular dependencies
+- WorldGrid location_ids match scene files
 
 ### Agent: balance-reviewer
 **Purpose:** Reviews game balance - stats, damage, spawn rates, economy.
@@ -669,87 +678,7 @@ The following agents work together to streamline development. Use them proactive
 - Item costs vs rewards
 - Spawn rates vs difficulty curve
 - Loot table weights
-
-### Agent: gdscript-linter
-**Purpose:** Catches common GDScript issues before runtime.
-**When to use:** After writing new code, before testing.
-**Checks:**
-- Type safety (missing type hints on exports)
-- Null safety (potential null access)
-- Signal naming conventions
-- Function too long (>50 lines)
-- Dead code detection
-- Proper cleanup in _exit_tree
-
-### Agent: save-system-auditor
-**Purpose:** Validates save/load system integrity.
-**When to use:** After adding new persistent data, when saves seem corrupted.
-**Checks:**
-- All zone_ids are unique
-- Persistent IDs don't collide
-- Save data schema matches load expectations
-- Migration paths exist for schema changes
-
-### Agent: dungeon-validator
-**Purpose:** Validates procedural dungeon generation.
-**When to use:** After dungeon changes, when players fall through floors.
-**Checks:**
-- All doors connect bidirectionally
-- Corridors cover all door gaps
-- No unreachable rooms
-- Spawn limits respected
-- Boss room always reachable
-
-### Agent: ui-consistency-checker
-**Purpose:** Ensures UI elements follow consistent patterns.
-**When to use:** After UI changes, when menus look broken.
-**Checks:**
-- All tabs use same sizing/anchoring pattern
-- Font sizes are consistent
-- Color scheme matches theme
-- Input handling is consistent
-- Accessibility considerations
-
-### Agent: combat-flow-tester
-**Purpose:** Reviews combat system integrity.
-**When to use:** After combat changes, when attacks don't connect.
-**Checks:**
-- Hitbox/hurtbox alignment
-- Damage calculation flow
-- Status effect stacking rules
-- Cooldown/timing consistency
-- Death handling and cleanup
-
-### Agent: quest-validator
-**Purpose:** Validates quest system integrity.
-**When to use:** After adding quests, when objectives don't complete.
-**Checks:**
-- All quest IDs are unique
-- Objectives are achievable
-- Rewards exist and are valid
-- Quest givers have proper dialogue
-- State transitions are valid
-
-### Agent: performance-profiler
-**Purpose:** Identifies performance bottlenecks.
-**When to use:** When game stutters, after adding many entities.
-**Checks:**
-- Entity counts vs budgets
-- Process/physics_process complexity
-- Signal spam detection
-- Memory leak patterns
-- Draw call estimates
-
----
-
-## AGENT COORDINATION
-
-When working on complex features, agents should be used in sequence:
-
-1. **Pre-implementation:** `gdscript-linter` on existing code
-2. **Asset work:** `asset-validator` after adding sprites/sounds
-3. **Feature complete:** `scene-auditor` + domain-specific agent
-4. **Pre-commit:** `performance-profiler` for budget checks
+- Danger levels vs enemy difficulty
 
 ### Agent: dialogue-quest-master
 **Purpose:** Specialist for creating dialogue, quests, bounties, and conversation-to-quest pipelines.
@@ -774,9 +703,9 @@ When working on complex features, agents should be used in sequence:
 **Bounty System Flow:**
 1. Player talks to NPC, selects "Looking for work" (QUESTS topic)
 2. BountyManager generates bounty based on region
-3. Player accepts → Quest created in QuestManager → Appears in journal
+3. Player accepts -> Quest created in QuestManager -> Appears in journal
 4. Player kills targets (QuestManager tracks automatically)
-5. Player returns to NPC → Turn in bounty → Rewards given
+5. Player returns to NPC -> Turn in bounty -> Rewards given
 
 **Standards:**
 - All quest objectives must have valid targets
@@ -784,12 +713,6 @@ When working on complex features, agents should be used in sequence:
 - Creature IDs in WorldLexicon must match enemy .tres files
 - Disposition ranges don't create unreachable content
 - Required_knowledge tags are valid
-
-**Validation checklist:**
-- [ ] Quest JSON validates against quest structure
-- [ ] Creature IDs exist in data/enemies/*.tres
-- [ ] Disposition ranges don't create unreachable content
-- [ ] Required_knowledge tags are valid
 
 ### Agent: town-builder
 **Purpose:** Specialist for creating towns, cities, capitals, and medieval buildings in PS1 style.
@@ -801,7 +724,7 @@ All buildings must follow these constraints:
 
 **Geometry:**
 - Extremely low poly (8-30 faces per building max)
-- No smooth curves — everything is hard edges and flat planes
+- No smooth curves - everything is hard edges and flat planes
 - Roofs are simple 2-4 face slopes, no overhangs modeled (use texture)
 - Windows and doors are texture-only, never modeled geometry
 - Timber framing is part of the texture, not extra meshes
@@ -828,22 +751,6 @@ All buildings must follow these constraints:
 - Example: `transform = Transform3D(1, 0, 0, 0, -1, 0, 0, 0, -1, x, y, z)` flips the roof
 - Test roof orientation visually - the peak should point UP, not down into the building
 
-**Expertise:**
-- Procedural building generation using MeshInstance3D and SurfaceTool
-- CSGBox3D prototyping for rapid building creation
-- Scene templates for modular Tudor buildings
-- PS1-style spatial shaders (vertex snapping, nearest-neighbor, no perspective correction)
-- Town layout generation with organic medieval paths
-- Settlement tier scaling (Village → Town → City → Capital)
-
-**Key Capabilities:**
-1. **Building Generator:** Create low-poly medieval buildings from simple box shapes for walls, wedge shapes for roofs, optional awnings. Face count under 30.
-2. **Scene Templates:** Modular .tscn templates with swappable wall segments, roof types, ground-floor variations (shop front vs solid wall)
-3. **PS1 Shaders:** Vertex snapping to grid, nearest-neighbor filtering, UV perspective removal, distance-based wobble
-4. **Town Layout:** Place buildings along winding paths for organic medieval village feel, buildings face roads with slight random rotation/spacing
-
-**Reference Material:** `C:\Users\caleb\CatacombsOfGore\reference\` folder contains style references
-
 **Settlement Tiers:**
 | Tier | Type | Building Count | Services |
 |------|------|----------------|----------|
@@ -860,22 +767,293 @@ All buildings must follow these constraints:
 - Each building is a Node3D container with child geometry
 - NPC spawn markers placed inside/near relevant buildings
 
+---
+
+## AGENT COORDINATION
+
+When working on complex features, agents should be used in sequence:
+
+1. **Pre-implementation:** `gdscript-linter` on existing code
+2. **Asset work:** `asset-validator` after adding sprites/sounds
+3. **Feature complete:** `scene-auditor` + domain-specific agent
+4. **World changes:** Verify WorldGrid locations match scene files
+
 ### Quick Reference Commands
-- "validate assets" → asset-validator
-- "audit scene" → scene-auditor
-- "check balance" → balance-reviewer
-- "lint code" → gdscript-linter
-- "check saves" → save-system-auditor
-- "validate dungeon" → dungeon-validator
-- "check ui" → ui-consistency-checker
-- "test combat" → combat-flow-tester
-- "validate quests" → quest-validator
-- "profile performance" → performance-profiler
-- "create dialogue" → dialogue-quest-master
-- "add bounties" → dialogue-quest-master
-- "build town" → town-builder
-- "create building" → town-builder
-- "design settlement" → town-builder
+- "lint code" -> gdscript-linter
+- "validate assets" -> asset-validator
+- "audit scene" -> scene-auditor
+- "check balance" -> balance-reviewer
+- "create dialogue" -> dialogue-quest-master
+- "add bounties" -> dialogue-quest-master
+- "build town" -> town-builder
+- "create building" -> town-builder
+- "design settlement" -> town-builder
+
+---
+
+## WORLD ARCHITECTURE (Daggerfall-Style Cell Streaming)
+
+The game uses a Daggerfall-inspired cell streaming system for seamless open world exploration. The player walks continuously across cell boundaries without teleportation or loading screens.
+
+### Core Systems Overview
+
+| System | File | Purpose |
+|--------|------|---------|
+| **CellStreamer** | `scripts/autoload/cell_streamer.gd` | Loads/unloads cells around player |
+| **PlayerGPS** | `scripts/autoload/player_gps.gd` | Tracks player position and discovery |
+| **WorldGrid** | `scripts/data/world_grid.gd` | Single source of truth for world data |
+| **CellEdge** | `scripts/world/cell_edge.gd` | Boundary walls for impassable terrain |
+| **PaintedWorldMap** | `scripts/ui/painted_world_map.gd` | OpenMW-style world map UI |
+| **MapFogOfWar** | `scripts/map/map_fog_of_war.gd` | Exploration fog reveal system |
+
+---
+
+### CellStreamer (Autoload)
+
+The heart of the world streaming system. Loads cells in a ring around the player and unloads distant ones.
+
+**Key Constants:**
+```gdscript
+const LOAD_RADIUS := 1       # Load cells within 1 cell of player
+const UNLOAD_RADIUS := 2     # Unload cells beyond 2 cells
+const CELL_SIZE := 100.0     # World units per cell (matches WorldGrid)
+const ORIGIN_SHIFT_THRESHOLD := 500.0  # Floating origin shift distance
+```
+
+**Key Properties:**
+```gdscript
+var loaded_cells: Dictionary = {}     # Vector2i -> Node3D
+var active_cell: Vector2i             # Current player cell
+var world_offset: Vector3             # Cumulative floating origin offset
+var streaming_enabled: bool           # Is streaming active?
+```
+
+**Public API:**
+| Method | Description |
+|--------|-------------|
+| `start_streaming(coords: Vector2i)` | Begin streaming from a cell |
+| `stop_streaming()` | Stop streaming and unload all cells |
+| `pause_streaming()` | Pause without unloading (for menus) |
+| `resume_streaming()` | Resume streaming |
+| `get_active_cell() -> Vector2i` | Get current player cell |
+| `is_cell_loaded(coords: Vector2i) -> bool` | Check if cell is loaded |
+| `teleport_to_cell(coords: Vector2i, spawn_pos: Vector3)` | Fast travel to cell |
+| `register_main_scene_cell(coords: Vector2i, node: Node3D)` | Register the main scene (never unloaded) |
+
+**Floating Origin:**
+The system automatically shifts all loaded content when the player moves too far from the world origin to prevent floating-point precision issues.
+
+**Usage in Hand-Crafted Levels:**
+```gdscript
+func _ready() -> void:
+    # Register this level as the main scene cell
+    var my_coords := Vector2i.ZERO  # Elder Moor is at (0, 0)
+    CellStreamer.register_main_scene_cell(my_coords, self)
+    CellStreamer.start_streaming(my_coords)
+```
+
+---
+
+### PlayerGPS (Autoload)
+
+Single source of truth for player location and exploration state. Replaces the old WorldManager + MapTracker systems.
+
+**Key Signals:**
+```gdscript
+signal cell_changed(old_cell: Vector2i, new_cell: Vector2i)
+signal location_discovered(location_id: String, location_name: String)
+signal region_changed(old_region: String, new_region: String)
+signal cell_revealed(coords: Vector2i)
+```
+
+**Key Properties:**
+```gdscript
+var current_cell: Vector2i            # Current player cell (Elder Moor-relative)
+var current_region: String            # Current region name
+var current_location_id: String       # Current location ID (empty if wilderness)
+var discovered_cells: Dictionary      # Vector2i -> timestamp
+var discovered_locations: Dictionary  # location_id -> info dict
+var total_cells_traveled: int         # Statistics
+```
+
+**Public API:**
+| Method | Description |
+|--------|-------------|
+| `update_cell(new_cell: Vector2i)` | Called by CellStreamer when player crosses boundary |
+| `discover_cell(coords: Vector2i)` | Mark cell as discovered |
+| `is_discovered(coords: Vector2i) -> bool` | Check if cell discovered |
+| `discover_location(location_id: String)` | Discover location by ID (for shrines) |
+| `get_discovered_locations() -> Array[Dictionary]` | Get all discovered locations |
+| `get_distance_to(location_id: String) -> int` | Grid distance to location |
+| `set_position(coords: Vector2i)` | Set position directly (saves/fast travel) |
+
+---
+
+### WorldGrid (Static Data)
+
+Contains all world grid data with Elder Moor at coordinate (0, 0). This is the canonical source for terrain, locations, and regions.
+
+**Coordinate System:**
+- **Elder Moor = (0, 0)** - All coordinates are relative to Elder Moor
+- **X increases East**, **Y increases South** (screen-space mapping)
+- Grid bounds: (-12, -8) to (7, 11) relative to Elder Moor
+- Cell size: 100 world units
+
+**Grid to World Conversion:**
+```
+Grid X → World X (direct: Grid X * 100 = World X)
+Grid Y → World Z (direct: Grid Y * 100 = World Z)
+```
+- Grid Y positive = South = World Z positive (+Z is South in Godot)
+- Grid Y negative = North = World Z negative (-Z is North in Godot)
+- Example: Thornfield at Grid (3, -2) = World (300, 0, -200) = East + North
+
+**Terrain Types:**
+```gdscript
+enum Terrain { BLOCKED, HIGHLANDS, FOREST, WATER, COAST, SWAMP, ROAD, POI, DESERT }
+```
+
+**Location Types:**
+```gdscript
+enum LocationType { NONE, VILLAGE, TOWN, CITY, CAPITAL, DUNGEON, LANDMARK, BRIDGE, OUTPOST, BLOCKED }
+```
+
+**CellInfo Structure:**
+```gdscript
+class CellInfo:
+    var terrain: Terrain
+    var biome: Biome
+    var location_type: LocationType
+    var location_id: String       # Unique identifier (e.g., "dalhurst")
+    var location_name: String     # Display name (e.g., "Dalhurst")
+    var region_name: String       # Region (e.g., "The Greenwood")
+    var passable: bool
+    var discovered: bool
+    var is_road: bool
+    var scene_path: String        # Hand-crafted scene path (empty = procedural)
+    var danger_level: int         # 1-10 based on distance from Elder Moor
+```
+
+**Public API:**
+| Method | Description |
+|--------|-------------|
+| `initialize()` | Build grid from GRID_DATA |
+| `get_cell(coords: Vector2i) -> CellInfo` | Get cell info |
+| `is_passable(coords: Vector2i) -> bool` | Check if cell is walkable |
+| `is_road(coords: Vector2i) -> bool` | Check if cell is a road |
+| `is_in_bounds(coords: Vector2i) -> bool` | Check if coords are valid |
+| `cell_to_world(coords: Vector2i) -> Vector3` | Convert grid to 3D position |
+| `world_to_cell(world_pos: Vector3) -> Vector2i` | Convert 3D position to grid |
+| `get_location_coords(location_id: String) -> Vector2i` | Get coords by location ID |
+| `find_path(from: Vector2i, to: Vector2i) -> Array[Vector2i]` | BFS pathfinding |
+| `grid_distance(from: Vector2i, to: Vector2i) -> int` | Manhattan distance |
+
+**Defined Locations:**
+| Location ID | Name | Coords | Type |
+|-------------|------|--------|------|
+| `elder_moor` | Elder Moor | (0, 0) | Landmark (Start) |
+| `dalhurst` | Dalhurst | (-8, -2) | Town |
+| `crossroads` | Crossroads | (-5, -2) | Landmark |
+| `thornfield` | Thornfield | (3, -2) | Town |
+| `millbrook` | Millbrook | (-7, 4) | Town |
+| `willow_dale` | Willow Dale Ruins | (-5, -5) | Dungeon |
+| `bandit_hideout` | Bandit Hideout | (1, -4) | Dungeon |
+| `kazer_dun_entrance` | Kazer-Dun Entrance | (-5, 9) | Dungeon |
+
+---
+
+### CellEdge (Boundary Walls)
+
+Static utility class for creating invisible collision walls at cell edges where adjacent cells are impassable.
+
+**Usage:**
+```gdscript
+# Create boundary walls for a cell
+CellEdge.create_boundary_walls(cell_node, coords, 100.0)
+
+# Create visible debug walls
+CellEdge.create_visible_boundaries(cell_node, coords, 100.0)
+
+# Check if direction is blocked
+if CellEdge.is_direction_blocked(coords, CellEdge.Direction.NORTH):
+    # North edge has impassable terrain
+```
+
+---
+
+### PaintedWorldMap (UI)
+
+OpenMW-inspired world map with a hand-painted texture overlay, fog of war, and fast travel.
+
+**Features:**
+- Pan and zoom with mouse
+- Fog of war reveals as player explores
+- Click towns to fast travel (discovered only)
+- Player marker with pulsing glow
+- Tooltip showing cell info
+
+**Integration:**
+```gdscript
+# The map reads from PlayerGPS for player position
+# and WorldGrid for cell/location data
+var player_cell: Vector2i = PlayerGPS.current_cell
+var cell_info: WorldGrid.CellInfo = WorldGrid.get_cell(player_cell)
+```
+
+---
+
+### MapFogOfWar
+
+Grayscale image-based fog of war system. White = visible, black = hidden.
+
+**Constants:**
+```gdscript
+const REVEAL_RADIUS_CELLS := 2  # Cells around player to reveal
+const REVEAL_FEATHER := 0.3     # Edge softness
+```
+
+**Public API:**
+| Method | Description |
+|--------|-------------|
+| `reveal_hex(cell: Vector2i)` | Reveal area around cell |
+| `is_explored(hex: Vector2i) -> bool` | Check if cell explored |
+| `bulk_reveal(hexes: Array)` | Reveal multiple cells |
+| `reset()` | Clear all exploration |
+| `reveal_all()` | Reveal entire map (dev mode) |
+| `to_dict() -> Dictionary` | Save state |
+| `from_dict(data: Dictionary)` | Load state |
+
+---
+
+### Region-Based Level Structure
+
+Hand-crafted levels follow a consistent pattern with region scripts.
+
+**Standard Region Script:**
+```gdscript
+extends Node3D
+
+const ZONE_ID := "region_name"
+const ZONE_SIZE := 100.0  # Matches WorldGrid.CELL_SIZE
+
+@onready var nav_region: NavigationRegion3D = $NavigationRegion3D
+
+func _ready() -> void:
+    # Register with PlayerGPS
+    if PlayerGPS:
+        PlayerGPS.set_position(Vector2i.ZERO)  # Set correct coords
+
+    _setup_navigation()
+    _setup_day_night_cycle()
+    _setup_spawn_point_metadata()
+    _spawn_enemies()
+    _setup_cell_streaming()  # For main regions like Elder Moor
+
+func _setup_cell_streaming() -> void:
+    if CellStreamer:
+        CellStreamer.register_main_scene_cell(Vector2i.ZERO, self)
+        CellStreamer.start_streaming(Vector2i.ZERO)
+```
 
 ---
 
@@ -890,28 +1068,29 @@ The world's religious pantheon consists of three deities:
 The Temple of Three Gods exists in Elder Moor with priests for each deity who can bestow blessings.
 
 ### Persistent World Locations
-These locations exist in EVERY playthrough and are the anchors for quests and story:
+These locations exist in EVERY playthrough and are the anchors for quests and story.
+All coordinates are Elder Moor-relative (Elder Moor = 0, 0).
 
-| Location | Type | Hex Coords | Notes |
-|----------|------|------------|-------|
-| **Elder Moor** | Starting Town | (31, 12) | Swamp town, player starts here. Town-06. |
-| **Dalhurst** | Major Town | TBD | Trade hub, one of the oldest settlements |
-| **Kazan-Dun** | Dwarf Hold | South, Mountains | Dwarven stronghold inside mountain range |
-| **Desert Camp** | Outpost | South, Desert | Nomadic/trading post. Town-11 terrain. |
-| **Elven City** | Major City | Across Lake | Requires boat travel to reach |
+| Location | Type | Coords | Notes |
+|----------|------|--------|-------|
+| **Elder Moor** | Starting Town | (0, 0) | Logging camp, player starts here |
+| **Dalhurst** | Major Town | (-8, -2) | Western trade hub |
+| **Crossroads** | Landmark | (-5, -2) | Road intersection |
+| **Thornfield** | Town | (3, -2) | Eastern town |
+| **Millbrook** | Town | (-7, 4) | Southern lakeside town |
+| **Kazan-Dun** | Dwarf Hold | (-5, 9) | Southern dwarf stronghold |
+| **Willow Dale** | Dungeon | (-5, -5) | Ruins in the foothills |
+| **Bandit Hideout** | Dungeon | (1, -4) | Bandit cave |
 
-### Square Grid World Map System
-- World uses a square grid coordinate system
-- Map data managed through WorldData autoload
-- Terrain types: plains, forest, hills, mountains, swamp, desert, water
-- Towns, POIs (ruins/watchtowers), rivers, and roads defined in WorldData
-
-### Procedural World Generation
-The world should be procedurally generated with these rules:
-- **Persistent locations** (Elder Moor, Dalhurst, Kazan-Dun, Desert Camp, Elven City) are FIXED
-- **Other settlements** are randomly placed based on terrain logic
-- **Ruins and POIs** are scattered procedurally but some key ones are fixed for quest anchors
-- Each new character gets a unique world layout while keeping story-critical locations constant
+### Regions
+| Region Name | Location | Terrain |
+|-------------|----------|---------|
+| Western Shore | West coast (cols 0-2) | Coastal, water |
+| Elder Moor | Central (around 0, 0) | Forest, plains |
+| Eastern Highlands | East (cols 14+) | Rocky, highlands |
+| Southern Forest | South (rows 14+) | Dense forest |
+| Iron Mountains | North/edges | Impassable peaks |
+| The Greenwood | Central default | Mixed forest |
 
 ### Sea Travel & Encounters
 Planned boat travel system for crossing the lake to the Elven City:
@@ -1101,10 +1280,21 @@ sprite.offset = Vector2(0, frame_height / 2.0)
 - **BUG:** MagicPanel shows ALL spells instead of only learned ones
 - Need to filter `_populate_spell_list()` to check if player has learned each spell
 
-### World Map
-- Town names need to be mapped to hex IDs (Dalhurst, Rotherhine, etc.)
-- Zone loading system needs implementation for hex-based travel
+### World Map (RESOLVED)
+The world map system has been completely rebuilt:
+- WorldGrid now contains all location data with Elder Moor at (0, 0)
+- CellStreamer handles seamless cell loading/unloading
+- PlayerGPS tracks player position and discoveries
+- PaintedWorldMap displays the world with fog of war
 - Boat travel mechanics not yet implemented
+
+### NPC Spawning & Cell Streaming (TODO)
+NPCs need to be connected to the new cell streaming/map system:
+- NPCs in hand-crafted scenes should persist when cell is loaded as streaming cell
+- Traveling merchants, random encounters, etc. should spawn via CellStreamer
+- NPC positions should be tracked by PlayerGPS for minimap/compass
+- Consider: Should NPCs despawn when cell unloads? Or persist in memory?
+- Guard patrols, civilian schedules may need cell-aware logic
 
 ### NPC Visual Issues (Needs Full Audit)
 - Some NPCs floating above ground
@@ -1121,17 +1311,26 @@ sprite.offset = Vector2(0, frame_height / 2.0)
 
 ## SESSION NOTES
 
-### Current Session Focus (Rebuilding from Memory)
-The game is being rebuilt based on memory after losing physical design notes. Key decisions being cemented:
-- PS1 aesthetic with billboard sprites
-- TTRPG-inspired stat/skill system
-- Open world with procedural elements but fixed story anchors
-- Deep NPC conversation system inspired by Elder Scrolls games
-- Three-god pantheon for religious content
-- Multiple factions (guilds, temples, towns)
+### Current Architecture (Post-Refactor)
+The game now uses a Daggerfall-style cell streaming system:
+- **CellStreamer** loads/unloads 100x100 unit cells around the player
+- **PlayerGPS** is the single source of truth for player position
+- **WorldGrid** contains all world data with Elder Moor at (0, 0)
+- **PaintedWorldMap** shows an OpenMW-style world map with fog of war
+- Player walks seamlessly across cell boundaries (no teleporting)
+
+**DELETED SYSTEMS (do not reference):**
+- WorldManager (replaced by PlayerGPS + WorldGrid)
+- MapTracker (replaced by PlayerGPS)
+- BackgroundManager (no longer needed)
+- room_edge.gd (replaced by CellEdge)
+- zone_edge.gd (deleted)
+- wilderness_exit_handler.gd (deleted)
+- tile_*_template files (deleted)
 
 ### Inspirations
 Main sources of inspiration:
+- **Daggerfall** - Cell streaming, open world structure
 - **Skyrim** - Open world, guilds, conversation system
 - **Fallout New Vegas** - Faction reputation, skill checks in dialogue
 - **Elden Ring / Dark Souls** - Combat feel, difficulty
@@ -1144,13 +1343,7 @@ Main sources of inspiration:
 
 ## NEXT SESSION PLAN
 
-### Priority 1: Fix Dialogue System ✅ COMPLETED
-All dialogue issues have been fixed. Test to verify:
-- Click on choice buttons - should respond to clicks
-- Press ESC during dialogue - should close dialogue (not open pause menu)
-- Talk to NPCs - dialogue/conversation UI should appear
-
-### Priority 2: Fix NPC Visual Issues (CURRENT FOCUS)
+### Priority 1: Fix NPC Visual Issues
 
 1. **Audit all NPC sprites:**
    - Check each NPC class for correct pixel_size (see table in CLAUDE.md)
@@ -1171,23 +1364,25 @@ All dialogue issues have been fixed. Test to verify:
    - Barmaid: pixel_size = 0.0326
    - Guard: pixel_size = 0.055
 
-### Priority 3: Create New Sprite Assets
+### Priority 2: Expand World Content
 
-User prefers **1x5 sprite sheet format** for all NPCs:
-- 5 horizontal frames, 1 row
-- Recommended frame sizes:
-  - Standard NPC: 32×64 pixels per frame (160×64 total)
-  - Small NPC (wizard): 32×48 pixels per frame (160×48 total)
-  - Large NPC (guard): 32×64 or 48×64 per frame
+With the cell streaming system working:
+- Add more hand-crafted locations (scenes in `scripts/levels/`)
+- Register locations in WorldGrid.LOCATIONS
+- Test seamless walking between cells
 
 ### Testing Checklist
-**Dialogue System (should be fixed):**
-- [ ] Talk to civilian NPC - dialogue box appears
-- [ ] Click dialogue choice buttons - they respond
-- [ ] Press ESC - dialogue closes (not pause menu)
-- [ ] Talk to guard NPC - conversation UI appears
-- [ ] Select topic via number keys - response shows
-- [ ] Press ESC - conversation closes
+**Cell Streaming:**
+- [ ] Walk from Elder Moor into adjacent wilderness cells
+- [ ] Adjacent cells load seamlessly (no teleport/rotation)
+- [ ] Distant cells unload properly
+- [ ] Fast travel via world map works
+
+**World Map:**
+- [ ] World map shows player position
+- [ ] Fog of war reveals explored areas
+- [ ] Click on discovered towns to fast travel
+- [ ] Tooltip shows cell info on hover
 
 **NPC Visual Issues (needs audit):**
 - [ ] All NPCs at correct height (not floating)
