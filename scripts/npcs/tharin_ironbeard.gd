@@ -447,11 +447,10 @@ func _register_compass_poi() -> void:
 	set_meta("poi_color", Color(0.9, 0.7, 0.3))  # Gold for important NPC
 
 
-## Register with WorldData
+## Register with PlayerGPS
 func _register_with_world_data() -> void:
-	var hex: Vector2i = WorldData.world_to_axial(global_position)
-	WorldData.register_npc(npc_id, hex, "village_elder_moor", npc_type)
+	PlayerGPS.register_npc(self, npc_id, npc_type, "village_elder_moor")
 
 
 func _exit_tree() -> void:
-	WorldData.unregister_npc(npc_id)
+	PlayerGPS.unregister_npc(npc_id)

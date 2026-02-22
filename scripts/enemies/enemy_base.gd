@@ -354,29 +354,10 @@ func _initialize_from_data() -> void:
 			hurtbox.position.y *= scale_factor
 
 ## Register this enemy with WorldData for tracking
+## Note: Enemy tracking removed - enemies are found dynamically via "enemies" group
 func _register_with_world_data() -> void:
-	var enemy_type: String = ""
-	if enemy_data:
-		enemy_type = enemy_data.id if enemy_data.id else enemy_data.display_name
-	else:
-		enemy_type = name
-
-	var hex: Vector2i = WorldData.world_to_axial(global_position)
-	var zone_id: String = ""
-
-	# Try to get zone_id from parent scene
-	var parent: Node = get_parent()
-	while parent:
-		if "zone_id" in parent:
-			zone_id = parent.zone_id
-			break
-		parent = parent.get_parent()
-
-	# Default zone if not found
-	if zone_id.is_empty():
-		zone_id = "wilderness_%d_%d" % [hex.x, hex.y]
-
-	WorldData.register_enemy_spawn(enemy_type, hex, zone_id)
+	# Legacy function - enemy spawns are tracked in-scene via groups, not a global registry
+	pass
 
 
 ## Randomly select behavior mode based on weights
@@ -1862,6 +1843,12 @@ func _perform_basic_attack() -> void:
 func _activate_attack_hitbox() -> void:
 	if DEBUG:
 		print("[Enemy] _activate_attack_hitbox called. hitbox=", hitbox, " is_attacking=", is_attacking)
+
+	# Check if this is a ranged attack - spawn a visual projectile instead of melee hitbox
+	if current_attack and current_attack.is_ranged and is_attacking:
+		_spawn_attack_projectile()
+		return
+
 	if hitbox and is_attacking:
 		if DEBUG:
 			print("[Enemy] Activating attack hitbox! Target=", str(current_target.name) if current_target else "none")
@@ -1909,6 +1896,189 @@ func _activate_attack_hitbox() -> void:
 			if hitbox:
 				hitbox.deactivate()
 		)
+
+
+## Spawn a visual projectile for ranged EnemyAttackData attacks (e.g., goblin mage fireballs)
+func _spawn_attack_projectile() -> void:
+	if not current_attack or not current_target:
+		return
+
+	# Calculate spawn position (chest height, slightly in front)
+	var spawn_offset := Vector3.FORWARD.rotated(Vector3.UP, mesh_root.rotation.y if mesh_root else 0) * 1.0
+	spawn_offset.y = 1.2  # Chest height
+	var projectile_spawn := global_position + spawn_offset
+
+	# Calculate direction to target
+	var target_pos := current_target.global_position + Vector3.UP * 1.0
+	var direction := (target_pos - projectile_spawn).normalized()
+
+	# Create a visual magic projectile
+	var projectile := _create_magic_projectile(current_attack)
+	if projectile:
+		get_tree().current_scene.add_child(projectile)
+		projectile.global_position = projectile_spawn
+
+		# Initialize projectile movement and damage
+		var dmg := current_attack.roll_damage()
+		projectile.set_meta("damage", dmg)
+		projectile.set_meta("damage_type", current_attack.damage_type)
+		projectile.set_meta("owner", self)
+		projectile.set_meta("direction", direction)
+		projectile.set_meta("speed", current_attack.projectile_speed)
+		projectile.set_meta("target", current_target)
+
+		# Start projectile movement
+		_animate_projectile(projectile, direction, current_attack.projectile_speed, current_attack.range_distance)
+
+	# Play cast sound
+	AudioManager.play_sfx_3d("projectile_fire", projectile_spawn)
+
+	if DEBUG:
+		print("[Enemy] Spawned ranged attack projectile toward ", current_target.name)
+
+
+## Create a visual magic projectile based on attack damage type
+func _create_magic_projectile(attack: EnemyAttackData) -> Node3D:
+	var projectile := Node3D.new()
+	projectile.name = "MagicProjectile"
+
+	# Create glowing sphere mesh
+	var mesh := MeshInstance3D.new()
+	var sphere := SphereMesh.new()
+	sphere.radius = 0.25
+	sphere.height = 0.5
+	mesh.mesh = sphere
+
+	# Color based on damage type
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.emission_enabled = true
+
+	match attack.damage_type:
+		Enums.DamageType.FIRE:
+			mat.albedo_color = Color(1.0, 0.4, 0.1, 0.9)
+			mat.emission = Color(1.0, 0.5, 0.2)
+		Enums.DamageType.FROST:
+			mat.albedo_color = Color(0.5, 0.8, 1.0, 0.9)
+			mat.emission = Color(0.6, 0.9, 1.0)
+		Enums.DamageType.LIGHTNING:
+			mat.albedo_color = Color(0.7, 0.8, 1.0, 0.9)
+			mat.emission = Color(0.8, 0.9, 1.0)
+		Enums.DamageType.POISON:
+			mat.albedo_color = Color(0.3, 0.8, 0.2, 0.9)
+			mat.emission = Color(0.4, 0.9, 0.3)
+		Enums.DamageType.NECROTIC:
+			mat.albedo_color = Color(0.5, 0.2, 0.6, 0.9)
+			mat.emission = Color(0.6, 0.3, 0.7)
+		_:  # ARCANE or other magical
+			mat.albedo_color = Color(0.8, 0.5, 1.0, 0.9)
+			mat.emission = Color(0.9, 0.6, 1.0)
+
+	mat.emission_energy_multiplier = 4.0
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mesh.material_override = mat
+
+	projectile.add_child(mesh)
+
+	# Add a point light for glow
+	var light := OmniLight3D.new()
+	light.light_color = mat.emission
+	light.light_energy = 1.5
+	light.omni_range = 3.0
+	projectile.add_child(light)
+
+	return projectile
+
+
+## Animate projectile flight and handle collision
+func _animate_projectile(projectile: Node3D, direction: Vector3, speed: float, max_range: float) -> void:
+	var start_pos := projectile.global_position
+	var elapsed := 0.0
+	var max_time := max_range / speed
+
+	# Create physics query for collision detection
+	var space_state := get_world_3d().direct_space_state
+
+	# Animate via process callback
+	var timer := Timer.new()
+	timer.wait_time = 0.016  # ~60 FPS
+	timer.autostart = true
+	projectile.add_child(timer)
+
+	timer.timeout.connect(func():
+		if not is_instance_valid(projectile):
+			return
+
+		elapsed += 0.016
+		if elapsed > max_time:
+			projectile.queue_free()
+			return
+
+		# Move projectile
+		projectile.global_position += direction * speed * 0.016
+
+		# Check for collision with player
+		var target: Node3D = projectile.get_meta("target", null)
+		if target and is_instance_valid(target):
+			var dist := projectile.global_position.distance_to(target.global_position + Vector3.UP)
+			if dist < 1.0:
+				# Hit!
+				var dmg: int = projectile.get_meta("damage", 10)
+				var dmg_type: Enums.DamageType = projectile.get_meta("damage_type", Enums.DamageType.FIRE)
+				var owner_ref: Node = projectile.get_meta("owner", null)
+
+				if target.has_method("take_damage"):
+					target.take_damage(dmg, dmg_type, owner_ref)
+
+				# Spawn impact effect
+				_spawn_projectile_impact(projectile.global_position, dmg_type)
+				AudioManager.play_sfx_3d("projectile_hit", projectile.global_position)
+				projectile.queue_free()
+	)
+
+
+## Spawn impact VFX when projectile hits
+func _spawn_projectile_impact(pos: Vector3, dmg_type: Enums.DamageType) -> void:
+	var particles := GPUParticles3D.new()
+	particles.emitting = true
+	particles.one_shot = true
+	particles.explosiveness = 1.0
+	particles.amount = 20
+	particles.lifetime = 0.4
+
+	var mat := ParticleProcessMaterial.new()
+	mat.direction = Vector3(0, 0, 0)
+	mat.spread = 180.0
+	mat.initial_velocity_min = 3.0
+	mat.initial_velocity_max = 6.0
+	mat.gravity = Vector3(0, -5, 0)
+	mat.scale_min = 0.1
+	mat.scale_max = 0.2
+
+	# Color based on damage type
+	match dmg_type:
+		Enums.DamageType.FIRE:
+			mat.color = Color(1.0, 0.5, 0.2, 1.0)
+		Enums.DamageType.FROST:
+			mat.color = Color(0.6, 0.9, 1.0, 1.0)
+		Enums.DamageType.LIGHTNING:
+			mat.color = Color(0.8, 0.9, 1.0, 1.0)
+		_:
+			mat.color = Color(0.9, 0.6, 1.0, 1.0)
+
+	particles.process_material = mat
+
+	var draw_pass := SphereMesh.new()
+	draw_pass.radius = 0.08
+	draw_pass.height = 0.16
+	particles.draw_pass_1 = draw_pass
+
+	get_tree().current_scene.add_child(particles)
+	particles.global_position = pos
+
+	# Cleanup after particles finish
+	get_tree().create_timer(0.6).timeout.connect(particles.queue_free)
+
 
 ## Direct proximity-based hit check - primary damage delivery method
 func _direct_hit_check(target: Node3D, dmg: int, dmg_type: Enums.DamageType) -> void:

@@ -6,8 +6,8 @@ extends Node3D
 signal town_generated(town: TownGenerator)
 
 ## Town configuration from WorldData
-var location_type: WorldData.LocationType = WorldData.LocationType.VILLAGE
-var biome: WorldData.Biome = WorldData.Biome.FOREST
+var location_type: WorldGrid.LocationType = WorldGrid.LocationType.VILLAGE
+var biome: WorldGrid.Biome = WorldGrid.Biome.FOREST
 var location_id: String = ""
 var location_name: String = ""
 var region_name: String = ""
@@ -19,40 +19,40 @@ var town_seed: int = 0
 ## Get town size based on location type
 static func get_town_size(loc_type: int) -> float:
 	match loc_type:
-		WorldData.LocationType.VILLAGE: return 60.0
-		WorldData.LocationType.TOWN: return 80.0
-		WorldData.LocationType.CITY: return 100.0
-		WorldData.LocationType.CAPITAL: return 120.0
+		WorldGrid.LocationType.VILLAGE: return 60.0
+		WorldGrid.LocationType.TOWN: return 80.0
+		WorldGrid.LocationType.CITY: return 100.0
+		WorldGrid.LocationType.CAPITAL: return 120.0
 		_: return 60.0
 
 
 ## Get building counts by location type
 static func get_building_counts(loc_type: int) -> Dictionary:
 	match loc_type:
-		WorldData.LocationType.VILLAGE: return {"houses": 3, "shops": 1, "special": 0}
-		WorldData.LocationType.TOWN: return {"houses": 5, "shops": 3, "special": 1}
-		WorldData.LocationType.CITY: return {"houses": 8, "shops": 5, "special": 2}
-		WorldData.LocationType.CAPITAL: return {"houses": 12, "shops": 8, "special": 4}
+		WorldGrid.LocationType.VILLAGE: return {"houses": 3, "shops": 1, "special": 0}
+		WorldGrid.LocationType.TOWN: return {"houses": 5, "shops": 3, "special": 1}
+		WorldGrid.LocationType.CITY: return {"houses": 8, "shops": 5, "special": 2}
+		WorldGrid.LocationType.CAPITAL: return {"houses": 12, "shops": 8, "special": 4}
 		_: return {"houses": 3, "shops": 1, "special": 0}
 
 
 ## Get NPC counts by location type
 static func get_npc_counts(loc_type: int) -> Dictionary:
 	match loc_type:
-		WorldData.LocationType.VILLAGE: return {"civilians": 5, "guards": 1}
-		WorldData.LocationType.TOWN: return {"civilians": 10, "guards": 3}
-		WorldData.LocationType.CITY: return {"civilians": 15, "guards": 6}
-		WorldData.LocationType.CAPITAL: return {"civilians": 25, "guards": 10}
+		WorldGrid.LocationType.VILLAGE: return {"civilians": 5, "guards": 1}
+		WorldGrid.LocationType.TOWN: return {"civilians": 10, "guards": 3}
+		WorldGrid.LocationType.CITY: return {"civilians": 15, "guards": 6}
+		WorldGrid.LocationType.CAPITAL: return {"civilians": 25, "guards": 10}
 		_: return {"civilians": 5, "guards": 1}
 
 
 ## Get shop types available by location type
 static func get_shop_types(loc_type: int) -> Array[String]:
 	match loc_type:
-		WorldData.LocationType.VILLAGE: return ["general_store", "inn"]
-		WorldData.LocationType.TOWN: return ["general_store", "inn", "blacksmith", "temple"]
-		WorldData.LocationType.CITY: return ["general_store", "inn", "blacksmith", "temple", "magic_shop", "armorer"]
-		WorldData.LocationType.CAPITAL: return ["general_store", "inn", "blacksmith", "temple", "magic_shop", "armorer", "jeweler", "guild_hall"]
+		WorldGrid.LocationType.VILLAGE: return ["general_store", "inn"]
+		WorldGrid.LocationType.TOWN: return ["general_store", "inn", "blacksmith", "temple"]
+		WorldGrid.LocationType.CITY: return ["general_store", "inn", "blacksmith", "temple", "magic_shop", "armorer"]
+		WorldGrid.LocationType.CAPITAL: return ["general_store", "inn", "blacksmith", "temple", "magic_shop", "armorer", "jeweler", "guild_hall"]
 		_: return ["general_store", "inn"]
 
 ## Generated content
@@ -80,7 +80,7 @@ func _ready() -> void:
 
 
 ## Generate town from WorldData cell
-func generate_from_cell(cell: WorldData.CellData, coords: Vector2i, seed_value: int) -> void:
+func generate_from_cell(cell: WorldGrid.CellInfo, coords: Vector2i, seed_value: int) -> void:
 	location_type = cell.location_type
 	biome = cell.biome
 	location_id = cell.location_id
@@ -102,7 +102,7 @@ func generate() -> void:
 	half_size = town_size / 2.0
 
 	print("[TownGenerator] Generating %s '%s' at %s (seed: %d)" % [
-		WorldData.LocationType.keys()[location_type],
+		WorldGrid.LocationType.keys()[location_type],
 		location_name,
 		grid_coords,
 		town_seed
@@ -141,15 +141,15 @@ func _create_ground() -> void:
 
 	# Ground color/texture based on biome
 	match biome:
-		WorldData.Biome.COAST:
+		WorldGrid.Biome.COAST:
 			mat.albedo_color = Color(0.6, 0.55, 0.4)  # Sandy
-		WorldData.Biome.ROCKY, WorldData.Biome.MOUNTAINS:
+		WorldGrid.Biome.ROCKY, WorldGrid.Biome.MOUNTAINS:
 			mat.albedo_color = Color(0.4, 0.38, 0.35)  # Stone
 			if stone_texture:
 				mat.albedo_texture = stone_texture
 				mat.uv1_scale = Vector3(town_size / 8.0, town_size / 8.0, 1.0)
 				mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-		WorldData.Biome.SWAMP:
+		WorldGrid.Biome.SWAMP:
 			mat.albedo_color = Color(0.25, 0.3, 0.2)  # Muddy
 		_:
 			mat.albedo_color = Color(0.35, 0.3, 0.25)  # Dirt/cobble
@@ -231,7 +231,7 @@ func _create_town_center() -> void:
 	add_child(fireplace)
 
 	# Fast travel shrine near center (if town or larger)
-	if location_type in [WorldData.LocationType.TOWN, WorldData.LocationType.CITY, WorldData.LocationType.CAPITAL]:
+	if location_type in [WorldGrid.LocationType.TOWN, WorldGrid.LocationType.CITY, WorldGrid.LocationType.CAPITAL]:
 		var shrine := _create_shrine()
 		shrine.position = Vector3(rng.randf_range(-5, 5), 0, rng.randf_range(-5, 5))
 		add_child(shrine)

@@ -239,6 +239,22 @@ func _spawn_enemies() -> void:
 		4, 4
 	)
 
+	# Floor 1: Cave bats near entrance
+	_spawn_billboard_enemy(
+		Vector3(-5, FLOOR_1_Y + 2.0, 10),
+		"res://data/enemies/bat.tres",
+		"res://Sprite folders grab bag/bat_flying_attacking.png",
+		"Cave Bat",
+		4, 1
+	)
+	_spawn_billboard_enemy(
+		Vector3(5, FLOOR_1_Y + 1.5, 8),
+		"res://data/enemies/bat.tres",
+		"res://Sprite folders grab bag/bat_flying_attacking.png",
+		"Cave Bat",
+		4, 1
+	)
+
 	# Floor 2: More Soul Shades
 	_spawn_billboard_enemy(
 		Vector3(-10, FLOOR_2_Y, -25),
@@ -253,6 +269,22 @@ func _spawn_enemies() -> void:
 		"res://assets/sprites/enemies/skeleton_shade.png",
 		"Soul Shade",
 		4, 4
+	)
+
+	# Floor 2: Flaming Skulls - undead magical enemies
+	_spawn_billboard_enemy(
+		Vector3(-8, FLOOR_2_Y + 1.5, -40),
+		"res://data/enemies/flaming_skull.tres",
+		"res://Sprite folders grab bag/flaming_skull_enemy.png",
+		"Flaming Skull",
+		4, 1
+	)
+	_spawn_billboard_enemy(
+		Vector3(8, FLOOR_2_Y + 1.5, -35),
+		"res://data/enemies/flaming_skull.tres",
+		"res://Sprite folders grab bag/flaming_skull_enemy.png",
+		"Flaming Skull",
+		4, 1
 	)
 
 	# Floor 2: Vampire Lord (boss) - uses new 4x6 sprite sheet

@@ -438,14 +438,14 @@ func _on_close_pressed() -> void:
 ## Get human-readable location type name
 func _get_location_type_name(loc_type: int) -> String:
 	match loc_type:
-		WorldData.LocationType.VILLAGE: return "Village"
-		WorldData.LocationType.TOWN: return "Town"
-		WorldData.LocationType.CITY: return "City"
-		WorldData.LocationType.CAPITAL: return "Capital"
-		WorldData.LocationType.DUNGEON: return "Dungeon"
-		WorldData.LocationType.LANDMARK: return "Landmark"
-		WorldData.LocationType.BRIDGE: return "Bridge"
-		WorldData.LocationType.OUTPOST: return "Outpost"
+		WorldGrid.LocationType.VILLAGE: return "Village"
+		WorldGrid.LocationType.TOWN: return "Town"
+		WorldGrid.LocationType.CITY: return "City"
+		WorldGrid.LocationType.CAPITAL: return "Capital"
+		WorldGrid.LocationType.DUNGEON: return "Dungeon"
+		WorldGrid.LocationType.LANDMARK: return "Landmark"
+		WorldGrid.LocationType.BRIDGE: return "Bridge"
+		WorldGrid.LocationType.OUTPOST: return "Outpost"
 		_: return "Location"
 
 

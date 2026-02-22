@@ -9,8 +9,8 @@ const RETURN_TO_WILDERNESS := "__RETURN_TO_WILDERNESS__"
 ## Procedural dungeons regenerate each time, so saved positions are invalid
 const PROCEDURAL_DUNGEON_ZONES := ["random_cave", "test_dungeon"]
 
-## Dev mode - enables fast travel to any location
-var dev_mode: bool = true
+## Dev mode - enables fast travel to any location (set to false for normal gameplay)
+var dev_mode: bool = false
 
 ## Fog of war toggle
 var fog_of_war_enabled: bool = true
@@ -193,6 +193,12 @@ func change_scene(scene_path: String, spawn_id: String = "", fade: bool = true) 
 	is_loading = true
 
 	scene_load_started.emit(scene_path)
+
+	# Stop CellStreamer before changing scenes to prevent state conflicts
+	# The new scene will re-initialize streaming if needed
+	if CellStreamer and CellStreamer.is_streaming():
+		CellStreamer.stop_streaming()
+		print("[SceneManager] Stopped cell streaming for scene change")
 
 	if fade:
 		await _fade_out()

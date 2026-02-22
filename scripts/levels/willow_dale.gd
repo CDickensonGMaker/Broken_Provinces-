@@ -34,6 +34,7 @@ func _ready() -> void:
 	_spawn_undead()
 	_spawn_loot()
 	_create_lighting()
+	_setup_cell_streaming()
 
 	# Quest trigger for entering willow dale
 	QuestManager.on_location_reached("willow_dale_entrance")
@@ -625,3 +626,23 @@ func _spawn_eerie_light(pos: Vector3, color: Color, range_val: float, energy: fl
 	light.omni_range = range_val
 	light.position = pos
 	add_child(light)
+
+
+## Setup cell streaming if we're the main scene (has Player/HUD)
+## When loaded as a streaming cell, this will be skipped (Player/HUD stripped by CellStreamer)
+func _setup_cell_streaming() -> void:
+	# Only setup streaming if we're the main scene (we have Player/HUD)
+	var player: Node = get_node_or_null("Player")
+	if not player:
+		# We're a streaming cell, not main scene - skip streaming setup
+		return
+
+	if not CellStreamer:
+		push_warning("[%s] CellStreamer not found" % ZONE_ID)
+		return
+
+	# Use WorldGrid location_id (may differ from ZONE_ID for save compatibility)
+	var my_coords: Vector2i = WorldGrid.get_location_coords("willow_dale")
+	CellStreamer.register_main_scene_cell(my_coords, self)
+	CellStreamer.start_streaming(my_coords)
+	print("[%s] Registered as main scene, streaming started at %s" % [ZONE_ID, my_coords])

@@ -13,12 +13,13 @@ signal destroyed(destroyer: Node)
 @export var armor_value: int = 5
 
 ## Spawning configuration
-@export var spawn_interval_min: float = 45.0
-@export var spawn_interval_max: float = 75.0
-@export var max_spawned_enemies: int = 2
-@export var spawn_radius: float = 4.0
-@export var spawn_count_min: int = 1
-@export var spawn_count_max: int = 1
+@export var spawn_interval_min: float = 25.0
+@export var spawn_interval_max: float = 40.0
+@export var max_spawned_enemies: int = 6
+@export var spawn_radius: float = 5.0
+@export var spawn_count_min: int = 2
+@export var spawn_count_max: int = 3
+@export var initial_spawn_count: int = 4  ## Skeletons to spawn immediately on load
 
 ## Enemy data paths
 const SKELETON_WARRIOR_PATH := "res://data/enemies/skeleton_warrior.tres"
@@ -51,11 +52,53 @@ func _ready() -> void:
 	_create_hurtbox()
 	_create_glow()
 
-	# Initial spawn delay
-	current_spawn_interval = randf_range(spawn_interval_min, spawn_interval_max) * 0.5
+	# Spawn initial skeletons immediately (3-5 by default)
+	call_deferred("_spawn_initial_skeletons")
+
+	# Next spawn delay
+	current_spawn_interval = randf_range(spawn_interval_min, spawn_interval_max)
 	spawn_timer = 0.0
 
 	print("[CursedTotem] Initialized at ", global_position)
+
+
+## Spawn initial batch of skeletons when totem is placed
+func _spawn_initial_skeletons() -> void:
+	var parent := get_tree().current_scene
+	if not parent:
+		return
+
+	var count := mini(initial_spawn_count, max_spawned_enemies)
+	print("[CursedTotem] Spawning %d initial skeletons..." % count)
+
+	for i in count:
+		var angle := (float(i) / count) * TAU  # Evenly spaced around totem
+		var distance := randf_range(2.5, spawn_radius)
+		var spawn_offset := Vector3(cos(angle) * distance, 0, sin(angle) * distance)
+		var spawn_pos := global_position + spawn_offset
+
+		var enemy: Node = EnemyBase.spawn_skeleton_enemy(
+			parent,
+			spawn_pos,
+			SKELETON_WARRIOR_PATH
+		)
+
+		if enemy:
+			spawned_enemies.append(enemy)
+
+			if "wander_radius" in enemy:
+				enemy.wander_radius = 12.0
+			if "leash_radius" in enemy:
+				enemy.leash_radius = 25.0
+			if "spawn_position" in enemy:
+				enemy.spawn_position = global_position
+
+			if enemy.has_signal("died"):
+				enemy.died.connect(_on_spawned_enemy_died.bind(enemy))
+
+	# Dramatic glow pulse for initial spawn (extra bright)
+	if count > 0:
+		_pulse_glow(2.0)
 
 
 func _physics_process(delta: float) -> void:
@@ -202,16 +245,16 @@ func _try_spawn_skeleton() -> void:
 		_pulse_glow()
 
 
-## Visual effect when spawning
-func _pulse_glow() -> void:
+## Visual effect when spawning (intensity_mult for dramatic initial spawn)
+func _pulse_glow(intensity_mult: float = 1.0) -> void:
 	if not glow_light:
 		return
 
 	var original_energy := glow_light.light_energy
-	glow_light.light_energy = 4.0
+	glow_light.light_energy = 4.0 * intensity_mult
 
 	var tween := create_tween()
-	tween.tween_property(glow_light, "light_energy", original_energy, 0.5)
+	tween.tween_property(glow_light, "light_energy", original_energy, 0.5 * intensity_mult)
 
 
 ## Handle spawned enemy death

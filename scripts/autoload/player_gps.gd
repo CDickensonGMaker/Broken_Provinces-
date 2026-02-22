@@ -38,6 +38,13 @@ var discovered_locations: Dictionary = {}
 var total_cells_traveled: int = 0
 var total_distance_traveled: int = 0
 
+## ============================================================================
+## NPC REGISTRY - Tracks NPCs by cell for streaming/minimap
+## ============================================================================
+
+## Registered NPCs: npc_id -> {node: Node3D, cell: Vector2i, type: String, zone_id: String}
+var registered_npcs: Dictionary = {}
+
 
 func _ready() -> void:
 	# Initialize with starting location discovered
@@ -355,3 +362,83 @@ func from_dict(data: Dictionary) -> void:
 	print("[PlayerGPS] Loaded from dict: %d cells, %d locations" % [
 		discovered_cells.size(), discovered_locations.size()
 	])
+
+
+## ============================================================================
+## NPC REGISTRY API
+## ============================================================================
+
+## Register an NPC with the GPS system
+## Called by NPCs on _ready()
+func register_npc(npc: Node3D, npc_id: String, npc_type: String, zone_id: String = "") -> void:
+	if not is_instance_valid(npc):
+		return
+
+	var cell: Vector2i = WorldGrid.world_to_cell(npc.global_position)
+	registered_npcs[npc_id] = {
+		"node": npc,
+		"cell": cell,
+		"type": npc_type,
+		"zone_id": zone_id
+	}
+
+
+## Unregister an NPC
+## Called by NPCs on _exit_tree()
+func unregister_npc(npc_id: String) -> void:
+	registered_npcs.erase(npc_id)
+
+
+## Get all NPCs in a specific cell
+func get_npcs_in_cell(cell: Vector2i) -> Array:
+	var result: Array = []
+	for npc_id: String in registered_npcs:
+		var info: Dictionary = registered_npcs[npc_id]
+		if info.get("cell", Vector2i(-999, -999)) == cell:
+			var node: Node3D = info.get("node")
+			if is_instance_valid(node):
+				result.append({"id": npc_id, "node": node, "type": info.get("type", "")})
+	return result
+
+
+## Get all registered NPCs
+func get_all_npcs() -> Array:
+	var result: Array = []
+	for npc_id: String in registered_npcs:
+		var info: Dictionary = registered_npcs[npc_id]
+		var node: Node3D = info.get("node")
+		if is_instance_valid(node):
+			result.append({
+				"id": npc_id,
+				"node": node,
+				"type": info.get("type", ""),
+				"cell": info.get("cell", Vector2i.ZERO),
+				"zone_id": info.get("zone_id", "")
+			})
+	return result
+
+
+## Update an NPC's cell position (call when NPC moves significantly)
+func update_npc_cell(npc_id: String, new_position: Vector3) -> void:
+	if not registered_npcs.has(npc_id):
+		return
+
+	var new_cell: Vector2i = WorldGrid.world_to_cell(new_position)
+	registered_npcs[npc_id]["cell"] = new_cell
+
+
+## Check if an NPC is registered
+func is_npc_registered(npc_id: String) -> bool:
+	return registered_npcs.has(npc_id)
+
+
+## Get NPC info by ID
+func get_npc_info(npc_id: String) -> Dictionary:
+	if not registered_npcs.has(npc_id):
+		return {}
+	return registered_npcs[npc_id].duplicate()
+
+
+## Clear all NPC registrations (for scene changes)
+func clear_npcs() -> void:
+	registered_npcs.clear()

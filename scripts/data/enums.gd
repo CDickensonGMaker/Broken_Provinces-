@@ -333,17 +333,18 @@ static func get_quality_modifier(quality: ItemQuality) -> int:
 	return 0
 
 # XP cost curve for skills and stats (unified for simplicity)
-# Early levels accessible, mid-game requires exploration, endgame is long-term goals
-const XP_COSTS := [100, 400, 1200, 3000, 7000, 15000, 30000, 55000, 90000, 140000]
+# Levels 1-10: Original tabletop values (accessible early/mid game)
+# Levels 11-15: Extended endgame (mastery tier, exponential cost increase)
+const XP_COSTS := [100, 400, 1200, 3000, 7000, 15000, 30000, 55000, 90000, 140000, 200000, 275000, 370000, 490000, 640000]
 
 # Get skill XP cost for level
 static func get_skill_ip_cost(level: int) -> int:
-	if level < 1 or level > 10:
+	if level < 1 or level > XP_COSTS.size():
 		return 0
 	return XP_COSTS[level - 1]
 
 # Get stat XP cost for level (same as skills per TTRPG rules)
 static func get_stat_xp_cost(level: int) -> int:
-	if level < 1 or level > 10:
+	if level < 1 or level > XP_COSTS.size():
 		return 0
 	return XP_COSTS[level - 1]

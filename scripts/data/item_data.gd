@@ -1,4 +1,47 @@
 ## item_data.gd - Resource class for consumables and misc items
+##
+## ============================================================================
+## ITEM CREATION CHECKLIST
+## ============================================================================
+## When adding a new item to the game, complete ALL of these steps:
+##
+## 1. CREATE THE .TRES FILE
+##    - Create a new .tres file in res://data/items/
+##    - File name should match the item id (e.g., wolf_pelt.tres for id="wolf_pelt")
+##    - Set ALL required fields:
+##      - id: Unique identifier (snake_case, no spaces)
+##      - display_name: Human-readable name shown to player
+##      - description: Explains what the item is and its purpose
+##      - item_type: CONSUMABLE, MATERIAL, QUEST, KEY, SCROLL, etc.
+##      - base_value: Gold value for buying/selling
+##      - weight: Encumbrance weight
+##
+## 2. REGISTER IN INVENTORY_MANAGER
+##    - Open scripts/autoload/inventory_manager.gd
+##    - Add the item id string to the item_files array
+##    - Place it in the appropriate category section with a comment
+##
+## 3. VERIFY THE ITEM PURPOSE
+##    Every item MUST serve a gameplay purpose:
+##    - CONSUMABLE: Has a consumable_effect that benefits the player
+##    - MATERIAL: Used in crafting recipes OR sells to specific merchants
+##    - QUEST: Required for quest completion
+##    - KEY: Opens specific doors/containers
+##    - SCROLL: Teaches a spell (set teaches_spell_id)
+##    - AMMUNITION: Used by ranged weapons
+##    - REPAIR_KIT: Restores equipment durability
+##    - MISC: Only if truly no other category fits
+##
+## 4. IF REFERENCED BY ENEMIES
+##    - Ensure the item id in enemy .tres drop_table matches exactly
+##    - Test that looting the enemy works correctly
+##
+## 5. TEST THE ITEM
+##    - Verify it loads without errors
+##    - Verify it appears correctly in inventory
+##    - Verify it can be bought/sold if applicable
+##    - Verify its effect works if consumable
+## ============================================================================
 @tool
 class_name ItemData
 extends Resource

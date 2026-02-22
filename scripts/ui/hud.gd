@@ -208,6 +208,14 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 
+	# M key opens the world map directly
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		if key_event.keycode == KEY_M and key_event.pressed and not key_event.echo:
+			_open_map()
+			get_viewport().set_input_as_handled()
+			return
+
 func _setup_menus() -> void:
 	# Setup game menu (loaded via @onready)
 	if game_menu:
@@ -244,6 +252,17 @@ func _open_game_menu() -> void:
 	if game_menu:
 		game_menu.open()
 		# Hide minimap when game menu opens (Tab menu)
+		if minimap:
+			minimap.visible = false
+		if minimap_coord_label:
+			minimap_coord_label.visible = false
+
+
+## Open directly to the world map (M key shortcut)
+func _open_map() -> void:
+	if game_menu:
+		game_menu.open_to_tab(GameMenu.MenuTab.MAP)
+		# Hide minimap when map opens
 		if minimap:
 			minimap.visible = false
 		if minimap_coord_label:
@@ -2172,9 +2191,11 @@ func _update_compass_quest_marker(player: Node3D, yaw_degrees: float, ppd: float
 		else:
 			compass_quest_marker.add_theme_color_override("font_color", Color(0.2, 0.8, 0.8))  # Teal
 
-	# Calculate angle to target
+	# Calculate angle to target (0°=North, 90°=East, 180°=South, 270°=West)
+	# In Godot: -Z is North, +X is East, +Z is South, -X is West
+	# atan2(x, -z) gives: 0° when facing -Z (North), 90° when facing +X (East)
 	var to_target := target_pos - player.global_position
-	var target_angle := rad_to_deg(atan2(-to_target.x, -to_target.z))
+	var target_angle := rad_to_deg(atan2(to_target.x, -to_target.z))
 	target_angle = fmod(target_angle + 360.0, 360.0)
 
 	# Calculate relative angle
@@ -2873,15 +2894,15 @@ func _calculate_direction_to_settlement(_player_pos: Vector3, _target_zone: Stri
 	return null
 
 
-## Find settlement coordinates from WorldData by zone ID
+## Find settlement coordinates from WorldGrid by zone ID
 func _find_settlement_coords(zone_id: String) -> Vector2i:
-	# Initialize WorldData if needed
-	if WorldData.world_grid.is_empty():
-		WorldData.initialize()
+	# Initialize WorldGrid if needed
+	if WorldGrid.cells.is_empty():
+		WorldGrid.initialize()
 
 	# Search all cells for matching location_id
-	for coords: Vector2i in WorldData.world_grid:
-		var cell: WorldData.CellData = WorldData.world_grid[coords]
+	for coords: Vector2i in WorldGrid.cells:
+		var cell: WorldGrid.CellInfo = WorldGrid.cells[coords]
 		if cell.location_id == zone_id:
 			return coords
 		# Also check partial matches (village_elder_moor matches elder_moor)

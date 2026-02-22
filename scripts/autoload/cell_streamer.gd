@@ -232,6 +232,20 @@ func _load_handcrafted_cell(coords: Vector2i, cell_info: WorldGrid.CellInfo) -> 
 		return null
 
 	var instance: Node3D = scene.instantiate()
+
+	# Strip Player and HUD - they belong to the main scene, not streaming cells
+	# When a hand-crafted scene is loaded AS A CELL (adjacent to player), it shouldn't
+	# have its own Player or HUD since those already exist in the main scene
+	var embedded_player: Node = instance.get_node_or_null("Player")
+	if embedded_player:
+		embedded_player.queue_free()
+		print("[CellStreamer] Stripped embedded Player from cell %s" % coords)
+
+	var embedded_hud: Node = instance.get_node_or_null("HUD")
+	if embedded_hud:
+		embedded_hud.queue_free()
+		print("[CellStreamer] Stripped embedded HUD from cell %s" % coords)
+
 	return instance
 
 
@@ -251,8 +265,8 @@ func _generate_procedural_cell(coords: Vector2i, cell_info: WorldGrid.CellInfo) 
 		# Set biome - WildernessRoom has this as an @export
 		room.set("biome", WorldGrid.to_wilderness_biome(cell_info.biome))
 
-		# Generate with deterministic seed
-		var seed_value: int = coords.x * 10000 + coords.y + 12345
+		# Generate with deterministic seed (world_seed ensures different worlds per playthrough)
+		var seed_value: int = GameManager.world_seed + (coords.x * 10000) + coords.y
 		if room.has_method("generate"):
 			room.call("generate", seed_value, coords)
 
@@ -371,6 +385,12 @@ func start_streaming(start_coords: Vector2i) -> void:
 	active_cell = start_coords
 	streaming_enabled = true
 
+	# Ensure cell container exists (may have been freed during scene change)
+	if not is_instance_valid(_cell_container):
+		_cell_container = Node3D.new()
+		_cell_container.name = "CellContainer"
+		add_child(_cell_container)
+
 	# Load initial cells
 	_update_loaded_cells()
 
@@ -378,16 +398,25 @@ func start_streaming(start_coords: Vector2i) -> void:
 	print("[CellStreamer] Streaming started at %s" % start_coords)
 
 
-## Stop streaming (called when entering interior)
+## Stop streaming (called when entering interior or changing scenes)
 func stop_streaming() -> void:
 	streaming_enabled = false
 
-	# Unload all cells
-	for coords: Vector2i in loaded_cells.keys():
-		_unload_cell(coords)
+	# Clear all tracked cells - the scene tree change will free the actual nodes
+	# We just need to clear our references to prevent accessing freed objects
+	loaded_cells.clear()
+	_loading_cells.clear()
+	_external_cells.clear()
+	_main_scene_cell = Vector2i(-9999, -9999)
+
+	# Reset world offset for next streaming session
+	world_offset = Vector3.ZERO
+
+	# Reset player reference
+	_player = null
 
 	streaming_paused.emit()
-	print("[CellStreamer] Streaming stopped")
+	print("[CellStreamer] Streaming stopped and state reset")
 
 
 ## Pause streaming without unloading (for menus, etc.)

@@ -47,8 +47,8 @@ const CARAVAN_COSTS: Dictionary = {
 }
 
 ## Caravan route data - maps route_id to {from, to, road_id, danger_level}
-## Note: Caravan routes now come from WorldData road registry
-var caravan_routes: Dictionary = {}
+## Note: Caravan routes not yet implemented for square grid system
+var caravan_routes: Dictionary = {}  # Dead variable - caravan system disabled
 
 ## Current travel state
 var is_traveling: bool = false
@@ -94,14 +94,14 @@ func calculate_travel_time(from_id: String, to_id: String, speed: TravelSpeed = 
 
 	if mode == TravelMode.ROAD:
 		# Use pathfinding along roads
-		var path: Array[Vector2i] = WorldData.find_road_path(from_coords, to_coords)
+		var path: Array[Vector2i] = WorldGrid.find_path(from_coords, to_coords)
 		if path.is_empty():
 			# No road path, fall back to direct
 			hours = _calculate_direct_time(from_coords, to_coords)
 		else:
 			# Calculate time along path, accounting for road bonus
 			for i: int in range(1, path.size()):
-				var cell: WorldData.CellData = WorldData.get_cell(path[i])
+				var cell: WorldGrid.CellInfo = WorldGrid.get_cell(path[i])
 				var cell_time: float = BASE_HOURS_PER_CELL
 				if cell and cell.is_road:
 					cell_time *= (1.0 - ROAD_SPEED_BONUS)

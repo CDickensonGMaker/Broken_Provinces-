@@ -105,7 +105,7 @@ func _register_compass_poi() -> void:
 ## Register this NPC with WorldData for quest navigation/tracking
 func _register_with_world_data() -> void:
 	var effective_id: String = get_npc_id()
-	var hex: Vector2i = WorldData.world_to_axial(global_position)
+	var cell: Vector2i = WorldGrid.world_to_cell(global_position)
 	var zone_id: String = ""
 
 	# Try to get zone_id from parent scene
@@ -120,12 +120,12 @@ func _register_with_world_data() -> void:
 	if zone_id.is_empty():
 		zone_id = region_id if not region_id.is_empty() else "shop_unknown"
 
-	WorldData.register_npc(effective_id, hex, zone_id, npc_type)
+	PlayerGPS.register_npc(self, effective_id, npc_type, zone_id)
 
 
-## Unregister from WorldData when removed from scene
+## Unregister from PlayerGPS when removed from scene
 func _exit_tree() -> void:
-	WorldData.unregister_npc(get_npc_id())
+	PlayerGPS.unregister_npc(get_npc_id())
 
 func _create_merchant_mesh() -> void:
 	## Create visual representation - billboard sprite if texture provided, otherwise capsule mesh

@@ -37,6 +37,9 @@ var enemy_hp_multiplier: float = 1.0
 ## Debug mode
 var debug_mode: bool = false
 
+## Global world seed for procedural generation (unique per playthrough)
+var world_seed: int = 0
+
 func _ready() -> void:
 	# Set default UI scale to 68%
 	get_tree().root.content_scale_factor = 0.68
@@ -226,6 +229,10 @@ func on_player_death() -> void:
 
 ## Reset game state for a new game (called from death screen "New Game")
 func reset_for_new_game() -> void:
+	# Generate unique world seed for procedural generation
+	world_seed = randi()
+	print("[GameManager] New game world seed: %d" % world_seed)
+
 	# Create fresh player data
 	player_data = CharacterData.new()
 	player_data.recalculate_derived_stats()
@@ -267,8 +274,8 @@ func apply_dev_stats(char_data: CharacterData) -> void:
 	char_data.set_skill(Enums.Skill.ARCANA_LORE, 8)      # Read all scrolls
 	char_data.set_skill(Enums.Skill.CONCENTRATION, 8)   # Spell casting
 
-	# Bonus improvement points for testing
-	char_data.improvement_points += 100000
+	# Bonus improvement points for testing (disabled for normal play)
+	#char_data.improvement_points += 100000
 
 	# Recalculate and restore resources
 	char_data.recalculate_derived_stats()

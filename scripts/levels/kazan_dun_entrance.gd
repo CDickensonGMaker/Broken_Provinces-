@@ -16,6 +16,7 @@ func _ready() -> void:
 	_setup_navigation()
 	_setup_spawn_point_metadata()
 	_spawn_dwarf_npcs()
+	_setup_cell_streaming()
 	print("[Kazan-Dun Entrance] Grand entrance hall initialized (Zone size: %dx%d)" % [ZONE_SIZE_X, ZONE_SIZE_Z])
 
 
@@ -80,3 +81,23 @@ func _spawn_dwarf_npcs() -> void:
 	CivilianNPC.spawn_dwarf_random(npcs_node, Vector3(-25, 0, -15), ZONE_ID)
 
 	print("[Kazan-Dun Entrance] Spawned dwarf NPCs")
+
+
+## Setup cell streaming if we're the main scene (has Player/HUD)
+## When loaded as a streaming cell, this will be skipped (Player/HUD stripped by CellStreamer)
+func _setup_cell_streaming() -> void:
+	# Only setup streaming if we're the main scene (we have Player/HUD)
+	var player: Node = get_node_or_null("Player")
+	if not player:
+		# We're a streaming cell, not main scene - skip streaming setup
+		return
+
+	if not CellStreamer:
+		push_warning("[%s] CellStreamer not found" % ZONE_ID)
+		return
+
+	# Use WorldGrid location_id (note: WorldGrid uses "kazer" spelling)
+	var my_coords: Vector2i = WorldGrid.get_location_coords("kazer_dun_entrance")
+	CellStreamer.register_main_scene_cell(my_coords, self)
+	CellStreamer.start_streaming(my_coords)
+	print("[%s] Registered as main scene, streaming started at %s" % [ZONE_ID, my_coords])

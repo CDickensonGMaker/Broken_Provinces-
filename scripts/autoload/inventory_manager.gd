@@ -35,6 +35,10 @@ var quick_slots: Array[String] = ["", "", "", ""]
 ## Each slot: {"type": "weapon"|"spell"|"item"|"", "id": String}
 var hotbar: Array[Dictionary] = []
 
+## Quick spell slots (4 slots for MagicPanel) - separate from hotbar
+## Stores spell IDs that can be cast via dedicated spell keys
+var spell_slots: Array[String] = ["", "", "", ""]
+
 ## Currently equipped spell (like main_hand for spells)
 var equipped_spell: SpellData = null
 
@@ -120,7 +124,11 @@ func _load_item_databases() -> void:
 		# Tools
 		"lockpick", "repair_kit", "bedroll",
 		# Light sources
-		"torch"
+		"torch",
+		# Monster drops - wolf
+		"wolf_pelt", "wolf_fang", "raw_meat",
+		# Monster drops - spider
+		"spider_silk", "spider_venom", "spider_fang"
 	]
 	for item_id in item_files:
 		var path := "res://data/items/%s.tres" % item_id
@@ -777,6 +785,32 @@ func clear_equipped_spell() -> void:
 	equipped_spell = null
 	equipped_spell_changed.emit(old_spell, null)
 
+# ============================================================================
+# SPELL SLOTS (Quick spell slots for MagicPanel)
+# ============================================================================
+
+## Set a spell slot (0-3 for MagicPanel quick slots)
+func set_spell_slot(slot_index: int, spell_id: String) -> void:
+	if slot_index < 0 or slot_index >= 4:
+		return
+	spell_slots[slot_index] = spell_id
+
+## Get a spell slot
+func get_spell_slot(slot_index: int) -> String:
+	if slot_index < 0 or slot_index >= 4:
+		return ""
+	return spell_slots[slot_index]
+
+## Clear a spell slot
+func clear_spell_slot(slot_index: int) -> void:
+	if slot_index < 0 or slot_index >= 4:
+		return
+	spell_slots[slot_index] = ""
+
+## Clear all spell slots
+func clear_all_spell_slots() -> void:
+	spell_slots = ["", "", "", ""]
+
 ## Cast the currently equipped spell directly (called from hotbar)
 func _cast_equipped_spell() -> bool:
 	if not equipped_spell:
@@ -999,6 +1033,9 @@ func _give_starter_items() -> void:
 	add_item("arrows", 20, Enums.ItemQuality.AVERAGE)
 	add_item("torch", 3, Enums.ItemQuality.AVERAGE)  # 3 torches for exploring dark areas
 
+	# Starter spell scroll - Magic Missile for learning basic magic
+	add_item("scroll_magic_missile", 1, Enums.ItemQuality.AVERAGE)
+
 ## Random quality with weighted distribution:
 ## Poor: 10%, Below Average: 25%, Average: 40%, Above Average: 20%, Perfect: 5%
 func _random_quality() -> Enums.ItemQuality:
@@ -1209,6 +1246,7 @@ func to_dict() -> Dictionary:
 		"equipment": equipment.duplicate(true),
 		"quick_slots": quick_slots.duplicate(),
 		"hotbar": hotbar_save,
+		"spell_slots": spell_slots.duplicate(),
 		"equipped_spell_id": equipped_spell.id if equipped_spell else "",
 		"gold": gold
 	}
@@ -1260,6 +1298,12 @@ func from_dict(data: Dictionary) -> void:
 	for i in range(min(hotbar_data.size(), 10)):
 		if hotbar_data[i] is Dictionary:
 			hotbar[i] = hotbar_data[i].duplicate()
+
+	# Load spell slots (MagicPanel quick slots)
+	spell_slots = ["", "", "", ""]
+	var spell_slots_data: Array = data.get("spell_slots", [])
+	for i in range(min(spell_slots_data.size(), 4)):
+		spell_slots[i] = str(spell_slots_data[i]) if spell_slots_data[i] else ""
 
 	# Load equipped spell (use set_equipped_spell_by_id to bypass known_spells check during restoration)
 	var spell_id: String = data.get("equipped_spell_id", "")
@@ -1619,6 +1663,9 @@ func reset_for_new_game() -> void:
 	# Clear quick slots
 	quick_slots = ["", "", "", ""]
 
+	# Clear spell slots
+	spell_slots = ["", "", "", ""]
+
 	# Reinitialize hotbar
 	_initialize_hotbar()
 
@@ -1629,3 +1676,5 @@ func reset_for_new_game() -> void:
 	add_item("longsword", 1, Enums.ItemQuality.ABOVE_AVERAGE)  # Fine longsword
 	add_item("hunting_bow", 1, Enums.ItemQuality.AVERAGE)
 	add_item("arrows", 20, Enums.ItemQuality.AVERAGE)
+	add_item("torch", 3, Enums.ItemQuality.AVERAGE)
+	add_item("scroll_magic_missile", 1, Enums.ItemQuality.AVERAGE)  # Starter spell scroll

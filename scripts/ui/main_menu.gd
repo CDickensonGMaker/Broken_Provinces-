@@ -402,6 +402,9 @@ func _create_random_character_and_start() -> void:
 	# Set as active character
 	GameManager.player_data = char_data
 
+	# DEV: Apply testing stats (high magic stats for testing)
+	GameManager.apply_dev_stats(char_data)
+
 	# Give starting equipment
 	InventoryManager.add_item("iron_sword", 1)
 	InventoryManager.add_item("health_potion", 3)

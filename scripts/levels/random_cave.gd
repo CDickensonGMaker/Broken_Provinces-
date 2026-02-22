@@ -137,12 +137,29 @@ func _spawn_portal() -> void:
 	exit_portal.show_frame = false
 	exit_portal.rotation.y = PI
 
+	# Spawn point for entering from wilderness dungeon door
+	var entrance_spawn := Node3D.new()
+	entrance_spawn.name = "entrance"
+	entrance_spawn.position = Vector3(0, 0.1, 2)
+	entrance_spawn.add_to_group("spawn_points")
+	entrance_spawn.set_meta("spawn_id", "entrance")
+	add_child(entrance_spawn)
+
+	# Alias spawn points for compatibility
 	var from_world := Node3D.new()
 	from_world.name = "from_wilderness"
 	from_world.position = Vector3(0, 0.1, 2)
 	from_world.add_to_group("spawn_points")
 	from_world.set_meta("spawn_id", "from_open_world")
 	add_child(from_world)
+
+	# Default spawn point (fallback)
+	var default_spawn := Node3D.new()
+	default_spawn.name = "default"
+	default_spawn.position = Vector3(0, 0.1, 2)
+	default_spawn.add_to_group("spawn_points")
+	default_spawn.set_meta("spawn_id", "default")
+	add_child(default_spawn)
 
 
 ## Spawn enemies (placeholder - random enemy types)
@@ -162,9 +179,32 @@ func _spawn_enemies() -> void:
 		"Cave Abomination"
 	)
 
+	# Cave bats - small flying enemies for ambiance
+	_spawn_billboard_enemy(
+		Vector3(-5, 1.5, -25),
+		"res://data/enemies/bat.tres",
+		"res://Sprite folders grab bag/bat_flying_attacking.png",
+		"Cave Bat",
+		4, 1
+	)
+	_spawn_billboard_enemy(
+		Vector3(5, 2.0, -30),
+		"res://data/enemies/bat.tres",
+		"res://Sprite folders grab bag/bat_flying_attacking.png",
+		"Cave Bat",
+		4, 1
+	)
+	_spawn_billboard_enemy(
+		Vector3(0, 1.8, -42),
+		"res://data/enemies/bat.tres",
+		"res://Sprite folders grab bag/bat_flying_attacking.png",
+		"Cave Bat",
+		4, 1
+	)
+
 
 ## Helper to spawn enemy (billboard or mesh)
-func _spawn_billboard_enemy(pos: Vector3, data_path: String, sprite_path: String, display_name: String) -> void:
+func _spawn_billboard_enemy(pos: Vector3, data_path: String, sprite_path: String, display_name: String, h_frames: int = 4, v_frames: int = 4) -> void:
 	if sprite_path.is_empty():
 		# Spawn mesh-based enemy
 		var enemy_scene: PackedScene = load("res://scenes/enemies/enemy_base.tscn")
@@ -189,7 +229,8 @@ func _spawn_billboard_enemy(pos: Vector3, data_path: String, sprite_path: String
 		pos,
 		data_path,
 		sprite_texture,
-		4, 4
+		h_frames,
+		v_frames
 	)
 
 	if enemy:

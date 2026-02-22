@@ -211,3 +211,25 @@ static func add_to_level(parent: Node) -> DayNightCycle:
 	cycle.name = "DayNightCycle"
 	parent.add_child(cycle)
 	return cycle
+
+
+## Force DayNightCycle to take over lighting (removes existing lights)
+## Use this when entering hand-crafted areas that may have their own static lighting
+static func force_takeover(parent: Node) -> DayNightCycle:
+	# Remove any existing WorldEnvironment and DirectionalLight3D
+	for child in parent.get_children():
+		if child is WorldEnvironment:
+			child.queue_free()
+		elif child is DirectionalLight3D:
+			child.queue_free()
+
+	# Also check for existing DayNightCycle and remove it
+	var existing_cycle: Node = parent.get_node_or_null("DayNightCycle")
+	if existing_cycle:
+		existing_cycle.queue_free()
+
+	# Create fresh DayNightCycle
+	var cycle := DayNightCycle.new()
+	cycle.name = "DayNightCycle"
+	parent.add_child(cycle)
+	return cycle

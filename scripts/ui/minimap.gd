@@ -1,12 +1,19 @@
 ## minimap.gd - HUD minimap showing explored areas
 ## Renders revealed cells, player position, enemies, and POIs
+## Fixed 1-cell zoom for focused local area view
 class_name Minimap
 extends Control
 
 ## Minimap settings
 const MAP_SIZE := Vector2(120, 120)
-const CELL_PIXEL_SIZE := 30  # Pixels per cell (750% zoom - very zoomed in for visibility)
-const VIEW_RADIUS := 2  # Cells to show from player center (smaller = more zoomed in)
+
+## Fixed zoom settings (1-cell view = current cell + immediate neighbors)
+const VIEW_RADIUS := 1  # Show current cell + adjacent cells (3x3 grid)
+const CELL_PIXEL_SIZE := 40  # Larger pixels for zoomed-in single-cell view
+
+## Use these for rendering (fixed values, no dynamic zoom)
+var view_radius: int = VIEW_RADIUS
+var cell_pixel_size: int = CELL_PIXEL_SIZE
 
 ## Colors
 const COLOR_REVEALED := Color(0.15, 0.13, 0.18, 0.9)
@@ -35,6 +42,45 @@ const COLOR_BLACKSMITH := Color(0.5, 0.5, 0.6, 1.0)   # Steel gray for blacksmit
 const COLOR_ALCHEMIST := Color(0.4, 0.8, 0.4, 1.0)    # Green for alchemists/potion shops
 const COLOR_FIREPLACE := Color(1.0, 0.5, 0.2, 1.0)    # Warm orange for campfires/fireplaces
 const COLOR_FAST_TRAVEL := Color(0.4, 0.9, 1.0, 1.0)  # Cyan for fast travel shrines
+
+## Marker type system (Daggerfall-inspired icon differentiation)
+enum MarkerType {
+	QUEST_MAIN,    # Gold star for main quest objectives
+	QUEST_SIDE,    # Teal diamond for side quests
+	ENEMY,         # Red dot for enemies
+	NPC_FRIENDLY,  # Green dot for friendly NPCs
+	NPC_MERCHANT,  # Orange $ for merchants
+	ITEM,          # White dot for items
+	POI,           # Blue triangle for points of interest
+	CHEST,         # Yellow square for chests
+	PORTAL,        # Blue circle for doors/portals
+}
+
+## Symbol characters for each marker type
+const MARKER_SYMBOLS: Dictionary = {
+	MarkerType.QUEST_MAIN: "★",
+	MarkerType.QUEST_SIDE: "◆",
+	MarkerType.ENEMY: "●",
+	MarkerType.NPC_FRIENDLY: "●",
+	MarkerType.NPC_MERCHANT: "$",
+	MarkerType.ITEM: "•",
+	MarkerType.POI: "▲",
+	MarkerType.CHEST: "■",
+	MarkerType.PORTAL: "○",
+}
+
+## Colors for each marker type
+const MARKER_COLORS: Dictionary = {
+	MarkerType.QUEST_MAIN: Color(1.0, 0.85, 0.2),     # Gold
+	MarkerType.QUEST_SIDE: Color(0.2, 0.8, 0.8),      # Teal
+	MarkerType.ENEMY: Color(0.9, 0.2, 0.2),           # Red
+	MarkerType.NPC_FRIENDLY: Color(0.2, 0.8, 0.2),    # Green
+	MarkerType.NPC_MERCHANT: Color(0.9, 0.7, 0.2),    # Orange-gold
+	MarkerType.ITEM: Color(0.9, 0.9, 0.9),            # White
+	MarkerType.POI: Color(0.6, 0.6, 0.9),             # Light blue
+	MarkerType.CHEST: Color(0.9, 0.8, 0.2),           # Yellow
+	MarkerType.PORTAL: Color(0.3, 0.5, 0.9),          # Blue
+}
 
 ## Components
 var background: ColorRect
@@ -176,11 +222,11 @@ func _draw() -> void:
 	for cell_variant in revealed_cells:
 		var cell: Vector2i = cell_variant as Vector2i
 		var rel_cell := cell - player_cell
-		if abs(rel_cell.x) > VIEW_RADIUS or abs(rel_cell.y) > VIEW_RADIUS:
+		if abs(rel_cell.x) > view_radius or abs(rel_cell.y) > view_radius:
 			continue
 
-		var pixel_pos := center + Vector2(rel_cell.x, rel_cell.y) * CELL_PIXEL_SIZE
-		var rect := Rect2(pixel_pos - Vector2(CELL_PIXEL_SIZE / 2.0, CELL_PIXEL_SIZE / 2.0), Vector2(CELL_PIXEL_SIZE, CELL_PIXEL_SIZE))
+		var pixel_pos := center + Vector2(rel_cell.x, rel_cell.y) * cell_pixel_size
+		var rect := Rect2(pixel_pos - Vector2(cell_pixel_size / 2.0, cell_pixel_size / 2.0), Vector2(cell_pixel_size, cell_pixel_size))
 
 		# Check if cell is on room edge (for wall rendering)
 		var is_edge := _is_edge_cell(cell)
@@ -192,6 +238,9 @@ func _draw() -> void:
 
 	# Draw markers (chests, portals, etc.)
 	_draw_markers(center)
+
+	# Draw rotating cardinal directions around edge
+	_draw_cardinal_directions(center)
 
 
 ## Check if a cell is on the edge of revealed area (wall)
@@ -221,6 +270,53 @@ func _draw_room_outlines(_center: Vector2) -> void:
 	pass
 
 
+## Draw rotating cardinal directions (N/E/S/W) around minimap edge
+## Directions rotate based on player/camera heading
+func _draw_cardinal_directions(center: Vector2) -> void:
+	if not player:
+		return
+
+	# Get player/camera heading
+	var camera := get_viewport().get_camera_3d()
+	var player_yaw: float = 0.0
+	if camera:
+		player_yaw = -camera.global_rotation.y
+	else:
+		player_yaw = -player.global_rotation.y
+
+	# Cardinal direction labels and their base angles (0° = North, 90° = East, etc.)
+	var cardinals: Array[Dictionary] = [
+		{"label": "N", "base_angle": 0.0},
+		{"label": "E", "base_angle": PI / 2.0},
+		{"label": "S", "base_angle": PI},
+		{"label": "W", "base_angle": 3.0 * PI / 2.0},
+	]
+
+	var radius: float = min(MAP_SIZE.x, MAP_SIZE.y) / 2.0 - 8.0
+	var font := ThemeDB.fallback_font
+	var font_size: int = 10
+
+	for cardinal: Dictionary in cardinals:
+		var label: String = cardinal["label"]
+		var base_angle: float = cardinal["base_angle"]
+
+		# Rotate by player heading (negative because minimap is north-up)
+		var angle: float = base_angle - player_yaw
+
+		# Calculate position on edge of minimap
+		var pos := center + Vector2(sin(angle), -cos(angle)) * radius
+
+		# Draw the label
+		var text_size := font.get_string_size(label, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+		var text_pos := pos - text_size / 2.0
+
+		# Draw outline for visibility
+		draw_string_outline(font, text_pos, label, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, 2, Color(0, 0, 0, 0.8))
+		# Draw main text
+		var color := Color(0.9, 0.85, 0.7, 0.9) if label == "N" else Color(0.7, 0.65, 0.6, 0.7)
+		draw_string(font, text_pos, label, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, color)
+
+
 ## Draw map markers (chests, portals, etc. from scene)
 func _draw_markers(center: Vector2) -> void:
 	# Get markers from scene groups instead of MapTracker
@@ -243,10 +339,10 @@ func _draw_markers(center: Vector2) -> void:
 			var marker_cell := WorldGrid.world_to_cell(marker_pos)
 			var rel_cell := marker_cell - player_cell
 
-			if abs(rel_cell.x) > VIEW_RADIUS or abs(rel_cell.y) > VIEW_RADIUS:
+			if abs(rel_cell.x) > view_radius or abs(rel_cell.y) > view_radius:
 				continue
 
-			var pixel_pos := center + Vector2(rel_cell.x, rel_cell.y) * CELL_PIXEL_SIZE
+			var pixel_pos := center + Vector2(rel_cell.x, rel_cell.y) * cell_pixel_size
 			var color: Color
 
 			match marker_type:
@@ -280,6 +376,28 @@ func _update_player_marker() -> void:
 
 
 ## Update entity markers (enemies, items)
+## Create a symbol-based marker at the given position
+## Uses the MarkerType enum for consistent icon differentiation
+func _create_symbol_marker(pixel_pos: Vector2, marker_type: MarkerType, size_scale: float = 1.0) -> Label:
+	var marker := Label.new()
+	marker.text = MARKER_SYMBOLS.get(marker_type, "●")
+	marker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	marker.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+
+	var font_size: int = int(10 * size_scale)
+	marker.add_theme_font_size_override("font_size", font_size)
+
+	var color: Color = MARKER_COLORS.get(marker_type, Color.WHITE)
+	marker.add_theme_color_override("font_color", color)
+	marker.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.8))
+	marker.add_theme_constant_override("outline_size", 1)
+
+	marker.size = Vector2(12, 12) * size_scale
+	marker.position = pixel_pos - marker.size / 2.0
+
+	return marker
+
+
 func _update_entity_markers() -> void:
 	# Clear old markers
 	for marker in entity_markers:
@@ -301,19 +419,22 @@ func _update_entity_markers() -> void:
 		var rel_cell := enemy_cell - player_cell
 
 		# Only show nearby enemies
-		if abs(rel_cell.x) > VIEW_RADIUS or abs(rel_cell.y) > VIEW_RADIUS:
+		if abs(rel_cell.x) > view_radius or abs(rel_cell.y) > view_radius:
 			continue
 
 		# Only show in revealed cells
 		if PlayerGPS and not PlayerGPS.is_discovered(enemy_cell):
 			continue
 
-		var pixel_pos := center + Vector2(rel_cell.x, rel_cell.y) * CELL_PIXEL_SIZE
+		var pixel_pos := center + Vector2(rel_cell.x, rel_cell.y) * cell_pixel_size
 
-		var marker := ColorRect.new()
-		marker.color = COLOR_ENEMY
-		marker.size = Vector2(4, 4)
-		marker.position = pixel_pos - Vector2(2, 2)
+		# Use symbol marker for enemies (scales with enemy level if available)
+		var size_scale: float = 1.0
+		if enemy.has_method("get_level"):
+			var level: int = enemy.get_level()
+			size_scale = clampf(0.8 + level * 0.02, 0.8, 1.5)  # Scale 0.8 to 1.5
+
+		var marker := _create_symbol_marker(pixel_pos, MarkerType.ENEMY, size_scale)
 		add_child(marker)
 		entity_markers.append(marker)
 
@@ -326,18 +447,15 @@ func _update_entity_markers() -> void:
 		var item_cell := WorldGrid.world_to_cell((item as Node3D).global_position)
 		var rel_cell := item_cell - player_cell
 
-		if abs(rel_cell.x) > VIEW_RADIUS or abs(rel_cell.y) > VIEW_RADIUS:
+		if abs(rel_cell.x) > view_radius or abs(rel_cell.y) > view_radius:
 			continue
 
 		if PlayerGPS and not PlayerGPS.is_discovered(item_cell):
 			continue
 
-		var pixel_pos := center + Vector2(rel_cell.x, rel_cell.y) * CELL_PIXEL_SIZE
+		var pixel_pos := center + Vector2(rel_cell.x, rel_cell.y) * cell_pixel_size
 
-		var marker := ColorRect.new()
-		marker.color = COLOR_CHEST
-		marker.size = Vector2(3, 3)
-		marker.position = pixel_pos - Vector2(1.5, 1.5)
+		var marker := _create_symbol_marker(pixel_pos, MarkerType.ITEM, 0.8)
 		add_child(marker)
 		entity_markers.append(marker)
 
@@ -406,9 +524,9 @@ func _get_turnin_world_position(quest) -> Vector3:
 		return Vector3.ZERO
 
 	# Check for cached turn-in location
-	var turnin_hex: Vector2i = QuestManager.get_turnin_hex(quest.id)
-	if turnin_hex != Vector2i.ZERO:
-		return WorldData.axial_to_world(turnin_hex)
+	var turnin_cell: Vector2i = QuestManager.get_turnin_hex(quest.id)
+	if turnin_cell != Vector2i.ZERO:
+		return WorldGrid.cell_to_world(turnin_cell)
 
 	return Vector3.ZERO
 
@@ -419,7 +537,7 @@ func _add_quest_marker_with_distance(world_pos: Vector3, color: Color, icon: Str
 	var rel_cell := target_cell - player_cell
 
 	# Calculate pixel position
-	var pixel_pos := center + Vector2(rel_cell.x, rel_cell.y) * CELL_PIXEL_SIZE
+	var pixel_pos := center + Vector2(rel_cell.x, rel_cell.y) * cell_pixel_size
 
 	# Check if on screen or needs edge indicator
 	var is_on_map: bool = pixel_pos.x >= 0 and pixel_pos.x <= MAP_SIZE.x and pixel_pos.y >= 0 and pixel_pos.y <= MAP_SIZE.y
@@ -598,10 +716,14 @@ func _update_poi_markers() -> void:
 
 	var center := MAP_SIZE / 2.0
 
+	# Track which nodes we've already added markers for (prevent duplicates)
+	# This is needed because merchants add themselves to multiple groups (merchants, shops, etc.)
+	var processed_nodes: Array[int] = []
+
 	# Define POI types to look for with their groups, icons, and colors
+	# Order matters - more specific groups come FIRST so they get their specialized icon
+	# Generic groups (merchants) come LAST as fallback
 	var poi_types: Array[Dictionary] = [
-		{"group": "merchants", "icon": "$", "color": COLOR_SHOP},
-		{"group": "shops", "icon": "$", "color": COLOR_SHOP},
 		{"group": "blacksmiths", "icon": "⚒", "color": COLOR_BLACKSMITH},
 		{"group": "alchemists", "icon": "⚗", "color": COLOR_ALCHEMIST},
 		{"group": "temples", "icon": "†", "color": COLOR_TEMPLE},
@@ -615,6 +737,8 @@ func _update_poi_markers() -> void:
 		{"group": "rest_spots", "icon": "🔥", "color": COLOR_FIREPLACE},
 		{"group": "fast_travel", "icon": "◈", "color": COLOR_FAST_TRAVEL},
 		{"group": "fast_travel_shrines", "icon": "◈", "color": COLOR_FAST_TRAVEL},
+		# Generic merchant group comes LAST (fallback for unspecialized merchants)
+		{"group": "merchants", "icon": "$", "color": COLOR_SHOP},
 	]
 
 	for poi_type: Dictionary in poi_types:
@@ -627,15 +751,21 @@ func _update_poi_markers() -> void:
 			if not poi is Node3D:
 				continue
 
+			# Skip if we've already processed this node (prevents duplicates)
+			var node_id: int = poi.get_instance_id()
+			if node_id in processed_nodes:
+				continue
+			processed_nodes.append(node_id)
+
 			var poi_node := poi as Node3D
 			var poi_cell := WorldGrid.world_to_cell(poi_node.global_position)
 			var rel_cell := poi_cell - player_cell
 
 			# Only show nearby POIs
-			if abs(rel_cell.x) > VIEW_RADIUS or abs(rel_cell.y) > VIEW_RADIUS:
+			if abs(rel_cell.x) > view_radius or abs(rel_cell.y) > view_radius:
 				continue
 
-			var pixel_pos := center + Vector2(rel_cell.x, rel_cell.y) * CELL_PIXEL_SIZE
+			var pixel_pos := center + Vector2(rel_cell.x, rel_cell.y) * cell_pixel_size
 
 			# Check if on screen
 			if pixel_pos.x < 0 or pixel_pos.x > MAP_SIZE.x or pixel_pos.y < 0 or pixel_pos.y > MAP_SIZE.y:
@@ -658,6 +788,8 @@ func _update_poi_markers() -> void:
 				marker.tooltip_text = poi.display_name
 			elif "shop_name" in poi:
 				marker.tooltip_text = poi.shop_name
+			elif "merchant_name" in poi:
+				marker.tooltip_text = poi.merchant_name
 
 			add_child(marker)
 			poi_markers.append(marker)

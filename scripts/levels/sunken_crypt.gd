@@ -37,6 +37,7 @@ func _ready() -> void:
 	_spawn_portals()
 	_spawn_enemies()
 	_spawn_loot()
+	_setup_cell_streaming()
 
 	print("[SunkenCrypt] Dungeon initialized")
 
@@ -335,9 +336,14 @@ func _spawn_enemies() -> void:
 	# Treasure Room - 1 Skeleton Warrior (harder)
 	_spawn_enemy(Vector3(12, FLOOR_1_Y, -22), "skeleton_warrior")
 
-	# Boss Chamber - Drowned One (boss) + 2 Skeleton Shades
+	# Flooded Corridor - Flaming Skulls guarding the descent
+	_spawn_enemy(Vector3(0, FLOOR_1_Y + 1.5, -32), "flaming_skull")
+
+	# Boss Chamber - Drowned One (boss) + 2 Skeleton Shades + Flaming Skulls
 	_spawn_enemy(Vector3(-4, FLOOR_2_Y, -55), "skeleton_shade")
 	_spawn_enemy(Vector3(4, FLOOR_2_Y, -55), "skeleton_shade")
+	_spawn_enemy(Vector3(-6, FLOOR_2_Y + 1.5, -58), "flaming_skull")
+	_spawn_enemy(Vector3(6, FLOOR_2_Y + 1.5, -58), "flaming_skull")
 	_spawn_boss(Vector3(0, FLOOR_2_Y, -60))
 
 
@@ -356,6 +362,11 @@ func _spawn_enemy(pos: Vector3, enemy_type: String) -> void:
 			sprite_path = "res://Sprite folders grab bag/skeleton_warrior.png"
 			h_frames = 8
 			v_frames = 12
+		"flaming_skull":
+			data_path = "res://data/enemies/flaming_skull.tres"
+			sprite_path = "res://Sprite folders grab bag/flaming_skull_enemy.png"
+			h_frames = 4
+			v_frames = 1
 		_:
 			push_warning("[SunkenCrypt] Unknown enemy type: %s" % enemy_type)
 			return
@@ -427,3 +438,28 @@ func _spawn_loot() -> void:
 		"sunken_crypt_boss"
 	)
 	chest2.setup_with_loot(LootTables.LootTier.RARE)
+
+
+## Setup cell streaming if we're the main scene (has Player/HUD)
+## When loaded as a streaming cell, this will be skipped (Player/HUD stripped by CellStreamer)
+func _setup_cell_streaming() -> void:
+	# Only setup streaming if we're the main scene (we have Player/HUD)
+	var player: Node = get_node_or_null("Player")
+	if not player:
+		# We're a streaming cell, not main scene - skip streaming setup
+		return
+
+	if not CellStreamer:
+		push_warning("[%s] CellStreamer not found" % ZONE_ID)
+		return
+
+	# Use WorldGrid location_id (sunken_crypts) to get coordinates
+	var location_info: Dictionary = WorldGrid.get_location_info("sunken_crypts")
+	if location_info.is_empty():
+		push_warning("[%s] Location 'sunken_crypts' not found in WorldGrid" % ZONE_ID)
+		return
+
+	var my_coords: Vector2i = location_info.get("coords", Vector2i.ZERO)
+	CellStreamer.register_main_scene_cell(my_coords, self)
+	CellStreamer.start_streaming(my_coords)
+	print("[%s] Registered as main scene, streaming started at %s" % [ZONE_ID, my_coords])

@@ -254,7 +254,7 @@ func start(player: Node3D) -> void:
 	_player = player
 	_active = true
 	_encounter_timer = 0.0
-	_last_check_hex = WorldData.world_to_axial(player.global_position)
+	_last_check_hex = WorldGrid.world_to_cell(player.global_position)
 	print("[EncounterManager] Started - checking every %.0f seconds" % ENCOUNTER_CHECK_INTERVAL)
 
 
@@ -282,7 +282,7 @@ func get_current_danger_level() -> float:
 	if not _player:
 		return 1.0
 
-	var hex: Vector2i = WorldData.world_to_axial(_player.global_position)
+	var hex: Vector2i = WorldGrid.world_to_cell(_player.global_position)
 	return _calculate_danger_level(hex)
 
 
@@ -291,15 +291,15 @@ func is_in_safe_zone() -> bool:
 	if not _player:
 		return true
 
-	var hex: Vector2i = WorldData.world_to_axial(_player.global_position)
-	var cell: WorldData.CellData = WorldData.get_cell(hex)
+	var hex: Vector2i = WorldGrid.world_to_cell(_player.global_position)
+	var cell: WorldGrid.CellInfo = WorldGrid.get_cell(hex)
 
 	if not cell:
 		return false
 
 	# Towns and settlements are safe
-	if cell.location_type in [WorldData.LocationType.VILLAGE, WorldData.LocationType.TOWN,
-							   WorldData.LocationType.CITY, WorldData.LocationType.CAPITAL]:
+	if cell.location_type in [WorldGrid.LocationType.VILLAGE, WorldGrid.LocationType.TOWN,
+							   WorldGrid.LocationType.CITY, WorldGrid.LocationType.CAPITAL]:
 		return true
 
 	return false
@@ -314,7 +314,7 @@ func _check_for_encounter() -> void:
 	if not _player:
 		return
 
-	var hex: Vector2i = WorldData.world_to_axial(_player.global_position)
+	var hex: Vector2i = WorldGrid.world_to_cell(_player.global_position)
 
 	# Don't check in safe zones
 	if is_in_safe_zone():
@@ -343,11 +343,11 @@ func _calculate_danger_level(hex: Vector2i) -> float:
 	var danger: float = 1.0
 
 	# Get cell data
-	var cell: WorldData.CellData = WorldData.get_cell(hex)
+	var cell: WorldGrid.CellInfo = WorldGrid.get_cell(hex)
 
 	# Biome modifier
 	if cell:
-		var biome_name: String = WorldData.Biome.keys()[cell.biome].to_lower()
+		var biome_name: String = WorldGrid.Biome.keys()[cell.biome].to_lower()
 		danger *= BIOME_DANGER.get(biome_name, 1.0)
 
 		# Road safety
@@ -402,10 +402,10 @@ func _trigger_encounter(hex: Vector2i) -> void:
 	_cooldown_timer = MIN_ENCOUNTER_COOLDOWN
 
 	# Get biome for encounter table
-	var cell: WorldData.CellData = WorldData.get_cell(hex)
+	var cell: WorldGrid.CellInfo = WorldGrid.get_cell(hex)
 	var biome_name: String = "plains"
 	if cell:
-		biome_name = WorldData.Biome.keys()[cell.biome].to_lower()
+		biome_name = WorldGrid.Biome.keys()[cell.biome].to_lower()
 
 	# Select encounter from table
 	var encounter_table: Array = ENCOUNTER_TABLES.get(biome_name, DEFAULT_ENCOUNTERS)

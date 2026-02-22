@@ -472,7 +472,7 @@ func _register_compass_poi() -> void:
 ## Register this NPC with WorldData for quest navigation/tracking
 func _register_with_world_data() -> void:
 	var effective_id: String = npc_id if not npc_id.is_empty() else name
-	var hex: Vector2i = WorldData.world_to_axial(global_position)
+	var cell: Vector2i = WorldGrid.world_to_cell(global_position)
 	var zone_id: String = ""
 
 	# Try to get zone_id from parent scene
@@ -487,16 +487,16 @@ func _register_with_world_data() -> void:
 	if zone_id.is_empty():
 		zone_id = region_id if not region_id.is_empty() else "town_unknown"
 
-	WorldData.register_npc(effective_id, hex, zone_id, npc_type)
-	print("[QuestGiver] Registered with WorldData: npc_id='%s', hex=%s, zone='%s', type='%s'" % [
-		effective_id, hex, zone_id, npc_type
+	PlayerGPS.register_npc(self, effective_id, npc_type, zone_id)
+	print("[QuestGiver] Registered with PlayerGPS: npc_id='%s', cell=%s, zone='%s', type='%s'" % [
+		effective_id, cell, zone_id, npc_type
 	])
 
 
-## Unregister from WorldData when removed from scene
+## Unregister from PlayerGPS when removed from scene
 func _exit_tree() -> void:
 	var effective_id: String = npc_id if not npc_id.is_empty() else name
-	WorldData.unregister_npc(effective_id)
+	PlayerGPS.unregister_npc(effective_id)
 
 
 ## Constants for spawn collision avoidance

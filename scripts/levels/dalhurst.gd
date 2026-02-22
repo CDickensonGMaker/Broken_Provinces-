@@ -15,15 +15,20 @@ const ZONE_SIZE := 100.0  # Matches WorldGrid.CELL_SIZE
 
 
 func _ready() -> void:
-	# Register with PlayerGPS
-	if PlayerGPS:
-		var coords := WorldGrid.get_location_coords(ZONE_ID)
-		PlayerGPS.set_position(coords)
+	# Only register with PlayerGPS if we're the main scene (have Player node)
+	# When loaded as a streaming cell, Player is stripped - don't touch GPS
+	var is_main_scene: bool = get_node_or_null("Player") != null
+
+	if is_main_scene:
+		if PlayerGPS:
+			var coords := WorldGrid.get_location_coords(ZONE_ID)
+			PlayerGPS.set_position(coords)
+		_setup_day_night_cycle()
+		DayNightCycle.add_to_level(self)
 
 	_setup_spawn_point_metadata()
 	_setup_navigation()
-	_setup_day_night_cycle()
-	DayNightCycle.add_to_level(self)
+	_setup_cell_streaming()
 	print("[Dalhurst] Port city loaded - Tier 4 Major City")
 
 
@@ -64,3 +69,22 @@ func _setup_day_night_cycle() -> void:
 	# Day/night cycle is managed by DayNightCycle autoload
 	# This function exists for any level-specific lighting setup
 	pass
+
+
+## Setup cell streaming if we're the main scene (has Player/HUD)
+## When loaded as a streaming cell, this will be skipped (Player/HUD stripped by CellStreamer)
+func _setup_cell_streaming() -> void:
+	# Only setup streaming if we're the main scene (we have Player/HUD)
+	var player: Node = get_node_or_null("Player")
+	if not player:
+		# We're a streaming cell, not main scene - skip streaming setup
+		return
+
+	if not CellStreamer:
+		push_warning("[%s] CellStreamer not found" % ZONE_ID)
+		return
+
+	var my_coords: Vector2i = WorldGrid.get_location_coords(ZONE_ID)
+	CellStreamer.register_main_scene_cell(my_coords, self)
+	CellStreamer.start_streaming(my_coords)
+	print("[%s] Registered as main scene, streaming started at %s" % [ZONE_ID, my_coords])

@@ -18,7 +18,7 @@ signal ip_gained(amount: int)
 @export var race: Enums.Race = Enums.Race.HUMAN
 @export var career: Enums.Career = Enums.Career.FARMER
 
-## Core attributes (1-10 scale, starting around 3-5)
+## Core attributes (1-20 scale, starting around 3-5)
 @export var grit: int = 3       # Melee damage, stagger resistance
 @export var agility: int = 3    # Movement, dodge, attack speed
 @export var will: int = 3       # Spell slots, magic resistance
@@ -42,11 +42,18 @@ signal ip_gained(amount: int)
 @export var total_ip_earned: int = 0     # Total IP ever earned (for level calculation)
 
 ## Level thresholds - level is based on total IP earned (not spent)
-const IP_PER_LEVEL: Array[int] = [0, 100, 300, 600, 1000, 1500, 2500, 4000, 6000, 9000, 13000, 18000, 25000]
+## Levels 1-10: Original tabletop progression
+## Levels 11-17: Extended mid-game
+## Levels 18-20: Endgame mastery (max level 20)
+const IP_PER_LEVEL: Array[int] = [
+	0, 100, 300, 600, 1000, 1500, 2500, 4000, 6000, 9000,       # Levels 1-10
+	13000, 18000, 25000, 35000, 50000, 70000, 100000,           # Levels 11-17
+	140000, 200000, 280000                                       # Levels 18-20
+]
 
 ## Note: XP costs for stats now use Enums.get_stat_xp_cost() - unified with skill costs
 
-## Skills dictionary (Enums.Skill -> level 0-10)
+## Skills dictionary (Enums.Skill -> level 0-15)
 var skills: Dictionary = {}
 
 ## Active conditions dictionary (Enums.Condition -> time_remaining)
@@ -70,14 +77,14 @@ func get_skill(skill: Enums.Skill) -> int:
 ## Set a skill level
 func set_skill(skill: Enums.Skill, new_level: int) -> void:
 	var old_level: int = skills.get(skill, 0)
-	skills[skill] = clamp(new_level, 0, 10)
+	skills[skill] = clamp(new_level, 0, 15)
 	if skills[skill] != old_level:
 		skill_changed.emit(skill, old_level, skills[skill])
 
 ## Increase a skill by 1 (if IP available)
 func increase_skill(skill: Enums.Skill) -> bool:
 	var current_level: int = get_skill(skill)
-	if current_level >= 10:
+	if current_level >= 15:
 		return false
 
 	var cost: int = Enums.get_skill_ip_cost(current_level + 1)
@@ -95,14 +102,14 @@ func get_stat_ip_cost(current_value: int) -> int:
 	var level := current_value - 2
 	if level < 1:
 		return Enums.XP_COSTS[0]  # Minimum cost to reach baseline
-	if level > 10:
-		return 200000  # Very expensive for stats beyond 12
+	if level > Enums.XP_COSTS.size():
+		return 800000  # Very expensive for stats beyond 17
 	return Enums.get_stat_xp_cost(level)
 
 ## Increase a stat by 1 (if IP available)
 func increase_stat(stat: Enums.Stat) -> bool:
 	var current_value := get_stat(stat)
-	if current_value >= 15:  # Max stat cap
+	if current_value >= 20:  # Max stat cap
 		return false
 
 	var cost := get_stat_ip_cost(current_value)

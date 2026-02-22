@@ -119,7 +119,7 @@ const GRID_DATA: Array = [
 	["W","W","C","F","F","F","F","R","F","F","F","F","F","F","F","H","B","B","B","B"],
 	["W","W","C","F","F","F","F","R","F","F","F","F","P","F","F","H","H","B","B","B"],
 	["W","W","C","F","F","F","F","R","F","F","F","F","F","F","F","F","H","B","B","B"],
-	["W","W","C","F","F","F","F","R","F","F","F","F","F","F","F","H","H","B","B","B"],
+	["W","W","C","F","F","F","F","R","F","P","F","F","F","F","F","H","H","B","B","B"],
 	["W","W","C","F","F","F","F","R","F","F","F","F","F","F","H","H","B","B","B","B"],
 	["W","W","C","F","F","P","F","R","F","F","F","F","F","F","H","H","B","B","B","B"],
 	["W","W","C","F","F","F","F","R","F","F","F","F","F","H","H","B","B","B","B","B"],
@@ -149,6 +149,8 @@ const LOCATIONS: Array = [
 	 "description": "A rickety little town clinging to the lakeshore."},
 	{"id": "kazer_dun_entrance", "name": "Kazer-Dun Entrance", "x": -5, "y": 9, "type": "dungeon",
 	 "description": "The great northern gate of Kazer-Dun Dwarf Hold."},
+	{"id": "sunken_crypts", "name": "Sunken Crypts", "x": -3, "y": 2, "type": "dungeon",
+	 "description": "A waterlogged burial ground slowly sinking into the marsh."},
 ]
 
 ## Road connections (Elder Moor-relative coordinates)
@@ -329,18 +331,24 @@ static func get_adjacent_passable(coords: Vector2i) -> Array[Vector2i]:
 ## Convert grid coordinates to 3D world position (center of cell)
 ## X increases East, Z decreases North (Godot convention)
 static func cell_to_world(coords: Vector2i) -> Vector3:
+	## Convert grid coordinates to world position
+	## Grid Y increases South, World Z increases South (both positive = South)
+	## So no negation needed - direct mapping
 	return Vector3(
 		coords.x * CELL_SIZE,
 		0.0,
-		-coords.y * CELL_SIZE
+		coords.y * CELL_SIZE
 	)
 
 
 ## Convert 3D world position to grid coordinates
 static func world_to_cell(world_pos: Vector3) -> Vector2i:
+	## Convert world position to grid coordinates
+	## World Z increases South, Grid Y increases South (both positive = South)
+	## So no negation needed - direct mapping
 	return Vector2i(
 		roundi(world_pos.x / CELL_SIZE),
-		roundi(-world_pos.z / CELL_SIZE)
+		roundi(world_pos.z / CELL_SIZE)
 	)
 
 

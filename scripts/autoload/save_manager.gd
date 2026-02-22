@@ -15,7 +15,8 @@ const DUNGEON_SEEDS_FILE := "user://saves/dungeon_seeds.cache"
 const MAX_SAVE_SLOTS := 10
 
 ## Current save format version - increment when structure changes
-const SAVE_VERSION := 1
+## Version 2: Added CellStreamer integration, deprecated hex system fields
+const SAVE_VERSION := 2
 
 ## Currently loaded save slot
 var current_slot: int = -1
@@ -410,6 +411,10 @@ func _collect_save_data():
 	if save_data.fog_of_war_data:
 		_collect_fog_of_war_data(save_data.fog_of_war_data)
 
+	# Cell streamer data (floating origin, active cell)
+	if save_data.cell_streamer_data:
+		_collect_cell_streamer_data(save_data.cell_streamer_data)
+
 	return save_data
 
 ## Collect player data
@@ -472,10 +477,12 @@ func _collect_inventory_data(inv_data) -> void:
 	inv_data.gold = inv_dict.get("gold", 0)
 	inv_data.quickslots = inv_dict.get("quick_slots", [])
 	inv_data.hotbar = inv_dict.get("hotbar", [])
+	inv_data.spell_slots = inv_dict.get("spell_slots", [])
 	inv_data.equipped_spell_id = inv_dict.get("equipped_spell_id", "")
 
 ## Collect world data
 func _collect_world_data(world_data) -> void:
+	world_data.world_seed = GameManager.world_seed
 	world_data.current_zone_id = current_zone_id
 	world_data.current_zone_name = current_zone_name
 	world_data.discovered_locations = discovered_locations.duplicate()
@@ -633,6 +640,11 @@ func _apply_save_data(save_data) -> void:
 	if save_data.fog_of_war_data:
 		_apply_fog_of_war_data(save_data.fog_of_war_data)
 
+	# Restore cell streamer data (floating origin, active cell)
+	# NOTE: This is stored for application after scene loads
+	if save_data.cell_streamer_data:
+		_store_pending_cell_streamer_data(save_data.cell_streamer_data)
+
 ## Apply player data
 func _apply_player_data(player_data) -> void:
 	if not GameManager.player_data:
@@ -676,11 +688,13 @@ func _apply_inventory_data(inv_data) -> void:
 		"gold": inv_data.gold,
 		"quick_slots": inv_data.quickslots,
 		"hotbar": inv_data.hotbar,
+		"spell_slots": inv_data.spell_slots,
 		"equipped_spell_id": inv_data.equipped_spell_id
 	})
 
 ## Apply world data
 func _apply_world_data(world_data) -> void:
+	GameManager.world_seed = world_data.world_seed
 	current_zone_id = world_data.current_zone_id
 	current_zone_name = world_data.current_zone_name
 	discovered_locations = world_data.discovered_locations.duplicate()
@@ -920,6 +934,56 @@ func _try_apply_fog_of_war() -> void:
 	_pending_fog_of_war_data.clear()
 
 
+## Pending cell streamer data to apply after scene loads
+var _pending_cell_streamer_data: Dictionary = {}
+
+
+## Collect cell streamer data (floating origin, active cell)
+func _collect_cell_streamer_data(cell_streamer_save_data) -> void:
+	if not CellStreamer:
+		return
+
+	var cs_dict: Dictionary = CellStreamer.get_save_data()
+	cell_streamer_save_data.active_cell_x = cs_dict.get("active_cell_x", 0)
+	cell_streamer_save_data.active_cell_y = cs_dict.get("active_cell_y", 0)
+	cell_streamer_save_data.world_offset_x = cs_dict.get("world_offset_x", 0.0)
+	cell_streamer_save_data.world_offset_y = cs_dict.get("world_offset_y", 0.0)
+	cell_streamer_save_data.world_offset_z = cs_dict.get("world_offset_z", 0.0)
+	cell_streamer_save_data.streaming_enabled = cs_dict.get("streaming_enabled", false)
+
+
+## Store cell streamer data for deferred application
+func _store_pending_cell_streamer_data(cell_streamer_save_data) -> void:
+	_pending_cell_streamer_data = {
+		"active_cell_x": cell_streamer_save_data.active_cell_x,
+		"active_cell_y": cell_streamer_save_data.active_cell_y,
+		"world_offset_x": cell_streamer_save_data.world_offset_x,
+		"world_offset_y": cell_streamer_save_data.world_offset_y,
+		"world_offset_z": cell_streamer_save_data.world_offset_z,
+		"streaming_enabled": cell_streamer_save_data.streaming_enabled
+	}
+
+
+## Apply pending cell streamer data (called after scene loads)
+func _apply_pending_cell_streamer_data() -> void:
+	if _pending_cell_streamer_data.is_empty():
+		return
+
+	if not CellStreamer:
+		_pending_cell_streamer_data.clear()
+		return
+
+	CellStreamer.load_save_data(_pending_cell_streamer_data)
+	print("[SaveManager] Applied cell streamer data: cell (%d, %d), offset (%0.1f, %0.1f, %0.1f)" % [
+		_pending_cell_streamer_data.get("active_cell_x", 0),
+		_pending_cell_streamer_data.get("active_cell_y", 0),
+		_pending_cell_streamer_data.get("world_offset_x", 0.0),
+		_pending_cell_streamer_data.get("world_offset_y", 0.0),
+		_pending_cell_streamer_data.get("world_offset_z", 0.0)
+	])
+	_pending_cell_streamer_data.clear()
+
+
 ## Migrate old save data to current version
 func _migrate_save_data(data: Dictionary, from_version: int) -> Dictionary:
 	var migrated := data.duplicate(true)
@@ -961,6 +1025,31 @@ func _migrate_save_data(data: Dictionary, from_version: int) -> Dictionary:
 			"unlocked_shortcuts": old_world.get("unlocked_shortcuts", {})
 		}
 
+	# Version 1 -> 2: Add CellStreamer data, remove hex system data
+	if from_version < 2:
+		# Create default cell_streamer data (player will spawn at default position)
+		migrated["cell_streamer"] = {
+			"active_cell_x": 0,
+			"active_cell_y": 0,
+			"world_offset_x": 0.0,
+			"world_offset_y": 0.0,
+			"world_offset_z": 0.0,
+			"streaming_enabled": false
+		}
+
+		# Remove deprecated hex fields from world data if present
+		if migrated.has("world"):
+			var world_data: Dictionary = migrated["world"]
+			world_data.erase("use_hex_system")
+			world_data.erase("current_hex_q")
+			world_data.erase("current_hex_r")
+			world_data.erase("last_hex_q")
+			world_data.erase("last_hex_r")
+			world_data.erase("hex_discovery")
+			world_data.erase("hex_seeds")
+
+		migrated["version"] = 2
+
 	return migrated
 
 ## Get current play time (including current session)
@@ -988,6 +1077,10 @@ func _on_scene_load_completed(_scene_path: String) -> void:
 	# Apply pending known spells with retry mechanism to ensure player is ready
 	if not pending_known_spells.is_empty():
 		_apply_pending_known_spells_with_retry(0)
+
+	# Apply pending cell streamer data after scene loads
+	# This ensures player positioning is correct relative to world offset
+	_apply_pending_cell_streamer_data()
 
 
 ## Apply pending known spells to player's SpellCaster with retry mechanism

@@ -24,6 +24,7 @@ func _ready() -> void:
 	_spawn_doors_from_markers()
 	_setup_navigation()
 	_create_invisible_border_walls()
+	_setup_cell_streaming()
 	DayNightCycle.add_to_level(self)
 	print("[BanditHideoutExterior] Bandit camp loaded")
 
@@ -214,3 +215,23 @@ func _create_border_wall(wall_name: String, position: Vector3, size: Vector3) ->
 	col.shape = box
 	col.position = position
 	wall.add_child(col)
+
+
+## Setup cell streaming if we're the main scene (has Player/HUD)
+## When loaded as a streaming cell, this will be skipped (Player/HUD stripped by CellStreamer)
+func _setup_cell_streaming() -> void:
+	# Only setup streaming if we're the main scene (we have Player/HUD)
+	var player: Node = get_node_or_null("Player")
+	if not player:
+		# We're a streaming cell, not main scene - skip streaming setup
+		return
+
+	if not CellStreamer:
+		push_warning("[%s] CellStreamer not found" % ZONE_ID)
+		return
+
+	# Use WorldGrid location_id (may differ from ZONE_ID for save compatibility)
+	var my_coords: Vector2i = WorldGrid.get_location_coords("bandit_hideout")
+	CellStreamer.register_main_scene_cell(my_coords, self)
+	CellStreamer.start_streaming(my_coords)
+	print("[%s] Registered as main scene, streaming started at %s" % [ZONE_ID, my_coords])

@@ -127,44 +127,41 @@ func _apply_weapon_transform_node(weapon: WeaponData, node: Node3D) -> void:
 		return
 
 	# Default transform - weapon held at side, pointing forward
-	# Adjust rotation so weapon barrel/blade points forward (-Z)
-
-	# NOTE: All Y rotations have +180 added because models face backward in editor
-	# When using viewmodel editor, subtract 180 from Y to get the value to paste here
+	# Values are WYSIWYG from the third-person viewmodel editor
 	match weapon.weapon_type:
 		Enums.WeaponType.MUSKET:
-			# Musket (tuned in viewmodel editor, +180 Y flip)
-			node.rotation_degrees = Vector3(-1.9, 281.3, 1.3)
+			# Musket (tuned in viewmodel editor)
+			node.rotation_degrees = Vector3(-1.9, 101.3, 1.3)
 			node.position = Vector3(-0.025, 0.510, -0.283)
 			node.scale = Vector3(1.50, 1.50, 1.50)
 		Enums.WeaponType.BOW:
-			# Bow (tuned in viewmodel editor, +180 Y flip)
-			node.rotation_degrees = Vector3(-18.8, 75.9, 13.4)
+			# Bow (tuned in viewmodel editor)
+			node.rotation_degrees = Vector3(-18.8, -104.1, 13.4)
 			node.position = Vector3(-0.713, 0.240, -0.054)
 			node.scale = Vector3(1.50, 1.50, 1.50)
 		Enums.WeaponType.CROSSBOW:
-			# Crossbow (tuned in viewmodel editor, +180 Y flip)
-			node.rotation_degrees = Vector3(0.0, 368.4, -10.0)
+			# Crossbow (tuned in viewmodel editor)
+			node.rotation_degrees = Vector3(0.0, 188.4, -10.0)
 			node.position = Vector3(-0.046, 0.542, 0.081)
 			node.scale = Vector3(1.50, 1.50, 1.50)
 		Enums.WeaponType.SWORD:
-			# Swords (tuned in viewmodel editor, +180 Y flip)
-			node.rotation_degrees = Vector3(8.4, 81.6, 0.0)
+			# Axe (tuned in viewmodel editor)
+			node.rotation_degrees = Vector3(8.4, -98.4, 0.0)
 			node.position = Vector3(-0.271, 0.375, -0.698)
-			node.scale = Vector3(1.2, 1.2, 1.2)
+			node.scale = Vector3(1.20, 1.20, 1.20)
 		Enums.WeaponType.DAGGER:
-			# Daggers (tuned in viewmodel editor, +180 Y flip)
-			node.rotation_degrees = Vector3(8.4, 114.4, 0.0)
+			# Daggers (tuned in viewmodel editor)
+			node.rotation_degrees = Vector3(8.4, -65.6, 0.0)
 			node.position = Vector3(-0.188, 0.292, -0.427)
 			node.scale = Vector3(1.20, 1.20, 1.20)
 		Enums.WeaponType.AXE:
-			# Axes (tuned in viewmodel editor, +180 Y flip)
-			node.rotation_degrees = Vector3(0.9, 84.4, 0.0)
+			# Axes (tuned in viewmodel editor)
+			node.rotation_degrees = Vector3(0.9, -95.6, 0.0)
 			node.position = Vector3(-0.489, 0.521, -0.583)
 			node.scale = Vector3(1.20, 1.20, 1.20)
 		_:
-			# Default (with +180 Y flip)
-			node.rotation_degrees = Vector3(0, 270, 0)
+			# Default
+			node.rotation_degrees = Vector3(0, 90, 0)
 			node.position = Vector3.ZERO
 			node.scale = Vector3(1.5, 1.5, 1.5)
 

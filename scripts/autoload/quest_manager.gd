@@ -321,18 +321,12 @@ func _resolve_objective_location(obj: Objective) -> Dictionary:
 	return {}
 
 
-## Resolve enemy spawn location from WorldData registry
-func _resolve_enemy_location(enemy_type: String) -> Dictionary:
-	# Check WorldData enemy spawn registry
-	var spawns: Array = WorldData.get_enemy_spawn_locations(enemy_type)
-	if not spawns.is_empty():
-		var spawn: Dictionary = spawns[0]
-		return {
-			"hex": spawn.get("hex", Vector2i.ZERO),
-			"zone_id": spawn.get("zone_id", ""),
-			"world_pos": WorldData.axial_to_world(spawn.get("hex", Vector2i.ZERO))
-		}
-
+## Resolve enemy spawn location
+## Note: Enemy locations are found dynamically in scenes, not from a registry
+func _resolve_enemy_location(_enemy_type: String) -> Dictionary:
+	# Enemy spawn locations are determined at runtime by checking active enemies
+	# and spawn points in loaded scenes. Return empty - navigation will use
+	# _find_enemy_spawn_position() which searches live scene data.
 	return {}
 
 
@@ -343,24 +337,18 @@ func _resolve_item_location(item_id: String) -> Dictionary:
 	return {}
 
 
-## Resolve NPC location from WorldData registry
-func _resolve_npc_location(npc_id: String) -> Dictionary:
-	# Check WorldData NPC registry
-	var npc_data: Dictionary = WorldData.get_npc_location(npc_id)
-	if not npc_data.is_empty():
-		var hex: Vector2i = npc_data.get("hex", Vector2i.ZERO)
-		return {
-			"hex": hex,
-			"zone_id": npc_data.get("zone_id", ""),
-			"world_pos": WorldData.axial_to_world(hex)
-		}
-
+## Resolve NPC location
+## Note: NPC locations are found dynamically in scenes, not from a registry
+func _resolve_npc_location(_npc_id: String) -> Dictionary:
+	# NPC locations are determined at runtime by searching the "npcs" group
+	# in loaded scenes. Return empty - navigation will use _find_npc_position()
+	# which searches live scene data.
 	return {}
 
 
 ## Resolve zone/location ID to coordinates
 func _resolve_zone_location(zone_id: String) -> Dictionary:
-	# First check WorldGrid (new system) for location IDs
+	# Check WorldGrid for location IDs
 	var coords: Vector2i = WorldGrid.get_location_coords(zone_id)
 	if coords != Vector2i.ZERO or zone_id == "elder_moor":
 		return {
@@ -368,16 +356,6 @@ func _resolve_zone_location(zone_id: String) -> Dictionary:
 			"zone_id": zone_id,
 			"world_pos": WorldGrid.cell_to_world(coords)
 		}
-
-	# Fallback to WorldData world_grid for legacy location IDs
-	for legacy_coords: Vector2i in WorldData.world_grid:
-		var cell: WorldData.CellData = WorldData.world_grid[legacy_coords]
-		if cell.location_id == zone_id:
-			return {
-				"hex": legacy_coords,
-				"zone_id": zone_id,
-				"world_pos": WorldData.axial_to_world(legacy_coords)
-			}
 
 	return {}
 

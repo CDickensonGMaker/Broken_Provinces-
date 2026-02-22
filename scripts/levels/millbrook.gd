@@ -10,12 +10,16 @@ const ZONE_SIZE := 100.0  # Matches WorldGrid.CELL_SIZE
 
 
 func _ready() -> void:
-	# Register with PlayerGPS
-	if PlayerGPS:
-		var coords := WorldGrid.get_location_coords(ZONE_ID)
-		PlayerGPS.set_position(coords)
+	# Only register with PlayerGPS if we're the main scene (have Player node)
+	# When loaded as a streaming cell, Player is stripped - don't touch GPS
+	var is_main_scene: bool = get_node_or_null("Player") != null
 
-	SaveManager.set_current_zone(ZONE_ID, "Mill Brook")
+	if is_main_scene:
+		if PlayerGPS:
+			var coords := WorldGrid.get_location_coords(ZONE_ID)
+			PlayerGPS.set_position(coords)
+		SaveManager.set_current_zone(ZONE_ID, "Mill Brook")
+		DayNightCycle.add_to_level(self)
 
 	_setup_spawn_points()
 	_spawn_merchants()
@@ -23,7 +27,7 @@ func _ready() -> void:
 	_spawn_fast_travel_shrine()
 	_spawn_rest_spot()
 	_setup_navigation()
-	DayNightCycle.add_to_level(self)
+	_setup_cell_streaming()
 	print("[Mill Brook] Farming hamlet loaded")
 
 
@@ -134,3 +138,22 @@ func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
 		print("[Mill Brook] Navigation mesh baked!")
+
+
+## Setup cell streaming if we're the main scene (has Player/HUD)
+## When loaded as a streaming cell, this will be skipped (Player/HUD stripped by CellStreamer)
+func _setup_cell_streaming() -> void:
+	# Only setup streaming if we're the main scene (we have Player/HUD)
+	var player: Node = get_node_or_null("Player")
+	if not player:
+		# We're a streaming cell, not main scene - skip streaming setup
+		return
+
+	if not CellStreamer:
+		push_warning("[%s] CellStreamer not found" % ZONE_ID)
+		return
+
+	var my_coords: Vector2i = WorldGrid.get_location_coords(ZONE_ID)
+	CellStreamer.register_main_scene_cell(my_coords, self)
+	CellStreamer.start_streaming(my_coords)
+	print("[%s] Registered as main scene, streaming started at %s" % [ZONE_ID, my_coords])

@@ -1978,6 +1978,13 @@ func open() -> void:
 	_refresh_stats_bar()
 	_refresh_tab()
 
+
+## Open directly to a specific tab (e.g., MAP for M key shortcut)
+func open_to_tab(tab: MenuTab) -> void:
+	current_tab = tab
+	open()
+	_update_tabs()
+
 func close() -> void:
 	visible = false
 	# Hide tooltip and reset selection state

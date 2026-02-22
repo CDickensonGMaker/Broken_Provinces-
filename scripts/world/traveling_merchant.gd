@@ -251,7 +251,9 @@ func _setup_interaction() -> void:
 	area.name = "InteractArea"
 	area.collision_layer = 256  # Layer 9 - interactable layer for player raycast
 	area.collision_mask = 0
-	area.add_to_group("interactable")  # Match other interactables
+	# NOTE: Do NOT add area to "interactable" group - the merchant itself (line 59) is already
+	# in that group. Adding the Area3D child creates duplicate interactables, causing the bug
+	# where interaction does nothing (the Area3D has no interact() method).
 	area.set_meta("interaction_type", "shop")
 	area.set_meta("shop_type", "traveling_merchant")
 	area.set_meta("display_name", merchant_name)
@@ -391,12 +393,12 @@ func _register_with_world_data() -> void:
 	if zone_id.is_empty():
 		zone_id = region_id if not region_id.is_empty() else "wilderness"
 
-	WorldData.register_npc(effective_id, cell, zone_id, npc_type)
+	PlayerGPS.register_npc(self, effective_id, npc_type, zone_id)
 
 
-## Unregister from WorldData when removed from scene
+## Unregister from PlayerGPS when removed from scene
 func _exit_tree() -> void:
-	WorldData.unregister_npc(get_npc_id())
+	PlayerGPS.unregister_npc(get_npc_id())
 
 
 ## Static factory to spawn a traveling merchant

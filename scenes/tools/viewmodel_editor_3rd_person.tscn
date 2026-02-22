@@ -29,6 +29,12 @@ size = Vector3(0.1, 0.05, 0.5)
 [sub_resource type="StandardMaterial3D" id="Material_Arrow"]
 albedo_color = Color(0.2, 1, 0.2, 1)
 
+[sub_resource type="BoxMesh" id="BoxMesh_BackLine"]
+size = Vector3(0.05, 1.6, 0.02)
+
+[sub_resource type="StandardMaterial3D" id="Material_BackLine"]
+albedo_color = Color(1, 0, 0, 1)
+
 [node name="ViewmodelEditor3rdPerson" type="Node3D"]
 script = ExtResource("1")
 
@@ -37,6 +43,7 @@ transform = Transform3D(1, 0, 0, 0, 0.955336, 0.29552, 0, -0.29552, 0.955336, 0,
 fov = 70.0
 
 [node name="PlayerModel" type="Node3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0)
 
 [node name="Body" type="MeshInstance3D" parent="PlayerModel"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
@@ -56,15 +63,22 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.8)
 mesh = SubResource("BoxMesh_1")
 material_override = SubResource("Material_Arrow")
 
+[node name="BackLine" type="MeshInstance3D" parent="PlayerModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0.35)
+mesh = SubResource("BoxMesh_BackLine")
+material_override = SubResource("Material_BackLine")
+
 [node name="FrontLabel" type="Label3D" parent="PlayerModel"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -1.0)
 text = "FRONT"
 font_size = 48
+modulate = Color(0, 1, 0, 1)
 
 [node name="BackLabel" type="Label3D" parent="PlayerModel"]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0.3, 1.0)
-text = "BACK"
+text = "BACK (Camera View)"
 font_size = 48
+modulate = Color(1, 0.3, 0.3, 1)
 
 [node name="WeaponAttachment" type="Node3D" parent="PlayerModel"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.8, -0.1)

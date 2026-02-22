@@ -114,7 +114,7 @@ func _ready() -> void:
 ## Register this NPC with WorldData for tracking
 func _register_with_world_data() -> void:
 	var effective_id: String = npc_id if not npc_id.is_empty() else name
-	var hex: Vector2i = WorldData.world_to_axial(global_position)
+	var cell: Vector2i = WorldGrid.world_to_cell(global_position)
 	var zone_id: String = ""
 
 	# Try to get zone_id from parent scene
@@ -129,12 +129,12 @@ func _register_with_world_data() -> void:
 	if zone_id.is_empty():
 		zone_id = "town_unknown"
 
-	WorldData.register_npc(effective_id, hex, zone_id, "civilian")
+	PlayerGPS.register_npc(self, effective_id, "civilian", zone_id)
 
 
 func _exit_tree() -> void:
 	var effective_id: String = npc_id if not npc_id.is_empty() else name
-	WorldData.unregister_npc(effective_id)
+	PlayerGPS.unregister_npc(effective_id)
 
 
 func _create_visual() -> void:

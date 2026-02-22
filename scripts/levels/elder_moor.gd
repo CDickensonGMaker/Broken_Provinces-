@@ -13,21 +13,26 @@ const TOWN_RADIUS := 35.0
 
 
 func _ready() -> void:
-	# Register with PlayerGPS
-	if PlayerGPS:
-		PlayerGPS.set_position(Vector2i.ZERO)  # Elder Moor is at (0, 0)
+	# Only register with PlayerGPS if we're the main scene (have Player node)
+	# When loaded as a streaming cell, Player is stripped - don't touch GPS
+	var is_main_scene: bool = get_node_or_null("Player") != null
+
+	if is_main_scene:
+		if PlayerGPS:
+			PlayerGPS.set_position(Vector2i.ZERO)  # Elder Moor is at (0, 0)
+		# Start the Road to Thornfield quest automatically for new players
+		_start_starter_quest()
 
 	_setup_navigation()
-	_setup_day_night_cycle()
+	if is_main_scene:
+		_setup_day_night_cycle()
 	_setup_spawn_point_metadata()
 	_spawn_enemy_spawners()
 	_spawn_harvestable_herbs()
+	_spawn_npcs()
 
 	# Register with CellStreamer and start streaming
 	_setup_cell_streaming()
-
-	# Start the Road to Thornfield quest automatically for new players
-	_start_starter_quest()
 
 	print("[Elder Moor] Logging camp initialized")
 
@@ -126,7 +131,7 @@ func _spawn_enemy_spawners() -> void:
 			spawner.secondary_enemy_enabled = true
 			spawner.secondary_enemy_chance = 0.3
 			spawner.secondary_data_path = "res://data/enemies/goblin_archer.tres"
-			spawner.secondary_sprite_path = "res://assets/sprites/enemies/goblin_archer.png"
+			# Note: sprite_path comes from EnemyData.sprite_path, not a separate property
 		elif "Wolf" in marker.name:
 			spawner.spawner_id = "wolf_den_%s" % marker.name.to_lower()
 			spawner.display_name = "Wolf Den"
@@ -165,3 +170,20 @@ func _spawn_harvestable_herbs() -> void:
 
 	# Remove the marker container
 	herbs_container.queue_free()
+
+
+## Spawn NPCs (merchants, quest givers, civilians)
+func _spawn_npcs() -> void:
+	# Spawn general merchant inside the GeneralShop building
+	# Building is at (-12, 0, 5), place merchant inside facing the open front
+	var general_shop_pos := Vector3(-12.0, 0.0, 4.0)  # Slightly forward in the shop
+	var merchant := Merchant.spawn_merchant(
+		self,
+		general_shop_pos,
+		"Grimwald",  # Name
+		LootTables.LootTier.COMMON,  # Starter town has basic goods
+		"general"  # General store type
+	)
+	merchant.merchant_id = "grimwald_eldermoor"
+	merchant.region_id = "elder_moor"
+	print("[Elder Moor] Spawned merchant: Grimwald at GeneralShop")

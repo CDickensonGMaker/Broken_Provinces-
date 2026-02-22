@@ -59,3 +59,33 @@ func _setup_environment() -> void:
 			world_env.environment.fog_enabled = true
 			world_env.environment.fog_density = 0.025
 			world_env.environment.fog_light_color = Color(0.4, 0.3, 0.25)
+
+	# Spawn fire bats in the forge area after rooms are initialized
+	call_deferred("_spawn_fire_bats")
+
+
+## Spawn fire bats in the forge and mine areas (fire variant for volcanic/forge areas)
+func _spawn_fire_bats() -> void:
+	# Spawn in the main forge room
+	spawn_enemy_in_room(
+		"kd_forge_main",
+		"res://data/enemies/fire_bat.tres",
+		"res://Sprite folders grab bag/bat_flying_on_fire.png",
+		Vector3(-3, 3, 2)
+	)
+	spawn_enemy_in_room(
+		"kd_forge_main",
+		"res://data/enemies/fire_bat.tres",
+		"res://Sprite folders grab bag/bat_flying_on_fire.png",
+		Vector3(4, 2.5, -3)
+	)
+
+	# Spawn in the mine shaft
+	spawn_enemy_in_room(
+		"kd_mine_shaft",
+		"res://data/enemies/fire_bat.tres",
+		"res://Sprite folders grab bag/bat_flying_on_fire.png",
+		Vector3(0, 4, 0)
+	)
+
+	print("[KD Level 4] Spawned fire bats in forge areas")

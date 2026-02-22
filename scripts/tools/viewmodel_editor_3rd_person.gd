@@ -14,6 +14,9 @@ extends Node3D
 @onready var copy_button: Button = $CanvasLayer/CopyButton
 @onready var weapon_selector: OptionButton = $CanvasLayer/WeaponSelector
 
+## Save button (created dynamically)
+var save_button: Button = null
+
 ## State
 var weapon_data: WeaponData = null
 var weapon_model: Node3D = null
@@ -76,8 +79,29 @@ func _ready() -> void:
 	if copy_button:
 		copy_button.pressed.connect(_on_copy_values)
 
+	# Create save button dynamically (next to copy button)
+	_create_save_button()
+
 	# Update camera position
 	_update_camera()
+
+
+func _create_save_button() -> void:
+	save_button = Button.new()
+	save_button.text = "SAVE TO CODE"
+	save_button.custom_minimum_size = Vector2(120, 40)
+	save_button.pressed.connect(_on_save_to_code)
+
+	# Position it below the copy button
+	if copy_button:
+		var canvas_layer: CanvasLayer = $CanvasLayer
+		canvas_layer.add_child(save_button)
+		save_button.position = copy_button.position + Vector2(0, 50)
+	else:
+		# Fallback position
+		var canvas_layer: CanvasLayer = $CanvasLayer
+		canvas_layer.add_child(save_button)
+		save_button.position = Vector2(10, 100)
 
 
 func _load_available_weapons() -> void:
@@ -333,15 +357,12 @@ func _update_position_display() -> void:
 
 
 func _on_copy_values() -> void:
-	# Note: Add +180 to Y rotation when pasting into third_person_weapon.gd
-	# because the editor faces the model but in-game the player faces away
-	var adjusted_y: float = edit_rotation.y + 180.0
+	# Copy exact values - what you see in the editor is what you get in-game
 	var text := """# Third-person weapon transform (paste into third_person_weapon.gd)
-# NOTE: Y rotation already has +180 added for in-game orientation
 node.rotation_degrees = Vector3(%.1f, %.1f, %.1f)
 node.position = Vector3(%.3f, %.3f, %.3f)
 node.scale = Vector3(%.2f, %.2f, %.2f)""" % [
-		edit_rotation.x, adjusted_y, edit_rotation.z,
+		edit_rotation.x, edit_rotation.y, edit_rotation.z,
 		edit_position.x, edit_position.y, edit_position.z,
 		edit_scale.x, edit_scale.y, edit_scale.z
 	]
@@ -363,11 +384,93 @@ func _update_copy_feedback(delta: float) -> void:
 			copy_feedback.visible = false
 
 
+func _on_save_to_code() -> void:
+	if not weapon_data:
+		_show_feedback("No weapon selected!")
+		return
+
+	var weapon_type_name: String = _get_weapon_type_name(weapon_data.weapon_type)
+	if weapon_type_name.is_empty():
+		_show_feedback("Unknown weapon type!")
+		return
+
+	# Path to the third_person_weapon.gd file
+	var file_path := "res://scripts/player/third_person_weapon.gd"
+
+	# Read the file
+	var file := FileAccess.open(file_path, FileAccess.READ)
+	if not file:
+		_show_feedback("Cannot open file!")
+		return
+
+	var content: String = file.get_as_text()
+	file.close()
+
+	# Build the new transform block
+	var new_block := """Enums.WeaponType.%s:
+			# %s (tuned in viewmodel editor)
+			node.rotation_degrees = Vector3(%.1f, %.1f, %.1f)
+			node.position = Vector3(%.3f, %.3f, %.3f)
+			node.scale = Vector3(%.2f, %.2f, %.2f)""" % [
+		weapon_type_name,
+		weapon_data.display_name,
+		edit_rotation.x, edit_rotation.y, edit_rotation.z,
+		edit_position.x, edit_position.y, edit_position.z,
+		edit_scale.x, edit_scale.y, edit_scale.z
+	]
+
+	# Find and replace the existing block for this weapon type
+	var pattern := "Enums.WeaponType." + weapon_type_name + ":[\\s\\S]*?node\\.scale = Vector3\\([^)]+\\)"
+	var regex := RegEx.new()
+	regex.compile(pattern)
+	var result: RegExMatch = regex.search(content)
+
+	if result:
+		# Replace the matched block
+		content = content.substr(0, result.get_start()) + new_block + content.substr(result.get_end())
+
+		# Write the file back
+		file = FileAccess.open(file_path, FileAccess.WRITE)
+		if file:
+			file.store_string(content)
+			file.close()
+			_show_feedback("SAVED!\n%s updated" % weapon_type_name)
+			print("[TP ViewmodelEditor] Saved %s to code" % weapon_type_name)
+		else:
+			_show_feedback("Write failed!")
+	else:
+		_show_feedback("Pattern not found!\nWeapon type: %s" % weapon_type_name)
+
+
+func _get_weapon_type_name(weapon_type: Enums.WeaponType) -> String:
+	match weapon_type:
+		Enums.WeaponType.DAGGER: return "DAGGER"
+		Enums.WeaponType.SWORD: return "SWORD"
+		Enums.WeaponType.AXE: return "AXE"
+		Enums.WeaponType.MACE: return "MACE"
+		Enums.WeaponType.HAMMER: return "HAMMER"
+		Enums.WeaponType.SPEAR: return "SPEAR"
+		Enums.WeaponType.GLAIVE: return "GLAIVE"
+		Enums.WeaponType.BOW: return "BOW"
+		Enums.WeaponType.CROSSBOW: return "CROSSBOW"
+		Enums.WeaponType.MUSKET: return "MUSKET"
+		Enums.WeaponType.STAFF: return "STAFF"
+		Enums.WeaponType.UNARMED: return "UNARMED"
+	return ""
+
+
+func _show_feedback(message: String) -> void:
+	copy_feedback_timer = 3.0
+	if copy_feedback:
+		copy_feedback.text = message
+		copy_feedback.visible = true
+
+
 func _get_instructions() -> String:
 	return """3RD PERSON EDITOR
 
-NOTE: Copy adds +180 to Y
-rotation for in-game use.
+WYSIWYG: What you see here
+is what you get in-game.
 
 POSITION:
   W/S - Forward/Back
@@ -390,4 +493,7 @@ OTHER:
   Shift - Fine adjust
   R - Reset
   C - Copy values
-  F5 - Reload"""
+  F5 - Reload
+
+SAVE TO CODE button writes
+values directly to the code!"""

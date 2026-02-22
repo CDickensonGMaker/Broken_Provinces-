@@ -14,40 +14,29 @@ const ZONE_SIZE := 100.0  # Matches WorldGrid.CELL_SIZE
 
 
 func _ready() -> void:
-	# Register with PlayerGPS
-	if PlayerGPS:
-		var coords := WorldGrid.get_location_coords(ZONE_ID)
-		PlayerGPS.set_position(coords)
+	# Only register with PlayerGPS if we're the main scene (have Player node)
+	# When loaded as a streaming cell, Player is stripped - don't touch GPS
+	var is_main_scene: bool = get_node_or_null("Player") != null
 
-	# Track location for quest objectives
-	if QuestManager:
-		QuestManager.on_location_reached(ZONE_ID)
+	if is_main_scene:
+		if PlayerGPS:
+			var coords := WorldGrid.get_location_coords(ZONE_ID)
+			PlayerGPS.set_position(coords)
 
-	_setup_environment()
+		# Track location for quest objectives (only if main scene)
+		if QuestManager:
+			QuestManager.on_location_reached(ZONE_ID)
+
+		# Day/night only needed when we're the main scene
+		DayNightCycle.force_takeover(self)
+
 	_spawn_npcs()
 	_spawn_interactables()
 	_spawn_doors()
 	_setup_spawn_point_metadata()
 	_setup_navigation()
-	DayNightCycle.add_to_level(self)
+	_setup_cell_streaming()
 	print("[Thornfield] Forest hamlet loaded - Woodcutters & Hunters Theme")
-
-
-## Setup the WorldEnvironment with proper settings
-func _setup_environment() -> void:
-	var world_env: WorldEnvironment = $WorldEnvironment
-	if world_env:
-		var env := Environment.new()
-		env.background_mode = Environment.BG_COLOR
-		env.background_color = Color(0.28, 0.38, 0.28)  # Forest green
-		env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-		env.ambient_light_color = Color(0.45, 0.52, 0.4)  # Dappled forest light
-		env.ambient_light_energy = 0.55
-		env.fog_enabled = true
-		env.fog_light_color = Color(0.32, 0.42, 0.32)
-		env.fog_density = 0.01
-		env.fog_sky_affect = 0.3
-		world_env.environment = env
 
 
 ## Spawn NPCs using positions from Marker3D nodes in NPCSpawnPoints
@@ -217,5 +206,24 @@ func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
 		print("[Thornfield] Navigation mesh baked!")
+
+
+## Setup cell streaming if we're the main scene (has Player/HUD)
+## When loaded as a streaming cell, this will be skipped (Player/HUD stripped by CellStreamer)
+func _setup_cell_streaming() -> void:
+	# Only setup streaming if we're the main scene (we have Player/HUD)
+	var player: Node = get_node_or_null("Player")
+	if not player:
+		# We're a streaming cell, not main scene - skip streaming setup
+		return
+
+	if not CellStreamer:
+		push_warning("[%s] CellStreamer not found" % ZONE_ID)
+		return
+
+	var my_coords: Vector2i = WorldGrid.get_location_coords(ZONE_ID)
+	CellStreamer.register_main_scene_cell(my_coords, self)
+	CellStreamer.start_streaming(my_coords)
+	print("[%s] Registered as main scene, streaming started at %s" % [ZONE_ID, my_coords])
 
 
