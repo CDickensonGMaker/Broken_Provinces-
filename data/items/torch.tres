@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "torch"
+display_name = "Torch"
+description = "A burning wooden torch that provides light when equipped in your off-hand. Burns for about 9 minutes of use."
+item_type = 10
+is_stackable = true
+max_stack = 10
+shop_bundle_size = 3
+consumable_effect = 0
+effect_value = Array[int]([0, 0, 0])
+effect_duration = 0.0
+effect_percent = 0.0
+teaches_spell_id = ""
+requires_literacy = false
+literacy_dc = 10
+base_value = 15
+weight = 0.5
+icon_path = ""
+mesh_path = ""
+use_sound = ""

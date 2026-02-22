@@ -26,8 +26,19 @@ const COLOR_SELECTED := Color(1.0, 0.9, 0.5, 0.8)
 const MAP_PADDING := 10
 const PLAYER_ICON_SIZE := 8.0
 const TOWN_MARKER_SIZE := 6.0
-const MIN_ZOOM := 0.5
-const MAX_ZOOM := 3.0
+const DUNGEON_MARKER_SIZE := 5.0
+const LANDMARK_MARKER_SIZE := 4.0
+const MIN_ZOOM := 0.3
+const MAX_ZOOM := 5.0  # Allow much closer zoom for detail
+
+## Location marker colors
+const COLOR_DUNGEON := Color(0.8, 0.3, 0.3)       # Red for dungeons
+const COLOR_DUNGEON_UNDISCOVERED := Color(0.5, 0.3, 0.3, 0.6)  # Dim red
+const COLOR_LANDMARK := Color(0.7, 0.7, 0.5)      # Tan for landmarks
+const COLOR_VILLAGE := Color(0.6, 0.8, 0.6)       # Light green for villages
+const COLOR_CAPITAL := Color(1.0, 0.85, 0.4)      # Bright gold for capitals
+const COLOR_OUTPOST := Color(0.6, 0.5, 0.4)       # Brown for outposts
+const COLOR_UNDISCOVERED := Color(0.5, 0.5, 0.5, 0.5)  # Gray for hints
 
 ## Components
 var background: ColorRect
@@ -65,13 +76,61 @@ var map_size: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
-	custom_minimum_size = Vector2(500, 400)
+	# Don't set custom_minimum_size - let parent control our size
+	# This allows the map to fill whatever space is available
 
 	_load_map_texture()
 	_setup_fog_of_war()
 	_setup_ui()
 	_update_player_position()
+
+	# Connect to resized signal for dynamic zoom calculation
+	resized.connect(_on_resized)
+
+	# Connect to PlayerGPS for cell changes to reveal fog
+	if PlayerGPS:
+		PlayerGPS.cell_changed.connect(_on_player_cell_changed)
+
+	# Defer initial setup until we're properly sized
+	call_deferred("_initial_setup")
+
+
+func _initial_setup() -> void:
+	_calculate_fit_zoom()
 	_center_on_player()
+
+
+func _on_resized() -> void:
+	_calculate_fit_zoom()
+	_center_on_player()
+	if map_canvas:
+		map_canvas.queue_redraw()
+
+
+## Calculate zoom level to fit map within current panel size
+func _calculate_fit_zoom() -> void:
+	if map_size.x <= 0 or map_size.y <= 0:
+		return
+	if size.x <= 0 or size.y <= 0:
+		return
+
+	# Use actual size, not hardcoded values
+	# map_canvas offsets: top=46, left=10, right=-10, bottom=-30
+	var canvas_width: float = size.x - 20  # Subtract left+right padding
+	var canvas_height: float = size.y - 76  # Subtract top title + bottom legend
+
+	if canvas_width <= 0 or canvas_height <= 0:
+		return
+
+	# Calculate zoom to fit map within canvas with some padding
+	var zoom_fit_x: float = canvas_width / map_size.x
+	var zoom_fit_y: float = canvas_height / map_size.y
+
+	# Use the smaller zoom to ensure entire map fits
+	zoom_level = minf(zoom_fit_x, zoom_fit_y) * 0.95  # 95% to leave margin
+
+	# Clamp to valid range
+	zoom_level = clampf(zoom_level, MIN_ZOOM, MAX_ZOOM)
 
 
 func _load_map_texture() -> void:
@@ -91,8 +150,25 @@ func _setup_fog_of_war() -> void:
 		# Reveal starting area (Elder Moor)
 		fog_of_war.reveal_hex(Vector2i.ZERO)
 
+		# Sync with PlayerGPS discovered cells
+		_sync_fog_with_player_gps()
+
 		# Reveal player's current position
 		_reveal_current_cell()
+
+
+## Sync fog of war with all cells discovered by PlayerGPS
+func _sync_fog_with_player_gps() -> void:
+	if not fog_of_war or not PlayerGPS:
+		return
+
+	var cells_to_reveal: Array = []
+	for coords: Vector2i in PlayerGPS.discovered_cells:
+		cells_to_reveal.append(coords)
+
+	if cells_to_reveal.size() > 0:
+		fog_of_war.bulk_reveal(cells_to_reveal)
+		print("[PaintedWorldMap] Synced fog with %d discovered cells from PlayerGPS" % cells_to_reveal.size())
 
 
 func _setup_ui() -> void:
@@ -169,17 +245,77 @@ func _setup_ui() -> void:
 	# Travel dialog
 	_setup_travel_dialog()
 
-	# Legend
+	# Legend with marker explanations
 	var legend := Label.new()
 	legend.name = "Legend"
-	legend.text = "Click town to fast travel | Scroll to zoom | Drag to pan | Green = You"
+	legend.text = "◆Town  ▼Dungeon  ★Landmark  ●Village | Scroll=Zoom  Drag=Pan  ?=Undiscovered"
 	legend.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	legend.add_theme_color_override("font_color", COLOR_DIM)
-	legend.add_theme_font_size_override("font_size", 10)
+	legend.add_theme_font_size_override("font_size", 9)
 	legend.set_anchors_preset(PRESET_BOTTOM_WIDE)
 	legend.offset_bottom = -4
 	legend.offset_top = -18
 	add_child(legend)
+
+	# Zoom controls (+ and - buttons in corner)
+	_setup_zoom_controls()
+
+
+func _setup_zoom_controls() -> void:
+	# Container for zoom buttons (bottom-right corner)
+	var zoom_container := VBoxContainer.new()
+	zoom_container.name = "ZoomControls"
+	zoom_container.set_anchors_preset(PRESET_BOTTOM_RIGHT)
+	zoom_container.offset_right = -15
+	zoom_container.offset_bottom = -35
+	zoom_container.offset_left = -45
+	zoom_container.offset_top = -85
+	zoom_container.add_theme_constant_override("separation", 2)
+	add_child(zoom_container)
+
+	# Zoom in button
+	var zoom_in_btn := Button.new()
+	zoom_in_btn.text = "+"
+	zoom_in_btn.custom_minimum_size = Vector2(30, 24)
+	zoom_in_btn.pressed.connect(_on_zoom_in_pressed)
+	_style_zoom_button(zoom_in_btn)
+	zoom_container.add_child(zoom_in_btn)
+
+	# Zoom out button
+	var zoom_out_btn := Button.new()
+	zoom_out_btn.text = "-"
+	zoom_out_btn.custom_minimum_size = Vector2(30, 24)
+	zoom_out_btn.pressed.connect(_on_zoom_out_pressed)
+	_style_zoom_button(zoom_out_btn)
+	zoom_container.add_child(zoom_out_btn)
+
+
+func _style_zoom_button(btn: Button) -> void:
+	var normal := StyleBoxFlat.new()
+	normal.bg_color = Color(0.15, 0.15, 0.18, 0.9)
+	normal.border_color = COLOR_BORDER
+	normal.set_border_width_all(1)
+	normal.set_corner_radius_all(3)
+
+	var hover := StyleBoxFlat.new()
+	hover.bg_color = Color(0.25, 0.25, 0.3, 0.95)
+	hover.border_color = COLOR_GOLD
+	hover.set_border_width_all(1)
+	hover.set_corner_radius_all(3)
+
+	btn.add_theme_stylebox_override("normal", normal)
+	btn.add_theme_stylebox_override("hover", hover)
+	btn.add_theme_stylebox_override("pressed", hover)
+	btn.add_theme_color_override("font_color", COLOR_TEXT)
+	btn.add_theme_font_size_override("font_size", 16)
+
+
+func _on_zoom_in_pressed() -> void:
+	_zoom_at_point(map_canvas.size / 2.0, 1.5)
+
+
+func _on_zoom_out_pressed() -> void:
+	_zoom_at_point(map_canvas.size / 2.0, 1.0 / 1.5)
 
 
 func _setup_tooltip() -> void:
@@ -197,6 +333,8 @@ func _setup_tooltip() -> void:
 	tooltip_panel.add_theme_stylebox_override("panel", style)
 
 	tooltip_label = Label.new()
+	tooltip_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tooltip_label.custom_minimum_size = Vector2(180, 0)  # Max width before wrap
 	tooltip_label.add_theme_color_override("font_color", COLOR_TEXT)
 	tooltip_label.add_theme_font_size_override("font_size", 11)
 	tooltip_panel.add_child(tooltip_label)
@@ -287,10 +425,12 @@ func canvas_to_map(canvas_pos: Vector2) -> Vector2:
 
 
 ## Convert grid coords to map pixel position (center of cell)
+## Elder Moor (0,0) is at map center; coords are Elder Moor-relative
 func grid_to_pixel(coords: Vector2i) -> Vector2:
 	var cell_size: float = _get_cell_size()
-	var pixel_x: float = float(coords.x) * cell_size + cell_size / 2.0
-	var pixel_y: float = float(coords.y) * cell_size + cell_size / 2.0
+	var map_center: Vector2 = map_size / 2.0
+	var pixel_x: float = map_center.x + float(coords.x) * cell_size
+	var pixel_y: float = map_center.y + float(coords.y) * cell_size
 	return Vector2(pixel_x, pixel_y)
 
 
@@ -300,14 +440,15 @@ func grid_to_canvas(coords: Vector2i) -> Vector2:
 	return map_to_canvas(map_pixel)
 
 
-## Convert map pixel position to grid coords
+## Convert map pixel position to grid coords (inverse of grid_to_pixel)
 func pixel_to_grid(pixel: Vector2) -> Vector2i:
 	var cell_size: float = _get_cell_size()
-	var col: int = int(pixel.x / cell_size)
-	var row: int = int(pixel.y / cell_size)
-	# Clamp to valid grid range
-	col = clampi(col, 0, GRID_COLS - 1)
-	row = clampi(row, 0, GRID_ROWS - 1)
+	var map_center: Vector2 = map_size / 2.0
+	var col: int = int((pixel.x - map_center.x) / cell_size)
+	var row: int = int((pixel.y - map_center.y) / cell_size)
+	# Clamp to valid grid range (Elder Moor-relative coords)
+	col = clampi(col, WorldGrid.GRID_MIN.x, WorldGrid.GRID_MAX.x)
+	row = clampi(row, WorldGrid.GRID_MIN.y, WorldGrid.GRID_MAX.y)
 	return Vector2i(col, row)
 
 
@@ -340,8 +481,11 @@ func _draw_map() -> void:
 	# Draw fog of war overlay
 	_draw_fog_overlay(map_rect)
 
-	# Draw town markers
-	_draw_town_markers()
+	# Draw all location markers (towns, dungeons, landmarks, etc.)
+	_draw_all_location_markers()
+
+	# Draw quest objective markers
+	_draw_quest_markers()
 
 	# Draw player marker
 	_draw_player_marker()
@@ -368,46 +512,88 @@ func _draw_fog_overlay(map_rect: Rect2) -> void:
 	if fog_disabled:
 		return
 
-	# Get fog texture and draw it as overlay
+	# Get fog texture - white = revealed, black = hidden
 	var fog_tex: ImageTexture = fog_of_war.get_texture()
 	if not fog_tex:
 		return
 
-	# Draw fog with inverted blend (fog blocks where image is black)
-	# We need to draw the fog overlay using a shader or manual per-pixel blend
-	# For simplicity, we draw a semi-transparent overlay where not explored
+	# Draw fog overlay by iterating cells and drawing fog rectangles for hidden areas
+	# This is more performant than per-pixel and gives proper cell-based fog
+	var cell_pixel_size: float = _get_cell_size() * zoom_level
 
-	# Since we can't easily do per-pixel fog blending in _draw,
-	# we draw a fog rectangle and rely on the fog texture for masking
-	# A proper implementation would use a shader
+	# Only draw cells that are visible on screen
+	var visible_min: Vector2i = canvas_to_grid(Vector2.ZERO)
+	var visible_max: Vector2i = canvas_to_grid(map_canvas.size)
 
-	# For now, draw unexplored areas as solid fog color
-	var fog_image: Image = fog_of_war.get_image()
-	if fog_image:
-		# Draw fog overlay texture
-		# This requires shader support for proper blending
-		# As a fallback, we skip per-pixel fog and rely on hex-based visibility
-		pass
+	# Add padding to ensure we cover edges
+	visible_min -= Vector2i(2, 2)
+	visible_max += Vector2i(2, 2)
+
+	# Clamp to valid grid range
+	visible_min.x = clampi(visible_min.x, WorldGrid.GRID_MIN.x, WorldGrid.GRID_MAX.x)
+	visible_min.y = clampi(visible_min.y, WorldGrid.GRID_MIN.y, WorldGrid.GRID_MAX.y)
+	visible_max.x = clampi(visible_max.x, WorldGrid.GRID_MIN.x, WorldGrid.GRID_MAX.x)
+	visible_max.y = clampi(visible_max.y, WorldGrid.GRID_MIN.y, WorldGrid.GRID_MAX.y)
+
+	# Draw fog for each unexplored cell
+	for y in range(visible_min.y, visible_max.y + 1):
+		for x in range(visible_min.x, visible_max.x + 1):
+			var coords := Vector2i(x, y)
+
+			# Check if this cell is explored
+			if fog_of_war.is_explored(coords):
+				continue
+
+			# Check if cell is discovered via other means (dev mode, etc.)
+			var cell: WorldGrid.CellInfo = WorldGrid.get_cell(coords)
+			if cell and cell.discovered:
+				continue
+
+			# Draw fog rectangle for this cell
+			var canvas_pos: Vector2 = grid_to_canvas(coords)
+			var half_cell: float = cell_pixel_size / 2.0
+
+			var fog_rect := Rect2(
+				canvas_pos.x - half_cell,
+				canvas_pos.y - half_cell,
+				cell_pixel_size,
+				cell_pixel_size
+			)
+
+			# Clip to map bounds
+			var clipped_rect: Rect2 = fog_rect.intersection(Rect2(Vector2.ZERO, map_canvas.size))
+			if clipped_rect.size.x > 0 and clipped_rect.size.y > 0:
+				map_canvas.draw_rect(clipped_rect, COLOR_FOG)
 
 
-func _draw_town_markers() -> void:
+## Draw all location markers (towns, dungeons, landmarks, etc.)
+func _draw_all_location_markers() -> void:
 	var is_dev: bool = SceneManager and SceneManager.dev_mode
 	var fog_disabled: bool = SceneManager and not SceneManager.fog_of_war_enabled
 
-	# Iterate through all cells to find towns
+	# Iterate through all cells to find locations
 	for coords: Vector2i in WorldGrid.cells:
 		var cell: WorldGrid.CellInfo = WorldGrid.cells[coords]
 
-		# Only draw towns
-		if cell.location_type != WorldGrid.LocationType.TOWN:
+		# Skip cells with no location
+		if cell.location_type == WorldGrid.LocationType.NONE:
+			continue
+		if cell.location_type == WorldGrid.LocationType.BLOCKED:
 			continue
 
 		# Check visibility
-		var is_visible: bool = cell.discovered or is_dev or fog_disabled
+		var is_discovered: bool = cell.discovered or is_dev or fog_disabled
 		if fog_of_war:
-			is_visible = is_visible or fog_of_war.is_explored(coords)
+			is_discovered = is_discovered or fog_of_war.is_explored(coords)
 
-		if not is_visible:
+		# Check if player is nearby (within 3 cells) - show hint markers
+		var is_nearby: bool = false
+		if not is_discovered:
+			var player_dist: int = abs(coords.x - player_cell.x) + abs(coords.y - player_cell.y)
+			is_nearby = player_dist <= 3
+
+		# Skip if not visible and not nearby
+		if not is_discovered and not is_nearby:
 			continue
 
 		var canvas_pos: Vector2 = grid_to_canvas(coords)
@@ -418,21 +604,196 @@ func _draw_town_markers() -> void:
 		if canvas_pos.y < -20 or canvas_pos.y > map_canvas.size.y + 20:
 			continue
 
-		# Draw town marker (diamond shape)
-		var marker_size: float = TOWN_MARKER_SIZE * zoom_level
-		var points: PackedVector2Array = [
-			canvas_pos + Vector2(0, -marker_size),
-			canvas_pos + Vector2(marker_size, 0),
-			canvas_pos + Vector2(0, marker_size),
-			canvas_pos + Vector2(-marker_size, 0)
-		]
-		map_canvas.draw_colored_polygon(points, COLOR_TOWN_MARKER)
-		points.append(points[0])
-		map_canvas.draw_polyline(points, COLOR_TOWN_MARKER.lightened(0.3), 1.5)
+		# Draw marker based on location type
+		match cell.location_type:
+			WorldGrid.LocationType.TOWN, WorldGrid.LocationType.CITY:
+				_draw_town_marker(canvas_pos, cell, is_discovered)
+			WorldGrid.LocationType.CAPITAL:
+				_draw_capital_marker(canvas_pos, cell, is_discovered)
+			WorldGrid.LocationType.VILLAGE:
+				_draw_village_marker(canvas_pos, cell, is_discovered)
+			WorldGrid.LocationType.DUNGEON:
+				_draw_dungeon_marker(canvas_pos, cell, is_discovered)
+			WorldGrid.LocationType.LANDMARK:
+				_draw_landmark_marker(canvas_pos, cell, is_discovered)
+			WorldGrid.LocationType.OUTPOST, WorldGrid.LocationType.BRIDGE:
+				_draw_outpost_marker(canvas_pos, cell, is_discovered)
 
-		# Draw town name if zoomed in enough
-		if zoom_level >= 0.8:
-			_draw_text_centered(canvas_pos + Vector2(0, marker_size + 8), cell.location_name, COLOR_TEXT, 10)
+
+## Draw town/city marker (diamond)
+func _draw_town_marker(canvas_pos: Vector2, cell: WorldGrid.CellInfo, is_discovered: bool) -> void:
+	var marker_size: float = TOWN_MARKER_SIZE * zoom_level
+	var color: Color = COLOR_TOWN_MARKER if is_discovered else COLOR_UNDISCOVERED
+
+	var points: PackedVector2Array = [
+		canvas_pos + Vector2(0, -marker_size),
+		canvas_pos + Vector2(marker_size, 0),
+		canvas_pos + Vector2(0, marker_size),
+		canvas_pos + Vector2(-marker_size, 0)
+	]
+	map_canvas.draw_colored_polygon(points, color)
+	points.append(points[0])
+	map_canvas.draw_polyline(points, color.lightened(0.3), 1.5)
+
+	# Draw name if discovered and zoomed in
+	if is_discovered and zoom_level >= 0.8:
+		_draw_text_centered(canvas_pos + Vector2(0, marker_size + 8), cell.location_name, COLOR_TEXT, 10)
+	elif not is_discovered and zoom_level >= 1.5:
+		_draw_text_centered(canvas_pos + Vector2(0, marker_size + 6), "?", COLOR_UNDISCOVERED, 12)
+
+
+## Draw capital marker (larger diamond with glow)
+func _draw_capital_marker(canvas_pos: Vector2, cell: WorldGrid.CellInfo, is_discovered: bool) -> void:
+	var marker_size: float = (TOWN_MARKER_SIZE + 3) * zoom_level
+	var color: Color = COLOR_CAPITAL if is_discovered else COLOR_UNDISCOVERED
+
+	# Glow effect
+	if is_discovered:
+		map_canvas.draw_circle(canvas_pos, marker_size + 2, Color(color.r, color.g, color.b, 0.3))
+
+	var points: PackedVector2Array = [
+		canvas_pos + Vector2(0, -marker_size),
+		canvas_pos + Vector2(marker_size, 0),
+		canvas_pos + Vector2(0, marker_size),
+		canvas_pos + Vector2(-marker_size, 0)
+	]
+	map_canvas.draw_colored_polygon(points, color)
+	points.append(points[0])
+	map_canvas.draw_polyline(points, color.lightened(0.3), 2.0)
+
+	if is_discovered and zoom_level >= 0.6:
+		_draw_text_centered(canvas_pos + Vector2(0, marker_size + 10), cell.location_name, COLOR_CAPITAL, 12)
+
+
+## Draw village marker (small circle)
+func _draw_village_marker(canvas_pos: Vector2, cell: WorldGrid.CellInfo, is_discovered: bool) -> void:
+	var marker_size: float = 4.0 * zoom_level
+	var color: Color = COLOR_VILLAGE if is_discovered else COLOR_UNDISCOVERED
+
+	map_canvas.draw_circle(canvas_pos, marker_size, color)
+	map_canvas.draw_arc(canvas_pos, marker_size, 0, TAU, 16, color.lightened(0.3), 1.0)
+
+	if is_discovered and zoom_level >= 1.0:
+		_draw_text_centered(canvas_pos + Vector2(0, marker_size + 6), cell.location_name, COLOR_TEXT, 9)
+
+
+## Draw dungeon marker (skull/triangle pointing down)
+func _draw_dungeon_marker(canvas_pos: Vector2, cell: WorldGrid.CellInfo, is_discovered: bool) -> void:
+	var marker_size: float = DUNGEON_MARKER_SIZE * zoom_level
+	var color: Color = COLOR_DUNGEON if is_discovered else COLOR_DUNGEON_UNDISCOVERED
+
+	# Triangle pointing down (dangerous!)
+	var points: PackedVector2Array = [
+		canvas_pos + Vector2(-marker_size, -marker_size * 0.6),
+		canvas_pos + Vector2(marker_size, -marker_size * 0.6),
+		canvas_pos + Vector2(0, marker_size)
+	]
+	map_canvas.draw_colored_polygon(points, color)
+	points.append(points[0])
+	map_canvas.draw_polyline(points, color.lightened(0.3), 1.5)
+
+	# Draw name or "?" based on discovery
+	if is_discovered and zoom_level >= 0.8:
+		_draw_text_centered(canvas_pos + Vector2(0, marker_size + 8), cell.location_name, COLOR_DUNGEON, 10)
+	elif not is_discovered and zoom_level >= 1.2:
+		_draw_text_centered(canvas_pos + Vector2(0, marker_size + 6), "?", COLOR_DUNGEON_UNDISCOVERED, 10)
+
+
+## Draw landmark marker (star)
+func _draw_landmark_marker(canvas_pos: Vector2, cell: WorldGrid.CellInfo, is_discovered: bool) -> void:
+	var marker_size: float = LANDMARK_MARKER_SIZE * zoom_level
+	var color: Color = COLOR_LANDMARK if is_discovered else COLOR_UNDISCOVERED
+
+	# Draw star shape
+	var points: PackedVector2Array = []
+	for i in 10:
+		var angle: float = i * TAU / 10.0 - PI / 2.0
+		var radius: float = marker_size if i % 2 == 0 else marker_size * 0.5
+		points.append(canvas_pos + Vector2(cos(angle), sin(angle)) * radius)
+	map_canvas.draw_colored_polygon(points, color)
+
+	if is_discovered and zoom_level >= 1.0:
+		_draw_text_centered(canvas_pos + Vector2(0, marker_size + 6), cell.location_name, COLOR_TEXT, 9)
+
+
+## Draw outpost/bridge marker (square)
+func _draw_outpost_marker(canvas_pos: Vector2, cell: WorldGrid.CellInfo, is_discovered: bool) -> void:
+	var marker_size: float = 3.0 * zoom_level
+	var color: Color = COLOR_OUTPOST if is_discovered else COLOR_UNDISCOVERED
+
+	var rect := Rect2(canvas_pos - Vector2(marker_size, marker_size), Vector2(marker_size * 2, marker_size * 2))
+	map_canvas.draw_rect(rect, color)
+	map_canvas.draw_rect(rect, color.lightened(0.3), false, 1.0)
+
+	if is_discovered and zoom_level >= 1.2:
+		_draw_text_centered(canvas_pos + Vector2(0, marker_size + 6), cell.location_name, COLOR_TEXT, 8)
+
+
+## Draw quest objective markers on world map
+func _draw_quest_markers() -> void:
+	if not QuestManager:
+		return
+
+	# Color constants for quest markers
+	const COLOR_QUEST_MAIN := Color(1.0, 0.85, 0.2, 1.0)  # Gold
+	const COLOR_QUEST_SIDE := Color(0.2, 0.8, 0.8, 1.0)   # Teal
+	const COLOR_QUEST_GLOW := Color(1.0, 0.9, 0.3, 0.4)   # Gold glow
+
+	# Get all active quests
+	var active_quests: Array = QuestManager.get_active_quests()
+
+	for quest in active_quests:
+		var is_main: bool = quest.is_main_quest if "is_main_quest" in quest else false
+		var quest_color: Color = COLOR_QUEST_MAIN if is_main else COLOR_QUEST_SIDE
+
+		# Check if all objectives complete (turn-in)
+		var all_complete: bool = QuestManager.are_objectives_complete(quest.id)
+
+		var target_cell: Vector2i = Vector2i.ZERO
+		var has_target: bool = false
+
+		if all_complete:
+			# Point to turn-in location
+			var turnin_cell: Vector2i = QuestManager.get_turnin_hex(quest.id)
+			if turnin_cell != Vector2i.ZERO:
+				target_cell = turnin_cell
+				has_target = true
+		else:
+			# Find first incomplete objective location
+			for obj in quest.objectives:
+				if obj.is_completed or obj.is_optional:
+					continue
+				var obj_location: Dictionary = QuestManager.get_cached_objective_location(quest.id, obj.id)
+				if obj_location.get("hex", Vector2i.ZERO) != Vector2i.ZERO:
+					target_cell = obj_location.get("hex", Vector2i.ZERO)
+					has_target = true
+					break
+
+		if not has_target:
+			continue
+
+		var canvas_pos: Vector2 = grid_to_canvas(target_cell)
+
+		# Skip if off screen
+		if canvas_pos.x < -20 or canvas_pos.x > map_canvas.size.x + 20:
+			continue
+		if canvas_pos.y < -20 or canvas_pos.y > map_canvas.size.y + 20:
+			continue
+
+		# Pulsing effect for quest markers
+		var pulse: float = (sin(Time.get_ticks_msec() * 0.005 + quest.id.hash() * 0.1) + 1.0) / 2.0
+		var marker_size: float = (6.0 + pulse * 2.0) * zoom_level
+
+		# Draw glow
+		map_canvas.draw_circle(canvas_pos, marker_size + 3.0, COLOR_QUEST_GLOW)
+
+		# Draw star shape for quest marker
+		var points: PackedVector2Array = []
+		for i in 10:
+			var angle: float = i * TAU / 10.0 - PI / 2.0
+			var radius: float = marker_size if i % 2 == 0 else marker_size * 0.5
+			points.append(canvas_pos + Vector2(cos(angle), sin(angle)) * radius)
+		map_canvas.draw_colored_polygon(points, quest_color)
 
 
 func _draw_player_marker() -> void:
@@ -623,8 +984,16 @@ func _on_cell_clicked(coords: Vector2i) -> void:
 	if coords == player_cell:
 		return
 
-	# Can only fast travel to towns
-	if cell.location_type != WorldGrid.LocationType.TOWN:
+	# Can fast travel to settlements and discovered dungeons
+	var valid_travel_types: Array[WorldGrid.LocationType] = [
+		WorldGrid.LocationType.TOWN,
+		WorldGrid.LocationType.CITY,
+		WorldGrid.LocationType.CAPITAL,
+		WorldGrid.LocationType.VILLAGE,
+		WorldGrid.LocationType.DUNGEON,
+		WorldGrid.LocationType.OUTPOST,
+	]
+	if cell.location_type not in valid_travel_types:
 		return
 
 	if cell.location_id.is_empty():
@@ -675,6 +1044,12 @@ func _on_travel_cancelled() -> void:
 func _reveal_current_cell() -> void:
 	if fog_of_war:
 		fog_of_war.reveal_hex(player_cell)
+
+
+## Called when player moves to a new cell
+func _on_player_cell_changed(_old_cell: Vector2i, new_cell: Vector2i) -> void:
+	player_cell = new_cell
+	_reveal_current_cell()
 
 
 func _update_player_position() -> void:

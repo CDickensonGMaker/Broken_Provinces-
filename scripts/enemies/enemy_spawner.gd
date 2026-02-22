@@ -25,11 +25,13 @@ signal destroyed(destroyer: Node)
 
 ## Secondary billboard enemy (e.g., goblin archer)
 @export var secondary_enemy_enabled: bool = true
-@export var secondary_enemy_chance: float = 0.35  ## 35% chance to spawn secondary
+@export var secondary_enemy_chance: float = 0.30  ## 30% chance to spawn secondary (archer)
 @export var secondary_data_path: String = "res://data/enemies/goblin_archer.tres"
-@export var secondary_sprite_path: String = "res://assets/sprites/enemies/goblin_archer.png"
-@export var secondary_h_frames: int = 4
-@export var secondary_v_frames: int = 4
+
+## Tertiary billboard enemy (e.g., goblin mage) - rarer spellcaster
+@export var tertiary_enemy_enabled: bool = true
+@export var tertiary_enemy_chance: float = 0.15  ## 15% chance to spawn tertiary (mage)
+@export var tertiary_data_path: String = "res://data/enemies/goblin_mage.tres"
 
 ## Visual configuration
 @export var mesh_height: float = 2.0
@@ -80,11 +82,8 @@ func _ready() -> void:
 	# Create health bar
 	_create_health_bar()
 
-	# Load enemy scene if not set
-	if not enemy_scene:
-		enemy_scene = load("res://scenes/enemies/enemy_base.tscn")
-		if DEBUG:
-			print("[EnemySpawner] Loaded default enemy scene: ", enemy_scene)
+	# Note: We now use billboard sprites loaded from enemy_data.sprite_path
+	# The enemy_scene variable is kept for backwards compatibility but not used
 
 	# Initial spawn delay (don't spawn immediately, use half of a random interval)
 	current_spawn_interval = _get_random_spawn_interval() * 0.5
@@ -229,10 +228,6 @@ func _try_spawn_enemy() -> void:
 			print("[EnemySpawner] At max capacity (", spawned_enemies.size(), "/", max_spawned_enemies, "), skipping spawn")
 		return
 
-	if not enemy_scene:
-		push_warning("[EnemySpawner] No enemy scene set!")
-		return
-
 	# Determine how many enemies to spawn this wave
 	var desired_count := randi_range(spawn_count_min, spawn_count_max)
 	var available_slots := max_spawned_enemies - spawned_enemies.size()
@@ -241,14 +236,24 @@ func _try_spawn_enemy() -> void:
 	if DEBUG:
 		print("[EnemySpawner] Spawning ", actual_count, " enemies (wanted ", desired_count, ", ", available_slots, " slots available)")
 
-	# Load enemy data once for all spawns
-	var enemy_data := load(enemy_data_path)
-	var parent := get_tree().current_scene
+	# Pre-load enemy data resources for all types
+	var primary_data: EnemyData = load(enemy_data_path) as EnemyData
+	if not primary_data:
+		push_error("[EnemySpawner] Failed to load primary enemy data: %s" % enemy_data_path)
+		return
 
-	# Pre-load secondary enemy resources if enabled
-	var secondary_sprite: Texture2D = null
-	if secondary_enemy_enabled and secondary_sprite_path != "":
-		secondary_sprite = load(secondary_sprite_path)
+	var secondary_data: EnemyData = null
+	var tertiary_data: EnemyData = null
+
+	if secondary_enemy_enabled:
+		secondary_data = load(secondary_data_path) as EnemyData
+	if tertiary_enemy_enabled:
+		tertiary_data = load(tertiary_data_path) as EnemyData
+
+	var parent: Node = get_tree().current_scene
+	if not parent:
+		push_error("[EnemySpawner] No current scene available for spawning")
+		return
 
 	# Spawn each enemy at a different random position
 	for i in actual_count:
@@ -258,45 +263,34 @@ func _try_spawn_enemy() -> void:
 		var spawn_offset := Vector3(cos(angle) * distance, 0, sin(angle) * distance)
 		var spawn_pos := global_position + spawn_offset
 
-		# Decide if this should be a secondary billboard enemy (archer)
-		var spawn_secondary := secondary_enemy_enabled and secondary_sprite and randf() < secondary_enemy_chance
+		# Decide enemy type based on random rolls (tertiary first since it's rarer)
+		var roll := randf()
+		var selected_data: EnemyData
+		var selected_path: String
+		var enemy_type: String
 
-		var enemy: Node
-
-		if spawn_secondary:
-			# Spawn billboard archer
-			enemy = EnemyBase.spawn_billboard_enemy(
-				parent,
-				spawn_pos,
-				secondary_data_path,
-				secondary_sprite,
-				secondary_h_frames,
-				secondary_v_frames
-			)
-			if DEBUG:
-				print("[EnemySpawner] Spawned ARCHER (billboard) at ", spawn_pos)
+		if tertiary_enemy_enabled and tertiary_data and roll < tertiary_enemy_chance:
+			selected_data = tertiary_data
+			selected_path = tertiary_data_path
+			enemy_type = "MAGE"
+		elif secondary_enemy_enabled and secondary_data and roll < (tertiary_enemy_chance + secondary_enemy_chance):
+			selected_data = secondary_data
+			selected_path = secondary_data_path
+			enemy_type = "ARCHER"
 		else:
-			# Instance the regular enemy
-			enemy = enemy_scene.instantiate()
+			selected_data = primary_data
+			selected_path = enemy_data_path
+			enemy_type = "SOLDIER"
 
-			# Set enemy data
-			if enemy_data and enemy.has_method("set") and "enemy_data" in enemy:
-				enemy.enemy_data = enemy_data
-
-			# Add to scene
-			parent.add_child(enemy)
-			enemy.global_position = spawn_pos
-
-			# Apply undead/monster glow if applicable
-			if enemy is EnemyBase:
-				(enemy as EnemyBase).call_deferred("_check_and_apply_undead_glow", enemy_data_path)
-
-			if DEBUG:
-				print("[EnemySpawner] Spawned SOLDIER at ", spawn_pos)
+		# Spawn billboard enemy using sprite from enemy_data
+		var enemy: EnemyBase = _spawn_billboard_from_data(parent, spawn_pos, selected_path, selected_data)
 
 		if not enemy:
-			push_warning("[EnemySpawner] Failed to spawn enemy at ", spawn_pos)
+			push_warning("[EnemySpawner] Failed to spawn %s at %s" % [enemy_type, spawn_pos])
 			continue
+
+		if DEBUG:
+			print("[EnemySpawner] Spawned %s at %s" % [enemy_type, spawn_pos])
 
 		# Configure spawned enemy to stay near the totem
 		if "wander_radius" in enemy:
@@ -314,6 +308,42 @@ func _try_spawn_enemy() -> void:
 			enemy.died.connect(_on_spawned_enemy_died.bind(enemy))
 
 	print("[EnemySpawner] Spawned ", actual_count, " enemies (", spawned_enemies.size(), "/", max_spawned_enemies, " total)")
+
+
+## Spawn a billboard enemy using sprite info from EnemyData
+func _spawn_billboard_from_data(parent: Node, pos: Vector3, data_path: String, data: EnemyData) -> EnemyBase:
+	if not data:
+		push_error("[EnemySpawner] Cannot spawn enemy - no data provided")
+		return null
+
+	# Get sprite info from enemy_data
+	var sprite_path: String = data.sprite_path
+	if sprite_path.is_empty():
+		push_warning("[EnemySpawner] Enemy data '%s' has no sprite_path, cannot spawn billboard" % data.id)
+		return null
+
+	var sprite_texture: Texture2D = load(sprite_path)
+	if not sprite_texture:
+		push_warning("[EnemySpawner] Failed to load sprite: %s" % sprite_path)
+		return null
+
+	var h_frames: int = data.sprite_hframes if data.sprite_hframes > 0 else 4
+	var v_frames: int = data.sprite_vframes if data.sprite_vframes > 0 else 4
+
+	var enemy := EnemyBase.spawn_billboard_enemy(
+		parent,
+		pos,
+		data_path,
+		sprite_texture,
+		h_frames,
+		v_frames
+	)
+
+	if enemy:
+		# Apply undead/monster glow if applicable
+		enemy.call_deferred("_check_and_apply_undead_glow", data_path)
+
+	return enemy
 
 ## Called when a spawned enemy dies
 func _on_spawned_enemy_died(_killer: Node, enemy: Node) -> void:

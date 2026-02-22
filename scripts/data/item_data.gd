@@ -13,7 +13,8 @@ enum ItemType {
 	MISC,
 	REPAIR_KIT,
 	AMMUNITION,
-	BEDROLL  # Single-use camping item for wilderness rest
+	BEDROLL,  # Single-use camping item for wilderness rest
+	TORCH     # Light source - equippable in off-hand, depletes while equipped
 }
 
 enum ConsumableEffect {

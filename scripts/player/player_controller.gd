@@ -55,6 +55,9 @@ var mana_regen_accumulator: float = 0.0  # Accumulates fractional mana regen
 ## Buff VFX manager for visual effects on conditions
 var buff_vfx_manager: BuffVFXManager = null
 
+## Torch light manager for equipped torches
+var torch_light: TorchLight = null
+
 func _ready() -> void:
 	# Add to player group
 	add_to_group("player")
@@ -73,6 +76,11 @@ func _ready() -> void:
 	buff_vfx_manager.name = "BuffVFXManager"
 	buff_vfx_manager.owner_entity = self
 	add_child(buff_vfx_manager)
+
+	# Create and attach torch light manager
+	torch_light = TorchLight.new()
+	torch_light.name = "TorchLight"
+	add_child(torch_light)
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Don't process input if in menu or dialogue
@@ -239,8 +247,9 @@ func _physics_process(delta: float) -> void:
 	_update_conditions(delta)
 
 	# --- Smoothly rotate ONLY the visuals (Model) toward movement direction ---
+	# Godot objects face their local -Z, so add PI to face the movement direction
 	if desired_dir.length() > 0.001:
-		var target_yaw := atan2(desired_dir.x, desired_dir.z)
+		var target_yaw := atan2(desired_dir.x, desired_dir.z) + PI
 		model.rotation.y = lerp_angle(model.rotation.y, target_yaw, turn_speed * delta)
 
 	# --- Update interaction detection ---
@@ -272,7 +281,7 @@ func _do_light_attack() -> void:
 		_do_ranged_attack(weapon)
 		return
 
-	# Trigger first-person attack animation
+	# Trigger attack animation (first or third person)
 	if camera_pivot and camera_pivot.has_method("play_attack_animation"):
 		camera_pivot.play_attack_animation()
 

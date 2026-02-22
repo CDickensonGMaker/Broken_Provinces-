@@ -48,7 +48,7 @@ const TILE_TEMPLATES: Dictionary = {
 @export var max_ruins: int = 3
 @export var dungeon_chance: float = 0.3
 @export var fireplace_chance: float = 0.15
-@export var traveling_merchant_chance: float = 0.15  # 15% chance per room
+@export var traveling_merchant_chance: float = 0.04  # 4% chance per room (rare encounter)
 @export var enemy_count_min: int = 2
 @export var enemy_count_max: int = 5
 @export var cursed_totem_chance: float = 0.25  # 25% chance for cursed totem near ruins
@@ -882,12 +882,22 @@ func _create_dungeon_entrance() -> Node3D:
 	arch.use_collision = true
 	entrance.add_child(arch)
 
-	# Dark pit (visual indicator)
-	var pit := CSGBox3D.new()
-	pit.size = Vector3(2.0, 0.5, 2.0)
-	pit.position = Vector3(0, -0.25, 0)
+	# Dark cave mouth - a large black void between the pillars
+	var cave_mouth := CSGBox3D.new()
+	cave_mouth.name = "CaveMouth"
+	cave_mouth.size = Vector3(2.5, 3.5, 0.3)  # Tall dark rectangle
+	cave_mouth.position = Vector3(0, 1.75, -0.5)
 	var dark_mat := StandardMaterial3D.new()
-	dark_mat.albedo_color = Color(0.05, 0.05, 0.08)
+	dark_mat.albedo_color = Color(0.02, 0.02, 0.03)  # Nearly black
+	dark_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED  # No lighting
+	cave_mouth.material = dark_mat
+	cave_mouth.use_collision = false  # Just visual - door handles collision
+	entrance.add_child(cave_mouth)
+
+	# Dark pit on ground (entrance to stairs)
+	var pit := CSGBox3D.new()
+	pit.size = Vector3(2.5, 0.3, 2.5)
+	pit.position = Vector3(0, -0.15, -0.5)
 	pit.material = dark_mat
 	pit.use_collision = true
 	entrance.add_child(pit)
@@ -902,14 +912,20 @@ func _create_dungeon_entrance() -> Node3D:
 		entrance.add_child(step)
 
 	# Create proper ZoneDoor for dungeon entry (interactable)
+	# Cave entrances should look like dark voids, not wooden doors
 	var dungeon_door := ZoneDoor.spawn_door(
 		entrance,
 		Vector3(0, 0.5, -1.0),  # Position in front of stairs
 		"res://scenes/levels/random_cave.tscn",  # Procedural dungeon
 		"entrance",
-		"Enter Cave"
+		"Enter Cave",
+		false  # No door frame - cave entrance uses the archway we created
 	)
 	dungeon_door.rotation.y = PI  # Face outward
+
+	# Hide the door mesh - the dark pit we created IS the visual
+	if dungeon_door.door_mesh:
+		dungeon_door.door_mesh.visible = false
 
 	return entrance
 
@@ -1663,7 +1679,7 @@ func _create_mountain_barriers() -> void:
 ## Spawn a wall of mountain blocks along an edge
 func _spawn_mountain_wall(dir_data: Dictionary) -> void:
 	var half_size := room_size / 2.0
-	var block_spacing := 8.0  # Space between mountain blocks
+	var block_spacing := 5.0  # Space between mountain blocks (reduced from 8 to eliminate gaps)
 	var num_blocks := int(room_size / block_spacing) + 1
 
 	for i in range(num_blocks):
@@ -1700,10 +1716,10 @@ func _create_mountain_block() -> Node3D:
 	var mesh_instance := MeshInstance3D.new()
 	var box := BoxMesh.new()
 
-	# Random size for variety
-	var width := rng.randf_range(6.0, 12.0)
-	var height := rng.randf_range(8.0, 18.0)
-	var depth := rng.randf_range(5.0, 10.0)
+	# Random size for variety - min width >= spacing to ensure overlap
+	var width := rng.randf_range(8.0, 14.0)
+	var height := rng.randf_range(10.0, 20.0)
+	var depth := rng.randf_range(6.0, 12.0)
 	box.size = Vector3(width, height, depth)
 	mesh_instance.mesh = box
 

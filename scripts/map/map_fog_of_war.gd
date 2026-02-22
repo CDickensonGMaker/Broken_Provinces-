@@ -54,9 +54,11 @@ func reveal_hex(cell: Vector2i) -> void:
 
 
 ## Convert grid coords to pixel position (center of cell)
+## Elder Moor (0,0) is at the CENTER of the map image
 func _grid_to_pixel(coords: Vector2i) -> Vector2:
-	var pixel_x: float = float(coords.x) * cell_size + cell_size / 2.0
-	var pixel_y: float = float(coords.y) * cell_size + cell_size / 2.0
+	var map_center: Vector2 = Vector2(float(image_size.x), float(image_size.y)) / 2.0
+	var pixel_x: float = map_center.x + float(coords.x) * cell_size
+	var pixel_y: float = map_center.y + float(coords.y) * cell_size
 	return Vector2(pixel_x, pixel_y)
 
 

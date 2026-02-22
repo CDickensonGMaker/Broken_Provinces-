@@ -52,7 +52,8 @@ var region_id: String = ""  # Set by zone when spawned
 
 func _ready() -> void:
 	add_to_group("npcs")
-	add_to_group("merchants")
+	# Note: NOT added to "merchants" group to avoid minimap $ icon clutter
+	# Traveling merchants are still functional shops via "shops" group
 	add_to_group("shops")
 	add_to_group("traveling_merchants")
 	add_to_group("interactable")
@@ -375,7 +376,7 @@ func get_npc_id() -> String:
 ## Register this NPC with WorldData for quest navigation/tracking
 func _register_with_world_data() -> void:
 	var effective_id: String = get_npc_id()
-	var hex: Vector2i = WorldData.world_to_axial(global_position)
+	var cell: Vector2i = WorldGrid.world_to_cell(global_position)
 	var zone_id: String = ""
 
 	# Try to get zone_id from parent scene
@@ -390,7 +391,7 @@ func _register_with_world_data() -> void:
 	if zone_id.is_empty():
 		zone_id = region_id if not region_id.is_empty() else "wilderness"
 
-	WorldData.register_npc(effective_id, hex, zone_id, npc_type)
+	WorldData.register_npc(effective_id, cell, zone_id, npc_type)
 
 
 ## Unregister from WorldData when removed from scene

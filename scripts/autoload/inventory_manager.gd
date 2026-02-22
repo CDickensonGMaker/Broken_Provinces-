@@ -118,7 +118,9 @@ func _load_item_databases() -> void:
 		# Food and consumables
 		"bread", "cheese", "cooked_meat", "ale",
 		# Tools
-		"lockpick", "repair_kit", "bedroll"
+		"lockpick", "repair_kit", "bedroll",
+		# Light sources
+		"torch"
 	]
 	for item_id in item_files:
 		var path := "res://data/items/%s.tres" % item_id
@@ -357,6 +359,14 @@ func equip_item(inventory_index: int) -> bool:
 					equip_slot = "ring_2"
 			Enums.ArmorSlot.AMULET: equip_slot = "amulet"
 			Enums.ArmorSlot.SHIELD: equip_slot = "off_hand"
+	elif item_database.has(item_id):
+		# Check for equippable item types (torch, etc.)
+		item_data = item_database[item_id]
+		var item := item_data as ItemData
+		if item.item_type == ItemData.ItemType.TORCH:
+			equip_slot = "off_hand"
+		else:
+			return false  # Not an equippable item type
 	else:
 		return false  # Not equippable
 
@@ -367,13 +377,24 @@ func equip_item(inventory_index: int) -> bool:
 	var old_item: Dictionary = equipment[equip_slot].duplicate()
 	_unequip_to_inventory(equip_slot)
 
-	# Equip new item
+	# Equip new item - determine durability based on item type
+	var equip_durability: int
+	var equip_max_durability: int
+
+	# Torches have fixed durability (540 seconds = 9 minutes of use)
+	if item_data is ItemData and (item_data as ItemData).item_type == ItemData.ItemType.TORCH:
+		equip_durability = 540
+		equip_max_durability = 540
+	else:
+		equip_durability = get_max_durability(quality)
+		equip_max_durability = get_max_durability(quality)
+
 	equipment[equip_slot] = {
 		"item_id": item_id,
 		"quality": quality,
 		"data": item_data,
-		"durability": get_max_durability(quality),
-		"max_durability": get_max_durability(quality)
+		"durability": equip_durability,
+		"max_durability": equip_max_durability
 	}
 
 	# Remove from inventory
@@ -976,6 +997,7 @@ func _give_starter_items() -> void:
 	add_item("longsword", 1, Enums.ItemQuality.ABOVE_AVERAGE)  # Fine longsword
 	add_item("hunting_bow", 1, Enums.ItemQuality.AVERAGE)
 	add_item("arrows", 20, Enums.ItemQuality.AVERAGE)
+	add_item("torch", 3, Enums.ItemQuality.AVERAGE)  # 3 torches for exploring dark areas
 
 ## Random quality with weighted distribution:
 ## Poor: 10%, Below Average: 25%, Average: 40%, Above Average: 20%, Perfect: 5%
