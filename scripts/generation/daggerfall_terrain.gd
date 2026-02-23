@@ -5,10 +5,10 @@ class_name DaggerfallTerrain
 extends RefCounted
 
 
-## Grid configuration - low poly for PS1 aesthetic
-const GRID_SIZE: int = 9           # 9x9 vertices per cell (81 total)
+## Grid configuration - higher resolution for walkable slopes
+const GRID_SIZE: int = 17          # 17x17 vertices per cell (289 total, still low poly)
 const HEIGHT_LEVELS: int = 5       # Discrete height tiers: 0, 1, 2, 3, 4
-const HEIGHT_STEP: float = 0.5     # Units between levels (0, 0.5, 1, 1.5, 2) - walkable slopes
+const HEIGHT_STEP: float = 0.25    # Units between levels (max height 1.0) - very gentle slopes
 const CELL_SIZE: float = 100.0     # World units per cell
 
 ## Noise settings - coarser for blockier terrain
@@ -16,8 +16,8 @@ const NOISE_FREQUENCY: float = 0.008  # Lower = larger features
 const NOISE_SEED: int = 42069         # Fixed seed for seamless cells
 
 ## Smoothing settings
-const SMOOTH_PASSES: int = 3       # Number of smoothing passes (more = gentler slopes)
-const SMOOTH_FACTOR: float = 0.4   # How much neighbors influence height (0-1)
+const SMOOTH_PASSES: int = 4       # Number of smoothing passes (more = gentler slopes)
+const SMOOTH_FACTOR: float = 0.5   # How much neighbors influence height (0-1)
 
 
 ## Generate complete terrain for a cell
@@ -207,7 +207,7 @@ static func _create_mesh(
 				float(z) / (GRID_SIZE - 1)
 			))
 
-	# Generate indices (8x8 quads = 64 quads = 128 triangles)
+	# Generate indices for quads
 	for z in range(GRID_SIZE - 1):
 		for x in range(GRID_SIZE - 1):
 			var tl: int = z * GRID_SIZE + x
@@ -215,14 +215,16 @@ static func _create_mesh(
 			var bl: int = (z + 1) * GRID_SIZE + x
 			var br: int = bl + 1
 
-			# Two triangles per quad (counter-clockwise winding)
+			# Two triangles per quad - CCW winding when viewed from above (+Y looking down)
+			# Triangle 1: tl -> tr -> bl
 			indices.append(tl)
-			indices.append(bl)
 			indices.append(tr)
+			indices.append(bl)
 
+			# Triangle 2: tr -> br -> bl
 			indices.append(tr)
-			indices.append(bl)
 			indices.append(br)
+			indices.append(bl)
 
 	# Calculate normals - start with up vector
 	normals.resize(vertices.size())
@@ -230,7 +232,7 @@ static func _create_mesh(
 		normals[i] = Vector3.ZERO
 
 	# Compute face normals and accumulate at vertices
-	# Using (v2-v0).cross(v1-v0) for upward-facing normals with CCW winding
+	# For CCW winding (tl->tr->bl), use (v1-v0).cross(v2-v0) for upward normals
 	for i in range(0, indices.size(), 3):
 		var i0: int = indices[i]
 		var i1: int = indices[i + 1]
@@ -240,7 +242,7 @@ static func _create_mesh(
 		var v1: Vector3 = vertices[i1]
 		var v2: Vector3 = vertices[i2]
 
-		var normal: Vector3 = (v2 - v0).cross(v1 - v0).normalized()
+		var normal: Vector3 = (v1 - v0).cross(v2 - v0).normalized()
 
 		normals[i0] += normal
 		normals[i1] += normal
@@ -306,12 +308,12 @@ static func _create_collision(heights: PackedFloat32Array) -> StaticBody3D:
 				(z + 1) * step - half_size
 			)
 
-			# Triangle 1 (clockwise for collision - opposite of render winding)
+			# Triangle 1 - same winding as mesh for collision
 			faces.append(tl)
 			faces.append(tr)
 			faces.append(bl)
 
-			# Triangle 2 (clockwise for collision)
+			# Triangle 2 - same winding as mesh
 			faces.append(tr)
 			faces.append(br)
 			faces.append(bl)
