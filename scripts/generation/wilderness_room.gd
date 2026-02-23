@@ -44,9 +44,8 @@ const TILE_TEMPLATES: Dictionary = {
 }
 
 ## Content settings (from plan: 1-3 ruins, 0-1 dungeons at 30%)
-## TESTING: Increased ruins for terrain testing
-@export var min_ruins: int = 5
-@export var max_ruins: int = 8
+@export var min_ruins: int = 1
+@export var max_ruins: int = 3
 @export var dungeon_chance: float = 0.3
 @export var fireplace_chance: float = 0.15
 @export var traveling_merchant_chance: float = 0.04  # 4% chance per room (rare encounter)
@@ -681,7 +680,7 @@ func _set_background_for_biome() -> void:
 func _spawn_ruins() -> void:
 	var ruin_count := rng.randi_range(min_ruins, max_ruins)
 	var placed_positions: Array[Vector3] = []
-	var min_distance := 12.0  # Minimum distance between ruins (reduced for testing)
+	var min_distance := 20.0  # Minimum distance between ruins
 
 	for i in range(ruin_count):
 		var attempts := 0
