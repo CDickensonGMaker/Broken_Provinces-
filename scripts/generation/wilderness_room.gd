@@ -182,14 +182,39 @@ func _setup_materials() -> void:
 
 ## Create ground plane with simple solid color (PS1 style - no complex textures)
 ## When use_heightmap is true, creates terrain with noise-based height variation
+## Cells adjacent to towns/hand-crafted scenes use flat ground as a buffer zone
 func _create_ground() -> void:
-	if use_heightmap and not is_road_cell:
+	var use_terrain: bool = use_heightmap and not is_road_cell and not _is_adjacent_to_scene()
+
+	if use_terrain:
 		_create_heightmap_terrain()
 	else:
 		_create_flat_ground()
 
 	# Spawn environmental props on the ground
 	_spawn_ground_props()
+
+
+## Check if this cell is adjacent to a hand-crafted scene (town, dungeon, etc.)
+## Used to create flat buffer zones around towns
+func _is_adjacent_to_scene() -> bool:
+	var neighbors: Array[Vector2i] = [
+		grid_coords + Vector2i(0, -1),   # North
+		grid_coords + Vector2i(0, 1),    # South
+		grid_coords + Vector2i(1, 0),    # East
+		grid_coords + Vector2i(-1, 0),   # West
+		grid_coords + Vector2i(1, -1),   # Northeast
+		grid_coords + Vector2i(-1, -1),  # Northwest
+		grid_coords + Vector2i(1, 1),    # Southeast
+		grid_coords + Vector2i(-1, 1),   # Southwest
+	]
+
+	for neighbor_coords: Vector2i in neighbors:
+		var cell_info: WorldGrid.CellInfo = WorldGrid.get_cell(neighbor_coords)
+		if cell_info and cell_info.scene_path != "":
+			return true
+
+	return false
 
 
 ## Create flat ground (original method, used for roads)
