@@ -44,18 +44,25 @@ const TILE_TEMPLATES: Dictionary = {
 }
 
 ## Content settings (from plan: 1-3 ruins, 0-1 dungeons at 30%)
-@export var min_ruins: int = 1
-@export var max_ruins: int = 3
+## TESTING: Increased ruins for terrain testing
+@export var min_ruins: int = 5
+@export var max_ruins: int = 8
 @export var dungeon_chance: float = 0.3
 @export var fireplace_chance: float = 0.15
 @export var traveling_merchant_chance: float = 0.04  # 4% chance per room (rare encounter)
-@export var enemy_count_min: int = 2
-@export var enemy_count_max: int = 5
+@export var enemy_count_min: int = 1
+@export var enemy_count_max: int = 3
 @export var cursed_totem_chance: float = 0.25  # 25% chance for cursed totem near ruins
 
 ## Road visualization settings
 @export var road_width: float = 8.0  # Width of dirt road
 @export var road_prop_density_multiplier: float = 0.3  # Reduce props to 30% on roads
+
+## Terrain settings (Daggerfall-style discrete heights)
+@export var use_heightmap: bool = true  # Daggerfall-style stepped terrain
+
+## Terrain height data for prop placement (stored after generation)
+var _terrain_heights: PackedFloat32Array
 
 ## Room grid coordinates (set by SceneManager)
 var grid_coords: Vector2i = Vector2i.ZERO
@@ -175,7 +182,19 @@ func _setup_materials() -> void:
 
 
 ## Create ground plane with simple solid color (PS1 style - no complex textures)
+## When use_heightmap is true, creates terrain with noise-based height variation
 func _create_ground() -> void:
+	if use_heightmap and not is_road_cell:
+		_create_heightmap_terrain()
+	else:
+		_create_flat_ground()
+
+	# Spawn environmental props on the ground
+	_spawn_ground_props()
+
+
+## Create flat ground (original method, used for roads)
+func _create_flat_ground() -> void:
 	var ground := CSGBox3D.new()
 	ground.name = "Ground"
 	ground.size = Vector3(room_size + 20, 1.0, room_size + 20)
@@ -190,8 +209,38 @@ func _create_ground() -> void:
 	ground.material = simple_mat
 	add_child(ground)
 
-	# Spawn environmental props on the ground
-	_spawn_ground_props()
+
+## Create terrain with Daggerfall-style discrete height levels
+func _create_heightmap_terrain() -> void:
+	# Create terrain material
+	var terrain_mat := StandardMaterial3D.new()
+	terrain_mat.roughness = 0.95
+	terrain_mat.albedo_color = ground_material.albedo_color
+	terrain_mat.cull_mode = BaseMaterial3D.CULL_BACK
+
+	# Generate Daggerfall-style terrain
+	var result: Dictionary = DaggerfallTerrain.generate(
+		grid_coords.x,
+		grid_coords.y,
+		biome,
+		terrain_mat
+	)
+
+	# Store heights for prop placement
+	_terrain_heights = result.heights
+
+	# Add terrain node to scene
+	var terrain_node: Node3D = result.node
+	add_child(terrain_node)
+
+
+## Get terrain height at a world position (relative to room center)
+## Returns 0.0 if no terrain heights or position is outside bounds
+func get_terrain_height_at(local_x: float, local_z: float) -> float:
+	if _terrain_heights.is_empty():
+		return 0.0
+
+	return DaggerfallTerrain.get_height_at(_terrain_heights, local_x, local_z)
 
 
 ## Create dirt road mesh if this is a road cell
@@ -306,29 +355,26 @@ func _spawn_ground_props() -> void:
 
 	# Grass clumps
 	for i in range(num_grass):
-		var pos := Vector3(
-			rng.randf_range(-half_size, half_size),
-			0.0,
-			rng.randf_range(-half_size, half_size)
-		)
+		var x: float = rng.randf_range(-half_size, half_size)
+		var z: float = rng.randf_range(-half_size, half_size)
+		var y: float = get_terrain_height_at(x, z)
+		var pos := Vector3(x, y, z)
 		_spawn_grass_prop(props_container, pos)
 
 	# Trees
 	for i in range(num_trees):
-		var pos := Vector3(
-			rng.randf_range(-half_size, half_size),
-			0.0,
-			rng.randf_range(-half_size, half_size)
-		)
+		var x: float = rng.randf_range(-half_size, half_size)
+		var z: float = rng.randf_range(-half_size, half_size)
+		var y: float = get_terrain_height_at(x, z)
+		var pos := Vector3(x, y, z)
 		_spawn_tree_prop(props_container, pos)
 
 	# Special props based on biome
 	for i in range(num_special):
-		var pos := Vector3(
-			rng.randf_range(-half_size, half_size),
-			0.0,
-			rng.randf_range(-half_size, half_size)
-		)
+		var x: float = rng.randf_range(-half_size, half_size)
+		var z: float = rng.randf_range(-half_size, half_size)
+		var y: float = get_terrain_height_at(x, z)
+		var pos := Vector3(x, y, z)
 		_spawn_special_prop(props_container, pos)
 
 
@@ -635,7 +681,7 @@ func _set_background_for_biome() -> void:
 func _spawn_ruins() -> void:
 	var ruin_count := rng.randi_range(min_ruins, max_ruins)
 	var placed_positions: Array[Vector3] = []
-	var min_distance := 20.0  # Minimum distance between ruins
+	var min_distance := 12.0  # Minimum distance between ruins (reduced for testing)
 
 	for i in range(ruin_count):
 		var attempts := 0
@@ -662,6 +708,60 @@ func _spawn_ruins() -> void:
 			add_child(ruin)
 			ruins.append(ruin)
 			placed_positions.append(pos)
+
+	# Always spawn one observation tower per cell (guaranteed)
+	_spawn_observation_tower(placed_positions)
+
+
+## Spawn a guaranteed observation tower with loot chest
+func _spawn_observation_tower(existing_positions: Array[Vector3]) -> void:
+	var min_distance := 15.0
+	var attempts := 0
+	var max_attempts := 30
+	var pos: Vector3
+
+	while attempts < max_attempts:
+		pos = _get_random_content_position()
+		var valid := true
+
+		# Check distance from other ruins
+		for other_pos: Vector3 in existing_positions:
+			if pos.distance_to(other_pos) < min_distance:
+				valid = false
+				break
+
+		if valid:
+			break
+		attempts += 1
+
+	# Load the observation tower scene
+	var tower_scene: PackedScene = load("res://scenes/structures/observation_tower.tscn")
+	if not tower_scene:
+		push_error("[WildernessRoom] Failed to load observation_tower.tscn")
+		return
+
+	var tower: Node3D = tower_scene.instantiate()
+	tower.position = pos
+	add_child(tower)
+	ruins.append(tower)
+
+	# Spawn chest at the marker position
+	var chest_marker: Marker3D = tower.get_node_or_null("ChestSpawnPoint")
+	if chest_marker:
+		var chest_id: String = "tower_chest_%d_%d" % [grid_coords.x, grid_coords.y]
+		var chest: Chest = Chest.spawn_chest(
+			tower,
+			chest_marker.position,
+			"Tower Chest",
+			false,
+			0,
+			false,
+			chest_id
+		)
+		if chest:
+			chest.setup_with_loot(LootTables.LootTier.UNCOMMON)
+
+	print("[WildernessRoom] Spawned Observation Tower at %s" % pos)
 
 
 ## Spawn Cursed Totems near ruins (skeleton spawners)
@@ -694,7 +794,7 @@ func _create_ruin(index: int) -> Node3D:
 	var ruin := Node3D.new()
 	ruin.name = "Ruin_%d" % index
 
-	var ruin_type := rng.randi() % 4
+	var ruin_type := rng.randi() % 4  # 0-3 only, observation towers spawn separately
 
 	match ruin_type:
 		0:  # Broken tower
@@ -1359,13 +1459,18 @@ func _spawn_enemies() -> void:
 		# Get enemy config for this biome
 		var enemy_config: Dictionary = _get_enemy_config_for_biome()
 
+		# Apply height offset for flying enemies (bats, flaming skulls, etc.)
+		var spawn_pos: Vector3 = pos
+		if enemy_config.get("is_flying", false):
+			spawn_pos.y += enemy_config.get("fly_height", 3.0)
+
 		var enemy: Node = null
 
 		# Check if this is a skeleton enemy - use specialized spawner with walk/attack sprites
 		if enemy_config.get("is_skeleton", false):
 			enemy = EnemyBase.spawn_skeleton_enemy(
 				self,
-				pos,
+				spawn_pos,
 				enemy_config.data_path
 			)
 		else:
@@ -1378,7 +1483,7 @@ func _spawn_enemies() -> void:
 			# Spawn regular billboard enemy
 			enemy = EnemyBase.spawn_billboard_enemy(
 				self,
-				pos,
+				spawn_pos,
 				enemy_config.data_path,
 				sprite_tex,
 				enemy_config.h_frames,
@@ -1767,40 +1872,38 @@ func _create_mountain_block() -> Node3D:
 
 
 ## Get random position in content area (avoiding edges)
+## Uses terrain heightmap for Y position
 func _get_random_content_position() -> Vector3:
 	var margin := 20.0  # Stay away from edges
 	var half_size := room_size / 2.0 - margin
-	return Vector3(
-		rng.randf_range(-half_size, half_size),
-		0,
-		rng.randf_range(-half_size, half_size)
-	)
+	var x: float = rng.randf_range(-half_size, half_size)
+	var z: float = rng.randf_range(-half_size, half_size)
+	var y: float = get_terrain_height_at(x, z)
+	return Vector3(x, y, z)
 
 
 ## Get random position for props (can be closer to edges)
 ## On road cells, avoids the road area
+## Uses terrain heightmap for Y position
 func _get_random_prop_position() -> Vector3:
 	var margin := 10.0
 	var half_size := room_size / 2.0 - margin
 
 	# If not a road cell, use full area
 	if not is_road_cell:
-		return Vector3(
-			rng.randf_range(-half_size, half_size),
-			0,
-			rng.randf_range(-half_size, half_size)
-		)
+		var x: float = rng.randf_range(-half_size, half_size)
+		var z: float = rng.randf_range(-half_size, half_size)
+		var y: float = get_terrain_height_at(x, z)
+		return Vector3(x, y, z)
 
 	# On road cells, try to avoid the road area
 	var max_attempts := 10
 	var road_half_width: float = road_width / 2.0 + 2.0  # Add buffer
 
 	for i in range(max_attempts):
-		var pos := Vector3(
-			rng.randf_range(-half_size, half_size),
-			0,
-			rng.randf_range(-half_size, half_size)
-		)
+		var x: float = rng.randf_range(-half_size, half_size)
+		var z: float = rng.randf_range(-half_size, half_size)
+		var pos := Vector3(x, 0, z)
 
 		# Check if position is on the road
 		var on_road := false
@@ -1820,19 +1923,28 @@ func _get_random_prop_position() -> Vector3:
 			on_road = true
 
 		if not on_road:
+			pos.y = get_terrain_height_at(x, z)
 			return pos
 
-	# Fallback - return position away from center
+	# Fallback - return position away from center with terrain height
 	var side: int = rng.randi() % 4
+	var fallback_x: float
+	var fallback_z: float
 	match side:
 		0:  # Northeast quadrant
-			return Vector3(rng.randf_range(road_half_width + 5, half_size), 0, rng.randf_range(-half_size, -road_half_width - 5))
+			fallback_x = rng.randf_range(road_half_width + 5, half_size)
+			fallback_z = rng.randf_range(-half_size, -road_half_width - 5)
 		1:  # Southeast quadrant
-			return Vector3(rng.randf_range(road_half_width + 5, half_size), 0, rng.randf_range(road_half_width + 5, half_size))
+			fallback_x = rng.randf_range(road_half_width + 5, half_size)
+			fallback_z = rng.randf_range(road_half_width + 5, half_size)
 		2:  # Southwest quadrant
-			return Vector3(rng.randf_range(-half_size, -road_half_width - 5), 0, rng.randf_range(road_half_width + 5, half_size))
+			fallback_x = rng.randf_range(-half_size, -road_half_width - 5)
+			fallback_z = rng.randf_range(road_half_width + 5, half_size)
 		_:  # Northwest quadrant
-			return Vector3(rng.randf_range(-half_size, -road_half_width - 5), 0, rng.randf_range(-half_size, -road_half_width - 5))
+			fallback_x = rng.randf_range(-half_size, -road_half_width - 5)
+			fallback_z = rng.randf_range(-half_size, -road_half_width - 5)
+	var fallback_y: float = get_terrain_height_at(fallback_x, fallback_z)
+	return Vector3(fallback_x, fallback_y, fallback_z)
 
 
 ## Spawn signposts on road cells pointing to destinations
