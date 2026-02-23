@@ -1,23 +1,21 @@
-## daggerfall_terrain.gd - Daggerfall-style discrete height terrain generation
-## Creates PS1-appropriate stepped terrain with low vertex count
-## Uses discrete height levels for authentic retro aesthetic
+## daggerfall_terrain.gd - Seamless terrain generation using world-space noise
+## Creates continuous terrain across cell boundaries
+## Heights are deterministic based on world coordinates
 class_name DaggerfallTerrain
 extends RefCounted
 
 
-## Grid configuration - higher resolution for walkable slopes
-const GRID_SIZE: int = 17          # 17x17 vertices per cell (289 total, still low poly)
-const HEIGHT_LEVELS: int = 5       # Discrete height tiers: 0, 1, 2, 3, 4
-const HEIGHT_STEP: float = 0.25    # Units between levels (max height 1.0) - very gentle slopes
+## Grid configuration
+const GRID_SIZE: int = 17          # 17x17 vertices per cell (289 total)
 const CELL_SIZE: float = 100.0     # World units per cell
 
-## Noise settings - coarser for blockier terrain
-const NOISE_FREQUENCY: float = 0.008  # Lower = larger features
-const NOISE_SEED: int = 42069         # Fixed seed for seamless cells
+## Height settings
+const MAX_HEIGHT: float = 4.0      # Maximum terrain height in units
+const MIN_HEIGHT: float = 0.0      # Minimum terrain height
 
-## Smoothing settings
-const SMOOTH_PASSES: int = 4       # Number of smoothing passes (more = gentler slopes)
-const SMOOTH_FACTOR: float = 0.5   # How much neighbors influence height (0-1)
+## Noise settings - world-space continuous noise
+const NOISE_FREQUENCY: float = 0.012  # Controls hill size (lower = larger hills)
+const NOISE_SEED: int = 42069         # Fixed seed for deterministic generation
 
 
 ## Generate complete terrain for a cell
@@ -94,89 +92,44 @@ static func get_height_at(
 	return lerpf(h0, h1, fz)
 
 
-## Generate discrete height grid
-## Uses noise quantized to discrete levels for Daggerfall aesthetic
+## Generate height grid using world-space noise coordinates
+## This ensures seamless terrain across cell boundaries - edge vertices
+## at adjacent cells sample the exact same world position and get identical heights
 static func _generate_height_grid(cell_x: int, cell_z: int) -> PackedFloat32Array:
 	var noise := FastNoiseLite.new()
-	noise.noise_type = FastNoiseLite.TYPE_PERLIN
+	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
 	noise.frequency = NOISE_FREQUENCY
-	noise.fractal_octaves = 2
+	noise.fractal_octaves = 3
 	noise.fractal_lacunarity = 2.0
-	noise.fractal_gain = 0.4
+	noise.fractal_gain = 0.5
 	noise.seed = NOISE_SEED
 
 	var heights := PackedFloat32Array()
 	heights.resize(GRID_SIZE * GRID_SIZE)
 
 	var step: float = CELL_SIZE / (GRID_SIZE - 1)
-	var world_offset_x: float = cell_x * CELL_SIZE
-	var world_offset_z: float = cell_z * CELL_SIZE
 
 	for z in range(GRID_SIZE):
 		for x in range(GRID_SIZE):
-			var world_x: float = world_offset_x + x * step
-			var world_z: float = world_offset_z + z * step
+			# Calculate world-space coordinates for this vertex
+			# This is the key to seamless terrain - same world pos = same height
+			var world_x: float = cell_x * CELL_SIZE + x * step
+			var world_z: float = cell_z * CELL_SIZE + z * step
 
-			# Get noise value (-1 to 1)
+			# Sample noise at world coordinates (returns -1 to 1)
 			var noise_value: float = noise.get_noise_2d(world_x, world_z)
 
-			# Quantize to discrete height level
-			var height: float = _quantize_height(noise_value)
-			heights[z * GRID_SIZE + x] = height
+			# Map noise to height range (no quantization - smooth continuous values)
+			# noise_value is -1 to 1, map to MIN_HEIGHT to MAX_HEIGHT
+			var height: float = lerpf(MIN_HEIGHT, MAX_HEIGHT, (noise_value + 1.0) * 0.5)
 
-	# Apply smoothing passes for gradual transitions
-	for pass_num in range(SMOOTH_PASSES):
-		heights = _smooth_heights(heights)
+			heights[z * GRID_SIZE + x] = height
 
 	return heights
 
 
-## Apply smoothing pass to blend neighboring heights
-static func _smooth_heights(heights: PackedFloat32Array) -> PackedFloat32Array:
-	var smoothed := PackedFloat32Array()
-	smoothed.resize(GRID_SIZE * GRID_SIZE)
-
-	for z in range(GRID_SIZE):
-		for x in range(GRID_SIZE):
-			var idx: int = z * GRID_SIZE + x
-			var current: float = heights[idx]
-
-			# Get neighbor heights (with edge clamping)
-			var sum: float = 0.0
-			var count: int = 0
-
-			for dz in range(-1, 2):
-				for dx in range(-1, 2):
-					if dx == 0 and dz == 0:
-						continue
-					var nx: int = clampi(x + dx, 0, GRID_SIZE - 1)
-					var nz: int = clampi(z + dz, 0, GRID_SIZE - 1)
-					sum += heights[nz * GRID_SIZE + nx]
-					count += 1
-
-			var neighbor_avg: float = sum / count
-			# Blend current height with neighbor average
-			smoothed[idx] = lerpf(current, neighbor_avg, SMOOTH_FACTOR)
-
-	return smoothed
-
-
-## Quantize continuous noise value to discrete height level
-## Maps -1.0 to 1.0 range to discrete levels
-static func _quantize_height(noise_value: float) -> float:
-	# Map noise (-1 to 1) to (0 to 1) range
-	var normalized: float = (noise_value + 1.0) * 0.5
-
-	# Quantize to level index (0, 1, 2, 3, 4)
-	var level: int = int(normalized * HEIGHT_LEVELS)
-	level = clampi(level, 0, HEIGHT_LEVELS - 1)
-
-	# Return actual height value
-	return level * HEIGHT_STEP
-
-
 ## Create mesh from height grid
-## Builds low-poly terrain with 8x8 quads (128 triangles)
+## Builds terrain mesh from the 17x17 vertex grid
 static func _create_mesh(
 	heights: PackedFloat32Array,
 	material: Material
@@ -193,7 +146,7 @@ static func _create_mesh(
 	var step: float = CELL_SIZE / (GRID_SIZE - 1)
 	var half_size: float = CELL_SIZE * 0.5
 
-	# Generate vertices (9x9 = 81)
+	# Generate vertices (17x17 = 289)
 	for z in range(GRID_SIZE):
 		for x in range(GRID_SIZE):
 			var height: float = heights[z * GRID_SIZE + x]
