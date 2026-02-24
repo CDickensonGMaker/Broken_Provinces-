@@ -151,6 +151,21 @@ const LOCATIONS: Array = [
 	 "description": "The great northern gate of Kazer-Dun Dwarf Hold."},
 	{"id": "sunken_crypts", "name": "Sunken Crypts", "x": -3, "y": 2, "type": "dungeon",
 	 "description": "A waterlogged burial ground slowly sinking into the marsh."},
+	# === SOUTH/SOUTHWEST LOCATIONS (filling empty areas) ===
+	{"id": "darkwood_grove", "name": "Darkwood Grove", "x": -3, "y": 5, "type": "dungeon",
+	 "description": "Ancient trees twisted by dark magic. The forest spirits here have turned hostile."},
+	{"id": "troll_bridge", "name": "Troll Bridge", "x": -6, "y": 6, "type": "landmark",
+	 "description": "A crumbling stone bridge over a ravine. A territorial troll has claimed it as his domain."},
+	{"id": "abandoned_mine", "name": "Abandoned Silver Mine", "x": 0, "y": 4, "type": "dungeon",
+	 "description": "A mine shaft once worked by dwarven prospectors. Something drove them out."},
+	{"id": "wyverns_roost", "name": "Wyvern's Roost", "x": 2, "y": 5, "type": "landmark",
+	 "description": "A rocky outcropping where wyverns nest. Their shrieks echo across the hills."},
+	{"id": "border_wars_graveyard", "name": "Border Wars Graveyard", "x": -2, "y": 7, "type": "dungeon",
+	 "description": "Mass graves from the Tegner Wars. The restless dead do not sleep quietly here."},
+	{"id": "smugglers_cove", "name": "Smuggler's Cove", "x": -9, "y": 5, "type": "dungeon",
+	 "description": "A hidden sea cave used by pirates and smugglers. Rumored to hold buried treasure."},
+	{"id": "old_watchtower", "name": "Old Watchtower", "x": 1, "y": 2, "type": "landmark",
+	 "description": "A ruined imperial watchtower overlooking the road. Now a bandit lookout."},
 ]
 
 ## Road connections (Elder Moor-relative coordinates)

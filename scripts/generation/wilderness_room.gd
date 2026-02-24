@@ -51,6 +51,22 @@ const TILE_TEMPLATES: Dictionary = {
 	]
 }
 
+## 3D tree models for decorative (non-harvestable) trees
+const TREE_3D_MODELS: Array[String] = [
+	"res://assets/models/trees/big_fabulous_tree_001.fbx",
+	"res://assets/models/trees/fabulous_tree_001.fbx",
+	"res://assets/models/trees/fir_001.fbx",
+	"res://assets/models/trees/tree_001.fbx"
+]
+
+## 3D mushroom models for decorative (non-harvestable) mushrooms
+const MUSHROOM_3D_MODELS: Array[String] = [
+	"res://assets/models/mushrooms/fabulous_mushroom_001.fbx",
+	"res://assets/models/mushrooms/fabulous_mushroom_002.fbx",
+	"res://assets/models/mushrooms/fabulous_mushroom_003.fbx",
+	"res://assets/models/mushrooms/fabulous_mushroom_004.fbx"
+]
+
 ## Content settings (from plan: 1-3 ruins, 0-1 dungeons at 30%)
 @export var min_ruins: int = 1
 @export var max_ruins: int = 3
@@ -1148,6 +1164,22 @@ func _spawn_environment() -> void:
 		add_child(mushroom)
 		props.append(mushroom)
 
+	# Spawn decorative 3D trees (non-harvestable, 30-50% of harvestable tree count)
+	var decorative_tree_count: int = int(tree_count * rng.randf_range(0.3, 0.5))
+	for i in range(decorative_tree_count):
+		var pos: Vector3 = _get_random_prop_position()
+		var deco_tree: Node3D = _create_decorative_tree_3d(pos)
+		add_child(deco_tree)
+		props.append(deco_tree)
+
+	# Spawn decorative 3D mushrooms near trees or in random positions
+	var decorative_mushroom_count: int = int(mushroom_count * rng.randf_range(0.4, 0.6))
+	for i in range(decorative_mushroom_count):
+		var pos: Vector3 = _get_random_prop_position()
+		var deco_mushroom: Node3D = _create_decorative_mushroom_3d(pos)
+		add_child(deco_mushroom)
+		props.append(deco_mushroom)
+
 
 ## Create a harvestable mushroom (no tool required)
 func _create_mushroom() -> Node3D:
@@ -1168,6 +1200,105 @@ func _create_tree() -> Node3D:
 	tree.yield_min = 2
 	tree.yield_max = 3
 	return tree
+
+
+## Create a decorative 3D tree (non-harvestable, uses FBX models)
+func _create_decorative_tree_3d(pos: Vector3) -> Node3D:
+	var container := Node3D.new()
+	container.name = "DecorativeTree3D"
+	container.position = pos
+
+	# Pick a random tree model
+	var model_path: String = TREE_3D_MODELS[rng.randi() % TREE_3D_MODELS.size()]
+
+	# Try to load the model
+	if ResourceLoader.exists(model_path):
+		var scene: PackedScene = load(model_path)
+		if scene:
+			var tree_instance: Node3D = scene.instantiate()
+
+			# Apply random Y rotation
+			tree_instance.rotation.y = rng.randf() * TAU
+
+			# Scale appropriately
+			tree_instance.scale = Vector3(0.5, 0.5, 0.5)
+
+			container.add_child(tree_instance)
+
+			# Add collision for trunk (StaticBody3D with cylinder shape)
+			var static_body := StaticBody3D.new()
+			static_body.name = "TrunkCollision"
+
+			var collision_shape := CollisionShape3D.new()
+			var cylinder := CylinderShape3D.new()
+			cylinder.radius = 0.4
+			cylinder.height = 3.0
+			collision_shape.shape = cylinder
+			collision_shape.position = Vector3(0, 1.5, 0)  # Center the cylinder vertically
+
+			static_body.add_child(collision_shape)
+			container.add_child(static_body)
+	else:
+		# Fallback: create a simple placeholder if model not found
+		var placeholder := CSGCylinder3D.new()
+		placeholder.radius = 0.3
+		placeholder.height = 4.0
+		placeholder.position = Vector3(0, 2.0, 0)
+
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color(0.4, 0.25, 0.15)  # Brown trunk color
+		placeholder.material = mat
+
+		container.add_child(placeholder)
+
+	return container
+
+
+## Create a decorative 3D mushroom (non-harvestable, uses FBX models)
+func _create_decorative_mushroom_3d(pos: Vector3) -> Node3D:
+	var container := Node3D.new()
+	container.name = "DecorativeMushroom3D"
+	container.position = pos
+
+	# Pick a random mushroom model
+	var model_path: String = MUSHROOM_3D_MODELS[rng.randi() % MUSHROOM_3D_MODELS.size()]
+
+	# Try to load the model
+	if ResourceLoader.exists(model_path):
+		var scene: PackedScene = load(model_path)
+		if scene:
+			var mushroom_instance: Node3D = scene.instantiate()
+
+			# Apply random Y rotation
+			mushroom_instance.rotation.y = rng.randf() * TAU
+
+			# Small scale for mushrooms
+			mushroom_instance.scale = Vector3(0.3, 0.3, 0.3)
+
+			container.add_child(mushroom_instance)
+	else:
+		# Fallback: create a simple placeholder if model not found
+		var cap := CSGSphere3D.new()
+		cap.radius = 0.15
+		cap.position = Vector3(0, 0.2, 0)
+
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color(0.8, 0.2, 0.2)  # Red mushroom cap
+		cap.material = mat
+
+		var stem := CSGCylinder3D.new()
+		stem.radius = 0.05
+		stem.height = 0.2
+		stem.position = Vector3(0, 0.1, 0)
+
+		var stem_mat := StandardMaterial3D.new()
+		stem_mat.albedo_color = Color(0.9, 0.9, 0.85)  # White stem
+		stem.material = stem_mat
+
+		container.add_child(cap)
+		container.add_child(stem)
+
+	return container
 
 
 ## Get tree texture based on biome
@@ -1583,125 +1714,171 @@ func _spawn_enemies() -> void:
 	print("[WildernessRoom] Spawned %d enemies" % enemies.size())
 
 
-## Get enemy configuration based on biome
+## Get enemy configuration based on biome AND danger level
 ## Returns dictionary with: data_path, sprite_path, h_frames, v_frames, display_name
 ## NOTE: Skeletons removed from open world - they only spawn from Cursed Totems
+## Danger levels (distance from Elder Moor):
+##   1-3: Basic wildlife (wolf, spider, rat, bat)
+##   4-5: Mid-tier (dire wolf, goblin)
+##   6-7: Dangerous (ogre, troll, tree_ent)
+##   8-10: Exotic (wyvern, basilisk, abomination)
 func _get_enemy_config_for_biome() -> Dictionary:
+	# Get cell danger level from WorldGrid
+	var cell: WorldGrid.CellInfo = WorldGrid.get_cell(grid_coords)
+	var danger: int = 1
+	if cell:
+		danger = cell.danger_level
+
 	var configs: Array[Dictionary] = []
+
+	# === TIER 1: Basic enemies (danger 1-3) - Always available ===
+	var tier1_configs: Array[Dictionary] = [
+		{
+			"data_path": "res://data/enemies/wolf.tres",
+			"sprite_path": "res://Sprite folders grab bag/wolf_moving.png",
+			"h_frames": 6, "v_frames": 1,
+			"display_name": "Wolf", "is_skeleton": false
+		},
+		{
+			"data_path": "res://data/enemies/giant_spider.tres",
+			"sprite_path": "res://Sprite folders grab bag/evilspider.png",
+			"h_frames": 1, "v_frames": 1,
+			"display_name": "Giant Spider", "is_skeleton": false
+		},
+		{
+			"data_path": "res://data/enemies/human_bandit.tres",
+			"sprite_path": "res://Sprite folders grab bag/3x4humanbandit.png",
+			"h_frames": 4, "v_frames": 1,
+			"display_name": "Bandit", "is_skeleton": false
+		},
+		{
+			"data_path": "res://data/enemies/giant_rat.tres",
+			"sprite_path": "res://Sprite folders grab bag/rat_moving.png",
+			"h_frames": 4, "v_frames": 1,
+			"display_name": "Giant Rat", "is_skeleton": false
+		},
+		{
+			"data_path": "res://data/enemies/bat.tres",
+			"sprite_path": "res://Sprite folders grab bag/bat_flying_attacking.png",
+			"h_frames": 4, "v_frames": 1,
+			"display_name": "Bat", "is_skeleton": false,
+			"is_flying": true, "fly_height": 2.5
+		}
+	]
+
+	# === TIER 2: Mid-tier enemies (danger 4+) ===
+	var tier2_configs: Array[Dictionary] = [
+		{
+			"data_path": "res://data/enemies/dire_wolf.tres",
+			"sprite_path": "res://Sprite folders grab bag/wolf_moving.png",
+			"h_frames": 6, "v_frames": 1,
+			"display_name": "Dire Wolf", "is_skeleton": false
+		},
+		{
+			"data_path": "res://data/enemies/goblin_soldier.tres",
+			"sprite_path": "res://Sprite folders grab bag/goblin_sword.png",
+			"h_frames": 4, "v_frames": 2,
+			"display_name": "Goblin Soldier", "is_skeleton": false
+		},
+		{
+			"data_path": "res://data/enemies/bandit_captain.tres",
+			"sprite_path": "res://Sprite folders grab bag/3x4humanbandit.png",
+			"h_frames": 4, "v_frames": 1,
+			"display_name": "Bandit Captain", "is_skeleton": false
+		}
+	]
+
+	# === TIER 3: Dangerous enemies (danger 6+) ===
+	var tier3_configs: Array[Dictionary] = [
+		{
+			"data_path": "res://data/enemies/ogre.tres",
+			"sprite_path": "res://assets/sprites/enemies/ogre_monster.png",
+			"h_frames": 1, "v_frames": 1,
+			"display_name": "Ogre", "is_skeleton": false
+		},
+		{
+			"data_path": "res://data/enemies/troll.tres",
+			"sprite_path": "res://Sprite folders grab bag/troll.png",
+			"h_frames": 1, "v_frames": 1,
+			"display_name": "Bridge Troll", "is_skeleton": false
+		}
+	]
+
+	# === TIER 4: Exotic enemies (danger 8+) ===
+	var tier4_configs: Array[Dictionary] = [
+		{
+			"data_path": "res://data/enemies/wyvern.tres",
+			"sprite_path": "res://Sprite folders grab bag/wyvern.png",
+			"h_frames": 6, "v_frames": 1,
+			"display_name": "Wyvern", "is_skeleton": false,
+			"is_flying": true, "fly_height": 4.0
+		},
+		{
+			"data_path": "res://data/enemies/basilisk.tres",
+			"sprite_path": "res://Sprite folders grab bag/baslisk.png",
+			"h_frames": 4, "v_frames": 1,
+			"display_name": "Basilisk", "is_skeleton": false
+		},
+		{
+			"data_path": "res://data/enemies/abomination.tres",
+			"sprite_path": "res://assets/sprites/abomination.png",
+			"h_frames": 1, "v_frames": 1,
+			"display_name": "Abomination", "is_skeleton": false
+		}
+	]
+
+	# === BIOME-SPECIFIC ADDITIONS ===
+	var biome_configs: Array[Dictionary] = []
 
 	match biome:
 		Biome.FOREST:
-			configs = [
-				{
-					"data_path": "res://data/enemies/wolf.tres",
-					"sprite_path": "res://Sprite folders grab bag/wolf_moving.png",
-					"h_frames": 6,
-					"v_frames": 1,
-					"display_name": "Wolf",
-					"is_skeleton": false
-				},
-				{
-					"data_path": "res://data/enemies/giant_spider.tres",
-					"sprite_path": "res://Sprite folders grab bag/evilspider.png",
-					"h_frames": 1,
-					"v_frames": 1,
-					"display_name": "Giant Spider",
-					"is_skeleton": false
-				},
-				{
-					"data_path": "res://data/enemies/human_bandit.tres",
-					"sprite_path": "res://Sprite folders grab bag/3x4humanbandit.png",
-					"h_frames": 4,
-					"v_frames": 1,
-					"display_name": "Bandit",
-					"is_skeleton": false
-				}
-			]
+			# Forests can have tree ents at danger 5+
+			if danger >= 5:
+				biome_configs.append({
+					"data_path": "res://data/enemies/tree_ent.tres",
+					"sprite_path": "res://assets/sprites/enemies/tree_ent.png",
+					"h_frames": 4, "v_frames": 4,
+					"display_name": "Ancient Treant", "is_skeleton": false
+				})
 		Biome.SWAMP:
-			configs = [
-				{
-					"data_path": "res://data/enemies/giant_spider.tres",
-					"sprite_path": "res://Sprite folders grab bag/evilspider.png",
-					"h_frames": 1,
-					"v_frames": 1,
-					"display_name": "Giant Spider",
-					"is_skeleton": false
-				},
-				{
-					"data_path": "res://data/enemies/wolf.tres",
-					"sprite_path": "res://Sprite folders grab bag/wolf_moving.png",
-					"h_frames": 6,
-					"v_frames": 1,
-					"display_name": "Wolf",
-					"is_skeleton": false
-				},
-				{
-					"data_path": "res://data/enemies/human_bandit.tres",
-					"sprite_path": "res://Sprite folders grab bag/3x4humanbandit.png",
-					"h_frames": 4,
-					"v_frames": 1,
-					"display_name": "Bandit",
-					"is_skeleton": false
-				}
-			]
+			# Swamps have more spiders and trolls
+			tier1_configs.append({
+				"data_path": "res://data/enemies/giant_spider.tres",
+				"sprite_path": "res://Sprite folders grab bag/evilspider.png",
+				"h_frames": 1, "v_frames": 1,
+				"display_name": "Swamp Spider", "is_skeleton": false
+			})
 		Biome.HILLS, Biome.ROCKY:
-			configs = [
-				{
-					"data_path": "res://data/enemies/wolf.tres",
-					"sprite_path": "res://Sprite folders grab bag/wolf_moving.png",
-					"h_frames": 6,
-					"v_frames": 1,
-					"display_name": "Wolf",
-					"is_skeleton": false
-				},
-				{
-					"data_path": "res://data/enemies/human_bandit.tres",
-					"sprite_path": "res://Sprite folders grab bag/3x4humanbandit.png",
-					"h_frames": 4,
-					"v_frames": 1,
-					"display_name": "Bandit",
-					"is_skeleton": false
-				}
-			]
-		Biome.PLAINS:
-			configs = [
-				{
-					"data_path": "res://data/enemies/wolf.tres",
-					"sprite_path": "res://Sprite folders grab bag/wolf_moving.png",
-					"h_frames": 6,
-					"v_frames": 1,
-					"display_name": "Wolf",
-					"is_skeleton": false
-				},
-				{
-					"data_path": "res://data/enemies/human_bandit.tres",
-					"sprite_path": "res://Sprite folders grab bag/3x4humanbandit.png",
-					"h_frames": 4,
-					"v_frames": 1,
-					"display_name": "Bandit",
-					"is_skeleton": false
-				}
-			]
-		_:
-			# Default fallback - wolves and spiders (wildlife)
-			configs = [
-				{
-					"data_path": "res://data/enemies/wolf.tres",
-					"sprite_path": "res://Sprite folders grab bag/wolf_moving.png",
-					"h_frames": 6,
-					"v_frames": 1,
-					"display_name": "Wolf",
-					"is_skeleton": false
-				},
-				{
-					"data_path": "res://data/enemies/giant_spider.tres",
-					"sprite_path": "res://Sprite folders grab bag/evilspider.png",
-					"h_frames": 1,
-					"v_frames": 1,
-					"display_name": "Giant Spider",
-					"is_skeleton": false
-				}
-			]
+			# Rocky areas have more wyverns and basilisks at high danger
+			if danger >= 7:
+				biome_configs.append({
+					"data_path": "res://data/enemies/wyvern.tres",
+					"sprite_path": "res://Sprite folders grab bag/wyvern.png",
+					"h_frames": 6, "v_frames": 1,
+					"display_name": "Wyvern", "is_skeleton": false,
+					"is_flying": true, "fly_height": 4.0
+				})
+				biome_configs.append({
+					"data_path": "res://data/enemies/basilisk.tres",
+					"sprite_path": "res://Sprite folders grab bag/baslisk.png",
+					"h_frames": 4, "v_frames": 1,
+					"display_name": "Basilisk", "is_skeleton": false
+				})
+
+	# Build final pool based on danger level
+	configs.append_array(tier1_configs)
+
+	if danger >= 4:
+		configs.append_array(tier2_configs)
+
+	if danger >= 6:
+		configs.append_array(tier3_configs)
+
+	if danger >= 8:
+		configs.append_array(tier4_configs)
+
+	# Add biome-specific enemies
+	configs.append_array(biome_configs)
 
 	# Return random config from available options
 	return configs[rng.randi() % configs.size()]
