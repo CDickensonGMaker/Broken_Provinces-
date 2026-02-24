@@ -17,7 +17,7 @@ enum DialogueResult {
 	CANCELLED   ## Player closed dialogue (treated as fight)
 }
 
-const DEBUG := true
+const DEBUG := false
 
 ## UI elements
 var panel: Panel

@@ -24,6 +24,8 @@ extends Resource
 @export var conditions: Array[DialogueCondition] = []
 ## Unique ID for memory system - tracks if this response was already said
 @export var response_id: String = ""
+## If true, this response is automatically logged to the journal when delivered
+@export var auto_log_to_journal: bool = false
 
 
 # =============================================================================

@@ -1,0 +1,49 @@
+{
+	"id": "tutorial_cooking",
+	"title": "A Warm Meal",
+	"description": "Martha the cook has noticed you look hungry after your travels. She's offered to teach you how to prepare a simple meal over the cooking fire. Cook some meat and you'll have learned a valuable survival skill.",
+	"is_main_quest": false,
+	"quest_source": "tutorial",
+	"giver_npc_id": "martha_cook",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "talk_to_martha",
+			"description": "Speak with Martha the Cook",
+			"type": "talk",
+			"target": "martha_cook",
+			"required_count": 1
+		},
+		{
+			"id": "cook_meat",
+			"description": "Cook some meat at the campfire",
+			"type": "craft",
+			"target": "cook_meat",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_martha",
+			"description": "Return to Martha",
+			"type": "talk",
+			"target": "martha_cook",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "martha_cook",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 15,
+		"xp": 35,
+		"items": [
+			{"id": "hearty_stew", "quantity": 2}
+		]
+	},
+	"starter_items": [
+		{"id": "raw_meat", "quantity": 2}
+	],
+	"prerequisites": [],
+	"next_quest": "",
+	"is_tutorial": true
+}

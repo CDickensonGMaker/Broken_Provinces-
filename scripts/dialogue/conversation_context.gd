@@ -27,6 +27,8 @@ var time_of_day: String = "day"
 var weather: String = "clear"
 ## Pending bounty ID for accept/decline workflow
 var pending_bounty_id: String = ""
+## Pending quest ID for accept/decline workflow
+var pending_quest_id: String = ""
 ## Additional custom variables for injection
 var custom_variables: Dictionary = {}
 

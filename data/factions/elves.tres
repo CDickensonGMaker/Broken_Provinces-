@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "elves"
+display_name = "Elven Kingdoms"
+description = "The ancient elven race, dwelling in their forest kingdoms for millennia. Elves are long-lived, wise, and skilled in magic, but deeply divided on how to deal with the rise of human civilization. Their internal politics often spill over into the wider world."
+parent_faction = ""
+allies = []
+enemies = ["undead"]
+neutrals = ["human_empire", "dwarves"]
+alignment = 30
+ranks = [{"name": "Outsider", "min_reputation": -100, "benefits": []}, {"name": "Known", "min_reputation": 0, "benefits": []}, {"name": "Respected", "min_reputation": 40, "benefits": ["elven_trade"]}, {"name": "Honored", "min_reputation": 70, "benefits": ["elven_trade", "forest_welcome"]}, {"name": "Elf-Friend", "min_reputation": 90, "benefits": ["elven_trade", "forest_welcome", "elven_magic"]}]
+default_reputation = 0
+joinable = false
+join_threshold = 0
+is_hidden = false
+faction_color = Color(0.3, 0.6, 0.4, 1.0)

@@ -1,0 +1,57 @@
+{
+	"id": "millbrook_bandits",
+	"title": "Trouble in Millbrook",
+	"description": "The town of Millbrook is being extorted by a gang of bandits who've taken up residence in the surrounding woods. The townsfolk are too frightened to travel the roads, and the local militia is spread too thin. Someone needs to deal with these brigands.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "millbrook_elder",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "millbrook",
+	"objectives": [
+		{
+			"id": "speak_victims",
+			"description": "Speak with the victims of the bandit attacks",
+			"type": "talk",
+			"target": "millbrook_victim",
+			"required_count": 2
+		},
+		{
+			"id": "find_camp",
+			"description": "Track down the bandit camp in the woods",
+			"type": "reach",
+			"target": "millbrook_bandit_camp",
+			"required_count": 1
+		},
+		{
+			"id": "kill_bandits",
+			"description": "Clear out the bandits",
+			"type": "kill",
+			"target": "human_bandit",
+			"required_count": 6
+		},
+		{
+			"id": "kill_leader",
+			"description": "Defeat the bandit captain",
+			"type": "kill",
+			"target": "bandit_captain",
+			"required_count": 1
+		},
+		{
+			"id": "recover_goods",
+			"description": "Recover the stolen goods",
+			"type": "collect",
+			"target": "stolen_goods",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "millbrook_elder",
+	"turn_in_zone": "millbrook",
+	"rewards": {
+		"gold": 150,
+		"xp": 400,
+		"items": []
+	},
+	"prerequisites": [],
+	"next_quest": ""
+}

@@ -24,6 +24,12 @@ signal room_count_changed(count: int)
 @export var min_rooms_with_enemies: int = 3  # GUARANTEE at least this many rooms have enemies
 @export var max_enemies_per_room: int = 4  # Cap enemies per room for balance
 
+## Organic cave generation settings
+@export var use_organic_caves: bool = false  # Use cellular automata caves instead of box rooms
+@export var organic_cave_chance: float = 0.3  # Chance for each room to be organic (when use_organic_caves=true)
+@export var cave_grid_size: int = 20  # Grid cells for cave generation (20x20)
+@export var cave_cell_size: float = 5.0  # World units per cave grid cell
+
 ## Room templates (loaded at runtime or assigned)
 var entrance_templates: Array[RoomTemplate] = []
 var corridor_templates: Array[RoomTemplate] = []
@@ -37,6 +43,7 @@ var quest_templates: Array[RoomTemplate] = []  # Quest room with NPC
 ## Generated dungeon state
 var rooms: Array[DungeonRoom] = []
 var room_grid: Dictionary = {}  # Vector2i -> DungeonRoom (grid position -> room)
+var organic_caves: Array[Node3D] = []  # Track organic cave nodes for cleanup
 var actual_seed: int = 0
 var nav_region: NavigationRegion3D
 
@@ -116,13 +123,19 @@ func _clear_dungeon() -> void:
 	room_grid.clear()
 	rooms_with_enemies.clear()
 
+	# Clear organic caves
+	for cave in organic_caves:
+		if is_instance_valid(cave):
+			cave.queue_free()
+	organic_caves.clear()
+
 	if nav_region:
 		nav_region.queue_free()
 		nav_region = null
 
 	# Clear any corridor/safety geometry
 	for child in get_children():
-		if child.name.begins_with("Corridor") or child.name.begins_with("Safety") or child.name.begins_with("KillZone"):
+		if child.name.begins_with("Corridor") or child.name.begins_with("Safety") or child.name.begins_with("KillZone") or child.name.begins_with("OrganicCave"):
 			child.queue_free()
 
 	enemies_spawned = 0
@@ -270,19 +283,79 @@ func _place_room_at_grid(grid_pos: Vector2i, template: RoomTemplate) -> DungeonR
 	room.name = "Room_%d_%s" % [rooms.size(), template.room_type]
 	room.wall_thickness = wall_thickness
 	add_child(room)
-	room.setup(template, world_pos, rooms.size())
+
+	# Check if this should be an organic cave
+	var should_be_organic: bool = template.is_organic_cave or (use_organic_caves and randf() < organic_cave_chance)
+
+	if should_be_organic and template.room_type != "entrance":  # Never make entrance organic
+		# Generate organic cave geometry alongside the DungeonRoom
+		_generate_organic_cave_for_room(room, template, world_pos)
+	else:
+		# Standard room setup
+		room.setup(template, world_pos, rooms.size())
 
 	rooms.append(room)
 	room_grid[grid_pos] = room
 
 	# Store grid position on room for later reference
 	room.set_meta("grid_pos", grid_pos)
+	room.set_meta("is_organic", should_be_organic and template.room_type != "entrance")
 
 	# Connect signals
 	room.room_entered.connect(_on_room_entered)
 	room.room_cleared.connect(_on_room_cleared)
 
 	return room
+
+
+## Generate organic cave geometry for a room
+func _generate_organic_cave_for_room(room: DungeonRoom, template: RoomTemplate, world_pos: Vector3) -> void:
+	# Use template's cave settings or defaults
+	var fill_percent: float = template.cave_fill_percent if template.cave_fill_percent > 0 else 0.46
+	var iterations: int = template.cave_iterations if template.cave_iterations > 0 else 5
+	var cell_size: float = template.cave_cell_size if template.cave_cell_size > 0 else cave_cell_size
+
+	# Calculate grid dimensions to fit the room size
+	var grid_width: int = int(template.width / cell_size)
+	var grid_height: int = int(template.depth / cell_size)
+
+	# Ensure minimum size
+	grid_width = maxi(grid_width, 10)
+	grid_height = maxi(grid_height, 10)
+
+	# Generate unique cave seed based on room position
+	var cave_seed: int = actual_seed + room.get_instance_id()
+
+	# Generate cave
+	var cave_node: Node3D = CaveGenerator.generate_cave_room(
+		grid_width,
+		grid_height,
+		cell_size,
+		float(template.height),
+		template.floor_y,
+		fill_percent,
+		iterations,
+		cave_seed
+	)
+
+	if cave_node:
+		cave_node.name = "OrganicCave_%d" % rooms.size()
+		cave_node.position = world_pos - Vector3(grid_width * cell_size * 0.5, 0, grid_height * cell_size * 0.5)
+		add_child(cave_node)
+		organic_caves.append(cave_node)
+
+		# Link cave to room
+		room.set_meta("cave_node", cave_node)
+
+		# Still need to set up the DungeonRoom for tracking purposes
+		# Create a minimal setup that doesn't generate CSG geometry
+		room.template = template
+		room.room_center = world_pos
+		room.room_index = rooms.size()
+		room.room_id = "%s_%d" % [template.room_id, rooms.size()]
+		room.position = world_pos
+
+		print("[DungeonGenerator] Created organic cave for room %d at %s" % [rooms.size(), str(world_pos)])
 
 
 ## Convert Vector3 direction to grid direction (Vector2i)

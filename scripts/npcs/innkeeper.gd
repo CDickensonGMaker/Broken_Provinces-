@@ -18,6 +18,11 @@ const FEMALE_NAMES: Array[String] = ["Marta", "Helga", "Greta", "Elspeth", "Bryn
 ## Track selected gender for reference
 var is_male: bool = true
 
+## Alias for ConversationSystem compatibility (uses merchant_name from parent)
+var npc_name: String:
+	get: return merchant_name
+	set(value): merchant_name = value
+
 ## Innkeeper-specific configuration
 @export var room_cost: int = 25  # Gold cost to rent a room
 @export var innkeeper_greeting: String = "Welcome to my tavern, traveler!"
@@ -125,31 +130,29 @@ func _setup_default_inventory() -> void:
 	_add_shop_item("stamina_potion", 40, -1, Enums.ItemQuality.AVERAGE)
 	_add_shop_item("antidote", 30, 10, Enums.ItemQuality.AVERAGE)
 
-## Override interact to show innkeeper menu instead of direct shop
+## Override interact to use ConversationSystem
 func interact(_interactor: Node) -> void:
-	if dialogue_data:
-		# Start dialogue first - dialogue can use OPEN_SHOP action with "inn_menu" to open innkeeper menu
-		# Pass merchant_id context for per-merchant flag substitution
-		var resolved_id: String = merchant_id if not merchant_id.is_empty() else merchant_name.to_snake_case()
-		var context := {"merchant_id": resolved_id}
-		DialogueManager.start_dialogue(dialogue_data, merchant_name, context)
-		# Connect to dialogue_ended signal if not already connected
-		if not DialogueManager.dialogue_ended.is_connected(_on_dialogue_ended):
-			DialogueManager.dialogue_ended.connect(_on_dialogue_ended)
-	else:
-		# No dialogue, open innkeeper menu directly
-		_open_innkeeper_menu()
+	# Get or create knowledge profile
+	var profile := _get_or_create_profile()
 
-## Handle dialogue ending - check if we should open the innkeeper menu
-func _on_dialogue_ended(_data: DialogueData) -> void:
-	# Disconnect immediately to avoid repeat calls
-	if DialogueManager.dialogue_ended.is_connected(_on_dialogue_ended):
-		DialogueManager.dialogue_ended.disconnect(_on_dialogue_ended)
+	# Start conversation via ConversationSystem
+	ConversationSystem.start_conversation(self, profile)
 
-	# Check if dialogue requested opening the inn menu
-	var pending_shop: String = DialogueManager.pop_pending_shop()
-	if pending_shop == "inn_menu":
-		_open_innkeeper_menu()
+
+## Get or create the NPC knowledge profile for conversation
+func _get_or_create_profile() -> NPCKnowledgeProfile:
+	if not knowledge_profile:
+		knowledge_profile = NPCKnowledgeProfile.new()
+		knowledge_profile.archetype = NPCKnowledgeProfile.Archetype.INNKEEPER
+		knowledge_profile.knowledge_tags = ["local_area", "local_news", "travelers", "food_drink"]
+		knowledge_profile.personality_traits = ["hospitable", "observant"]
+
+	return knowledge_profile
+
+
+## Open the inn menu (called by ConversationSystem when TRADE topic is selected)
+func _open_inn_menu() -> void:
+	_open_innkeeper_menu()
 
 ## Override interaction prompt
 func get_interaction_prompt() -> String:

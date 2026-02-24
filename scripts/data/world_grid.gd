@@ -104,7 +104,7 @@ const LOCATION_SCENES: Dictionary = {
 	"bandit_hideout": "res://scenes/levels/bandit_hideout_exterior.tscn",
 	"kazer_dun_entrance": "res://scenes/levels/kazan_dun_entrance.tscn",
 	"sunken_crypts": "res://scenes/levels/sunken_crypt.tscn",
-	"crossroads": "",  # Procedural
+	"crossroads": "res://scenes/regions/crossroads.tscn",
 }
 
 ## The canonical 20x20 terrain grid (row 0 = North, row 19 = South)

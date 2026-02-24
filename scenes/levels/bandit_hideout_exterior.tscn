@@ -420,47 +420,47 @@ metadata/spawn_id = "from_level_1"
 [node name="EnemySpawns" type="Node3D" parent="."]
 
 [node name="EnemySpawn_SouthGuard_W" type="Marker3D" parent="EnemySpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 16)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1, 16)
 metadata/enemy_data = "res://data/enemies/human_bandit.tres"
 
 [node name="EnemySpawn_SouthGuard_E" type="Marker3D" parent="EnemySpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 16)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 16)
 metadata/enemy_data = "res://data/enemies/human_bandit.tres"
 
 [node name="EnemySpawn_NorthGuard_W" type="Marker3D" parent="EnemySpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, -15)
 metadata/enemy_data = "res://data/enemies/human_bandit.tres"
 
 [node name="EnemySpawn_NorthGuard_E" type="Marker3D" parent="EnemySpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1, -15)
 metadata/enemy_data = "res://data/enemies/human_bandit.tres"
 
 [node name="EnemySpawn_Camp_0" type="Marker3D" parent="EnemySpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 1, -4)
 metadata/enemy_data = "res://data/enemies/human_bandit.tres"
 
 [node name="EnemySpawn_Camp_1" type="Marker3D" parent="EnemySpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, -6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 1, -6)
 metadata/enemy_data = "res://data/enemies/human_bandit.tres"
 
 [node name="EnemySpawn_Camp_2" type="Marker3D" parent="EnemySpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, 6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, 6)
 metadata/enemy_data = "res://data/enemies/human_bandit.tres"
 
 [node name="EnemySpawn_Camp_4" type="Marker3D" parent="EnemySpawns"]
-transform = Transform3D(0.48951945, 0, 0.87199235, 0, 1, 0, -0.87199235, 0, 0.48951945, -12.039856, 0, 5.884962)
+transform = Transform3D(0.48951945, 0, 0.87199235, 0, 1, 0, -0.87199235, 0, 0.48951945, -12.039856, 1, 5.884962)
 metadata/enemy_data = "res://data/enemies/human_bandit.tres"
 
 [node name="EnemySpawn_Camp_3" type="Marker3D" parent="EnemySpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, 5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1, 5)
 metadata/enemy_data = "res://data/enemies/human_bandit.tres"
 
 [node name="EnemySpawn_LeaderPatrol_W" type="Marker3D" parent="EnemySpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, -8)
 metadata/enemy_data = "res://data/enemies/human_bandit.tres"
 
 [node name="EnemySpawn_LeaderPatrol_E" type="Marker3D" parent="EnemySpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, -8)
 metadata/enemy_data = "res://data/enemies/human_bandit.tres"
 
 [node name="ChestPositions" type="Node3D" parent="."]

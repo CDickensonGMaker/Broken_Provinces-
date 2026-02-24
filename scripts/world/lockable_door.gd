@@ -3,7 +3,7 @@
 class_name LockableDoor
 extends StaticBody3D
 
-const DEBUG := true
+const DEBUG := false
 
 ## Signals
 signal lockpick_success

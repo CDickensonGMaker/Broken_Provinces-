@@ -1,0 +1,50 @@
+{
+	"id": "harbor_ghost_ship",
+	"title": "The Phantom Vessel",
+	"description": "The Harbor Captain of Dalhurst is troubled. Fishermen have reported sighting a ghostly ship sailing without crew at night, and several boats have gone missing. He needs someone brave enough to investigate the abandoned lighthouse on the coast where the phantom ship was last seen.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "harbor_captain",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "investigate_lighthouse",
+			"description": "Travel to the abandoned lighthouse on the western coast",
+			"type": "reach",
+			"target": "abandoned_lighthouse",
+			"required_count": 1
+		},
+		{
+			"id": "search_lighthouse",
+			"description": "Search the lighthouse for clues",
+			"type": "interact",
+			"target": "lighthouse_logbook",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_drowned",
+			"description": "Deal with the drowned dead haunting the lighthouse",
+			"type": "kill",
+			"target": "drowned_dead",
+			"required_count": 6
+		},
+		{
+			"id": "find_source",
+			"description": "Discover the source of the haunting",
+			"type": "interact",
+			"target": "cursed_anchor",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "harbor_captain",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 175,
+		"xp": 500,
+		"items": ["sailors_charm"]
+	},
+	"prerequisites": [],
+	"next_quest": ""
+}

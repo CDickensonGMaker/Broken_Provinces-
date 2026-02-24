@@ -8,11 +8,19 @@ signal recipe_crafted(recipe_id: String, result: Dictionary)
 var recipes: Dictionary = {}  # recipe_id -> CraftingRecipe
 
 ## Recipe categories for UI filtering
-var categories: Array[String] = ["Weapon", "Armor", "Consumable", "Tool", "Material"]
+var categories: Array[String] = ["Weapon", "Armor", "Consumable", "Tool", "Material", "Food"]
 
 
 func _ready() -> void:
 	_register_recipes()
+	# Connect to quest system for craft objectives
+	recipe_crafted.connect(_on_recipe_crafted)
+
+
+## Notify quest system when a recipe is crafted
+func _on_recipe_crafted(recipe_id: String, _result: Dictionary) -> void:
+	if QuestManager:
+		QuestManager.update_progress("craft", recipe_id, 1)
 
 
 ## Register all crafting recipes
@@ -201,6 +209,50 @@ func _register_recipes() -> void:
 		"required_engineering": 0,
 		"output_item_id": "leather_strip",
 		"output_quantity": 3,
+		"base_quality": Enums.ItemQuality.AVERAGE,
+		"can_crit": false
+	})
+
+	# === FOOD (Cooking) ===
+
+	# Cooked Meat
+	_add_recipe({
+		"recipe_id": "cook_meat",
+		"display_name": "Cooked Meat",
+		"description": "Roast raw meat over the fire for a filling meal that restores health over time",
+		"category": "Food",
+		"materials": {"raw_meat": 1},
+		"gold_cost": 0,
+		"required_engineering": 0,
+		"output_item_id": "cooked_meat",
+		"base_quality": Enums.ItemQuality.AVERAGE,
+		"can_crit": false
+	})
+
+	# Hearty Stew
+	_add_recipe({
+		"recipe_id": "cook_stew",
+		"display_name": "Hearty Stew",
+		"description": "A nourishing stew that restores both health and stamina",
+		"category": "Food",
+		"materials": {"raw_meat": 1, "potato": 1, "carrot": 1},
+		"gold_cost": 0,
+		"required_engineering": 0,
+		"output_item_id": "hearty_stew",
+		"base_quality": Enums.ItemQuality.AVERAGE,
+		"can_crit": false
+	})
+
+	# Bread
+	_add_recipe({
+		"recipe_id": "bake_bread",
+		"display_name": "Bread",
+		"description": "Simple bread - a cheap way to restore a small amount of health",
+		"category": "Food",
+		"materials": {"flour": 1, "water": 1},
+		"gold_cost": 0,
+		"required_engineering": 0,
+		"output_item_id": "bread",
 		"base_quality": Enums.ItemQuality.AVERAGE,
 		"can_crit": false
 	})

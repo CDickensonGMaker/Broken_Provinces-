@@ -29,9 +29,12 @@ var dc_label: Label
 # Animation
 var display_timer: float = 0.0
 var display_duration: float = 2.0  # Passive rolls
-var active_duration: float = 4.0  # Active rolls (lockpicking, etc.)
+var active_duration: float = 2.0  # Active rolls (lockpicking, etc.) - auto-dismiss after 2 seconds
 var is_displaying: bool = false
 var current_mode: DisplayMode = DisplayMode.PASSIVE
+
+# Auto-dismiss timer
+var auto_dismiss_timer: Timer
 
 # Roll queue for passive rolls
 var roll_queue: Array[Dictionary] = []
@@ -39,16 +42,34 @@ var processing_queue: bool = false
 
 func _ready() -> void:
 	visible = false
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mouse_filter = Control.MOUSE_FILTER_STOP  # Capture clicks when visible
 	z_index = 50
 	_build_ui()
+	_setup_auto_dismiss_timer()
 
-func _process(delta: float) -> void:
+func _setup_auto_dismiss_timer() -> void:
+	auto_dismiss_timer = Timer.new()
+	auto_dismiss_timer.one_shot = true
+	auto_dismiss_timer.timeout.connect(_on_auto_dismiss_timeout)
+	add_child(auto_dismiss_timer)
+
+func _on_auto_dismiss_timeout() -> void:
 	if is_displaying:
-		display_timer -= delta
-		if display_timer <= 0:
+		_hide_roll()
+		_process_queue()
+
+func _gui_input(event: InputEvent) -> void:
+	# Click anywhere on the popup to dismiss it immediately
+	if is_displaying and event is InputEventMouseButton:
+		var mouse_event: InputEventMouseButton = event
+		if mouse_event.pressed:
 			_hide_roll()
 			_process_queue()
+			get_viewport().set_input_as_handled()
+
+func _process(_delta: float) -> void:
+	# Timer-based dismiss is now handled by auto_dismiss_timer
+	pass
 
 func _build_ui() -> void:
 	# Anchor to top-right for passive, center for active
@@ -227,6 +248,11 @@ func _display_roll(roll_data: Dictionary) -> void:
 
 	visible = true
 	is_displaying = true
+
+	# Start auto-dismiss timer (2 seconds for both passive and active)
+	var dismiss_time: float = display_duration if current_mode == DisplayMode.PASSIVE else active_duration
+	auto_dismiss_timer.start(dismiss_time)
+
 	roll_complete.emit(success)
 
 func _create_modifier_row(mod_name: String, value: int) -> HBoxContainer:
@@ -255,9 +281,11 @@ func _create_modifier_row(mod_name: String, value: int) -> HBoxContainer:
 func _hide_roll() -> void:
 	visible = false
 	is_displaying = false
+	auto_dismiss_timer.stop()  # Stop timer in case dismissed by click
 
 ## Instant hide for scene changes
 func force_hide() -> void:
 	_hide_roll()
 	roll_queue.clear()
 	processing_queue = false
+	auto_dismiss_timer.stop()

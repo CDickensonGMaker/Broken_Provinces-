@@ -136,6 +136,15 @@ var _connected_player_data: CharacterData = null
 ## Cached player reference for safety checks
 var _cached_player: Node3D = null
 
+## Debug overlay (F3 to toggle)
+var debug_overlay_visible: bool = false
+var debug_overlay_container: PanelContainer
+var debug_cell_label: Label
+var debug_world_pos_label: Label
+var debug_active_cells_label: Label
+var debug_world_offset_label: Label
+var debug_fps_label: Label
+
 func _ready() -> void:
 	# Add to hud group so other scripts can find us
 	add_to_group("hud")
@@ -182,6 +191,7 @@ func _ready() -> void:
 	_connect_signals()
 	_setup_menus()
 	_connect_scene_signals()
+	_setup_debug_overlay()
 
 	# Try to load damage number scene
 	if ResourceLoader.exists("res://scenes/ui/damage_number.tscn"):
@@ -213,6 +223,11 @@ func _input(event: InputEvent) -> void:
 		var key_event := event as InputEventKey
 		if key_event.keycode == KEY_M and key_event.pressed and not key_event.echo:
 			_open_map()
+			get_viewport().set_input_as_handled()
+			return
+		# F3 toggles debug overlay
+		if key_event.keycode == KEY_F3 and key_event.pressed and not key_event.echo:
+			_toggle_debug_overlay()
 			get_viewport().set_input_as_handled()
 			return
 
@@ -251,22 +266,26 @@ func _is_menu_open() -> bool:
 func _open_game_menu() -> void:
 	if game_menu:
 		game_menu.open()
-		# Hide minimap when game menu opens (Tab menu)
+		# Hide minimap and quest tracker when game menu opens (Tab menu)
 		if minimap:
 			minimap.visible = false
 		if minimap_coord_label:
 			minimap_coord_label.visible = false
+		if quest_tracker_container:
+			quest_tracker_container.visible = false
 
 
 ## Open directly to the world map (M key shortcut)
 func _open_map() -> void:
 	if game_menu:
 		game_menu.open_to_tab(GameMenu.MenuTab.MAP)
-		# Hide minimap when map opens
+		# Hide minimap and quest tracker when map opens
 		if minimap:
 			minimap.visible = false
 		if minimap_coord_label:
 			minimap_coord_label.visible = false
+		if quest_tracker_container:
+			quest_tracker_container.visible = false
 
 func _open_pause_menu() -> void:
 	if pause_menu:
@@ -279,6 +298,8 @@ func _on_menu_closed() -> void:
 		minimap.visible = true
 	if minimap_coord_label:
 		minimap_coord_label.visible = true
+	# Restore quest tracker (will show only if there's a tracked quest)
+	_update_quest_tracker()
 
 ## Connect to scene manager signals for zone transition cleanup
 func _connect_scene_signals() -> void:
@@ -405,6 +426,7 @@ func _process(delta: float) -> void:
 	_update_minimap_coordinates()
 	_update_bounty_indicator(delta)
 	_update_quest_tracker()
+	_update_debug_overlay()
 
 func _setup_spell_slots() -> void:
 	# Spell slots deprecated - mana bar is used instead
@@ -2356,7 +2378,7 @@ func _get_quest_giver_zone(quest: QuestManager.Quest) -> String:
 		# Common quest giver IDs and their zones
 		var giver_zones: Dictionary = {
 			# Elder Moor NPCs
-			"wandering_knight": "elder_moor",
+			"tharin_ironbeard": "elder_moor",
 			"elder": "elder_moor",
 			"village_elder": "elder_moor",
 			"elder_moor_guard": "elder_moor",
@@ -2365,6 +2387,7 @@ func _get_quest_giver_zone(quest: QuestManager.Quest) -> String:
 			"guard": "elder_moor",
 			"town_guard": "elder_moor",
 			# Dalhurst NPCs
+			"aldric_vane": "dalhurst",
 			"dalhurst_contact": "dalhurst",
 			"dalhurst_merchant": "dalhurst",
 			"harbor_master": "dalhurst",
@@ -2671,8 +2694,10 @@ func _get_objective_target_zone(objective: QuestManager.Objective) -> String:
 		"talk":
 			# Check if NPC is in a specific location
 			match objective.target:
-				"wandering_knight":
-					return "elder_moor"  # Knight is in starting town
+				"tharin_ironbeard":
+					return "elder_moor"  # Tharin is in starting town
+				"aldric_vane":
+					return "dalhurst"  # Aldric is in Dalhurst
 				"innkeeper", "blacksmith", "merchant", "alchemist":
 					# Use current zone if in town, else return elder_moor
 					var current: String = PlayerGPS.current_location_id if PlayerGPS else ""
@@ -3110,6 +3135,11 @@ func _update_quest_tracker() -> void:
 		quest_tracker_container.visible = false
 		return
 
+	# Hide quest tracker when any menu is open
+	if _is_menu_open():
+		quest_tracker_container.visible = false
+		return
+
 	quest_tracker_container.visible = true
 	quest_tracker_title.text = tracked_quest.title
 
@@ -3128,3 +3158,117 @@ func _update_quest_tracker() -> void:
 		progress_parts.append(obj_text)
 
 	quest_tracker_progress.text = " | ".join(progress_parts) if not progress_parts.is_empty() else ""
+
+
+## ============================================================================
+## DEBUG OVERLAY (F3 to toggle)
+## ============================================================================
+
+func _setup_debug_overlay() -> void:
+	# Create container
+	debug_overlay_container = PanelContainer.new()
+	debug_overlay_container.name = "DebugOverlay"
+	debug_overlay_container.visible = false
+	debug_overlay_container.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	debug_overlay_container.offset_left = 10
+	debug_overlay_container.offset_top = 10
+
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.0, 0.0, 0.0, 0.7)
+	style.set_corner_radius_all(4)
+	style.set_content_margin_all(8)
+	debug_overlay_container.add_theme_stylebox_override("panel", style)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 4)
+	debug_overlay_container.add_child(vbox)
+
+	# Title
+	var title := Label.new()
+	title.text = "DEBUG (F3)"
+	title.add_theme_color_override("font_color", Color.YELLOW)
+	title.add_theme_font_size_override("font_size", 14)
+	vbox.add_child(title)
+
+	# Cell coordinates
+	debug_cell_label = Label.new()
+	debug_cell_label.text = "Cell: (0, 0)"
+	debug_cell_label.add_theme_color_override("font_color", Color.WHITE)
+	debug_cell_label.add_theme_font_size_override("font_size", 12)
+	vbox.add_child(debug_cell_label)
+
+	# World position
+	debug_world_pos_label = Label.new()
+	debug_world_pos_label.text = "World Pos: (0, 0, 0)"
+	debug_world_pos_label.add_theme_color_override("font_color", Color.WHITE)
+	debug_world_pos_label.add_theme_font_size_override("font_size", 12)
+	vbox.add_child(debug_world_pos_label)
+
+	# Active cells
+	debug_active_cells_label = Label.new()
+	debug_active_cells_label.text = "Active Cells: 0"
+	debug_active_cells_label.add_theme_color_override("font_color", Color.WHITE)
+	debug_active_cells_label.add_theme_font_size_override("font_size", 12)
+	vbox.add_child(debug_active_cells_label)
+
+	# World offset
+	debug_world_offset_label = Label.new()
+	debug_world_offset_label.text = "World Offset: (0, 0, 0)"
+	debug_world_offset_label.add_theme_color_override("font_color", Color.WHITE)
+	debug_world_offset_label.add_theme_font_size_override("font_size", 12)
+	vbox.add_child(debug_world_offset_label)
+
+	# FPS
+	debug_fps_label = Label.new()
+	debug_fps_label.text = "FPS: 0"
+	debug_fps_label.add_theme_color_override("font_color", Color.GREEN)
+	debug_fps_label.add_theme_font_size_override("font_size", 12)
+	vbox.add_child(debug_fps_label)
+
+	add_child(debug_overlay_container)
+
+
+func _toggle_debug_overlay() -> void:
+	debug_overlay_visible = not debug_overlay_visible
+	if debug_overlay_container:
+		debug_overlay_container.visible = debug_overlay_visible
+	print("[HUD] Debug overlay: %s" % ("ON" if debug_overlay_visible else "OFF"))
+
+
+func _update_debug_overlay() -> void:
+	if not debug_overlay_visible or not debug_overlay_container:
+		return
+
+	# Get player world position
+	var world_pos := Vector3.ZERO
+	if _cached_player and is_instance_valid(_cached_player):
+		world_pos = _cached_player.global_position
+
+	# Get cell info from CellStreamer
+	var current_cell := Vector2i.ZERO
+	var active_cell_count := 0
+	var world_offset := Vector3.ZERO
+
+	if CellStreamer:
+		current_cell = CellStreamer.active_cell
+		active_cell_count = CellStreamer.loaded_cells.size()
+		world_offset = CellStreamer.world_offset
+
+	# Calculate true world position (accounting for offset)
+	var true_world_pos := world_pos + world_offset
+
+	# Update labels
+	debug_cell_label.text = "Cell: (%d, %d)" % [current_cell.x, current_cell.y]
+	debug_world_pos_label.text = "World Pos: (%.1f, %.1f, %.1f)" % [true_world_pos.x, true_world_pos.y, true_world_pos.z]
+	debug_active_cells_label.text = "Active Cells: %d" % active_cell_count
+	debug_world_offset_label.text = "Offset: (%.0f, %.0f, %.0f)" % [world_offset.x, world_offset.y, world_offset.z]
+
+	# FPS with color coding
+	var fps := Engine.get_frames_per_second()
+	debug_fps_label.text = "FPS: %d" % fps
+	if fps >= 55:
+		debug_fps_label.add_theme_color_override("font_color", Color.GREEN)
+	elif fps >= 30:
+		debug_fps_label.add_theme_color_override("font_color", Color.YELLOW)
+	else:
+		debug_fps_label.add_theme_color_override("font_color", Color.RED)

@@ -3,7 +3,7 @@
 class_name Hitbox
 extends Area3D
 
-const DEBUG := true  # TEMP: Enable to debug enemy damage issues
+const DEBUG := false  # DISABLED - was causing freeze from excessive prints
 
 signal hit_landed(target: Node)
 

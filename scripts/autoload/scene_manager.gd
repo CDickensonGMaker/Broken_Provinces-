@@ -7,7 +7,7 @@ extends Node
 const RETURN_TO_WILDERNESS := "__RETURN_TO_WILDERNESS__"
 
 ## Procedural dungeons regenerate each time, so saved positions are invalid
-const PROCEDURAL_DUNGEON_ZONES := ["random_cave", "test_dungeon"]
+const PROCEDURAL_DUNGEON_ZONES := ["test_dungeon"]
 
 ## Dev mode - enables fast travel to any location (set to false for normal gameplay)
 var dev_mode: bool = false

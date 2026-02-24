@@ -336,14 +336,14 @@ func _spawn_enemies() -> void:
 	# Treasure Room - 1 Skeleton Warrior (harder)
 	_spawn_enemy(Vector3(12, FLOOR_1_Y, -22), "skeleton_warrior")
 
-	# Flooded Corridor - Flaming Skulls guarding the descent
-	_spawn_enemy(Vector3(0, FLOOR_1_Y + 1.5, -32), "flaming_skull")
+	# Flooded Corridor - Flaming Skulls floating above player
+	_spawn_enemy(Vector3(0, FLOOR_1_Y + 3.5, -32), "flaming_skull")
 
 	# Boss Chamber - Drowned One (boss) + 2 Skeleton Shades + Flaming Skulls
 	_spawn_enemy(Vector3(-4, FLOOR_2_Y, -55), "skeleton_shade")
 	_spawn_enemy(Vector3(4, FLOOR_2_Y, -55), "skeleton_shade")
-	_spawn_enemy(Vector3(-6, FLOOR_2_Y + 1.5, -58), "flaming_skull")
-	_spawn_enemy(Vector3(6, FLOOR_2_Y + 1.5, -58), "flaming_skull")
+	_spawn_enemy(Vector3(-6, FLOOR_2_Y + 3.5, -58), "flaming_skull")
+	_spawn_enemy(Vector3(6, FLOOR_2_Y + 4.0, -58), "flaming_skull")
 	_spawn_boss(Vector3(0, FLOOR_2_Y, -60))
 
 

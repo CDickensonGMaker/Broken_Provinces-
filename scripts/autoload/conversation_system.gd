@@ -22,6 +22,18 @@ signal memory_reminder(response_id: String, original_text: String)
 ## Emitted when conversation ends
 signal conversation_ended(npc: Node)
 
+## Emitted when a persuasion attempt is made
+signal persuasion_performed(action: String, success: bool, disposition_change: int, roll_data: Dictionary)
+
+## Emitted when a skill check is performed in dialogue
+signal skill_check_performed(skill: int, dc: int, success: bool, roll_data: Dictionary)
+
+## Emitted when a scripted line is shown
+signal scripted_line_shown(line: Dictionary, index: int)
+
+## Emitted when scripted dialogue ends
+signal scripted_dialogue_ended()
+
 
 # =============================================================================
 # CONSTANTS
@@ -74,6 +86,21 @@ var npc_memory: Dictionary = {}
 
 ## Reference to the conversation UI
 var conversation_ui: Node = null
+
+## Conversation flags (persisted via SaveManager)
+## These track dialogue-specific state like "talked_to_npc_about_quest"
+## Migrated from DialogueManager for centralized flag management
+var conversation_flags: Dictionary = {}
+
+## Context variables for placeholder substitution in flag names
+## Example: {"merchant_id": "blacksmith_01"} allows flags like "{merchant_id}:befriend"
+var context_variables: Dictionary = {}
+
+## Scripted dialogue state
+var is_scripted_mode: bool = false
+var scripted_lines: Array[Dictionary] = []  # Array of ScriptedLine dictionaries
+var scripted_current_index: int = 0
+var scripted_callback: Callable  # Called when scripted dialogue ends
 
 
 # =============================================================================
@@ -296,16 +323,107 @@ func end_conversation() -> void:
 
 
 ## Get available topics for an NPC based on their knowledge profile
-## Simplified to 3 core topics: LOCAL_NEWS, RUMORS (bounties), GOODBYE
-func get_available_topics(_profile: NPCKnowledgeProfile) -> Array[ConversationTopic.TopicType]:
+## Topics are filtered by archetype:
+##   - Guards: DIRECTIONS + GOODBYE only (they're on duty)
+##   - Merchants/Innkeepers: All standard topics + TRADE
+##   - Others: Standard topics based on profile
+func get_available_topics(profile: NPCKnowledgeProfile) -> Array[ConversationTopic.TopicType]:
 	var topics: Array[ConversationTopic.TopicType] = []
 
-	# All NPCs have the same 3 topics
+	# Guards have restricted topics (they're on duty, not here to chat)
+	if profile and profile.archetype == NPCKnowledgeProfile.Archetype.GUARD:
+		topics.append(ConversationTopic.TopicType.DIRECTIONS)
+		topics.append(ConversationTopic.TopicType.GOODBYE)
+		return topics
+
+	# Standard topics for most NPCs
 	topics.append(ConversationTopic.TopicType.LOCAL_NEWS)  # What's happening here?
-	topics.append(ConversationTopic.TopicType.RUMORS)       # Bounty work
-	topics.append(ConversationTopic.TopicType.GOODBYE)      # Exit
+	topics.append(ConversationTopic.TopicType.PERSONAL)     # About the NPC
+
+	# RUMORS topic only for NPCs with the "rumors" knowledge tag
+	if profile and profile.knowledge_tags.has("rumors"):
+		topics.append(ConversationTopic.TopicType.RUMORS)
+
+	# DIRECTIONS available to most NPCs (they know the area)
+	if profile and profile.has_knowledge("local_area"):
+		topics.append(ConversationTopic.TopicType.DIRECTIONS)
+
+	# TRADE topic for merchants, innkeepers, and blacksmiths
+	if profile and profile.archetype in [
+		NPCKnowledgeProfile.Archetype.MERCHANT,
+		NPCKnowledgeProfile.Archetype.INNKEEPER,
+		NPCKnowledgeProfile.Archetype.BLACKSMITH
+	]:
+		topics.append(ConversationTopic.TopicType.TRADE)
+
+	# Also add TRADE if NPC is in merchants group
+	if current_npc and current_npc.is_in_group("merchants"):
+		if ConversationTopic.TopicType.TRADE not in topics:
+			topics.append(ConversationTopic.TopicType.TRADE)
+
+	# Add QUESTS topic if this NPC has quests to give or receive
+	if current_npc and _npc_has_quests(current_npc):
+		topics.append(ConversationTopic.TopicType.QUESTS)
+
+	# GOODBYE is always last
+	topics.append(ConversationTopic.TopicType.GOODBYE)
 
 	return topics
+
+
+## Select a custom topic (defined by NPC profile)
+func select_custom_topic(custom_id: String, topic_data: Dictionary) -> void:
+	if not is_active or not current_context:
+		push_warning("ConversationSystem: No active conversation for custom topic")
+		return
+
+	# Emit topic selected signal with the base type
+	var base_type: ConversationTopic.TopicType = topic_data.get("type", ConversationTopic.TopicType.PERSONAL)
+	topic_selected.emit(base_type)
+
+	# Check if NPC has a custom handler for this topic
+	if current_npc and current_npc.has_method("handle_custom_topic"):
+		var handled: bool = current_npc.handle_custom_topic(custom_id, topic_data)
+		if handled:
+			return
+
+	# Fallback - deliver a generic response
+	var response := ConversationResponse.new()
+	response.response_id = "custom_" + custom_id
+	response.text = topic_data.get("response", "I don't have much to say about that.")
+	response.topic_type = base_type
+	response_delivered.emit(response, current_context)
+
+
+## Check if NPC has quests to offer, complete, or is a turn-in target
+## NOTE: QUESTS topic is restricted to designated quest sources to prevent "task bloat":
+##   - NPCs in "quest_givers" group (main story NPCs, dedicated quest givers)
+##   - Bounty boards, Guilds, Temples
+func _npc_has_quests(npc: Node) -> bool:
+	# DESIGN CONSTRAINT: Only show QUESTS topic for designated quest sources
+	# This prevents every NPC from becoming a quest giver
+	if not npc.is_in_group("quest_givers") and not npc.is_in_group("guilds") and not npc.is_in_group("temples") and not npc.is_in_group("bounty_boards"):
+		return false
+
+	var npc_id := _get_npc_id(npc)
+	if npc_id.is_empty():
+		return false
+
+	# Check if NPC has quest_ids property (QuestGiver nodes)
+	if "quest_ids" in npc:
+		var quest_ids: Array = npc.quest_ids
+		if not quest_ids.is_empty():
+			return true
+
+	# Check if any quest has this NPC as turn-in target
+	if QuestManager.has_active_quest_for_npc(npc_id):
+		return true
+
+	# Check if any available quest has this NPC as giver
+	if QuestManager.has_available_quest_from_npc(npc_id):
+		return true
+
+	return false
 
 
 ## Select a topic and get an NPC response
@@ -325,6 +443,19 @@ func select_topic(topic_type: ConversationTopic.TopicType) -> void:
 		topic_selected.emit(topic_type)
 		_handle_bounty_topic()
 		return
+
+	# Handle QUESTS topic with quest system
+	if topic_type == ConversationTopic.TopicType.QUESTS:
+		topic_selected.emit(topic_type)
+		_handle_quest_topic()
+		return
+
+	# Handle TRADE topic for merchants - open their shop
+	if topic_type == ConversationTopic.TopicType.TRADE:
+		if current_npc and current_npc.is_in_group("merchants"):
+			topic_selected.emit(topic_type)
+			_handle_merchant_trade()
+			return
 
 	# Emit topic selected signal
 	topic_selected.emit(topic_type)
@@ -355,7 +486,7 @@ func select_topic(topic_type: ConversationTopic.TopicType) -> void:
 
 	# Execute any actions attached to the response
 	for action in response.actions:
-		DialogueManager.execute_action(action)
+		execute_action(action)
 
 	# Emit response delivered signal
 	response_delivered.emit(response, current_context)
@@ -431,7 +562,7 @@ func check_memory(response: ConversationResponse) -> bool:
 ## Get disposition value for an NPC
 func get_disposition(npc_id: String) -> int:
 	var flag_key := "disposition:" + npc_id
-	var value: Variant = DialogueManager.get_flag(flag_key, null)
+	var value: Variant = get_flag(flag_key, null)
 
 	# If no stored disposition, check for base disposition from profile
 	if value == null:
@@ -450,14 +581,14 @@ func modify_disposition(npc_id: String, delta: int) -> void:
 	var current := get_disposition(npc_id)
 	var new_value := clampi(current + delta, MIN_DISPOSITION, MAX_DISPOSITION)
 	var flag_key := "disposition:" + npc_id
-	DialogueManager.set_flag(flag_key, new_value)
+	set_flag(flag_key, new_value)
 
 
 ## Set disposition to a specific value
 func set_disposition(npc_id: String, value: int) -> void:
 	var clamped := clampi(value, MIN_DISPOSITION, MAX_DISPOSITION)
 	var flag_key := "disposition:" + npc_id
-	DialogueManager.set_flag(flag_key, clamped)
+	set_flag(flag_key, clamped)
 
 
 ## Get disposition category name for an NPC
@@ -516,19 +647,83 @@ func clear_response_pools() -> void:
 
 
 # =============================================================================
+# FLAG MANAGEMENT
+# =============================================================================
+
+## Substitute context variables in a string
+## Replaces {variable_name} patterns with values from context_variables
+## Example: "{merchant_id}:befriend" with context {"merchant_id": "blacksmith"} -> "blacksmith:befriend"
+func _substitute_context_variables(text: String) -> String:
+	var result := text
+	for key in context_variables:
+		var placeholder := "{%s}" % key
+		if result.contains(placeholder):
+			result = result.replace(placeholder, str(context_variables[key]))
+	return result
+
+
+## Set a conversation flag (supports context variable substitution)
+func set_flag(flag_name: String, value: Variant = true) -> void:
+	var resolved_name := _substitute_context_variables(flag_name)
+	conversation_flags[resolved_name] = value
+
+
+## Clear a conversation flag (supports context variable substitution)
+func clear_flag(flag_name: String) -> void:
+	var resolved_name := _substitute_context_variables(flag_name)
+	if conversation_flags.has(resolved_name):
+		conversation_flags.erase(resolved_name)
+
+
+## Check if a flag is set (supports context variable substitution)
+func has_flag(flag_name: String) -> bool:
+	var resolved_name := _substitute_context_variables(flag_name)
+	return conversation_flags.has(resolved_name)
+
+
+## Get a flag value (supports context variable substitution)
+func get_flag(flag_name: String, default: Variant = null) -> Variant:
+	var resolved_name := _substitute_context_variables(flag_name)
+	return conversation_flags.get(resolved_name, default)
+
+
+## Set context variables for flag substitution
+func set_context_variables(variables: Dictionary) -> void:
+	context_variables = variables.duplicate()
+
+
+## Clear context variables
+func clear_context_variables() -> void:
+	context_variables.clear()
+
+
+## Check and clear a pending shop flag (returns shop ID or empty string)
+func pop_pending_shop() -> String:
+	var shop_id := ""
+	for key in conversation_flags.keys():
+		if key.begins_with("_pending_shop:"):
+			shop_id = key.substr(len("_pending_shop:"))
+			conversation_flags.erase(key)
+			break
+	return shop_id
+
+
+# =============================================================================
 # SAVE/LOAD
 # =============================================================================
 
 ## Serialize conversation state for saving
 func to_dict() -> Dictionary:
 	return {
-		"npc_memory": npc_memory.duplicate()
+		"npc_memory": npc_memory.duplicate(),
+		"conversation_flags": conversation_flags.duplicate()
 	}
 
 
 ## Deserialize conversation state from save
 func from_dict(data: Dictionary) -> void:
 	npc_memory = data.get("npc_memory", {}).duplicate()
+	conversation_flags = data.get("conversation_flags", {}).duplicate()
 
 
 ## Reset state for new game
@@ -537,8 +732,206 @@ func reset_for_new_game() -> void:
 	if is_active:
 		end_conversation()
 
-	# Clear memory (dispositions are stored in DialogueManager.dialogue_flags)
+	# Clear memory and flags
 	npc_memory.clear()
+	conversation_flags.clear()
+	context_variables.clear()
+
+
+# =============================================================================
+# SCRIPTED DIALOGUE MODE
+# =============================================================================
+
+## Create a scripted line dictionary
+## speaker: Name of the speaker (empty for NPC, "Player" for player lines)
+## text: The dialogue text
+## choices: Array of choice dictionaries [{text, next_index, actions}] (optional)
+## is_end: If true, this line ends the dialogue
+static func create_scripted_line(speaker: String, text: String, choices: Array = [], is_end: bool = false) -> Dictionary:
+	return {
+		"speaker": speaker,
+		"text": text,
+		"choices": choices,
+		"is_end": is_end
+	}
+
+
+## Create a scripted choice dictionary
+## text: Display text for the choice
+## next_index: Index of the next line to jump to (-1 for end)
+## actions: Array of action dictionaries to execute (optional)
+static func create_scripted_choice(text: String, next_index: int, actions: Array = []) -> Dictionary:
+	return {
+		"text": text,
+		"next_index": next_index,
+		"actions": actions
+	}
+
+
+## Start a scripted dialogue sequence
+## lines: Array of ScriptedLine dictionaries
+## callback: Optional callable to run when dialogue ends
+func start_scripted_dialogue(lines: Array, callback: Callable = Callable()) -> void:
+	if lines.is_empty():
+		push_warning("ConversationSystem: Cannot start scripted dialogue with no lines")
+		return
+
+	is_scripted_mode = true
+	scripted_lines.clear()
+	for line: Variant in lines:
+		if line is Dictionary:
+			scripted_lines.append(line)
+	scripted_current_index = 0
+	scripted_callback = callback
+
+	# Pause game
+	GameManager.start_dialogue()
+	is_active = true
+
+	# Show the first line
+	_show_scripted_line(0)
+
+
+## Show a specific scripted line
+func _show_scripted_line(index: int) -> void:
+	if index < 0 or index >= scripted_lines.size():
+		_end_scripted_dialogue()
+		return
+
+	scripted_current_index = index
+	var line: Dictionary = scripted_lines[index]
+
+	# Emit signal for UI to display
+	scripted_line_shown.emit(line, index)
+
+
+## Handle player selecting a choice in scripted dialogue
+func select_scripted_choice(choice_index: int) -> void:
+	if not is_scripted_mode:
+		return
+
+	var current_line: Dictionary = scripted_lines[scripted_current_index]
+	var choices: Array = current_line.get("choices", [])
+
+	if choice_index < 0 or choice_index >= choices.size():
+		# No valid choice, try to continue or end
+		if current_line.get("is_end", false):
+			_end_scripted_dialogue()
+		else:
+			# Auto-advance to next line
+			_show_scripted_line(scripted_current_index + 1)
+		return
+
+	var choice: Dictionary = choices[choice_index]
+
+	# Execute any actions attached to the choice
+	var actions: Array = choice.get("actions", [])
+	for action_data: Variant in actions:
+		if action_data is Dictionary:
+			_execute_scripted_action(action_data)
+
+	# Navigate to next line
+	var next_index: int = choice.get("next_index", -1)
+	if next_index < 0:
+		_end_scripted_dialogue()
+	else:
+		_show_scripted_line(next_index)
+
+
+## Continue scripted dialogue (for lines without choices)
+func continue_scripted_dialogue() -> void:
+	if not is_scripted_mode:
+		return
+
+	var current_line: Dictionary = scripted_lines[scripted_current_index]
+
+	if current_line.get("is_end", false):
+		_end_scripted_dialogue()
+	elif current_line.get("choices", []).is_empty():
+		# Auto-advance to next line
+		_show_scripted_line(scripted_current_index + 1)
+
+
+## End the scripted dialogue
+func _end_scripted_dialogue() -> void:
+	is_scripted_mode = false
+	scripted_lines.clear()
+	scripted_current_index = 0
+	is_active = false
+
+	GameManager.end_dialogue()
+
+	# Call the callback if provided
+	if scripted_callback.is_valid():
+		scripted_callback.call()
+		scripted_callback = Callable()
+
+	scripted_dialogue_ended.emit()
+
+
+## Execute an action from scripted dialogue
+func _execute_scripted_action(action_data: Dictionary) -> void:
+	var action_type: String = action_data.get("type", "")
+
+	match action_type:
+		"set_flag":
+			var flag_name: String = action_data.get("flag", "")
+			var value: Variant = action_data.get("value", true)
+			if not flag_name.is_empty():
+				set_flag(flag_name, value)
+
+		"clear_flag":
+			var flag_name: String = action_data.get("flag", "")
+			if not flag_name.is_empty():
+				clear_flag(flag_name)
+
+		"give_gold":
+			var amount: int = action_data.get("amount", 0)
+			if amount > 0 and InventoryManager:
+				InventoryManager.add_gold(amount)
+
+		"take_gold":
+			var amount: int = action_data.get("amount", 0)
+			if amount > 0 and InventoryManager:
+				InventoryManager.remove_gold(amount)
+
+		"give_item":
+			var item_id: String = action_data.get("item_id", "")
+			var quantity: int = action_data.get("quantity", 1)
+			if not item_id.is_empty() and InventoryManager:
+				InventoryManager.add_item(item_id, quantity)
+
+		"take_item":
+			var item_id: String = action_data.get("item_id", "")
+			var quantity: int = action_data.get("quantity", 1)
+			if not item_id.is_empty() and InventoryManager:
+				InventoryManager.remove_item(item_id, quantity)
+
+		"start_quest":
+			var quest_id: String = action_data.get("quest_id", "")
+			if not quest_id.is_empty():
+				QuestManager.start_quest(quest_id)
+
+		"complete_quest":
+			var quest_id: String = action_data.get("quest_id", "")
+			if not quest_id.is_empty():
+				QuestManager.complete_quest(quest_id)
+
+		"modify_disposition":
+			var npc_id: String = action_data.get("npc_id", "")
+			var delta: int = action_data.get("delta", 0)
+			if not npc_id.is_empty():
+				modify_disposition(npc_id, delta)
+
+		"turn_hostile":
+			# Make the current NPC hostile
+			if current_npc and current_npc.has_method("turn_hostile"):
+				current_npc.turn_hostile()
+
+		"arrest":
+			# Handle arrest logic - this would be NPC-specific
+			if current_npc and current_npc.has_method("arrest_player"):
+				current_npc.arrest_player()
 
 
 # =============================================================================
@@ -613,6 +1006,528 @@ func accept_pending_bounty() -> bool:
 func decline_pending_bounty() -> void:
 	if current_context:
 		current_context.pending_bounty_id = ""
+
+
+## Handle QUESTS topic - quest offers and turn-ins
+func _handle_quest_topic() -> void:
+	if not current_npc or not current_context:
+		return
+
+	var npc_id := _get_npc_id(current_npc)
+	var npc_name := current_context.npc_name
+
+	# Priority 1: Check if player can complete/turn-in a quest to this NPC
+	var completable_quest := QuestManager.get_completable_quest_for_npc(npc_id)
+	if completable_quest:
+		var quest_title: String = completable_quest.title
+		var turnin_text := "You've done well. The task is complete.\n\n[Quest Complete: %s]" % quest_title
+
+		# Complete the quest (rewards given automatically)
+		QuestManager.complete_quest(completable_quest.id)
+
+		var response := ConversationResponse.new()
+		response.response_id = "quest_complete_" + completable_quest.id
+		response.text = turnin_text
+		response.topic_type = ConversationTopic.TopicType.QUESTS
+		response_delivered.emit(response, current_context)
+		return
+
+	# Priority 2: Check if NPC has quests to offer
+	var quest_ids: Array = []
+	if "quest_ids" in current_npc:
+		quest_ids = current_npc.quest_ids
+
+	# Find first available quest from this NPC's list
+	for quest_id in quest_ids:
+		if QuestManager.is_quest_available(quest_id):
+			var quest := QuestManager.get_quest_data(quest_id)
+			if quest:
+				var offer_text := _get_quest_offer_text(quest)
+
+				var response := ConversationResponse.new()
+				response.response_id = "quest_offer_" + quest_id
+				response.text = offer_text
+				response.topic_type = ConversationTopic.TopicType.QUESTS
+
+				# Store quest ID for acceptance
+				current_context.pending_quest_id = quest_id
+
+				response_delivered.emit(response, current_context)
+				return
+
+	# Priority 3: Check for active quests from this NPC (progress update)
+	for quest_id in quest_ids:
+		if QuestManager.is_quest_active(quest_id):
+			var quest := QuestManager.get_quest(quest_id)
+			if quest:
+				var progress_text := "You're still working on the task.\n\n[%s - In Progress]" % quest.title
+
+				var response := ConversationResponse.new()
+				response.response_id = "quest_progress_" + quest_id
+				response.text = progress_text
+				response.topic_type = ConversationTopic.TopicType.QUESTS
+				response_delivered.emit(response, current_context)
+				return
+
+	# Fallback - no quests available
+	var response := ConversationResponse.new()
+	response.response_id = "no_quests_available"
+	response.text = "I don't have any tasks for you right now."
+	response.topic_type = ConversationTopic.TopicType.QUESTS
+	response_delivered.emit(response, current_context)
+
+
+## Get formatted quest offer text
+func _get_quest_offer_text(quest_data: Dictionary) -> String:
+	var title: String = quest_data.get("title", "Unknown Quest")
+	var description: String = quest_data.get("description", "A task awaits.")
+	var rewards: Dictionary = quest_data.get("rewards", {})
+
+	var text := "%s\n\n%s" % [title, description]
+
+	# Add reward info
+	var reward_parts: Array[String] = []
+	if rewards.get("gold", 0) > 0:
+		reward_parts.append("%d gold" % rewards.gold)
+	if rewards.get("xp", 0) > 0:
+		reward_parts.append("%d XP" % rewards.xp)
+
+	if not reward_parts.is_empty():
+		text += "\n\n[Rewards: %s]" % ", ".join(reward_parts)
+
+	return text
+
+
+## Accept the pending quest offer
+func accept_pending_quest() -> bool:
+	if not current_context or current_context.pending_quest_id.is_empty():
+		return false
+
+	var quest_id: String = current_context.pending_quest_id
+	if QuestManager.start_quest(quest_id):
+		current_context.pending_quest_id = ""
+
+		# Notify player talked to this NPC (for "talk" objectives)
+		var npc_id := _get_npc_id(current_npc)
+		QuestManager.on_npc_talked(npc_id)
+
+		return true
+
+	return false
+
+
+## Decline the pending quest offer
+func decline_pending_quest() -> void:
+	if current_context:
+		current_context.pending_quest_id = ""
+
+
+## Handle TRADE topic for merchant/innkeeper NPCs - opens their shop or inn menu
+func _handle_merchant_trade() -> void:
+	if not current_npc:
+		return
+
+	# Store reference to merchant/innkeeper before ending conversation
+	var npc: Node = current_npc
+
+	# End conversation first
+	end_conversation()
+
+	# Small delay to let conversation UI close, then open shop/inn
+	await get_tree().create_timer(0.1).timeout
+
+	if not npc or not is_instance_valid(npc):
+		return
+
+	# Check for innkeeper-specific method first
+	if npc.has_method("_open_inn_menu"):
+		npc._open_inn_menu()
+	# Then check for shop UI (merchants, blacksmiths)
+	elif npc.has_method("_open_shop_ui"):
+		npc._open_shop_ui()
+	# Fallback - check if NPC is in merchants group
+	elif npc.is_in_group("merchants") and npc.has_method("open_shop"):
+		npc.open_shop()
+
+
+# =============================================================================
+# PERSUASION SYSTEM
+# =============================================================================
+
+## Persuasion action types
+enum PersuasionAction {
+	ADMIRE,      # Speech DC 12, success +5 to +15 disposition, fail -5
+	INTIMIDATE,  # Grit+Speech DC 15, success +10 (fear-based), fail -10 may turn hostile
+	BRIBE,       # Gold + Speech DC 10, success +5 to +20, fail -5 lose gold anyway
+	TAUNT        # Speech DC 10, success -10 to -20 (intentional), fail no effect
+}
+
+## Perform a persuasion attempt on the current NPC
+## Returns dictionary with: success, disposition_change, roll_data, turned_hostile
+func perform_persuasion(action: PersuasionAction, bribe_amount: int = 0) -> Dictionary:
+	if not is_active or not current_context or not current_npc:
+		return {"success": false, "disposition_change": 0, "roll_data": {}, "turned_hostile": false}
+
+	var npc_id := _get_npc_id(current_npc)
+	var player_data := GameManager.player_data
+	if not player_data:
+		return {"success": false, "disposition_change": 0, "roll_data": {}, "turned_hostile": false}
+
+	# Get player stats
+	var speech: int = player_data.get_effective_stat(Enums.Stat.SPEECH)
+	var grit: int = player_data.get_effective_stat(Enums.Stat.GRIT)
+	var persuasion_skill: int = player_data.get_skill(Enums.Skill.PERSUASION)
+	var intimidation_skill: int = player_data.get_skill(Enums.Skill.INTIMIDATION)
+
+	var dc: int = 10
+	var stat_to_use: int = speech
+	var stat_name: String = "Speech"
+	var skill_to_use: int = persuasion_skill
+	var skill_name: String = "Persuasion"
+	var action_name: String = ""
+
+	# Configure based on action type
+	match action:
+		PersuasionAction.ADMIRE:
+			dc = 12
+			action_name = "ADMIRE"
+		PersuasionAction.INTIMIDATE:
+			dc = 15
+			stat_to_use = (grit + speech) / 2  # Average of Grit and Speech
+			stat_name = "Grit+Speech"
+			skill_to_use = intimidation_skill
+			skill_name = "Intimidation"
+			action_name = "INTIMIDATE"
+		PersuasionAction.BRIBE:
+			dc = 10
+			action_name = "BRIBE"
+			# Bribe amount adds bonus to check
+			if bribe_amount > 0:
+				skill_to_use += bribe_amount / 10  # +1 per 10 gold
+		PersuasionAction.TAUNT:
+			dc = 10
+			action_name = "TAUNT"
+
+	# Make the skill check via DiceManager
+	var roll_data := DiceManager.make_check(
+		action_name,
+		stat_to_use,
+		stat_name,
+		skill_to_use,
+		skill_name,
+		dc,
+		[],
+		true  # Active roll for prominent display
+	)
+
+	var success: bool = roll_data.success
+	var is_crit: bool = roll_data.is_crit
+	var disposition_change: int = 0
+	var turned_hostile: bool = false
+
+	# Calculate disposition change based on action and result
+	match action:
+		PersuasionAction.ADMIRE:
+			if success:
+				# Success: +5 to +15 (crit doubles it)
+				disposition_change = randi_range(5, 15)
+				if is_crit:
+					disposition_change *= 2
+			else:
+				# Fail: -5
+				disposition_change = -5
+
+		PersuasionAction.INTIMIDATE:
+			if success:
+				# Success: +10 (fear-based, crit adds more)
+				disposition_change = 10
+				if is_crit:
+					disposition_change = 20
+			else:
+				# Fail: -10, may turn hostile (20% chance)
+				disposition_change = -10
+				if randf() < 0.2:
+					turned_hostile = true
+
+		PersuasionAction.BRIBE:
+			# Gold is lost regardless of outcome
+			if bribe_amount > 0 and InventoryManager:
+				InventoryManager.remove_gold(bribe_amount)
+			if success:
+				# Success: +5 to +20 based on bribe amount
+				var base_change: int = 5 + mini(bribe_amount / 5, 15)  # +1 per 5 gold, max +15 bonus
+				disposition_change = base_change
+				if is_crit:
+					disposition_change = int(disposition_change * 1.5)
+			else:
+				# Fail: -5 (insulted by bad bribe attempt)
+				disposition_change = -5
+
+		PersuasionAction.TAUNT:
+			if success:
+				# Success: -10 to -20 (intentional - for making enemies)
+				disposition_change = -randi_range(10, 20)
+				if is_crit:
+					disposition_change = -30
+			else:
+				# Fail: no effect
+				disposition_change = 0
+
+	# Apply disposition change
+	if disposition_change != 0:
+		modify_disposition(npc_id, disposition_change)
+		current_context.disposition = get_disposition(npc_id)
+
+	# Handle hostile state
+	if turned_hostile and current_npc.has_method("turn_hostile"):
+		current_npc.turn_hostile()
+
+	var result := {
+		"success": success,
+		"disposition_change": disposition_change,
+		"roll_data": roll_data,
+		"turned_hostile": turned_hostile,
+		"action": action_name
+	}
+
+	# Emit signal
+	persuasion_performed.emit(action_name, success, disposition_change, roll_data)
+
+	return result
+
+
+## Perform a skill check during dialogue
+## Returns dictionary with: success, roll_data
+func perform_skill_check(skill_enum: int, dc: int, context_text: String = "") -> Dictionary:
+	var player_data := GameManager.player_data
+	if not player_data:
+		skill_check_performed.emit(skill_enum, dc, false, {})
+		return {"success": false, "roll_data": {}}
+
+	# Determine governing stat
+	var governing_stat := _get_skill_governing_stat(skill_enum)
+	var stat_value: int = player_data.get_effective_stat(governing_stat)
+	var skill_value: int = player_data.get_skill(skill_enum)
+
+	var stat_name := _get_stat_name(governing_stat)
+	var skill_name := _get_skill_name(skill_enum)
+
+	var title := skill_name.to_upper() + " CHECK"
+	if not context_text.is_empty():
+		title = context_text
+
+	# Make the roll
+	var roll_data := DiceManager.make_check(
+		title,
+		stat_value,
+		stat_name,
+		skill_value,
+		skill_name,
+		dc,
+		[],
+		true  # Active roll
+	)
+
+	skill_check_performed.emit(skill_enum, dc, roll_data.success, roll_data)
+
+	return {
+		"success": roll_data.success,
+		"roll_data": roll_data
+	}
+
+
+## Get the governing stat for a skill (copy from DialogueManager for consistency)
+func _get_skill_governing_stat(skill_enum: int) -> int:
+	match skill_enum:
+		Enums.Skill.MELEE, Enums.Skill.INTIMIDATION:
+			return Enums.Stat.GRIT
+		Enums.Skill.RANGED, Enums.Skill.DODGE, Enums.Skill.STEALTH, \
+		Enums.Skill.ENDURANCE, Enums.Skill.THIEVERY, Enums.Skill.ACROBATICS, \
+		Enums.Skill.ATHLETICS, Enums.Skill.LOCKPICKING:
+			return Enums.Stat.AGILITY
+		Enums.Skill.CONCENTRATION, Enums.Skill.RESIST, Enums.Skill.BRAVERY:
+			return Enums.Stat.WILL
+		Enums.Skill.PERSUASION, Enums.Skill.DECEPTION, Enums.Skill.NEGOTIATION:
+			return Enums.Stat.SPEECH
+		Enums.Skill.ARCANA_LORE, Enums.Skill.HISTORY, Enums.Skill.INTUITION, \
+		Enums.Skill.ENGINEERING, Enums.Skill.INVESTIGATION, Enums.Skill.PERCEPTION, \
+		Enums.Skill.RELIGION, Enums.Skill.NATURE, Enums.Skill.ALCHEMY, Enums.Skill.SMITHING:
+			return Enums.Stat.KNOWLEDGE
+		Enums.Skill.FIRST_AID, Enums.Skill.HERBALISM, Enums.Skill.SURVIVAL:
+			return Enums.Stat.VITALITY
+	return Enums.Stat.KNOWLEDGE
+
+
+## Get stat name from enum
+func _get_stat_name(stat_enum: int) -> String:
+	match stat_enum:
+		Enums.Stat.GRIT: return "Grit"
+		Enums.Stat.AGILITY: return "Agility"
+		Enums.Stat.WILL: return "Will"
+		Enums.Stat.SPEECH: return "Speech"
+		Enums.Stat.KNOWLEDGE: return "Knowledge"
+		Enums.Stat.VITALITY: return "Vitality"
+	return "Unknown"
+
+
+## Get skill name from enum
+func _get_skill_name(skill_enum: int) -> String:
+	match skill_enum:
+		Enums.Skill.MELEE: return "Melee"
+		Enums.Skill.INTIMIDATION: return "Intimidation"
+		Enums.Skill.RANGED: return "Ranged"
+		Enums.Skill.DODGE: return "Dodge"
+		Enums.Skill.STEALTH: return "Stealth"
+		Enums.Skill.ENDURANCE: return "Endurance"
+		Enums.Skill.THIEVERY: return "Thievery"
+		Enums.Skill.ACROBATICS: return "Acrobatics"
+		Enums.Skill.ATHLETICS: return "Athletics"
+		Enums.Skill.CONCENTRATION: return "Concentration"
+		Enums.Skill.RESIST: return "Resist"
+		Enums.Skill.BRAVERY: return "Bravery"
+		Enums.Skill.PERSUASION: return "Persuasion"
+		Enums.Skill.DECEPTION: return "Deception"
+		Enums.Skill.NEGOTIATION: return "Negotiation"
+		Enums.Skill.ARCANA_LORE: return "Arcana Lore"
+		Enums.Skill.HISTORY: return "History"
+		Enums.Skill.INTUITION: return "Intuition"
+		Enums.Skill.ENGINEERING: return "Engineering"
+		Enums.Skill.INVESTIGATION: return "Investigation"
+		Enums.Skill.PERCEPTION: return "Perception"
+		Enums.Skill.RELIGION: return "Religion"
+		Enums.Skill.NATURE: return "Nature"
+		Enums.Skill.FIRST_AID: return "First Aid"
+		Enums.Skill.HERBALISM: return "Herbalism"
+		Enums.Skill.SURVIVAL: return "Survival"
+		Enums.Skill.ALCHEMY: return "Alchemy"
+		Enums.Skill.SMITHING: return "Smithing"
+		Enums.Skill.LOCKPICKING: return "Lockpicking"
+	return "Unknown"
+
+
+# =============================================================================
+# ACTION EXECUTION
+# =============================================================================
+
+## Execute a dialogue action (migrated from DialogueManager)
+## Returns the next node ID if action overrides it (skill checks), empty string otherwise
+func execute_action(action: DialogueAction) -> String:
+	match action.type:
+		DialogueData.ActionType.NONE:
+			pass
+
+		DialogueData.ActionType.GIVE_ITEM:
+			InventoryManager.add_item(action.param_string, action.param_int)
+
+		DialogueData.ActionType.TAKE_ITEM:
+			InventoryManager.remove_item(action.param_string, action.param_int)
+
+		DialogueData.ActionType.GIVE_GOLD:
+			InventoryManager.add_gold(action.param_int)
+
+		DialogueData.ActionType.TAKE_GOLD:
+			InventoryManager.remove_gold(action.param_int)
+
+		DialogueData.ActionType.START_QUEST:
+			QuestManager.start_quest(action.param_string)
+
+		DialogueData.ActionType.COMPLETE_QUEST:
+			QuestManager.complete_quest(action.param_string)
+
+		DialogueData.ActionType.ADVANCE_QUEST:
+			# Advance quest objective - param_string is "quest_id:objective_id"
+			var parts := action.param_string.split(":")
+			if parts.size() >= 2:
+				QuestManager.update_progress(parts[1], parts[0], action.param_int)
+
+		DialogueData.ActionType.SET_FLAG:
+			set_flag(action.param_string)
+
+		DialogueData.ActionType.CLEAR_FLAG:
+			clear_flag(action.param_string)
+
+		DialogueData.ActionType.SKILL_CHECK:
+			return _execute_skill_check_action(action)
+
+		DialogueData.ActionType.MODIFY_REPUTATION:
+			# Future: modify faction reputation
+			pass
+
+		DialogueData.ActionType.GIVE_XP:
+			if GameManager.player_data:
+				GameManager.player_data.add_ip(action.param_int)
+
+		DialogueData.ActionType.HEAL_PLAYER:
+			if GameManager.player_data:
+				GameManager.player_data.heal(action.param_int)
+
+		DialogueData.ActionType.TELEPORT:
+			# Future: teleport player to location
+			pass
+
+		DialogueData.ActionType.OPEN_SHOP:
+			# Shop will be opened after dialogue ends
+			# Store shop ID for scene to handle
+			set_flag("_pending_shop:" + action.param_string)
+
+		DialogueData.ActionType.PLAY_SOUND:
+			AudioManager.play_ui_sound(action.param_string)
+
+		DialogueData.ActionType.SET_NPC_STATE:
+			# Future: change NPC behavior/state
+			pass
+
+		DialogueData.ActionType.SPAWN_ERRAND:
+			# Legacy action - errands replaced by bounty system
+			push_warning("[ConversationSystem] SPAWN_ERRAND action is deprecated. Use bounty system instead.")
+
+	return ""
+
+
+## Execute a skill check action with dice roll
+## Returns the next node ID (success or failure branch)
+func _execute_skill_check_action(action: DialogueAction) -> String:
+	var skill_enum: int = action.param_int
+	var dc: float = action.param_float
+
+	# Get player stats
+	var player_data := GameManager.player_data
+	if not player_data:
+		# No player data, fail the check
+		skill_check_performed.emit(skill_enum, int(dc), false, {})
+		return action.failure_node_id
+
+	# Determine which stat governs this skill
+	var governing_stat := _get_skill_governing_stat(skill_enum)
+	var stat_value: int = player_data.get_effective_stat(governing_stat)
+	var skill_value: int = player_data.get_skill(skill_enum)
+
+	# Get names for display
+	var stat_name := _get_stat_name(governing_stat)
+	var skill_name := _get_skill_name(skill_enum)
+
+	# Make the roll via DiceManager
+	var roll_data := DiceManager.make_check(
+		skill_name.to_upper() + " CHECK",
+		stat_value,
+		stat_name,
+		skill_value,
+		skill_name,
+		int(dc),
+		[],
+		true  # Active roll (prominent display)
+	)
+
+	var success: bool = roll_data.success
+
+	# Emit signal
+	skill_check_performed.emit(skill_enum, int(dc), success, roll_data)
+
+	# Return appropriate branch
+	if success:
+		return action.success_node_id
+	else:
+		return action.failure_node_id
 
 
 # =============================================================================
@@ -719,8 +1634,92 @@ func _check_knowledge_requirements(response: ConversationResponse, profile: NPCK
 func _check_conditions(response: ConversationResponse) -> bool:
 	# Check conditions array if present
 	for condition: DialogueCondition in response.conditions:
-		if not DialogueManager.evaluate_condition(condition):
+		if not _evaluate_condition(condition):
 			return false
+
+	return true
+
+
+## Evaluate a single condition
+func _evaluate_condition(condition: DialogueCondition) -> bool:
+	var result := _evaluate_condition_internal(condition)
+
+	# Apply invert flag
+	if condition.invert:
+		result = not result
+
+	return result
+
+
+## Internal condition evaluation
+func _evaluate_condition_internal(condition: DialogueCondition) -> bool:
+	match condition.type:
+		DialogueData.ConditionType.NONE:
+			return true
+
+		DialogueData.ConditionType.QUEST_STATE:
+			var quest := QuestManager.get_quest(condition.param_string)
+			if not quest:
+				return condition.param_int == Enums.QuestState.UNAVAILABLE
+			return quest.state == condition.param_int
+
+		DialogueData.ConditionType.QUEST_COMPLETE:
+			return QuestManager.is_quest_completed(condition.param_string)
+
+		DialogueData.ConditionType.HAS_ITEM:
+			return InventoryManager.has_item(condition.param_string, condition.param_int)
+
+		DialogueData.ConditionType.HAS_GOLD:
+			return InventoryManager.gold >= condition.param_int
+
+		DialogueData.ConditionType.FLAG_SET:
+			# Check both ConversationSystem and DialogueManager flags
+			if has_flag(condition.param_string):
+				return true
+			if DialogueManager and DialogueManager.has_flag(condition.param_string):
+				return true
+			return false
+
+		DialogueData.ConditionType.FLAG_NOT_SET:
+			# Check both ConversationSystem and DialogueManager flags
+			if has_flag(condition.param_string):
+				return false
+			if DialogueManager and DialogueManager.has_flag(condition.param_string):
+				return false
+			return true
+
+		DialogueData.ConditionType.STAT_CHECK:
+			if not GameManager.player_data:
+				return false
+			var stat_value: int = GameManager.player_data.get_effective_stat(condition.param_int)
+			return stat_value >= int(condition.param_float)
+
+		DialogueData.ConditionType.SKILL_CHECK:
+			if not GameManager.player_data:
+				return false
+			var skill_value: int = GameManager.player_data.get_skill(condition.param_int)
+			return skill_value >= int(condition.param_float)
+
+		DialogueData.ConditionType.TIME_OF_DAY:
+			var current_time := GameManager.current_time_of_day
+			match condition.param_string.to_lower():
+				"dawn": return current_time == Enums.TimeOfDay.DAWN
+				"morning": return current_time == Enums.TimeOfDay.MORNING
+				"noon": return current_time == Enums.TimeOfDay.NOON
+				"afternoon": return current_time == Enums.TimeOfDay.AFTERNOON
+				"dusk": return current_time == Enums.TimeOfDay.DUSK
+				"night": return current_time == Enums.TimeOfDay.NIGHT
+				"midnight": return current_time == Enums.TimeOfDay.MIDNIGHT
+				"day": return not GameManager.is_night()
+				"night_any": return GameManager.is_night()
+			return false
+
+		DialogueData.ConditionType.REPUTATION:
+			# Future: check faction reputation
+			return true
+
+		DialogueData.ConditionType.RANDOM_CHANCE:
+			return randf() <= condition.param_float
 
 	return true
 

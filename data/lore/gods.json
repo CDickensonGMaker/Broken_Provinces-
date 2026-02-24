@@ -1,0 +1,26 @@
+[
+  {
+    "id": "chronos",
+    "title": "Chronos, God of Time",
+    "category": "gods",
+    "text": "Chronos is the firstborn of the Three, the Eternal Watcher who measures all things against the great span of infinity. He sees the threads of fate stretching backward into the forgotten ages and forward into futures yet unwritten. His followers believe that every moment is precious, for even the gods cannot reclaim time once spent.\n\nPriests of Chronos wear robes of deep midnight blue, adorned with silver hourglasses and celestial symbols. They keep the great temple bells that mark the hours and maintain calendars tracking the movements of stars. In times of great need, the faithful may receive visions of what is to come, though such prophecies are often cryptic and double-edged.\n\nChronos teaches that patience is wisdom, that haste leads to ruin, and that all debts are paid in time. His blessing is said to slow the aging of the body and sharpen the clarity of the mind. Those who break oaths sworn in his name find their remaining days numbered, for Chronos does not forget."
+  },
+  {
+    "id": "gaela",
+    "title": "Gaela, Goddess of the Harvest",
+    "category": "gods",
+    "text": "Gaela is the Earthmother, she who coaxes life from barren soil and fills the granaries against the coming winter. Where Chronos governs the passage of seasons, Gaela embodies their bounty. She is worshipped by farmers, brewers, and all who depend upon the land's generosity for survival.\n\nHer temples are often simple shrines set at the edges of fields, decorated with wheat sheaves and offerings of the first fruits. During planting and harvest seasons, her priests lead festivals of thanksgiving and perform rituals to ensure fertility of crops, livestock, and hearth. The sick and wounded seek her blessing, for she governs not only the growth of grain but the healing of flesh.\n\nGaela teaches that generosity begets prosperity, that the community survives when all share in times of plenty and scarcity alike. Her blessing brings vigor to the body and abundance to the table. Those who hoard while others starve find their stores rotting and their fields turning to dust, for the Earthmother's patience with greed is finite."
+  },
+  {
+    "id": "morthane",
+    "title": "Morthane, God of Death and Rebirth",
+    "category": "gods",
+    "text": "Morthane is the Twofold, the deity who governs the threshold between life and what lies beyond. Unlike the grim reapers of other faiths, Morthane is not merely an ending but also a beginning, the shepherd of souls into their next existence. Death, the faithful say, is merely a door, and Morthane holds the key.\n\nMorthane is depicted as both masculine and feminine, often shown as a figure cloaked in twilight with one side of their face young and vital, the other ancient and skeletal. Their priests tend to the dying, prepare the dead for burial, and guard cemeteries against those who would disturb the eternal rest. In their deeper mysteries, they speak of the cycle of souls and the great wheel that turns beyond mortal sight.\n\nMorthane teaches that death comes to all in its proper time, that fighting the inevitable only breeds suffering, and that what seems an ending is merely a transformation. Their blessing eases the passage of the dying and protects the living from restless spirits. Necromancers and those who pervert the natural order are Morthane's greatest enemies, for they chain souls that should be free and corrupt the sacred cycle."
+  },
+  {
+    "id": "church_of_three",
+    "title": "The Church of Three Gods",
+    "category": "gods",
+    "text": "The Church of Three Gods serves as the dominant religious institution throughout the Human Empire, maintaining temples in every significant settlement from humble village shrines to grand cathedrals in the great cities. The faith teaches that Chronos, Gaela, and Morthane are not separate entities but three aspects of a single divine truth: the cycle of existence itself.\n\nTime flows, the harvest grows and is reaped, and all things pass into death only to be reborn. This eternal wheel turns endlessly, and the Three are its guardians and embodiments. Priests may dedicate themselves primarily to one aspect while honoring all three, and the temples hold services that acknowledge the complete cycle.\n\nThe Church provides more than spiritual guidance. Temple healers tend to the sick and injured. Chronos's archivists preserve knowledge and history. Morthane's undertakers ensure the dead receive proper rites. The faithful find community, purpose, and protection within the Church's embrace. In return, they tithe a portion of their earnings and attend services marking the holy days that punctuate the year.\n\nDark rumors persist in tavern corners that the Church hierarchy knows truths about the world's nature that they keep hidden from common believers, and that their inner councils debate matters that would shake the faith of ordinary folk."
+  }
+]

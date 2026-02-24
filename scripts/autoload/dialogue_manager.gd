@@ -6,6 +6,7 @@ signal dialogue_ended(dialogue_data: DialogueData)
 signal node_changed(node: DialogueNode)
 signal choice_made(choice: DialogueChoice, node: DialogueNode)
 signal skill_check_performed(skill: int, dc: float, success: bool, roll_data: Dictionary)
+signal flag_changed(flag_name: String, value: bool)
 
 ## Current dialogue state
 var current_dialogue: DialogueData = null
@@ -655,11 +656,14 @@ func _substitute_context_variables(text: String) -> String:
 func set_flag(flag_name: String, value: Variant = true) -> void:
 	var resolved_name := _substitute_context_variables(flag_name)
 	dialogue_flags[resolved_name] = value
+	flag_changed.emit(resolved_name, true)
 
 ## Clear a dialogue flag (supports context variable substitution)
 func clear_flag(flag_name: String) -> void:
 	var resolved_name := _substitute_context_variables(flag_name)
-	dialogue_flags.erase(resolved_name)
+	if dialogue_flags.has(resolved_name):
+		dialogue_flags.erase(resolved_name)
+		flag_changed.emit(resolved_name, false)
 
 ## Check if a flag is set (supports context variable substitution)
 func has_flag(flag_name: String) -> bool:

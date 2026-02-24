@@ -18,12 +18,23 @@ const COL_REMINDER_BORDER = Color(0.5, 0.4, 0.3)
 const TYPEWRITER_SPEED := 0.03
 const TYPEWRITER_FAST_SPEED := 0.005
 
-## Topic menu configuration - simplified to 3 essential topics
-const TOPIC_MENU: Array[Dictionary] = [
-	{"key": 1, "type": ConversationTopic.TopicType.LOCAL_NEWS, "text": "What's happening here?"},
-	{"key": 2, "type": ConversationTopic.TopicType.RUMORS, "text": "Heard any rumors?"},
-	{"key": 3, "type": ConversationTopic.TopicType.GOODBYE, "text": "Goodbye"}
-]
+## Topic menu configuration - all available topics with display text
+## Topics are filtered dynamically based on NPC profile
+const ALL_TOPICS: Dictionary = {
+	ConversationTopic.TopicType.LOCAL_NEWS: "What's happening here?",
+	ConversationTopic.TopicType.RUMORS: "Heard any rumors?",
+	ConversationTopic.TopicType.PERSONAL: "Tell me about yourself.",
+	ConversationTopic.TopicType.DIRECTIONS: "Can you give me directions?",
+	ConversationTopic.TopicType.TRADE: "Let's trade.",
+	ConversationTopic.TopicType.QUESTS: "Any work available?",
+	ConversationTopic.TopicType.GOODBYE: "Goodbye"
+}
+
+## Maximum topic buttons to create (can be extended with custom topics)
+const MAX_TOPIC_BUTTONS := 8
+
+## Dynamic topic menu built per conversation (populated in _build_dynamic_topic_menu)
+var dynamic_topic_menu: Array[Dictionary] = []
 
 
 # =============================================================================
@@ -43,6 +54,15 @@ var bounty_container: HBoxContainer
 var accept_button: Button
 var decline_button: Button
 var click_outside_overlay: Control  # Overlay to detect clicks outside panel
+var copy_to_journal_button: Button  # Button to copy current response to journal
+var journal_confirmation_label: Label  # Shows "Added to Journal" flash
+var persuasion_container: HBoxContainer  # Persuasion action buttons
+var admire_button: Button
+var intimidate_button: Button
+var bribe_button: Button
+var taunt_button: Button
+var disposition_label: Label  # Shows current disposition
+var persuasion_result_label: Label  # Shows result of persuasion attempt
 
 # =============================================================================
 # STATE
@@ -59,6 +79,11 @@ var skip_typewriter: bool = false
 var current_context: ConversationContext = null
 var available_topics: Array[ConversationTopic.TopicType] = []
 var is_showing_bounty_offer: bool = false
+var is_showing_quest_offer: bool = false
+var current_response: ConversationResponse = null  # Store current response for journal
+var journal_flash_timer: float = 0.0  # Timer for "Added to Journal" flash
+var persuasion_result_timer: float = 0.0  # Timer for persuasion result display
+var is_showing_bribe_input: bool = false  # Whether bribe amount popup is showing
 
 
 # =============================================================================
@@ -105,6 +130,18 @@ func _process(delta: float) -> void:
 			is_typing = false
 			_on_typing_complete()
 
+	# Handle journal confirmation flash timer
+	if journal_flash_timer > 0.0:
+		journal_flash_timer -= delta
+		if journal_flash_timer <= 0.0:
+			journal_confirmation_label.visible = false
+
+	# Handle persuasion result timer
+	if persuasion_result_timer > 0.0:
+		persuasion_result_timer -= delta
+		if persuasion_result_timer <= 0.0:
+			persuasion_result_label.visible = false
+
 
 func _input(event: InputEvent) -> void:
 	if not is_open:
@@ -132,28 +169,51 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
-	# Handle Y/N keys for bounty accept/decline
-	if event is InputEventKey and event.pressed and not is_typing and is_showing_bounty_offer:
-		match event.keycode:
-			KEY_Y:
-				_on_accept_bounty()
-				get_viewport().set_input_as_handled()
-				return
-			KEY_N:
-				_on_decline_bounty()
-				get_viewport().set_input_as_handled()
-				return
+	# Handle Y/N keys for bounty or quest accept/decline
+	if event is InputEventKey and event.pressed and not is_typing:
+		if is_showing_bounty_offer:
+			match event.keycode:
+				KEY_Y:
+					_on_accept_bounty()
+					get_viewport().set_input_as_handled()
+					return
+				KEY_N:
+					_on_decline_bounty()
+					get_viewport().set_input_as_handled()
+					return
+		elif is_showing_quest_offer:
+			match event.keycode:
+				KEY_Y:
+					_on_accept_quest()
+					get_viewport().set_input_as_handled()
+					return
+				KEY_N:
+					_on_decline_quest()
+					get_viewport().set_input_as_handled()
+					return
 
-	# Handle number keys for topic selection (1-3)
+	# Handle J key for Copy to Journal
+	if event is InputEventKey and event.pressed and not is_typing:
+		if event.keycode == KEY_J:
+			_on_copy_to_journal_pressed()
+			get_viewport().set_input_as_handled()
+			return
+
+	# Handle number keys for topic selection (1-8)
 	# Process in _input to ensure it runs before GUI focus consumes the event
-	if event is InputEventKey and event.pressed and not is_typing and not is_showing_bounty_offer:
+	if event is InputEventKey and event.pressed and not is_typing and not is_showing_bounty_offer and not is_showing_quest_offer:
 		var key_num := -1
 		match event.keycode:
 			KEY_1: key_num = 0
 			KEY_2: key_num = 1
 			KEY_3: key_num = 2
+			KEY_4: key_num = 3
+			KEY_5: key_num = 4
+			KEY_6: key_num = 5
+			KEY_7: key_num = 6
+			KEY_8: key_num = 7
 
-		if key_num >= 0 and key_num < topic_buttons.size():
+		if key_num >= 0 and key_num < dynamic_topic_menu.size() and key_num < topic_buttons.size():
 			var btn: Button = topic_buttons[key_num]
 			if btn.visible and not btn.disabled:
 				_on_topic_pressed(key_num)
@@ -251,14 +311,47 @@ func _build_ui() -> void:
 	response_panel.add_theme_stylebox_override("panel", response_style)
 	vbox.add_child(response_panel)
 
+	# Response text area container (VBox for text + journal button)
+	var response_vbox := VBoxContainer.new()
+	response_vbox.add_theme_constant_override("separation", 8)
+	response_panel.add_child(response_vbox)
+
 	response_text = RichTextLabel.new()
 	response_text.name = "ResponseText"
 	response_text.bbcode_enabled = true
 	response_text.fit_content = false
 	response_text.scroll_active = true
+	response_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	response_text.add_theme_color_override("default_color", COL_TEXT)
 	response_text.add_theme_font_size_override("normal_font_size", 12)
-	response_panel.add_child(response_text)
+	response_vbox.add_child(response_text)
+
+	# Copy to Journal button + confirmation label (bottom of response panel)
+	var journal_hbox := HBoxContainer.new()
+	journal_hbox.alignment = BoxContainer.ALIGNMENT_END
+	journal_hbox.add_theme_constant_override("separation", 10)
+	response_vbox.add_child(journal_hbox)
+
+	# Journal confirmation label (hidden by default)
+	journal_confirmation_label = Label.new()
+	journal_confirmation_label.name = "JournalConfirmation"
+	journal_confirmation_label.text = "Added to Journal"
+	journal_confirmation_label.add_theme_color_override("font_color", Color(0.5, 0.8, 0.5))
+	journal_confirmation_label.add_theme_font_size_override("font_size", 10)
+	journal_confirmation_label.visible = false
+	journal_hbox.add_child(journal_confirmation_label)
+
+	# Copy to Journal button
+	copy_to_journal_button = Button.new()
+	copy_to_journal_button.name = "CopyToJournalButton"
+	copy_to_journal_button.text = "[J] Copy to Journal"
+	copy_to_journal_button.focus_mode = Control.FOCUS_NONE
+	copy_to_journal_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	copy_to_journal_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	copy_to_journal_button.custom_minimum_size = Vector2(120, 24)
+	copy_to_journal_button.pressed.connect(_on_copy_to_journal_pressed)
+	_style_journal_button(copy_to_journal_button)
+	journal_hbox.add_child(copy_to_journal_button)
 
 	# Memory reminder panel (hidden by default)
 	reminder_panel = PanelContainer.new()
@@ -293,10 +386,9 @@ func _build_ui() -> void:
 	topic_container.mouse_filter = Control.MOUSE_FILTER_PASS
 	vbox.add_child(topic_container)
 
-	# Create topic buttons for all 8 topics
-	for i in range(TOPIC_MENU.size()):
-		var topic_data: Dictionary = TOPIC_MENU[i]
-		var btn := _create_topic_button(i, topic_data)
+	# Create placeholder topic buttons (will be populated dynamically per conversation)
+	for i in range(MAX_TOPIC_BUTTONS):
+		var btn := _create_topic_button_placeholder(i)
 		topic_container.add_child(btn)
 		topic_buttons.append(btn)
 
@@ -316,30 +408,96 @@ func _build_ui() -> void:
 	decline_button.pressed.connect(_on_decline_bounty)
 	bounty_container.add_child(decline_button)
 
+	# Persuasion bar with disposition display and action buttons
+	var persuasion_vbox := VBoxContainer.new()
+	persuasion_vbox.name = "PersuasionSection"
+	persuasion_vbox.add_theme_constant_override("separation", 5)
+	vbox.add_child(persuasion_vbox)
+
+	# Disposition display
+	var disposition_hbox := HBoxContainer.new()
+	disposition_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	disposition_hbox.add_theme_constant_override("separation", 10)
+	persuasion_vbox.add_child(disposition_hbox)
+
+	var disp_title := Label.new()
+	disp_title.text = "Disposition:"
+	disp_title.add_theme_color_override("font_color", COL_DIM)
+	disp_title.add_theme_font_size_override("font_size", 10)
+	disposition_hbox.add_child(disp_title)
+
+	disposition_label = Label.new()
+	disposition_label.name = "DispositionLabel"
+	disposition_label.text = "50 (Neutral)"
+	disposition_label.add_theme_color_override("font_color", COL_GOLD)
+	disposition_label.add_theme_font_size_override("font_size", 10)
+	disposition_hbox.add_child(disposition_label)
+
+	# Persuasion result label (hidden by default)
+	persuasion_result_label = Label.new()
+	persuasion_result_label.name = "PersuasionResultLabel"
+	persuasion_result_label.text = ""
+	persuasion_result_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	persuasion_result_label.add_theme_font_size_override("font_size", 10)
+	persuasion_result_label.visible = false
+	persuasion_vbox.add_child(persuasion_result_label)
+
+	# Persuasion buttons
+	persuasion_container = HBoxContainer.new()
+	persuasion_container.name = "PersuasionContainer"
+	persuasion_container.add_theme_constant_override("separation", 8)
+	persuasion_container.alignment = BoxContainer.ALIGNMENT_CENTER
+	persuasion_vbox.add_child(persuasion_container)
+
+	admire_button = _create_persuasion_button("Admire", Color(0.3, 0.5, 0.3))
+	admire_button.pressed.connect(_on_admire_pressed)
+	persuasion_container.add_child(admire_button)
+
+	intimidate_button = _create_persuasion_button("Intimidate", Color(0.5, 0.3, 0.3))
+	intimidate_button.pressed.connect(_on_intimidate_pressed)
+	persuasion_container.add_child(intimidate_button)
+
+	bribe_button = _create_persuasion_button("Bribe", Color(0.5, 0.45, 0.2))
+	bribe_button.pressed.connect(_on_bribe_pressed)
+	persuasion_container.add_child(bribe_button)
+
+	taunt_button = _create_persuasion_button("Taunt", Color(0.4, 0.3, 0.4))
+	taunt_button.pressed.connect(_on_taunt_pressed)
+	persuasion_container.add_child(taunt_button)
+
 	# Hint label at bottom
 	hint_label = Label.new()
 	hint_label.name = "HintLabel"
-	hint_label.text = "[1-3] Select Topic  |  [ESC] Exit"
+	hint_label.text = "[1-4] Select Topic  |  [ESC] Exit"
 	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint_label.add_theme_color_override("font_color", COL_DIM)
 	hint_label.add_theme_font_size_override("font_size", 10)
 	vbox.add_child(hint_label)
 
 
-func _create_topic_button(index: int, topic_data: Dictionary) -> Button:
+## Create a placeholder topic button (will be configured per conversation)
+func _create_topic_button_placeholder(index: int) -> Button:
 	var btn := Button.new()
 	btn.name = "Topic%d" % (index + 1)
-	var key_num: int = topic_data["key"]
-	var text: String = topic_data["text"]
-	btn.text = "[%d] %s" % [key_num, text]
+	btn.text = "[%d] ..." % (index + 1)
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.focus_mode = Control.FOCUS_ALL
 	btn.mouse_filter = Control.MOUSE_FILTER_STOP
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	btn.custom_minimum_size = Vector2(0, 28)  # Ensure clickable height
 	btn.pressed.connect(_on_topic_pressed.bind(index))
+	btn.visible = false  # Hidden until configured
 	_style_topic_button(btn)
 	return btn
+
+
+## Configure a topic button with actual topic data
+func _configure_topic_button(btn: Button, index: int, topic_data: Dictionary) -> void:
+	var key_num: int = index + 1
+	var text: String = topic_data.get("text", "...")
+	btn.text = "[%d] %s" % [key_num, text]
+	btn.visible = true
+	btn.disabled = false
 
 
 func _create_bounty_button(text: String, is_accept: bool) -> Button:
@@ -368,6 +526,65 @@ func _create_bounty_button(text: String, is_accept: bool) -> Button:
 	btn.add_theme_font_size_override("font_size", 12)
 	btn.add_theme_color_override("font_color", COL_TEXT if not is_accept else Color(0.7, 0.9, 0.7))
 	btn.add_theme_color_override("font_hover_color", COL_GOLD if not is_accept else Color(0.8, 1.0, 0.8))
+
+	return btn
+
+
+func _style_journal_button(btn: Button) -> void:
+	var normal := StyleBoxFlat.new()
+	normal.bg_color = Color(0.1, 0.12, 0.1)
+	normal.border_color = Color(0.3, 0.4, 0.3)
+	normal.set_border_width_all(1)
+	normal.set_content_margin_all(4)
+
+	var hover := StyleBoxFlat.new()
+	hover.bg_color = Color(0.15, 0.2, 0.15)
+	hover.border_color = Color(0.4, 0.6, 0.4)
+	hover.set_border_width_all(1)
+	hover.set_content_margin_all(4)
+
+	btn.add_theme_stylebox_override("normal", normal)
+	btn.add_theme_stylebox_override("hover", hover)
+	btn.add_theme_stylebox_override("pressed", hover)
+	btn.add_theme_font_size_override("font_size", 9)
+	btn.add_theme_color_override("font_color", Color(0.6, 0.7, 0.6))
+	btn.add_theme_color_override("font_hover_color", Color(0.7, 0.9, 0.7))
+
+
+func _create_persuasion_button(text: String, tint: Color) -> Button:
+	var btn := Button.new()
+	btn.text = text
+	btn.focus_mode = Control.FOCUS_ALL
+	btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	btn.custom_minimum_size = Vector2(80, 26)
+
+	var normal := StyleBoxFlat.new()
+	normal.bg_color = Color(tint.r * 0.5, tint.g * 0.5, tint.b * 0.5)
+	normal.border_color = tint
+	normal.set_border_width_all(1)
+	normal.set_content_margin_all(5)
+
+	var hover := StyleBoxFlat.new()
+	hover.bg_color = Color(tint.r * 0.7, tint.g * 0.7, tint.b * 0.7)
+	hover.border_color = Color(tint.r * 1.2, tint.g * 1.2, tint.b * 1.2)
+	hover.set_border_width_all(1)
+	hover.set_content_margin_all(5)
+
+	var disabled := StyleBoxFlat.new()
+	disabled.bg_color = Color(0.1, 0.1, 0.1)
+	disabled.border_color = COL_DIM
+	disabled.set_border_width_all(1)
+	disabled.set_content_margin_all(5)
+
+	btn.add_theme_stylebox_override("normal", normal)
+	btn.add_theme_stylebox_override("hover", hover)
+	btn.add_theme_stylebox_override("pressed", hover)
+	btn.add_theme_stylebox_override("disabled", disabled)
+	btn.add_theme_font_size_override("font_size", 10)
+	btn.add_theme_color_override("font_color", COL_TEXT)
+	btn.add_theme_color_override("font_hover_color", COL_GOLD)
+	btn.add_theme_color_override("font_disabled_color", COL_DIM)
 
 	return btn
 
@@ -434,11 +651,17 @@ func _hide_ui() -> void:
 	is_typing = false
 	skip_typewriter = false
 	current_context = null
+	current_response = null
 	available_topics.clear()
 	reminder_panel.visible = false
 	is_showing_bounty_offer = false
+	is_showing_quest_offer = false
 	bounty_container.visible = false
 	topic_container.visible = true
+	journal_confirmation_label.visible = false
+	journal_flash_timer = 0.0
+	persuasion_result_label.visible = false
+	persuasion_result_timer = 0.0
 	# Note: GameManager.end_dialogue() handles is_in_dialogue flag
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
@@ -462,23 +685,85 @@ func _on_typing_complete() -> void:
 	_set_topics_enabled(true)
 
 
+## Build the dynamic topic menu based on NPC profile and available topics
+func _build_dynamic_topic_menu(profile: NPCKnowledgeProfile) -> void:
+	dynamic_topic_menu.clear()
+
+	# Hide all buttons first
+	for btn in topic_buttons:
+		btn.visible = false
+		btn.disabled = true
+
+	# Get topics from ConversationSystem
+	var topics_to_show: Array[ConversationTopic.TopicType] = available_topics.duplicate()
+
+	# Add custom topics from NPC profile if available
+	var custom_topics: Array[Dictionary] = []
+	if profile and profile.has_method("get_custom_topics"):
+		custom_topics = profile.get_custom_topics()
+
+	# Build menu entries for standard topics
+	var menu_index := 0
+	for topic_type: ConversationTopic.TopicType in topics_to_show:
+		if menu_index >= MAX_TOPIC_BUTTONS:
+			break
+
+		var text: String = ALL_TOPICS.get(topic_type, "Unknown")
+		dynamic_topic_menu.append({
+			"key": menu_index + 1,
+			"type": topic_type,
+			"text": text,
+			"is_custom": false
+		})
+		menu_index += 1
+
+	# Add custom topics from profile
+	for custom_topic: Dictionary in custom_topics:
+		if menu_index >= MAX_TOPIC_BUTTONS:
+			break
+		dynamic_topic_menu.append({
+			"key": menu_index + 1,
+			"type": custom_topic.get("type", ConversationTopic.TopicType.PERSONAL),
+			"text": custom_topic.get("text", "..."),
+			"is_custom": true,
+			"custom_id": custom_topic.get("id", "")
+		})
+		menu_index += 1
+
+	# Configure visible buttons
+	for i in range(dynamic_topic_menu.size()):
+		if i < topic_buttons.size():
+			_configure_topic_button(topic_buttons[i], i, dynamic_topic_menu[i])
+
+	# Update hint label with correct key range
+	var max_key: int = mini(dynamic_topic_menu.size(), 9)
+	if max_key > 0:
+		hint_label.text = "[1-%d] Select Topic  |  [ESC] Exit" % max_key
+	else:
+		hint_label.text = "[ESC] Exit"
+
+
 func _update_topic_availability() -> void:
-	# Update which topics are available based on NPC profile
-	for i in range(topic_buttons.size()):
+	# Update which topics are available based on dynamic menu
+	for i in range(dynamic_topic_menu.size()):
+		if i >= topic_buttons.size():
+			break
 		var btn: Button = topic_buttons[i]
-		var topic_data: Dictionary = TOPIC_MENU[i]
+		var topic_data: Dictionary = dynamic_topic_menu[i]
 		var topic_type: ConversationTopic.TopicType = topic_data["type"]
 
 		# Check if this topic is available
 		var is_available: bool = topic_type in available_topics
 		btn.disabled = not is_available
-		btn.visible = true  # Always show, just disable if unavailable
+		btn.visible = true
 
 
 func _set_topics_enabled(enabled: bool) -> void:
-	for i in range(topic_buttons.size()):
+	for i in range(dynamic_topic_menu.size()):
+		if i >= topic_buttons.size():
+			break
 		var btn: Button = topic_buttons[i]
-		var topic_data: Dictionary = TOPIC_MENU[i]
+		var topic_data: Dictionary = dynamic_topic_menu[i]
 		var topic_type: ConversationTopic.TopicType = topic_data["type"]
 
 		# Only enable if both enabled flag is true AND topic is available
@@ -498,11 +783,11 @@ func _on_topic_pressed(index: int) -> void:
 		print("ConversationUI: _on_topic_pressed blocked - is_typing=true")
 		return
 
-	if index < 0 or index >= TOPIC_MENU.size():
+	if index < 0 or index >= dynamic_topic_menu.size():
 		print("ConversationUI: _on_topic_pressed blocked - invalid index")
 		return
 
-	var topic_data: Dictionary = TOPIC_MENU[index]
+	var topic_data: Dictionary = dynamic_topic_menu[index]
 	var topic_type: ConversationTopic.TopicType = topic_data["type"]
 
 	# Check if topic is available
@@ -512,8 +797,13 @@ func _on_topic_pressed(index: int) -> void:
 	# Hide reminder when selecting new topic
 	reminder_panel.visible = false
 
-	# Select the topic in ConversationSystem
-	ConversationSystem.select_topic(topic_type)
+	# Handle custom topics differently
+	if topic_data.get("is_custom", false):
+		var custom_id: String = topic_data.get("custom_id", "")
+		ConversationSystem.select_custom_topic(custom_id, topic_data)
+	else:
+		# Select the standard topic in ConversationSystem
+		ConversationSystem.select_topic(topic_type)
 
 
 # =============================================================================
@@ -542,19 +832,29 @@ func _on_conversation_started(npc: Node, context: ConversationContext) -> void:
 	# Set NPC name
 	name_label.text = context.npc_name.to_upper()
 
-	# Get available topics (always the same 3 simplified topics)
+	# Get available topics based on NPC profile
 	available_topics = ConversationSystem.get_available_topics(context.npc_profile)
+
+	# Build the dynamic topic menu based on available topics and NPC profile
+	_build_dynamic_topic_menu(context.npc_profile)
 
 	# Update topic button availability
 	_update_topic_availability()
+
+	# Update disposition display
+	_update_disposition_display()
 
 	# Show greeting
 	var greeting := _get_greeting(context)
 	response_text.text = greeting
 	response_text.visible_characters = -1
 
-	# Hide reminder
+	# Hide reminder and persuasion result
 	reminder_panel.visible = false
+	persuasion_result_label.visible = false
+
+	# Enable persuasion buttons
+	_set_persuasion_enabled(true)
 
 	# Show UI
 	_show_ui()
@@ -564,20 +864,38 @@ func _on_response_delivered(response: ConversationResponse, context: Conversatio
 	if not is_open:
 		return
 
+	# Store current response for journal copying
+	current_response = response
+
 	# Inject variables into response text
 	var final_text := context.inject_variables(response.text)
+
+	# Check if this response should be auto-logged to journal
+	if response.auto_log_to_journal:
+		_copy_response_to_journal(response, context, final_text)
 
 	# Check if this is a bounty offer (has pending bounty)
 	if context.pending_bounty_id and not context.pending_bounty_id.is_empty():
 		is_showing_bounty_offer = true
+		is_showing_quest_offer = false
 		topic_container.visible = false
 		bounty_container.visible = true
+		accept_button.text = "[Y] Accept Bounty"
+		hint_label.text = "[Y] Accept  |  [N] Decline  |  [ESC] Exit"
+	# Check if this is a quest offer (has pending quest)
+	elif context.pending_quest_id and not context.pending_quest_id.is_empty():
+		is_showing_quest_offer = true
+		is_showing_bounty_offer = false
+		topic_container.visible = false
+		bounty_container.visible = true
+		accept_button.text = "[Y] Accept Quest"
 		hint_label.text = "[Y] Accept  |  [N] Decline  |  [ESC] Exit"
 	else:
 		is_showing_bounty_offer = false
+		is_showing_quest_offer = false
 		topic_container.visible = true
 		bounty_container.visible = false
-		hint_label.text = "[1-3] Select Topic  |  [ESC] Exit"
+		hint_label.text = "[1-4] Select Topic  |  [J] Copy to Journal  |  [ESC] Exit"
 
 	# Start typewriter effect
 	_start_typewriter(final_text)
@@ -601,6 +919,11 @@ func _on_conversation_ended(_npc: Node) -> void:
 # =============================================================================
 
 func _on_accept_bounty() -> void:
+	# Also handle quest offers since we reuse the same buttons
+	if is_showing_quest_offer:
+		_on_accept_quest()
+		return
+
 	if not is_showing_bounty_offer:
 		return
 
@@ -613,11 +936,16 @@ func _on_accept_bounty() -> void:
 	is_showing_bounty_offer = false
 	bounty_container.visible = false
 	topic_container.visible = true
-	hint_label.text = "[1-3] Select Topic  |  [ESC] Exit"
+	hint_label.text = "[1-4] Select Topic  |  [ESC] Exit"
 	_update_topic_availability()
 
 
 func _on_decline_bounty() -> void:
+	# Also handle quest offers since we reuse the same buttons
+	if is_showing_quest_offer:
+		_on_decline_quest()
+		return
+
 	if not is_showing_bounty_offer:
 		return
 
@@ -631,7 +959,46 @@ func _on_decline_bounty() -> void:
 	is_showing_bounty_offer = false
 	bounty_container.visible = false
 	topic_container.visible = true
-	hint_label.text = "[1-3] Select Topic  |  [ESC] Exit"
+	hint_label.text = "[1-4] Select Topic  |  [ESC] Exit"
+	_update_topic_availability()
+
+
+# =============================================================================
+# QUEST HANDLERS
+# =============================================================================
+
+func _on_accept_quest() -> void:
+	if not is_showing_quest_offer:
+		return
+
+	if ConversationSystem.accept_pending_quest():
+		# Show acceptance confirmation
+		response_text.text = "Very well. I trust you'll see it done."
+		response_text.visible_characters = -1
+
+	# Hide buttons, show topics again
+	is_showing_quest_offer = false
+	bounty_container.visible = false
+	topic_container.visible = true
+	hint_label.text = "[1-4] Select Topic  |  [ESC] Exit"
+	_update_topic_availability()
+
+
+func _on_decline_quest() -> void:
+	if not is_showing_quest_offer:
+		return
+
+	ConversationSystem.decline_pending_quest()
+
+	# Show decline response
+	response_text.text = "Perhaps another time, then."
+	response_text.visible_characters = -1
+
+	# Hide buttons, show topics again
+	is_showing_quest_offer = false
+	bounty_container.visible = false
+	topic_container.visible = true
+	hint_label.text = "[1-4] Select Topic  |  [ESC] Exit"
 	_update_topic_availability()
 
 
@@ -669,3 +1036,190 @@ func _get_greeting(context: ConversationContext) -> String:
 		return "What do you want?"
 	else:
 		return "Make it quick."
+
+
+# =============================================================================
+# JOURNAL HANDLERS
+# =============================================================================
+
+## Handle copy to journal button press
+func _on_copy_to_journal_pressed() -> void:
+	if not current_response or not current_context:
+		return
+
+	# Get the final text with variables injected
+	var final_text := current_context.inject_variables(current_response.text)
+	_copy_response_to_journal(current_response, current_context, final_text)
+
+
+## Copy a response to the journal
+func _copy_response_to_journal(response: ConversationResponse, context: ConversationContext, final_text: String) -> void:
+	# Format the journal entry
+	var npc_name: String = context.npc_name
+	var topic_name: String = ConversationTopic.get_topic_name(response.topic_type)
+	var location: String = JournalManager.get_current_location_name() if JournalManager else ""
+
+	# Try to add to journal via JournalManager
+	if JournalManager:
+		# For auto-logged important responses
+		if response.auto_log_to_journal:
+			# add_dialogue_note(dialogue_text, npc_name, location, quest_tag)
+			JournalManager.add_dialogue_note(final_text, npc_name, location, topic_name)
+		else:
+			# For manual copies - add_manual_note(dialogue_text, npc_name, location)
+			JournalManager.add_manual_note(final_text, npc_name, location)
+
+		# Show confirmation flash
+		_show_journal_confirmation()
+	else:
+		push_warning("ConversationUI: JournalManager not available")
+
+
+## Show the "Added to Journal" confirmation flash
+func _show_journal_confirmation() -> void:
+	journal_confirmation_label.visible = true
+	journal_flash_timer = 2.0  # Show for 2 seconds
+
+
+# =============================================================================
+# PERSUASION HANDLERS
+# =============================================================================
+
+## Handle Admire persuasion button
+func _on_admire_pressed() -> void:
+	if is_typing:
+		return
+	_perform_persuasion(ConversationSystem.PersuasionAction.ADMIRE)
+
+
+## Handle Intimidate persuasion button
+func _on_intimidate_pressed() -> void:
+	if is_typing:
+		return
+	_perform_persuasion(ConversationSystem.PersuasionAction.INTIMIDATE)
+
+
+## Handle Bribe persuasion button (simplified - uses 50 gold)
+func _on_bribe_pressed() -> void:
+	if is_typing:
+		return
+
+	# Check if player has enough gold
+	var player_gold: int = InventoryManager.gold if InventoryManager else 0
+	if player_gold < 10:
+		_show_persuasion_result("Not enough gold to bribe!", Color(0.8, 0.5, 0.5))
+		return
+
+	# Use 50 gold or whatever the player has (minimum 10)
+	var bribe_amount: int = mini(50, player_gold)
+	_perform_persuasion(ConversationSystem.PersuasionAction.BRIBE, bribe_amount)
+
+
+## Handle Taunt persuasion button
+func _on_taunt_pressed() -> void:
+	if is_typing:
+		return
+	_perform_persuasion(ConversationSystem.PersuasionAction.TAUNT)
+
+
+## Perform a persuasion action and update UI
+func _perform_persuasion(action: ConversationSystem.PersuasionAction, bribe_amount: int = 0) -> void:
+	# Disable persuasion buttons during the action
+	_set_persuasion_enabled(false)
+
+	var result: Dictionary = ConversationSystem.perform_persuasion(action, bribe_amount)
+
+	# Update disposition display
+	_update_disposition_display()
+
+	# Show result message
+	var result_text: String = ""
+	var result_color: Color = COL_TEXT
+
+	var action_name: String = result.get("action", "")
+	var success: bool = result.get("success", false)
+	var disp_change: int = result.get("disposition_change", 0)
+	var turned_hostile: bool = result.get("turned_hostile", false)
+
+	if turned_hostile:
+		result_text = "%s FAILED! They've turned hostile!" % action_name
+		result_color = Color(1.0, 0.3, 0.3)
+	elif success:
+		if disp_change > 0:
+			result_text = "%s SUCCESS! Disposition +%d" % [action_name, disp_change]
+			result_color = Color(0.5, 0.9, 0.5)
+		elif disp_change < 0:
+			result_text = "%s SUCCESS! Disposition %d" % [action_name, disp_change]
+			result_color = Color(0.9, 0.7, 0.3)  # Yellow for intentional decrease
+		else:
+			result_text = "%s SUCCESS!" % action_name
+			result_color = Color(0.5, 0.9, 0.5)
+	else:
+		if disp_change < 0:
+			result_text = "%s FAILED! Disposition %d" % [action_name, disp_change]
+			result_color = Color(0.9, 0.5, 0.5)
+		else:
+			result_text = "%s FAILED!" % action_name
+			result_color = Color(0.9, 0.5, 0.5)
+
+	# Add bribe cost info
+	if action == ConversationSystem.PersuasionAction.BRIBE and bribe_amount > 0:
+		result_text += " (-%d gold)" % bribe_amount
+
+	_show_persuasion_result(result_text, result_color)
+
+	# Re-enable buttons after a short delay
+	await get_tree().create_timer(1.5).timeout
+	_set_persuasion_enabled(true)
+
+
+## Show persuasion result message
+func _show_persuasion_result(text: String, color: Color) -> void:
+	persuasion_result_label.text = text
+	persuasion_result_label.add_theme_color_override("font_color", color)
+	persuasion_result_label.visible = true
+	persuasion_result_timer = 3.0  # Show for 3 seconds
+
+
+## Update the disposition display
+func _update_disposition_display() -> void:
+	if not current_context:
+		disposition_label.text = "?? (Unknown)"
+		return
+
+	var disp: int = current_context.disposition
+	var category: String = ""
+	var color: Color = COL_TEXT
+
+	if disp >= 90:
+		category = "Allied"
+		color = Color(0.3, 0.9, 0.3)
+	elif disp >= 75:
+		category = "Friendly"
+		color = Color(0.5, 0.8, 0.5)
+	elif disp >= 60:
+		category = "Warm"
+		color = Color(0.6, 0.7, 0.5)
+	elif disp >= 40:
+		category = "Neutral"
+		color = COL_GOLD
+	elif disp >= 25:
+		category = "Cool"
+		color = Color(0.7, 0.6, 0.4)
+	elif disp >= 10:
+		category = "Unfriendly"
+		color = Color(0.8, 0.5, 0.4)
+	else:
+		category = "Hostile"
+		color = Color(0.9, 0.3, 0.3)
+
+	disposition_label.text = "%d (%s)" % [disp, category]
+	disposition_label.add_theme_color_override("font_color", color)
+
+
+## Enable/disable persuasion buttons
+func _set_persuasion_enabled(enabled: bool) -> void:
+	admire_button.disabled = not enabled
+	intimidate_button.disabled = not enabled
+	bribe_button.disabled = not enabled
+	taunt_button.disabled = not enabled

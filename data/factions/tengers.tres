@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "tengers"
+display_name = "Tenger Horde"
+description = "A fierce human subgroup from the southern wastes known for their brutal warrior culture. The Tengers are blood-thirsty marauders who have razed villages like Windmere and Dusty Hollow. They despise magic and follow clan warlords who rule through strength alone. Their camps are marked by war banners and skull totems."
+parent_faction = ""
+allies = []
+enemies = ["human_empire", "town_guard", "dwarves_birth", "dwarves_power", "elves_anti_human", "elves_pro_human", "goblins"]
+neutrals = []
+alignment = -70
+ranks = [{"name": "Enemy", "min_reputation": -100, "benefits": []}, {"name": "Target", "min_reputation": -70, "benefits": []}, {"name": "Prey", "min_reputation": -40, "benefits": []}, {"name": "Outsider", "min_reputation": -10, "benefits": []}, {"name": "Survivor", "min_reputation": 20, "benefits": ["safe_passage_tenger"]}, {"name": "Warrior Respected", "min_reputation": 50, "benefits": ["safe_passage_tenger", "tenger_trade"]}, {"name": "Blood Brother", "min_reputation": 80, "benefits": ["safe_passage_tenger", "tenger_trade", "tenger_mercenaries"]}]
+default_reputation = -60
+joinable = false
+join_threshold = 50
+is_hidden = false
+faction_color = Color(0.6, 0.25, 0.15, 1.0)

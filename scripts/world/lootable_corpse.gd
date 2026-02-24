@@ -136,9 +136,45 @@ func get_interaction_prompt() -> String:
 	return "Search " + corpse_name
 
 
+## Radius for scanning nearby corpses (in game units / meters)
+const LOOT_SCAN_RADIUS := 10.0
+
+
+## Get all corpses within range (including self)
+func get_nearby_corpses() -> Array[LootableCorpse]:
+	var nearby: Array[LootableCorpse] = []
+	nearby.append(self)  # Always include the interacted corpse first
+
+	# Find all corpses in the scene
+	var all_corpses := get_tree().get_nodes_in_group("corpses")
+	for node in all_corpses:
+		if node == self:
+			continue
+		if not is_instance_valid(node):
+			continue
+		if not node is LootableCorpse:
+			continue
+
+		var corpse: LootableCorpse = node as LootableCorpse
+		var distance: float = global_position.distance_to(corpse.global_position)
+		if distance <= LOOT_SCAN_RADIUS:
+			# Only include non-empty corpses
+			if not corpse.contents.is_empty() or corpse.gold > 0 or not corpse.has_been_looted:
+				nearby.append(corpse)
+
+	return nearby
+
+
 ## Open the corpse loot UI
 func _open_loot_ui() -> void:
 	has_been_looted = true
+
+	# Scan for nearby corpses to include in the loot UI
+	var nearby_corpses: Array[LootableCorpse] = get_nearby_corpses()
+
+	# Mark all nearby corpses as looted
+	for corpse in nearby_corpses:
+		corpse.has_been_looted = true
 
 	# Load and instantiate corpse loot UI
 	var loot_ui_script := preload("res://scripts/ui/corpse_loot_ui.gd")
@@ -146,8 +182,9 @@ func _open_loot_ui() -> void:
 	loot_ui.set_script(loot_ui_script)
 	loot_ui.name = "CorpseLootUI"
 
-	# Pass corpse reference
+	# Pass corpse references (primary corpse for backward compatibility, and all corpses)
 	loot_ui.set("corpse", self)
+	loot_ui.set("corpses", nearby_corpses)
 
 	# Add to CanvasLayer
 	var canvas := CanvasLayer.new()

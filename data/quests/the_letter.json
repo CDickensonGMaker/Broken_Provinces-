@@ -1,30 +1,37 @@
 {
-	"id": "the_letter",
-	"title": "The Letter",
-	"description": "Tharin Ironbeard has entrusted you with a sealed letter to deliver to his contact in Falkenhaften. He was vague about the contents, only mentioning it was 'royal business'. Do not open the letter.",
+	"id": "keepers_letter_delivery",
+	"title": "A Letter for Dalhurst",
+	"description": "Tharin Ironbeard has asked you to deliver a sealed letter to his contact in Dalhurst, a man named Aldric Vane who runs a curiosities shop. The dwarf was cryptic about its contents, mentioning only that it concerns 'matters of great importance'. The wax seal bears an unfamiliar crest - perhaps the mark of some secret society.",
 	"is_main_quest": true,
 	"quest_source": "story",
+	"giver_npc_id": "tharin_ironbeard",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "elder_moor",
 	"objectives": [
 		{
-			"id": "deliver_letter",
-			"description": "Deliver the letter to Tharin's contact in Falkenhaften",
+			"id": "travel_dalhurst",
+			"description": "Travel to Dalhurst",
 			"type": "reach",
-			"target": "falkenhaften_contact",
-			"zone": "falkenhaften"
+			"target": "dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "deliver_letter",
+			"description": "Deliver the letter to Aldric Vane",
+			"type": "talk",
+			"target": "aldric_vane",
+			"required_count": 1
 		}
 	],
 	"turn_in_type": "npc_specific",
-	"turn_in_target": "falkenhaften_contact",
-	"turn_in_zone": "falkenhaften",
+	"turn_in_target": "aldric_vane",
+	"turn_in_zone": "dalhurst",
 	"rewards": {
 		"gold": 50,
-		"xp": 100
+		"xp": 100,
+		"items": []
 	},
-	"required_items": [
-		{
-			"item_id": "tharins_letter",
-			"quantity": 1,
-			"consume": true
-		}
-	]
+	"prerequisites": [],
+	"next_quest": "",
+	"unlocks_quests": ["keepers_initiation"]
 }

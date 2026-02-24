@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "thieves_guild"
+display_name = "Thieves Guild"
+description = "The organized criminal underworld operating in major cities throughout the realm. The Guild controls fencing operations, information brokering, and protection rackets. They maintain strict codes of conduct and punish those who steal from fellow members or bring unwanted attention."
+parent_faction = ""
+allies = []
+enemies = ["human_empire", "imperial_army"]
+neutrals = ["goblins", "dwarves_power"]
+alignment = -40
+ranks = [{"name": "Mark", "min_reputation": -100, "benefits": []}, {"name": "Unknown", "min_reputation": -30, "benefits": []}, {"name": "Associate", "min_reputation": 0, "benefits": ["fence_access"]}, {"name": "Footpad", "min_reputation": 25, "benefits": ["fence_access", "guild_jobs"]}, {"name": "Burglar", "min_reputation": 50, "benefits": ["fence_access", "guild_jobs", "safe_houses"]}, {"name": "Master Thief", "min_reputation": 75, "benefits": ["fence_access", "guild_jobs", "safe_houses", "assassination_contracts"]}, {"name": "Shadow Master", "min_reputation": 95, "benefits": ["fence_access", "guild_jobs", "safe_houses", "assassination_contracts", "guild_leadership"]}]
+default_reputation = -30
+joinable = true
+join_threshold = 0
+is_hidden = true
+faction_color = Color(0.3, 0.3, 0.35, 1.0)

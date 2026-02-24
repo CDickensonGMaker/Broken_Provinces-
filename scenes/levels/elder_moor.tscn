@@ -9,10 +9,11 @@
 [ext_resource type="PackedScene" path="res://scenes/world/rest_spot_instance.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://scenes/world/fast_travel_shrine_instance.tscn" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/npcs/quest_giver_instance.tscn" id="9"]
-[ext_resource type="PackedScene" path="res://scenes/world/zone_door_instance.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://scenes/npcs/tharin_ironbeard_instance.tscn" id="11"]
-[ext_resource type="Texture2D" uid="uid://v1oadin60t7k" path="res://Sprite folders grab bag/enchantedforest_background.png" id="12"]
-[ext_resource type="Texture2D" path="res://Sprite folders grab bag/cat_animiation.png" id="13"]
+[ext_resource type="Texture2D" uid="uid://dpdehw6py1vin" path="res://Sprite folders grab bag/cat_animiation.png" id="13"]
+[ext_resource type="PackedScene" path="res://scenes/world/repair_station_instance.tscn" id="14"]
+[ext_resource type="PackedScene" path="res://scenes/world/cooking_station_instance.tscn" id="15"]
+[ext_resource type="PackedScene" path="res://scenes/world/alchemy_station_instance.tscn" id="16"]
 
 [sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
 sky_top_color = Color(0.3, 0.4, 0.5, 1)
@@ -35,20 +36,13 @@ fog_density = 0.006
 fog_sky_affect = 0.3
 
 [sub_resource type="StandardMaterial3D" id="mat_ground"]
-albedo_color = Color(0.35, 0.3, 0.2, 1)
-albedo_texture = ExtResource("4")
+albedo_color = Color(0.28, 0.38, 0.2, 1)
 roughness = 0.95
-uv1_scale = Vector3(75, 75, 1)
 texture_filter = 0
 
 [sub_resource type="StandardMaterial3D" id="mat_swamp_ground"]
 albedo_color = Color(0.25, 0.28, 0.2, 1)
 roughness = 0.98
-
-[sub_resource type="StandardMaterial3D" id="mat_murky_water"]
-albedo_color = Color(0.15, 0.2, 0.12, 0.8)
-roughness = 0.3
-metallic = 0.1
 
 [sub_resource type="StandardMaterial3D" id="mat_wood_floor"]
 albedo_color = Color(0.6, 0.5, 0.4, 1)
@@ -152,7 +146,7 @@ radius = 1.0
 material = SubResource("mat_swamp_ground")
 
 [node name="Hill_SW" type="CSGSphere3D" parent="Terrain/Hills"]
-transform = Transform3D(4, 0, 0, 0, 1.0, 0, 0, 0, 4, -32, 0, 36)
+transform = Transform3D(4, 0, 0, 0, 1, 0, 0, 0, 4, -32, 0, 36)
 radius = 1.0
 material = SubResource("mat_swamp_ground")
 
@@ -161,36 +155,10 @@ transform = Transform3D(5, 0, 0, 0, 1.3, 0, 0, 0, 4, 42, 0, 8)
 radius = 1.0
 material = SubResource("mat_swamp_ground")
 
-[node name="SwampyAreas" type="Node3D" parent="Terrain"]
-
-[node name="MurkyPond_NW" type="CSGCylinder3D" parent="Terrain/SwampyAreas"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, -0.3, -28)
-radius = 6.0
-height = 0.4
-material = SubResource("mat_murky_water")
-
-[node name="MurkyPond_SE" type="CSGCylinder3D" parent="Terrain/SwampyAreas"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, -0.3, 32)
-radius = 5.0
-height = 0.4
-material = SubResource("mat_murky_water")
-
-[node name="MurkyPond_E" type="CSGCylinder3D" parent="Terrain/SwampyAreas"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, -0.3, -12)
-radius = 4.0
-height = 0.4
-material = SubResource("mat_murky_water")
-
-[node name="MurkyPond_SW" type="CSGCylinder3D" parent="Terrain/SwampyAreas"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, -0.3, 25)
-radius = 4.5
-height = 0.4
-material = SubResource("mat_murky_water")
-
 [node name="Buildings" type="Node3D" parent="."]
 
 [node name="GeneralShop" type="Node3D" parent="Buildings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 5)
+transform = Transform3D(-0.051621296, 0, 0.9986667, 0, 1, 0, -0.9986667, 0, -0.051621296, -12, 0, 5)
 
 [node name="Floor" type="CSGBox3D" parent="Buildings/GeneralShop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.075, 0)
@@ -244,7 +212,7 @@ light_color = Color(1, 0.9, 0.7, 1)
 light_energy = 1.2
 
 [node name="WorkerCabinA" type="Node3D" parent="Buildings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, -8)
+transform = Transform3D(0.40325782, 0, -0.9150864, 0, 1, 0, 0.9150864, 0, 0.40325782, 15, 0, -8)
 
 [node name="Floor" type="CSGBox3D" parent="Buildings/WorkerCabinA"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
@@ -288,7 +256,7 @@ size = Vector3(3.8, 0.15, 3.3)
 material = SubResource("mat_roof")
 
 [node name="WorkerCabinB" type="Node3D" parent="Buildings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 12)
+transform = Transform3D(-0.93358046, 0, -0.35836792, 0, 1, 0, 0.35836792, 0, -0.93358046, 12, 0, 12)
 
 [node name="Floor" type="CSGBox3D" parent="Buildings/WorkerCabinB"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
@@ -332,7 +300,7 @@ size = Vector3(3.8, 0.15, 3.3)
 material = SubResource("mat_roof")
 
 [node name="ForemansCabin" type="Node3D" parent="Buildings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, -10)
+transform = Transform3D(0.7077852, 0, 0.7064277, 0, 1, 0, -0.7064277, 0, 0.7077852, -15, 0, -10)
 
 [node name="Floor" type="CSGBox3D" parent="Buildings/ForemansCabin"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
@@ -376,7 +344,7 @@ size = Vector3(3.8, 0.15, 3.3)
 material = SubResource("mat_roof")
 
 [node name="Sawmill" type="Node3D" parent="Buildings"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -12)
+transform = Transform3D(1.6156204, 0, 0, 0, 1.5084662, 0, 0, 0, 1, -5, 0, 31.495949)
 
 [node name="PostNW" type="CSGBox3D" parent="Buildings/Sawmill"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.75, -2.5)
@@ -414,6 +382,138 @@ size = Vector3(4, 0.8, 1.5)
 material = SubResource("mat_sawmill_wood")
 
 [node name="LogOnTable" type="CSGCylinder3D" parent="Buildings/Sawmill"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 1, 0)
+radius = 0.2
+height = 3.0
+material = SubResource("mat_lumber")
+
+[node name="Sawmill2" type="Node3D" parent="Buildings"]
+transform = Transform3D(0.4804988, 0, 0.9547504, 0, 1.5084662, 0, -1.5425142, 0, 0.29740822, 11.31995, 0, 31.495949)
+
+[node name="PostNW" type="CSGBox3D" parent="Buildings/Sawmill2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.75, -2.5)
+use_collision = true
+size = Vector3(0.3, 3.5, 0.3)
+material = SubResource("mat_sawmill_wood")
+
+[node name="PostNE" type="CSGBox3D" parent="Buildings/Sawmill2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.75, -2.5)
+use_collision = true
+size = Vector3(0.3, 3.5, 0.3)
+material = SubResource("mat_sawmill_wood")
+
+[node name="PostSW" type="CSGBox3D" parent="Buildings/Sawmill2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.75, 2.5)
+use_collision = true
+size = Vector3(0.3, 3.5, 0.3)
+material = SubResource("mat_sawmill_wood")
+
+[node name="PostSE" type="CSGBox3D" parent="Buildings/Sawmill2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.75, 2.5)
+use_collision = true
+size = Vector3(0.3, 3.5, 0.3)
+material = SubResource("mat_sawmill_wood")
+
+[node name="Roof" type="CSGBox3D" parent="Buildings/Sawmill2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6, 0)
+size = Vector3(8.5, 0.2, 5.5)
+material = SubResource("mat_roof")
+
+[node name="WorkTable" type="CSGBox3D" parent="Buildings/Sawmill2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+use_collision = true
+size = Vector3(4, 0.8, 1.5)
+material = SubResource("mat_sawmill_wood")
+
+[node name="LogOnTable" type="CSGCylinder3D" parent="Buildings/Sawmill2"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 1, 0)
+radius = 0.2
+height = 3.0
+material = SubResource("mat_lumber")
+
+[node name="Sawmill3" type="Node3D" parent="Buildings"]
+transform = Transform3D(0.010433219, 0, 0.99997914, 0, 1.5084662, 0, -1.6155866, 0, 0.006457717, 11.31995, 0, -26.307297)
+
+[node name="PostNW" type="CSGBox3D" parent="Buildings/Sawmill3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.75, -2.5)
+use_collision = true
+size = Vector3(0.3, 3.5, 0.3)
+material = SubResource("mat_sawmill_wood")
+
+[node name="PostNE" type="CSGBox3D" parent="Buildings/Sawmill3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.75, -2.5)
+use_collision = true
+size = Vector3(0.3, 3.5, 0.3)
+material = SubResource("mat_sawmill_wood")
+
+[node name="PostSW" type="CSGBox3D" parent="Buildings/Sawmill3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.75, 2.5)
+use_collision = true
+size = Vector3(0.3, 3.5, 0.3)
+material = SubResource("mat_sawmill_wood")
+
+[node name="PostSE" type="CSGBox3D" parent="Buildings/Sawmill3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.75, 2.5)
+use_collision = true
+size = Vector3(0.3, 3.5, 0.3)
+material = SubResource("mat_sawmill_wood")
+
+[node name="Roof" type="CSGBox3D" parent="Buildings/Sawmill3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6, 0)
+size = Vector3(8.5, 0.2, 5.5)
+material = SubResource("mat_roof")
+
+[node name="WorkTable" type="CSGBox3D" parent="Buildings/Sawmill3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+use_collision = true
+size = Vector3(4, 0.8, 1.5)
+material = SubResource("mat_sawmill_wood")
+
+[node name="LogOnTable" type="CSGCylinder3D" parent="Buildings/Sawmill3"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 1, 0)
+radius = 0.2
+height = 3.0
+material = SubResource("mat_lumber")
+
+[node name="Sawmill4" type="Node3D" parent="Buildings"]
+transform = Transform3D(1.177254, 0, 0.6848651, 0, 1.5084662, 0, -1.106482, 0, 0.7286699, -18.794579, 0, -26.307297)
+
+[node name="PostNW" type="CSGBox3D" parent="Buildings/Sawmill4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.75, -2.5)
+use_collision = true
+size = Vector3(0.3, 3.5, 0.3)
+material = SubResource("mat_sawmill_wood")
+
+[node name="PostNE" type="CSGBox3D" parent="Buildings/Sawmill4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.75, -2.5)
+use_collision = true
+size = Vector3(0.3, 3.5, 0.3)
+material = SubResource("mat_sawmill_wood")
+
+[node name="PostSW" type="CSGBox3D" parent="Buildings/Sawmill4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.75, 2.5)
+use_collision = true
+size = Vector3(0.3, 3.5, 0.3)
+material = SubResource("mat_sawmill_wood")
+
+[node name="PostSE" type="CSGBox3D" parent="Buildings/Sawmill4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.75, 2.5)
+use_collision = true
+size = Vector3(0.3, 3.5, 0.3)
+material = SubResource("mat_sawmill_wood")
+
+[node name="Roof" type="CSGBox3D" parent="Buildings/Sawmill4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6, 0)
+size = Vector3(8.5, 0.2, 5.5)
+material = SubResource("mat_roof")
+
+[node name="WorkTable" type="CSGBox3D" parent="Buildings/Sawmill4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+use_collision = true
+size = Vector3(4, 0.8, 1.5)
+material = SubResource("mat_sawmill_wood")
+
+[node name="LogOnTable" type="CSGCylinder3D" parent="Buildings/Sawmill4"]
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 1, 0)
 radius = 0.2
 height = 3.0
@@ -509,7 +609,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0, -20)
 
 [node name="Trunk" type="CSGCylinder3D" parent="TownTrees/Tree1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
-radius = 0.5
 height = 6.0
 material = SubResource("mat_tree_trunk")
 
@@ -523,7 +622,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0, -18)
 
 [node name="Trunk" type="CSGCylinder3D" parent="TownTrees/Tree2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
-radius = 0.5
 height = 6.0
 material = SubResource("mat_tree_trunk")
 
@@ -563,6 +661,47 @@ material = SubResource("mat_tree_leaves")
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
 
 [node name="NPCs" type="Node3D" parent="."]
+
+[node name="Grimwald" parent="NPCs" instance=ExtResource("6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 4)
+merchant_name = "Grimwald"
+merchant_id = "grimwald_eldermoor"
+region_id = "elder_moor"
+
+[node name="TharinIronbeard" parent="NPCs" instance=ExtResource("11")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, -7)
+
+[node name="GromTheSmith" parent="NPCs" instance=ExtResource("9")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -12)
+npc_id = "grom_the_smith"
+display_name = "Grom the Smith"
+region_id = "elder_moor"
+quest_ids = Array[String](["tutorial_crafting"])
+
+[node name="Martha" parent="NPCs" instance=ExtResource("9")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 8)
+npc_id = "martha_cook"
+display_name = "Martha"
+region_id = "elder_moor"
+quest_ids = Array[String](["tutorial_cooking"])
+
+[node name="OldSageBrennan" parent="NPCs" instance=ExtResource("9")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -5)
+npc_id = "sage_brennan"
+display_name = "Old Sage Brennan"
+region_id = "elder_moor"
+quest_ids = Array[String](["tutorial_alchemy"])
+
+[node name="CraftingStations" type="Node3D" parent="."]
+
+[node name="BlacksmithAnvil" parent="CraftingStations" instance=ExtResource("14")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.978911, 0, -0.29663372)
+
+[node name="CookingFire" parent="CraftingStations" instance=ExtResource("15")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.586413, 0, 8.4112215)
+
+[node name="AlchemyTable" parent="CraftingStations" instance=ExtResource("16")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.079892, 0, -8.24263)
 
 [node name="Interactables" type="Node3D" parent="."]
 
@@ -635,21 +774,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 5)
 
 [node name="Cat_0" type="Sprite3D" parent="AmbientAnimals"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0.3, 6)
-pixel_size = 0.01
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
-hframes = 5
 texture = ExtResource("13")
+hframes = 5
 
 [node name="Cat_1" type="Sprite3D" parent="AmbientAnimals"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.3, -4)
-pixel_size = 0.01
 billboard = 1
-transparent = true
 alpha_cut = 2
-alpha_scissor_threshold = 0.5
+texture = ExtResource("13")
 hframes = 5
 frame = 2
-texture = ExtResource("13")

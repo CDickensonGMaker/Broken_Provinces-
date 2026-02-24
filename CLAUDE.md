@@ -54,6 +54,19 @@ Before making ANY code changes, follow this process:
 - Prefer editing existing files over creating new ones
 - Always check if similar patterns exist before creating new ones
 
+## QUEST DESIGN RULES
+**Every quest giver MUST have a corresponding quest receiver.**
+- If a quest requires turning in to an NPC, that NPC MUST exist and be spawned in the target zone
+- Before creating a quest, verify:
+  1. `giver_npc_id` exists and is spawned in `giver_region`
+  2. `turn_in_target` NPC exists and is spawned in `turn_in_zone`
+  3. All `target` NPCs in objectives exist in their respective zones
+- When adding a quest giver to a zone, also verify/add the receiver
+- Quest JSON fields that require spawned NPCs:
+  - `giver_npc_id` + `giver_region`
+  - `turn_in_target` + `turn_in_zone` (if `turn_in_type` is "npc_specific")
+  - `objectives[].target` (if objective type is "talk")
+
 ## ITEM DESIGN PHILOSOPHY
 Every item MUST serve a gameplay purpose. No "junk" items without function.
 - **Consumables:** Must provide meaningful effects (healing, buffs, cures)
@@ -1092,6 +1105,20 @@ All coordinates are Elder Moor-relative (Elder Moor = 0, 0).
 | Iron Mountains | North/edges | Impassable peaks |
 | The Greenwood | Central default | Mixed forest |
 
+### World Geography Notes
+**IMPORTANT terrain rules for level design:**
+
+- **Western Edge = Water**: The entire western edge of the map (columns 0-1) is open water (impassable). Column 2 is coastline.
+- **Dalhurst Harbor**: Dalhurst's harbor faces WEST toward the water. Ships dock on the western side of town.
+- **Eastern Edge = Mountains**: The eastern edge has impassable mountain terrain (blocked cells).
+- **Northern Edge = Mountains**: The northern boundary is also impassable mountains.
+- **Southern Edge = Mixed**: Southern edge has forest leading to Kazer-Dun, with some blocked mountain cells.
+
+**Hand-crafted level orientation:**
+- When a town borders water (like Dalhurst), the harbor/docks should face the water direction
+- Check WorldData GRID_DATA to determine which edges of a cell have water/mountains
+- Water cells ("W") and blocked cells ("B") are impassable - don't place walkable content there
+
 ### Sea Travel & Encounters
 Planned boat travel system for crossing the lake to the Elven City:
 - **Pirates** - Human bandits on the water
@@ -1276,9 +1303,8 @@ sprite.offset = Vector2(0, frame_height / 2.0)
 - `scripts/data/save_data.gd` - Added CrimeSaveData, DialogueSaveData, ConversationSaveData classes
 - `scripts/autoload/save_manager.gd` - Added collect/apply functions for crime, dialogue, conversation data
 
-### Magic System
-- **BUG:** MagicPanel shows ALL spells instead of only learned ones
-- Need to filter `_populate_spell_list()` to check if player has learned each spell
+### Magic System (FIXED)
+- ✅ **MagicPanel shows ALL spells** - Fixed: Now properly filters `_populate_spell_list()` to only show learned spells
 
 ### World Map (RESOLVED)
 The world map system has been completely rebuilt:
@@ -1296,11 +1322,11 @@ NPCs need to be connected to the new cell streaming/map system:
 - Consider: Should NPCs despawn when cell unloads? Or persist in memory?
 - Guard patrols, civilian schedules may need cell-aware logic
 
-### NPC Visual Issues (Needs Full Audit)
-- Some NPCs floating above ground
-- Some NPCs too big or too small
-- Frame flicker on spawn for animated sprites
-- Need consistent pixel_size across all NPC types
+### NPC Visual Issues (RESOLVED)
+- ✅ NPCs now at correct height (fixed floating)
+- ✅ NPCs now at correct size (fixed scaling)
+- ✅ Frame flicker on spawn fixed
+- ✅ Consistent pixel_size applied across all NPC types
 
 ### Starting Experience
 - Player starts with 10,000 gold and 100,000 XP for testing
@@ -1343,26 +1369,18 @@ Main sources of inspiration:
 
 ## NEXT SESSION PLAN
 
-### Priority 1: Fix NPC Visual Issues
+### Priority 1: Fix NPC Visual Issues (COMPLETED)
 
-1. **Audit all NPC sprites:**
-   - Check each NPC class for correct pixel_size (see table in CLAUDE.md)
-   - Verify sprite offset calculation uses `frame_height / 2.0`
-   - Ensure frame is set to 0 before AND after add_child to prevent flicker
+NPC visual issues have been resolved:
+- All NPC sprites audited for correct pixel_size
+- Sprite offset calculations fixed to use `frame_height / 2.0`
+- Frame flicker on spawn fixed by setting frame to 0 before AND after add_child
 
-2. **Files to audit:**
-   - `scripts/world/civilian_npc.gd`
-   - `scripts/npcs/guard_npc.gd`
-   - `scripts/npcs/quest_giver.gd`
-   - `scripts/world/merchant.gd`
-   - `scripts/world/innkeeper.gd`
-   - Any other NPC scripts
-
-3. **Standard sizes to enforce:**
-   - Man civilian: pixel_size = 0.0518
-   - Wizard/Lady in Red: pixel_size = 0.0134
-   - Barmaid: pixel_size = 0.0326
-   - Guard: pixel_size = 0.055
+**Standard sizes (now applied):**
+- Man civilian: pixel_size = 0.0518
+- Wizard/Lady in Red: pixel_size = 0.0134
+- Barmaid: pixel_size = 0.0326
+- Guard: pixel_size = 0.055
 
 ### Priority 2: Expand World Content
 
@@ -1384,7 +1402,7 @@ With the cell streaming system working:
 - [ ] Click on discovered towns to fast travel
 - [ ] Tooltip shows cell info on hover
 
-**NPC Visual Issues (needs audit):**
-- [ ] All NPCs at correct height (not floating)
-- [ ] All NPCs at correct size (not too big/small)
-- [ ] No frame flicker when NPCs spawn
+**NPC Visual Issues (COMPLETED):**
+- [x] All NPCs at correct height (not floating)
+- [x] All NPCs at correct size (not too big/small)
+- [x] No frame flicker when NPCs spawn

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "dwarves_power"
+display_name = "Dwarves of Power"
+description = "The progressive faction of dwarven society, valuing achievement, meritocracy, and innovation. They believe leadership should be earned through deeds and skill, not birthright. They are more open to trade with outsiders and adopting new techniques."
+parent_faction = "dwarves"
+allies = ["dwarves"]
+enemies = ["goblins"]
+neutrals = ["human_empire", "dwarves_birth", "elves_pro_human"]
+alignment = 10
+ranks = [{"name": "Outsider", "min_reputation": -100, "benefits": []}, {"name": "Tolerated", "min_reputation": -20, "benefits": []}, {"name": "Prospect", "min_reputation": 10, "benefits": ["trade_access"]}, {"name": "Proven", "min_reputation": 40, "benefits": ["trade_access", "forge_access"]}, {"name": "Master", "min_reputation": 70, "benefits": ["trade_access", "forge_access", "innovation_labs"]}, {"name": "Forge Lord", "min_reputation": 90, "benefits": ["trade_access", "forge_access", "innovation_labs", "council_voice"]}]
+default_reputation = 0
+joinable = true
+join_threshold = 30
+is_hidden = false
+faction_color = Color(0.7, 0.4, 0.2, 1.0)

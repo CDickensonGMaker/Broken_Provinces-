@@ -402,14 +402,51 @@ func _on_start_pressed() -> void:
 	GameManager.create_new_character(character_name, selected_race, selected_career)
 	GameManager.player_data.recalculate_derived_stats()
 
-	# Give starting gold bonus for merchant
-	if selected_career == Enums.Career.MERCHANT:
-		InventoryManager.add_gold(200)  # Extra starting gold
-
-	# DEV: Apply testing stats (high magic stats, improvement points)
-	GameManager.apply_dev_stats(GameManager.player_data)
+	# Starting equipment/gold is handled by career selection
+	# Merchant gets bonus gold, others get relevant gear
+	_apply_career_starting_equipment(selected_career)
 
 	character_created.emit()
 
 	# Transition to game - start at Elder Moor
 	get_tree().change_scene_to_file("res://scenes/levels/elder_moor.tscn")
+
+
+## Give starting equipment based on career
+func _apply_career_starting_equipment(career: Enums.Career) -> void:
+	# Everyone gets basic supplies
+	InventoryManager.add_item("health_potion", 1)
+	InventoryManager.add_gold(10)
+
+	match career:
+		Enums.Career.APPRENTICE:
+			# Magic student - scrolls and robes
+			InventoryManager.add_item("wooden_staff", 1)
+			InventoryManager.add_gold(5)
+		Enums.Career.FARMER:
+			# Humble beginnings - tools and food
+			InventoryManager.add_item("rusty_sword", 1)
+			InventoryManager.add_item("bread", 2)
+		Enums.Career.GRAVE_DIGGER:
+			# Morbid work - shovel and lantern
+			InventoryManager.add_item("rusty_sword", 1)
+			InventoryManager.add_item("torch", 2)
+		Enums.Career.SCOUT:
+			# Wilderness survival - bow and supplies
+			InventoryManager.add_item("hunting_bow", 1)
+			InventoryManager.add_item("arrow", 20)
+		Enums.Career.SOLDIER:
+			# Military training - proper weapons
+			InventoryManager.add_item("iron_sword", 1)
+			InventoryManager.add_item("health_potion", 1)
+		Enums.Career.MERCHANT:
+			# Trading background - gold and goods
+			InventoryManager.add_gold(40)  # Total 50 gold
+		Enums.Career.PRIEST:
+			# Holy calling - healing and faith
+			InventoryManager.add_item("wooden_staff", 1)
+			InventoryManager.add_item("health_potion", 2)
+		Enums.Career.THIEF:
+			# Street skills - tools of the trade
+			InventoryManager.add_item("dagger", 1)
+			InventoryManager.add_item("lockpick", 3)

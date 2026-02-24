@@ -1705,7 +1705,7 @@ metadata/aggro_range = 3
 
 [node name="BossEnemy" type="Marker3D" parent="EnemySpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -24)
-metadata/enemy_data = "res://data/enemies/human_bandit.tres"
+metadata/enemy_data = "res://data/enemies/bandit_leader.tres"
 metadata/patrol_radius = 4
 metadata/aggro_range = 3
 metadata/is_boss = true

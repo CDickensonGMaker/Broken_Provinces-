@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "human_empire"
+display_name = "Human Empire"
+description = "The dominant political power in the known world, ruled from the Imperial Capital. The Empire controls trade, maintains roads, and enforces law throughout human lands. Unknown to most, the current ruler is an imposter - a witch who has secretly replaced the true King."
+parent_faction = ""
+allies = ["the_crown", "imperial_army", "church_of_three"]
+enemies = ["goblins", "undead", "thieves_guild"]
+neutrals = ["dwarves_birth", "dwarves_power", "elves_anti_human", "elves_pro_human"]
+alignment = 20
+ranks = [{"name": "Outlaw", "min_reputation": -100, "benefits": []}, {"name": "Stranger", "min_reputation": -50, "benefits": []}, {"name": "Citizen", "min_reputation": 0, "benefits": ["legal_protection"]}, {"name": "Respected", "min_reputation": 30, "benefits": ["legal_protection", "reduced_taxes"]}, {"name": "Honored", "min_reputation": 60, "benefits": ["legal_protection", "reduced_taxes", "noble_access"]}, {"name": "Champion", "min_reputation": 90, "benefits": ["legal_protection", "reduced_taxes", "noble_access", "royal_favor"]}]
+default_reputation = 0
+joinable = false
+join_threshold = 0
+is_hidden = false
+faction_color = Color(0.8, 0.6, 0.2, 1.0)

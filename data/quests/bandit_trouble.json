@@ -1,0 +1,43 @@
+{
+	"id": "bandit_trouble",
+	"title": "Bandit Trouble",
+	"description": "Travelers on the road between Elder Moor and Dalhurst have been attacked by bandits. The brigands have made camp somewhere in the hills north of the road. Someone needs to deal with them before more innocent blood is spilled.",
+	"is_main_quest": false,
+	"quest_source": "bounty",
+	"giver_npc_id": "bounty_board",
+	"giver_npc_type": "bounty_board",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "find_camp",
+			"description": "Find the bandit camp in the northern hills",
+			"type": "reach",
+			"target": "bandit_hideout",
+			"required_count": 1
+		},
+		{
+			"id": "kill_bandits",
+			"description": "Clear out the bandits",
+			"type": "kill",
+			"target": "human_bandit",
+			"required_count": 8
+		},
+		{
+			"id": "kill_leader",
+			"description": "Defeat the bandit leader",
+			"type": "kill",
+			"target": "bandit_leader",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "bounty_board",
+	"turn_in_target": "bounty_board_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 100,
+		"xp": 400,
+		"items": []
+	},
+	"prerequisites": [],
+	"next_quest": ""
+}

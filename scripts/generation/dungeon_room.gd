@@ -811,6 +811,20 @@ func spawn_portal(parent: Node) -> void:
 
 ## Get a random valid spawn position
 func _get_random_spawn_position() -> Vector3:
+	# For organic caves, use CaveGenerator to get valid positions
+	if has_meta("is_organic") and get_meta("is_organic") and has_meta("cave_node"):
+		var cave_node: Node3D = get_meta("cave_node")
+		if cave_node and cave_node.has_meta("cave_grid"):
+			var grid: Array = cave_node.get_meta("cave_grid")
+			var cell_size: float = cave_node.get_meta("cell_size")
+			var floor_y: float = cave_node.get_meta("floor_y")
+
+			var positions: Array[Vector3] = CaveGenerator.get_spawn_positions(grid, cell_size, floor_y, 2, 1)
+			if not positions.is_empty():
+				# Convert from cave-local to room-local coordinates
+				var world_pos: Vector3 = cave_node.position + positions[0]
+				return world_pos - room_center
+
 	if not template.enemy_spawn_zones.is_empty():
 		var zones := template.enemy_spawn_zones.duplicate()
 		zones.shuffle()
@@ -851,6 +865,20 @@ func spawn_single_chest(parent: Node) -> void:
 
 ## Get a random valid loot position
 func _get_random_loot_position() -> Vector3:
+	# For organic caves, use CaveGenerator to get valid positions
+	if has_meta("is_organic") and get_meta("is_organic") and has_meta("cave_node"):
+		var cave_node: Node3D = get_meta("cave_node")
+		if cave_node and cave_node.has_meta("cave_grid"):
+			var grid: Array = cave_node.get_meta("cave_grid")
+			var cell_size: float = cave_node.get_meta("cell_size")
+			var floor_y: float = cave_node.get_meta("floor_y")
+
+			var positions: Array[Vector3] = CaveGenerator.get_spawn_positions(grid, cell_size, floor_y, 2, 1)
+			if not positions.is_empty():
+				# Convert from cave-local to room-local coordinates
+				var world_pos: Vector3 = cave_node.position + positions[0]
+				return world_pos - room_center
+
 	if not template.loot_spawn_zones.is_empty():
 		var zones := template.loot_spawn_zones.duplicate()
 		zones.shuffle()
@@ -872,6 +900,16 @@ func _get_random_loot_position() -> Vector3:
 
 ## Get world bounds
 func get_world_bounds() -> AABB:
+	# For organic caves, get bounds from the cave geometry
+	if has_meta("is_organic") and get_meta("is_organic") and has_meta("cave_node"):
+		var cave_node: Node3D = get_meta("cave_node")
+		if cave_node and cave_node.has_meta("cave_grid"):
+			var grid: Array = cave_node.get_meta("cave_grid")
+			var cell_size: float = cave_node.get_meta("cell_size")
+			var floor_y: float = cave_node.get_meta("floor_y")
+			var cave_height: float = cave_node.get_meta("cave_height")
+			return CaveGenerator.get_cave_bounds(grid, cell_size, floor_y, cave_height)
+
 	var half_w := template.width / 2.0
 	var half_d := template.depth / 2.0
 	return AABB(
@@ -905,6 +943,11 @@ func mark_explored() -> void:
 
 ## Spawn torches for lighting
 func spawn_torches() -> void:
+	# Check if this is an organic cave room
+	if has_meta("is_organic") and get_meta("is_organic"):
+		_spawn_cave_torches()
+		return
+
 	var torch_spacing := 6.0
 	var torch_height := template.height * 0.3  # Lowered from 50% to 30% to prevent ceiling clipping
 	var half_w := template.width / 2.0 - 1.5
@@ -943,6 +986,50 @@ func spawn_torches() -> void:
 		central_light.omni_attenuation = 1.2
 		central_light.position = Vector3(0, torch_height, 0)
 		add_child(central_light)
+
+
+## Spawn torches for organic cave rooms
+func _spawn_cave_torches() -> void:
+	if not has_meta("cave_node"):
+		return
+
+	var cave_node: Node3D = get_meta("cave_node")
+	if not cave_node or not cave_node.has_meta("cave_grid"):
+		return
+
+	var grid: Array = cave_node.get_meta("cave_grid")
+	var cell_size: float = cave_node.get_meta("cell_size")
+	var floor_y: float = cave_node.get_meta("floor_y")
+	var cave_height: float = cave_node.get_meta("cave_height")
+
+	# Get spawn positions for torches (need positions near walls but not inside them)
+	var torch_positions: Array[Vector3] = CaveGenerator.get_spawn_positions(grid, cell_size, floor_y, 1, 6)
+
+	# Create ambient lights at spawn positions
+	for pos in torch_positions:
+		# Offset position to be relative to cave_node
+		var world_pos: Vector3 = cave_node.position + pos
+		var local_pos: Vector3 = world_pos - room_center
+
+		# Create torch light (simpler for caves - just ambient light)
+		var torch_light := OmniLight3D.new()
+		torch_light.name = "CaveTorch"
+		torch_light.light_color = Color(1.0, 0.6, 0.3)  # Warmer cave light
+		torch_light.light_energy = 1.2
+		torch_light.omni_range = 12.0
+		torch_light.omni_attenuation = 1.5
+		torch_light.position = local_pos + Vector3(0, cave_height * 0.6, 0)
+		add_child(torch_light)
+
+	# Add central ambient light for large caves
+	var central_light := OmniLight3D.new()
+	central_light.name = "CaveCentralLight"
+	central_light.light_color = Color(0.6, 0.5, 0.4)
+	central_light.light_energy = 0.5
+	central_light.omni_range = 20.0
+	central_light.omni_attenuation = 1.2
+	central_light.position = Vector3(0, cave_height * 0.5, 0)
+	add_child(central_light)
 
 
 ## Check if position is near a door

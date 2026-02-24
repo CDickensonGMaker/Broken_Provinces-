@@ -113,6 +113,7 @@ func _spawn_enemy_at_marker(marker: Node3D) -> void:
 	var sprite_path: String = marker.get_meta("sprite_path", "res://assets/sprites/enemies/human_bandit.png")
 	var h_frames: int = marker.get_meta("h_frames", 3)
 	var v_frames: int = marker.get_meta("v_frames", 1)
+	var is_boss: bool = marker.get_meta("is_boss", false)
 
 	var sprite_texture: Texture2D = load(sprite_path)
 	if not sprite_texture:
@@ -133,6 +134,12 @@ func _spawn_enemy_at_marker(marker: Node3D) -> void:
 
 	if enemy:
 		enemy.add_to_group("enemies")
+		# Add to quest objective tracking groups
+		if is_boss or "bandit_leader" in enemy_data_path:
+			enemy.add_to_group("bandit_leader")
+			enemy.add_to_group("bosses")
+		else:
+			enemy.add_to_group("human_bandit")
 
 
 func _setup_doors() -> void:

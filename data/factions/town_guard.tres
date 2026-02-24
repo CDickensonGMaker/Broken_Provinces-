@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "town_guard"
+display_name = "Town Guard"
+description = "The local law enforcement found in settlements throughout the realm. Town guards maintain order, patrol streets, and respond to criminal activity. While technically part of the Human Empire's authority structure, each town's guard operates semi-independently under their local captain."
+parent_faction = "human_empire"
+allies = ["human_empire"]
+enemies = ["thieves_guild", "goblins"]
+neutrals = ["dwarves", "elves"]
+alignment = 30
+ranks = [{"name": "Criminal", "min_reputation": -100, "benefits": []}, {"name": "Suspicious", "min_reputation": -50, "benefits": []}, {"name": "Unknown", "min_reputation": -20, "benefits": []}, {"name": "Citizen", "min_reputation": 0, "benefits": ["no_harassment"]}, {"name": "Trusted", "min_reputation": 30, "benefits": ["no_harassment", "quest_access"]}, {"name": "Deputy", "min_reputation": 60, "benefits": ["no_harassment", "quest_access", "guard_assistance"]}, {"name": "Honored Defender", "min_reputation": 85, "benefits": ["no_harassment", "quest_access", "guard_assistance", "bounty_bonus"]}]
+default_reputation = 0
+joinable = false
+join_threshold = 60
+is_hidden = false
+faction_color = Color(0.5, 0.5, 0.6, 1.0)

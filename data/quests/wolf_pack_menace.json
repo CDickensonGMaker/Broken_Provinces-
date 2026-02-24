@@ -1,0 +1,51 @@
+{
+	"id": "wolf_pack_menace",
+	"title": "Wolf Pack Menace",
+	"description": "Marek the Hunter reports that a particularly aggressive wolf pack has been terrorizing the outskirts of Thornfield. Led by a massive dire wolf, the pack has killed livestock and even attacked travelers on the road. Marek needs help tracking down and eliminating the threat.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "marek_hunter",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "thornfield",
+	"objectives": [
+		{
+			"id": "track_wolves",
+			"description": "Follow the wolf tracks into the eastern forest",
+			"type": "reach",
+			"target": "wolf_den_forest",
+			"required_count": 1
+		},
+		{
+			"id": "kill_wolves",
+			"description": "Kill the wolf pack members",
+			"type": "kill",
+			"target": "wolf",
+			"required_count": 5
+		},
+		{
+			"id": "kill_alpha",
+			"description": "Defeat the dire wolf pack leader",
+			"type": "kill",
+			"target": "dire_wolf",
+			"required_count": 1
+		},
+		{
+			"id": "optional_pelts",
+			"description": "(Optional) Collect wolf pelts for Marek",
+			"type": "collect",
+			"target": "wolf_pelt",
+			"required_count": 3,
+			"is_optional": true
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "marek_hunter",
+	"turn_in_zone": "thornfield",
+	"rewards": {
+		"gold": 75,
+		"xp": 300,
+		"items": ["hunters_bow"]
+	},
+	"prerequisites": [],
+	"next_quest": ""
+}

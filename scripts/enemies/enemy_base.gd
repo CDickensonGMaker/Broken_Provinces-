@@ -2,7 +2,7 @@
 class_name EnemyBase
 extends CharacterBody3D
 
-const DEBUG := true  # TEMP: Enable to debug enemy damage issues
+const DEBUG := false  # DISABLED - was causing freeze from excessive prints
 
 signal damaged(amount: int, damage_type: Enums.DamageType, attacker: Node)
 signal died(killer: Node)

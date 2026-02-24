@@ -16,7 +16,9 @@ const MAX_SAVE_SLOTS := 10
 
 ## Current save format version - increment when structure changes
 ## Version 2: Added CellStreamer integration, deprecated hex system fields
-const SAVE_VERSION := 2
+## Version 3: Added MoralityManager, FactionManager, CodexManager, NPC dispositions
+## Version 4: Added StatsTracker, JournalManager (notes, bestiary, codex unlocks)
+const SAVE_VERSION := 4
 
 ## Currently loaded save slot
 var current_slot: int = -1
@@ -415,6 +417,30 @@ func _collect_save_data():
 	if save_data.cell_streamer_data:
 		_collect_cell_streamer_data(save_data.cell_streamer_data)
 
+	# Morality data
+	if save_data.morality_data:
+		_collect_morality_data(save_data.morality_data)
+
+	# Faction data
+	if save_data.faction_data:
+		_collect_faction_data(save_data.faction_data)
+
+	# NPC disposition data
+	if save_data.npc_disposition_data:
+		_collect_npc_disposition_data(save_data.npc_disposition_data)
+
+	# Codex data
+	if save_data.codex_data:
+		_collect_codex_data(save_data.codex_data)
+
+	# Stats tracker data
+	if save_data.stats_data:
+		_collect_stats_data(save_data.stats_data)
+
+	# Journal data (notes and bestiary)
+	if save_data.journal_data:
+		_collect_journal_data(save_data.journal_data)
+
 	return save_data
 
 ## Collect player data
@@ -564,6 +590,7 @@ func _collect_conversation_data(conversation_data) -> void:
 
 	var conversation_dict := ConversationSystem.to_dict()
 	conversation_data.npc_memory = conversation_dict.get("npc_memory", {})
+	conversation_data.conversation_flags = conversation_dict.get("conversation_flags", {})
 
 
 ## Collect bounty quest data
@@ -644,6 +671,30 @@ func _apply_save_data(save_data) -> void:
 	# NOTE: This is stored for application after scene loads
 	if save_data.cell_streamer_data:
 		_store_pending_cell_streamer_data(save_data.cell_streamer_data)
+
+	# Restore morality data
+	if save_data.morality_data:
+		_apply_morality_data(save_data.morality_data)
+
+	# Restore faction data
+	if save_data.faction_data:
+		_apply_faction_data(save_data.faction_data)
+
+	# Restore NPC disposition data
+	if save_data.npc_disposition_data:
+		_apply_npc_disposition_data(save_data.npc_disposition_data)
+
+	# Restore codex data
+	if save_data.codex_data:
+		_apply_codex_data(save_data.codex_data)
+
+	# Restore stats tracker data
+	if save_data.stats_data:
+		_apply_stats_data(save_data.stats_data)
+
+	# Restore journal data (notes and bestiary)
+	if save_data.journal_data:
+		_apply_journal_data(save_data.journal_data)
 
 ## Apply player data
 func _apply_player_data(player_data) -> void:
@@ -764,7 +815,8 @@ func _apply_conversation_data(conversation_data) -> void:
 		return
 
 	ConversationSystem.from_dict({
-		"npc_memory": conversation_data.npc_memory
+		"npc_memory": conversation_data.npc_memory,
+		"conversation_flags": conversation_data.conversation_flags
 	})
 
 
@@ -859,79 +911,16 @@ func _apply_encounter_data(encounter_data) -> void:
 			em._last_check_hex = Vector2i.ZERO
 
 
-## Collect fog of war data from painted world map
-func _collect_fog_of_war_data(fog_data) -> void:
-	# Find the painted world map in the scene tree
-	# It's a child of GameMenu named MapPanelInstance
-	var hud := get_tree().get_first_node_in_group("hud")
-	if not hud:
-		return
-
-	# Use find_child to locate MapPanelInstance since it's nested in dynamic containers
-	var map_panel: MapPanel = hud.find_child("MapPanelInstance", true, false)
-	if not map_panel:
-		return
-
-	var painted_map: PaintedWorldMap = map_panel.get_painted_world_map()
-	if not painted_map:
-		return
-
-	var fog_of_war: MapFogOfWar = painted_map.get_fog_of_war()
-	if not fog_of_war:
-		return
-
-	var fog_dict: Dictionary = fog_of_war.to_dict()
-	fog_data.explored_hexes = fog_dict.get("explored_hexes", [])
-	fog_data.image_size = fog_dict.get("image_size", [798, 588])
+## Collect fog of war data from world map
+func _collect_fog_of_war_data(_fog_data) -> void:
+	# PaintedWorldMap removed - fog of war handled by PlayerGPS.discovered_cells
+	pass
 
 
-## Apply fog of war data to painted world map
-func _apply_fog_of_war_data(fog_data) -> void:
-	# Store fog data for deferred application (map panel may not exist yet)
-	_pending_fog_of_war_data = {
-		"explored_hexes": fog_data.explored_hexes,
-		"image_size": fog_data.image_size
-	}
-
-	# Try to apply immediately if map panel exists
-	_try_apply_fog_of_war()
-
-
-## Pending fog of war data to apply after scene loads
-var _pending_fog_of_war_data: Dictionary = {}
-
-
-## Try to apply pending fog of war data
-func _try_apply_fog_of_war() -> void:
-	if _pending_fog_of_war_data.is_empty():
-		return
-
-	var hud := get_tree().get_first_node_in_group("hud")
-	if not hud:
-		# Retry later
-		get_tree().create_timer(0.2).timeout.connect(_try_apply_fog_of_war)
-		return
-
-	# Use find_child to locate MapPanelInstance since it's nested in dynamic containers
-	var map_panel: MapPanel = hud.find_child("MapPanelInstance", true, false)
-	if not map_panel:
-		get_tree().create_timer(0.2).timeout.connect(_try_apply_fog_of_war)
-		return
-
-	var painted_map: PaintedWorldMap = map_panel.get_painted_world_map()
-	if not painted_map:
-		get_tree().create_timer(0.2).timeout.connect(_try_apply_fog_of_war)
-		return
-
-	var fog_of_war: MapFogOfWar = painted_map.get_fog_of_war()
-	if not fog_of_war:
-		get_tree().create_timer(0.2).timeout.connect(_try_apply_fog_of_war)
-		return
-
-	# Apply the fog data
-	fog_of_war.from_dict(_pending_fog_of_war_data)
-	print("[SaveManager] Applied fog of war data: %d explored hexes" % _pending_fog_of_war_data.get("explored_hexes", []).size())
-	_pending_fog_of_war_data.clear()
+## Apply fog of war data to world map
+func _apply_fog_of_war_data(_fog_data) -> void:
+	# PaintedWorldMap removed - fog of war handled by PlayerGPS.discovered_cells
+	pass
 
 
 ## Pending cell streamer data to apply after scene loads
@@ -982,6 +971,132 @@ func _apply_pending_cell_streamer_data() -> void:
 		_pending_cell_streamer_data.get("world_offset_z", 0.0)
 	])
 	_pending_cell_streamer_data.clear()
+
+
+## Collect morality data
+func _collect_morality_data(morality_save_data) -> void:
+	if not MoralityManager:
+		return
+
+	var morality_dict: Dictionary = MoralityManager.to_dict()
+	morality_save_data.morality_score = morality_dict.get("morality_score", 0)
+	morality_save_data.hours_since_last_decay = morality_dict.get("hours_since_last_decay", 0.0)
+
+
+## Apply morality data
+func _apply_morality_data(morality_save_data) -> void:
+	if not MoralityManager:
+		return
+
+	MoralityManager.from_dict({
+		"morality_score": morality_save_data.morality_score,
+		"hours_since_last_decay": morality_save_data.hours_since_last_decay
+	})
+
+
+## Collect faction data
+func _collect_faction_data(faction_save_data) -> void:
+	if not FactionManager:
+		return
+
+	var faction_dict: Dictionary = FactionManager.to_dict()
+	faction_save_data.reputations = faction_dict.get("reputations", {})
+	faction_save_data.memberships = faction_dict.get("memberships", {})
+
+
+## Apply faction data
+func _apply_faction_data(faction_save_data) -> void:
+	if not FactionManager:
+		return
+
+	FactionManager.from_dict({
+		"reputations": faction_save_data.reputations,
+		"memberships": faction_save_data.memberships
+	})
+
+
+## Collect NPC disposition data
+func _collect_npc_disposition_data(npc_disposition_save_data) -> void:
+	# NPC dispositions are tracked in GameManager.npc_disposition_modifiers
+	if not GameManager:
+		return
+
+	if "npc_disposition_modifiers" in GameManager:
+		npc_disposition_save_data.modifiers = GameManager.npc_disposition_modifiers.duplicate()
+
+
+## Apply NPC disposition data
+func _apply_npc_disposition_data(npc_disposition_save_data) -> void:
+	if not GameManager:
+		return
+
+	if "npc_disposition_modifiers" in GameManager:
+		GameManager.npc_disposition_modifiers = npc_disposition_save_data.modifiers.duplicate()
+
+
+## Collect codex data
+func _collect_codex_data(codex_save_data) -> void:
+	if not CodexManager:
+		return
+
+	var codex_dict: Dictionary = CodexManager.to_dict()
+	codex_save_data.discovered_recipes = codex_dict.get("discovered_recipes", {})
+	codex_save_data.discovered_lore = codex_dict.get("discovered_lore", {})
+	codex_save_data.bestiary_entries = codex_dict.get("bestiary_entries", {})
+
+
+## Apply codex data
+func _apply_codex_data(codex_save_data) -> void:
+	if not CodexManager:
+		return
+
+	CodexManager.from_dict({
+		"discovered_recipes": codex_save_data.discovered_recipes,
+		"discovered_lore": codex_save_data.discovered_lore,
+		"bestiary_entries": codex_save_data.bestiary_entries
+	})
+
+
+## Collect stats tracker data
+func _collect_stats_data(stats_save_data) -> void:
+	if not StatsTracker:
+		return
+
+	var stats_dict: Dictionary = StatsTracker.to_dict()
+	stats_save_data.stats = stats_dict
+
+
+## Apply stats tracker data
+func _apply_stats_data(stats_save_data) -> void:
+	if not StatsTracker:
+		return
+
+	StatsTracker.from_dict(stats_save_data.stats)
+
+
+## Collect journal data (notes and bestiary)
+func _collect_journal_data(journal_save_data) -> void:
+	if not JournalManager:
+		return
+
+	var journal_dict: Dictionary = JournalManager.to_dict()
+	journal_save_data.notes = journal_dict.get("notes", [])
+	journal_save_data.next_note_id = journal_dict.get("next_note_id", 1)
+	journal_save_data.bestiary = journal_dict.get("bestiary", {})
+	journal_save_data.unlocked_codex_entries = journal_dict.get("unlocked_codex_entries", [])
+
+
+## Apply journal data (notes and bestiary)
+func _apply_journal_data(journal_save_data) -> void:
+	if not JournalManager:
+		return
+
+	JournalManager.from_dict({
+		"notes": journal_save_data.notes,
+		"next_note_id": journal_save_data.next_note_id,
+		"bestiary": journal_save_data.bestiary,
+		"unlocked_codex_entries": journal_save_data.unlocked_codex_entries
+	})
 
 
 ## Migrate old save data to current version
@@ -1049,6 +1164,43 @@ func _migrate_save_data(data: Dictionary, from_version: int) -> Dictionary:
 			world_data.erase("hex_seeds")
 
 		migrated["version"] = 2
+
+	# Version 2 -> 3: Add morality, faction, codex, and NPC disposition data
+	if from_version < 3:
+		# Initialize with defaults
+		migrated["morality"] = {
+			"morality_score": 0,
+			"hours_since_last_decay": 0.0
+		}
+		migrated["factions"] = {
+			"reputations": {},
+			"memberships": {}
+		}
+		migrated["npc_dispositions"] = {
+			"modifiers": {}
+		}
+		migrated["codex"] = {
+			"discovered_recipes": {},
+			"discovered_lore": {},
+			"bestiary_entries": {}
+		}
+
+		migrated["version"] = 3
+
+	# Version 3 -> 4: Add StatsTracker and JournalManager data
+	if from_version < 4:
+		# Initialize with empty defaults
+		migrated["stats"] = {
+			"stats": {}
+		}
+		migrated["journal"] = {
+			"notes": [],
+			"next_note_id": 1,
+			"bestiary": {},
+			"unlocked_codex_entries": []
+		}
+
+		migrated["version"] = 4
 
 	return migrated
 
@@ -1290,9 +1442,10 @@ func reset_world_state() -> void:
 	if DialogueManager:
 		DialogueManager.dialogue_flags.clear()
 
-	# Reset conversation memory
+	# Reset conversation memory and flags
 	if ConversationSystem:
 		ConversationSystem.npc_memory.clear()
+		ConversationSystem.conversation_flags.clear()
 
 	# Reset bounty quests
 	if has_node("/root/BountyManager"):
@@ -1302,3 +1455,31 @@ func reset_world_state() -> void:
 	# Reset player GPS (location discovery)
 	if PlayerGPS:
 		PlayerGPS.reset()
+
+	# Reset morality
+	if MoralityManager:
+		MoralityManager.reset()
+
+	# Reset faction reputations
+	if FactionManager:
+		FactionManager.reset()
+
+	# Reset codex
+	if CodexManager:
+		CodexManager.reset()
+
+	# Reset NPC dispositions
+	if GameManager and "npc_disposition_modifiers" in GameManager:
+		GameManager.npc_disposition_modifiers.clear()
+
+	# Reset takeover manager (clear any stuck UI states)
+	if TakeoverManager:
+		TakeoverManager.reset_for_new_game()
+
+	# Reset stats tracker
+	if StatsTracker:
+		StatsTracker.reset()
+
+	# Reset journal manager
+	if JournalManager:
+		JournalManager.reset()

@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "pickaxe"
+display_name = "Pickaxe"
+description = "A sturdy mining pickaxe. Required for harvesting rocks and ore deposits."
+weapon_type = 12
+weapon_class = 0
+base_damage = Array[int]([2, 4, 2])
+attack_speed = 0.8
+reach = 1.8
+stagger_power = 1.2
+required_grit = 3
+base_value = 80
+weight = 4.0
+mesh_path = ""
+fps_sprite_path = "res://Sprite folders grab bag/arm swing 4x4fixed.png"
+fps_v_frames = 4
+fps_sprite_size = Vector2(300, 300)

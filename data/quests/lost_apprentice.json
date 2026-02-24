@@ -1,0 +1,50 @@
+{
+	"id": "lost_apprentice",
+	"title": "The Lost Apprentice",
+	"description": "A wizard in Dalhurst is frantic - his young apprentice ventured into the ruins of Willow Dale seeking rare magical components and hasn't returned. The boy was foolish and overconfident. The wizard fears the worst but holds out hope someone can find him before it's too late.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "wizard_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "travel_willow_dale",
+			"description": "Travel to the Willow Dale ruins",
+			"type": "reach",
+			"target": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "search_ruins",
+			"description": "Search the upper ruins for signs of the apprentice",
+			"type": "interact",
+			"target": "apprentice_belongings",
+			"required_count": 1
+		},
+		{
+			"id": "descend_dungeon",
+			"description": "Descend into the dungeon depths",
+			"type": "reach",
+			"target": "willow_dale_depths",
+			"required_count": 1
+		},
+		{
+			"id": "find_apprentice",
+			"description": "Find the apprentice (alive or dead)",
+			"type": "interact",
+			"target": "apprentice_marcus",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "wizard_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 120,
+		"xp": 350,
+		"items": ["minor_spell_scroll"]
+	},
+	"prerequisites": [],
+	"next_quest": ""
+}

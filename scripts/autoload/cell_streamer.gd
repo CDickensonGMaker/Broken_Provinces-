@@ -22,7 +22,7 @@ const UNLOAD_RADIUS := 2     ## Unload cells beyond this radius
 const CELL_SIZE := 100.0     ## World units per cell (matches WorldGrid)
 
 ## Floating origin configuration
-const ORIGIN_SHIFT_THRESHOLD := 500.0  ## Shift origin when player exceeds this distance
+const ORIGIN_SHIFT_THRESHOLD := 2000.0  ## Shift origin when player exceeds this distance (increased for stability)
 
 ## Currently loaded cells: Vector2i -> Node3D (the cell scene/room)
 var loaded_cells: Dictionary = {}
@@ -195,9 +195,17 @@ func _load_cell(coords: Vector2i) -> void:
 
 	var cell_node: Node3D
 
-	if cell_info.scene_path != "" and ResourceLoader.exists(cell_info.scene_path):
-		# Hand-crafted scene
-		cell_node = await _load_handcrafted_cell(coords, cell_info)
+	# Debug: Log what type of cell we're loading
+	if cell_info.scene_path != "":
+		var exists: bool = ResourceLoader.exists(cell_info.scene_path)
+		print("[CellStreamer] Cell %s has scene_path '%s', exists=%s, location='%s'" % [
+			coords, cell_info.scene_path, exists, cell_info.location_id])
+		if exists:
+			# Hand-crafted scene
+			cell_node = await _load_handcrafted_cell(coords, cell_info)
+		else:
+			push_warning("[CellStreamer] Scene path doesn't exist: %s" % cell_info.scene_path)
+			cell_node = _generate_procedural_cell(coords, cell_info)
 	else:
 		# Procedural wilderness
 		cell_node = _generate_procedural_cell(coords, cell_info)
@@ -280,34 +288,52 @@ func _generate_procedural_cell(coords: Vector2i, cell_info: WorldGrid.CellInfo) 
 func _create_simple_cell(coords: Vector2i, cell_info: WorldGrid.CellInfo) -> Node3D:
 	var cell: Node3D = Node3D.new()
 
-	# Create ground mesh - slightly larger to avoid seams
+	# Create ground mesh - exact size to prevent z-fighting with adjacent cells
 	var ground: MeshInstance3D = MeshInstance3D.new()
 	var plane_mesh: PlaneMesh = PlaneMesh.new()
-	plane_mesh.size = Vector2(CELL_SIZE + 2.0, CELL_SIZE + 2.0)  # Overlap by 1 unit on each side
+	plane_mesh.size = Vector2(CELL_SIZE, CELL_SIZE)  # Exact cell size, no overlap
 	ground.mesh = plane_mesh
 
-	# Set material to grass green to match wilderness rooms
+	# Set material based on biome to match wilderness rooms
 	var material: StandardMaterial3D = StandardMaterial3D.new()
-	# Use consistent grass green color to prevent flashing with wilderness cells
-	material.albedo_color = Color(0.2, 0.35, 0.15)  # Forest grass green
+	material.albedo_color = _get_biome_ground_color(cell_info.biome)
 	material.roughness = 0.9
 	ground.material_override = material
 
 	cell.add_child(ground)
 
-	# Add collision - also slightly larger to ensure no gaps
+	# Add collision - exact size to prevent z-fighting
 	var static_body: StaticBody3D = StaticBody3D.new()
 	static_body.collision_layer = 1  # World layer
 	static_body.collision_mask = 0   # Ground doesn't need to detect anything
 	var collision: CollisionShape3D = CollisionShape3D.new()
 	var box_shape: BoxShape3D = BoxShape3D.new()
-	box_shape.size = Vector3(CELL_SIZE + 2.0, 1.0, CELL_SIZE + 2.0)  # Thicker and overlapping
+	box_shape.size = Vector3(CELL_SIZE, 1.0, CELL_SIZE)  # Exact cell size
 	collision.shape = box_shape
 	collision.position.y = -0.5  # Match Elder Moor's ground level
 	static_body.add_child(collision)
 	cell.add_child(static_body)
 
 	return cell
+
+
+## Get ground color for a biome (must match wilderness_room.gd _setup_materials exactly)
+func _get_biome_ground_color(biome: WorldGrid.Biome) -> Color:
+	match biome:
+		WorldGrid.Biome.FOREST:
+			return Color(0.2, 0.35, 0.15)  # Green grass
+		WorldGrid.Biome.PLAINS:
+			return Color(0.45, 0.4, 0.25)  # Dry grass
+		WorldGrid.Biome.SWAMP:
+			return Color(0.15, 0.2, 0.12)  # Dark murky
+		WorldGrid.Biome.HILLS:
+			return Color(0.35, 0.38, 0.25)  # Hilly grass
+		WorldGrid.Biome.ROCKY, WorldGrid.Biome.MOUNTAINS:
+			return Color(0.3, 0.28, 0.25)  # Rocky ground
+		WorldGrid.Biome.COAST, WorldGrid.Biome.DESERT:
+			return Color(0.55, 0.50, 0.40)  # Sandy
+		_:
+			return Color(0.2, 0.35, 0.15)  # Default forest
 
 
 ## Unload a cell

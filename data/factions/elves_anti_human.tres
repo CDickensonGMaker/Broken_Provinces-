@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "elves_anti_human"
+display_name = "Elven Isolationists"
+description = "The isolationist faction of elven society who view humans as a blight upon the world. They seek to preserve their ancient forests from human expansion and believe that any contact with the shorter-lived races corrupts elven culture. They are not inherently evil, but are hostile to human intrusion."
+parent_faction = "elves"
+allies = ["elves"]
+enemies = ["human_empire", "elves_pro_human"]
+neutrals = ["dwarves_birth", "dwarves_power"]
+alignment = -20
+ranks = [{"name": "Intruder", "min_reputation": -100, "benefits": []}, {"name": "Tolerated", "min_reputation": -30, "benefits": []}, {"name": "Observed", "min_reputation": 0, "benefits": ["safe_passage"]}, {"name": "Accepted", "min_reputation": 40, "benefits": ["safe_passage", "forest_knowledge"]}, {"name": "Friend of the Wild", "min_reputation": 70, "benefits": ["safe_passage", "forest_knowledge", "elven_magic"]}, {"name": "Elder Friend", "min_reputation": 90, "benefits": ["safe_passage", "forest_knowledge", "elven_magic", "ancient_secrets"]}]
+default_reputation = -40
+joinable = true
+join_threshold = 40
+is_hidden = false
+faction_color = Color(0.2, 0.5, 0.3, 1.0)

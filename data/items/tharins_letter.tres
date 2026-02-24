@@ -6,8 +6,8 @@
 script = ExtResource("1")
 id = "tharins_letter"
 display_name = "Tharin's Sealed Letter"
-description = "A sealed letter from Tharin Ironbeard to be delivered to his contact in Falkenhaften. The wax seal bears an unfamiliar crest. Do not open."
-item_type = 4
+description = "A sealed letter from Tharin Ironbeard to be delivered to his contact in Dalhurst. The wax seal bears an unfamiliar crest. Do not open."
+item_type = 2
 is_stackable = false
 max_stack = 1
 shop_bundle_size = 1

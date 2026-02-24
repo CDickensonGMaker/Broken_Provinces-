@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "goblins"
+display_name = "Goblin Clans"
+description = "The scattered goblin clans that inhabit caves, ruins, and wild places throughout the realm. Viewed as pests by most civilized races, goblins are actually organized into complex clan structures with their own politics and culture. Some seek legitimacy through trade, while others embrace banditry."
+parent_faction = ""
+allies = []
+enemies = ["human_empire", "dwarves_birth", "dwarves_power", "elves_anti_human", "elves_pro_human"]
+neutrals = ["thieves_guild", "undead"]
+alignment = -30
+ranks = [{"name": "Enemy", "min_reputation": -100, "benefits": []}, {"name": "Target", "min_reputation": -50, "benefits": []}, {"name": "Outsider", "min_reputation": -10, "benefits": []}, {"name": "Tolerated", "min_reputation": 20, "benefits": ["safe_passage_goblin"]}, {"name": "Trader", "min_reputation": 50, "benefits": ["safe_passage_goblin", "goblin_goods"]}, {"name": "Clan Friend", "min_reputation": 80, "benefits": ["safe_passage_goblin", "goblin_goods", "goblin_mercenaries"]}]
+default_reputation = -30
+joinable = false
+join_threshold = 50
+is_hidden = false
+faction_color = Color(0.4, 0.5, 0.2, 1.0)

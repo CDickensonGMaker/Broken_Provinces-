@@ -39,6 +39,13 @@ CrimeManager="*res://scripts/autoload/crime_manager.gd"
 BountyManager="*res://scripts/autoload/bounty_manager.gd"
 FastTravelManager="*res://scripts/autoload/fast_travel_manager.gd"
 EncounterManager="*res://scripts/autoload/encounter_manager.gd"
+MoralityManager="*res://scripts/autoload/morality_manager.gd"
+FactionManager="*res://scripts/autoload/faction_manager.gd"
+CodexManager="*res://scripts/autoload/codex_manager.gd"
+TakeoverManager="*res://scripts/autoload/takeover_manager.gd"
+StatsTracker="*res://scripts/autoload/stats_tracker.gd"
+JournalManager="*res://scripts/autoload/journal_manager.gd"
+GameSystems="*res://scripts/autoload/game_systems.gd"
 
 [display]
 

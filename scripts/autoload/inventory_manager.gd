@@ -57,8 +57,8 @@ var spell_database: Dictionary = {}
 func _ready() -> void:
 	_initialize_hotbar()
 	_load_item_databases()
-	# Give player 3 random starter items
-	call_deferred("_give_starter_items")
+	# Starter items are now given by character creation or quick start
+	# NOT here - this would duplicate items on every scene load
 
 ## Initialize hotbar with 10 empty slots
 func _initialize_hotbar() -> void:
@@ -75,7 +75,8 @@ func _load_item_databases() -> void:
 	var weapon_files := [
 		"dagger", "longsword", "battleaxe", "flamebrand",
 		"hunting_bow", "crossbow", "musket",
-		"iron_sword", "steel_sword", "iron_dagger"
+		"iron_sword", "steel_sword", "iron_dagger",
+		"axe", "pickaxe"  # Tools for harvesting
 	]
 	for weapon_id in weapon_files:
 		var path := "res://data/weapons/%s.tres" % weapon_id
@@ -119,6 +120,8 @@ func _load_item_databases() -> void:
 		"iron_ore", "iron_ingot", "gold_ore", "stone_block",
 		"steel_ingot", "coal", "leather", "leather_strip",
 		"wood_plank", "red_herb", "empty_vial",
+		# Harvestable plant materials
+		"wild_berry", "blue_flower", "mushroom",
 		# Food and consumables
 		"bread", "cheese", "cooked_meat", "ale",
 		# Tools
@@ -1648,8 +1651,8 @@ func get_total_repair_cost() -> int:
 	return total
 
 
-## Reset inventory for a new game (called from death screen "New Game")
-func reset_for_new_game() -> void:
+## Clear inventory state without giving items (used before custom item setup like dev quick start)
+func clear_inventory_state() -> void:
 	# Clear inventory
 	inventory.clear()
 
@@ -1657,8 +1660,8 @@ func reset_for_new_game() -> void:
 	for slot in equipment.keys():
 		equipment[slot] = {}
 
-	# Reset gold to starting amount
-	gold = 300
+	# Reset gold to zero (caller will set appropriate amount)
+	gold = 0
 
 	# Clear quick slots
 	quick_slots = ["", "", "", ""]
@@ -1672,7 +1675,15 @@ func reset_for_new_game() -> void:
 	# Clear equipped spell
 	equipped_spell = null
 
-	# Give starting items
+
+## Reset inventory for a new game (called from death screen "New Game")
+## Gives standard starting items for normal gameplay
+func reset_for_new_game() -> void:
+	# Clear state first
+	clear_inventory_state()
+
+	# Give standard starting items for normal gameplay
+	gold = 300
 	add_item("longsword", 1, Enums.ItemQuality.ABOVE_AVERAGE)  # Fine longsword
 	add_item("hunting_bow", 1, Enums.ItemQuality.AVERAGE)
 	add_item("arrows", 20, Enums.ItemQuality.AVERAGE)

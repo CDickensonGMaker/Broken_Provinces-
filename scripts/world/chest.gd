@@ -3,7 +3,7 @@
 class_name Chest
 extends StaticBody3D
 
-const DEBUG := true
+const DEBUG := false
 
 ## Signals
 signal opened
@@ -409,8 +409,8 @@ func setup_with_loot(tier: LootTables.LootTier, luck_modifier: int = 0) -> void:
 
 	for item in loot:
 		if item.item_id == "_gold":
-			# Gold is handled separately by the UI or directly added to player
-			InventoryManager.add_gold(item.quantity)
+			# Store gold in chest - player must open chest to get it
+			add_item("_gold", item.quantity, Enums.ItemQuality.AVERAGE)
 		else:
 			add_item(item.item_id, item.quantity, item.quality)
 

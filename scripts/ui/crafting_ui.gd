@@ -44,6 +44,7 @@ var station_type: String = ""
 const STATION_CATEGORIES := {
 	"blacksmith": ["Weapon", "Armor", "Tool", "Material"],
 	"alchemy": ["Consumable"],
+	"cooking": ["Food"],
 }
 
 

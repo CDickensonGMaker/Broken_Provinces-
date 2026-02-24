@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "dwarves"
+display_name = "Dwarven Kingdoms"
+description = "The collective dwarven race, united by their mountain homes and love of craftsmanship despite internal political divisions. Dwarves are renowned smiths, miners, and warriors who hold grudges for generations and honor their word absolutely."
+parent_faction = ""
+allies = []
+enemies = ["goblins"]
+neutrals = ["human_empire", "elves"]
+alignment = 20
+ranks = [{"name": "Outsider", "min_reputation": -100, "benefits": []}, {"name": "Known", "min_reputation": 0, "benefits": []}, {"name": "Respected", "min_reputation": 40, "benefits": ["dwarven_trade"]}, {"name": "Honored", "min_reputation": 70, "benefits": ["dwarven_trade", "hold_welcome"]}, {"name": "Dwarf-Friend", "min_reputation": 90, "benefits": ["dwarven_trade", "hold_welcome", "dwarven_craft"]}]
+default_reputation = 0
+joinable = false
+join_threshold = 0
+is_hidden = false
+faction_color = Color(0.65, 0.5, 0.35, 1.0)

@@ -7,7 +7,7 @@ const DEBUG := false
 const DEBUG_UNLIMITED_STAMINA := true  # For testing - disable stamina drain
 
 # --- Movement tuning ---
-@export var walk_speed: float = 6.0  # Increased 50% for testing (was 4.0)
+@export var walk_speed: float = 4.0
 @export var run_speed: float = 7.0
 @export var acceleration: float = 18.0
 @export var gravity: float = 24.0
@@ -58,6 +58,12 @@ var buff_vfx_manager: BuffVFXManager = null
 ## Torch light manager for equipped torches
 var torch_light: TorchLight = null
 
+## Weapon drawn state - affects NPC disposition
+var weapon_drawn: bool = false
+
+## Signal emitted when weapon is drawn or sheathed
+signal weapon_state_changed(is_drawn: bool)
+
 func _ready() -> void:
 	# Add to player group
 	add_to_group("player")
@@ -66,6 +72,8 @@ func _ready() -> void:
 	# Without this, player hops over small terrain bumps
 	floor_snap_length = 1.0  # Snap to ground up to 1 unit below
 	floor_max_angle = deg_to_rad(50)  # Allow walking up steeper slopes
+	floor_stop_on_slope = true  # Prevent sliding down slopes when standing still
+	floor_block_on_wall = true  # Stop on walls when walking up slopes
 
 	# Make sure the hitbox starts off.
 	melee_hitbox.monitoring = false
@@ -168,7 +176,7 @@ func _physics_process(delta: float) -> void:
 		desired_dir = desired_dir.normalized()
 
 	# --- Choose speed (with sprint/stamina system) ---
-	var speed := walk_speed
+	var speed := walk_speed * GameManager.dev_speed_multiplier
 	var wants_to_sprint := Input.is_action_pressed("sprint") and desired_dir.length() > 0.001 and not is_overencumbered
 	var has_stamina := DEBUG_UNLIMITED_STAMINA or (GameManager.player_data and GameManager.player_data.current_stamina > 0)
 
@@ -239,9 +247,18 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	else:
-		# Keep grounded (prevents tiny bouncing) unless jumping
+		# On floor - use floor snap to stay grounded
+		# Only apply small downward force to maintain ground contact
 		if velocity.y < 0:
-			velocity.y = -0.1
+			velocity.y = -0.5  # Slightly stronger to stick to slopes
+
+		# On slopes, if not moving, zero out velocity to prevent sliding
+		if desired_dir.length() < 0.1:
+			var floor_normal := get_floor_normal()
+			if floor_normal.y < 0.99:  # We're on a slope
+				# Cancel horizontal velocity when standing still on slope
+				velocity.x = move_toward(velocity.x, 0, acceleration * delta * 3)
+				velocity.z = move_toward(velocity.z, 0, acceleration * delta * 3)
 
 	move_and_slide()
 
@@ -725,6 +742,33 @@ func heal(amount: int) -> int:
 	if GameManager.player_data:
 		return GameManager.player_data.heal(amount)
 	return 0
+
+## Draw weapon (affects NPC disposition)
+func draw_weapon() -> void:
+	if not weapon_drawn:
+		weapon_drawn = true
+		weapon_state_changed.emit(true)
+		if DEBUG:
+			print("[Player] Weapon drawn")
+
+## Sheathe weapon
+func sheathe_weapon() -> void:
+	if weapon_drawn:
+		weapon_drawn = false
+		weapon_state_changed.emit(false)
+		if DEBUG:
+			print("[Player] Weapon sheathed")
+
+## Toggle weapon drawn state
+func toggle_weapon() -> void:
+	if weapon_drawn:
+		sheathe_weapon()
+	else:
+		draw_weapon()
+
+## Check if weapon is currently drawn
+func is_weapon_drawn() -> bool:
+	return weapon_drawn
 
 ## Show spell casting feedback
 func _show_cast_feedback(message: String) -> void:

@@ -66,6 +66,12 @@ extends Resource
 @export var boss_h_frames: int = 4
 @export var boss_v_frames: int = 4
 
+## Organic cave generation (uses cellular automata instead of CSG boxes)
+@export var is_organic_cave: bool = false
+@export var cave_fill_percent: float = 0.46  # 45-48% walls for good cave formation
+@export var cave_iterations: int = 5  # Cellular automata smoothing passes
+@export var cave_cell_size: float = 5.0  # World units per grid cell
+
 
 ## Get a random enemy configuration from this room's pool
 func get_random_enemy() -> Dictionary:

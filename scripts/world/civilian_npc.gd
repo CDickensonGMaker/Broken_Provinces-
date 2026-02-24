@@ -33,6 +33,23 @@ const PIXEL_SIZE_BARMAID_BRUNETTE := 0.0234  # 105px frame height
 const DWARF_TARGET_HEIGHT := 1.85  # Dwarves are shorter
 const PIXEL_SIZE_DWARF := 0.029    # 64px frame height, shorter stature
 
+## New civilian sprite pixel sizes (2-4 frame reference sheets)
+const PIXEL_SIZE_GUY_CIVILIAN := 0.0164     # 150px frame height
+const PIXEL_SIZE_PINK_LADY := 0.0164        # 150px frame height
+const PIXEL_SIZE_MAGIC_SHOP := 0.0137       # 180px frame height
+const PIXEL_SIZE_SEDUCTRESS := 0.0154       # 160px frame height
+const PIXEL_SIZE_SEDUCTRESS2 := 0.0145      # 170px frame height
+
+## Newer single-frame reference sprites (~200-250px)
+const PIXEL_SIZE_NOBLE := 0.0123            # ~200px frame height
+const PIXEL_SIZE_GLADIATOR := 0.0115        # ~215px frame height
+const PIXEL_SIZE_HUNTER := 0.0123           # ~200px frame height
+const PIXEL_SIZE_GUARD_CIV := 0.0110        # ~225px frame height
+const PIXEL_SIZE_WIZARD_CIV := 0.0115       # ~215px frame height
+const PIXEL_SIZE_BARD := 0.0123             # ~200px frame height
+const PIXEL_SIZE_MERCHANT := 0.0115         # ~215px frame height
+const PIXEL_SIZE_BANDIT := 0.0120           # ~205px frame height
+
 var sprite_texture: Texture2D
 var sprite_h_frames: int = 8  # Default for most civilian sprites
 var sprite_v_frames: int = 3  # Default for most civilian sprites
@@ -44,6 +61,22 @@ var tint_color: Color = Color.WHITE
 
 ## NPC name (for potential dialogue)
 var npc_name: String = "Villager"
+
+## Disposition system - personal modifier from player interactions
+## Range: -50 to +50, added to calculated disposition
+var disposition_modifier: int = 0
+
+## Base disposition before any modifiers (50 = neutral)
+var base_disposition: int = 50
+
+## NPC's faction affiliation (if any)
+var faction_id: String = ""
+
+## NPC's moral alignment (-100 to 100, 0 = neutral)
+var alignment: int = 0
+
+## Region this NPC belongs to (for bounty checks)
+var region: String = ""
 
 ## Color variations for female NPCs (dress tints)
 const DRESS_COLORS := [
@@ -192,12 +225,7 @@ func _create_interaction_area() -> void:
 
 ## Called by player interaction system
 func interact(_interactor: Node) -> void:
-	# Priority 1: Use scripted dialogue if available
-	if dialogue_data:
-		DialogueManager.start_dialogue(dialogue_data, npc_name)
-		return
-
-	# Priority 2: Use topic-based conversation system
+	# Always use topic-based ConversationSystem
 	var profile := knowledge_profile
 	if not profile:
 		# Create default civilian profile if none assigned
@@ -226,6 +254,32 @@ func get_npc_id() -> String:
 ## Get display name for interaction prompt
 func get_interaction_prompt() -> String:
 	return "Talk to " + npc_name
+
+
+## Modify this NPC's personal disposition toward the player
+## amount: positive = like more, negative = like less
+func modify_disposition(amount: int) -> void:
+	var old_modifier: int = disposition_modifier
+	disposition_modifier = clampi(disposition_modifier + amount, -50, 50)
+	if disposition_modifier != old_modifier:
+		print("[NPC] %s disposition changed by %d: %d -> %d" % [npc_name, amount, old_modifier, disposition_modifier])
+
+
+## Get the NPC's current disposition toward the player
+## Uses DispositionCalculator for full calculation
+func get_disposition() -> int:
+	return DispositionCalculator.calculate_disposition(self)
+
+
+## Get the disposition status (HOSTILE, UNFRIENDLY, NEUTRAL, FRIENDLY, ALLY)
+func get_disposition_status() -> DispositionCalculator.DispositionStatus:
+	var disp: int = get_disposition()
+	return DispositionCalculator.get_disposition_status(disp)
+
+
+## Check if NPC will interact with player (not hostile)
+func will_interact() -> bool:
+	return get_disposition_status() != DispositionCalculator.DispositionStatus.HOSTILE
 
 
 func _setup_wandering() -> void:
@@ -706,3 +760,236 @@ static func spawn_dwarf_forge_random(parent: Node, pos: Vector3, zone_id: String
 		return spawn_dwarf_forge_worker(parent, pos, zone_id)  # 45% workers
 	else:
 		return spawn_dwarf_forge_guard(parent, pos, zone_id)   # 40% guards
+
+
+## ============================================================================
+## NEW CIVILIAN NPC SPAWNING METHODS (Reference Sheet Style)
+## These sprites have 2-4 viewing angles, used as static or minimal animation
+## ============================================================================
+
+## Spawn a guy in green vest (2 frames: front/back)
+## zone_id: Optional zone for unique name generation
+static func spawn_guy_green_vest(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	var npc := spawn_civilian(
+		parent,
+		pos,
+		"res://Sprite folders grab bag/guy_civilian1.png",
+		2,  # 2 columns (front/back)
+		1,  # 1 row
+		false,
+		PIXEL_SIZE_GUY_CIVILIAN
+	)
+	npc.tint_color = Color.WHITE
+	_assign_unique_name(npc, zone_id, false)
+	return npc
+
+
+## Spawn a pink lady civilian (2 frames: front/back)
+## zone_id: Optional zone for unique name generation
+static func spawn_pink_lady(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	var npc := spawn_civilian(
+		parent,
+		pos,
+		"res://Sprite folders grab bag/pinklady.png",
+		2,  # 2 columns (front/back)
+		1,  # 1 row
+		false,
+		PIXEL_SIZE_PINK_LADY
+	)
+	npc.tint_color = Color.WHITE
+	_assign_unique_name(npc, zone_id, true)
+	return npc
+
+
+## Spawn a magic shop worker (4 frames: 4 viewing angles)
+## zone_id: Optional zone for unique name generation
+static func spawn_magic_shop_worker(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	var npc := spawn_civilian(
+		parent,
+		pos,
+		"res://Sprite folders grab bag/magic shop worker.png",
+		4,  # 4 columns (4 angles)
+		1,  # 1 row
+		false,
+		PIXEL_SIZE_MAGIC_SHOP
+	)
+	npc.tint_color = Color.WHITE
+	_assign_unique_name(npc, zone_id, true, "Enchantress")
+	return npc
+
+
+## Spawn a seductress civilian - dark hair variant (2 frames: front/back)
+## zone_id: Optional zone for unique name generation
+static func spawn_seductress(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	var npc := spawn_civilian(
+		parent,
+		pos,
+		"res://Sprite folders grab bag/seductress_civilian.png",
+		2,  # 2 columns (front/back)
+		1,  # 1 row
+		false,
+		PIXEL_SIZE_SEDUCTRESS
+	)
+	npc.tint_color = Color.WHITE
+	_assign_unique_name(npc, zone_id, true)
+	return npc
+
+
+## Spawn a seductress civilian - blue dress variant (2 frames: front/back)
+## zone_id: Optional zone for unique name generation
+static func spawn_blue_dress_lady(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	var npc := spawn_civilian(
+		parent,
+		pos,
+		"res://Sprite folders grab bag/seductress2_civilian.png",
+		2,  # 2 columns (front/back)
+		1,  # 1 row
+		false,
+		PIXEL_SIZE_SEDUCTRESS2
+	)
+	npc.tint_color = Color.WHITE
+	_assign_unique_name(npc, zone_id, true)
+	return npc
+
+
+## Spawn a random new-style civilian (uses the newer reference sheet sprites)
+## zone_id: Optional zone for unique name generation
+static func spawn_random_new(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	var roll := randf()
+	if roll < 0.20:
+		return spawn_guy_green_vest(parent, pos, zone_id)    # 20% green vest guy
+	elif roll < 0.40:
+		return spawn_pink_lady(parent, pos, zone_id)         # 20% pink lady
+	elif roll < 0.55:
+		return spawn_magic_shop_worker(parent, pos, zone_id) # 15% magic shop worker
+	elif roll < 0.75:
+		return spawn_seductress(parent, pos, zone_id)        # 20% seductress dark
+	else:
+		return spawn_blue_dress_lady(parent, pos, zone_id)   # 25% blue dress
+
+
+## Spawn any random civilian (combines old and new sprite types)
+## zone_id: Optional zone for unique name generation
+static func spawn_any_random(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	if randf() < 0.5:
+		return spawn_random(parent, pos, zone_id)      # 50% old animated sprites
+	else:
+		return spawn_random_new(parent, pos, zone_id)  # 50% new reference sprites
+
+
+# =============================================================================
+# NEWER SINGLE-FRAME REFERENCE SPRITES
+# =============================================================================
+
+## Spawn a female noble NPC
+static func spawn_female_noble(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	return spawn_civilian(parent, pos,
+		"res://Sprite folders grab bag/female_noble1.png",
+		1, 1, PIXEL_SIZE_NOBLE, _generate_npc_name("female", zone_id), Color.WHITE)
+
+
+## Spawn a male noble NPC
+static func spawn_male_noble(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	return spawn_civilian(parent, pos,
+		"res://Sprite folders grab bag/man_noble1.png",
+		1, 1, PIXEL_SIZE_NOBLE, _generate_npc_name("male", zone_id), Color.WHITE)
+
+
+## Spawn a female gladiator NPC
+static func spawn_female_gladiator(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	return spawn_civilian(parent, pos,
+		"res://Sprite folders grab bag/female_gladiator1.png",
+		1, 1, PIXEL_SIZE_GLADIATOR, _generate_npc_name("female", zone_id), Color.WHITE)
+
+
+## Spawn a male gladiator NPC
+static func spawn_male_gladiator(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	return spawn_civilian(parent, pos,
+		"res://Sprite folders grab bag/male_gladiator1.png",
+		1, 1, PIXEL_SIZE_GLADIATOR, _generate_npc_name("male", zone_id), Color.WHITE)
+
+
+## Spawn a female hunter NPC
+static func spawn_female_hunter(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	return spawn_civilian(parent, pos,
+		"res://Sprite folders grab bag/female hunter.png",
+		1, 1, PIXEL_SIZE_HUNTER, _generate_npc_name("female", zone_id), Color.WHITE)
+
+
+## Spawn a guard (civilian clothes) NPC
+static func spawn_guard_civilian(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	return spawn_civilian(parent, pos,
+		"res://Sprite folders grab bag/guard_civilian.png",
+		1, 1, PIXEL_SIZE_GUARD_CIV, _generate_npc_name("male", zone_id), Color.WHITE)
+
+
+## Spawn a wild wizard NPC
+static func spawn_wizard_wild(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	return spawn_civilian(parent, pos,
+		"res://Sprite folders grab bag/wizard_wild.png",
+		1, 1, PIXEL_SIZE_WIZARD_CIV, _generate_npc_name("male", zone_id), Color.WHITE)
+
+
+## Spawn a civilian wizard NPC
+static func spawn_wizard_civilian(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	return spawn_civilian(parent, pos,
+		"res://Sprite folders grab bag/wizard_civilian.png",
+		1, 1, PIXEL_SIZE_WIZARD_CIV, _generate_npc_name("male", zone_id), Color.WHITE)
+
+
+## Spawn a bard NPC
+static func spawn_bard(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	return spawn_civilian(parent, pos,
+		"res://Sprite folders grab bag/bard_civilian.png",
+		1, 1, PIXEL_SIZE_BARD, _generate_npc_name("female", zone_id), Color.WHITE)
+
+
+## Spawn a merchant NPC
+static func spawn_merchant(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	return spawn_civilian(parent, pos,
+		"res://Sprite folders grab bag/merchant_civilian.png",
+		1, 1, PIXEL_SIZE_MERCHANT, _generate_npc_name("male", zone_id), Color.WHITE)
+
+
+## Spawn a bandit (type 2) - can be used for reformed bandits in towns
+static func spawn_bandit_civilian(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	var sprite: String = "res://Sprite folders grab bag/bandit_2.png" if randf() < 0.5 else "res://Sprite folders grab bag/bandit_3.png"
+	return spawn_civilian(parent, pos,
+		sprite,
+		1, 1, PIXEL_SIZE_BANDIT, _generate_npc_name("male", zone_id), Color.WHITE)
+
+
+## Spawn any of the newer reference sprites randomly
+static func spawn_random_newest(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	var roll: float = randf()
+	if roll < 0.1:
+		return spawn_female_noble(parent, pos, zone_id)
+	elif roll < 0.2:
+		return spawn_male_noble(parent, pos, zone_id)
+	elif roll < 0.3:
+		return spawn_female_gladiator(parent, pos, zone_id)
+	elif roll < 0.4:
+		return spawn_male_gladiator(parent, pos, zone_id)
+	elif roll < 0.5:
+		return spawn_female_hunter(parent, pos, zone_id)
+	elif roll < 0.6:
+		return spawn_guard_civilian(parent, pos, zone_id)
+	elif roll < 0.7:
+		return spawn_wizard_civilian(parent, pos, zone_id)
+	elif roll < 0.8:
+		return spawn_bard(parent, pos, zone_id)
+	elif roll < 0.9:
+		return spawn_merchant(parent, pos, zone_id)
+	else:
+		return spawn_bandit_civilian(parent, pos, zone_id)
+
+
+## Spawn any civilian from ALL available sprite types
+static func spawn_truly_random(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
+	var roll: float = randf()
+	if roll < 0.33:
+		return spawn_random(parent, pos, zone_id)          # Old animated sprites
+	elif roll < 0.66:
+		return spawn_random_new(parent, pos, zone_id)      # Newer reference sprites
+	else:
+		return spawn_random_newest(parent, pos, zone_id)   # Newest reference sprites

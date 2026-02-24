@@ -248,7 +248,11 @@ func _create_bounty_list_item(bounty) -> void:
 	var info := Label.new()
 	var tier_text: String = bounty.tier.capitalize()
 	if bounty.is_active:
-		info.text = "[%s] %s" % [tier_text, bounty.get_progress_text()]
+		var progress_text: String = bounty.get_progress_text()
+		if bounty.is_complete and not bounty.source_board_name.is_empty():
+			info.text = "[%s] %s - Return to %s" % [tier_text, progress_text, bounty.source_board_name]
+		else:
+			info.text = "[%s] %s" % [tier_text, progress_text]
 	else:
 		info.text = "[%s] %d Gold, %d XP" % [tier_text, bounty.gold_reward, bounty.xp_reward]
 	info.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
@@ -303,7 +307,7 @@ func _refresh_detail_panel() -> void:
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content_container.add_child(desc)
 
-	# Progress (if active)
+	# Progress and turn-in location (if active)
 	if selected_bounty.is_active:
 		var progress_sep := HSeparator.new()
 		content_container.add_child(progress_sep)
@@ -315,6 +319,14 @@ func _refresh_detail_panel() -> void:
 		else:
 			progress.add_theme_color_override("font_color", Color(0.9, 0.8, 0.3))
 		content_container.add_child(progress)
+
+		# Show turn-in location
+		if not selected_bounty.source_board_name.is_empty():
+			var turn_in_label := Label.new()
+			turn_in_label.text = "Turn in at: %s" % selected_bounty.source_board_name
+			turn_in_label.add_theme_color_override("font_color", Color(0.7, 0.85, 1.0))
+			turn_in_label.add_theme_font_size_override("font_size", 13)
+			content_container.add_child(turn_in_label)
 
 	# Rewards
 	var reward_sep := HSeparator.new()
@@ -343,12 +355,20 @@ func _refresh_detail_panel() -> void:
 	# Action button
 	if selected_bounty.is_active:
 		if selected_bounty.is_complete:
+			# Check if we're at the correct board for turn-in
+			var can_turn_in: bool = (bounty_board and selected_bounty.source_board_name == bounty_board.board_name)
+
 			var turn_in_btn := Button.new()
-			turn_in_btn.text = "Turn In Bounty"
+			if can_turn_in:
+				turn_in_btn.text = "Turn In Bounty"
+				_style_action_button(turn_in_btn, Color(0.3, 0.7, 0.3))
+			else:
+				turn_in_btn.text = "Wrong Board - Go to %s" % selected_bounty.source_board_name
+				turn_in_btn.disabled = true
+				_style_action_button(turn_in_btn, Color(0.4, 0.4, 0.4))
 			turn_in_btn.custom_minimum_size = Vector2(0, 40)
 			turn_in_btn.pressed.connect(_on_turn_in_pressed)
 			turn_in_btn.process_mode = Node.PROCESS_MODE_ALWAYS
-			_style_action_button(turn_in_btn, Color(0.3, 0.7, 0.3))
 			content_container.add_child(turn_in_btn)
 		else:
 			var abandon_btn := Button.new()

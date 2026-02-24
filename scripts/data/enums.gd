@@ -92,7 +92,8 @@ enum WeaponType {
 	CROSSBOW,
 	MUSKET,
 	STAFF,
-	UNARMED
+	UNARMED,
+	PICKAXE  # Tool weapon for mining rocks
 }
 
 # Weapon Class

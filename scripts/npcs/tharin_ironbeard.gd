@@ -9,6 +9,11 @@ extends StaticBody3D
 @export var npc_id: String = "tharin_ironbeard"
 @export var display_name: String = "Tharin Ironbeard"
 
+## Alias for ConversationSystem compatibility
+var npc_name: String:
+	get: return display_name
+	set(value): display_name = value
+
 ## Region for quest system
 var region_id: String = "elder_moor"
 var npc_type: String = "quest_giver"
@@ -24,7 +29,13 @@ var sprite_pixel_size: float = 0.032  # Shorter than standard human
 
 ## Quest state
 var has_given_quest: bool = false
-var quest_id: String = "the_letter"
+var quest_id: String = "keepers_letter_delivery"
+
+## Quest IDs this NPC can offer (for ConversationSystem QUESTS topic)
+var quest_ids: Array[String] = ["keepers_letter_delivery"]
+
+## NPC knowledge profile (created on demand)
+var knowledge_profile: NPCKnowledgeProfile
 
 ## Wandering behavior
 var wander_enabled: bool = true
@@ -36,12 +47,10 @@ var wander_timer: float = 0.0
 var wander_wait_time: float = 3.0
 var is_waiting: bool = true
 
-## Dialogue content
-var dialogue_intro := "Ah, there ye are! Been lookin' for ye.\nGot somethin' important to discuss."
-var dialogue_quest_offer := "Listen close now. I need ye to deliver\nthis sealed letter to my contact in Falkenhaften.\nDon't open it, don't lose it. This is important\nbusiness - royal business, if ye catch my meaning.\nThere'll be coin in it for ye when it's done."
-var dialogue_quest_active := "Ye still here? Get that letter to\nFalkenhaften! My contact will be waitin'\nnear the south gate. Don't dawdle!"
-var dialogue_quest_complete := "Good work, lad. Ye've proven yerself\nreliable. There may be more work for ye yet."
-var dialogue_casual := "Keep up the good work around camp.\nWe've got quotas to meet!"
+## Dialogue content for scripted sequences
+var dialogue_quest_offer := "Listen close now. I need ye to deliver this sealed letter to my contact in Dalhurst. A man named Aldric Vane - he runs a curiosities shop. Don't open it, don't lose it. This is important business, if ye catch my meaning. There'll be coin in it for ye when it's done."
+var dialogue_quest_active := "Ye still have the letter? Get it to Aldric Vane in Dalhurst! He runs a curiosities shop in the merchant district. Don't dawdle!"
+var dialogue_quest_complete := "Good work. Ye've proven yerself reliable. There may be more work for ye yet."
 
 ## Exit interception
 var _player_near_exit: bool = false
@@ -50,7 +59,7 @@ var _exit_dialogue_shown: bool = false
 func _ready() -> void:
 	add_to_group("interactable")
 	add_to_group("npcs")
-	add_to_group("quest_givers")
+	add_to_group("quest_givers")  # Important: enables QUESTS topic in ConversationSystem
 
 	home_position = position
 	wander_target = position
@@ -67,6 +76,10 @@ func _ready() -> void:
 	# Check if quest already given (from save)
 	if QuestManager.is_quest_active(quest_id) or QuestManager.is_quest_completed(quest_id):
 		has_given_quest = true
+
+	# Connect to ConversationSystem signals for quest handling
+	if not ConversationSystem.conversation_ended.is_connected(_on_conversation_ended):
+		ConversationSystem.conversation_ended.connect(_on_conversation_ended)
 
 
 func _physics_process(delta: float) -> void:
@@ -216,12 +229,22 @@ func _intercept_player() -> void:
 
 	# Small delay then trigger dialogue
 	await get_tree().create_timer(0.5).timeout
-	_open_quest_dialogue()
+	_open_quest_scripted_dialogue()
 
 
 ## Interaction interface
 func interact(_interactor: Node) -> void:
-	_open_dialogue()
+	# Notify quest system that player talked to this NPC
+	QuestManager.on_npc_talked(npc_id)
+
+	# If quest not given yet and player near exit, use scripted intercept dialogue
+	if not has_given_quest and _player_near_exit:
+		_open_quest_scripted_dialogue()
+		return
+
+	# Otherwise use ConversationSystem for topic-based dialogue
+	var profile := _get_or_create_profile()
+	ConversationSystem.start_conversation(self, profile)
 
 
 func get_interaction_prompt() -> String:
@@ -233,119 +256,84 @@ func get_interaction_prompt() -> String:
 		return "Talk to " + display_name
 
 
-## Open standard dialogue
-func _open_dialogue() -> void:
-	if not has_given_quest:
-		_open_quest_dialogue()
-	elif QuestManager.is_quest_active(quest_id):
-		_show_simple_dialogue(dialogue_quest_active)
-	elif QuestManager.is_quest_complete(quest_id):
-		_show_simple_dialogue(dialogue_quest_complete)
-	else:
-		_show_simple_dialogue(dialogue_casual)
+## Get or create the NPC knowledge profile
+func _get_or_create_profile() -> NPCKnowledgeProfile:
+	if not knowledge_profile:
+		knowledge_profile = NPCKnowledgeProfile.new()
+		# Tharin is a logging camp foreman with connections
+		knowledge_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+		knowledge_profile.personality_traits = ["gruff", "secretive", "dutiful"]
+		knowledge_profile.knowledge_tags = ["local_area", "logging", "dwarves", "the_keepers"]
+		knowledge_profile.base_disposition = 55
+		knowledge_profile.speech_style = "casual"  # Dwarven accent handled in dialogue text
+	return knowledge_profile
 
 
-## Open the quest offer dialogue
-func _open_quest_dialogue() -> void:
-	get_tree().paused = true
-	GameManager.enter_menu()
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-
-	var dialogue_ui := _create_quest_dialogue_panel()
-
-	var canvas := CanvasLayer.new()
-	canvas.name = "TharinDialogueCanvas"
-	canvas.layer = 100
-	canvas.process_mode = Node.PROCESS_MODE_ALWAYS
-	add_child(canvas)
-	canvas.add_child(dialogue_ui)
+## Handle conversation ending - check if we need to offer quest via QUESTS topic
+func _on_conversation_ended(npc: Node) -> void:
+	if npc != self:
+		return
+	# Quest acceptance is handled by ConversationSystem's QUESTS topic handler
 
 
-## Create the quest dialogue panel
-func _create_quest_dialogue_panel() -> Control:
-	var panel := PanelContainer.new()
-	panel.name = "DialoguePanel"
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.offset_left = -220
-	panel.offset_right = 220
-	panel.offset_top = -140
-	panel.offset_bottom = 140
-	panel.process_mode = Node.PROCESS_MODE_ALWAYS
+## Open scripted quest dialogue (for intercept scenario)
+func _open_quest_scripted_dialogue() -> void:
+	var lines: Array = []
 
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.08, 0.1)
-	style.border_color = Color(0.4, 0.3, 0.2)
-	style.set_border_width_all(2)
-	panel.add_theme_stylebox_override("panel", style)
+	# Line 0: Quest offer with choices
+	lines.append(ConversationSystem.create_scripted_line(
+		display_name,
+		dialogue_quest_offer,
+		[
+			ConversationSystem.create_scripted_choice("I'll deliver the letter.", 1),
+			ConversationSystem.create_scripted_choice("I need to prepare first.", 2)
+		]
+	))
 
-	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 10)
-	panel.add_child(vbox)
+	# Line 1: Accept quest
+	lines.append(ConversationSystem.create_scripted_line(
+		display_name,
+		"Good. Don't let me down.",
+		[],
+		true  # is_end
+	))
 
-	# NPC Name
-	var name_label := Label.new()
-	name_label.text = display_name.to_upper()
-	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.add_theme_color_override("font_color", Color(0.8, 0.6, 0.2))
-	name_label.add_theme_font_size_override("font_size", 18)
-	vbox.add_child(name_label)
+	# Line 2: Decline (can talk again)
+	lines.append(ConversationSystem.create_scripted_line(
+		display_name,
+		"Don't take too long. This is important.",
+		[],
+		true  # is_end
+	))
 
-	# Dialogue text
-	var text_label := Label.new()
-	text_label.text = dialogue_quest_offer
-	text_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	text_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	text_label.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
-	vbox.add_child(text_label)
+	# Track which choice was made
+	if not ConversationSystem.scripted_line_shown.is_connected(_on_quest_line_shown):
+		ConversationSystem.scripted_line_shown.connect(_on_quest_line_shown)
 
-	# Spacer
-	var spacer := Control.new()
-	spacer.custom_minimum_size.y = 8
-	vbox.add_child(spacer)
-
-	# Accept button
-	var accept_btn := Button.new()
-	accept_btn.text = "I'll deliver the letter."
-	accept_btn.custom_minimum_size = Vector2(200, 35)
-	accept_btn.pressed.connect(_on_accept_quest.bind(panel))
-	accept_btn.process_mode = Node.PROCESS_MODE_ALWAYS
-	_style_button(accept_btn)
-	vbox.add_child(accept_btn)
-
-	# Decline button (just closes dialogue, can talk again)
-	var decline_btn := Button.new()
-	decline_btn.text = "I need to prepare first."
-	decline_btn.custom_minimum_size = Vector2(200, 35)
-	decline_btn.pressed.connect(_on_decline_quest.bind(panel))
-	decline_btn.process_mode = Node.PROCESS_MODE_ALWAYS
-	_style_button(decline_btn)
-	vbox.add_child(decline_btn)
-
-	return panel
+	ConversationSystem.start_scripted_dialogue(lines, _on_quest_scripted_ended)
 
 
-## Style a button
-func _style_button(btn: Button) -> void:
-	var normal := StyleBoxFlat.new()
-	normal.bg_color = Color(0.12, 0.12, 0.15)
-	normal.border_color = Color(0.3, 0.25, 0.2)
-	normal.set_border_width_all(1)
-	normal.set_corner_radius_all(4)
+var _last_quest_line_index: int = 0
 
-	var hover := StyleBoxFlat.new()
-	hover.bg_color = Color(0.25, 0.2, 0.15)
-	hover.border_color = Color(0.8, 0.6, 0.2)
-	hover.set_border_width_all(1)
-	hover.set_corner_radius_all(4)
-
-	btn.add_theme_stylebox_override("normal", normal)
-	btn.add_theme_stylebox_override("hover", hover)
-	btn.add_theme_stylebox_override("pressed", hover)
-	btn.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
-	btn.add_theme_color_override("font_hover_color", Color(0.8, 0.6, 0.2))
+func _on_quest_line_shown(_line: Dictionary, index: int) -> void:
+	_last_quest_line_index = index
 
 
-func _on_accept_quest(panel: Control) -> void:
+func _on_quest_scripted_ended() -> void:
+	if ConversationSystem.scripted_line_shown.is_connected(_on_quest_line_shown):
+		ConversationSystem.scripted_line_shown.disconnect(_on_quest_line_shown)
+
+	match _last_quest_line_index:
+		1:  # Accepted
+			_accept_quest()
+		2:  # Declined
+			_exit_dialogue_shown = false  # Allow showing again
+			wander_enabled = true
+
+	_last_quest_line_index = 0
+
+
+func _accept_quest() -> void:
 	has_given_quest = true
 
 	# Start the quest
@@ -358,85 +346,8 @@ func _on_accept_quest(panel: Control) -> void:
 	# Give player the letter item
 	InventoryManager.add_item("tharins_letter", 1)
 
-	_close_dialogue(panel)
-
 	# Resume wandering
 	wander_enabled = true
-
-
-func _on_decline_quest(panel: Control) -> void:
-	_close_dialogue(panel)
-	_exit_dialogue_shown = false  # Allow showing again
-	wander_enabled = true
-
-
-func _close_dialogue(panel: Control) -> void:
-	var canvas := panel.get_parent()
-	panel.queue_free()
-	if canvas:
-		canvas.queue_free()
-
-	get_tree().paused = false
-	GameManager.exit_menu()
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
-
-## Show simple dialogue (no choices)
-func _show_simple_dialogue(text: String) -> void:
-	get_tree().paused = true
-	GameManager.enter_menu()
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-
-	var panel := PanelContainer.new()
-	panel.name = "SimpleDialogue"
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.offset_left = -200
-	panel.offset_right = 200
-	panel.offset_top = -100
-	panel.offset_bottom = 100
-	panel.process_mode = Node.PROCESS_MODE_ALWAYS
-
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.08, 0.1)
-	style.border_color = Color(0.4, 0.3, 0.2)
-	style.set_border_width_all(2)
-	panel.add_theme_stylebox_override("panel", style)
-
-	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 10)
-	panel.add_child(vbox)
-
-	var name_label := Label.new()
-	name_label.text = display_name.to_upper()
-	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.add_theme_color_override("font_color", Color(0.8, 0.6, 0.2))
-	vbox.add_child(name_label)
-
-	var text_label := Label.new()
-	text_label.text = text
-	text_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	text_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	text_label.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
-	vbox.add_child(text_label)
-
-	var spacer := Control.new()
-	spacer.custom_minimum_size.y = 8
-	vbox.add_child(spacer)
-
-	var close_btn := Button.new()
-	close_btn.text = "Farewell."
-	close_btn.custom_minimum_size = Vector2(150, 35)
-	close_btn.pressed.connect(_close_dialogue.bind(panel))
-	close_btn.process_mode = Node.PROCESS_MODE_ALWAYS
-	_style_button(close_btn)
-	vbox.add_child(close_btn)
-
-	var canvas := CanvasLayer.new()
-	canvas.name = "SimpleDialogueCanvas"
-	canvas.layer = 100
-	canvas.process_mode = Node.PROCESS_MODE_ALWAYS
-	add_child(canvas)
-	canvas.add_child(panel)
 
 
 ## Register as compass POI
@@ -454,3 +365,8 @@ func _register_with_world_data() -> void:
 
 func _exit_tree() -> void:
 	PlayerGPS.unregister_npc(npc_id)
+	# Disconnect signals
+	if ConversationSystem.conversation_ended.is_connected(_on_conversation_ended):
+		ConversationSystem.conversation_ended.disconnect(_on_conversation_ended)
+	if ConversationSystem.scripted_line_shown.is_connected(_on_quest_line_shown):
+		ConversationSystem.scripted_line_shown.disconnect(_on_quest_line_shown)

@@ -26,6 +26,46 @@ const BARREN_BUSH_TEXTURES := [
 	"res://Sprite folders grab bag/barren_bush2.png"
 ]
 
+## Plant type definitions with weights and textures
+## weight is cumulative for weighted random selection
+const PLANT_TYPES: Array[Dictionary] = [
+	{
+		"id": "red_herb",
+		"name": "Red Herb",
+		"yield": 1,
+		"weight": 0.45,  # 45%
+		"fresh_texture": "res://Sprite folders grab bag/herb_bush2.png",
+		"harvested_texture": "res://Sprite folders grab bag/herb_bush_picked2.png"
+	},
+	{
+		"id": "wild_berry",
+		"name": "Wild Berry Bush",
+		"yield": 1,
+		"weight": 0.25,  # 25%
+		"fresh_texture": "res://Sprite folders grab bag/autmun bush.png",
+		"harvested_texture": "res://Sprite folders grab bag/barren_bush.png"
+	},
+	{
+		"id": "blue_flower",
+		"name": "Blue Flower",
+		"yield": 1,
+		"weight": 0.20,  # 20%
+		"fresh_texture": "res://Sprite folders grab bag/herb_bush2.png",
+		"harvested_texture": "res://Sprite folders grab bag/herb_bush_picked2.png"
+	},
+	{
+		"id": "mushroom",
+		"name": "Mushroom",
+		"yield": 1,
+		"weight": 0.10,  # 10%
+		"fresh_texture": "res://Sprite folders grab bag/autmun bush.png",
+		"harvested_texture": "res://Sprite folders grab bag/barren_bush2.png"
+	}
+]
+
+## Reference to collision shape for disabling after harvest
+var collision_shape: CollisionShape3D = null
+
 func _ready() -> void:
 	add_to_group("harvestable_plants")
 	add_to_group("interactable")
@@ -38,13 +78,13 @@ func _setup_collision() -> void:
 	collision_layer = 1  # World layer
 	collision_mask = 0   # Doesn't collide with anything
 
-	var col_shape := CollisionShape3D.new()
+	collision_shape = CollisionShape3D.new()
 	var cylinder := CylinderShape3D.new()
 	cylinder.radius = 0.3
 	cylinder.height = 0.5
-	col_shape.shape = cylinder
-	col_shape.position.y = 0.25
-	add_child(col_shape)
+	collision_shape.shape = cylinder
+	collision_shape.position.y = 0.25
+	add_child(collision_shape)
 
 func _setup_interaction_area() -> void:
 	interaction_area = Area3D.new()
@@ -79,12 +119,23 @@ func _setup_visuals() -> void:
 	add_child(sprite)
 
 func _get_plant_texture() -> String:
-	# Map plant types to textures (can expand as more plant types are added)
-	match plant_type:
-		"red_herb":
-			return "res://Sprite folders grab bag/autmun bush.png"
-		_:
-			return "res://Sprite folders grab bag/autmun bush.png"
+	# Find texture for current plant type from PLANT_TYPES definitions
+	for plant_def in PLANT_TYPES:
+		if plant_def["id"] == plant_type:
+			return plant_def["fresh_texture"]
+
+	# Fallback to autumn bush
+	return "res://Sprite folders grab bag/autmun bush.png"
+
+
+## Get harvested texture for current plant type
+func _get_harvested_texture() -> String:
+	for plant_def in PLANT_TYPES:
+		if plant_def["id"] == plant_type:
+			return plant_def["harvested_texture"]
+
+	# Fallback to barren bush
+	return BARREN_BUSH_TEXTURES[randi() % BARREN_BUSH_TEXTURES.size()]
 
 func _process(delta: float) -> void:
 	# Handle respawn timer if implemented
@@ -140,14 +191,19 @@ func _on_harvested() -> void:
 	# Remove from interactable group so prompt doesn't show
 	remove_from_group("interactable")
 
-	# Swap sprite to barren bush (randomly pick one of two variants)
+	# Disable collision so player can walk through
+	collision_layer = 0
+	if collision_shape:
+		collision_shape.disabled = true
+
+	# Swap sprite to harvested texture (plant-type specific)
 	if sprite:
-		var barren_tex_path: String = BARREN_BUSH_TEXTURES[randi() % BARREN_BUSH_TEXTURES.size()]
-		var barren_tex := load(barren_tex_path) as Texture2D
-		if barren_tex:
-			sprite.texture = barren_tex
+		var harvested_tex_path: String = _get_harvested_texture()
+		var harvested_tex := load(harvested_tex_path) as Texture2D
+		if harvested_tex:
+			sprite.texture = harvested_tex
 			# Reposition sprite based on new texture height
-			var tex_height := barren_tex.get_height() * sprite.pixel_size
+			var tex_height := harvested_tex.get_height() * sprite.pixel_size
 			sprite.position.y = tex_height / 2.0
 
 	# Start respawn timer (or just stay harvested until zone reload)
@@ -184,17 +240,17 @@ static func spawn_plant(parent: Node, pos: Vector3, p_plant_type: String = "red_
 	parent.add_child(instance)
 	return instance
 
-## Static method to spawn a random plant type
+## Static method to spawn a random plant type using weighted selection
 static func spawn_random_plant(parent: Node, pos: Vector3) -> HarvestablePlant:
-	# Define available plant types with weights
-	var plant_types: Array[Dictionary] = [
-		{"id": "red_herb", "name": "Red Herb", "yield": 1, "weight": 0.6},  # 60%
-		# Future plant types can be added here:
-		# {"id": "blue_flower", "name": "Blue Flower", "yield": 1, "weight": 0.3},
-		# {"id": "mushroom", "name": "Mushroom", "yield": 2, "weight": 0.1},
-	]
+	# Weighted random selection from PLANT_TYPES
+	var roll: float = randf()
+	var cumulative: float = 0.0
+	var selected: Dictionary = PLANT_TYPES[0]  # Default to first type
 
-	# For now, just spawn red herb (add weighted selection when more plants exist)
-	var selected: Dictionary = plant_types[0]
+	for plant_def in PLANT_TYPES:
+		cumulative += plant_def["weight"]
+		if roll <= cumulative:
+			selected = plant_def
+			break
 
 	return spawn_plant(parent, pos, selected["id"], selected["name"], selected["yield"])

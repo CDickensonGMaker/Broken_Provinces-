@@ -8,6 +8,11 @@ signal menu_closed
 enum MenuTab { CHARACTER, ITEMS, MAGIC, JOURNAL, MAP }
 var current_tab: MenuTab = MenuTab.CHARACTER
 
+## Inventory category filter
+enum InvCategory { ALL, WEAPONS, ARMOR, MAGIC, AID, MISC, QUEST }
+var current_inv_category: InvCategory = InvCategory.ALL
+const INV_CATEGORY_NAMES = ["All", "Weapons", "Armor", "Magic", "Aid", "Misc", "Quest"]
+
 const TAB_NAMES = ["Character", "Items", "Magic", "Journal", "Map"]
 
 # Dark gothic colors
@@ -32,6 +37,10 @@ var selected_equip_slot: String = ""  # Currently selected equipment slot for un
 var hover_tooltip: PanelContainer = null
 var hovered_item_idx: int = -1
 var item_list_ref: ItemList = null  # Reference to current ItemList
+
+# Index mapping for filtered inventory display
+# Maps displayed list index -> actual InventoryManager.inventory index
+var filtered_inv_index_map: Array[int] = []
 
 # Hotbar context menu
 var hotbar_context_menu: PopupMenu = null
@@ -527,9 +536,34 @@ func _get_condition_display_color(condition: Enums.Condition) -> Color:
 
 # ==================== ITEMS TAB ====================
 func _build_items_panel() -> Control:
+	var main_vbox = VBoxContainer.new()
+	main_vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+
+	# Category tabs row
+	var cat_hbox = HBoxContainer.new()
+	cat_hbox.name = "CategoryTabs"
+	cat_hbox.add_theme_constant_override("separation", 2)
+	main_vbox.add_child(cat_hbox)
+
+	# Build category tabs
+	for i in range(INV_CATEGORY_NAMES.size()):
+		var btn = Button.new()
+		btn.text = INV_CATEGORY_NAMES[i]
+		btn.flat = true
+		btn.focus_mode = Control.FOCUS_NONE
+		btn.toggle_mode = true
+		btn.button_pressed = (i == current_inv_category)
+		btn.pressed.connect(_on_inv_category_clicked.bind(i))
+		_style_category_button(btn, i == current_inv_category)
+		cat_hbox.add_child(btn)
+
+	main_vbox.add_child(HSeparator.new())
+
+	# Content area (equipment + inventory)
 	var hbox = HBoxContainer.new()
-	hbox.set_anchors_preset(Control.PRESET_FULL_RECT)
 	hbox.add_theme_constant_override("separation", 15)
+	hbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	main_vbox.add_child(hbox)
 
 	# Left: Equipment
 	var equip_vbox = VBoxContainer.new()
@@ -543,7 +577,82 @@ func _build_items_panel() -> Control:
 	inv_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	hbox.add_child(inv_vbox)
 
-	return hbox
+	return main_vbox
+
+func _style_category_button(btn: Button, is_selected: bool) -> void:
+	if is_selected:
+		btn.add_theme_color_override("font_color", COL_GOLD)
+		btn.add_theme_color_override("font_hover_color", COL_GOLD)
+		btn.add_theme_color_override("font_pressed_color", COL_GOLD)
+	else:
+		btn.add_theme_color_override("font_color", COL_DIM)
+		btn.add_theme_color_override("font_hover_color", COL_TEXT)
+		btn.add_theme_color_override("font_pressed_color", COL_TEXT)
+
+func _on_inv_category_clicked(category_idx: int) -> void:
+	current_inv_category = category_idx as InvCategory
+	_refresh_inv_category_tabs()
+	_refresh_items()
+
+func _refresh_inv_category_tabs() -> void:
+	var panel = tab_panels[MenuTab.ITEMS]
+	var cat_hbox = panel.find_child("CategoryTabs", true, false)
+	if not cat_hbox:
+		return
+
+	var buttons: Array = cat_hbox.get_children()
+	for i in range(buttons.size()):
+		var btn: Button = buttons[i]
+		btn.button_pressed = (i == current_inv_category)
+		_style_category_button(btn, i == current_inv_category)
+
+## Determine the UI category for an item
+func _get_item_category(item_id: String) -> InvCategory:
+	# Check if weapon
+	if InventoryManager.weapon_database.has(item_id):
+		return InvCategory.WEAPONS
+
+	# Check if armor
+	if InventoryManager.armor_database.has(item_id):
+		return InvCategory.ARMOR
+
+	# Check item database for type
+	if InventoryManager.item_database.has(item_id):
+		var item_data: ItemData = InventoryManager.item_database[item_id]
+		match item_data.item_type:
+			ItemData.ItemType.QUEST:
+				return InvCategory.QUEST
+			ItemData.ItemType.KEY:
+				return InvCategory.QUEST  # Keys are quest-like
+			ItemData.ItemType.CONSUMABLE:
+				return InvCategory.AID
+			ItemData.ItemType.SCROLL:
+				return InvCategory.MAGIC
+			ItemData.ItemType.BOOK:
+				return InvCategory.MAGIC
+			ItemData.ItemType.REPAIR_KIT:
+				return InvCategory.AID
+			ItemData.ItemType.BEDROLL:
+				return InvCategory.AID
+			ItemData.ItemType.TORCH:
+				return InvCategory.AID
+			ItemData.ItemType.AMMUNITION:
+				return InvCategory.WEAPONS  # Ammo grouped with weapons
+			_:
+				return InvCategory.MISC
+
+	return InvCategory.MISC
+
+## Filter inventory slots by current category
+func _get_filtered_inventory() -> Array:
+	if current_inv_category == InvCategory.ALL:
+		return InventoryManager.inventory.duplicate()
+
+	var filtered: Array = []
+	for slot in InventoryManager.inventory:
+		if _get_item_category(slot.item_id) == current_inv_category:
+			filtered.append(slot)
+	return filtered
 
 func _refresh_items() -> void:
 	var panel = tab_panels[MenuTab.ITEMS]
@@ -636,11 +745,26 @@ func _refresh_items() -> void:
 		weight_color = Color(1.0, 0.3, 0.3)  # Red for overencumbered
 	equip_vbox.add_child(_make_label("Weight: %.1f / %.1f" % [total_weight, max_weight], weight_color))
 
-	# Inventory section
-	inv_vbox.add_child(_make_label("INVENTORY", COL_GOLD))
+	# Inventory section - with category filtering
+	var cat_label: String = "INVENTORY"
+	if current_inv_category != InvCategory.ALL:
+		cat_label += " (%s)" % INV_CATEGORY_NAMES[current_inv_category]
+	inv_vbox.add_child(_make_label(cat_label, COL_GOLD))
 
-	if InventoryManager.inventory.is_empty():
-		inv_vbox.add_child(_make_label("Empty", COL_DIM))
+	# Build filtered inventory with index mapping
+	filtered_inv_index_map.clear()
+	var filtered_items: Array = []
+	for i in range(InventoryManager.inventory.size()):
+		var slot: Dictionary = InventoryManager.inventory[i]
+		if current_inv_category == InvCategory.ALL or _get_item_category(slot.item_id) == current_inv_category:
+			filtered_items.append(slot)
+			filtered_inv_index_map.append(i)
+
+	if filtered_items.is_empty():
+		if InventoryManager.inventory.is_empty():
+			inv_vbox.add_child(_make_label("Empty", COL_DIM))
+		else:
+			inv_vbox.add_child(_make_label("No items in this category", COL_DIM))
 	else:
 		var item_list = ItemList.new()
 		item_list.name = "ItemList"
@@ -652,17 +776,17 @@ func _refresh_items() -> void:
 		inv_vbox.add_child(item_list)
 		item_list_ref = item_list  # Store reference for hover tracking
 
-		for slot in InventoryManager.inventory:
-			var item_name = InventoryManager.get_item_name(slot.item_id)
-			var quality = slot.quality as Enums.ItemQuality
-			var prefix = ""
+		for slot in filtered_items:
+			var item_name: String = InventoryManager.get_item_name(slot.item_id)
+			var quality: int = slot.quality as Enums.ItemQuality
+			var prefix: String = ""
 			match quality:
 				Enums.ItemQuality.POOR: prefix = "[Poor] "
 				Enums.ItemQuality.BELOW_AVERAGE: prefix = "[Worn] "
 				Enums.ItemQuality.ABOVE_AVERAGE: prefix = "[Fine] "
 				Enums.ItemQuality.PERFECT: prefix = "[Perfect] "
 
-			var display = prefix + item_name
+			var display: String = prefix + item_name
 			if slot.quantity > 1:
 				display += " x%d" % slot.quantity
 			item_list.add_item(display)
@@ -699,24 +823,32 @@ func _refresh_items() -> void:
 		_style_button(drop_btn)
 		btn_row.add_child(drop_btn)
 
+## Convert a displayed list index to the real inventory index
+func _get_real_inv_index(displayed_idx: int) -> int:
+	if displayed_idx < 0 or displayed_idx >= filtered_inv_index_map.size():
+		return -1
+	return filtered_inv_index_map[displayed_idx]
+
 func _on_item_selected(idx: int) -> void:
-	selected_item_idx = idx
+	selected_item_idx = idx  # This is the display index
 	selected_equip_slot = ""  # Deselect equipment when selecting inventory item
 	var panel = tab_panels[MenuTab.ITEMS]
 	var details = panel.find_child("ItemDetails", true, false)
 	if not details:
 		return
 
-	if idx < 0 or idx >= InventoryManager.inventory.size():
+	# Convert display index to real inventory index
+	var real_idx: int = _get_real_inv_index(idx)
+	if real_idx < 0 or real_idx >= InventoryManager.inventory.size():
 		details.text = "Select an item"
 		return
 
-	var slot = InventoryManager.inventory[idx]
-	var item_name = InventoryManager.get_item_name(slot.item_id)
-	var desc = InventoryManager.get_item_description(slot.item_id)
+	var slot: Dictionary = InventoryManager.inventory[real_idx]
+	var item_name: String = InventoryManager.get_item_name(slot.item_id)
+	var desc: String = InventoryManager.get_item_description(slot.item_id)
 
 	# Get weight and value for display
-	var item_data = InventoryManager.get_item_data(slot.item_id)
+	var item_data: Resource = InventoryManager.get_item_data(slot.item_id)
 	var weight: float = 0.0
 	var value: int = InventoryManager.get_item_value(slot.item_id, slot.quality)
 
@@ -727,13 +859,16 @@ func _on_item_selected(idx: int) -> void:
 	# Note: Comparison now shown via hover tooltip, not click-based panel
 
 func _on_use_item() -> void:
-	if selected_item_idx >= 0 and selected_item_idx < InventoryManager.inventory.size():
-		InventoryManager.use_item(selected_item_idx)
+	var real_idx: int = _get_real_inv_index(selected_item_idx)
+	if real_idx >= 0 and real_idx < InventoryManager.inventory.size():
+		InventoryManager.use_item(real_idx)
+		selected_item_idx = -1
 		_refresh_items()
 
 func _on_equip_item() -> void:
-	if selected_item_idx >= 0 and selected_item_idx < InventoryManager.inventory.size():
-		if InventoryManager.equip_item(selected_item_idx):
+	var real_idx: int = _get_real_inv_index(selected_item_idx)
+	if real_idx >= 0 and real_idx < InventoryManager.inventory.size():
+		if InventoryManager.equip_item(real_idx):
 			AudioManager.play_ui_confirm()
 		else:
 			AudioManager.play_ui_cancel()
@@ -741,7 +876,8 @@ func _on_equip_item() -> void:
 		_refresh_items()
 
 func _on_drop_item() -> void:
-	if selected_item_idx < 0 or selected_item_idx >= InventoryManager.inventory.size():
+	var real_idx: int = _get_real_inv_index(selected_item_idx)
+	if real_idx < 0 or real_idx >= InventoryManager.inventory.size():
 		return
 
 	# Get player position for dropping the item
@@ -751,7 +887,7 @@ func _on_drop_item() -> void:
 		# Drop slightly in front of player
 		drop_pos = (player as Node3D).global_position + Vector3(0, 0.5, 1.0)
 
-	InventoryManager.drop_item(selected_item_idx, drop_pos)
+	InventoryManager.drop_item(real_idx, drop_pos)
 	selected_item_idx = -1
 	_refresh_items()
 
@@ -843,11 +979,13 @@ func _hide_hover_tooltip() -> void:
 	hovered_spell_idx = -1
 
 func _update_hover_tooltip(item_idx: int, mouse_pos: Vector2) -> void:
-	if item_idx < 0 or item_idx >= InventoryManager.inventory.size():
+	# Convert display index to real inventory index
+	var real_idx: int = _get_real_inv_index(item_idx)
+	if real_idx < 0 or real_idx >= InventoryManager.inventory.size():
 		_hide_hover_tooltip()
 		return
 
-	var slot = InventoryManager.inventory[item_idx]
+	var slot: Dictionary = InventoryManager.inventory[real_idx]
 	var item_data = InventoryManager.get_item_data(slot.item_id)
 
 	if not item_data:
@@ -1195,12 +1333,14 @@ func _handle_inventory_right_click(global_pos: Vector2) -> void:
 		return
 
 	var local_pos := item_list_ref.get_local_mouse_position()
-	var item_idx := item_list_ref.get_item_at_position(local_pos, true)
+	var display_idx := item_list_ref.get_item_at_position(local_pos, true)
 
-	if item_idx < 0 or item_idx >= InventoryManager.inventory.size():
+	# Convert display index to real inventory index
+	var real_idx: int = _get_real_inv_index(display_idx)
+	if real_idx < 0 or real_idx >= InventoryManager.inventory.size():
 		return
 
-	var slot: Dictionary = InventoryManager.inventory[item_idx]
+	var slot: Dictionary = InventoryManager.inventory[real_idx]
 	var item_id: String = slot.get("item_id", "")
 	if item_id.is_empty():
 		return
@@ -1834,77 +1974,16 @@ func _calculate_spell_avg_effect(spell: SpellData) -> float:
 
 # ==================== JOURNAL TAB ====================
 func _build_journal_panel() -> Control:
-	var scroll = ScrollContainer.new()
-	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-
-	var vbox = VBoxContainer.new()
-	vbox.name = "JournalContent"
-	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(vbox)
-
-	return scroll
+	# Use the comprehensive JournalPanel class with 6 tabs
+	var journal := JournalPanel.new()
+	journal.set_anchors_preset(Control.PRESET_FULL_RECT)
+	return journal
 
 func _refresh_journal() -> void:
+	# JournalPanel handles its own refresh internally
 	var panel = tab_panels[MenuTab.JOURNAL]
-	var vbox = panel.find_child("JournalContent", true, false)
-	if not vbox:
-		return
-
-	_clear_children_immediate(vbox)
-
-	var tracked_id := QuestManager.get_tracked_quest_id()
-
-	vbox.add_child(_make_label("ACTIVE QUESTS", COL_GOLD))
-	var hint := _make_label("Click a quest to track it on your compass", COL_DIM)
-	hint.add_theme_font_size_override("font_size", 12)
-	vbox.add_child(hint)
-	vbox.add_child(HSeparator.new())
-
-	var active_quests = QuestManager.get_active_quests()
-	if active_quests.is_empty():
-		vbox.add_child(_make_label("No active quests.", COL_DIM))
-	else:
-		for quest in active_quests:
-			var is_tracked: bool = (quest.id == tracked_id)
-			# Create clickable quest header button
-			var quest_btn := Button.new()
-			quest_btn.flat = true
-			quest_btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
-			var track_indicator := "[>] " if is_tracked else "    "
-			quest_btn.text = track_indicator + quest.title
-			quest_btn.add_theme_color_override("font_color", COL_GOLD if is_tracked else COL_TEXT)
-			quest_btn.add_theme_color_override("font_hover_color", COL_GOLD)
-			quest_btn.add_theme_color_override("font_pressed_color", COL_GOLD)
-			quest_btn.pressed.connect(_on_quest_track_clicked.bind(quest.id))
-			quest_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-			vbox.add_child(quest_btn)
-
-			vbox.add_child(_make_wrapping_label("  " + quest.description, COL_DIM))
-			for obj in quest.objectives:
-				var check := "[X]" if obj.is_completed else "[ ]"
-				var progress := ""
-				if obj.required_count > 1:
-					progress = " (%d/%d)" % [obj.current_count, obj.required_count]
-				var col := COL_GREEN if obj.is_completed else COL_TEXT
-				vbox.add_child(_make_wrapping_label("  %s %s%s" % [check, obj.description, progress], col))
-			vbox.add_child(HSeparator.new())
-
-	vbox.add_child(_make_label("COMPLETED QUESTS", COL_GOLD))
-	vbox.add_child(HSeparator.new())
-
-	var completed_quests = QuestManager.get_completed_quests()
-	if completed_quests.is_empty():
-		vbox.add_child(_make_label("No completed quests.", COL_DIM))
-	else:
-		for quest in completed_quests:
-			vbox.add_child(_make_label(quest.title + " [DONE]", COL_DIM))
-
-## Handle quest tracking button click
-func _on_quest_track_clicked(quest_id: String) -> void:
-	QuestManager.set_tracked_quest(quest_id)
-	AudioManager.play_ui_confirm()
-	_refresh_journal()  # Refresh to update visual indicator
+	if panel and panel is JournalPanel:
+		panel._refresh_current_tab()
 
 # ==================== HELPERS ====================
 func _make_label(text: String, color: Color) -> Label:

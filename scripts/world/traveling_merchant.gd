@@ -16,7 +16,7 @@ signal merchant_interacted(merchant: TravelingMerchant)
 
 ## Shop settings - chance to have items from each shop type
 const SHOP_ITEM_CHANCES := {
-	"general_store": 1.0,    # Always has general store items
+	"general": 1.0,          # Always has general store items (tools, supplies, potions)
 	"blacksmith": 0.4,       # 40% chance for weapons/armor
 	"magic_shop": 0.25,      # 25% chance for magic items
 	"armorer": 0.3,          # 30% chance for armor
@@ -39,7 +39,12 @@ var current_direction: Vector3 = Vector3.ZERO
 
 ## Shop inventory (generated on spawn)
 var available_shop_types: Array[String] = []
+var shop_inventory: Array[Dictionary] = []
 var merchant_name: String = "Traveling Merchant"
+var shop_tier: LootTables.LootTier = LootTables.LootTier.UNCOMMON  # Default tier
+var shop_type: String = "general"  # Traveling merchants buy/sell most items
+var buy_price_multiplier: float = 1.2  # 20% markup when player buys
+var sell_price_multiplier: float = 0.4  # 40% of value when player sells (worse than static shops)
 
 ## RNG
 var rng: RandomNumberGenerator
@@ -48,6 +53,11 @@ var rng: RandomNumberGenerator
 ## NPC properties for central turn-in system
 var npc_type: String = "traveling_merchant"
 var region_id: String = ""  # Set by zone when spawned
+
+## Alias for ConversationSystem compatibility
+var npc_name: String:
+	get: return merchant_name
+	set(value): merchant_name = value
 
 
 func _ready() -> void:
@@ -273,14 +283,25 @@ func interact(_interactor: Node) -> void:
 	# Emit signal for any listeners
 	merchant_interacted.emit(self)
 
-	# Check if dialogue data exists - start dialogue first
-	if dialogue_data:
-		# Pass merchant_id context for per-merchant flag substitution
-		var context := {"merchant_id": merchant_name.to_snake_case()}
-		DialogueManager.start_dialogue(dialogue_data, merchant_name, context)
-		return
+	# Use ConversationSystem for topic-based dialogue
+	var profile := _get_or_create_profile()
+	ConversationSystem.start_conversation(self, profile)
 
-	# Try to open shop UI directly
+
+## Get or create the NPC knowledge profile for conversation
+func _get_or_create_profile() -> NPCKnowledgeProfile:
+	var profile := NPCKnowledgeProfile.new()
+	profile.archetype = NPCKnowledgeProfile.Archetype.MERCHANT
+	# Traveling merchants have unique knowledge from wandering
+	profile.personality_traits = ["wanderer", "shrewd", "friendly"]
+	profile.knowledge_tags = ["local_area", "trade", "roads", "travelers", "distant_lands"]
+	profile.base_disposition = 55
+	profile.speech_style = "casual"
+	return profile
+
+
+## Open the shop UI (called by ConversationSystem when TRADE topic is selected)
+func _open_shop_ui() -> void:
 	var shop_ui := get_tree().get_first_node_in_group("shop_ui")
 	if shop_ui and shop_ui.has_method("open_traveling_merchant"):
 		shop_ui.open_traveling_merchant(self)
@@ -299,22 +320,110 @@ func get_interaction_prompt() -> String:
 
 func _generate_shop_inventory() -> void:
 	# Always have general store
-	available_shop_types.append("general_store")
+	available_shop_types.append("general")
 
 	# Roll for other shop types
-	for shop_type: String in SHOP_ITEM_CHANCES:
-		if shop_type == "general_store":
+	for type_key: String in SHOP_ITEM_CHANCES:
+		if type_key == "general":
 			continue
-		var chance: float = SHOP_ITEM_CHANCES[shop_type]
+		var chance: float = SHOP_ITEM_CHANCES[type_key]
 		if rng.randf() < chance:
-			available_shop_types.append(shop_type)
+			available_shop_types.append(type_key)
 
 	# Generate a fun merchant name
 	var first_names := ["Old", "Wandering", "Lucky", "Honest", "Shrewd", "Jolly", "Silent"]
 	var last_names := ["Pete", "Martha", "Gideon", "Nessa", "Korbin", "Yara", "Thom"]
 	merchant_name = first_names[rng.randi() % first_names.size()] + " " + last_names[rng.randi() % last_names.size()]
 
-	print("[TravelingMerchant] %s spawned with shops: %s" % [merchant_name, available_shop_types])
+	# Generate actual shop inventory from each shop type
+	_populate_shop_inventory()
+
+	print("[TravelingMerchant] %s spawned with shops: %s, %d items" % [merchant_name, available_shop_types, shop_inventory.size()])
+
+
+func _populate_shop_inventory() -> void:
+	shop_inventory.clear()
+
+	# Generate items from each available shop type
+	for type_name: String in available_shop_types:
+		# General store uses fixed inventory (tools and supplies) like static merchants
+		if type_name == "general":
+			_add_general_store_inventory()
+			continue
+
+		# Other shop types use LootTables random generation
+		var generated: Array[Dictionary] = LootTables.generate_shop_inventory(shop_tier, type_name)
+		for item: Dictionary in generated:
+			# Add item to inventory with traveling merchant markup
+			var price: int = item.get("price", 10)
+			var marked_up_price: int = int(price * buy_price_multiplier)
+			shop_inventory.append({
+				"item_id": item.get("item_id", ""),
+				"price": marked_up_price,
+				"quantity": item.get("quantity", 1),
+				"quality": item.get("quality", Enums.ItemQuality.AVERAGE),
+			})
+
+	# If no items were generated, add fallback items
+	if shop_inventory.is_empty():
+		_generate_fallback_inventory()
+
+
+## Add fixed general store inventory (tools, supplies, and chance for potions)
+## Mirrors the Merchant class general store inventory
+func _add_general_store_inventory() -> void:
+	# Required inventory - always available (limited stock for traveling merchant)
+	_add_shop_item("lockpick", 30, 5, Enums.ItemQuality.AVERAGE)  # Slightly higher price, limited stock
+	_add_shop_item("repair_kit", 60, 3, Enums.ItemQuality.AVERAGE)
+	_add_shop_item("pickaxe", 96, 2, Enums.ItemQuality.AVERAGE)  # Mining tool
+	_add_shop_item("axe", 180, 2, Enums.ItemQuality.AVERAGE)  # Woodcutting/combat
+	_add_shop_item("torch", 18, 10, Enums.ItemQuality.AVERAGE)  # Light source
+
+	# Optional inventory - chance to have potions (use merchant name for consistent RNG)
+	var stock_rng := RandomNumberGenerator.new()
+	stock_rng.seed = hash(merchant_name + str(global_position))
+
+	# 45% chance for each potion type (slightly better odds than static merchants)
+	if stock_rng.randf() < 0.45:
+		var health_qty: int = stock_rng.randi_range(2, 5)
+		_add_shop_item("health_potion", 90, health_qty, Enums.ItemQuality.AVERAGE)  # Higher markup
+	if stock_rng.randf() < 0.45:
+		var stamina_qty: int = stock_rng.randi_range(2, 5)
+		_add_shop_item("stamina_potion", 72, stamina_qty, Enums.ItemQuality.AVERAGE)
+	if stock_rng.randf() < 0.45:
+		var mana_qty: int = stock_rng.randi_range(2, 4)
+		_add_shop_item("mana_potion", 132, mana_qty, Enums.ItemQuality.AVERAGE)
+
+
+## Helper to add items to shop inventory with markup
+func _add_shop_item(item_id: String, base_price: int, quantity: int, quality: Enums.ItemQuality) -> void:
+	# Verify item exists in InventoryManager databases
+	if not InventoryManager._item_exists(item_id):
+		push_warning("[TravelingMerchant] Item not found in database: " + item_id)
+		return
+
+	var price: int = int(base_price * buy_price_multiplier)
+	shop_inventory.append({
+		"item_id": item_id,
+		"price": price,
+		"quantity": quantity,
+		"quality": quality
+	})
+
+
+func _generate_fallback_inventory() -> void:
+	# Fallback inventory if LootTables returns no items
+	# Basic general store items
+	var fallback_items: Array[Dictionary] = [
+		{"item_id": "torch", "price": 6, "quantity": 10, "quality": Enums.ItemQuality.AVERAGE},
+		{"item_id": "rope", "price": 12, "quantity": 5, "quality": Enums.ItemQuality.AVERAGE},
+		{"item_id": "health_potion", "price": 60, "quantity": 3, "quality": Enums.ItemQuality.AVERAGE},
+		{"item_id": "bread", "price": 4, "quantity": 10, "quality": Enums.ItemQuality.AVERAGE},
+		{"item_id": "waterskin", "price": 10, "quantity": 5, "quality": Enums.ItemQuality.AVERAGE},
+	]
+
+	for item: Dictionary in fallback_items:
+		shop_inventory.append(item)
 
 
 func _pick_new_target() -> void:
@@ -407,3 +516,87 @@ static func spawn_merchant(parent: Node3D, pos: Vector3) -> TravelingMerchant:
 	merchant.position = pos
 	parent.add_child(merchant)
 	return merchant
+
+
+# ==================== SHOP PRICING METHODS ====================
+# These methods mirror the Merchant class interface for ShopUI compatibility
+
+## Get the base sell price for an item in player inventory
+func get_sell_price(inventory_index: int) -> int:
+	if inventory_index < 0 or inventory_index >= InventoryManager.inventory.size():
+		return 0
+
+	var inv_item: Dictionary = InventoryManager.inventory[inventory_index]
+	var base_value := InventoryManager.get_item_value(inv_item.item_id, inv_item.quality)
+	return int(base_value * sell_price_multiplier)
+
+
+## Get the effective merchant ID for dialogue flag matching
+func get_effective_merchant_id() -> String:
+	return merchant_name.to_lower().replace(" ", "_")
+
+
+## Get dialogue-based price modifier from DialogueManager flags
+## Returns a multiplier: <1.0 = discount, >1.0 = markup
+func get_dialogue_price_modifier() -> float:
+	var mid := get_effective_merchant_id()
+	var modifier := 1.0
+
+	# Check for temporary discounts (from successful dialogue checks)
+	if DialogueManager.has_flag(mid + "_haggle_success"):
+		modifier -= 0.10
+	if DialogueManager.has_flag(mid + "_intimidate_success"):
+		modifier -= 0.15
+
+	# Check for permanent relationship modifiers
+	if DialogueManager.has_flag(mid + "_befriend"):
+		modifier -= 0.05
+	if DialogueManager.has_flag(mid + "_angered"):
+		modifier += 0.20
+
+	return maxf(0.5, modifier)
+
+
+## Get Speech skill sell price modifier (better Speech = better sell prices)
+func get_speech_sell_modifier() -> float:
+	var speech := 0
+	var persuasion := 0
+	var negotiation := 0
+	if GameManager.player_data:
+		speech = GameManager.player_data.get_effective_stat(Enums.Stat.SPEECH)
+		persuasion = GameManager.player_data.get_skill(Enums.Skill.PERSUASION)
+		negotiation = GameManager.player_data.get_skill(Enums.Skill.NEGOTIATION)
+
+	var skill_modifier := 1.0 + (speech * 0.02) + (persuasion * 0.02) + (negotiation * 0.05)
+	var dialogue_mod := get_dialogue_price_modifier()
+	var inverted_dialogue := 2.0 - dialogue_mod
+
+	return skill_modifier * inverted_dialogue
+
+
+## Get Speech skill buy price modifier (better Speech = lower buy prices)
+func get_speech_buy_modifier() -> float:
+	var speech := 0
+	var persuasion := 0
+	var negotiation := 0
+	if GameManager.player_data:
+		speech = GameManager.player_data.get_effective_stat(Enums.Stat.SPEECH)
+		persuasion = GameManager.player_data.get_skill(Enums.Skill.PERSUASION)
+		negotiation = GameManager.player_data.get_skill(Enums.Skill.NEGOTIATION)
+
+	var skill_modifier := 1.0 - (speech * 0.01) - (persuasion * 0.01) - (negotiation * 0.03)
+	var dialogue_mod := get_dialogue_price_modifier()
+
+	return maxf(0.5, skill_modifier * dialogue_mod)
+
+
+## Get sell price with Speech skill modifier applied
+func get_sell_price_with_speech(inventory_index: int) -> int:
+	return int(get_sell_price(inventory_index) * get_speech_sell_modifier())
+
+
+## Get buy price with Speech skill modifier applied
+func get_buy_price_with_speech(shop_index: int) -> int:
+	if shop_index < 0 or shop_index >= shop_inventory.size():
+		return 0
+	return int(shop_inventory[shop_index].price * get_speech_buy_modifier())

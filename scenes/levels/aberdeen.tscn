@@ -838,16 +838,19 @@ shop_type = "blacksmith"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -18)
 npc_id = "mayor_aberdeeen"
 display_name = "Mayor Bjorn"
+quest_ids = Array[String](["missing_miner"])
 
 [node name="TemplePriest" parent="NPCs/QuestGivers" instance=ExtResource("10")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, -12)
 npc_id = "priest_chronos_aberdeen"
 display_name = "Father Aldwin"
+quest_ids = Array[String](["aberdeens_blessing"])
 
 [node name="Innkeeper" parent="NPCs/QuestGivers" instance=ExtResource("10")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -10)
 npc_id = "innkeeper_aberdeen"
 display_name = "Ingrid the Innkeep"
+quest_ids = Array[String](["rat_problem"])
 
 [node name="Interactables" type="Node3D" parent="."]
 

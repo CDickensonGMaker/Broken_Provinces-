@@ -151,7 +151,7 @@ const LOCATION_SCENES: Dictionary = {
 	"millbrook": "res://scenes/levels/millbrook.tscn",
 	# Landmarks
 	"elder_moor": "res://scenes/levels/elder_moor.tscn",
-	"crossroads": "",  # No dedicated scene - use procedural wilderness
+	"crossroads": "res://scenes/regions/crossroads.tscn",
 	# Dungeons
 	"willow_dale": "res://scenes/levels/willow_dale.tscn",
 	"bandit_hideout": "res://scenes/levels/bandit_hideout_exterior.tscn",

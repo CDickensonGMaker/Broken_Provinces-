@@ -1,36 +1,51 @@
 {
 	"id": "willow_dale_investigation",
-	"title": "The Ruins of Willow Dale",
-	"description": "A worried merchant in Dalhurst speaks of strange lights and sounds coming from the old ruins at Willow Dale, northwest of the city. Travelers have gone missing. Investigate the ruins and discover what lurks within.",
+	"title": "Missing Caravan",
+	"description": "A worried merchant in Dalhurst reports that his trade caravan went missing near the old Willow Dale ruins. The caravan was carrying valuable goods and the merchant fears bandits or worse. He offers a reward to anyone who can find out what happened to his goods and his men.",
 	"is_main_quest": false,
-	"quest_source": "story",
+	"quest_source": "npc",
 	"giver_npc_id": "worried_merchant_dalhurst",
-	"giver_npc_type": "merchant",
+	"giver_npc_type": "quest_giver",
 	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "travel_willow_dale",
+			"description": "Travel to the Willow Dale ruins",
+			"type": "reach",
+			"target": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "find_caravan",
+			"description": "Search for signs of the missing caravan",
+			"type": "interact",
+			"target": "wrecked_caravan",
+			"required_count": 1
+		},
+		{
+			"id": "recover_goods",
+			"description": "Recover the stolen trade goods",
+			"type": "collect",
+			"target": "merchant_goods",
+			"required_count": 3
+		},
+		{
+			"id": "optional_survivors",
+			"description": "(Optional) Find any survivors",
+			"type": "talk",
+			"target": "caravan_survivor",
+			"required_count": 1,
+			"is_optional": true
+		}
+	],
 	"turn_in_type": "npc_specific",
 	"turn_in_target": "worried_merchant_dalhurst",
 	"turn_in_zone": "dalhurst",
-	"objectives": [
-		{
-			"id": "enter_willow_dale",
-			"description": "Enter the Willow Dale Ruins",
-			"type": "reach",
-			"target": "dungeon_willow_dale",
-			"required_count": 1,
-			"is_optional": false
-		},
-		{
-			"id": "explore_ruins",
-			"description": "Explore the depths of the ruins",
-			"type": "kill",
-			"target": "enemies",
-			"required_count": 5,
-			"is_optional": false
-		}
-	],
 	"rewards": {
-		"gold": 200,
-		"xp": 250
+		"gold": 100,
+		"xp": 300,
+		"items": []
 	},
-	"prerequisites": []
+	"prerequisites": [],
+	"next_quest": ""
 }

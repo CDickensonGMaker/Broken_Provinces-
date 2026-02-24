@@ -1,0 +1,23 @@
+{
+  "kill": {
+    "standard": [
+      {"target": "human_bandit", "display": "Bandits", "count_min": 4, "count_max": 8},
+      {"target": "thief", "display": "Thieves", "count_min": 3, "count_max": 6}
+    ],
+    "dangerous": [
+      {"target": "bandit_archer", "display": "Bandit Archers", "count_min": 3, "count_max": 5},
+      {"target": "bandit_brute", "display": "Bandit Brutes", "count_min": 2, "count_max": 4}
+    ],
+    "deadly": [
+      {"target": "bandit_leader", "display": "Bandit Leader", "count_min": 1, "count_max": 1, "is_boss": true}
+    ],
+    "extreme": [
+      {"target": "bandit_warlord", "display": "the Bandit Warlord", "count_min": 1, "count_max": 1, "is_boss": true}
+    ]
+  },
+  "collect": {
+    "standard": [
+      {"target": "stolen_goods", "display": "Stolen Goods", "count_min": 3, "count_max": 6}
+    ]
+  }
+}

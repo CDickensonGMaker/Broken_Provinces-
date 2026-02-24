@@ -37,6 +37,9 @@ var enemy_hp_multiplier: float = 1.0
 ## Debug mode
 var debug_mode: bool = false
 
+## DEV: Speed multiplier for fast traversal testing (1.0 = normal, 10.0 = 10x speed)
+var dev_speed_multiplier: float = 1.0
+
 ## Global world seed for procedural generation (unique per playthrough)
 var world_seed: int = 0
 

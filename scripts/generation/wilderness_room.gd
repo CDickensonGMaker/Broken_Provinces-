@@ -21,6 +21,14 @@ var seamless_mode: bool = false
 enum Biome { FOREST, PLAINS, SWAMP, HILLS, ROCKY }
 @export var biome: Biome = Biome.FOREST
 
+## Static texture cache - loaded once, reused across all instances
+## This prevents repeated load() calls that cause stutter
+static var _grass_textures: Array[Texture2D] = []
+static var _tree_textures_forest: Array[Texture2D] = []
+static var _tree_textures_swamp: Array[Texture2D] = []
+static var _tree_textures_plains: Array[Texture2D] = []
+static var _textures_initialized: bool = false
+
 ## Tile template scenes for biome-based tile selection
 ## Maps Biome enum to array of scene paths for hand-crafted tile variations
 const TILE_TEMPLATES: Dictionary = {
@@ -46,12 +54,11 @@ const TILE_TEMPLATES: Dictionary = {
 ## Content settings (from plan: 1-3 ruins, 0-1 dungeons at 30%)
 @export var min_ruins: int = 1
 @export var max_ruins: int = 3
-@export var dungeon_chance: float = 0.3
 @export var fireplace_chance: float = 0.15
 @export var traveling_merchant_chance: float = 0.04  # 4% chance per room (rare encounter)
-@export var enemy_count_min: int = 1
-@export var enemy_count_max: int = 3
-@export var cursed_totem_chance: float = 0.25  # 25% chance for cursed totem near ruins
+@export var enemy_count_min: int = 0  # Can have no enemies (exploration focus)
+@export var enemy_count_max: int = 2  # Reduced max for less combat density
+@export var cursed_totem_chance: float = 0.05  # 5% chance for cursed totem near ruins (reduced to prevent skeleton spam)
 
 ## Road visualization settings
 @export var road_width: float = 8.0  # Width of dirt road
@@ -74,7 +81,6 @@ var entry_direction: int = -1
 var edges: Dictionary = {}  # Direction -> boundary info
 var ruins: Array[Node3D] = []
 var cursed_totems: Array[CursedTotem] = []  # Skeleton spawners near ruins
-var dungeon_entrance: Node3D = null
 var enemies: Array[Node3D] = []
 var props: Array[Node3D] = []
 var traveling_merchant: TravelingMerchant = null
@@ -95,6 +101,49 @@ var rock_material: StandardMaterial3D
 var ruin_material: StandardMaterial3D
 
 
+## Initialize static texture cache (called once per game session)
+static func _init_texture_cache() -> void:
+	if _textures_initialized:
+		return
+	_textures_initialized = true
+
+	# Grass textures
+	var grass_paths: Array[String] = [
+		"res://Sprite folders grab bag/grassland_1.png",
+		"res://Sprite folders grab bag/grassland_2.png",
+		"res://Sprite folders grab bag/grassland_3.png"
+	]
+	for path: String in grass_paths:
+		if ResourceLoader.exists(path):
+			_grass_textures.append(load(path) as Texture2D)
+
+	# Forest tree textures (autumn trees)
+	var forest_tree_paths: Array[String] = [
+		"res://Sprite folders grab bag/autumntree.png",
+		"res://Sprite folders grab bag/autumntree2.png"
+	]
+	for path: String in forest_tree_paths:
+		if ResourceLoader.exists(path):
+			_tree_textures_forest.append(load(path) as Texture2D)
+
+	# Swamp tree textures
+	var swamp_tree_paths: Array[String] = [
+		"res://Sprite folders grab bag/swamp_tree1.png",
+		"res://Sprite folders grab bag/swamp_tree2.png",
+		"res://Sprite folders grab bag/swamp_downtree1.png",
+		"res://Sprite folders grab bag/swamp_downtree2.png"
+	]
+	for path: String in swamp_tree_paths:
+		if ResourceLoader.exists(path):
+			_tree_textures_swamp.append(load(path) as Texture2D)
+
+	# Plains tree textures (same as forest)
+	_tree_textures_plains = _tree_textures_forest.duplicate()
+
+	print("[WildernessRoom] Texture cache initialized: %d grass, %d forest trees, %d swamp trees" % [
+		_grass_textures.size(), _tree_textures_forest.size(), _tree_textures_swamp.size()])
+
+
 func _ready() -> void:
 	add_to_group("wilderness_room")
 
@@ -105,6 +154,9 @@ func _process(_delta: float) -> void:
 
 ## Generate the room with given seed
 func generate(seed_value: int = 0, coords: Vector2i = Vector2i.ZERO) -> void:
+	# Initialize texture cache once (static, shared across all rooms)
+	_init_texture_cache()
+
 	grid_coords = coords
 	room_seed = seed_value if seed_value != 0 else randi()
 
@@ -131,7 +183,6 @@ func generate(seed_value: int = 0, coords: Vector2i = Vector2i.ZERO) -> void:
 	_create_spawn_points()  # Directional spawn points for cell transitions
 	_spawn_ruins()
 	_spawn_cursed_totems()  # Skeleton spawners near ruins
-	_spawn_dungeon_entrance()
 	_spawn_environment()
 	_spawn_enemies()
 	_spawn_fireplace()
@@ -221,7 +272,8 @@ func _is_adjacent_to_scene() -> bool:
 func _create_flat_ground() -> void:
 	var ground := CSGBox3D.new()
 	ground.name = "Ground"
-	ground.size = Vector3(room_size + 20, 1.0, room_size + 20)
+	# Use exact room size (no overlap) to prevent z-fighting with adjacent cells
+	ground.size = Vector3(room_size, 1.0, room_size)
 	ground.position = Vector3(0, -0.5, 0)
 	ground.use_collision = true
 
@@ -433,65 +485,52 @@ func _spawn_ground_props() -> void:
 		_spawn_special_prop(props_container, pos)
 
 
-## Spawn a grass clump billboard
+## Spawn a grass clump billboard (uses cached textures)
 func _spawn_grass_prop(parent: Node3D, pos: Vector3) -> void:
-	var grass_textures: Array[String] = [
-		"res://Sprite folders grab bag/grassland_1.png",
-		"res://Sprite folders grab bag/grassland_2.png",
-		"res://Sprite folders grab bag/grassland_3.png"
-	]
+	if _grass_textures.is_empty():
+		return
 
-	var tex_path: String = grass_textures[rng.randi() % grass_textures.size()]
-	if not ResourceLoader.exists(tex_path):
+	var tex: Texture2D = _grass_textures[rng.randi() % _grass_textures.size()]
+	if not tex:
 		return
 
 	var grass := Sprite3D.new()
 	grass.name = "Grass"
-	grass.texture = load(tex_path)
+	grass.texture = tex
 	grass.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	grass.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	grass.pixel_size = rng.randf_range(0.015, 0.025)
-	grass.position = pos + Vector3(0, grass.texture.get_height() * grass.pixel_size * 0.5, 0)
+	grass.position = pos + Vector3(0, tex.get_height() * grass.pixel_size * 0.5, 0)
 	grass.modulate = _get_biome_prop_tint()
 	parent.add_child(grass)
 
 
-## Spawn a tree billboard based on biome
+## Spawn a tree billboard based on biome (uses cached textures)
 func _spawn_tree_prop(parent: Node3D, pos: Vector3) -> void:
-	var tree_textures: Array[String] = []
+	var tree_cache: Array[Texture2D]
 
 	match biome:
 		Biome.SWAMP:
-			tree_textures = [
-				"res://Sprite folders grab bag/swamp_tree1.png",
-				"res://Sprite folders grab bag/swamp_tree2.png",
-				"res://Sprite folders grab bag/swamp_downtree1.png",
-				"res://Sprite folders grab bag/swamp_downtree2.png"
-			]
+			tree_cache = _tree_textures_swamp
 		Biome.FOREST:
-			tree_textures = [
-				"res://Sprite folders grab bag/autumntree.png",
-				"res://Sprite folders grab bag/autumntree2.png"
-			]
+			tree_cache = _tree_textures_forest
 		_:
-			tree_textures = [
-				"res://Sprite folders grab bag/autumntree.png"
-			]
+			tree_cache = _tree_textures_plains
 
-	if tree_textures.is_empty():
+	if tree_cache.is_empty():
 		return
 
-	var tex_path: String = tree_textures[rng.randi() % tree_textures.size()]
-	if not ResourceLoader.exists(tex_path):
+	var tex: Texture2D = tree_cache[rng.randi() % tree_cache.size()]
+	if not tex:
 		return
 
 	var tree := Sprite3D.new()
 	tree.name = "Tree"
-	tree.texture = load(tex_path)
+	tree.texture = tex
 	tree.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	tree.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	tree.pixel_size = rng.randf_range(0.03, 0.05)
-	tree.position = pos + Vector3(0, tree.texture.get_height() * tree.pixel_size * 0.5, 0)
+	tree.position = pos + Vector3(0, tex.get_height() * tree.pixel_size * 0.5, 0)
 	tree.modulate = _get_biome_prop_tint()
 	parent.add_child(tree)
 
@@ -991,101 +1030,7 @@ func _create_stone_circle(parent: Node3D) -> void:
 	parent.add_child(altar)
 
 
-## Spawn dungeon entrance (30% chance)
-func _spawn_dungeon_entrance() -> void:
-	if rng.randf() > dungeon_chance:
-		return
-
-	var pos := _get_random_content_position()
-
-	# Check distance from ruins
-	for ruin: Node3D in ruins:
-		if pos.distance_to(ruin.position) < 15.0:
-			pos = _get_random_content_position()  # Try again
-
-	dungeon_entrance = _create_dungeon_entrance()
-	dungeon_entrance.position = pos
-	add_child(dungeon_entrance)
-	print("[WildernessRoom] Spawned dungeon entrance at %s" % pos)
-
-
-## Create dungeon entrance structure with proper ZoneDoor
-func _create_dungeon_entrance() -> Node3D:
-	var entrance := Node3D.new()
-	entrance.name = "DungeonEntrance"
-	entrance.add_to_group("dungeon_entrance")
-
-	# Stone archway
-	var left_pillar := CSGBox3D.new()
-	left_pillar.size = Vector3(1.0, 4.0, 1.0)
-	left_pillar.position = Vector3(-1.5, 2.0, 0)
-	left_pillar.material = rock_material
-	left_pillar.use_collision = true
-	entrance.add_child(left_pillar)
-
-	var right_pillar := CSGBox3D.new()
-	right_pillar.size = Vector3(1.0, 4.0, 1.0)
-	right_pillar.position = Vector3(1.5, 2.0, 0)
-	right_pillar.material = rock_material
-	right_pillar.use_collision = true
-	entrance.add_child(right_pillar)
-
-	var arch := CSGBox3D.new()
-	arch.size = Vector3(4.0, 0.8, 1.0)
-	arch.position = Vector3(0, 4.4, 0)
-	arch.material = rock_material
-	arch.use_collision = true
-	entrance.add_child(arch)
-
-	# Dark cave mouth - a large black void between the pillars
-	var cave_mouth := CSGBox3D.new()
-	cave_mouth.name = "CaveMouth"
-	cave_mouth.size = Vector3(2.5, 3.5, 0.3)  # Tall dark rectangle
-	cave_mouth.position = Vector3(0, 1.75, -0.5)
-	var dark_mat := StandardMaterial3D.new()
-	dark_mat.albedo_color = Color(0.02, 0.02, 0.03)  # Nearly black
-	dark_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED  # No lighting
-	cave_mouth.material = dark_mat
-	cave_mouth.use_collision = false  # Just visual - door handles collision
-	entrance.add_child(cave_mouth)
-
-	# Dark pit on ground (entrance to stairs)
-	var pit := CSGBox3D.new()
-	pit.size = Vector3(2.5, 0.3, 2.5)
-	pit.position = Vector3(0, -0.15, -0.5)
-	pit.material = dark_mat
-	pit.use_collision = true
-	entrance.add_child(pit)
-
-	# Stairs going down
-	for i in range(4):
-		var step := CSGBox3D.new()
-		step.size = Vector3(2.0, 0.3, 0.6)
-		step.position = Vector3(0, -0.15 - i * 0.3, -0.3 - i * 0.6)
-		step.material = rock_material
-		step.use_collision = true
-		entrance.add_child(step)
-
-	# Create proper ZoneDoor for dungeon entry (interactable)
-	# Cave entrances should look like dark voids, not wooden doors
-	var dungeon_door := ZoneDoor.spawn_door(
-		entrance,
-		Vector3(0, 0.5, -1.0),  # Position in front of stairs
-		"res://scenes/levels/random_cave.tscn",  # Procedural dungeon
-		"entrance",
-		"Enter Cave",
-		false  # No door frame - cave entrance uses the archway we created
-	)
-	dungeon_door.rotation.y = PI  # Face outward
-
-	# Hide the door mesh - the dark pit we created IS the visual
-	if dungeon_door.door_mesh:
-		dungeon_door.door_mesh.visible = false
-
-	return entrance
-
-
-## Spawn environmental props (trees, rocks, bushes, grass)
+## Spawn environmental props (trees, rocks, bushes, grass, mushrooms)
 func _spawn_environment() -> void:
 	var tree_count := 0
 	var rock_count := 0
@@ -1093,6 +1038,8 @@ func _spawn_environment() -> void:
 	var grass_count := 0
 	var swamp_tree_count := 0
 	var fallen_tree_count := 0
+	var hillcross_count := 0
+	var mushroom_count := 0  # Harvestable mushrooms
 
 	match biome:
 		Biome.FOREST:
@@ -1100,28 +1047,38 @@ func _spawn_environment() -> void:
 			bush_count = rng.randi_range(20, 35)  # Harvestable bushes
 			rock_count = rng.randi_range(3, 8)    # Few rocks
 			grass_count = rng.randi_range(18, 25) # Moderate grass, scattered among trees
+			mushroom_count = rng.randi_range(8, 15)  # Forests have lots of mushrooms
+			hillcross_count = 1 if rng.randf() < 0.05 else 0  # 5% chance for memorial cross (reduced)
 		Biome.PLAINS:
 			tree_count = rng.randi_range(3, 8)    # Sparse trees
 			bush_count = rng.randi_range(10, 20)  # Some bushes to harvest
 			rock_count = rng.randi_range(5, 10)   # Scattered rocks
 			grass_count = rng.randi_range(28, 38) # Dense grass coverage
+			mushroom_count = rng.randi_range(2, 5)   # Few mushrooms in open areas
+			hillcross_count = 1 if rng.randf() < 0.08 else 0  # 8% chance - reduced spawn rate
 		Biome.SWAMP:
 			tree_count = rng.randi_range(15, 25)  # Fewer regular trees
 			bush_count = rng.randi_range(15, 25)  # Harvestable
 			rock_count = rng.randi_range(3, 6)    # Few rocks
 			grass_count = rng.randi_range(10, 16) # Sparse grass in murky water
+			mushroom_count = rng.randi_range(10, 20)  # Swamps have many mushrooms
 			swamp_tree_count = rng.randi_range(4, 7)   # Standing swamp trees
 			fallen_tree_count = rng.randi_range(3, 5)  # Fallen/dead trees
+			hillcross_count = 1 if rng.randf() < 0.03 else 0  # 3% chance - very rare in swamps (reduced)
 		Biome.HILLS:
 			tree_count = rng.randi_range(8, 15)   # Moderate trees
 			bush_count = rng.randi_range(10, 18)  # Harvestable
 			rock_count = rng.randi_range(12, 20)  # Rocky terrain
 			grass_count = rng.randi_range(15, 22) # Moderate grass
+			mushroom_count = rng.randi_range(3, 7)   # Some mushrooms in shaded areas
+			hillcross_count = 1 if rng.randf() < 0.06 else 0  # 6% chance - hilltop crosses (reduced)
 		Biome.ROCKY:
 			tree_count = rng.randi_range(2, 5)    # Very sparse
 			bush_count = rng.randi_range(5, 10)   # Few bushes
 			rock_count = rng.randi_range(20, 35)  # Lots of rocks
 			grass_count = rng.randi_range(5, 10)  # Very sparse grass
+			mushroom_count = rng.randi_range(1, 3)   # Very few mushrooms
+			hillcross_count = 1 if rng.randf() < 0.04 else 0  # 4% chance - rare mountain memorial (reduced)
 
 	# Reduce prop density on road cells
 	if is_road_cell:
@@ -1129,8 +1086,10 @@ func _spawn_environment() -> void:
 		bush_count = int(bush_count * road_prop_density_multiplier)
 		rock_count = int(rock_count * road_prop_density_multiplier)
 		grass_count = int(grass_count * road_prop_density_multiplier)
+		mushroom_count = int(mushroom_count * road_prop_density_multiplier)
 		swamp_tree_count = int(swamp_tree_count * road_prop_density_multiplier)
 		fallen_tree_count = int(fallen_tree_count * road_prop_density_multiplier)
+		# Hillcrosses can appear near roads (roadside memorials are thematic)
 
 	# Spawn trees
 	for i in range(tree_count):
@@ -1174,47 +1133,40 @@ func _spawn_environment() -> void:
 		add_child(fallen)
 		props.append(fallen)
 
+	# Spawn hillcrosses (memorial crosses - rare atmospheric prop)
+	for i in range(hillcross_count):
+		var cross := _create_hillcross()
+		cross.position = _get_random_content_position()  # Use content position to keep away from edges
+		add_child(cross)
+		props.append(cross)
+		print("[WildernessRoom] Spawned hillcross at %s" % cross.position)
 
-## Create a billboard sprite tree
+	# Spawn mushrooms (harvestable without tools)
+	for i in range(mushroom_count):
+		var mushroom := _create_mushroom()
+		mushroom.position = _get_random_prop_position()
+		add_child(mushroom)
+		props.append(mushroom)
+
+
+## Create a harvestable mushroom (no tool required)
+func _create_mushroom() -> Node3D:
+	# Use HarvestableMushroom class - can be picked with E key, no tools needed
+	var mushroom := HarvestableMushroom.spawn_mushroom(self, Vector3.ZERO)
+	# Remove from parent since spawn_mushroom adds it - we'll re-add it in the caller
+	if mushroom.get_parent():
+		mushroom.get_parent().remove_child(mushroom)
+	return mushroom
+
+
+## Create a harvestable tree (requires axe to harvest for wood)
 func _create_tree() -> Node3D:
-	var tree := Node3D.new()
-	tree.name = "Tree"
-
-	# Get tree texture based on biome
-	var tree_tex: Texture2D = _get_tree_texture()
-	if not tree_tex:
-		return tree  # Return empty node if no texture
-
-	var sprite := Sprite3D.new()
-	sprite.texture = tree_tex
-	sprite.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-	sprite.pixel_size = 0.025  # Scale to make trees ~8-12 units tall
-	sprite.no_depth_test = false
-	sprite.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
-	sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST  # PS1 style
-
-	# Random scale variation (0.7 to 1.1 for variety)
-	var scale_var := rng.randf_range(0.7, 1.1)
-	sprite.scale = Vector3(scale_var, scale_var, 1.0)
-
-	# Position sprite so bottom is at ground level
-	# Tree sprites are roughly square, so height = width * pixel_size * scale
-	var approx_height: float = tree_tex.get_height() * sprite.pixel_size * scale_var
-	sprite.position = Vector3(0, approx_height / 2.0, 0)
-
-	tree.add_child(sprite)
-
-	# Add small collision cylinder at base for tree trunk
-	var collision := StaticBody3D.new()
-	var col_shape := CollisionShape3D.new()
-	var cylinder := CylinderShape3D.new()
-	cylinder.radius = 0.4
-	cylinder.height = 2.0
-	col_shape.shape = cylinder
-	col_shape.position = Vector3(0, 1.0, 0)
-	collision.add_child(col_shape)
-	tree.add_child(collision)
-
+	# Use HarvestableTree class for proper interact() and get_interaction_prompt() support
+	var tree := HarvestableTree.new()
+	tree.name = "HarvestableTree"
+	tree.display_name = "Tree"
+	tree.yield_min = 2
+	tree.yield_max = 3
 	return tree
 
 
@@ -1238,50 +1190,77 @@ func _get_tree_texture() -> Texture2D:
 			return load("res://Sprite folders grab bag/autumntree.png")
 
 
-## Create a rock using stone texture - small environmental prop
+## Create a harvestable rock (requires pickaxe to mine for stone/iron)
+## Uses rock type variants in highlands biomes
 func _create_rock() -> Node3D:
-	var rock := CSGBox3D.new()
-	rock.name = "Rock"
+	# Determine if this is a highlands area (more iron ore)
+	var is_highlands: bool = (biome == Biome.ROCKY or biome == Biome.HILLS)
 
-	# Random rock size
-	rock.size = Vector3(
-		rng.randf_range(0.5, 2.0),
-		rng.randf_range(0.3, 1.2),
-		rng.randf_range(0.5, 2.0)
-	)
-	rock.position = Vector3(0, rock.size.y / 2.0, 0)
-	rock.rotation_degrees = Vector3(
-		rng.randf_range(-15, 15),
-		rng.randf_range(0, 360),
-		rng.randf_range(-15, 15)
-	)
-
-	# Use stone texture
-	var rock_mat := StandardMaterial3D.new()
-	var stone_tex: Texture2D = load("res://Sprite folders grab bag/stonewall.png")
-	if stone_tex:
-		rock_mat.albedo_texture = stone_tex
-		rock_mat.uv1_scale = Vector3(0.3, 0.3, 0.3)
-		rock_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-	else:
-		rock_mat.albedo_color = rock_material.albedo_color
-	rock_mat.roughness = 0.95
-
-	rock.material = rock_mat
-	rock.use_collision = true
-
+	# Use static factory method which handles rock type selection
+	var rock := HarvestableRock.spawn_random_rock(self, Vector3.ZERO, is_highlands)
+	# Remove from parent since spawn_random_rock adds it - we'll re-add it in the caller
+	if rock.get_parent():
+		rock.get_parent().remove_child(rock)
 	return rock
 
 
-## Create a bush - uses HarvestablePlant for proper interaction
+## Decorative bush textures (non-harvestable)
+const DECORATIVE_BUSH_TEXTURES: Array[String] = [
+	"res://Sprite folders grab bag/perro_bush1.png",
+	"res://Sprite folders grab bag/perro_bush2.png"
+]
+
+
+## Create a bush - 50% chance decorative, 50% harvestable
 func _create_bush() -> Node3D:
+	# 50% chance to be a decorative (non-harvestable) bush
+	if rng.randf() < 0.5:
+		return _create_decorative_bush()
+
 	# Use HarvestablePlant class for proper interact() and get_interaction_prompt() support
-	var plant := HarvestablePlant.new()
-	plant.name = "Bush"
-	plant.plant_type = "red_herb"  # Currently only red_herb exists as an item
-	plant.display_name = "Herb Bush"
-	plant.base_yield = 1
+	var plant := HarvestablePlant.spawn_random_plant(self, Vector3.ZERO)
+	plant.name = "HarvestableBush"
+	# Remove from parent since spawn_random_plant adds it - we'll re-add it in the caller
+	if plant.get_parent():
+		plant.get_parent().remove_child(plant)
 	return plant
+
+
+## Create a decorative bush (no interaction, just visual)
+func _create_decorative_bush() -> Node3D:
+	var bush := Node3D.new()
+	bush.name = "DecorativeBush"
+
+	# Pick random decorative bush texture
+	var tex_path: String = DECORATIVE_BUSH_TEXTURES[rng.randi() % DECORATIVE_BUSH_TEXTURES.size()]
+	var bush_tex: Texture2D = load(tex_path)
+	if not bush_tex:
+		return bush  # Return empty node if texture fails
+
+	var sprite := Sprite3D.new()
+	sprite.texture = bush_tex
+	sprite.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+	sprite.no_depth_test = false
+	sprite.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+	sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST  # PS1 style
+
+	# Bush size - similar to harvestable plants
+	var base_pixel_size := 0.012
+	var scale_var: float = rng.randf_range(0.8, 1.2)
+	sprite.pixel_size = base_pixel_size * scale_var
+
+	# Random Y rotation for variety
+	bush.rotation_degrees.y = rng.randf_range(0, 360)
+
+	# Position sprite so bottom is at ground level
+	var approx_height: float = bush_tex.get_height() * sprite.pixel_size
+	sprite.position = Vector3(0, approx_height / 2.0, 0)
+
+	bush.add_child(sprite)
+
+	# No collision - decorative bushes are just visual
+
+	return bush
 
 
 ## Grassland texture paths for decorative grass clumps
@@ -1329,6 +1308,98 @@ func _create_grass_clump() -> Node3D:
 	# No collision - grass is just decorative ground cover
 
 	return grass
+
+
+## Hillcross model path
+const HILLCROSS_MODEL_PATH := "res://assets/models/terrain/hillcross.glb"
+
+
+## Create a hillcross memorial - 3D model prop
+## These are medieval-style memorial crosses that add atmosphere to the wilderness
+func _create_hillcross() -> Node3D:
+	var cross := Node3D.new()
+	cross.name = "Hillcross"
+
+	# Load the GLB model
+	if not ResourceLoader.exists(HILLCROSS_MODEL_PATH):
+		push_warning("[WildernessRoom] Hillcross model not found: %s" % HILLCROSS_MODEL_PATH)
+		return cross  # Return empty node
+
+	var scene: PackedScene = load(HILLCROSS_MODEL_PATH)
+	if not scene:
+		push_warning("[WildernessRoom] Failed to load hillcross model")
+		return cross
+
+	var model: Node3D = scene.instantiate()
+
+	# Random scale variation for variety (0.8 to 1.2)
+	var scale_var: float = rng.randf_range(0.8, 1.2)
+	model.scale = Vector3.ONE * scale_var
+
+	# Random Y rotation
+	cross.rotation_degrees.y = rng.randf_range(0, 360)
+
+	cross.add_child(model)
+
+	# Apply PS1-style material to the model
+	_apply_hillcross_material(model)
+
+	# Add collision for the cross (simple box approximation)
+	var collision := StaticBody3D.new()
+	collision.name = "HillcrossCollision"
+	var col_shape := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(0.8 * scale_var, 3.0 * scale_var, 0.4 * scale_var)  # Tall thin box for cross
+	col_shape.shape = box
+	col_shape.position = Vector3(0, 1.5 * scale_var, 0)  # Center collision vertically
+	collision.add_child(col_shape)
+	cross.add_child(collision)
+
+	return cross
+
+
+## Apply PS1-style material to hillcross model
+func _apply_hillcross_material(node: Node) -> void:
+	var mat := StandardMaterial3D.new()
+	mat.roughness = 0.95
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST  # PS1 pixelated look
+
+	# Stone/weathered wood color based on biome
+	var base_color: Color
+	match biome:
+		Biome.FOREST:
+			base_color = Color(0.45, 0.42, 0.38)  # Weathered gray stone
+		Biome.PLAINS:
+			base_color = Color(0.55, 0.50, 0.42)  # Sun-bleached stone
+		Biome.SWAMP:
+			base_color = Color(0.35, 0.38, 0.32)  # Mossy, damp
+		Biome.HILLS:
+			base_color = Color(0.50, 0.48, 0.45)  # Mountain stone
+		Biome.ROCKY:
+			base_color = Color(0.48, 0.46, 0.44)  # Granite gray
+		_:
+			base_color = Color(0.45, 0.43, 0.40)  # Default stone
+
+	mat.albedo_color = base_color
+
+	# Try to load stone texture for more detail
+	var stone_tex: Texture2D = load("res://Sprite folders grab bag/stonewall.png")
+	if stone_tex:
+		mat.albedo_texture = stone_tex
+		mat.uv1_scale = Vector3(0.5, 0.5, 0.5)  # Tile texture appropriately
+
+	# Apply material recursively to all mesh instances
+	_apply_material_to_meshes(node, mat)
+
+
+## Helper to apply material to all MeshInstance3D nodes recursively
+func _apply_material_to_meshes(node: Node, material: StandardMaterial3D) -> void:
+	if node is MeshInstance3D:
+		var mi: MeshInstance3D = node as MeshInstance3D
+		mi.material_override = material
+
+	for child in node.get_children():
+		_apply_material_to_meshes(child, material)
 
 
 ## Swamp tree textures
@@ -1385,55 +1456,14 @@ const FALLEN_TREE_TEXTURES: Array[String] = [
 ]
 
 
-## Create a fallen/dead tree - ground obstacle, slightly tilted or flat
+## Create a harvestable fallen tree (requires axe to harvest for wood)
 func _create_fallen_tree() -> Node3D:
-	var fallen := Node3D.new()
-	fallen.name = "FallenTree"
-
-	# Pick random fallen tree texture
-	var tex_path: String = FALLEN_TREE_TEXTURES[rng.randi() % FALLEN_TREE_TEXTURES.size()]
-	var fallen_tex: Texture2D = load(tex_path)
-	if not fallen_tex:
-		return fallen  # Return empty node if texture fails
-
-	var sprite := Sprite3D.new()
-	sprite.texture = fallen_tex
-	sprite.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-	sprite.no_depth_test = false
-	sprite.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
-	sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST  # PS1 style
-
-	# Fallen trees are lower to the ground
-	var base_pixel_size := 0.022
-
-	# Random scale variation
-	var scale_var: float = rng.randf_range(0.85, 1.15)
-	sprite.pixel_size = base_pixel_size * scale_var
-
-	# Random Y rotation (full 360 - fallen trees can point any direction)
-	fallen.rotation_degrees.y = rng.randf_range(0, 360)
-
-	# Slight X tilt to make it look more fallen/collapsed (0-15 degrees)
-	var tilt_angle: float = rng.randf_range(-12, 12)
-	sprite.rotation_degrees.x = tilt_angle
-
-	# Position sprite so bottom is near ground level (slightly embedded)
-	var approx_height: float = fallen_tex.get_height() * sprite.pixel_size
-	sprite.position = Vector3(0, approx_height / 2.5, 0)  # Lower than standing trees
-
-	fallen.add_child(sprite)
-
-	# Add collision box for fallen trunk (elongated obstacle)
-	var collision := StaticBody3D.new()
-	var col_shape := CollisionShape3D.new()
-	var box := BoxShape3D.new()
-	# Fallen trees are longer horizontally, shorter vertically
-	box.size = Vector3(2.0, 0.8, 0.6)
-	col_shape.shape = box
-	col_shape.position = Vector3(0, 0.4, 0)
-	collision.add_child(col_shape)
-	fallen.add_child(collision)
-
+	# Use HarvestableFallenTree class for proper interact() and get_interaction_prompt() support
+	var fallen := HarvestableFallenTree.new()
+	fallen.name = "HarvestableFallenTree"
+	fallen.display_name = "Fallen Tree"
+	fallen.yield_min = 1
+	fallen.yield_max = 2
 	return fallen
 
 
@@ -2186,11 +2216,6 @@ func _clear_content() -> void:
 		if is_instance_valid(totem):
 			totem.queue_free()
 	cursed_totems.clear()
-
-	# Clear dungeon entrance
-	if dungeon_entrance and is_instance_valid(dungeon_entrance):
-		dungeon_entrance.queue_free()
-	dungeon_entrance = null
 
 	# Clear enemies
 	for enemy: Node3D in enemies:

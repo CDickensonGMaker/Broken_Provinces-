@@ -4,7 +4,9 @@ extends Resource
 
 ## Current save format version - increment when structure changes
 ## Version 2: Added CellStreamerSaveData, deprecated hex system fields in WorldSaveData
-const SAVE_VERSION := 2
+## Version 3: Added MoralitySaveData, FactionSaveData, NPC disposition persistence
+## Version 4: Added StatsSaveData, JournalSaveData (notes, bestiary, codex unlocks)
+const SAVE_VERSION := 4
 
 ## Metadata
 @export var version: int = SAVE_VERSION
@@ -51,6 +53,24 @@ var fog_of_war_data = null  # FogOfWarSaveData
 ## Cell streamer section (floating origin, active cell)
 var cell_streamer_data = null  # CellStreamerSaveData
 
+## Morality system section
+var morality_data = null  # MoralitySaveData
+
+## Faction system section
+var faction_data = null  # FactionSaveData
+
+## NPC disposition modifiers section
+var npc_disposition_data = null  # NPCDispositionSaveData
+
+## Codex (discovered lore entries) section
+var codex_data = null  # CodexSaveData
+
+## Statistics tracking section
+var stats_data = null  # StatsSaveData
+
+## Journal (notes and bestiary) section
+var journal_data = null  # JournalSaveData
+
 ## Audio settings section
 @export_group("Settings")
 @export var audio_settings: Dictionary = {}
@@ -69,6 +89,12 @@ func _init() -> void:
 	encounter_data = EncounterSaveData.new()
 	fog_of_war_data = FogOfWarSaveData.new()
 	cell_streamer_data = CellStreamerSaveData.new()
+	morality_data = MoralitySaveData.new()
+	faction_data = FactionSaveData.new()
+	npc_disposition_data = NPCDispositionSaveData.new()
+	codex_data = CodexSaveData.new()
+	stats_data = StatsSaveData.new()
+	journal_data = JournalSaveData.new()
 
 ## Convert to dictionary for JSON serialization
 func to_dict() -> Dictionary:
@@ -90,6 +116,12 @@ func to_dict() -> Dictionary:
 		"encounters": encounter_data.to_dict() if encounter_data else {},
 		"fog_of_war": fog_of_war_data.to_dict() if fog_of_war_data else {},
 		"cell_streamer": cell_streamer_data.to_dict() if cell_streamer_data else {},
+		"morality": morality_data.to_dict() if morality_data else {},
+		"factions": faction_data.to_dict() if faction_data else {},
+		"npc_dispositions": npc_disposition_data.to_dict() if npc_disposition_data else {},
+		"codex": codex_data.to_dict() if codex_data else {},
+		"stats": stats_data.to_dict() if stats_data else {},
+		"journal": journal_data.to_dict() if journal_data else {},
 		"audio_settings": audio_settings
 	}
 
@@ -126,6 +158,18 @@ func from_dict(data: Dictionary) -> void:
 		fog_of_war_data.from_dict(data.get("fog_of_war", {}))
 	if cell_streamer_data:
 		cell_streamer_data.from_dict(data.get("cell_streamer", {}))
+	if morality_data:
+		morality_data.from_dict(data.get("morality", {}))
+	if faction_data:
+		faction_data.from_dict(data.get("factions", {}))
+	if npc_disposition_data:
+		npc_disposition_data.from_dict(data.get("npc_dispositions", {}))
+	if codex_data:
+		codex_data.from_dict(data.get("codex", {}))
+	if stats_data:
+		stats_data.from_dict(data.get("stats", {}))
+	if journal_data:
+		journal_data.from_dict(data.get("journal", {}))
 
 	audio_settings = data.get("audio_settings", {})
 
@@ -504,13 +548,19 @@ class ConversationSaveData:
 	## Tracks what each NPC has told the player
 	var npc_memory: Dictionary = {}
 
+	## Conversation flags (flag_name -> value)
+	## Includes disposition values (disposition:npc_id -> int)
+	var conversation_flags: Dictionary = {}
+
 	func to_dict() -> Dictionary:
 		return {
-			"npc_memory": npc_memory
+			"npc_memory": npc_memory,
+			"conversation_flags": conversation_flags
 		}
 
 	func from_dict(data: Dictionary) -> void:
 		npc_memory = data.get("npc_memory", {})
+		conversation_flags = data.get("conversation_flags", {})
 
 
 ## Bounty quest save data structure (replaces old ErrandSaveData)
@@ -673,3 +723,118 @@ class CellStreamerSaveData:
 		world_offset_y = data.get("world_offset_y", 0.0)
 		world_offset_z = data.get("world_offset_z", 0.0)
 		streaming_enabled = data.get("streaming_enabled", false)
+
+
+## Morality system save data structure
+class MoralitySaveData:
+	## Current morality score (-100 to 100)
+	var morality_score: int = 0
+
+	## Hours since last decay tick
+	var hours_since_last_decay: float = 0.0
+
+	func to_dict() -> Dictionary:
+		return {
+			"morality_score": morality_score,
+			"hours_since_last_decay": hours_since_last_decay
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		morality_score = data.get("morality_score", 0)
+		hours_since_last_decay = data.get("hours_since_last_decay", 0.0)
+
+
+## Faction system save data structure
+class FactionSaveData:
+	## Player reputation per faction (faction_id -> reputation int)
+	var reputations: Dictionary = {}
+
+	## Faction memberships (faction_id -> {rank: String, joined_time: float})
+	var memberships: Dictionary = {}
+
+	func to_dict() -> Dictionary:
+		return {
+			"reputations": reputations,
+			"memberships": memberships
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		reputations = data.get("reputations", {})
+		memberships = data.get("memberships", {})
+
+
+## NPC disposition modifier save data structure
+class NPCDispositionSaveData:
+	## NPC disposition modifiers (npc_id -> disposition_modifier int)
+	## Only stores NPCs with non-zero modifiers
+	var modifiers: Dictionary = {}
+
+	func to_dict() -> Dictionary:
+		return {
+			"modifiers": modifiers
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		modifiers = data.get("modifiers", {})
+
+
+## Codex (discovered lore entries) save data structure
+class CodexSaveData:
+	## Discovered recipes by category (category_name -> array of recipe_ids)
+	var discovered_recipes: Dictionary = {}
+
+	## Discovered lore entries by category (category_name -> array of lore_ids)
+	var discovered_lore: Dictionary = {}
+
+	## Discovered bestiary entries (creature_id -> creature_data dict)
+	var bestiary_entries: Dictionary = {}
+
+	func to_dict() -> Dictionary:
+		return {
+			"discovered_recipes": discovered_recipes,
+			"discovered_lore": discovered_lore,
+			"bestiary_entries": bestiary_entries
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		discovered_recipes = data.get("discovered_recipes", {})
+		discovered_lore = data.get("discovered_lore", {})
+		bestiary_entries = data.get("bestiary_entries", {})
+
+
+## Statistics tracking save data structure
+class StatsSaveData:
+	## All tracked gameplay statistics
+	var stats: Dictionary = {}
+
+	func to_dict() -> Dictionary:
+		return {"stats": stats}
+
+	func from_dict(data: Dictionary) -> void:
+		stats = data.get("stats", {})
+
+
+## Journal (notes and bestiary) save data structure
+class JournalSaveData:
+	## All journal notes
+	var notes: Array = []
+	## Next note ID counter
+	var next_note_id: int = 1
+	## Bestiary entries (creature_id -> data)
+	var bestiary: Dictionary = {}
+	## Unlocked codex entries
+	var unlocked_codex_entries: Array = []
+
+	func to_dict() -> Dictionary:
+		return {
+			"notes": notes,
+			"next_note_id": next_note_id,
+			"bestiary": bestiary,
+			"unlocked_codex_entries": unlocked_codex_entries
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		notes = data.get("notes", [])
+		next_note_id = data.get("next_note_id", 1)
+		bestiary = data.get("bestiary", {})
+		unlocked_codex_entries = data.get("unlocked_codex_entries", [])

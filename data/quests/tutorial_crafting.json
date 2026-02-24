@@ -1,0 +1,49 @@
+{
+	"id": "tutorial_crafting",
+	"title": "The Smith's Apprentice",
+	"description": "Grom the Smith has offered to teach you the basics of blacksmithing. He's provided you with some iron ingots and asks that you craft an iron dagger at his anvil to prove you understand the process.",
+	"is_main_quest": false,
+	"quest_source": "tutorial",
+	"giver_npc_id": "grom_the_smith",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "talk_to_grom",
+			"description": "Speak with Grom the Smith",
+			"type": "talk",
+			"target": "grom_the_smith",
+			"required_count": 1
+		},
+		{
+			"id": "craft_dagger",
+			"description": "Craft an Iron Dagger at the anvil",
+			"type": "craft",
+			"target": "craft_iron_dagger",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_grom",
+			"description": "Return to Grom the Smith",
+			"type": "talk",
+			"target": "grom_the_smith",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "grom_the_smith",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 25,
+		"xp": 50,
+		"items": [
+			{"id": "repair_kit", "quantity": 1}
+		]
+	},
+	"starter_items": [
+		{"id": "iron_ingot", "quantity": 2}
+	],
+	"prerequisites": [],
+	"next_quest": "",
+	"is_tutorial": true
+}

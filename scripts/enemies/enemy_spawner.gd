@@ -40,6 +40,8 @@ signal destroyed(destroyer: Node)
 ## Spawned enemy behavior configuration
 @export var spawned_wander_radius: float = 8.0   ## How far spawned enemies wander from totem
 @export var spawned_leash_radius: float = 15.0   ## Max distance before spawned enemies return
+@export var spawned_patrol_radius: float = 15.0  ## Patrol point generation radius
+@export var enable_patrols: bool = true          ## Whether spawned enemies should patrol
 
 ## Runtime state
 var current_hp: int
@@ -292,13 +294,27 @@ func _try_spawn_enemy() -> void:
 		if DEBUG:
 			print("[EnemySpawner] Spawned %s at %s" % [enemy_type, spawn_pos])
 
-		# Configure spawned enemy to stay near the totem
+		# Configure spawned enemy behavior
 		if "wander_radius" in enemy:
 			enemy.wander_radius = spawned_wander_radius
 		if "leash_radius" in enemy:
 			enemy.leash_radius = spawned_leash_radius
 		if "spawn_position" in enemy:
 			enemy.spawn_position = global_position  # Anchor to the totem, not spawn point
+
+		# Enable patrol mode for wider area coverage
+		if enable_patrols:
+			if "patrol_radius" in enemy:
+				enemy.patrol_radius = spawned_patrol_radius
+			if "patrol_point_count" in enemy:
+				enemy.patrol_point_count = 4  # 4 patrol waypoints
+			if "auto_generate_patrol_points" in enemy:
+				enemy.auto_generate_patrol_points = true
+			# Set behavior mode to use weighted selection (includes patrol)
+			if "behavior_mode" in enemy:
+				enemy.behavior_mode = 0  # BehaviorMode.WEIGHTED
+			if "patrol_weight" in enemy:
+				enemy.patrol_weight = 3.0  # Higher chance to patrol
 
 		# Track the spawned enemy
 		spawned_enemies.append(enemy)
@@ -376,6 +392,16 @@ func _spawn_warboss(attacker: Node) -> void:
 		# Configure warboss to defend the totem (no leash)
 		warboss.defending_totem = true
 		warboss.totem_position = global_position
+
+		# Add health bar above the warboss (bosses should have visible HP)
+		var health_bar_scene: PackedScene = load("res://scenes/ui/enemy_health_bar_3d.tscn")
+		if health_bar_scene:
+			var boss_hp_bar: EnemyHealthBar3D = health_bar_scene.instantiate()
+			boss_hp_bar.position.y = 3.0  # Above the warboss sprite
+			boss_hp_bar.bar_width = 1.5  # Wider bar for boss
+			warboss.add_child(boss_hp_bar)
+			boss_hp_bar.set_target(warboss)
+			boss_hp_bar.show_bar(999.0)  # Show for a very long time
 
 		# Alert warboss to the attacker
 		if attacker and attacker is Node3D:

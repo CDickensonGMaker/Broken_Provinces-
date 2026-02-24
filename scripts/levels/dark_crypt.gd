@@ -239,16 +239,16 @@ func _spawn_enemies() -> void:
 		4, 4
 	)
 
-	# Floor 1: Cave bats near entrance
+	# Floor 1: Cave bats - flying above player's head
 	_spawn_billboard_enemy(
-		Vector3(-5, FLOOR_1_Y + 2.0, 10),
+		Vector3(-5, FLOOR_1_Y + 3.5, 10),
 		"res://data/enemies/bat.tres",
 		"res://Sprite folders grab bag/bat_flying_attacking.png",
 		"Cave Bat",
 		4, 1
 	)
 	_spawn_billboard_enemy(
-		Vector3(5, FLOOR_1_Y + 1.5, 8),
+		Vector3(5, FLOOR_1_Y + 4.0, 8),
 		"res://data/enemies/bat.tres",
 		"res://Sprite folders grab bag/bat_flying_attacking.png",
 		"Cave Bat",
@@ -271,16 +271,16 @@ func _spawn_enemies() -> void:
 		4, 4
 	)
 
-	# Floor 2: Flaming Skulls - undead magical enemies
+	# Floor 2: Flaming Skulls - floating above player's head
 	_spawn_billboard_enemy(
-		Vector3(-8, FLOOR_2_Y + 1.5, -40),
+		Vector3(-8, FLOOR_2_Y + 3.5, -40),
 		"res://data/enemies/flaming_skull.tres",
 		"res://Sprite folders grab bag/flaming_skull_enemy.png",
 		"Flaming Skull",
 		4, 1
 	)
 	_spawn_billboard_enemy(
-		Vector3(8, FLOOR_2_Y + 1.5, -35),
+		Vector3(8, FLOOR_2_Y + 4.0, -35),
 		"res://data/enemies/flaming_skull.tres",
 		"res://Sprite folders grab bag/flaming_skull_enemy.png",
 		"Flaming Skull",

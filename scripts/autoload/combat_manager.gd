@@ -430,8 +430,10 @@ func check_humanoid_dialogue(enemy: EnemyBase) -> bool:
 	if not enemy or not enemy.enemy_data:
 		return false
 
-	# Only HUMAN_BANDIT faction can be reasoned with
-	if enemy.enemy_data.faction != Enums.Faction.HUMAN_BANDIT:
+	# Only enemies with allows_dialogue = true can be negotiated with
+	# This is reserved for special encounters (named NPCs, quest targets, bosses)
+	# Regular enemies (even bandits) just attack - no negotiation
+	if not enemy.enemy_data.allows_dialogue:
 		return false
 
 	# Already dealt with (bribed, intimidated, etc.)

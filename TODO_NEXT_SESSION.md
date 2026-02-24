@@ -32,9 +32,9 @@ Get ALL spell types working like Magic Missile (PROJECTILE) does now.
 | Spell | Type | Expected Result | Status |
 |-------|------|-----------------|--------|
 | Magic Missile | PROJECTILE | Blue ball flies, hits enemy, deals damage | WORKING |
-| Lightning Bolt | BEAM | Instant hit, chains to nearby enemies | NEEDS TESTING |
-| Soul Drain | BEAM | Beam hits, damages enemy, heals + restores mana | NEEDS TESTING |
-| Healing Light | AOE_SELF | Heals self | NEEDS TESTING |
+| Lightning Bolt | BEAM | Instant hit, chains to nearby enemies | WORKING |
+| Soul Drain | BEAM | Beam hits, damages enemy, heals + restores mana | WORKING |
+| Healing Light | AOE_SELF | Heals self | WORKING |
 
 ---
 
@@ -82,12 +82,12 @@ PROJECTILE = 7   → Flying projectile (WORKING)
 
 ## Success Criteria
 
-- [ ] Lightning Bolt fires beam, hits enemy, chains to others
-- [ ] Soul Drain fires beam, damages, heals HP, restores mana
-- [ ] Healing Light heals player when cast
-- [ ] All 4 test spells work without crashes
-- [ ] Mana is consumed for all spells
-- [ ] No error messages in console
+- [x] Lightning Bolt fires beam, hits enemy, chains to others
+- [x] Soul Drain fires beam, damages, heals HP, restores mana
+- [x] Healing Light heals player when cast
+- [x] All 4 test spells work without crashes
+- [x] Mana is consumed for all spells
+- [x] No error messages in console
 
 ---
 

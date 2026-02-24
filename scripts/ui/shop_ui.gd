@@ -987,10 +987,33 @@ func _make_separator() -> Control:
 	sep.add_theme_constant_override("separation", 5)
 	return sep
 
-func open() -> void:
+func open(p_merchant: Node = null) -> void:
+	merchant = p_merchant
 	visible = true
 	_clear_carts()
 	_refresh_display()
+
+	# Update title if we have a merchant name
+	if merchant and merchant.get("merchant_name"):
+		if title_label:
+			title_label.text = merchant.merchant_name
+
+
+## Open shop UI specifically for a traveling merchant
+## This is the method traveling_merchant.gd calls
+func open_traveling_merchant(p_merchant: Node) -> void:
+	merchant = p_merchant
+	visible = true
+	_clear_carts()
+	_refresh_display()
+
+	# Update title with merchant's name
+	if title_label:
+		if merchant and merchant.get("merchant_name"):
+			title_label.text = merchant.merchant_name
+		else:
+			title_label.text = "Traveling Merchant"
+
 
 func close() -> void:
 	visible = false

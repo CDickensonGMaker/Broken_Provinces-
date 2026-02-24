@@ -209,6 +209,25 @@ func _create_item_row(index: int, slot: Dictionary, is_player: bool) -> Control:
 	var quantity: int = slot.quantity
 	var quality: Enums.ItemQuality = slot.quality
 
+	# Special handling for gold
+	if item_id == "_gold":
+		var gold_btn := Button.new()
+		gold_btn.flat = true
+		gold_btn.custom_minimum_size.y = 22
+		gold_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		gold_btn.text = "%d Gold" % quantity
+		gold_btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		gold_btn.process_mode = Node.PROCESS_MODE_ALWAYS
+		gold_btn.add_theme_color_override("font_color", COL_GOLD)
+		gold_btn.add_theme_color_override("font_hover_color", Color(1.0, 0.9, 0.5))
+		gold_btn.add_theme_font_size_override("font_size", 12)
+		var hover_style := StyleBoxFlat.new()
+		hover_style.bg_color = COL_HOVER
+		gold_btn.add_theme_stylebox_override("hover", hover_style)
+		if not is_player:
+			gold_btn.pressed.connect(_on_chest_item_clicked.bind(index))
+		return gold_btn
+
 	# Get item name
 	var item_name := InventoryManager.get_item_name(item_id)
 
@@ -294,7 +313,17 @@ func _on_chest_item_clicked(index: int) -> void:
 
 	var slot: Dictionary = chest.contents[index]
 	var item_id: String = slot.item_id
+	var quantity: int = slot.quantity
 	var quality: Enums.ItemQuality = slot.quality
+
+	# Special handling for gold
+	if item_id == "_gold":
+		InventoryManager.add_gold(quantity)
+		chest.remove_item(item_id, quantity, quality)
+		AudioManager.play_item_pickup()
+		_show_notification("Took %d gold" % quantity)
+		_refresh_lists()
+		return
 
 	# Check if player inventory has space
 	if not InventoryManager._can_add_item(item_id, 1, quality):
@@ -321,6 +350,7 @@ func _on_take_all() -> void:
 		return
 
 	var items_taken := 0
+	var gold_taken := 0
 
 	# Copy contents array since we'll be modifying it
 	var contents_copy: Array = chest.contents.duplicate(true)
@@ -329,6 +359,13 @@ func _on_take_all() -> void:
 		var item_id: String = slot.item_id
 		var quantity: int = slot.quantity
 		var quality: Enums.ItemQuality = slot.quality
+
+		# Special handling for gold - take all at once
+		if item_id == "_gold":
+			InventoryManager.add_gold(quantity)
+			chest.remove_item(item_id, quantity, quality)
+			gold_taken += quantity
+			continue
 
 		# Try to add each item
 		for i in range(quantity):
@@ -339,9 +376,14 @@ func _on_take_all() -> void:
 			else:
 				break  # Inventory full
 
-	if items_taken > 0:
+	if items_taken > 0 or gold_taken > 0:
 		AudioManager.play_item_pickup()
-		_show_notification("Took %d items" % items_taken)
+		if gold_taken > 0 and items_taken > 0:
+			_show_notification("Took %d items and %d gold" % [items_taken, gold_taken])
+		elif gold_taken > 0:
+			_show_notification("Took %d gold" % gold_taken)
+		else:
+			_show_notification("Took %d items" % items_taken)
 	else:
 		AudioManager.play_ui_cancel()
 		_show_notification("Inventory full!")

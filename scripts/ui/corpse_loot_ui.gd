@@ -1,11 +1,15 @@
 ## corpse_loot_ui.gd - UI for searching corpses (Fallout-style loot interface)
 ## Shows corpse contents with gold display, take all button, and close button
+## Supports radius-based combined looting of multiple nearby corpses
 extends Control
 
 signal ui_closed
 
-## Reference to the corpse we're looting
+## Reference to the primary corpse we're looting (for backward compatibility)
 var corpse: Node = null
+
+## Array of all corpses being looted (within radius)
+var corpses: Array = []
 
 ## UI colors (matching game_menu style)
 const COL_BG = Color(0.08, 0.06, 0.05)  # Darker, more gore-ish
@@ -16,6 +20,7 @@ const COL_DIM = Color(0.5, 0.45, 0.4)
 const COL_GOLD = Color(0.85, 0.7, 0.3)
 const COL_HOVER = Color(0.25, 0.15, 0.12)
 const COL_BLOOD = Color(0.5, 0.15, 0.1)  # Blood red accent
+const COL_SOURCE = Color(0.6, 0.55, 0.5)  # Dimmer color for source labels
 
 ## UI elements
 var contents_list: VBoxContainer
@@ -80,8 +85,6 @@ func _build_ui() -> void:
 	# Title with blood red accent
 	title_label = Label.new()
 	title_label.text = "SEARCH BODY"
-	if corpse:
-		title_label.text = corpse.corpse_name.to_upper()
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.add_theme_color_override("font_color", COL_BLOOD)
 	title_label.add_theme_font_size_override("font_size", 20)
@@ -174,21 +177,36 @@ func _build_ui() -> void:
 
 
 func _refresh_contents() -> void:
-	# Update title
-	if corpse:
-		title_label.text = corpse.corpse_name.to_upper()
+	# Use corpses array if available, otherwise fall back to single corpse
+	var all_corpses: Array = corpses if not corpses.is_empty() else ([corpse] if corpse else [])
 
-	# Update gold display
-	if corpse:
-		gold_label.text = str(corpse.gold)
+	# Update title - show count if multiple corpses
+	if all_corpses.size() > 1:
+		title_label.text = "SEARCH BODIES (%d)" % all_corpses.size()
+	elif all_corpses.size() == 1 and all_corpses[0]:
+		title_label.text = all_corpses[0].corpse_name.to_upper()
 	else:
-		gold_label.text = "0"
+		title_label.text = "SEARCH BODY"
+
+	# Calculate total gold from all corpses
+	var total_gold: int = 0
+	for c in all_corpses:
+		if c and is_instance_valid(c):
+			total_gold += c.gold
+	gold_label.text = str(total_gold)
 
 	# Clear existing items
 	for child in contents_list.get_children():
 		child.queue_free()
 
-	if not corpse or corpse.contents.is_empty():
+	# Check if all corpses are empty
+	var has_any_contents := false
+	for c in all_corpses:
+		if c and is_instance_valid(c) and not c.contents.is_empty():
+			has_any_contents = true
+			break
+
+	if not has_any_contents:
 		var empty_label := Label.new()
 		empty_label.text = "Nothing else of value..."
 		empty_label.add_theme_color_override("font_color", COL_DIM)
@@ -196,14 +214,28 @@ func _refresh_contents() -> void:
 		contents_list.add_child(empty_label)
 		return
 
-	# Add each item as a clickable row
-	for i in range(corpse.contents.size()):
-		var slot: Dictionary = corpse.contents[i]
-		var row := _create_item_row(i, slot)
-		contents_list.add_child(row)
+	# Add each item from all corpses as a clickable row
+	# Track items with their source corpse for proper take/remove
+	for corpse_idx in range(all_corpses.size()):
+		var c = all_corpses[corpse_idx]
+		if not c or not is_instance_valid(c):
+			continue
+
+		var show_source: bool = all_corpses.size() > 1
+
+		for i in range(c.contents.size()):
+			var slot: Dictionary = c.contents[i]
+			var row := _create_item_row_multi(corpse_idx, i, slot, c.corpse_name if show_source else "")
+			contents_list.add_child(row)
 
 
+## Legacy function for single-corpse mode (backward compatibility)
 func _create_item_row(index: int, slot: Dictionary) -> Control:
+	return _create_item_row_multi(0, index, slot, "")
+
+
+## Create an item row for multi-corpse mode
+func _create_item_row_multi(corpse_idx: int, slot_idx: int, slot: Dictionary, source_name: String) -> Control:
 	var item_id: String = slot.item_id
 	var quantity: int = slot.quantity
 	var quality: Enums.ItemQuality = slot.quality
@@ -232,6 +264,10 @@ func _create_item_row(index: int, slot: Dictionary) -> Control:
 	if quantity > 1:
 		display_text += " x%d" % quantity
 
+	# Container for item row with optional source label
+	var row_container := VBoxContainer.new()
+	row_container.add_theme_constant_override("separation", 0)
+
 	# Clickable row button
 	var row_btn := Button.new()
 	row_btn.flat = true
@@ -250,27 +286,47 @@ func _create_item_row(index: int, slot: Dictionary) -> Control:
 	hover_style.bg_color = COL_HOVER
 	row_btn.add_theme_stylebox_override("hover", hover_style)
 
-	row_btn.pressed.connect(_on_item_clicked.bind(index))
+	row_btn.pressed.connect(_on_item_clicked_multi.bind(corpse_idx, slot_idx))
+	row_container.add_child(row_btn)
 
-	return row_btn
+	# Add source label if showing multiple corpses
+	if not source_name.is_empty():
+		var source_label := Label.new()
+		source_label.text = "  from: " + source_name
+		source_label.add_theme_color_override("font_color", COL_SOURCE)
+		source_label.add_theme_font_size_override("font_size", 10)
+		row_container.add_child(source_label)
+
+	return row_container
 
 
+## Legacy function for single-corpse mode
 func _on_item_clicked(index: int) -> void:
-	## Take single item from corpse
-	if not corpse:
+	_on_item_clicked_multi(0, index)
+
+
+## Take single item from specific corpse
+func _on_item_clicked_multi(corpse_idx: int, slot_idx: int) -> void:
+	var all_corpses: Array = corpses if not corpses.is_empty() else ([corpse] if corpse else [])
+
+	if corpse_idx < 0 or corpse_idx >= all_corpses.size():
 		return
 
-	if index < 0 or index >= corpse.contents.size():
+	var target_corpse = all_corpses[corpse_idx]
+	if not target_corpse or not is_instance_valid(target_corpse):
 		return
 
-	var slot: Dictionary = corpse.contents[index]
+	if slot_idx < 0 or slot_idx >= target_corpse.contents.size():
+		return
+
+	var slot: Dictionary = target_corpse.contents[slot_idx]
 	var item_id: String = slot.item_id
 	var quality: Enums.ItemQuality = slot.quality
 
 	# Add to player inventory
 	if InventoryManager.add_item(item_id, 1, quality):
 		# Remove from corpse
-		corpse.remove_item(item_id, 1, quality)
+		target_corpse.remove_item(item_id, 1, quality)
 
 		# Play pickup sound
 		AudioManager.play_item_pickup()
@@ -287,48 +343,56 @@ func _on_item_clicked(index: int) -> void:
 
 
 func _on_take_gold() -> void:
-	## Take all gold from corpse
-	if not corpse:
-		return
+	## Take all gold from all corpses
+	var all_corpses: Array = corpses if not corpses.is_empty() else ([corpse] if corpse else [])
 
-	if corpse.gold <= 0:
+	var total_gold_taken: int = 0
+	for c in all_corpses:
+		if not c or not is_instance_valid(c):
+			continue
+		if c.gold > 0:
+			total_gold_taken += c.take_gold()
+
+	if total_gold_taken <= 0:
 		AudioManager.play_ui_cancel()
 		return
 
-	var gold_taken: int = corpse.take_gold()
-	InventoryManager.add_gold(gold_taken)
+	InventoryManager.add_gold(total_gold_taken)
 	AudioManager.play_item_pickup()
-	_show_notification("Took %d gold" % gold_taken)
+	_show_notification("Took %d gold" % total_gold_taken)
 	_refresh_contents()
 
 
 func _on_take_all() -> void:
-	## Take everything from corpse
-	if not corpse:
-		return
+	## Take everything from all nearby corpses
+	var all_corpses: Array = corpses if not corpses.is_empty() else ([corpse] if corpse else [])
 
 	var items_taken := 0
 
-	# Take gold first
-	if corpse.gold > 0:
-		var gold_taken: int = corpse.take_gold()
-		InventoryManager.add_gold(gold_taken)
-		items_taken += 1
+	for c in all_corpses:
+		if not c or not is_instance_valid(c):
+			continue
 
-	# Take all items
-	var contents_copy: Array = corpse.contents.duplicate(true)
+		# Take gold first
+		if c.gold > 0:
+			var gold_taken: int = c.take_gold()
+			InventoryManager.add_gold(gold_taken)
+			items_taken += 1
 
-	for slot in contents_copy:
-		var item_id: String = slot.item_id
-		var quantity: int = slot.quantity
-		var quality: Enums.ItemQuality = slot.quality
+		# Take all items
+		var contents_copy: Array = c.contents.duplicate(true)
 
-		for i in range(quantity):
-			if InventoryManager.add_item(item_id, 1, quality):
-				corpse.remove_item(item_id, 1, quality)
-				items_taken += 1
-			else:
-				break
+		for slot in contents_copy:
+			var item_id: String = slot.item_id
+			var quantity: int = slot.quantity
+			var quality: Enums.ItemQuality = slot.quality
+
+			for i in range(quantity):
+				if InventoryManager.add_item(item_id, 1, quality):
+					c.remove_item(item_id, 1, quality)
+					items_taken += 1
+				else:
+					break
 
 	if items_taken > 0:
 		AudioManager.play_item_pickup()

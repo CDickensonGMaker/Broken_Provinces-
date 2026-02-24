@@ -51,8 +51,8 @@
 
 #### Spell Type Implementation
 - [x] PROJECTILE spells (Magic Missile) - WORKING
-- [x] BEAM spells (Lightning Bolt, Soul Drain) - FIXED (needs testing)
-- [x] AOE_SELF spells (Healing Light) - FIXED (needs testing)
+- [x] BEAM spells (Lightning Bolt, Soul Drain) - WORKING
+- [x] AOE_SELF spells (Healing Light) - WORKING
 - [ ] CONE spells - UNTESTED
 - [ ] AOE_POINT spells - UNTESTED
 - [ ] SINGLE_ENEMY spells - UNTESTED
@@ -107,11 +107,11 @@
 
 1. ~~**BEAM spells don't fire**~~ - FIXED: Collision mask and raycast origin corrected
 2. ~~**AOE_SELF spells don't work**~~ - FIXED: Caster now included as target for healing
-3. **Debug prints still in code** - Remove before release
+3. ~~**Debug prints still in code**~~ - FIXED: Debug prints removed
 4. **No visual effects** - Beam/AOE spells work but have no visual feedback yet
 
 ## Technical Debt
 
-- Remove debug print statements from spell_caster.gd, player_controller.gd, inventory_manager.gd
+- ~~Remove debug print statements from spell_caster.gd, player_controller.gd, inventory_manager.gd~~ - DONE
 - Consolidate spell type handling (some have debug prints, some don't)
 - SpellCaster.owner_entity should be properly set in scene, not auto-detected

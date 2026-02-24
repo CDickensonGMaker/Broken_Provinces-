@@ -14,7 +14,7 @@ func _ready() -> void:
 func _dev_quick_start() -> void:
 	# Reset game state
 	GameManager.reset_for_new_game()
-	InventoryManager.reset_for_new_game()
+	InventoryManager.clear_inventory_state()  # Clear without items
 	QuestManager.reset_for_new_game()
 	SaveManager.reset_world_state()
 
@@ -35,28 +35,31 @@ func _dev_quick_start() -> void:
 	var race_names: Array = names.get(char_data.race, [\"Stranger\"])
 	char_data.character_name = race_names[randi() % race_names.size()]
 
-	# Apply racial bonuses
+	# Apply racial bonuses and random stats
 	char_data.initialize_race_bonuses()
-
-	# Random bonus stats
 	var stats := [\"grit\", \"agility\", \"will\", \"speech\", \"knowledge\", \"vitality\"]
 	for i in range(5):
 		var stat: String = stats[randi() % stats.size()]
 		char_data.set(stat, char_data.get(stat) + 1)
 
-	# Set as active character and apply dev stats
+	# Recalculate and set as active
+	char_data.recalculate_derived_stats()
+	char_data.current_hp = char_data.max_hp
+	char_data.current_stamina = char_data.max_stamina
+	char_data.current_mana = char_data.max_mana
 	GameManager.player_data = char_data
-	GameManager.apply_dev_stats(char_data)
 
-	# Starting gear
+	# DEV: Minimal gear only
 	InventoryManager.add_item(\"iron_sword\", 1)
 	InventoryManager.add_item(\"health_potion\", 3)
-	InventoryManager.add_item(\"lockpick\", 5)
-	InventoryManager.add_gold(100)
+	InventoryManager.add_gold(50)
+
+	# Normal speed (set to 10.0 for fast traversal testing)
+	GameManager.dev_speed_multiplier = 1.0
 
 	print(\"[DEV] Quick start: %s the %s\" % [char_data.character_name, Enums.Race.keys()[char_data.race]])
 
-	# Load game - start at Elder Moor
+	# Load Elder Moor
 	get_tree().change_scene_to_file(\"res://scenes/levels/elder_moor.tscn\")
 "
 

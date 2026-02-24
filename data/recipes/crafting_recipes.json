@@ -1,0 +1,167 @@
+[
+  {
+    "id": "craft_iron_sword",
+    "title": "Iron Sword",
+    "category": "weapons",
+    "description": "A sturdy iron blade, the workhorse of warriors throughout the realm. Three iron ingots are heated until glowing, then hammered together on the anvil and shaped into a double-edged blade. A leather strip wraps the tang to form a serviceable grip.",
+    "materials": {
+      "iron_ingot": 3,
+      "leather_strip": 1
+    },
+    "gold_cost": 25,
+    "skill_required": "Engineering 1",
+    "output": "iron_sword"
+  },
+  {
+    "id": "craft_steel_sword",
+    "title": "Steel Sword",
+    "category": "weapons",
+    "description": "A well-crafted steel blade that holds an edge better than iron and strikes harder in battle. The process requires careful temperature control and repeated folding to eliminate impurities. Only skilled smiths can produce quality steel weapons.",
+    "materials": {
+      "steel_ingot": 3,
+      "leather_strip": 2
+    },
+    "gold_cost": 75,
+    "skill_required": "Engineering 3",
+    "output": "steel_sword"
+  },
+  {
+    "id": "craft_iron_dagger",
+    "title": "Iron Dagger",
+    "category": "weapons",
+    "description": "A simple iron dagger, useful for everything from cutting rope to cutting throats. Even novice smiths can produce serviceable daggers, making them common throughout the realm.",
+    "materials": {
+      "iron_ingot": 1
+    },
+    "gold_cost": 10,
+    "skill_required": "None",
+    "output": "iron_dagger"
+  },
+  {
+    "id": "craft_wooden_bow",
+    "title": "Wooden Bow",
+    "category": "weapons",
+    "description": "A hunting bow crafted from flexible wood, capable of bringing down game at moderate distances. The wood must be properly seasoned and shaped to provide the right balance of power and reliability.",
+    "materials": {
+      "wood_plank": 2,
+      "leather_strip": 1
+    },
+    "gold_cost": 20,
+    "skill_required": "Engineering 1",
+    "output": "hunting_bow"
+  },
+  {
+    "id": "craft_leather_armor",
+    "title": "Leather Armor",
+    "category": "armor",
+    "description": "Basic leather protection that provides mobility while stopping glancing blows. Multiple layers of treated leather are stitched together and reinforced at vital points. Light enough for all-day wear but limited against heavy weapons.",
+    "materials": {
+      "leather": 4,
+      "leather_strip": 2
+    },
+    "gold_cost": 30,
+    "skill_required": "Engineering 1",
+    "output": "leather_armor"
+  },
+  {
+    "id": "craft_chain_mail",
+    "title": "Chain Mail",
+    "category": "armor",
+    "description": "Interlocking metal rings woven into a protective mesh that can turn sword cuts and arrow points. Creating chain mail is labor-intensive work, requiring thousands of rings to be individually linked. The result is flexible protection that has saved countless lives.",
+    "materials": {
+      "iron_ingot": 5,
+      "leather_strip": 2
+    },
+    "gold_cost": 100,
+    "skill_required": "Engineering 4",
+    "output": "chainmail"
+  },
+  {
+    "id": "craft_health_potion",
+    "title": "Health Potion",
+    "category": "consumables",
+    "description": "A basic healing potion brewed from red herbs known for their restorative properties. The herbs must be carefully prepared and combined with purified water, then left to steep until the mixture takes on a deep crimson color. Drinking the potion accelerates the body's natural healing.",
+    "materials": {
+      "red_herb": 2,
+      "empty_vial": 1
+    },
+    "gold_cost": 5,
+    "skill_required": "None",
+    "output": "health_potion"
+  },
+  {
+    "id": "craft_arrows",
+    "title": "Arrows (10)",
+    "category": "consumables",
+    "description": "A bundle of arrows suitable for hunting or combat. Each arrow requires a straight wooden shaft, iron head, and fletching. Mass production allows archers to keep their quivers full without breaking the purse.",
+    "materials": {
+      "wood_plank": 1,
+      "iron_ingot": 1
+    },
+    "gold_cost": 5,
+    "skill_required": "None",
+    "output": "arrows x10"
+  },
+  {
+    "id": "craft_lockpick",
+    "title": "Lockpick",
+    "category": "tools",
+    "description": "A thin metal tool shaped for manipulating lock mechanisms. Quality lockpicks require precise bending and tempering to achieve the right combination of flexibility and strength. Possession of lockpicks is technically illegal in most jurisdictions, though enforcement varies.",
+    "materials": {
+      "iron_ingot": 1
+    },
+    "gold_cost": 5,
+    "skill_required": "Engineering 1",
+    "output": "lockpick"
+  },
+  {
+    "id": "craft_repair_kit",
+    "title": "Repair Kit",
+    "category": "tools",
+    "description": "A collection of tools and materials for field repairs of weapons and armor. Includes files, whetstones, wire, leather patches, and other supplies needed to keep equipment functional away from a proper forge. Experienced adventurers never travel without one.",
+    "materials": {
+      "iron_ingot": 1,
+      "leather": 1
+    },
+    "gold_cost": 15,
+    "skill_required": "Engineering 2",
+    "output": "repair_kit"
+  },
+  {
+    "id": "smelt_iron",
+    "title": "Smelt Iron Ingot",
+    "category": "materials",
+    "description": "Raw iron ore must be smelted to remove impurities before it can be worked. The ore is heated in a furnace until it liquefies, allowing the slag to separate and drain away. The remaining iron is cast into ingots for storage and later use.",
+    "materials": {
+      "iron_ore": 2
+    },
+    "gold_cost": 0,
+    "skill_required": "None",
+    "output": "iron_ingot"
+  },
+  {
+    "id": "forge_steel",
+    "title": "Forge Steel Ingot",
+    "category": "materials",
+    "description": "Steel is created by combining iron with carefully measured amounts of carbon under controlled conditions. The process requires skill and experience, as too much carbon makes the metal brittle while too little leaves it soft. Quality steel commands premium prices throughout the realm.",
+    "materials": {
+      "iron_ingot": 2,
+      "coal": 1
+    },
+    "gold_cost": 5,
+    "skill_required": "Engineering 2",
+    "output": "steel_ingot"
+  },
+  {
+    "id": "cut_leather_strip",
+    "title": "Cut Leather Strips",
+    "category": "materials",
+    "description": "Leather strips are used in countless applications, from weapon grips to armor straps to simple bindings. A single piece of cured leather can be cut into multiple strips with a sharp knife and steady hand.",
+    "materials": {
+      "leather": 1
+    },
+    "gold_cost": 0,
+    "skill_required": "None",
+    "output": "leather_strip x3"
+  }
+]

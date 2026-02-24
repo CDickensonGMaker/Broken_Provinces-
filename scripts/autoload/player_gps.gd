@@ -97,8 +97,13 @@ func discover_cell(coords: Vector2i) -> void:
 
 	discovered_cells[coords] = Time.get_unix_time_from_system()
 
-	# Also mark in WorldGrid
+	# Also mark in WorldGrid (uses Elder Moor-relative coords)
 	WorldGrid.discover_cell(coords)
+
+	# Also mark in WorldData (uses grid coords with Elder Moor at 12,8)
+	# Convert from WorldGrid coords (Elder Moor = 0,0) to WorldData grid coords
+	var grid_coords: Vector2i = WorldData.region_to_grid(coords)
+	WorldData.discover_cell(grid_coords)
 
 	cell_revealed.emit(coords)
 
@@ -128,8 +133,55 @@ func _discover_location_at(coords: Vector2i) -> void:
 		"discovered_time": Time.get_unix_time_from_system()
 	}
 
+	# Award discovery XP based on location importance
+	var xp_reward: int = _get_discovery_xp(cell_info.location_type)
+	if xp_reward > 0:
+		_award_discovery_xp(xp_reward, cell_info.location_name)
+
 	location_discovered.emit(cell_info.location_id, cell_info.location_name)
-	print("[PlayerGPS] Location discovered: %s" % cell_info.location_name)
+	print("[PlayerGPS] Location discovered: %s (XP: %d)" % [cell_info.location_name, xp_reward])
+
+
+## Get discovery XP reward based on location type
+## Small POI = 25 XP, Large city = 100 XP
+func _get_discovery_xp(location_type: WorldGrid.LocationType) -> int:
+	match location_type:
+		WorldGrid.LocationType.CAPITAL:
+			return 100  # Major discovery - capital cities
+		WorldGrid.LocationType.CITY:
+			return 75   # Large discovery - cities
+		WorldGrid.LocationType.TOWN:
+			return 50   # Medium discovery - towns
+		WorldGrid.LocationType.VILLAGE:
+			return 35   # Small settlement
+		WorldGrid.LocationType.DUNGEON:
+			return 50   # Dungeon entrances are notable discoveries
+		WorldGrid.LocationType.OUTPOST:
+			return 30   # Small outposts
+		WorldGrid.LocationType.LANDMARK:
+			return 25   # Landmarks and points of interest
+		WorldGrid.LocationType.BRIDGE:
+			return 25   # Bridges and crossings
+		_:
+			return 0    # NONE and BLOCKED give no XP
+
+
+## Award discovery XP to the player
+func _award_discovery_xp(amount: int, location_name: String) -> void:
+	if not GameManager or not GameManager.player_data:
+		return
+
+	# Apply player's XP multiplier if they have one
+	var final_xp: int = amount
+	if GameManager.player_data.has_method("get_xp_multiplier"):
+		final_xp = int(amount * GameManager.player_data.get_xp_multiplier())
+
+	GameManager.player_data.add_ip(final_xp)
+
+	# Show discovery notification with XP
+	var hud: Node = get_tree().get_first_node_in_group("hud")
+	if hud and hud.has_method("show_notification"):
+		hud.show_notification("Discovered %s! (+%d XP)" % [location_name, final_xp])
 
 
 ## Check if a location has been discovered
@@ -206,8 +258,13 @@ func discover_location(location_id: String) -> void:
 		"discovered_time": Time.get_unix_time_from_system()
 	}
 
+	# Award discovery XP based on location importance (shrines also give XP)
+	var xp_reward: int = _get_discovery_xp(cell_info.location_type)
+	if xp_reward > 0:
+		_award_discovery_xp(xp_reward, cell_info.location_name)
+
 	location_discovered.emit(location_id, cell_info.location_name)
-	print("[PlayerGPS] Location discovered via shrine: %s" % cell_info.location_name)
+	print("[PlayerGPS] Location discovered via shrine: %s (XP: %d)" % [cell_info.location_name, xp_reward])
 
 
 ## Set current position directly (used for loading saves or fast travel)
@@ -355,6 +412,9 @@ func from_dict(data: Dictionary) -> void:
 			var coords := Vector2i(cell_dict.get("x", 0), cell_dict.get("y", 0))
 			discovered_cells[coords] = Time.get_unix_time_from_system()
 			WorldGrid.discover_cell(coords)
+			# Also sync to WorldData (uses grid coords with Elder Moor at 12,8)
+			var grid_coords: Vector2i = WorldData.region_to_grid(coords)
+			WorldData.discover_cell(grid_coords)
 
 	# Load discovered locations
 	discovered_locations = data.get("discovered_locations", {}).duplicate(true)

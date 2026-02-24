@@ -1,0 +1,27 @@
+{
+  "kill": {
+    "standard": [
+      {"target": "wolf", "display": "Wolves", "count_min": 3, "count_max": 6},
+      {"target": "boar", "display": "Wild Boars", "count_min": 2, "count_max": 4}
+    ],
+    "dangerous": [
+      {"target": "dire_wolf", "display": "Dire Wolves", "count_min": 2, "count_max": 4},
+      {"target": "bandit", "display": "Bandits", "count_min": 4, "count_max": 8}
+    ],
+    "deadly": [
+      {"target": "bandit_captain", "display": "Bandit Captain", "count_min": 1, "count_max": 1, "is_boss": true}
+    ],
+    "extreme": [
+      {"target": "alpha_wolf", "display": "the Alpha Wolf", "count_min": 1, "count_max": 1, "is_boss": true}
+    ]
+  },
+  "collect": {
+    "standard": [
+      {"target": "wolf_pelt", "display": "Wolf Pelts", "count_min": 3, "count_max": 5},
+      {"target": "raw_meat", "display": "Raw Meat", "count_min": 5, "count_max": 10}
+    ],
+    "dangerous": [
+      {"target": "dire_wolf_pelt", "display": "Dire Wolf Pelts", "count_min": 2, "count_max": 3}
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "dwarves_birth"
+display_name = "Dwarves of Birth"
+description = "The traditionalist faction of dwarven society, valuing lineage, hereditary rule, and ancient customs. They believe leadership should pass through bloodlines and that the old ways are the true ways. They are suspicious of innovation and outsiders who might dilute their culture."
+parent_faction = "dwarves"
+allies = ["dwarves"]
+enemies = ["goblins"]
+neutrals = ["human_empire", "dwarves_power", "elves_pro_human"]
+alignment = 30
+ranks = [{"name": "Outsider", "min_reputation": -100, "benefits": []}, {"name": "Tolerated", "min_reputation": -20, "benefits": []}, {"name": "Guest", "min_reputation": 10, "benefits": ["trade_access"]}, {"name": "Friend of the Clans", "min_reputation": 40, "benefits": ["trade_access", "hold_access"]}, {"name": "Clan Friend", "min_reputation": 70, "benefits": ["trade_access", "hold_access", "master_smiths"]}, {"name": "Blood Brother", "min_reputation": 90, "benefits": ["trade_access", "hold_access", "master_smiths", "clan_secrets"]}]
+default_reputation = -10
+joinable = true
+join_threshold = 40
+is_hidden = false
+faction_color = Color(0.6, 0.5, 0.3, 1.0)

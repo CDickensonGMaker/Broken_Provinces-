@@ -24,6 +24,7 @@ class Bounty:
 	var is_complete: bool = false
 	var is_active: bool = false
 	var bonus_loot: String = ""  # Guaranteed loot for deadly+ tiers
+	var source_board_name: String = ""  # Which board this bounty was accepted from
 
 	func get_progress_text() -> String:
 		return "%d / %d" % [current_count, required_count]
@@ -48,6 +49,7 @@ class Bounty:
 @export var board_name: String = "Bounty Board"
 @export var max_available_bounties: int = 5
 @export var min_available_bounties: int = 3
+@export var region_template_path: String = ""  ## Optional regional bounty template file
 
 ## Visual components
 var mesh_instance: MeshInstance3D
@@ -175,9 +177,13 @@ func _create_collision() -> void:
 
 ## Load bounty templates from data file
 func _load_bounty_templates() -> void:
+	# Use regional template if specified, otherwise use default
 	var file_path := "res://data/bounty_templates.json"
+	if not region_template_path.is_empty():
+		file_path = region_template_path
+
 	if not FileAccess.file_exists(file_path):
-		push_warning("[BountyBoard] bounty_templates.json not found, using defaults")
+		push_warning("[BountyBoard] %s not found, using defaults" % file_path)
 		_create_default_templates()
 		return
 
@@ -188,7 +194,7 @@ func _load_bounty_templates() -> void:
 		if json is Dictionary:
 			bounty_templates = json
 		else:
-			push_warning("[BountyBoard] Failed to parse bounty_templates.json")
+			push_warning("[BountyBoard] Failed to parse %s" % file_path)
 			_create_default_templates()
 	else:
 		_create_default_templates()
@@ -430,6 +436,7 @@ func accept_bounty(bounty: Bounty) -> bool:
 		available_bounties.remove_at(idx)
 
 	bounty.is_active = true
+	bounty.source_board_name = board_name  # Track where this bounty was accepted
 
 	# Check existing inventory for collect bounties
 	if bounty.objective_type == "collect":
@@ -447,6 +454,13 @@ func accept_bounty(bounty: Bounty) -> bool:
 ## Turn in a completed bounty
 func turn_in_bounty(bounty: Bounty) -> bool:
 	if not bounty.is_complete:
+		return false
+
+	# Can only turn in at the board where the bounty was accepted
+	if bounty.source_board_name != board_name:
+		var hud := get_tree().get_first_node_in_group("hud")
+		if hud and hud.has_method("show_notification"):
+			hud.show_notification("Must turn in at: %s" % bounty.source_board_name)
 		return false
 
 	# Give rewards
@@ -589,7 +603,8 @@ func to_dict() -> Dictionary:
 			"is_boss": bounty.is_boss,
 			"is_complete": bounty.is_complete,
 			"is_active": bounty.is_active,
-			"bonus_loot": bounty.bonus_loot
+			"bonus_loot": bounty.bonus_loot,
+			"source_board_name": bounty.source_board_name
 		})
 
 	return {
@@ -621,6 +636,7 @@ func from_dict(data: Dictionary) -> void:
 			bounty.is_complete = bd.get("is_complete", false)
 			bounty.is_active = bd.get("is_active", true)
 			bounty.bonus_loot = bd.get("bonus_loot", "")
+			bounty.source_board_name = bd.get("source_board_name", "")
 			active_bounties.append(bounty)
 
 	var completed: Array = data.get("completed_bounty_ids", [])

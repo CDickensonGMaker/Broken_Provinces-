@@ -3,7 +3,7 @@
 class_name Merchant
 extends StaticBody3D
 
-const DEBUG := true
+const DEBUG := false
 
 ## Visual representation
 var mesh_root: Node3D
@@ -31,7 +31,7 @@ var npc_id: String:
 	get:
 		return get_npc_id()
 var npc_type: String = "merchant"  # For NPC_TYPE_IN_REGION turn-ins
-var region_id: String = ""  # Set by zone when spawned
+@export var region_id: String = ""  # Set by zone when spawned or in scene
 @export var sell_price_multiplier: float = 0.5  # Price when player sells (50% of value)
 @export var shop_tier: LootTables.LootTier = LootTables.LootTier.UNCOMMON
 @export var shop_type: String = "general"
@@ -197,12 +197,33 @@ func _setup_default_inventory() -> void:
 		print("[Merchant] Setting up inventory...")
 		print("[Merchant] Shop tier: %d, Shop type: %s" % [shop_tier, shop_type])
 
-	# General store uses fixed inventory (lockpicks + repair kits only)
+	# General store uses fixed inventory (tools and supplies)
 	if shop_type == "general":
+		# Required inventory - always available (infinite stock)
 		_add_shop_item("lockpick", 25, -1, Enums.ItemQuality.AVERAGE)  # Infinite stock
 		_add_shop_item("repair_kit", 50, -1, Enums.ItemQuality.AVERAGE)  # Infinite stock
+		_add_shop_item("pickaxe", 80, -1, Enums.ItemQuality.AVERAGE)  # Mining tool
+		_add_shop_item("axe", 150, -1, Enums.ItemQuality.AVERAGE)  # Woodcutting/combat
+		_add_shop_item("torch", 15, -1, Enums.ItemQuality.AVERAGE)  # Light source
+
+		# Optional inventory - small chance to have potions (marked up vs magic shops)
+		# Use RNG seeded by merchant position for consistent stock per merchant
+		var stock_rng := RandomNumberGenerator.new()
+		stock_rng.seed = hash(merchant_name + str(global_position))
+
+		# 35% chance for each potion type, limited stock, marked up prices
+		if stock_rng.randf() < 0.35:
+			var health_qty: int = stock_rng.randi_range(1, 3)
+			_add_shop_item("health_potion", 75, health_qty, Enums.ItemQuality.AVERAGE)  # 50% markup
+		if stock_rng.randf() < 0.35:
+			var stamina_qty: int = stock_rng.randi_range(1, 3)
+			_add_shop_item("stamina_potion", 60, stamina_qty, Enums.ItemQuality.AVERAGE)  # 50% markup
+		if stock_rng.randf() < 0.35:
+			var mana_qty: int = stock_rng.randi_range(1, 3)
+			_add_shop_item("mana_potion", 110, mana_qty, Enums.ItemQuality.AVERAGE)  # ~47% markup
+
 		if DEBUG:
-			print("[Merchant] General store: fixed inventory (lockpicks, repair kits)")
+			print("[Merchant] General store: tools, supplies, and possibly potions")
 		return
 
 	# All shop types (including alchemist) use LootTables random generation
@@ -255,25 +276,15 @@ func interact(_interactor: Node) -> void:
 		_show_quest_turnin_dialogue(turnin_quests[0])
 		return
 
-	# Priority 1: Use scripted dialogue if available
-	if dialogue_data:
-		# Start dialogue first - dialogue can use OPEN_SHOP action to open shop
-		# Pass merchant_id as context for per-merchant flag substitution
-		var resolved_id: String = merchant_id if not merchant_id.is_empty() else merchant_name.to_snake_case()
-		var context := {"merchant_id": resolved_id}
-		DialogueManager.start_dialogue(dialogue_data, merchant_name, context)
+	# Use topic-based ConversationSystem (TRADE topic opens shop)
+	var profile := knowledge_profile
+	if not profile:
+		profile = _get_merchant_profile()
+	if profile:
+		ConversationSystem.start_conversation(self, profile)
 		return
 
-	# Priority 2: Use topic-based conversation (TRADE topic leads to shop)
-	if use_conversation_system:
-		var profile := knowledge_profile
-		if not profile:
-			profile = _get_merchant_profile()
-		if profile:
-			ConversationSystem.start_conversation(self, profile)
-			return
-
-	# Fallback: Open shop directly
+	# Fallback: Open shop directly if no profile
 	_open_shop_ui()
 
 
@@ -409,9 +420,9 @@ func _open_shop_ui() -> void:
 	get_tree().paused = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
-	# Open the UI
+	# Open the UI (pass self as merchant)
 	if shop_ui.has_method("open"):
-		shop_ui.open()
+		shop_ui.open(self)
 
 func _on_shop_ui_closed(canvas: CanvasLayer) -> void:
 	## Handle shop UI close

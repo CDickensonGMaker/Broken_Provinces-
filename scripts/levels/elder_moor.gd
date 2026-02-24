@@ -20,8 +20,8 @@ func _ready() -> void:
 	if is_main_scene:
 		if PlayerGPS:
 			PlayerGPS.set_position(Vector2i.ZERO)  # Elder Moor is at (0, 0)
-		# Start the Road to Thornfield quest automatically for new players
-		_start_starter_quest()
+		# Legacy starter quest disabled - using new quest system
+		#_start_starter_quest()
 
 	_setup_navigation()
 	if is_main_scene:
@@ -29,7 +29,11 @@ func _ready() -> void:
 	_setup_spawn_point_metadata()
 	_spawn_enemy_spawners()
 	_spawn_harvestable_herbs()
-	_spawn_npcs()
+	# NPCs and crafting stations are now placed directly in elder_moor.tscn
+	# for easier editing in the Godot editor
+	#_spawn_npcs()
+	#_spawn_crafting_stations()
+	#_spawn_tutorial_npcs()
 
 	# Register with CellStreamer and start streaming
 	_setup_cell_streaming()
@@ -37,15 +41,15 @@ func _ready() -> void:
 	print("[Elder Moor] Logging camp initialized")
 
 
-## Start the introductory quest to guide players east to Thornfield
-func _start_starter_quest() -> void:
-	if not QuestManager:
-		return
-
-	# Only start if not already active or completed
-	if not QuestManager.quests.has("road_to_thornfield"):
-		if QuestManager.start_quest("road_to_thornfield"):
-			print("[Elder Moor] Started starter quest: Road to Thornfield")
+## Legacy starter quest - disabled, using new quest system
+#func _start_starter_quest() -> void:
+#	if not QuestManager:
+#		return
+#
+#	# Only start if not already active or completed
+#	if not QuestManager.quests.has("road_to_thornfield"):
+#		if QuestManager.start_quest("road_to_thornfield"):
+#			print("[Elder Moor] Started starter quest: Road to Thornfield")
 
 
 ## Register this scene with CellStreamer and start streaming
@@ -107,46 +111,73 @@ func _setup_spawn_point_metadata() -> void:
 
 
 ## Spawn enemy spawners at marker positions in the wilderness
+## Only spawns 1 goblin totem (randomly selected) with patrolling goblins
 func _spawn_enemy_spawners() -> void:
 	var spawners_container := get_node_or_null("EnemySpawners")
 	if not spawners_container:
 		return
 
+	var goblin_markers: Array[Node] = []
+	var wolf_markers: Array[Node] = []
+
+	# Sort markers by type
 	for marker in spawners_container.get_children():
+		if "Goblin" in marker.name:
+			goblin_markers.append(marker)
+		elif "Wolf" in marker.name:
+			wolf_markers.append(marker)
+
+	# Only spawn 1 goblin totem (randomly selected) with more goblins that patrol
+	if goblin_markers.size() > 0:
+		var chosen_idx: int = randi() % goblin_markers.size()
+		var marker: Node = goblin_markers[chosen_idx]
+
 		var spawner := EnemySpawner.new()
 		spawner.position = marker.global_position
-
-		# Configure based on marker name
-		if "Goblin" in marker.name:
-			spawner.spawner_id = "goblin_totem_%s" % marker.name.to_lower()
-			spawner.display_name = "Goblin Totem"
-			spawner.max_hp = 500  # Starter level - easier to destroy
-			spawner.armor_value = 5
-			spawner.spawn_interval_min = 30.0
-			spawner.spawn_interval_max = 45.0
-			spawner.max_spawned_enemies = 6
-			spawner.spawn_count_min = 1
-			spawner.spawn_count_max = 2
-			spawner.enemy_data_path = "res://data/enemies/goblin_soldier.tres"
-			spawner.secondary_enemy_enabled = true
-			spawner.secondary_enemy_chance = 0.3
-			spawner.secondary_data_path = "res://data/enemies/goblin_archer.tres"
-			# Note: sprite_path comes from EnemyData.sprite_path, not a separate property
-		elif "Wolf" in marker.name:
-			spawner.spawner_id = "wolf_den_%s" % marker.name.to_lower()
-			spawner.display_name = "Wolf Den"
-			spawner.max_hp = 300
-			spawner.armor_value = 3
-			spawner.spawn_interval_min = 40.0
-			spawner.spawn_interval_max = 60.0
-			spawner.max_spawned_enemies = 4
-			spawner.spawn_count_min = 1
-			spawner.spawn_count_max = 2
-			spawner.enemy_data_path = "res://data/enemies/wolf.tres"
-			spawner.secondary_enemy_enabled = false
+		spawner.spawner_id = "goblin_totem_main"
+		spawner.display_name = "Goblin Totem"
+		spawner.max_hp = 600  # Slightly tougher since it's the only one
+		spawner.armor_value = 8
+		spawner.spawn_interval_min = 45.0  # Slower spawning
+		spawner.spawn_interval_max = 60.0
+		spawner.max_spawned_enemies = 8  # More max goblins since it's the only totem
+		spawner.spawn_count_min = 1
+		spawner.spawn_count_max = 2
+		spawner.spawned_wander_radius = 40.0  # Much larger wander radius for patrols
+		spawner.spawned_leash_radius = 80.0   # Allow goblins to roam far
+		spawner.spawned_patrol_radius = 50.0  # Large patrol radius for cell-spanning patrols
+		spawner.enable_patrols = true         # Enable patrol behavior
+		spawner.enemy_data_path = "res://data/enemies/goblin_soldier.tres"
+		spawner.secondary_enemy_enabled = true
+		spawner.secondary_enemy_chance = 0.25
+		spawner.secondary_data_path = "res://data/enemies/goblin_archer.tres"
+		spawner.tertiary_enemy_enabled = true
+		spawner.tertiary_enemy_chance = 0.10
+		spawner.tertiary_data_path = "res://data/enemies/goblin_mage.tres"
 
 		add_child(spawner)
-		print("[Elder Moor] Spawned enemy spawner: %s at %s" % [spawner.display_name, marker.global_position])
+		print("[Elder Moor] Spawned single goblin totem at %s with patrol radius" % marker.global_position)
+
+	# Spawn wolf dens (keep all of them but reduce count)
+	for marker in wolf_markers:
+		var spawner := EnemySpawner.new()
+		spawner.position = marker.global_position
+		spawner.spawner_id = "wolf_den_%s" % marker.name.to_lower()
+		spawner.display_name = "Wolf Den"
+		spawner.max_hp = 250
+		spawner.armor_value = 3
+		spawner.spawn_interval_min = 60.0  # Slower spawning
+		spawner.spawn_interval_max = 90.0
+		spawner.max_spawned_enemies = 3  # Fewer wolves
+		spawner.spawn_count_min = 1
+		spawner.spawn_count_max = 1
+		spawner.spawned_wander_radius = 25.0  # Wolves patrol their territory
+		spawner.spawned_leash_radius = 40.0
+		spawner.enemy_data_path = "res://data/enemies/wolf.tres"
+		spawner.secondary_enemy_enabled = false
+
+		add_child(spawner)
+		print("[Elder Moor] Spawned wolf den at %s" % marker.global_position)
 
 	# Remove the marker container since we no longer need it
 	spawners_container.queue_free()
@@ -187,3 +218,113 @@ func _spawn_npcs() -> void:
 	merchant.merchant_id = "grimwald_eldermoor"
 	merchant.region_id = "elder_moor"
 	print("[Elder Moor] Spawned merchant: Grimwald at GeneralShop")
+
+	# Spawn Tharin Ironbeard near the ForemansCabin
+	# ForemansCabin is at (-15, 0, -10), place Tharin in front of it
+	var tharin_scene: PackedScene = load("res://scenes/npcs/tharin_ironbeard_instance.tscn")
+	if tharin_scene:
+		var tharin: TharinIronbeard = tharin_scene.instantiate()
+		tharin.position = Vector3(-15.0, 0.0, -7.0)  # In front of ForemansCabin
+		add_child(tharin)
+		print("[Elder Moor] Spawned NPC: Tharin Ironbeard at ForemansCabin")
+	else:
+		push_warning("[Elder Moor] Failed to load tharin_ironbeard_instance.tscn")
+
+	# Old Harlan disabled - no quests configured yet
+	# Uncomment when quest giver has quests to offer
+	#var quest_giver_pos := Vector3(3.0, 0.0, 2.0)
+	#var quest_giver := QuestGiver.spawn_quest_giver(
+	#	self, quest_giver_pos, "Old Harlan", "old_harlan_eldermoor",
+	#	null, 8, 2
+	#)
+	#quest_giver.region_id = "elder_moor"
+
+
+## Spawn crafting stations (blacksmith anvil, cooking fire, alchemy table)
+func _spawn_crafting_stations() -> void:
+	# Blacksmith anvil - near the forge/blacksmith area
+	# Position next to Grom the Smith's workspace
+	var anvil_pos := Vector3(-8.0, 0.0, -12.0)
+	var anvil := RepairStation.spawn_station(self, anvil_pos)
+	print("[Elder Moor] Spawned blacksmith anvil at %s" % anvil_pos)
+
+	# Cooking fire - near the camp's central campfire area
+	# Position at the gathering area where travelers rest
+	var cooking_pos := Vector3(5.0, 0.0, 8.0)
+	var cooking := CookingStation.spawn_cooking_station(self, cooking_pos)
+	print("[Elder Moor] Spawned cooking station at %s" % cooking_pos)
+
+	# Alchemy table - near the herbalist's tent/workspace
+	# Position where Old Sage Brennan works
+	var alchemy_pos := Vector3(10.0, 0.0, -5.0)
+	var alchemy := AlchemyStation.spawn_alchemy_station(self, alchemy_pos)
+	print("[Elder Moor] Spawned alchemy station at %s" % alchemy_pos)
+
+
+## Spawn tutorial quest giver NPCs
+func _spawn_tutorial_npcs() -> void:
+	# Grom the Smith - blacksmith tutorial quest giver
+	# Positioned near the anvil
+	var grom_pos := Vector3(-10.0, 0.0, -12.0)
+	var grom_quests: Array[String] = ["tutorial_crafting"]
+	var grom := QuestGiver.spawn_quest_giver(
+		self,
+		grom_pos,
+		"Grom the Smith",
+		"grom_the_smith",
+		null,  # Uses default sprite
+		8, 2,
+		grom_quests
+	)
+	grom.region_id = "elder_moor"
+	grom.faction_id = "human_empire"
+	grom.generic_dialogues = {
+		"offer": "Hail, traveler! I am Grom, the village smith.\nI can teach you the basics of metalworking if you're interested.\nI've got some spare iron - craft yourself a dagger at my anvil.",
+		"active": "Have you crafted that iron dagger yet?\nThe anvil is right there - just use it and select the dagger recipe.",
+		"complete": "Well done! That's a fine piece of work for a beginner.\nHere, take this repair kit - you'll need it to maintain your gear."
+	}
+	print("[Elder Moor] Spawned tutorial NPC: Grom the Smith")
+
+	# Martha the Cook - cooking tutorial quest giver
+	# Positioned near the cooking fire
+	var martha_pos := Vector3(3.0, 0.0, 8.0)
+	var martha_quests: Array[String] = ["tutorial_cooking"]
+	var martha := QuestGiver.spawn_quest_giver(
+		self,
+		martha_pos,
+		"Martha",
+		"martha_cook",
+		null,  # Uses default sprite
+		8, 2,
+		martha_quests
+	)
+	martha.region_id = "elder_moor"
+	martha.faction_id = "human_empire"
+	martha.generic_dialogues = {
+		"offer": "Oh, hello dear! You look like you could use a good meal.\nI can teach you to cook if you'd like - it's a useful skill for any adventurer.\nHere's some raw meat. Cook it over the fire there.",
+		"active": "Just use the cooking fire and roast that meat.\nNothing fancy, but it'll keep you alive out there.",
+		"complete": "There you go! Simple but effective.\nTake these stews I made - they'll restore both health and stamina."
+	}
+	print("[Elder Moor] Spawned tutorial NPC: Martha the Cook")
+
+	# Old Sage Brennan - alchemy tutorial quest giver
+	# Positioned near the alchemy table
+	var brennan_pos := Vector3(8.0, 0.0, -5.0)
+	var brennan_quests: Array[String] = ["tutorial_alchemy"]
+	var brennan := QuestGiver.spawn_quest_giver(
+		self,
+		brennan_pos,
+		"Old Sage Brennan",
+		"sage_brennan",
+		null,  # Uses default sprite
+		8, 2,
+		brennan_quests
+	)
+	brennan.region_id = "elder_moor"
+	brennan.faction_id = "human_empire"
+	brennan.generic_dialogues = {
+		"offer": "Ah, a young soul seeking knowledge. I am Brennan, the village herbalist.\nAlchemy is a powerful art - the ability to brew potions can save your life.\nI'll give you the ingredients to make a basic healing potion. Use the alchemy table.",
+		"active": "The alchemy table is there. Combine two red herbs with an empty vial.\nThe art of potion-making requires patience and precision.",
+		"complete": "Excellent work! You have a steady hand.\nHere, take these supplies - a mana potion and some vials for your future brews."
+	}
+	print("[Elder Moor] Spawned tutorial NPC: Old Sage Brennan")

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "elves_pro_human"
+display_name = "Elven Diplomats"
+description = "The diplomatic faction of elven society who believe in coexistence with humans. They see trade and cultural exchange as beneficial to both races and work to build bridges between their forest kingdoms and human settlements. They often serve as ambassadors and mediators."
+parent_faction = "elves"
+allies = ["elves", "human_empire"]
+enemies = ["elves_anti_human", "goblins"]
+neutrals = ["dwarves_birth", "dwarves_power"]
+alignment = 40
+ranks = [{"name": "Stranger", "min_reputation": -100, "benefits": []}, {"name": "Acquaintance", "min_reputation": -20, "benefits": []}, {"name": "Friend", "min_reputation": 20, "benefits": ["trade_access", "elven_goods"]}, {"name": "Ally", "min_reputation": 50, "benefits": ["trade_access", "elven_goods", "diplomatic_aid"]}, {"name": "Ambassador", "min_reputation": 75, "benefits": ["trade_access", "elven_goods", "diplomatic_aid", "elven_training"]}, {"name": "Elf-Friend", "min_reputation": 95, "benefits": ["trade_access", "elven_goods", "diplomatic_aid", "elven_training", "star_magic"]}]
+default_reputation = 10
+joinable = true
+join_threshold = 20
+is_hidden = false
+faction_color = Color(0.4, 0.7, 0.5, 1.0)

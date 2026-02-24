@@ -1,0 +1,51 @@
+{
+	"id": "tutorial_alchemy",
+	"title": "Herbalism Basics",
+	"description": "Old Sage Brennan is the village herbalist and healer. He has offered to teach you the fundamentals of alchemy - the art of brewing potions from herbs. He has provided you with the ingredients to brew your first health potion.",
+	"is_main_quest": false,
+	"quest_source": "tutorial",
+	"giver_npc_id": "sage_brennan",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "talk_to_brennan",
+			"description": "Speak with Old Sage Brennan",
+			"type": "talk",
+			"target": "sage_brennan",
+			"required_count": 1
+		},
+		{
+			"id": "brew_potion",
+			"description": "Brew a Health Potion at the alchemy table",
+			"type": "craft",
+			"target": "craft_health_potion",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_brennan",
+			"description": "Return to Old Sage Brennan",
+			"type": "talk",
+			"target": "sage_brennan",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "sage_brennan",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 20,
+		"xp": 40,
+		"items": [
+			{"id": "mana_potion", "quantity": 1},
+			{"id": "empty_vial", "quantity": 3}
+		]
+	},
+	"starter_items": [
+		{"id": "red_herb", "quantity": 3},
+		{"id": "empty_vial", "quantity": 2}
+	],
+	"prerequisites": [],
+	"next_quest": "",
+	"is_tutorial": true
+}

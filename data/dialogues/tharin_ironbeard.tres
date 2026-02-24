@@ -1,0 +1,265 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=35 format=3 uid="uid://c4tharin_ironbeard"]
+
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_node.gd" id="2_node"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_choice.gd" id="3_choice"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_condition.gd" id="4_cond"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_action.gd" id="5_action"]
+
+; =============================================================================
+; CHOICES - Reusable choice components
+; =============================================================================
+
+[sub_resource type="Resource" id="choice_goodbye"]
+script = ExtResource("3_choice")
+text = "Farewell, Tharin."
+next_node_id = "end"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_ask_about_letter"]
+script = ExtResource("3_choice")
+text = "You mentioned having work for someone like me?"
+next_node_id = "letter_intro"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_ask_about_keepers"]
+script = ExtResource("3_choice")
+text = "Who are the Keepers?"
+next_node_id = "about_keepers"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_ask_about_dalhurst"]
+script = ExtResource("3_choice")
+text = "Tell me about Dalhurst."
+next_node_id = "about_dalhurst"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_ask_about_aldric"]
+script = ExtResource("3_choice")
+text = "Who is this contact I'm looking for?"
+next_node_id = "about_aldric"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+; Action: Start the quest
+[sub_resource type="Resource" id="action_start_quest"]
+script = ExtResource("5_action")
+type = 5
+param_string = "keepers_letter_delivery"
+param_int = 0
+param_float = 0.0
+success_node_id = ""
+failure_node_id = ""
+
+; Action: Give player the letter
+[sub_resource type="Resource" id="action_give_letter"]
+script = ExtResource("5_action")
+type = 1
+param_string = "tharins_letter"
+param_int = 1
+param_float = 0.0
+success_node_id = ""
+failure_node_id = ""
+
+; Action: Set flag that player accepted quest
+[sub_resource type="Resource" id="action_set_accepted_flag"]
+script = ExtResource("5_action")
+type = 8
+param_string = "tharin_quest_accepted"
+param_int = 0
+param_float = 0.0
+success_node_id = ""
+failure_node_id = ""
+
+[sub_resource type="Resource" id="choice_accept_quest"]
+script = ExtResource("3_choice")
+text = "I'll take the letter to Dalhurst for you."
+next_node_id = "quest_accepted"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = [SubResource("action_start_quest"), SubResource("action_give_letter"), SubResource("action_set_accepted_flag")]
+
+[sub_resource type="Resource" id="choice_decline_quest"]
+script = ExtResource("3_choice")
+text = "I'm not interested in courier work."
+next_node_id = "quest_declined"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_ask_payment"]
+script = ExtResource("3_choice")
+text = "What's in it for me?"
+next_node_id = "discuss_payment"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_back_to_start"]
+script = ExtResource("3_choice")
+text = "I had another question."
+next_node_id = "start"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+; Condition: Quest not accepted yet
+[sub_resource type="Resource" id="cond_quest_not_accepted"]
+script = ExtResource("4_cond")
+type = 6
+param_string = "tharin_quest_accepted"
+param_int = 0
+param_float = 0.0
+invert = false
+
+; Condition: Quest accepted
+[sub_resource type="Resource" id="cond_quest_accepted"]
+script = ExtResource("4_cond")
+type = 5
+param_string = "tharin_quest_accepted"
+param_int = 0
+param_float = 0.0
+invert = false
+
+[sub_resource type="Resource" id="choice_quest_progress"]
+script = ExtResource("3_choice")
+text = "About the letter you gave me..."
+next_node_id = "quest_progress"
+conditions = [SubResource("cond_quest_accepted")]
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+; =============================================================================
+; NODES - Dialogue tree structure
+; =============================================================================
+
+[sub_resource type="Resource" id="node_start"]
+script = ExtResource("2_node")
+id = "start"
+speaker_name = "Tharin Ironbeard"
+text = "*strokes his braided beard thoughtfully* Ah, another soul wanderin' through Elder Moor. I can tell by the way ye carry yerself - ye've got the look of someone searchin' for purpose. Or perhaps... opportunity?"
+choices = [SubResource("choice_ask_about_letter"), SubResource("choice_ask_about_keepers"), SubResource("choice_ask_about_dalhurst"), SubResource("choice_quest_progress"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "tharin_neutral"
+
+[sub_resource type="Resource" id="node_letter_intro"]
+script = ExtResource("2_node")
+id = "letter_intro"
+speaker_name = "Tharin Ironbeard"
+text = "*lowers his voice* Aye, that I do. I've a letter that needs deliverin' to Dalhurst - to a man named Aldric Vane. He runs a curiosities shop in the merchant district. It's a simple enough task, but the contents... let's just say they're for eyes other than yers."
+choices = [SubResource("choice_accept_quest"), SubResource("choice_ask_payment"), SubResource("choice_decline_quest")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "tharin_serious"
+
+[sub_resource type="Resource" id="node_discuss_payment"]
+script = ExtResource("2_node")
+id = "discuss_payment"
+speaker_name = "Tharin Ironbeard"
+text = "Fair question. Aldric will see ye compensated - fifty gold pieces for yer trouble, and some knowledge that might serve ye well in these dark times. More importantly, ye'd be makin' friends in places that matter. The roads are dangerous, but the reward of trust is worth more than coin."
+choices = [SubResource("choice_accept_quest"), SubResource("choice_decline_quest"), SubResource("choice_back_to_start")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "tharin_neutral"
+
+[sub_resource type="Resource" id="node_quest_accepted"]
+script = ExtResource("2_node")
+id = "quest_accepted"
+speaker_name = "Tharin Ironbeard"
+text = "*hands over a sealed letter with an unfamiliar wax crest* Good. Take this to Aldric Vane in Dalhurst's merchant district. Don't break the seal, and don't let it fall into the wrong hands. Aldric will explain more when ye arrive. May the gods watch over yer journey."
+choices = [SubResource("choice_ask_about_aldric"), SubResource("choice_ask_about_dalhurst"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "tharin_pleased"
+
+[sub_resource type="Resource" id="node_quest_declined"]
+script = ExtResource("2_node")
+id = "quest_declined"
+speaker_name = "Tharin Ironbeard"
+text = "*nods slowly* I understand. Not everyone is ready for such burdens. But if ye change yer mind, ye know where to find me. The offer stands."
+choices = [SubResource("choice_back_to_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "tharin_neutral"
+
+[sub_resource type="Resource" id="node_about_keepers"]
+script = ExtResource("2_node")
+id = "about_keepers"
+speaker_name = "Tharin Ironbeard"
+text = "*his eyes sharpen* The Keepers? They're... a fellowship of sorts. Folk who understand that some knowledge is too dangerous to be forgotten, yet too perilous to be widely known. We've existed for centuries, watchin', guardin', and occasionally... actin'. But that's all I'll say for now."
+choices = [SubResource("choice_ask_about_letter"), SubResource("choice_back_to_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "tharin_serious"
+
+[sub_resource type="Resource" id="node_about_dalhurst"]
+script = ExtResource("2_node")
+id = "about_dalhurst"
+speaker_name = "Tharin Ironbeard"
+text = "Dalhurst lies to the west, through the Crossroads. It's a proper town - bigger than Elder Moor, with merchant guilds, a garrison, and folk from all walks. Follow the western road and ye can't miss it. Just mind the bandits along the way."
+choices = [SubResource("choice_ask_about_letter"), SubResource("choice_back_to_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "tharin_neutral"
+
+[sub_resource type="Resource" id="node_about_aldric"]
+script = ExtResource("2_node")
+id = "about_aldric"
+speaker_name = "Tharin Ironbeard"
+text = "Aldric Vane is... a complicated man. He deals in curiosities - artifacts, relics, the odd magical trinket. But beneath that merchant's facade, he's one of us. A Keeper. Trust him with the letter, but be careful what else ye trust him with. He has his own... interests."
+choices = [SubResource("choice_back_to_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "tharin_serious"
+
+[sub_resource type="Resource" id="node_quest_progress"]
+script = ExtResource("2_node")
+id = "quest_progress"
+speaker_name = "Tharin Ironbeard"
+text = "Ye still have the letter? Good. Get it to Aldric in Dalhurst as soon as ye can. Time is not always on our side in these matters. Is there somethin' else ye need?"
+choices = [SubResource("choice_ask_about_aldric"), SubResource("choice_ask_about_dalhurst"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "tharin_serious"
+
+[sub_resource type="Resource" id="node_end"]
+script = ExtResource("2_node")
+id = "end"
+speaker_name = "Tharin Ironbeard"
+text = "*gives a curt nod* Stone and steel guide yer path, friend."
+choices = []
+is_end_node = true
+auto_continue_to = ""
+portrait_id = "tharin_neutral"
+
+; =============================================================================
+; MAIN RESOURCE
+; =============================================================================
+
+[resource]
+script = ExtResource("1_data")
+id = "tharin_ironbeard"
+display_name = "Tharin Ironbeard Dialogue"
+description = "Dialogue tree for Tharin Ironbeard, dwarven blacksmith and Keeper agent in Elder Moor. Gives the keepers_letter_delivery quest."
+start_node_id = "start"
+nodes = [SubResource("node_start"), SubResource("node_letter_intro"), SubResource("node_discuss_payment"), SubResource("node_quest_accepted"), SubResource("node_quest_declined"), SubResource("node_about_keepers"), SubResource("node_about_dalhurst"), SubResource("node_about_aldric"), SubResource("node_quest_progress"), SubResource("node_end")]

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "kreigstan_forest",
+    "title": "The Kreigstan Wilds",
+    "category": "locations",
+    "text": "The Kreigstan Wilds sprawl across the central heartland, a vast expanse of ancient forest that has never fully submitted to civilization's axe. Massive oaks and towering pines form a canopy so thick that even at midday, the forest floor lies in perpetual twilight. Travelers speak of paths that shift between visits, of clearings that vanish when you turn your back, and of eyes watching from the shadows.\n\nWolves hunt in packs through the undergrowth, grown bold and cunning from generations of predation. Giant rats infest the hollows of dead trees and the ruins of abandoned homesteads. Worst of all are the giant spiders that spin their webs between the branches, some large enough to trap a grown man. Bandits also make their camps here, preying on merchants foolish enough to leave the main roads.\n\nElder Moor sits at the forest's edge, a logging settlement that has carved out a tenuous existence harvesting timber from the Wilds. The locals know which paths are safe and which lead to certain death, knowledge they guard carefully and sell to outsiders for a fair price."
+  },
+  {
+    "id": "southern_swamps",
+    "title": "The Southern Swamps",
+    "category": "locations",
+    "text": "South of Elder Moor, the land grows soft and treacherous. The Southern Swamps are a maze of stagnant pools, sinking mud, and rotting vegetation that stretches for miles in every direction. The air hangs thick with moisture and the stench of decay, and clouds of biting insects swarm anyone foolish enough to venture in without proper preparation.\n\nThe swamps harbor creatures that thrive in the muck. Giant rats grow fat on carrion that floats in the murky waters. Spiders the size of dogs lurk beneath the surface, their webs strung between dead trees. Most terrible are the drowned dead, corpses of those who perished in the swamps now risen to drag the living down into the depths that claimed them.\n\nAberdeen lies beyond the swamps, a town that has learned to live alongside the marsh rather than fight it. Its people harvest strange herbs that grow nowhere else, catch fish with luminescent scales, and know the secret paths through the mire. They speak of lights that dance over the water at night, leading travelers astray, and of something vast that slumbers beneath the deepest pools."
+  },
+  {
+    "id": "dalhurst_plains",
+    "title": "The Dalhurst Coast",
+    "category": "locations",
+    "text": "West of the Kreigstan Wilds, the forest gradually gives way to rolling grasslands that sweep down to the sea. The Dalhurst Coast is a land of wind-bent grass, salt spray, and the cries of gulls. Ships from distant ports anchor in Dalhurst Bay, bringing exotic goods and strange tales from across the waters.\n\nDalhurst itself is the largest settlement in the region, a proper city with stone walls and a bustling harbor. Merchants hawk their wares in crowded marketplaces, smiths work the forges that supply the local guard, and the taverns overflow with sailors spending their shore leave. The city's wealth has not gone unnoticed by less savory elements.\n\nWolves prowl the grasslands, competing with bandits for prey along the trade roads. The bandits have grown organized in recent years, establishing hidden camps in the coastal caves and striking at merchant caravans with military precision. Some whisper that they serve a bandit king who dreams of building a kingdom of outlaws along the coast. Dire wolves, larger and fiercer than their common cousins, have also been spotted in the region, driven from the mountains by some unknown force."
+  },
+  {
+    "id": "whaeler_hills",
+    "title": "Whaeler's Canyon",
+    "category": "locations",
+    "text": "East of Aberdeen, the land rises into a broken country of ravines, cliffs, and precarious paths known as Whaeler's Canyon. Legend claims the canyon was carved by a great beast in ages past, though whether Whaeler was dragon, demon, or god varies with the teller. What remains is a treacherous landscape where a single misstep can send a traveler plummeting to their death.\n\nGoblins have claimed the canyon as their own, establishing warrens in the cliff faces and ambushing travelers from above. Goblin soldiers patrol in organized bands, while goblin archers rain arrows on intruders from ledges beyond reach. Their leaders are cunning creatures who have unified several clans under a single war banner, dreaming of expansion beyond their rocky domain.\n\nWolves also hunt in the canyon, natural predators that compete with the goblins for game. Most feared are the ogres, massive humanoids of limited intellect but tremendous strength, who smash through rock and bone with equal ease. The path through Whaeler's Canyon leads eventually to Whaeler's Drake, a settlement that exists primarily to supply expeditions into the eastern mountains."
+  },
+  {
+    "id": "willow_dale_area",
+    "title": "Willow Dale",
+    "category": "locations",
+    "text": "Northwest of Elder Moor lie the ruins of Willow Dale, once a prosperous village before some catastrophe erased it from the living world. Now only crumbling walls and overgrown foundations remain, slowly being reclaimed by the forest. Locals avoid the area, speaking of it only in whispers and making signs against evil when forced to mention its name.\n\nGiant spiders have colonized the ruins, spinning vast webs between the fallen stones. Wolves prowl the perimeter, drawn by the easy prey that the spiders' larder provides. But the true horror of Willow Dale walks on bone feet, skeleton warriors still clad in the rusted armor of the village's defenders, patrolling their posts centuries after death claimed them.\n\nTreasure hunters and adventurers sometimes brave Willow Dale's dangers, seeking the wealth that was buried with the village. Few return, and those who do speak of a presence in the deepest cellars, something ancient and hungry that commanded the villagers' doom and now waits for fresh victims to stumble into its domain."
+  },
+  {
+    "id": "undead_lands",
+    "title": "The Undead Lands",
+    "category": "locations",
+    "text": "Beyond Willow Dale, past the last traces of civilization, lie territories so thoroughly corrupted by dark magic that life itself struggles to take hold. The Undead Lands are a blighted waste where the boundary between the living world and the realm of the dead has worn thin, allowing horrors to cross over with disturbing regularity.\n\nSkeleton warriors march in endless patrols, the remnants of armies that fell in forgotten wars. Skeleton shades drift through the air, spirits of malevolence that can freeze a man's heart with their touch. The drowned dead rise from pools of stagnant water, and cultists gather in hidden shrines, performing rituals to their dark masters.\n\nNo settlements exist within the Undead Lands proper, though the border regions support a few desperate communities of outcasts, hermits, and those who have nowhere else to go. Scholars believe the corruption spreads from a central point, some nexus of necromantic power that grows stronger with each passing year. The Church of Three Gods has declared the Undead Lands anathema, and faithful are forbidden from entering without explicit dispensation."
+  },
+  {
+    "id": "mountain_pass",
+    "title": "The Mountain Pass",
+    "category": "locations",
+    "text": "The great mountain range that forms the eastern border of the known lands would be impassable were it not for the Keerzhar Pass, a treacherous route carved through the peaks by dwarven engineers in ages past. The journey takes days even in good weather, and winter closes the pass entirely for months at a time.\n\nGoblin soldiers have established outposts along the lower reaches, demanding tolls from travelers or simply attacking those who refuse. Their leaders command from fortified positions, dreaming of controlling the pass entirely and extorting wealth from all who would cross. Trolls lurk in the caves that honeycomb the mountainsides, regenerating from wounds that would kill any mortal creature. Ogres patrol the high trails, hurling boulders at anyone who catches their attention.\n\nThe dwarven fortress of Kazer-Dun guards the eastern end of the pass, a holdfast carved into the living rock that has never fallen to siege. Beyond lies Rotherhine, the first human settlement on the other side, and eventually the Imperial Capital of Falkenhafen itself."
+  },
+  {
+    "id": "elven_woods",
+    "title": "The Elven Lands",
+    "category": "locations",
+    "text": "East of Whaeler's Canyon, beyond the goblin territories, the land transforms into something altogether different. The Elven Lands are forests of impossible beauty, where the trees grow taller and straighter than anywhere else, where flowers bloom in colors that have no names in human tongues, and where magic saturates the very air.\n\nWolves patrol the forest's edge, but these are not ordinary beasts. The dire wolves of the Elven Lands are intelligent creatures, allies of the elves who carry messages and hunt trespassers. Tree ents, ancient spirits bound to towering oaks, walk slowly through the groves, guardians of a realm that existed before humans first learned to speak.\n\nThe elves themselves are rarely seen by outsiders, appearing only when they choose and vanishing when they tire of company. Their outposts mark the boundary between their lands and the mortal world, staffed by those elves who have chosen to interact with the younger races. Relations between elves and humans are complex, with some elves favoring trade and cooperation while others view human expansion as an existential threat to be stopped by any means necessary."
+  }
+]

@@ -1,0 +1,53 @@
+{
+	"id": "keepers_initiation",
+	"title": "The Keeper's Trust",
+	"description": "Aldric Vane has revealed himself to be a member of the Keepers - a secret society that has long watched over the Empire's hidden truths. He believes you have potential, but trust must be earned. Prove yourself by investigating the strange occurrences at Willow Dale ruins, where dark forces have been stirring.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "aldric_vane",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "travel_willow_dale",
+			"description": "Travel to the Willow Dale ruins northwest of Dalhurst",
+			"type": "reach",
+			"target": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "investigate_ruins",
+			"description": "Investigate the source of the dark energy",
+			"type": "interact",
+			"target": "willow_dale_altar",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_cultists",
+			"description": "Defeat the cultists performing the ritual",
+			"type": "kill",
+			"target": "cultist",
+			"required_count": 5
+		},
+		{
+			"id": "return_evidence",
+			"description": "Return to Aldric Vane with evidence of what you found",
+			"type": "talk",
+			"target": "aldric_vane",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "aldric_vane",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 150,
+		"xp": 750,
+		"items": ["keepers_badge"],
+		"faction_reputation": {
+			"keepers": 100
+		}
+	},
+	"prerequisites": ["keepers_letter_delivery"],
+	"next_quest": ""
+}

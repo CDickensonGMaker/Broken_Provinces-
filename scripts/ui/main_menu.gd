@@ -357,7 +357,7 @@ func _on_new_game() -> void:
 
 	# Reset game state for new game
 	GameManager.reset_for_new_game()
-	InventoryManager.reset_for_new_game()
+	InventoryManager.clear_inventory_state()  # Clear without items - quick start adds its own
 	QuestManager.reset_for_new_game()
 	SaveManager.reset_world_state()
 
@@ -402,16 +402,12 @@ func _create_random_character_and_start() -> void:
 	# Set as active character
 	GameManager.player_data = char_data
 
-	# DEV: Apply testing stats (high magic stats for testing)
-	GameManager.apply_dev_stats(char_data)
-
-	# Give starting equipment
+	# DEV quick start - minimal gear, just enough to test
 	InventoryManager.add_item("iron_sword", 1)
 	InventoryManager.add_item("health_potion", 3)
-	InventoryManager.add_item("lockpick", 5)
-	InventoryManager.add_gold(100)
+	InventoryManager.add_gold(50)
 
-	print("[MainMenu] Quick start COMPLETE: %s the %s" % [char_data.character_name, Enums.Race.keys()[char_data.race]])
+	print("[MainMenu] DEV Quick start: %s the %s" % [char_data.character_name, Enums.Race.keys()[char_data.race]])
 
 	# Start in Elder Moor
 	_fade_to_scene("res://scenes/levels/elder_moor.tscn")

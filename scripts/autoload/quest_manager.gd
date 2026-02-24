@@ -161,9 +161,11 @@ func _parse_quest(data: Dictionary) -> Quest:
 	quest.turn_in_region = data.get("turn_in_region", quest.giver_region)  # Fallback to giver region
 	quest.turn_in_zone = data.get("turn_in_zone", "")
 
-	# Quest chains and triggers
-	quest.next_quest = data.get("next_quest", "")
-	quest.trigger_item = data.get("trigger_item", "")
+	# Quest chains and triggers (handle null values from JSON)
+	var next_q: Variant = data.get("next_quest", "")
+	quest.next_quest = next_q if next_q != null else ""
+	var trigger: Variant = data.get("trigger_item", "")
+	quest.trigger_item = trigger if trigger != null else ""
 
 	# Prerequisites
 	var prereqs: Array = data.get("prerequisites", [])
@@ -717,6 +719,66 @@ func get_available_quests() -> Array[String]:
 	return available
 
 
+## Check if NPC has any active quest where they are the turn-in target
+func has_active_quest_for_npc(npc_id: String) -> bool:
+	for quest_id in quests:
+		var quest: Quest = quests[quest_id]
+		if quest.state == Enums.QuestState.ACTIVE:
+			if quest.turn_in_type == Enums.TurnInType.NPC_SPECIFIC and quest.turn_in_target == npc_id:
+				return true
+	return false
+
+
+## Check if NPC has any available quest they can give
+func has_available_quest_from_npc(npc_id: String) -> bool:
+	for quest_id in quest_database:
+		if is_quest_available(quest_id):
+			var template: Quest = quest_database[quest_id]
+			if template.giver_npc_id == npc_id:
+				return true
+	return false
+
+
+## Get a quest that's ready to complete with this NPC (objectives done, NPC is turn-in target)
+func get_completable_quest_for_npc(npc_id: String) -> Quest:
+	for quest_id in quests:
+		var quest: Quest = quests[quest_id]
+		if quest.state != Enums.QuestState.ACTIVE:
+			continue
+		if quest.turn_in_type != Enums.TurnInType.NPC_SPECIFIC:
+			continue
+		if quest.turn_in_target != npc_id:
+			continue
+		if not are_objectives_complete(quest_id):
+			continue
+		return quest
+	return null
+
+
+## Get raw quest data dictionary from JSON (for quest offers)
+func get_quest_data(quest_id: String) -> Dictionary:
+	# Check loaded quest data files
+	var quest_file_path := "res://data/quests/%s.json" % quest_id
+	if FileAccess.file_exists(quest_file_path):
+		var file := FileAccess.open(quest_file_path, FileAccess.READ)
+		if file:
+			var json_text := file.get_as_text()
+			file.close()
+			var json := JSON.new()
+			if json.parse(json_text) == OK:
+				return json.data
+	# Fallback - construct from Quest object
+	if quest_database.has(quest_id):
+		var quest: Quest = quest_database[quest_id]
+		return {
+			"id": quest.id,
+			"title": quest.title,
+			"description": quest.description,
+			"rewards": quest.rewards
+		}
+	return {}
+
+
 ## Set the quest giver NPC for a quest (used for dynamic quests like bounties)
 func set_quest_giver(quest_id: String, npc_id: String) -> void:
 	if quests.has(quest_id):
@@ -1230,8 +1292,9 @@ func from_dict(data: Dictionary) -> void:
 		quest.turn_in_region = quests_data[quest_id].get("turn_in_region", template.turn_in_region)
 		quest.turn_in_zone = quests_data[quest_id].get("turn_in_zone", template.turn_in_zone)
 
-		# Restore quest chain info
-		quest.next_quest = quests_data[quest_id].get("next_quest", template.next_quest)
+		# Restore quest chain info (handle null values)
+		var saved_next: Variant = quests_data[quest_id].get("next_quest", template.next_quest)
+		quest.next_quest = saved_next if saved_next != null else ""
 
 		var saved_objectives: Array = quests_data[quest_id].get("objectives", [])
 		for i in range(template.objectives.size()):

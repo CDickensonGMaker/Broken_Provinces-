@@ -6,16 +6,33 @@ extends StaticBody3D
 @export var npc_id: String = "quest_giver_01"
 @export var display_name: String = "Mysterious Stranger"
 
+## Alias for ConversationSystem compatibility
+var npc_name: String:
+	get: return display_name
+	set(value): display_name = value
+
 ## NPC type and region for central turn-in system (NPC_TYPE_IN_REGION)
 var npc_type: String = "quest_giver"  # Can be overridden for specific NPC types
-var region_id: String = ""  # Set by zone when spawned
+@export var region_id: String = ""  # Set by zone when spawned or in scene
 
 ## List of quests this NPC can offer (in order of priority)
 ## If empty, will auto-detect available quests from QuestManager
-@export var quest_ids: Array[String] = ["knight_intro", "road_to_dalhurst", "prove_yourself", "scout_the_cave", "thin_the_herd", "gather_intel", "destroy_goblin_totem"]
+@export var quest_ids: Array[String] = []
+
+## Faction affiliation (e.g., "human_empire", "the_keepers", "merchants_guild")
+## Used for quest tracking and faction reputation
+@export var faction_id: String = "human_empire"
+
+## NPC knowledge profile for ConversationSystem (uses generic_villager if not set)
+@export var npc_profile: NPCKnowledgeProfile
 
 ## Optional pre-quest dialogue (shown before quest offer when quest is NOT_STARTED)
+## If set, uses DialogueManager instead of ConversationSystem for this initial dialogue
 @export var dialogue_data: DialogueData
+
+## If true, uses legacy hardcoded dialogue instead of ConversationSystem
+## Set to false to use the new topic-based conversation system
+@export var use_legacy_dialogue: bool = false
 
 ## Sprite texture for billboard display (PS1-style)
 ## If not set, defaults to man_civilian sprite
@@ -45,58 +62,8 @@ var _intro_dialogue_shown: bool = false
 
 ## Dialogue content per quest (keyed by quest_id)
 ## Falls back to generic dialogue if quest not found
-var quest_dialogues := {
-	"knight_intro": {
-		"offer": "Hail, traveler! The road to Dalhurst has grown\ndangerous. Bandits prey on anyone who passes.\nClear out 5 of these rogues to make the road safe.",
-		"active": "The bandits still prowl the wilderness.\nReturn when you've dealt with them.",
-		"complete": "Well done! The road is safer thanks to you.\nI have another task - travel to Dalhurst and meet\nmy contact there. He has vital information."
-	},
-	"road_to_dalhurst": {
-		"offer": "My contact waits in Dalhurst, near the south gate.\nSeek him out - he has news of a growing threat\nthat concerns us all.",
-		"active": "Have you spoken with my contact in Dalhurst?\nHe awaits you near the city's south gate.",
-		"complete": "You've met with my contact. Good.\nThe information he shared is troubling indeed."
-	},
-	"prove_yourself": {
-		"offer": "Words are wind. Show me your skill with a blade.\nSlay 5 goblins in the open world and return.\nThen I'll know you're ready for greater challenges.",
-		"active": "The goblins still roam freely.\nProve your worth in battle.",
-		"complete": "Impressive! You handle yourself well.\nPerhaps you are the ally I've been seeking."
-	},
-	"scout_the_cave": {
-		"offer": "Intelligence reports speak of a cave where goblins gather.\nFind this cave and report back its location.\nDo not engage - just scout.",
-		"active": "Have you located the goblin cave?\nWe need to know what we're dealing with.",
-		"complete": "So the cave exists. This confirms my suspicions.\nThe goblins are more organized than we thought."
-	},
-	"thin_the_herd": {
-		"offer": "Before we can strike at the heart of their lair,\nwe must weaken their numbers. Slay 10 goblins\nto thin their ranks before our assault.",
-		"active": "Keep culling their numbers.\nEvery goblin slain makes our task easier.",
-		"complete": "Their forces are weakened.\nNow we can proceed with the next phase."
-	},
-	"gather_intel": {
-		"offer": "I need proof of goblin leadership - military organization.\nTheir commanders carry war horns of bone and brass.\nBring me one of these horns.",
-		"active": "Have you found a war horn?\nIt will prove they're being coordinated.",
-		"complete": "This horn... I recognize the markings.\nThey serve something darker within that cave."
-	},
-	"destroy_goblin_totem": {
-		"offer": "The time has come. Deep in the cave stands a dark totem\nthat spawns endless goblins. Destroy it\nand bring me the corrupted shard as proof.",
-		"active": "The totem still stands. Destroy it and bring me\nthe corrupted shard that remains.",
-		"complete": "You have the shard! I can feel its dark energy.\nThe totem is truly destroyed. Here is your reward."
-	},
-	"dungeon_clear": {
-		"offer": "These catacombs are infested with undead.\nI've been trapped here, unable to escape.\nSlay 3 of these wretched creatures and I'll reward you.",
-		"active": "The undead still lurk in these halls.\nI can hear their bones rattling...",
-		"complete": "The air feels lighter already.\nTake this - you've earned it."
-	},
-	"journey_to_kazandun": {
-		"offer": "You made it. Good. I have troubling news.\nStrange activity has been reported on the mountain road\ntoward Kazan-Dun. Travel south and investigate.",
-		"active": "The mountain road awaits. Head south toward\nKazan-Dun and see what stirs in those peaks.",
-		"complete": "You've made it to Kazan-Dun? The dwarves there\nmay have more information about these disturbances."
-	},
-	"willow_dale_investigation": {
-		"offer": "Please, you must help! Strange lights have been seen\nat the old Willow Dale ruins northwest of the city.\nTravelers have gone missing. Someone must investigate!",
-		"active": "Have you ventured to Willow Dale yet?\nThe ruins are to the northwest. Be careful!",
-		"complete": "You survived! The ruins were dangerous?\nHere, take this reward. You've earned it."
-	}
-}
+## Legacy quest dialogues removed - use DialogueTree resources instead
+var quest_dialogues := {}
 
 ## Generic dialogue for unknown quests
 var generic_dialogues := {
@@ -220,11 +187,25 @@ func interact(_interactor: Node) -> void:
 	# Notify quest system that player talked to this NPC (for "talk" objectives)
 	QuestManager.on_npc_talked(npc_id)
 
-	# Check if we should show optional intro dialogue first
-	if dialogue_data and quest_state == QuestState.NOT_STARTED and not _intro_dialogue_shown:
-		_open_intro_dialogue()
-	else:
-		_open_dialogue()
+	# Always use ConversationSystem for all NPC interactions
+	_open_conversation()
+
+
+## Open ConversationSystem topic-based dialogue
+func _open_conversation() -> void:
+	# Create or use existing profile
+	var profile: NPCKnowledgeProfile = npc_profile
+	if not profile:
+		# Generate a basic profile for quest givers
+		profile = NPCKnowledgeProfile.new()
+		profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+		profile.personality_traits = ["helpful"]
+		profile.knowledge_tags = ["local_area", "quests"]
+		profile.base_disposition = 60
+		profile.speech_style = "casual"
+
+	# Start conversation through ConversationSystem
+	ConversationSystem.start_conversation(self, profile)
 
 func get_interaction_prompt() -> String:
 	_update_quest_state()

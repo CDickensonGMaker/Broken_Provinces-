@@ -32,12 +32,16 @@ func _ready() -> void:
 	_spawn_spawn_points()
 	_spawn_exit_portal()
 	_spawn_undead()
+	_spawn_cultists()
 	_spawn_loot()
+	_spawn_quest_objectives()
 	_create_lighting()
 	_setup_cell_streaming()
 
-	# Quest trigger for entering willow dale
+	# Quest triggers for entering willow dale
 	QuestManager.on_location_reached("willow_dale_entrance")
+	QuestManager.on_location_reached("willow_dale")
+	QuestManager.on_location_reached("willow_dale_depths")
 
 	print("[WillowDale] Dungeon initialized!")
 
@@ -646,3 +650,403 @@ func _setup_cell_streaming() -> void:
 	CellStreamer.register_main_scene_cell(my_coords, self)
 	CellStreamer.start_streaming(my_coords)
 	print("[%s] Registered as main scene, streaming started at %s" % [ZONE_ID, my_coords])
+
+
+## ============================================================================
+## CULTIST SPAWNS - For keepers_initiation quest
+## ============================================================================
+
+func _spawn_cultists() -> void:
+	# 5+ cultists for the keepers_initiation quest "defeat_cultists" objective
+	# Cultists are performing a dark ritual near the altar inside the tower
+
+	# Cultists around the altar area (tower interior)
+	_spawn_cultist(Vector3(0, 0, -3))    # At altar
+	_spawn_cultist(Vector3(-3, 0, -2))   # Left of altar
+	_spawn_cultist(Vector3(3, 0, -2))    # Right of altar
+	_spawn_cultist(Vector3(-2, 0, 1))    # Front left
+	_spawn_cultist(Vector3(2, 0, 1))     # Front right
+
+	# Cult leader near the altar
+	_spawn_cult_leader(Vector3(0, 0, -5))
+
+	print("[WillowDale] Spawned cultists for keepers_initiation quest")
+
+
+## Helper: Spawn a cultist enemy
+func _spawn_cultist(pos: Vector3) -> void:
+	var sprite: Texture2D = load("res://assets/sprites/enemies/cultist.png")
+	if not sprite:
+		# Fallback to skeleton if cultist sprite not available
+		sprite = load("res://assets/sprites/enemies/skeleton_shade.png")
+	if not sprite:
+		push_warning("[WillowDale] Missing cultist sprite")
+		return
+
+	var data_path := "res://data/enemies/cultist.tres"
+	if not ResourceLoader.exists(data_path):
+		data_path = "res://data/enemies/skeleton_shade.tres"
+
+	var enemy := EnemyBase.spawn_billboard_enemy(
+		self,
+		pos,
+		data_path,
+		sprite,
+		3, 1  # 3x1 sprite sheet for cultist
+	)
+	if enemy:
+		enemy.add_to_group("willow_dale_cultists")
+		enemy.add_to_group("cultist")  # For quest objective tracking
+		print("[WillowDale] Spawned cultist at %s" % pos)
+
+
+## Helper: Spawn the cult leader (mini-boss)
+func _spawn_cult_leader(pos: Vector3) -> void:
+	var sprite: Texture2D = load("res://assets/sprites/enemies/cultist.png")
+	if not sprite:
+		sprite = load("res://assets/sprites/enemies/skeleton_shade.png")
+	if not sprite:
+		push_warning("[WillowDale] Missing cult leader sprite")
+		return
+
+	var data_path := "res://data/enemies/cult_leader.tres"
+	if not ResourceLoader.exists(data_path):
+		data_path = "res://data/enemies/cultist.tres"
+
+	var enemy := EnemyBase.spawn_billboard_enemy(
+		self,
+		pos,
+		data_path,
+		sprite,
+		3, 1
+	)
+	if enemy:
+		enemy.add_to_group("willow_dale_cultists")
+		enemy.add_to_group("cultist")
+		enemy.add_to_group("bosses")
+		print("[WillowDale] Spawned Cult Leader at %s" % pos)
+
+
+## ============================================================================
+## QUEST OBJECTIVES - Interactables and collectibles for various quests
+## ============================================================================
+
+func _spawn_quest_objectives() -> void:
+	# --- WILLOW_DALE_INVESTIGATION QUEST ---
+
+	# Wrecked caravan near the cemetery entrance
+	_spawn_wrecked_caravan(Vector3(15, 0, 48))
+
+	# 3x merchant goods scattered around the area
+	_spawn_merchant_goods(Vector3(14, 0, 46))
+	_spawn_merchant_goods(Vector3(18, 0, 50))
+	_spawn_merchant_goods(Vector3(12, 0, 52))
+
+	# --- LOST_APPRENTICE QUEST ---
+
+	# Apprentice belongings (satchel) near cemetery entrance
+	_spawn_apprentice_belongings(Vector3(-10, 0, 45))
+
+	# Apprentice Marcus body inside tower (tragic end)
+	_spawn_apprentice_marcus(Vector3(4, 0, -5))
+
+	# --- KEEPERS_INITIATION QUEST ---
+
+	# Dark altar inside the tower (cultist ritual site)
+	_spawn_willow_dale_altar(Vector3(0, 0, -7))
+
+	print("[WillowDale] Spawned quest objectives")
+
+
+## Spawn wrecked caravan for willow_dale_investigation quest
+func _spawn_wrecked_caravan(pos: Vector3) -> void:
+	var caravan := Node3D.new()
+	caravan.name = "wrecked_caravan"
+	caravan.position = pos
+	caravan.add_to_group("interactable")
+	caravan.set_meta("object_id", "wrecked_caravan")
+	caravan.set_meta("display_name", "Wrecked Caravan")
+	caravan.set_meta("interaction_type", "examine")
+	add_child(caravan)
+
+	# Broken cart body
+	var cart := CSGBox3D.new()
+	cart.name = "CartBody"
+	cart.size = Vector3(3.0, 1.0, 2.0)
+	cart.position = Vector3(0, 0.5, 0)
+	cart.rotation_degrees.z = 15  # Tilted as if crashed
+	cart.material = wood_mat
+	cart.use_collision = true
+	caravan.add_child(cart)
+
+	# Broken wheel nearby
+	var wheel := CSGCylinder3D.new()
+	wheel.name = "BrokenWheel"
+	wheel.radius = 0.5
+	wheel.height = 0.15
+	wheel.sides = 8
+	wheel.position = Vector3(2.5, 0.1, 1.0)
+	wheel.rotation_degrees.x = 90
+	wheel.rotation_degrees.z = 25
+	wheel.material = wood_mat
+	wheel.use_collision = true
+	caravan.add_child(wheel)
+
+	# Interaction area
+	var area := Area3D.new()
+	area.name = "InteractionArea"
+	area.collision_layer = 256
+	area.collision_mask = 0
+	var area_col := CollisionShape3D.new()
+	var area_shape := SphereShape3D.new()
+	area_shape.radius = 3.0
+	area_col.shape = area_shape
+	area_col.position.y = 1.0
+	area.add_child(area_col)
+	caravan.add_child(area)
+
+	# Connect to quest system when examined
+	area.area_entered.connect(_on_caravan_examined)
+
+	print("[WillowDale] Spawned wrecked caravan at %s" % pos)
+
+
+func _on_caravan_examined(_area: Area3D) -> void:
+	QuestManager.on_interact("wrecked_caravan")
+
+
+## Spawn merchant goods collectible
+func _spawn_merchant_goods(pos: Vector3) -> void:
+	# Use WorldItem for collectibles - automatically triggers quest progress
+	var goods := WorldItem.spawn_item(
+		self,
+		pos,
+		"merchant_goods",
+		Enums.ItemQuality.AVERAGE,
+		1
+	)
+	if goods:
+		goods.add_to_group("quest_items")
+		print("[WillowDale] Spawned merchant goods at %s" % pos)
+
+
+## Spawn apprentice belongings (satchel) for lost_apprentice quest
+func _spawn_apprentice_belongings(pos: Vector3) -> void:
+	var belongings := StaticBody3D.new()
+	belongings.name = "apprentice_belongings"
+	belongings.position = pos
+	belongings.add_to_group("interactable")
+	belongings.set_meta("object_id", "apprentice_belongings")
+	belongings.set_meta("display_name", "Apprentice's Satchel")
+	belongings.set_meta("interaction_type", "examine")
+	add_child(belongings)
+
+	# Satchel mesh
+	var satchel := CSGBox3D.new()
+	satchel.name = "SatchelMesh"
+	satchel.size = Vector3(0.4, 0.3, 0.2)
+	satchel.position = Vector3(0, 0.15, 0)
+	var satchel_mat := StandardMaterial3D.new()
+	satchel_mat.albedo_color = Color(0.4, 0.3, 0.2)
+	satchel_mat.roughness = 0.9
+	satchel.material = satchel_mat
+	satchel.use_collision = true
+	belongings.add_child(satchel)
+
+	# Scattered papers
+	var papers := CSGBox3D.new()
+	papers.name = "Papers"
+	papers.size = Vector3(0.5, 0.02, 0.3)
+	papers.position = Vector3(0.3, 0.01, 0.2)
+	papers.rotation_degrees.y = 25
+	var paper_mat := StandardMaterial3D.new()
+	paper_mat.albedo_color = Color(0.85, 0.82, 0.75)
+	papers.material = paper_mat
+	belongings.add_child(papers)
+
+	# Collision shape
+	var collision := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(0.5, 0.4, 0.3)
+	collision.shape = shape
+	collision.position.y = 0.2
+	belongings.add_child(collision)
+
+	# Interaction area
+	var area := Area3D.new()
+	area.name = "InteractionArea"
+	area.collision_layer = 256
+	area.collision_mask = 0
+	var area_col := CollisionShape3D.new()
+	var area_shape := SphereShape3D.new()
+	area_shape.radius = 2.0
+	area_col.shape = area_shape
+	area_col.position.y = 0.3
+	area.add_child(area_col)
+	belongings.add_child(area)
+
+	area.area_entered.connect(_on_belongings_examined)
+
+	print("[WillowDale] Spawned apprentice belongings at %s" % pos)
+
+
+func _on_belongings_examined(_area: Area3D) -> void:
+	QuestManager.on_interact("apprentice_belongings")
+
+
+## Spawn apprentice Marcus (body) for lost_apprentice quest
+func _spawn_apprentice_marcus(pos: Vector3) -> void:
+	var marcus := StaticBody3D.new()
+	marcus.name = "apprentice_marcus"
+	marcus.position = pos
+	marcus.add_to_group("interactable")
+	marcus.set_meta("object_id", "apprentice_marcus")
+	marcus.set_meta("display_name", "Apprentice Marcus")
+	marcus.set_meta("interaction_type", "examine")
+	marcus.set_meta("npc_type", "apprentice_marcus")
+	add_child(marcus)
+
+	# Body mesh (simplified prone figure)
+	var body := CSGBox3D.new()
+	body.name = "BodyMesh"
+	body.size = Vector3(0.5, 0.2, 1.5)
+	body.position = Vector3(0, 0.1, 0)
+	body.rotation_degrees.y = 35  # Angled
+	var body_mat := StandardMaterial3D.new()
+	body_mat.albedo_color = Color(0.3, 0.25, 0.35)  # Dark robes
+	body_mat.roughness = 0.9
+	body.material = body_mat
+	body.use_collision = true
+	marcus.add_child(body)
+
+	# Staff nearby
+	var staff := CSGCylinder3D.new()
+	staff.name = "Staff"
+	staff.radius = 0.04
+	staff.height = 1.8
+	staff.sides = 6
+	staff.position = Vector3(0.5, 0.04, 0.3)
+	staff.rotation_degrees.z = 85
+	staff.material = wood_mat
+	marcus.add_child(staff)
+
+	# Collision shape
+	var collision := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(0.6, 0.3, 1.6)
+	collision.shape = shape
+	collision.position.y = 0.15
+	marcus.add_child(collision)
+
+	# Interaction area
+	var area := Area3D.new()
+	area.name = "InteractionArea"
+	area.collision_layer = 256
+	area.collision_mask = 0
+	var area_col := CollisionShape3D.new()
+	var area_shape := SphereShape3D.new()
+	area_shape.radius = 2.0
+	area_col.shape = area_shape
+	area_col.position.y = 0.5
+	area.add_child(area_col)
+	marcus.add_child(area)
+
+	area.area_entered.connect(_on_marcus_examined)
+
+	print("[WillowDale] Spawned apprentice Marcus at %s" % pos)
+
+
+func _on_marcus_examined(_area: Area3D) -> void:
+	QuestManager.on_interact("apprentice_marcus")
+
+
+## Spawn the dark altar for keepers_initiation quest
+func _spawn_willow_dale_altar(pos: Vector3) -> void:
+	var altar := StaticBody3D.new()
+	altar.name = "willow_dale_altar"
+	altar.position = pos
+	altar.add_to_group("interactable")
+	altar.set_meta("object_id", "willow_dale_altar")
+	altar.set_meta("display_name", "Dark Altar")
+	altar.set_meta("interaction_type", "examine")
+	add_child(altar)
+
+	# Altar base (stone slab)
+	var base := CSGBox3D.new()
+	base.name = "AltarBase"
+	base.size = Vector3(3.0, 0.8, 2.0)
+	base.position = Vector3(0, 0.4, 0)
+	var altar_mat := StandardMaterial3D.new()
+	altar_mat.albedo_color = Color(0.15, 0.12, 0.1)  # Dark stone
+	altar_mat.roughness = 0.95
+	base.material = altar_mat
+	base.use_collision = true
+	altar.add_child(base)
+
+	# Altar top slab
+	var top := CSGBox3D.new()
+	top.name = "AltarTop"
+	top.size = Vector3(2.5, 0.15, 1.5)
+	top.position = Vector3(0, 0.88, 0)
+	var top_mat := StandardMaterial3D.new()
+	top_mat.albedo_color = Color(0.2, 0.1, 0.1)  # Blood-stained dark
+	top_mat.roughness = 0.8
+	top.material = top_mat
+	top.use_collision = true
+	altar.add_child(top)
+
+	# Candles/ritual objects
+	for i in range(4):
+		var candle := CSGCylinder3D.new()
+		candle.name = "Candle_%d" % i
+		candle.radius = 0.05
+		candle.height = 0.25
+		candle.sides = 6
+		var candle_pos: Vector3 = Vector3(
+			-0.8 + (i % 2) * 1.6,
+			1.0,
+			-0.5 + (i / 2) * 1.0
+		)
+		candle.position = candle_pos
+		var candle_mat := StandardMaterial3D.new()
+		candle_mat.albedo_color = Color(0.9, 0.85, 0.7)
+		candle.material = candle_mat
+		altar.add_child(candle)
+
+	# Eerie glow from altar
+	var glow := OmniLight3D.new()
+	glow.name = "AltarGlow"
+	glow.light_color = Color(0.5, 0.2, 0.3)  # Dark red glow
+	glow.light_energy = 1.5
+	glow.omni_range = 6.0
+	glow.position = Vector3(0, 1.5, 0)
+	altar.add_child(glow)
+
+	# Collision shape
+	var collision := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(3.2, 1.0, 2.2)
+	collision.shape = shape
+	collision.position.y = 0.5
+	altar.add_child(collision)
+
+	# Interaction area
+	var area := Area3D.new()
+	area.name = "InteractionArea"
+	area.collision_layer = 256
+	area.collision_mask = 0
+	var area_col := CollisionShape3D.new()
+	var area_shape := SphereShape3D.new()
+	area_shape.radius = 3.0
+	area_col.shape = area_shape
+	area_col.position.y = 1.0
+	area.add_child(area_col)
+	altar.add_child(area)
+
+	area.area_entered.connect(_on_altar_examined)
+
+	print("[WillowDale] Spawned dark altar at %s" % pos)
+
+
+func _on_altar_examined(_area: Area3D) -> void:
+	QuestManager.on_interact("willow_dale_altar")

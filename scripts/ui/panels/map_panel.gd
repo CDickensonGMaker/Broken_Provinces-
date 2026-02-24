@@ -5,14 +5,13 @@ class_name MapPanel
 extends Control
 
 ## Map display modes
-enum MapMode { LOCAL_AREA, WORLD_GRID, WORLD_PAINTED }
+enum MapMode { LOCAL_AREA, WORLD_GRID }
 
 ## Current map mode
 var current_mode: MapMode = MapMode.LOCAL_AREA
 
 ## Map containers
 var grid_world_map: WorldMap = null
-var painted_world_map: PaintedWorldMap = null
 var local_map_container: Control = null
 
 ## Local map components (for dungeons/interiors)
@@ -82,14 +81,6 @@ func _setup_ui() -> void:
 	grid_world_map.visible = false
 	add_child(grid_world_map)
 
-	# Create painted world map (OpenMW-style, hidden by default)
-	painted_world_map = PaintedWorldMap.new()
-	painted_world_map.name = "PaintedWorldMap"
-	painted_world_map.set_anchors_preset(PRESET_FULL_RECT)
-	painted_world_map.offset_top = 30
-	painted_world_map.visible = false
-	add_child(painted_world_map)
-
 	# Mode toggle button
 	mode_toggle_btn = Button.new()
 	mode_toggle_btn.name = "ModeToggle"
@@ -116,8 +107,8 @@ func _determine_map_mode() -> void:
 	var is_outdoor: bool = _is_outdoor_region(zone_id)
 
 	if is_outdoor:
-		# In outdoor region - show painted world map (uses WorldGrid)
-		_set_mode(MapMode.WORLD_PAINTED)
+		# In outdoor region - show grid world map (uses WorldGrid)
+		_set_mode(MapMode.WORLD_GRID)
 	else:
 		# In dungeon/town/interior - show local map
 		_set_mode(MapMode.LOCAL_AREA)
@@ -150,8 +141,6 @@ func _set_mode(mode: MapMode) -> void:
 	# Hide all maps
 	local_map_container.visible = false
 	grid_world_map.visible = false
-	if painted_world_map:
-		painted_world_map.visible = false
 
 	# Show the appropriate map
 	match mode:
@@ -162,18 +151,13 @@ func _set_mode(mode: MapMode) -> void:
 			grid_world_map.visible = true
 			grid_world_map.refresh()
 			mode_toggle_btn.text = "Local Map"
-		MapMode.WORLD_PAINTED:
-			if painted_world_map:
-				painted_world_map.visible = true
-				painted_world_map.refresh()
-			mode_toggle_btn.text = "Local Map"
 
 
 func _on_mode_toggle_pressed() -> void:
-	# Toggle between local and world map (uses PaintedWorldMap)
+	# Toggle between local and world map (uses grid WorldMap)
 	if current_mode == MapMode.LOCAL_AREA:
-		# Switch to painted world map
-		_set_mode(MapMode.WORLD_PAINTED)
+		# Switch to grid world map
+		_set_mode(MapMode.WORLD_GRID)
 	else:
 		# Switch to local map
 		_set_mode(MapMode.LOCAL_AREA)
@@ -192,13 +176,6 @@ func refresh() -> void:
 		_refresh_markers()
 	elif current_mode == MapMode.WORLD_GRID and grid_world_map:
 		grid_world_map.refresh()
-	elif current_mode == MapMode.WORLD_PAINTED and painted_world_map:
-		painted_world_map.refresh()
-
-
-## Get the painted world map instance (for save/load fog of war)
-func get_painted_world_map() -> PaintedWorldMap:
-	return painted_world_map
 
 
 func _update_area_name() -> void:

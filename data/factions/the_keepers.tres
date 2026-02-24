@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "the_keepers"
+display_name = "The Keepers"
+description = "A secret organization dedicated to preserving dangerous knowledge and protecting the realm from threats both internal and external. They know the truth about the missing King and seek a champion to rescue him from the Immortality Dungeon."
+parent_faction = ""
+allies = []
+enemies = ["the_witch"]
+neutrals = ["human_empire", "dwarves_birth", "dwarves_power"]
+alignment = 50
+ranks = [{"name": "Unknown", "min_reputation": -100, "benefits": []}, {"name": "Watched", "min_reputation": 0, "benefits": []}, {"name": "Initiate", "min_reputation": 20, "benefits": ["safe_houses", "basic_intel"]}, {"name": "Watcher", "min_reputation": 40, "benefits": ["safe_houses", "basic_intel", "keeper_contacts"]}, {"name": "Archivist", "min_reputation": 60, "benefits": ["safe_houses", "basic_intel", "keeper_contacts", "forbidden_lore"]}, {"name": "Inner Circle", "min_reputation": 85, "benefits": ["safe_houses", "basic_intel", "keeper_contacts", "forbidden_lore", "king_location"]}]
+default_reputation = -50
+joinable = true
+join_threshold = 20
+is_hidden = true
+faction_color = Color(0.3, 0.3, 0.5, 1.0)

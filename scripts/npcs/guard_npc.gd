@@ -375,99 +375,89 @@ func _initiate_arrest() -> void:
 	_show_arrest_dialogue(bounty, crime_name)
 
 
-## Show arrest dialogue options
+## Show arrest dialogue options using scripted dialogue mode
 func _show_arrest_dialogue(bounty: int, crime_name: String) -> void:
-	# Create arrest dialogue data
-	var dialogue := DialogueData.new()
-	dialogue.title = "Arrest"
+	# Build scripted dialogue lines
+	var lines: Array = []
 
-	# Create root node
-	var root_node := DialogueNode.new()
-	root_node.id = "arrest_root"
-	root_node.speaker = "Town Guard"
-	root_node.text = "Halt, criminal! You are wanted for %s. Your bounty is %d gold. What say you?" % [crime_name, bounty]
+	# Line 0: Guard's arrest statement with choices
+	lines.append(ConversationSystem.create_scripted_line(
+		"Town Guard",
+		"Halt, criminal! You are wanted for %s. Your bounty is %d gold. What say you?" % [crime_name, bounty],
+		[
+			ConversationSystem.create_scripted_choice("I'll pay the fine. (%d gold)" % bounty, 1),
+			ConversationSystem.create_scripted_choice("I'll serve my time.", 2),
+			ConversationSystem.create_scripted_choice("You'll never take me alive!", 3)
+		]
+	))
 
-	# Create choices
-	var choice_pay := DialogueChoice.new()
-	choice_pay.text = "I'll pay the fine. (%d gold)" % bounty
-	choice_pay.next_node_id = "pay_fine"
+	# Line 1: Pay fine response
+	lines.append(ConversationSystem.create_scripted_line(
+		"Town Guard",
+		"Very well. Consider this a warning.",
+		[],
+		true  # is_end
+	))
 
-	var choice_jail := DialogueChoice.new()
-	choice_jail.text = "I'll serve my time."
-	choice_jail.next_node_id = "go_to_jail"
+	# Line 2: Go to jail response
+	lines.append(ConversationSystem.create_scripted_line(
+		"Town Guard",
+		"You'll serve your time. Follow me to the jail.",
+		[],
+		true  # is_end
+	))
 
-	var choice_resist := DialogueChoice.new()
-	choice_resist.text = "You'll never take me alive!"
-	choice_resist.next_node_id = "resist_arrest"
+	# Line 3: Resist arrest response
+	lines.append(ConversationSystem.create_scripted_line(
+		"Town Guard",
+		"Then you choose death!",
+		[],
+		true  # is_end
+	))
 
-	root_node.choices = [choice_pay, choice_jail, choice_resist]
+	# Store the bounty for later processing
+	_current_arrest_bounty = bounty
 
-	# Create response nodes
-	var pay_node := DialogueNode.new()
-	pay_node.id = "pay_fine"
-	pay_node.speaker = "Town Guard"
-	pay_node.text = "Very well. Consider this a warning."
-	pay_node.is_end_node = true
+	# Connect to scripted line signal to track which line we end on
+	if not ConversationSystem.scripted_line_shown.is_connected(_on_arrest_line_shown):
+		ConversationSystem.scripted_line_shown.connect(_on_arrest_line_shown)
 
-	var jail_node := DialogueNode.new()
-	jail_node.id = "go_to_jail"
-	jail_node.speaker = "Town Guard"
-	jail_node.text = "You'll serve your time. Follow me to the jail."
-	jail_node.is_end_node = true
-
-	var resist_node := DialogueNode.new()
-	resist_node.id = "resist_arrest"
-	resist_node.speaker = "Town Guard"
-	resist_node.text = "Then you choose death!"
-	resist_node.is_end_node = true
-
-	# Build dialogue tree
-	dialogue.nodes = [root_node, pay_node, jail_node, resist_node]
-	dialogue.start_node_id = "arrest_root"
-
-	# Connect to dialogue ended signal
-	if not DialogueManager.dialogue_ended.is_connected(_on_arrest_dialogue_ended):
-		DialogueManager.dialogue_ended.connect(_on_arrest_dialogue_ended)
-
-	# Store which choice was made (we'll check the last node)
-	if not DialogueManager.node_changed.is_connected(_on_arrest_node_changed):
-		DialogueManager.node_changed.connect(_on_arrest_node_changed)
-
-	# Start dialogue
-	DialogueManager.start_dialogue(dialogue, "Town Guard")
+	# Start scripted dialogue with callback
+	ConversationSystem.start_scripted_dialogue(lines, _on_arrest_scripted_ended)
 
 
-## Track which arrest option was chosen
-var _arrest_choice: String = ""
-
-func _on_arrest_node_changed(node: DialogueNode) -> void:
-	if node:
-		_arrest_choice = node.id
+## Store arrest bounty for processing
+var _current_arrest_bounty: int = 0
 
 
-## Handle arrest dialogue completion
-func _on_arrest_dialogue_ended(_dialogue_data: DialogueData) -> void:
-	# Disconnect signals
-	if DialogueManager.dialogue_ended.is_connected(_on_arrest_dialogue_ended):
-		DialogueManager.dialogue_ended.disconnect(_on_arrest_dialogue_ended)
-	if DialogueManager.node_changed.is_connected(_on_arrest_node_changed):
-		DialogueManager.node_changed.disconnect(_on_arrest_node_changed)
+## Track which arrest line was shown (to determine player choice)
+var _last_arrest_line_index: int = 0
+
+func _on_arrest_line_shown(_line: Dictionary, index: int) -> void:
+	_last_arrest_line_index = index
+
+
+## Handle arrest scripted dialogue completion
+func _on_arrest_scripted_ended() -> void:
+	# Disconnect signal
+	if ConversationSystem.scripted_line_shown.is_connected(_on_arrest_line_shown):
+		ConversationSystem.scripted_line_shown.disconnect(_on_arrest_line_shown)
 
 	_arrest_dialogue_active = false
 
-	# Process the choice
-	match _arrest_choice:
-		"pay_fine":
+	# Process the choice based on which line we ended on
+	match _last_arrest_line_index:
+		1:  # Pay fine
 			_handle_pay_fine()
-		"go_to_jail":
+		2:  # Go to jail
 			_handle_go_to_jail()
-		"resist_arrest":
+		3:  # Resist arrest
 			_handle_resist_arrest()
 		_:
-			# Dialogue cancelled - treat as resist
+			# Dialogue cancelled or unknown - treat as resist
 			_handle_resist_arrest()
 
-	_arrest_choice = ""
+	_last_arrest_line_index = 0
 
 
 ## Handle player paying fine
@@ -632,16 +622,10 @@ func interact(_interactor: Node) -> void:
 		_show_quest_completion_dialogue(completable)
 		return
 
-	# Normal conversation
-	if use_conversation_system:
-		var profile := _get_guard_profile()
-		if profile:
-			ConversationSystem.start_conversation(self, profile)
-			return
-
-	# Fall back to scripted dialogue
-	if dialogue_data:
-		DialogueManager.start_dialogue(dialogue_data, npc_name)
+	# Normal conversation - guards always use ConversationSystem with restricted topics
+	var profile := _get_guard_profile()
+	if profile:
+		ConversationSystem.start_conversation(self, profile)
 
 
 ## Get quests that can be turned in to this guard using the central turn-in system
@@ -652,41 +636,18 @@ func _get_completable_guard_quests() -> Array[String]:
 	return result
 
 
-## Show dialogue for quest completion
+## Show dialogue for quest completion using scripted dialogue
 func _show_quest_completion_dialogue(completable_quests: Array[String]) -> void:
 	if completable_quests.is_empty():
 		return
 
 	# For simplicity, handle the first completable quest
-	# Could be expanded to show a menu if multiple quests are ready
 	var quest_id: String = completable_quests[0]
 	var quest: QuestManager.Quest = QuestManager.get_quest(quest_id)
 	if not quest:
 		return
 
-	# Create turn-in dialogue
-	var dialogue := DialogueData.new()
-	dialogue.title = "Quest Complete"
-
-	var root_node := DialogueNode.new()
-	root_node.id = "turnin_root"
-	root_node.speaker = npc_name
-	root_node.text = "Ah, you've completed '%s'. Well done. Here's your reward." % quest.title
-
-	# Create accept choice
-	var choice_accept := DialogueChoice.new()
-	choice_accept.text = "Accept reward"
-	choice_accept.next_node_id = "turnin_accept"
-
-	root_node.choices = [choice_accept]
-
-	# Create accept node
-	var accept_node := DialogueNode.new()
-	accept_node.id = "turnin_accept"
-	accept_node.speaker = npc_name
-
 	# Format reward text
-	var reward_text := "You received: "
 	var rewards: Array[String] = []
 	if quest.rewards.has("gold") and quest.rewards["gold"] > 0:
 		rewards.append("%d gold" % quest.rewards["gold"])
@@ -698,31 +659,39 @@ func _show_quest_completion_dialogue(completable_quests: Array[String]) -> void:
 			var quantity: int = item.get("quantity", 1)
 			rewards.append("%dx %s" % [quantity, item_name])
 
-	accept_node.text = reward_text + ", ".join(rewards) if not rewards.is_empty() else "The city thanks you for your service."
-	accept_node.is_end_node = true
+	var reward_text: String = "You received: " + ", ".join(rewards) if not rewards.is_empty() else "The city thanks you for your service."
 
-	dialogue.nodes = [root_node, accept_node]
-	dialogue.start_node_id = "turnin_root"
+	# Build scripted dialogue lines
+	var lines: Array = []
+
+	# Line 0: Quest complete acknowledgment
+	lines.append(ConversationSystem.create_scripted_line(
+		npc_name,
+		"Ah, you've completed '%s'. Well done. Here's your reward." % quest.title,
+		[ConversationSystem.create_scripted_choice("Accept reward", 1)]
+	))
+
+	# Line 1: Reward given
+	lines.append(ConversationSystem.create_scripted_line(
+		npc_name,
+		reward_text,
+		[],
+		true  # is_end
+	))
 
 	# Store quest ID to complete when dialogue ends
 	_pending_quest_completion = quest_id
 
-	# Connect to dialogue ended signal
-	if not DialogueManager.dialogue_ended.is_connected(_on_quest_turnin_dialogue_ended):
-		DialogueManager.dialogue_ended.connect(_on_quest_turnin_dialogue_ended)
-
-	DialogueManager.start_dialogue(dialogue, npc_name)
+	# Start scripted dialogue with callback
+	ConversationSystem.start_scripted_dialogue(lines, _on_quest_turnin_scripted_ended)
 
 
 ## Pending quest to complete after dialogue
 var _pending_quest_completion: String = ""
 
 
-## Handle quest turn-in dialogue completion
-func _on_quest_turnin_dialogue_ended(_dialogue_data: DialogueData) -> void:
-	if DialogueManager.dialogue_ended.is_connected(_on_quest_turnin_dialogue_ended):
-		DialogueManager.dialogue_ended.disconnect(_on_quest_turnin_dialogue_ended)
-
+## Handle quest turn-in scripted dialogue completion
+func _on_quest_turnin_scripted_ended() -> void:
 	if not _pending_quest_completion.is_empty():
 		# Use the central turn-in system
 		var result: Dictionary = QuestManager.try_turnin(self, _pending_quest_completion)
@@ -737,7 +706,6 @@ func _on_quest_turnin_dialogue_ended(_dialogue_data: DialogueData) -> void:
 					BountyManager.turn_in_bounty(bounty.id)
 		else:
 			# Fallback: If central turn-in failed, try direct completion
-			# (for backwards compatibility with old quest format)
 			if _pending_quest_completion.begins_with("quest_bounty"):
 				var bounty := _find_bounty_by_quest_id(_pending_quest_completion)
 				if bounty:

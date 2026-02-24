@@ -41,6 +41,11 @@ signal ip_gained(amount: int)
 @export var improvement_points: int = 0  # XP/IP for buying skills/stats
 @export var total_ip_earned: int = 0     # Total IP ever earned (for level calculation)
 
+## Morality and Faction System
+@export var morality_score: int = 0      # -100 (evil) to +100 (good)
+var faction_reputations: Dictionary = {} # faction_id -> reputation (-100 to 100)
+var faction_memberships: Dictionary = {} # faction_id -> {rank: String, joined_time: float}
+
 ## Level thresholds - level is based on total IP earned (not spent)
 ## Levels 1-10: Original tabletop progression
 ## Levels 11-17: Extended mid-game
