@@ -37,6 +37,7 @@ class CellInfo:
 	var dungeon_discovered: bool = false
 	var is_road: bool = false
 	var scene_path: String = ""  # Hand-crafted scene path (empty = procedural)
+	var scene_size: Vector2 = Vector2(100.0, 100.0)  # Scene dimensions (X = width, Y = depth)
 	var danger_level: int = 1
 	var description: String = ""
 
@@ -105,6 +106,7 @@ const LOCATION_SCENES: Dictionary = {
 	"kazer_dun_entrance": "res://scenes/levels/kazan_dun_entrance.tscn",
 	"sunken_crypts": "res://scenes/levels/sunken_crypt.tscn",
 	"crossroads": "res://scenes/regions/crossroads.tscn",
+	"bloodsand_arena": "res://scenes/levels/bloodsand_arena.tscn",
 }
 
 ## The canonical 20x20 terrain grid (row 0 = North, row 19 = South)
@@ -132,14 +134,17 @@ const GRID_DATA: Array = [
 ]
 
 ## Location definitions (coordinates are Elder Moor-relative)
+## scene_size: [width, depth] in world units (default 100x100 if not specified)
 const LOCATIONS: Array = [
 	{"id": "elder_moor", "name": "Elder Moor", "x": 0, "y": 0, "type": "landmark", "is_start": true,
+	 "scene_size": [242, 219],
 	 "description": "Rolling moorland dotted with standing stones. Your journey begins here."},
 	{"id": "willow_dale", "name": "Willow Dale Ruins", "x": -5, "y": -5, "type": "dungeon",
 	 "description": "Crumbling stone ruins deep in the foothills."},
 	{"id": "bandit_hideout", "name": "Bandit Hideout", "x": 1, "y": -4, "type": "dungeon",
 	 "description": "A fortified cave entrance crawling with bandits."},
 	{"id": "dalhurst", "name": "Dalhurst", "x": -8, "y": -2, "type": "town",
+	 "scene_size": [160, 172],
 	 "description": "A quiet settlement on the western road."},
 	{"id": "crossroads", "name": "Crossroads", "x": -5, "y": -2, "type": "landmark",
 	 "description": "A weathered signpost marks where the roads meet."},
@@ -166,6 +171,10 @@ const LOCATIONS: Array = [
 	 "description": "A hidden sea cave used by pirates and smugglers. Rumored to hold buried treasure."},
 	{"id": "old_watchtower", "name": "Old Watchtower", "x": 1, "y": 2, "type": "landmark",
 	 "description": "A ruined imperial watchtower overlooking the road. Now a bandit lookout."},
+	# === COMBAT ARENA ===
+	{"id": "bloodsand_arena", "name": "Bloodsand Arena", "x": 0, "y": 3, "type": "landmark",
+	 "scene_size": [100, 100],
+	 "description": "A gladiatorial arena where warriors test their mettle in bloody combat."},
 ]
 
 ## Road connections (Elder Moor-relative coordinates)
@@ -231,6 +240,11 @@ static func initialize() -> void:
 		cell.location_name = loc.get("name", "")
 		cell.description = loc.get("description", "")
 		cell.scene_path = LOCATION_SCENES.get(cell.location_id, "")
+
+		# Set custom scene size if specified (default is 100x100)
+		var size_arr: Array = loc.get("scene_size", [])
+		if size_arr.size() >= 2:
+			cell.scene_size = Vector2(size_arr[0], size_arr[1])
 
 		# Set location type
 		var type_str: String = loc.get("type", "")

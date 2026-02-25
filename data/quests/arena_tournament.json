@@ -1,0 +1,43 @@
+{
+	"id": "arena_novice_tournament",
+	"title": "Trial of the Newcomer",
+	"description": "Prove yourself worthy at the Bloodsand Arena by completing the novice tournament. Defeat three waves of opponents to earn fame and gold.",
+	"is_main_quest": false,
+	"quest_source": "arena",
+	"giver_npc_id": "arena_master_bloodsand",
+	"giver_npc_type": "arena_master",
+	"giver_region": "bloodsand_arena",
+	"objectives": [
+		{
+			"id": "reach_arena",
+			"description": "Travel to the Bloodsand Arena",
+			"type": "reach",
+			"target": "bloodsand_arena",
+			"required_count": 1
+		},
+		{
+			"id": "talk_pitmaster",
+			"description": "Speak with Gormund the Pitmaster",
+			"type": "talk",
+			"target": "arena_master_bloodsand",
+			"required_count": 1
+		},
+		{
+			"id": "win_tournament",
+			"description": "Win the novice tournament (3 rounds)",
+			"type": "custom",
+			"target": "tournament_novice_trial",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "arena_master_bloodsand",
+	"turn_in_zone": "bloodsand_arena",
+	"rewards": {
+		"gold": 150,
+		"xp": 300,
+		"items": []
+	},
+	"prerequisites": [],
+	"next_quest": "arena_veteran_tournament"
+}

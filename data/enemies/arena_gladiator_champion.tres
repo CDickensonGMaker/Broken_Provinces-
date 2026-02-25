@@ -1,0 +1,114 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/enemy_attack_data.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+id = "champion_cleave"
+display_name = "Cleave"
+damage = Array[int]([12, 20, 0])
+damage_type = 0
+windup_time = 0.4
+active_time = 0.25
+recovery_time = 0.35
+cooldown = 1.5
+range_distance = 2.5
+is_ranged = false
+is_aoe = true
+aoe_radius = 2.0
+projectile_speed = 15.0
+inflicts_condition = 0
+condition_chance = 0.0
+condition_duration = 0.0
+stagger_power = 0.9
+knockback_force = 4.0
+weight = 1.0
+min_range = 0.0
+max_range = 2.8
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+id = "champion_thrust"
+display_name = "Piercing Thrust"
+damage = Array[int]([10, 16, 0])
+damage_type = 0
+windup_time = 0.25
+active_time = 0.15
+recovery_time = 0.25
+cooldown = 1.2
+range_distance = 2.8
+is_ranged = false
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 15.0
+inflicts_condition = 2
+condition_chance = 0.3
+condition_duration = 5.0
+stagger_power = 0.6
+knockback_force = 2.0
+weight = 0.7
+min_range = 0.0
+max_range = 3.0
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[resource]
+script = ExtResource("1")
+id = "arena_gladiator_champion"
+display_name = "Champion Gladiator"
+description = "A celebrated arena champion who has defeated countless opponents. A true master of combat."
+level = 20
+min_level = 15
+max_level = 30
+max_hp = 120
+armor_value = 25
+movement_speed = 4.5
+turn_speed = 6.0
+grit = 10
+agility = 8
+will = 7
+knowledge = 5
+bravery = 9
+behavior = 0
+faction = 6
+aggro_range = 15.0
+attack_range = 2.5
+preferred_distance = 2.2
+flee_hp_threshold = 0.05
+is_boss = false
+attacks = Array[ExtResource("2")]([SubResource("1"), SubResource("2")])
+can_block = true
+block_chance = 0.45
+stagger_resistance = 0.35
+fire_resistance = 0.1
+frost_resistance = 0.1
+lightning_resistance = 0.1
+poison_resistance = 0.1
+necrotic_resistance = 0.0
+physical_resistance = 0.2
+fire_weakness = 0.0
+frost_weakness = 0.0
+lightning_weakness = 0.0
+holy_weakness = 0.0
+causes_horror = false
+horror_difficulty = 10
+loot_table_av = 8
+gold_drop = Array[int]([50, 100])
+guaranteed_drops = Array[String]([])
+drop_table = {
+"health_potion": 0.5,
+"strength_elixir": 0.2
+}
+xp_reward = 200
+scene_path = ""
+icon_path = "res://assets/sprites/enemies/human_bandit.png"
+scale = 1.1
+idle_sounds = Array[String]([])
+attack_sounds = Array[String]([])
+hurt_sounds = Array[String]([])
+death_sounds = Array[String]([])

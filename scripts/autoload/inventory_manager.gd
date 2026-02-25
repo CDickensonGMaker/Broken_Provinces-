@@ -91,7 +91,13 @@ func _load_item_databases() -> void:
 	var armor_files := [
 		"leather_armor", "chainmail", "wooden_shield",
 		"ring_of_protection", "ring_of_strength",
-		"amulet_of_vitality", "amulet_of_wisdom"
+		"amulet_of_vitality", "amulet_of_wisdom",
+		# Basic jewelry (no stats - for enchanting)
+		"iron_ring", "silver_ring", "gold_ring",
+		"copper_amulet", "silver_amulet", "gold_amulet",
+		# Special jewelry (unique effects)
+		"bone_ring", "serpent_ring", "flame_heart_ring", "signet_ring",
+		"wolf_fang_necklace", "spider_silk_pendant", "frost_crystal_pendant", "scholars_medallion"
 	]
 	for armor_id in armor_files:
 		var path := "res://data/armor/%s.tres" % armor_id
@@ -117,8 +123,9 @@ func _load_item_databases() -> void:
 		# Quest items
 		"corrupted_totem_shard", "goblin_war_horn", "bandit_bounty_note",
 		# Materials
-		"iron_ore", "iron_ingot", "gold_ore", "stone_block",
-		"steel_ingot", "coal", "leather", "leather_strip",
+		"iron_ore", "iron_ingot", "gold_ore", "gold_ingot",
+		"silver_ore", "silver_ingot",
+		"stone_block", "steel_ingot", "coal", "leather", "leather_strip",
 		"wood_plank", "red_herb", "empty_vial",
 		# Harvestable plant materials
 		"wild_berry", "blue_flower", "mushroom",
@@ -131,7 +138,13 @@ func _load_item_databases() -> void:
 		# Monster drops - wolf
 		"wolf_pelt", "wolf_fang", "raw_meat",
 		# Monster drops - spider
-		"spider_silk", "spider_venom", "spider_fang"
+		"spider_silk", "spider_venom", "spider_fang",
+		# Soulstones
+		"soulstone_petty_empty", "soulstone_petty_filled",
+		"soulstone_lesser_empty", "soulstone_lesser_filled",
+		"soulstone_common_empty", "soulstone_common_filled",
+		"soulstone_greater_empty", "soulstone_greater_filled",
+		"soulstone_grand_empty", "soulstone_grand_filled"
 	]
 	for item_id in item_files:
 		var path := "res://data/items/%s.tres" % item_id
@@ -336,6 +349,11 @@ func has_item(item_id: String, quantity: int = 1) -> bool:
 
 ## Equip an item from inventory
 func equip_item(inventory_index: int) -> bool:
+	# Check if equipment changes are locked (e.g., during arena tournament)
+	if TournamentManager and not TournamentManager.can_change_equipment():
+		push_warning("[InventoryManager] Cannot change equipment - locked during tournament")
+		return false
+
 	if inventory_index < 0 or inventory_index >= inventory.size():
 		return false
 
@@ -418,6 +436,10 @@ func equip_item(inventory_index: int) -> bool:
 
 ## Unequip an item to inventory
 func unequip_item(slot: String) -> bool:
+	# Check if equipment changes are locked (e.g., during arena tournament)
+	if TournamentManager and not TournamentManager.can_change_equipment():
+		push_warning("[InventoryManager] Cannot change equipment - locked during tournament")
+		return false
 	return _unequip_to_inventory(slot)
 
 func _unequip_to_inventory(slot: String) -> bool:
@@ -747,6 +769,11 @@ func _use_item_from_hotbar(item_id: String) -> bool:
 
 ## Equip a spell by ID (sets as active spell for casting via left-click)
 func equip_spell(spell_id: String) -> bool:
+	# Check if equipment changes are locked (e.g., during arena tournament)
+	if TournamentManager and not TournamentManager.can_change_equipment():
+		push_warning("[InventoryManager] Cannot change spells - locked during tournament")
+		return false
+
 	var spell: SpellData = null
 
 	# Try to find in spell database

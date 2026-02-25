@@ -10,9 +10,9 @@ config_version=5
 
 [application]
 
-config/name="Catacombs of Gore"
-config/description="PS1-style action RPG based on the Catacombs of Gore tabletop RPG"
-run/main_scene="res://scenes/main.tscn"
+config/name="Broken Provinces"
+config/description="PS1-style action RPG - Broken Provinces: The Empty Throne"
+run/main_scene="res://scenes/ui/title_screen.tscn"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -46,6 +46,10 @@ TakeoverManager="*res://scripts/autoload/takeover_manager.gd"
 StatsTracker="*res://scripts/autoload/stats_tracker.gd"
 JournalManager="*res://scripts/autoload/journal_manager.gd"
 GameSystems="*res://scripts/autoload/game_systems.gd"
+PostProcess="*res://scripts/autoload/post_process.gd"
+EnchantmentManager="*res://scripts/autoload/enchantment_manager.gd"
+SpellCreator="*res://scripts/autoload/spell_creator.gd"
+TournamentManager="*res://scripts/autoload/tournament_manager.gd"
 
 [display]
 
@@ -190,6 +194,11 @@ menu_prev_tab={
 menu_next_tab={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":88,"key_label":0,"unicode":120,"location":0,"echo":false,"script":null)
+]
+}
+crouch={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":67,"key_label":0,"unicode":99,"location":0,"echo":false,"script":null)
 ]
 }
 

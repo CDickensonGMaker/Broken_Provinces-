@@ -1,0 +1,141 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/enemy_attack_data.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+id = "legend_devastate"
+display_name = "Devastate"
+damage = Array[int]([20, 30, 0])
+damage_type = 0
+windup_time = 0.5
+active_time = 0.3
+recovery_time = 0.4
+cooldown = 2.0
+range_distance = 3.0
+is_ranged = false
+is_aoe = true
+aoe_radius = 3.0
+projectile_speed = 15.0
+inflicts_condition = 0
+condition_chance = 0.0
+condition_duration = 0.0
+stagger_power = 1.0
+knockback_force = 6.0
+weight = 1.0
+min_range = 0.0
+max_range = 3.2
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+id = "legend_execution"
+display_name = "Execution Strike"
+damage = Array[int]([25, 40, 0])
+damage_type = 0
+windup_time = 0.6
+active_time = 0.2
+recovery_time = 0.5
+cooldown = 3.0
+range_distance = 2.5
+is_ranged = false
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 15.0
+inflicts_condition = 0
+condition_chance = 0.0
+condition_duration = 0.0
+stagger_power = 1.0
+knockback_force = 5.0
+weight = 0.5
+min_range = 0.0
+max_range = 2.8
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[sub_resource type="Resource" id="3"]
+script = ExtResource("2")
+id = "legend_whirlwind"
+display_name = "Whirlwind"
+damage = Array[int]([15, 22, 0])
+damage_type = 0
+windup_time = 0.3
+active_time = 0.5
+recovery_time = 0.4
+cooldown = 2.5
+range_distance = 4.0
+is_ranged = false
+is_aoe = true
+aoe_radius = 4.0
+projectile_speed = 15.0
+inflicts_condition = 0
+condition_chance = 0.0
+condition_duration = 0.0
+stagger_power = 0.8
+knockback_force = 3.0
+weight = 0.6
+min_range = 0.0
+max_range = 4.0
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[resource]
+script = ExtResource("1")
+id = "arena_gladiator_legend"
+display_name = "Legendary Gladiator"
+description = "A living legend of the arena. Their name is spoken with reverence and fear."
+level = 35
+min_level = 30
+max_level = 50
+max_hp = 200
+armor_value = 35
+movement_speed = 5.0
+turn_speed = 7.0
+grit = 14
+agility = 10
+will = 9
+knowledge = 6
+bravery = 10
+behavior = 0
+faction = 6
+aggro_range = 18.0
+attack_range = 3.0
+preferred_distance = 2.5
+flee_hp_threshold = 0.0
+is_boss = true
+attacks = Array[ExtResource("2")]([SubResource("1"), SubResource("2"), SubResource("3")])
+can_block = true
+block_chance = 0.5
+stagger_resistance = 0.5
+fire_resistance = 0.15
+frost_resistance = 0.15
+lightning_resistance = 0.15
+poison_resistance = 0.15
+necrotic_resistance = 0.1
+physical_resistance = 0.25
+fire_weakness = 0.0
+frost_weakness = 0.0
+lightning_weakness = 0.0
+holy_weakness = 0.0
+causes_horror = false
+horror_difficulty = 12
+loot_table_av = 12
+gold_drop = Array[int]([100, 250])
+guaranteed_drops = Array[String]([])
+drop_table = {
+"health_potion": 0.8,
+"strength_elixir": 0.4
+}
+xp_reward = 500
+scene_path = ""
+icon_path = "res://assets/sprites/enemies/human_bandit.png"
+scale = 1.2
+idle_sounds = Array[String]([])
+attack_sounds = Array[String]([])
+hurt_sounds = Array[String]([])
+death_sounds = Array[String]([])
