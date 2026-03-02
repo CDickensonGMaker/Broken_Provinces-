@@ -1,0 +1,36 @@
+{
+  "opening": "You've lived your whole life in the small logging hamlet of Elder Moor, tucked deep in the pines at the edge of the wilds.",
+
+  "race_inserts": {
+    "HUMAN": "Your human adaptability has served you well in this frontier community.",
+    "ELF": "Though elves are rare in these parts, the villagers have come to accept your long ears and longer patience.",
+    "HALFLING": "Your small stature made you a natural for navigating the tight spaces between lumber stacks and cabin rafters.",
+    "DWARF": "Your dwarven stonework skills, though underused in a logging camp, earned you respect among the carpenters."
+  },
+
+  "career_inserts": {
+    "APPRENTICE": "The hedge-witch who taught you basic cantrips says you're ready to seek real instruction elsewhere.",
+    "FARMER": "Years of tending the camp's modest vegetable plots have given you practical knowledge of the land.",
+    "GRAVE_DIGGER": "The cemetery at the forest's edge is small, but the work taught you not to fear the dark.",
+    "SCOUT": "You've ranged further into the wilds than most, learning the paths that wind through the pines.",
+    "SOLDIER": "The sword-drills you practiced have prepared you for the dangers beyond the tree line.",
+    "MERCHANT": "Helping at the general store taught you the value of goods and the art of the deal.",
+    "PRIEST": "The small shrine to the Three Gods was your responsibility, and now you seek a larger flock.",
+    "THIEF": "Light fingers and lighter feet have kept you fed, but Elder Moor offers slim pickings.",
+    "NOBLE": "Your family's fall from grace brought you here, but you never forgot how to carry yourself.",
+    "CULTIST": "The forbidden texts you discovered in an abandoned cabin opened your eyes to darker truths.",
+    "ALCHEMIST": "Grinding herbs and mixing tinctures in the apothecary's corner has been your life's work.",
+    "BEGGAR": "You survived on scraps and kindness, but now you hunger for something more."
+  },
+
+  "core_message": "Today is the day - you're finally old enough to set out on your own and begin making a name for yourself. Before you leave, ask around town and see if anyone needs help. The people of Elder Moor have known you since childhood, and a good reputation starts at home.\n\nAnd don't forget to speak with Tharin Ironbeard, the Dwarf Guild Master, before you head out. He's waiting just north of town, beside the Blacksmith, and he says he has a special task for you.",
+
+  "lore_hints": [
+    "Strange lights have been seen in the forest at night, and wolves grow bolder with each passing moon.",
+    "Travelers from the south speak of trouble at Kazan-Dun, the old dwarven stronghold.",
+    "The Temple of Three Gods in Dalhurst has sent word that they seek able bodies for a holy task.",
+    "Bandits have been raiding the roads more frequently - the Guild is offering bounties."
+  ],
+
+  "closing": "Your journey begins in Elder Moor."
+}

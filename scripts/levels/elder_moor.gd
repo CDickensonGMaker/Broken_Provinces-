@@ -6,6 +6,7 @@ extends Node3D
 const ZONE_ID := "elder_moor"
 const ZONE_SIZE := Vector2(242.0, 219.0)  # Actual scene dimensions (width, depth)
 const ZONE_SIZE_LEGACY := 242.0  # For backwards compatibility (use larger dimension)
+const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
 
 ## Town center radius - buildings are kept within this area
 const TOWN_RADIUS := 80.0  # Expanded for larger scene
@@ -23,6 +24,9 @@ func _ready() -> void:
 			PlayerGPS.set_position(Vector2i.ZERO, true)  # Elder Moor is at (0, 0), skip_discovery=true (already handled by reset)
 		# Legacy starter quest disabled - using new quest system
 		#_start_starter_quest()
+		# Play town ambient sound and village music
+		AudioManager.play_ambient(TOWN_AMBIENT_PATH)
+		AudioManager.play_zone_music("village")
 
 	_setup_navigation()
 	if is_main_scene:
@@ -34,9 +38,20 @@ func _ready() -> void:
 	_spawn_civilian_population()
 	# Spawn tutorial NPCs (Grom, Martha, Brennan) with correct sprites
 	_spawn_tutorial_npcs()
+	# Spawn locked doors from markers (place LockedDoors container with Marker3D children in .tscn)
+	_spawn_locked_doors()
+	# Spawn thieves that lurk in the area
+	_spawn_thieves()
+
+	# Spawn fall leaves on the ground for forest atmosphere
+	_spawn_fall_leaves()
 
 	# Register with CellStreamer and start streaming
 	_setup_cell_streaming()
+
+	# Check if we should show the intro dialogue (new game only)
+	if is_main_scene:
+		_check_intro_dialogue()
 
 	print("[Elder Moor] Logging camp initialized")
 
@@ -58,14 +73,20 @@ func _setup_cell_streaming() -> void:
 		push_warning("[Elder Moor] CellStreamer not found")
 		return
 
+	# Check if we're loading from a save with pending cell data
+	# If so, use the saved cell coordinates instead of (0,0)
+	var start_coords: Vector2i = Vector2i.ZERO
+	if SaveManager and SaveManager.has_pending_cell_data():
+		start_coords = SaveManager.get_pending_cell_coords()
+		print("[Elder Moor] Loading from save - starting streaming at cell (%d, %d)" % [start_coords.x, start_coords.y])
+
 	# Register this scene as the MAIN SCENE cell at (0, 0)
 	# This tells CellStreamer that Elder Moor is already loaded AND should never be unloaded
 	# (it contains the WorldEnvironment and lighting for the entire world)
-	var my_coords: Vector2i = Vector2i.ZERO
-	CellStreamer.register_main_scene_cell(my_coords, self)
+	CellStreamer.register_main_scene_cell(Vector2i.ZERO, self)
 
-	# Start streaming from this cell - this will load adjacent wilderness cells
-	CellStreamer.start_streaming(my_coords)
+	# Start streaming from the correct cell (saved position or default 0,0)
+	CellStreamer.start_streaming(start_coords)
 
 
 ## Setup navigation mesh for NPC pathfinding
@@ -142,6 +163,75 @@ func _add_collision_to_meshes(node: Node) -> void:
 	# Recurse into children
 	for child in node.get_children():
 		_add_collision_to_meshes(child)
+
+
+## Spawn fall leaves as ground decoration for forest atmosphere
+func _spawn_fall_leaves() -> void:
+	# Fall leaf textures
+	var leaf_textures: Array[String] = [
+		"res://assets/sprites/environment/ground/leaves_full.png",
+		"res://assets/sprites/environment/ground/leaves_half.png"
+	]
+
+	# Container for leaves
+	var leaves_container := Node3D.new()
+	leaves_container.name = "FallLeaves"
+	add_child(leaves_container)
+
+	# Spawn leaves across the area (avoiding buildings)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash("elder_moor_leaves")
+
+	var leaf_count: int = 150  # Number of leaf patches
+
+	for i in range(leaf_count):
+		# Random position within town bounds
+		var x: float = rng.randf_range(-TOWN_RADIUS * 1.2, TOWN_RADIUS * 1.2)
+		var z: float = rng.randf_range(-TOWN_RADIUS * 1.2, TOWN_RADIUS * 1.2)
+
+		# Skip center area where buildings are dense
+		var dist_from_center: float = Vector2(x, z).length()
+		if dist_from_center < 15.0:
+			continue
+
+		# Load random leaf texture
+		var tex_path: String = leaf_textures[rng.randi() % leaf_textures.size()]
+		var tex: Texture2D = load(tex_path)
+		if not tex:
+			continue
+
+		# Create leaf decal sprite
+		var leaf := Sprite3D.new()
+		leaf.name = "LeafPatch_%d" % i
+		leaf.texture = tex
+		leaf.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST  # PS1 style
+
+		# Lay flat on ground
+		leaf.billboard = BaseMaterial3D.BILLBOARD_DISABLED
+		leaf.rotation_degrees.x = -90  # Face up
+
+		# Random rotation around Y
+		leaf.rotation_degrees.y = rng.randf() * 360.0
+
+		# Random scale
+		var scale_factor: float = rng.randf_range(0.015, 0.035)
+		leaf.pixel_size = scale_factor
+
+		# Position slightly above ground to avoid z-fighting
+		leaf.position = Vector3(x, 0.02, z)
+
+		# Autumn tint variations
+		var tint_roll: float = rng.randf()
+		if tint_roll < 0.3:
+			leaf.modulate = Color(1.0, 0.85, 0.6)  # Golden yellow
+		elif tint_roll < 0.6:
+			leaf.modulate = Color(0.9, 0.5, 0.3)  # Orange-brown
+		else:
+			leaf.modulate = Color(0.8, 0.4, 0.25)  # Rusty red-brown
+
+		leaves_container.add_child(leaf)
+
+	print("[Elder Moor] Spawned %d fall leaf patches" % leaf_count)
 
 
 ## Spawn enemy spawners at marker positions in the wilderness
@@ -288,6 +378,12 @@ func _spawn_civilian_population() -> void:
 			npc.wander_radius = radius * 0.8
 			npc.wander_speed = randf_range(1.2, 2.0)
 
+			# Add zone-specific knowledge to civilians for town-appropriate dialogue
+			if not npc.knowledge_profile:
+				npc.knowledge_profile = NPCKnowledgeProfile.generic_villager()
+			npc.knowledge_profile.knowledge_tags.append(ZONE_ID)
+			npc.knowledge_profile.knowledge_tags.append("local_area")
+
 			total_spawned += 1
 
 	print("[Elder Moor] Spawned %d civilian NPCs (loggers and workers)" % total_spawned)
@@ -298,8 +394,8 @@ func _spawn_civilian_population() -> void:
 	# Connect to GameManager's time of day changes for visibility management
 	if GameManager:
 		GameManager.time_of_day_changed.connect(_on_time_of_day_changed)
-		# Initial visibility check
-		_update_civilian_visibility()
+		# Defer initial visibility check to ensure scene is fully loaded (fixes fast travel/save load issues)
+		call_deferred("_update_civilian_visibility")
 
 
 ## Called when time of day changes
@@ -334,41 +430,60 @@ func _update_civilian_visibility() -> void:
 				child.wander.set_physics_process(is_daytime)
 
 
+## Spawn locked doors from markers placed in the scene
+## Add a Node3D container called "LockedDoors" with Marker3D children
+## Set metadata on each marker: door_name (String), lock_dc (int)
+func _spawn_locked_doors() -> void:
+	var doors_container := get_node_or_null("LockedDoors")
+	if not doors_container:
+		return
+
+	var doors_spawned: int = 0
+	for marker in doors_container.get_children():
+		if not marker is Marker3D:
+			continue
+
+		var door_name: String = marker.get_meta("door_name", "Locked Door")
+		var lock_dc: int = marker.get_meta("lock_dc", 12)
+
+		var door := LockableDoor.spawn_door(
+			self,
+			marker.global_position,
+			door_name,
+			lock_dc
+		)
+		door.rotation = marker.rotation
+		doors_spawned += 1
+
+	if doors_spawned > 0:
+		print("[Elder Moor] Spawned %d locked doors from markers" % doors_spawned)
+
+
+## Spawn thieves that lurk around looking to pickpocket
+func _spawn_thieves() -> void:
+	# Elder Moor is a small logging camp - low chance of thieves
+	# Only spawn 1 thief occasionally (25% chance)
+	if randf() > 0.25:
+		return
+
+	# Spawn near the edges of town where it's less populated
+	var thief_positions: Array[Vector3] = [
+		Vector3(20, 0, 35),   # Near sawmill (busy, easy to blend in)
+		Vector3(-15, 0, 25),  # Near worker cabins
+	]
+
+	var spawn_pos: Vector3 = thief_positions[randi() % thief_positions.size()]
+	var thief := ThiefNPC.spawn_thief(self, spawn_pos, ZONE_ID, 4)  # Low skill (4)
+	print("[Elder Moor] A suspicious figure lurks nearby...")
+
+
 ## Spawn NPCs (merchants, quest givers, civilians)
+## NOTE: Most NPCs are pre-placed in the scene file (elder_moor.tscn)
+## This function only handles runtime-only spawns not in the scene
 func _spawn_npcs() -> void:
-	# Spawn general merchant inside the GeneralShop building
-	# Building is at (-12, 0, 5), place merchant inside facing the open front
-	var general_shop_pos := Vector3(-12.0, 0.0, 4.0)  # Slightly forward in the shop
-	var merchant := Merchant.spawn_merchant(
-		self,
-		general_shop_pos,
-		"Grimwald",  # Name
-		LootTables.LootTier.COMMON,  # Starter town has basic goods
-		"general"  # General store type
-	)
-	merchant.merchant_id = "grimwald_eldermoor"
-	merchant.region_id = "elder_moor"
-	print("[Elder Moor] Spawned merchant: Grimwald at GeneralShop")
-
-	# Spawn Tharin Ironbeard near the ForemansCabin
-	# ForemansCabin is at (-15, 0, -10), place Tharin in front of it
-	var tharin_scene: PackedScene = load("res://scenes/npcs/tharin_ironbeard_instance.tscn")
-	if tharin_scene:
-		var tharin: TharinIronbeard = tharin_scene.instantiate()
-		tharin.position = Vector3(-15.0, 0.0, -7.0)  # In front of ForemansCabin
-		add_child(tharin)
-		print("[Elder Moor] Spawned NPC: Tharin Ironbeard at ForemansCabin")
-	else:
-		push_warning("[Elder Moor] Failed to load tharin_ironbeard_instance.tscn")
-
-	# Old Harlan disabled - no quests configured yet
-	# Uncomment when quest giver has quests to offer
-	#var quest_giver_pos := Vector3(3.0, 0.0, 2.0)
-	#var quest_giver := QuestGiver.spawn_quest_giver(
-	#	self, quest_giver_pos, "Old Harlan", "old_harlan_eldermoor",
-	#	null, 8, 2
-	#)
-	#quest_giver.region_id = "elder_moor"
+	# All main NPCs (Grimwald, Tharin, Grom, Brennan) are now placed in the scene file
+	# This avoids duplicates and allows precise positioning in the editor
+	pass
 
 
 ## Spawn crafting stations (blacksmith anvil, cooking fire, alchemy table)
@@ -393,74 +508,154 @@ func _spawn_crafting_stations() -> void:
 
 
 ## Spawn tutorial quest giver NPCs
+## NOTE: Grom and Brennan are pre-placed in elder_moor.tscn
+## Martha the Cook is spawned via code to avoid sprite sheet corruption issues
 func _spawn_tutorial_npcs() -> void:
-	# Grom the Smith - blacksmith tutorial quest giver
-	# Positioned near the anvil
-	var grom_pos := Vector3(-10.0, 0.0, -12.0)
-	var grom_quests: Array[String] = ["tutorial_crafting"]
-	var grom_sprite: Texture2D = load("res://assets/sprites/npcs/blacksmith.png")
-	var grom := QuestGiver.spawn_quest_giver(
-		self,
-		grom_pos,
-		"Grom the Smith",
-		"grom_the_smith",
-		grom_sprite,
-		5, 1,  # 5 horizontal frames (hammering animation), 1 row
-		grom_quests
-	)
-	grom.region_id = "elder_moor"
-	grom.faction_id = "human_empire"
-	grom.generic_dialogues = {
-		"offer": "Hail, traveler! I am Grom, the village smith.\nI can teach you the basics of metalworking if you're interested.\nI've got some spare iron - craft yourself a dagger at my anvil.",
-		"active": "Have you crafted that iron dagger yet?\nThe anvil is right there - just use it and select the dagger recipe.",
-		"complete": "Well done! That's a fine piece of work for a beginner.\nHere, take this repair kit - you'll need it to maintain your gear."
-	}
-	print("[Elder Moor] Spawned tutorial NPC: Grom the Smith")
+	# =========================================================================
+	# IMPORTANT: These NPCs MUST be spawned via code, NOT placed in scene
+	# Adding them directly to elder_moor.tscn causes sprite sheet corruption.
+	# DO NOT remove this code or move them to the scene file!
+	# =========================================================================
+	_spawn_martha_the_cook()
+	_spawn_varn_the_scarred()
 
-	# Martha the Cook - cooking tutorial quest giver
-	# Positioned near the cooking fire
-	var martha_pos := Vector3(3.0, 0.0, 8.0)
-	var martha_quests: Array[String] = ["tutorial_cooking"]
-	var martha_sprite: Texture2D = load("res://assets/sprites/npcs/martha_cook.png")
-	var martha := QuestGiver.spawn_quest_giver(
-		self,
-		martha_pos,
-		"Martha",
-		"martha_cook",
-		martha_sprite,
-		4, 1,  # 4 horizontal frames, 1 row
-		martha_quests,
-		false,  # is_talk_target
-		0.018   # pixel_size - smaller for cook sprite
-	)
-	martha.region_id = "elder_moor"
-	martha.faction_id = "human_empire"
-	martha.generic_dialogues = {
-		"offer": "Oh, hello dear! You look like you could use a good meal.\nI can teach you to cook if you'd like - it's a useful skill for any adventurer.\nHere's some raw meat. Cook it over the fire there.",
-		"active": "Just use the cooking fire and roast that meat.\nNothing fancy, but it'll keep you alive out there.",
-		"complete": "There you go! Simple but effective.\nTake these stews I made - they'll restore both health and stamina."
-	}
-	print("[Elder Moor] Spawned tutorial NPC: Martha")
 
-	# Old Sage Brennan - alchemy tutorial quest giver
-	# Positioned near the alchemy table
-	var brennan_pos := Vector3(8.0, 0.0, -5.0)
-	var brennan_quests: Array[String] = ["tutorial_alchemy"]
-	var brennan_sprite: Texture2D = load("res://assets/sprites/npcs/old_man_sage.png")
-	var brennan := QuestGiver.spawn_quest_giver(
-		self,
-		brennan_pos,
-		"Old Sage Brennan",
-		"sage_brennan",
-		brennan_sprite,
-		2, 1,  # 2 horizontal frames, 1 row
-		brennan_quests
+## ============================================================================
+## MARTHA THE COOK - Tutorial Cooking Quest Giver
+## ============================================================================
+## IMPORTANT: DO NOT DELETE THIS FUNCTION OR MOVE MARTHA TO THE SCENE FILE!
+## Her sprite sheet gets corrupted when added directly to elder_moor.tscn.
+## She MUST be spawned via code to display correctly.
+## ============================================================================
+func _spawn_martha_the_cook() -> void:
+	# Load Martha's sprite texture
+	var martha_sprite: Texture2D = load("res://assets/sprites/npcs/named/martha_cook.png")
+	if not martha_sprite:
+		push_error("[Elder Moor] Failed to load Martha the Cook sprite!")
+		return
+
+	# Position near the cooking fire (5.5, 0, 12.0)
+	var martha_pos := Vector3(5.5, 0.0, 12.0)
+
+	# Spawn using QuestGiver factory method
+	var martha: QuestGiver = QuestGiver.spawn_quest_giver(
+		self,                          # parent
+		martha_pos,                    # position
+		"Martha the Cook",             # display_name
+		"martha_cook",                 # npc_id
+		martha_sprite,                 # custom_sprite
+		4,                             # h_frames (4 frame animation)
+		1,                             # v_frames (single row)
+		["tutorial_cooking"]           # quest_ids
 	)
-	brennan.region_id = "elder_moor"
-	brennan.faction_id = "human_empire"
-	brennan.generic_dialogues = {
-		"offer": "Ah, a young soul seeking knowledge. I am Brennan, the village herbalist.\nAlchemy is a powerful art - the ability to brew potions can save your life.\nI'll give you the ingredients to make a basic healing potion. Use the alchemy table.",
-		"active": "The alchemy table is there. Combine two red herbs with an empty vial.\nThe art of potion-making requires patience and precision.",
-		"complete": "Excellent work! You have a steady hand.\nHere, take these supplies - a mana potion and some vials for your future brews."
-	}
-	print("[Elder Moor] Spawned tutorial NPC: Old Sage Brennan")
+
+	if martha:
+		martha.region_id = "elder_moor"
+		print("[Elder Moor] Spawned Martha the Cook at %s (via code - sprite fix)" % martha_pos)
+	else:
+		push_error("[Elder Moor] Failed to spawn Martha the Cook!")
+
+
+## ============================================================================
+## VARN THE SCARRED - Arena Quest Giver (Retired Gladiator)
+## ============================================================================
+## IMPORTANT: DO NOT DELETE THIS FUNCTION OR MOVE VARN TO THE SCENE FILE!
+## His sprite sheet gets corrupted when added directly to elder_moor.tscn.
+## He MUST be spawned via code to display correctly.
+## ============================================================================
+func _spawn_varn_the_scarred() -> void:
+	# Load Varn's sprite texture (gladiator sprite)
+	var varn_sprite: Texture2D = load("res://assets/sprites/npcs/combat/male_gladiator1.png")
+	if not varn_sprite:
+		push_error("[Elder Moor] Failed to load Varn the Scarred sprite!")
+		return
+
+	# Position near the camp (same as scene placement: 6.5, 0, 10.5)
+	var varn_pos := Vector3(6.5, 0.0, 10.5)
+
+	# Spawn using QuestGiver factory method
+	var varn: QuestGiver = QuestGiver.spawn_quest_giver(
+		self,                          # parent
+		varn_pos,                      # position
+		"Varn the Scarred",            # display_name
+		"varn_the_scarred",            # npc_id
+		varn_sprite,                   # custom_sprite
+		1,                             # h_frames (single frame - 48x96)
+		1,                             # v_frames (single row)
+		["meet_the_arena_master"]      # quest_ids
+	)
+
+	if varn:
+		varn.region_id = "elder_moor"
+		varn.faction_id = "human_empire"
+		# Give him a knowledge profile for conversation
+		var varn_profile := NPCKnowledgeProfile.new()
+		varn_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+		varn_profile.personality_traits = ["gruff", "battle-hardened", "nostalgic"]
+		varn_profile.knowledge_tags = ["elder_moor", "arena", "combat", "bloodsand_arena"]
+		varn_profile.base_disposition = 50
+		varn.npc_profile = varn_profile
+		print("[Elder Moor] Spawned Varn the Scarred at %s (via code - sprite fix)" % varn_pos)
+	else:
+		push_error("[Elder Moor] Failed to spawn Varn the Scarred!")
+
+
+# =============================================================================
+# INTRO DIALOGUE SYSTEM
+# =============================================================================
+
+## Check if intro dialogue should be shown (new game, first time in Elder Moor)
+func _check_intro_dialogue() -> void:
+	# Don't show if DialogueManager isn't ready
+	if not DialogueManager:
+		return
+
+	# Check if intro has already been shown
+	if DialogueManager.has_flag("intro_shown"):
+		return
+
+	# Don't show if dialogue is already active
+	if DialogueManager.is_dialogue_active:
+		return
+
+	# Don't show if player data isn't available
+	if not GameManager or not GameManager.player_data:
+		return
+
+	# Defer the actual dialogue display to ensure scene is fully ready
+	call_deferred("_show_intro_dialogue")
+
+
+## Build and display the intro dialogue based on player race and career
+func _show_intro_dialogue() -> void:
+	# Double-check flag hasn't been set in the meantime
+	if DialogueManager.has_flag("intro_shown"):
+		return
+
+	# Get player race and career
+	var player_race: Enums.Race = GameManager.player_data.race
+	var player_career: Enums.Career = GameManager.player_data.career
+
+	# Build the dialogue
+	var intro_dialogue_result: Variant = IntroDialogueBuilder.build_intro_dialogue(player_race, player_career)
+
+	if intro_dialogue_result == null or not intro_dialogue_result is DialogueData:
+		push_error("[Elder Moor] Failed to build intro dialogue")
+		# Set flag anyway to prevent repeated failures
+		DialogueManager.set_flag("intro_shown")
+		return
+
+	# Cast to DialogueData (safe after type check above)
+	var intro_dialogue: DialogueData = intro_dialogue_result as DialogueData
+
+	# Set the flag BEFORE showing dialogue to prevent double-showing
+	DialogueManager.set_flag("intro_shown")
+
+	# Start the dialogue
+	if not DialogueManager.start_dialogue(intro_dialogue, ""):
+		push_error("[Elder Moor] Failed to start intro dialogue")
+	else:
+		print("[Elder Moor] Showing intro dialogue for %s %s" % [
+			Enums.Race.keys()[player_race],
+			Enums.Career.keys()[player_career]
+		])
