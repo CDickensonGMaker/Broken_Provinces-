@@ -64,6 +64,10 @@ var current_segment: int = 0
 var encounters_this_journey: int = 0
 var pending_encounter: SeaEncounter = null
 
+## Departure info for failed voyage handling
+var departure_port: String = ""
+var voyage_cost_paid: int = 0
+
 ## Current hex waypoints for journey
 var current_waypoints: Array[Vector2i] = []
 var current_waypoint_index: int = 0
@@ -123,37 +127,86 @@ func _load_route_data() -> void:
 
 ## Register default routes programmatically (fallback if no .tres files)
 func _register_default_routes() -> void:
-	# Only create default if no routes loaded from files
-	if routes.size() > 0:
-		return
+	# Load sea encounter resources for routes
+	var pirate_encounter: SeaEncounter = load("res://data/travel/sea_encounters/pirate_ambush.tres")
+	var ghost_encounter: SeaEncounter = load("res://data/travel/sea_encounters/ghost_ship.tres")
+	var serpent_encounter: SeaEncounter = load("res://data/travel/sea_encounters/sea_serpent.tres")
+	var kraken_encounter: SeaEncounter = load("res://data/travel/sea_encounters/kraken_attack.tres")
 
-	# Elder Moor Docks -> Elven City (main route across the lake)
-	var lake_crossing := BoatTravelData.new()
-	lake_crossing.id = "lake_crossing_elven"
-	lake_crossing.display_name = "Lake Crossing to Elven City"
-	lake_crossing.description = "A boat journey across the great lake to the Elven City."
-	lake_crossing.departure_port = "elder_moor_docks"
-	lake_crossing.destination_port = "elven_city_harbor"
-	lake_crossing.travel_duration_hours = 6.0
-	lake_crossing.journey_segments = 4
-	lake_crossing.encounter_chance_per_segment = 0.3
-	lake_crossing.max_encounters_per_journey = 2
-	lake_crossing.base_cost = 100
-	register_route(lake_crossing)
+	# === DALHURST TO LARTON (Ghost Pirate Route) ===
+	# Main sea route - blocked by ghost pirates until quest is complete
+	var dalhurst_larton := BoatTravelData.new()
+	dalhurst_larton.id = "dalhurst_to_larton"
+	dalhurst_larton.display_name = "Larton Passage"
+	dalhurst_larton.description = "A dangerous sea voyage down the coast to Larton. Ghost pirates have been sighted in these waters."
+	dalhurst_larton.departure_port = "dalhurst"
+	dalhurst_larton.destination_port = "larton"
+	dalhurst_larton.is_bidirectional = true
+	dalhurst_larton.travel_duration_hours = 1.5  # 90 seconds real-time = 1.5 in-game hours
+	dalhurst_larton.journey_segments = 3
+	dalhurst_larton.encounter_chance_per_segment = 0.35  # 35% chance per segment (ghost pirate threat)
+	dalhurst_larton.max_encounters_per_journey = 2
+	dalhurst_larton.base_cost = 50
+	dalhurst_larton.cost_negotiable = true
+	# Add encounters - ghost pirates are more common on this route
+	if ghost_encounter:
+		dalhurst_larton.possible_encounters.append(ghost_encounter)
+		dalhurst_larton.encounter_weights.append(0.5)  # 50% chance ghost pirates
+	if pirate_encounter:
+		dalhurst_larton.possible_encounters.append(pirate_encounter)
+		dalhurst_larton.encounter_weights.append(0.35)  # 35% chance regular pirates
+	if serpent_encounter:
+		dalhurst_larton.possible_encounters.append(serpent_encounter)
+		dalhurst_larton.encounter_weights.append(0.15)  # 15% chance sea serpent
+	register_route(dalhurst_larton)
 
-	# Coastal route between harbor towns
-	var coastal_route := BoatTravelData.new()
-	coastal_route.id = "coastal_south"
-	coastal_route.display_name = "Southern Coastal Route"
-	coastal_route.description = "A journey along the southern coast."
-	coastal_route.departure_port = "dalhurst_harbor"
-	coastal_route.destination_port = "desert_port"
-	coastal_route.travel_duration_hours = 8.0
-	coastal_route.journey_segments = 5
-	coastal_route.encounter_chance_per_segment = 0.25
-	coastal_route.max_encounters_per_journey = 3
-	coastal_route.base_cost = 150
-	register_route(coastal_route)
+	# === DALHURST TO ELVEN CITY (Silvanost) ===
+	var dalhurst_elven := BoatTravelData.new()
+	dalhurst_elven.id = "dalhurst_to_silvanost"
+	dalhurst_elven.display_name = "Voyage to Silvanost"
+	dalhurst_elven.description = "A long journey across the bay to the ancient elven city. The elves do not welcome many visitors."
+	dalhurst_elven.departure_port = "dalhurst"
+	dalhurst_elven.destination_port = "elven_city"
+	dalhurst_elven.is_bidirectional = true
+	dalhurst_elven.travel_duration_hours = 3.0
+	dalhurst_elven.journey_segments = 4
+	dalhurst_elven.encounter_chance_per_segment = 0.2
+	dalhurst_elven.max_encounters_per_journey = 2
+	dalhurst_elven.base_cost = 100
+	if pirate_encounter:
+		dalhurst_elven.possible_encounters.append(pirate_encounter)
+		dalhurst_elven.encounter_weights.append(0.45)
+	if serpent_encounter:
+		dalhurst_elven.possible_encounters.append(serpent_encounter)
+		dalhurst_elven.encounter_weights.append(0.35)
+	if kraken_encounter:
+		dalhurst_elven.possible_encounters.append(kraken_encounter)
+		dalhurst_elven.encounter_weights.append(0.20)  # 20% chance kraken on long voyage
+	register_route(dalhurst_elven)
+
+	# === LARTON TO SILVANOST ===
+	var larton_elven := BoatTravelData.new()
+	larton_elven.id = "larton_to_silvanost"
+	larton_elven.display_name = "Southern Passage to Silvanost"
+	larton_elven.description = "A coastal route from Larton to the elven city, skirting the southern bay."
+	larton_elven.departure_port = "larton"
+	larton_elven.destination_port = "elven_city"
+	larton_elven.is_bidirectional = true
+	larton_elven.travel_duration_hours = 2.0
+	larton_elven.journey_segments = 3
+	larton_elven.encounter_chance_per_segment = 0.25
+	larton_elven.max_encounters_per_journey = 2
+	larton_elven.base_cost = 75
+	if pirate_encounter:
+		larton_elven.possible_encounters.append(pirate_encounter)
+		larton_elven.encounter_weights.append(0.5)
+	if ghost_encounter:
+		larton_elven.possible_encounters.append(ghost_encounter)
+		larton_elven.encounter_weights.append(0.3)
+	if serpent_encounter:
+		larton_elven.possible_encounters.append(serpent_encounter)
+		larton_elven.encounter_weights.append(0.2)
+	register_route(larton_elven)
 
 
 ## Load additional sea routes from data files (placeholder for future expansion)
@@ -249,7 +302,8 @@ func get_route_cost(route: BoatTravelData) -> int:
 
 ## Start a boat journey
 ## Returns true if journey started successfully
-func start_journey(route_id: String) -> bool:
+## Set skip_cost to true when cost was already deducted (e.g., via dialogue action)
+func start_journey(route_id: String, skip_cost: bool = false) -> bool:
 	if current_state != JourneyState.IDLE:
 		push_warning("[BoatTravelManager] Cannot start journey - already traveling")
 		return false
@@ -259,15 +313,19 @@ func start_journey(route_id: String) -> bool:
 		push_warning("[BoatTravelManager] Route not found: %s" % route_id)
 		return false
 
-	# Check player can afford
+	# Check player can afford (skip if already handled by dialogue)
 	var cost: int = get_route_cost(route)
-	if GameManager and GameManager.player_data:
-		if GameManager.player_data.gold < cost:
-			journey_cancelled.emit(route, "Not enough gold")
-			return false
+	if not skip_cost:
+		if GameManager and GameManager.player_data:
+			if GameManager.player_data.gold < cost:
+				journey_cancelled.emit(route, "Not enough gold")
+				return false
+			# Deduct cost
+			GameManager.player_data.gold -= cost
 
-		# Deduct cost
-		GameManager.player_data.gold -= cost
+	# Store departure info for potential failure handling
+	departure_port = route.departure_port
+	voyage_cost_paid = cost if not skip_cost else get_route_cost(route)
 
 	# Initialize journey state
 	current_route = route
@@ -278,8 +336,13 @@ func start_journey(route_id: String) -> bool:
 	journey_started.emit(route)
 	print("[BoatTravelManager] Started journey: %s (cost: %d gold)" % [route.display_name, cost])
 
-	# Begin processing segments
-	_process_next_segment()
+	# Load the boat voyage scene to handle the visual journey experience
+	const BOAT_VOYAGE_SCENE := "res://scenes/travel/boat_voyage.tscn"
+	if SceneManager:
+		SceneManager.change_scene(BOAT_VOYAGE_SCENE, "PlayerSpawn")
+	else:
+		# Fallback: process segments immediately without visual scene
+		_process_next_segment()
 	return true
 
 
@@ -572,6 +635,8 @@ func _reset_journey_state() -> void:
 	current_segment = 0
 	encounters_this_journey = 0
 	pending_encounter = null
+	departure_port = ""
+	voyage_cost_paid = 0
 
 
 ## Check if currently traveling

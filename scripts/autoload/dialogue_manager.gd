@@ -133,6 +133,9 @@ func end_dialogue() -> void:
 	# Emit end signal
 	dialogue_ended.emit(finished_dialogue)
 
+	# Check for pending boat voyage (deferred to allow UI to close)
+	call_deferred("_check_pending_boat_voyage")
+
 ## Navigate to a specific node by ID
 func go_to_node(node_id: String) -> void:
 	if not current_dialogue:
@@ -234,6 +237,8 @@ func continue_dialogue() -> void:
 		return
 
 	if current_node.is_end_node:
+		# Execute node-level actions before ending (e.g., take_gold, start_boat_voyage)
+		_execute_node_actions(current_node)
 		end_dialogue()
 		return
 
@@ -247,6 +252,17 @@ func continue_dialogue() -> void:
 
 	# No choices and no auto-continue, end dialogue
 	end_dialogue()
+
+
+## Execute all actions attached to a node
+## Used for end nodes that trigger effects like teleportation, gold exchange, etc.
+func _execute_node_actions(node: DialogueNode) -> void:
+	if not node or node.actions.is_empty():
+		return
+
+	print("[DialogueManager] Executing %d node actions for '%s'" % [node.actions.size(), node.id])
+	for action: DialogueAction in node.actions:
+		execute_action(action)
 
 
 # =============================================================================
@@ -513,6 +529,16 @@ func execute_action(action: DialogueAction) -> String:
 			# Bounties are now handled via ConversationSystem.select_topic(QUESTS)
 			push_warning("[DialogueManager] SPAWN_ERRAND action is deprecated. Use bounty system instead.")
 
+		DialogueData.ActionType.START_BOAT_VOYAGE:
+			# Start boat travel - closes dialogue and initiates voyage
+			if BoatTravelManager:
+				var route_id: String = action.param_string
+				# Store route for processing after dialogue ends
+				set_flag("_pending_boat_voyage:" + route_id)
+				print("[DialogueManager] Queued boat voyage: %s" % route_id)
+			else:
+				push_warning("[DialogueManager] BoatTravelManager not found")
+
 	return ""
 
 
@@ -694,6 +720,37 @@ func pop_pending_shop() -> String:
 			dialogue_flags.erase(key)
 			break
 	return shop_id
+
+
+## Check and clear a pending boat voyage flag (returns route ID or empty string)
+func pop_pending_boat_voyage() -> String:
+	var route_id := ""
+	for key in dialogue_flags.keys():
+		if key.begins_with("_pending_boat_voyage:"):
+			route_id = key.substr(len("_pending_boat_voyage:"))
+			dialogue_flags.erase(key)
+			break
+	return route_id
+
+
+## Check and start any pending boat voyage after dialogue ends
+func _check_pending_boat_voyage() -> void:
+	var route_id := pop_pending_boat_voyage()
+	if route_id.is_empty():
+		return
+
+	print("[DialogueManager] Starting boat voyage: %s" % route_id)
+
+	if not BoatTravelManager:
+		push_error("[DialogueManager] BoatTravelManager not available")
+		return
+
+	# Start the voyage (skip_cost=true because dialogue already deducted gold)
+	var success: bool = BoatTravelManager.start_journey(route_id, true)
+	if success:
+		print("[DialogueManager] Boat voyage started successfully")
+	else:
+		push_warning("[DialogueManager] Failed to start boat voyage: %s" % route_id)
 
 
 # =============================================================================

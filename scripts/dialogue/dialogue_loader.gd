@@ -65,6 +65,17 @@ static func _build_dialogue_node(data: Dictionary) -> DialogueNode:
 		if choice:
 			node.choices.append(choice)
 
+	# Build node-level actions (for end nodes that trigger effects like teleportation)
+	var actions_data: Array[Dictionary] = []
+	var raw_actions: Array = data.get("actions", [])
+	for item: Variant in raw_actions:
+		if item is Dictionary:
+			actions_data.append(item)
+	for action_dict: Dictionary in actions_data:
+		var action := _build_dialogue_action(action_dict)
+		if action:
+			node.actions.append(action)
+
 	return node
 
 
@@ -162,6 +173,7 @@ static func _parse_action_type(type_str: String) -> DialogueData.ActionType:
 		"open_shop": return DialogueData.ActionType.OPEN_SHOP
 		"play_sound": return DialogueData.ActionType.PLAY_SOUND
 		"set_npc_state": return DialogueData.ActionType.SET_NPC_STATE
+		"start_boat_voyage": return DialogueData.ActionType.START_BOAT_VOYAGE
 		_: return DialogueData.ActionType.NONE
 
 

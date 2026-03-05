@@ -1,0 +1,349 @@
+{
+  "id": "harbor_master_dalhurst",
+  "display_name": "Harbor Master - Dalhurst",
+  "description": "Dialogue for the Harbor Master in Dalhurst who offers boat travel",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Harbor Master",
+      "text": "Ahoy there. I'm the Harbor Master of Dalhurst. Looking for passage on a ship?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What destinations are available?",
+          "next": "destinations",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about the seas around here.",
+          "next": "sea_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Nevermind.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "destinations",
+      "speaker": "Harbor Master",
+      "text": "We have ships heading to a few places. Mind you, the waters ain't safe lately. Ghost pirates been harassing our shipping lanes something fierce.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Book passage to Larton (50 gold)",
+          "next": "confirm_larton",
+          "conditions": [
+            {
+              "type": "has_gold",
+              "param": "",
+              "value": 50
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Book passage to Silvanost (100 gold)",
+          "next": "confirm_silvanost",
+          "conditions": [
+            {
+              "type": "has_gold",
+              "param": "",
+              "value": 100
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "[Not enough gold] I can't afford that right now.",
+          "next": "no_gold",
+          "show_when_unavailable": true,
+          "conditions": [
+            {
+              "type": "has_gold",
+              "param": "",
+              "value": 50,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Tell me more about these ghost pirates.",
+          "next": "ghost_pirates",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Maybe later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "confirm_larton",
+      "speaker": "Harbor Master",
+      "text": "Larton, eh? That's a rough voyage. The ghost pirates are thick between here and there. Still want to go?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Yes, I'll take my chances.",
+          "next": "depart_larton",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "On second thought, no.",
+          "next": "destinations",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "depart_larton",
+      "speaker": "Harbor Master",
+      "text": "Alright then. The captain'll take good care of ya... assuming you survive the voyage. Board when you're ready.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "take_gold",
+          "param": "",
+          "value": 50
+        },
+        {
+          "type": "start_boat_voyage",
+          "param": "dalhurst_to_larton",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "confirm_silvanost",
+      "speaker": "Harbor Master",
+      "text": "Silvanost? The elven city? They don't take kindly to uninvited guests. You sure about this?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Yes, I need to get there.",
+          "next": "depart_silvanost",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Maybe somewhere else.",
+          "next": "destinations",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "depart_silvanost",
+      "speaker": "Harbor Master",
+      "text": "Your funeral... er, I mean, safe travels. The ship leaves shortly.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "take_gold",
+          "param": "",
+          "value": 100
+        },
+        {
+          "type": "start_boat_voyage",
+          "param": "dalhurst_to_silvanost",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "no_gold",
+      "speaker": "Harbor Master",
+      "text": "Aye, passage ain't cheap these days. Come back when you've got the coin.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll be back.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "ghost_pirates",
+      "speaker": "Harbor Master",
+      "text": "Started a few months back. Ships vanishing in the night, crews found dead or... changed. They say there's a captain leading 'em from a stronghold somewhere out in the bay. The southern ports like Larton are suffering the worst - can't get any supplies through.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Has anyone tried to stop them?",
+          "next": "stop_pirates",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Back to destinations.",
+          "next": "destinations",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "stop_pirates",
+      "speaker": "Harbor Master",
+      "text": "The navy sent ships. None came back. Whatever's leading those pirates, it ain't natural. We need someone crazy enough to face 'em head on... or foolish enough to try.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Maybe I can help.",
+          "next": "help_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Sounds dangerous. Back to the ships.",
+          "next": "destinations",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "help_offer",
+      "speaker": "Harbor Master",
+      "text": "Ha! You've got guts, I'll give you that. Tell you what - make it to Larton alive and talk to the folks there. They know more about these ghost pirates than anyone. Might be someone there can point you to their stronghold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll head to Larton then.",
+          "next": "confirm_larton",
+          "conditions": [
+            {
+              "type": "has_gold",
+              "param": "",
+              "value": 50
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I'll think about it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "sea_info",
+      "speaker": "Harbor Master",
+      "text": "The bay stretches south to Larton and west to the elven city of Silvanost. Used to be good trading routes, but now... well, you've probably heard about the ghost pirates.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me about Larton.",
+          "next": "larton_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about Silvanost.",
+          "next": "silvanost_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'd like to book passage.",
+          "next": "destinations",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "larton_info",
+      "speaker": "Harbor Master",
+      "text": "Larton's a port town at the south end of the bay. Poor souls are starving down there - the ghost pirates cut off their sea trade, and the land route through Kazer-Dun is blocked by some goblin siege. They're desperate for help.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'd like to book passage there.",
+          "next": "confirm_larton",
+          "conditions": [
+            {
+              "type": "has_gold",
+              "param": "",
+              "value": 50
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Tell me about something else.",
+          "next": "sea_info",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "silvanost_info",
+      "speaker": "Harbor Master",
+      "text": "The elven city on the western coast. Beautiful place, or so they say. The elves keep to themselves mostly. Don't expect a warm welcome if you don't have business there.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'd like to book passage there.",
+          "next": "confirm_silvanost",
+          "conditions": [
+            {
+              "type": "has_gold",
+              "param": "",
+              "value": 100
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Tell me about something else.",
+          "next": "sea_info",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "speaker": "Harbor Master",
+      "text": "Safe travels, friend. Come back if you need passage.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

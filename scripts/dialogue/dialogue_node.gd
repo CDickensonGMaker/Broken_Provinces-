@@ -18,6 +18,8 @@ extends Resource
 @export var auto_continue_to: String = ""
 ## Optional: portrait/emotion for the speaker
 @export var portrait_id: String = ""
+## Actions to execute when this node is reached (typically for end nodes)
+@export var actions: Array[DialogueAction] = []
 
 ## Create a simple node with text and optional choices
 static func create(node_id: String, speaker: String, dialogue_text: String,

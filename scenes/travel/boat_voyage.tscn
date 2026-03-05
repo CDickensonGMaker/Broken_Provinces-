@@ -1,0 +1,162 @@
+[gd_scene load_steps=10 format=3 uid="uid://c30jlrow0xw4w"]
+
+[ext_resource type="Script" uid="uid://sgby8g51aucr" path="res://scripts/travel/boat_voyage.gd" id="1_voyage"]
+[ext_resource type="PackedScene" uid="uid://difnuj7lily8h" path="res://assets/models/vehicles/boat_v1.glb" id="2_boat_model"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ocean"]
+albedo_color = Color(0.08, 0.18, 0.32, 1)
+roughness = 0.2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_deck"]
+size = Vector3(4.9050293, 0.5, 20)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_side"]
+size = Vector3(0.5, 3, 22.547949)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_front"]
+size = Vector3(12, 3, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_back"]
+size = Vector3(2.9246216, 3, 1.7167969)
+
+[sub_resource type="Sky" id="Sky_ocean"]
+sky_material = null
+
+[sub_resource type="Environment" id="Environment_ocean"]
+background_mode = 2
+background_color = Color(0.4, 0.55, 0.7, 1)
+sky = SubResource("Sky_ocean")
+ambient_light_source = 2
+ambient_light_color = Color(0.6, 0.7, 0.8, 1)
+ambient_light_energy = 0.8
+fog_enabled = true
+fog_light_color = Color(0.5, 0.6, 0.7, 1)
+fog_density = 0.005
+
+[node name="BoatVoyage" type="Node3D"]
+script = ExtResource("1_voyage")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 20, 0)
+light_color = Color(1, 0.95, 0.85, 1)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ocean")
+
+[node name="Ocean" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0)
+size = Vector3(500, 1, 500)
+material = SubResource("StandardMaterial3D_ocean")
+
+[node name="BoatModel" parent="." instance=ExtResource("2_boat_model")]
+transform = Transform3D(3.2522619, 0, 0, 0, 1, 0, 0, 0, 3.4714415, -0.8620949, 0, 0)
+
+[node name="DeckCollision" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+
+[node name="DeckShape" type="CollisionShape3D" parent="DeckCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1348877, 0, 0)
+shape = SubResource("BoxShape3D_deck")
+
+[node name="InvisibleWalls" type="Node3D" parent="."]
+
+[node name="PortWall" type="StaticBody3D" parent="InvisibleWalls"]
+transform = Transform3D(0.9793112, 0, -0.20236002, 0, 1, 0, 0.20236002, 0, 0.9793112, -6.4814014, 1.5, -8.684371)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InvisibleWalls/PortWall"]
+transform = Transform3D(0.9999158, 0, 0.013159379, 0, 1, 0, -0.013159379, 0, 0.9999158, 0.040136337, 0, -0.07065344)
+shape = SubResource("BoxShape3D_wall_side")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InvisibleWalls/PortWall/CollisionShape3D"]
+transform = Transform3D(0.93864596, 0, 0.34488946, 0, 1, 0, -0.34488946, 0, 0.93864596, 2.8174748, 0, 14.323444)
+shape = SubResource("BoxShape3D_wall_side")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="InvisibleWalls/PortWall"]
+transform = Transform3D(0.20630755, 0, -0.97849184, 0, 1, 0, 0.97849184, 0, 0.20630755, -0.44374275, 0, -11.242985)
+shape = SubResource("BoxShape3D_wall_side")
+
+[node name="StarboardWall" type="StaticBody3D" parent="InvisibleWalls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.25, 1.5, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InvisibleWalls/StarboardWall"]
+transform = Transform3D(0.99063385, 0, -0.13654554, 0, 1, 0, 0.13654554, 0, 0.99063385, -1.2935948, 0, 8.234616)
+shape = SubResource("BoxShape3D_wall_side")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InvisibleWalls/StarboardWall/CollisionShape3D"]
+transform = Transform3D(0.9438741, 0, 0.3303001, 0, 1, 0, -0.3303001, 0, 0.9438741, -3.35391, 0, -18.87331)
+shape = SubResource("BoxShape3D_wall_side")
+
+[node name="BowWall" type="StaticBody3D" parent="InvisibleWalls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 10.25)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InvisibleWalls/BowWall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.1980667)
+shape = SubResource("BoxShape3D_wall_front")
+
+[node name="SternWall" type="StaticBody3D" parent="InvisibleWalls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -10.25)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InvisibleWalls/SternWall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9026184, 0, 19.749117)
+shape = SubResource("BoxShape3D_wall_back")
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="PlayerSpawn" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.264434, 0.5, 11.848274)
+
+[node name="EnemySpawn1" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, 4)
+
+[node name="EnemySpawn2" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.5, 4)
+
+[node name="EnemySpawn3" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 6)
+
+[node name="EnemySpawn4" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.5, 0)
+
+[node name="EnemySpawn5" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 0)
+
+[node name="EnemyShipSpawns" type="Node3D" parent="."]
+
+[node name="PortShipSpawn" type="Marker3D" parent="EnemyShipSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, 0)
+
+[node name="StarboardShipSpawn" type="Marker3D" parent="EnemyShipSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0, 0)
+
+[node name="BowShipSpawn" type="Marker3D" parent="EnemyShipSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 50)
+
+[node name="TentacleSpawns" type="Node3D" parent="."]
+
+[node name="PortBow" type="Marker3D" parent="TentacleSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.755434, -2, 5)
+
+[node name="PortStern" type="Marker3D" parent="TentacleSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.317604, -2, -3)
+
+[node name="PortCenter" type="Marker3D" parent="TentacleSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.208995, -2, 1)
+
+[node name="StarboardBow" type="Marker3D" parent="TentacleSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6439934, -2, 5)
+
+[node name="StarboardStern" type="Marker3D" parent="TentacleSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, -2, -3)
+
+[node name="StarboardCenter" type="Marker3D" parent="TentacleSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, -2, 1)
+
+[node name="FarBow" type="Marker3D" parent="TentacleSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.9853554, -2, 9.229)
+
+[node name="NPCs" type="Node3D" parent="."]
+
+[node name="FallbackCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866, 0.5, 0, -0.5, 0.866, 0, 8, -12)
+fov = 75.0

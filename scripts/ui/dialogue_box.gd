@@ -170,22 +170,25 @@ func _build_ui() -> void:
 	root_control.process_mode = Node.PROCESS_MODE_ALWAYS  # Ensure GUI works when paused
 	add_child(root_control)
 
-	# Main dialogue panel - positioned at bottom of screen, compact height
+	# Main dialogue panel - centered on screen (matching ConversationUI)
 	panel = PanelContainer.new()
 	panel.name = "DialoguePanel"
-	panel.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	panel.anchor_top = 0.72  # Higher up - more compact
-	panel.offset_left = 20
-	panel.offset_right = -20
+	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	panel.anchor_left = 0.15
+	panel.anchor_right = 0.85
+	panel.anchor_top = 0.2
+	panel.anchor_bottom = 0.8
+	panel.offset_left = 0
+	panel.offset_right = 0
 	panel.offset_top = 0
-	panel.offset_bottom = -15
+	panel.offset_bottom = 0
 	panel.mouse_filter = Control.MOUSE_FILTER_PASS  # Pass to children (buttons)
 
 	var panel_style = StyleBoxFlat.new()
 	panel_style.bg_color = COL_BG
 	panel_style.border_color = COL_BORDER
 	panel_style.set_border_width_all(2)
-	panel_style.set_content_margin_all(12)
+	panel_style.set_content_margin_all(20)
 	panel.add_theme_stylebox_override("panel", panel_style)
 	root_control.add_child(panel)
 
@@ -206,7 +209,7 @@ func _build_ui() -> void:
 	name_label.name = "SpeakerName"
 	name_label.text = "NPC Name"
 	name_label.add_theme_color_override("font_color", COL_GOLD)
-	name_label.add_theme_font_size_override("font_size", 14)
+	name_label.add_theme_font_size_override("font_size", 18)
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top_row.add_child(name_label)
 
@@ -215,7 +218,7 @@ func _build_ui() -> void:
 	continue_indicator.name = "ContinueIndicator"
 	continue_indicator.text = "[E] Continue"
 	continue_indicator.add_theme_color_override("font_color", COL_DIM)
-	continue_indicator.add_theme_font_size_override("font_size", 10)
+	continue_indicator.add_theme_font_size_override("font_size", 12)
 	continue_indicator.visible = false
 	top_row.add_child(continue_indicator)
 
@@ -228,14 +231,15 @@ func _build_ui() -> void:
 	sep.add_theme_stylebox_override("separator", sep_style)
 	vbox.add_child(sep)
 
-	# Dialogue text area - compact
+	# Dialogue text area - larger for centered panel
 	text_label = RichTextLabel.new()
 	text_label.name = "DialogueText"
 	text_label.bbcode_enabled = true
 	text_label.fit_content = true
-	text_label.custom_minimum_size.y = 40
+	text_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	text_label.custom_minimum_size.y = 100
 	text_label.add_theme_color_override("default_color", COL_TEXT)
-	text_label.add_theme_font_size_override("normal_font_size", 12)
+	text_label.add_theme_font_size_override("normal_font_size", 14)
 	text_label.mouse_filter = Control.MOUSE_FILTER_PASS  # Don't block mouse events
 	vbox.add_child(text_label)
 
@@ -339,7 +343,7 @@ func _style_choice_button(btn: Button) -> void:
 	btn.add_theme_color_override("font_hover_color", COL_GOLD)
 	btn.add_theme_color_override("font_pressed_color", COL_GOLD)
 	btn.add_theme_color_override("font_disabled_color", COL_UNAVAILABLE)
-	btn.add_theme_font_size_override("font_size", 11)
+	btn.add_theme_font_size_override("font_size", 13)
 
 
 func _show_ui() -> void:

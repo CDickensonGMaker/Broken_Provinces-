@@ -1,0 +1,224 @@
+{
+  "id": "harbor_master_larton",
+  "display_name": "Harbor Master Giles - Larton",
+  "description": "Dialogue for the Harbor Master in Larton who offers return trips",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Harbor Master Giles",
+      "text": "By the gods, you made it through alive! We get so few ships now... the ghost pirates have all but destroyed our trade.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I need passage back to Dalhurst.",
+          "next": "return_trip",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about the ghost pirates.",
+          "next": "ghost_pirates",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How bad is it here?",
+          "next": "situation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I should go.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "return_trip",
+      "speaker": "Harbor Master Giles",
+      "text": "Back to Dalhurst? That's 50 gold for the journey. It's risky, but Captain Mira is brave enough to make the run. What say you?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll take passage. (50 gold)",
+          "next": "depart_dalhurst",
+          "conditions": [
+            {
+              "type": "has_gold",
+              "param": "",
+              "value": 50
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I can't afford that right now.",
+          "next": "no_gold",
+          "show_when_unavailable": true,
+          "conditions": [
+            {
+              "type": "has_gold",
+              "param": "",
+              "value": 50,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Maybe later.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "depart_dalhurst",
+      "speaker": "Harbor Master Giles",
+      "text": "Good luck to you. Board when you're ready - Captain Mira will see you safely through... gods willing.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "take_gold",
+          "param": "",
+          "value": 50
+        },
+        {
+          "type": "start_boat_voyage",
+          "param": "dalhurst_to_larton_reverse",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "no_gold",
+      "speaker": "Harbor Master Giles",
+      "text": "Hmm, that's a problem. No coin, no passage. I'm sorry, but even we have to eat... what little there is left.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand. I'll find the gold.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "ghost_pirates",
+      "speaker": "Harbor Master Giles",
+      "text": "Cursed things, they are. Started appearing a few months back. Ships vanish, crews turn up dead... or worse, turned into more of those undead monsters. There's a fortress out in the bay where they're based. Old Torben's seen it - talk to him by the docks if you want to know more.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Where is this fortress?",
+          "next": "fortress_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll speak with Torben.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Thanks for the information.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "fortress_info",
+      "speaker": "Harbor Master Giles",
+      "text": "I've only seen it from a distance - an island with ruins of an old fort. They've made it their lair. Some say there's a captain leading them... a ghost captain with a cursed blade. Torben knows the exact location, if you're foolish enough to go looking.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Someone has to stop them.",
+          "next": "hero_talk",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That sounds suicidal.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "hero_talk",
+      "speaker": "Harbor Master Giles",
+      "text": "Ha! You've got guts. Talk to Mayor Aldric - he's been looking for someone brave enough to investigate. The whole town would be in your debt if you could end this nightmare.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll speak with the Mayor.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "situation",
+      "speaker": "Harbor Master Giles",
+      "text": "Bad? We're starving. The ghost pirates block all sea trade. The land route through Kazer-Dun is blocked by goblins laying siege to the dwarf hold. We're trapped. Half the town has fled. The other half... we're just waiting to die, honestly.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Is there any way to help?",
+          "next": "help_options",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's terrible. I'm sorry.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "help_options",
+      "speaker": "Harbor Master Giles",
+      "text": "Break the blockade. Either clear out those ghost pirates, or break through the goblin siege at Kazer-Dun. Either would save us. Mayor Aldric can tell you more about the ghost pirates. The dwarves might know how to deal with the goblins.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll see what I can do.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "speaker": "Harbor Master Giles",
+      "text": "May the gods watch over you. Come back if you need passage.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}
