@@ -16,6 +16,7 @@ Aggregate findings and report only significant issues.
 | After quest system changes | `dialogue-quest-master` |
 | After adding/modifying WorldGrid locations | `scene-auditor` |
 | After adding new levels/regions | `scene-auditor` |
+| After adding new enemy sprites | `enemy-creator` (creates .tres, zoo entry, lexicon) |
 | Before declaring task complete | `scene-auditor` + relevant domain agent |
 
 **Run agents in parallel when possible.** Multiple agents can analyze simultaneously.
@@ -959,6 +960,42 @@ All buildings must follow these constraints:
 - Each building is a Node3D container with child geometry
 - NPC spawn markers placed inside/near relevant buildings
 
+### Agent: enemy-creator
+**Purpose:** Automates enemy creation from sprite images - creates .tres files, zoo entries, and encounter wiring.
+**When to use:** After adding new enemy sprite images, when creating new enemy types.
+
+**Workflow:**
+1. Provide sprite path(s) and enemy name/type
+2. Agent creates EnemyData .tres file with appropriate stats
+3. Agent adds entry to `dev/zoo/zoo_registry.gd`
+4. Agent adds entry to `scripts/data/world_lexicon.gd`
+5. Optionally wires to encounters (sea_encounters, wilderness spawns)
+
+**Enemy Types & Factions:**
+| Type | Faction ID | Typical Traits |
+|------|------------|----------------|
+| beast | 5 | Physical attacks, no gold drops |
+| humanoid | 4 (bandits) | Balanced stats, gold drops |
+| undead | 2 | Poison immune, holy weakness, causes horror |
+| goblin | 3 | Lower HP, higher aggression |
+| pirate | 6 | Balanced, nautical loot |
+| monster | 0 | High HP, special attacks |
+
+**Stat Tiers:**
+| Tier | Level Range | HP | Armor | XP |
+|------|-------------|-----|-------|-----|
+| 1 (Basic) | 1-8 | 25-50 | 5-10 | 50-100 |
+| 2 (Common) | 5-15 | 45-80 | 8-15 | 85-150 |
+| 3 (Dangerous) | 10-25 | 80-150 | 12-20 | 150-250 |
+| 4 (Boss) | 15-35 | 150-300 | 15-25 | 250-500 |
+
+**Required Files:**
+- `data/enemies/{enemy_id}.tres` - EnemyData resource
+- `dev/zoo/zoo_registry.gd` - Visual registry entry
+- `scripts/data/world_lexicon.gd` - Creature database entry
+
+**Full documentation:** `dev/agents/enemy-creator.md`
+
 ---
 
 ## AGENT COORDINATION
@@ -980,6 +1017,9 @@ When working on complex features, agents should be used in sequence:
 - "build town" -> town-builder
 - "create building" -> town-builder
 - "design settlement" -> town-builder
+- "add enemy" -> enemy-creator
+- "create enemy from sprite" -> enemy-creator
+- "wire up enemies" -> enemy-creator
 
 ---
 
@@ -1457,12 +1497,63 @@ World State Tracking:
 `NONE, QUEST_STATE, QUEST_COMPLETE, HAS_ITEM, HAS_GOLD, FLAG_SET, FLAG_NOT_SET, STAT_CHECK, SKILL_CHECK, TIME_OF_DAY, REPUTATION, RANDOM_CHANCE`
 
 ### Action Types
-`NONE, GIVE_ITEM, TAKE_ITEM, GIVE_GOLD, TAKE_GOLD, START_QUEST, COMPLETE_QUEST, ADVANCE_QUEST, SET_FLAG, CLEAR_FLAG, SKILL_CHECK, MODIFY_REPUTATION, GIVE_XP, HEAL_PLAYER, TELEPORT, OPEN_SHOP, PLAY_SOUND, SET_NPC_STATE`
+`NONE, GIVE_ITEM, TAKE_ITEM, GIVE_GOLD, TAKE_GOLD, START_QUEST, COMPLETE_QUEST, ADVANCE_QUEST, SET_FLAG, CLEAR_FLAG, SKILL_CHECK, MODIFY_REPUTATION, GIVE_XP, HEAL_PLAYER, TELEPORT, OPEN_SHOP, PLAY_SOUND, SET_NPC_STATE, START_BOAT_VOYAGE`
 
 ### Skill Checks in Dialogue
 - Uses TTRPG-style dice rolling via DiceManager
 - Visual feedback with delay before showing result
 - Branching based on success/failure node IDs
+
+### Dialogue-to-Scene Transition Pattern (IMPORTANT)
+
+**Use this pattern when dialogue should trigger scene changes** (boat travel, teleportation, entering dungeons, etc.)
+
+**Key Concept:** Actions can be placed on **nodes** (not just choices). Node actions execute when the player continues from an end node.
+
+**JSON Structure:**
+```json
+{
+  "id": "depart_destination",
+  "speaker": "Harbor Master",
+  "text": "Safe travels! The ship is ready to depart.",
+  "is_end": true,
+  "choices": [],
+  "actions": [
+    {"type": "take_gold", "param": "", "value": 50},
+    {"type": "start_boat_voyage", "param": "route_id", "value": 0}
+  ]
+}
+```
+
+**How It Works:**
+1. Player navigates dialogue tree to an end node (`is_end: true`)
+2. Player sees the final text and presses Continue
+3. `DialogueManager._execute_node_actions()` runs all actions on the node
+4. For `start_boat_voyage`: sets a flag `_pending_boat_voyage:route_id`
+5. `end_dialogue()` closes UI
+6. `_check_pending_boat_voyage()` triggers `BoatTravelManager.start_journey()`
+7. Scene changes to the voyage/destination
+
+**Available Scene-Change Actions:**
+| Action Type | Param | Description |
+|-------------|-------|-------------|
+| `start_boat_voyage` | route_id | Triggers boat travel via BoatTravelManager |
+| `teleport` | location_id | Direct teleport (future) |
+
+**Example Flow - Harbor Master:**
+```
+greeting -> destinations -> confirm_larton -> depart_larton (END + actions)
+```
+
+**Files Involved:**
+- `scripts/dialogue/dialogue_node.gd` - `actions: Array[DialogueAction]`
+- `scripts/dialogue/dialogue_loader.gd` - Parses node actions from JSON
+- `scripts/autoload/dialogue_manager.gd` - `_execute_node_actions()` runs on end nodes
+
+**Testing:**
+- Use `scenes/dev/boat_travel_test.tscn` for boat travel testing
+- Press F6 to force-start voyage (skip dialogue)
+- Press F3 during voyage to open debug menu
 
 ---
 
