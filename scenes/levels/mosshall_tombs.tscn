@@ -19,3 +19,62 @@ transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 10, 0)
 light_color = Color(0.5, 0.7, 0.5, 1)
 light_energy = 0.25
 shadow_enabled = true
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="from_wilderness" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 3)
+metadata/spawn_id = "from_wilderness"
+
+[node name="default" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 3)
+metadata/spawn_id = "default"
+
+[node name="EnemySpawns" type="Node3D" parent="."]
+
+[node name="DoorPositions" type="Node3D" parent="."]
+
+[node name="ExitDoor" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 5.5)
+metadata/target_scene = "__RETURN_TO_WILDERNESS__"
+metadata/spawn_id = "from_mosshall_tombs"
+metadata/door_label = "Exit to Wilderness"
+metadata/show_frame = true
+
+[node name="ChestPositions" type="Node3D" parent="."]
+
+[node name="WestTombChest" type="Marker3D" parent="ChestPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 0, 4)
+metadata/chest_id = "mosshall_west_tomb"
+metadata/chest_name = "Moss-Covered Urn"
+metadata/is_locked = false
+metadata/lock_difficulty = 0
+metadata/is_persistent = false
+metadata/loot_tier = "common"
+
+[node name="GuardHallChest" type="Marker3D" parent="ChestPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 0)
+metadata/chest_id = "mosshall_guard_hall"
+metadata/chest_name = "Guard's Strongbox"
+metadata/is_locked = true
+metadata/lock_difficulty = 14
+metadata/is_persistent = false
+metadata/loot_tier = "uncommon"
+
+[node name="OssuaryChest" type="Marker3D" parent="ChestPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, -8, -48)
+metadata/chest_id = "mosshall_ossuary"
+metadata/chest_name = "Bone Vessel"
+metadata/is_locked = true
+metadata/lock_difficulty = 12
+metadata/is_persistent = false
+metadata/loot_tier = "uncommon"
+
+[node name="BossChest" type="Marker3D" parent="ChestPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8, -70)
+metadata/chest_id = "mosshall_boss"
+metadata/chest_name = "Ancient Sarcophagus"
+metadata/is_locked = true
+metadata/lock_difficulty = 18
+metadata/is_persistent = false
+metadata/loot_tier = "rare"

@@ -1,0 +1,118 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/enemy_attack_data.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+id = "tentacle_lash"
+display_name = "Tentacle Lash"
+damage = Array[int]([3, 10, 0])
+damage_type = 0
+windup_time = 0.6
+active_time = 0.3
+recovery_time = 0.5
+cooldown = 1.5
+range_distance = 10.0
+is_ranged = false
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 0.0
+inflicts_condition = 0
+condition_chance = 0.0
+condition_duration = 0.0
+stagger_power = 1.5
+knockback_force = 3.0
+weight = 1.0
+min_range = 0.0
+max_range = 10.0
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+id = "constrict"
+display_name = "Constrict"
+damage = Array[int]([2, 6, 0])
+damage_type = 0
+windup_time = 0.8
+active_time = 0.5
+recovery_time = 0.7
+cooldown = 4.0
+range_distance = 8.0
+is_ranged = false
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 0.0
+inflicts_condition = 8
+condition_chance = 0.5
+condition_duration = 2.0
+stagger_power = 0.8
+knockback_force = 0.0
+weight = 0.5
+min_range = 0.0
+max_range = 8.0
+requires_los = true
+animation_name = "grab"
+sound_effect = ""
+
+[resource]
+script = ExtResource("1")
+id = "sea_tentacle"
+display_name = "Sea Tentacle"
+description = "A massive tentacle belonging to some unseen horror beneath the waves. It thrashes violently at anything on deck."
+max_hp = 40
+armor_value = 4
+movement_speed = 0.0
+turn_speed = 5.0
+grit = 8
+agility = 4
+will = 0
+knowledge = 0
+behavior = 0
+faction = 5
+aggro_range = 20.0
+attack_range = 10.0
+preferred_distance = 8.0
+flee_hp_threshold = 0.0
+is_boss = false
+attacks = Array[ExtResource("2")]([SubResource("1"), SubResource("2")])
+can_block = false
+block_chance = 0.0
+stagger_resistance = 0.7
+fire_resistance = -0.25
+frost_resistance = 0.5
+lightning_resistance = -0.5
+poison_resistance = 0.8
+necrotic_resistance = 0.0
+physical_resistance = 0.3
+fire_weakness = 0.25
+frost_weakness = 0.0
+lightning_weakness = 0.5
+holy_weakness = 0.0
+causes_horror = true
+horror_difficulty = 12
+loot_table_av = 3
+gold_drop = Array[int]([0, 0])
+guaranteed_drops = Array[String]([])
+drop_table = {
+"tentacle_meat": 0.6,
+"kraken_ink": 0.2,
+"sea_pearl": 0.05
+}
+xp_reward = 60
+scene_path = ""
+icon_path = "res://assets/sprites/enemies/beasts/sea monsters/tentacle_1.png"
+scale = 1.2
+sprite_path = "res://assets/sprites/enemies/beasts/sea monsters/tentacle_1.png"
+attack_sprite_path = ""
+sprite_hframes = 1
+sprite_vframes = 1
+attack_hframes = 1
+attack_vframes = 1
+sprite_pixel_size = 0.025
+idle_sounds = Array[String](["res://assets/audio/sfx/monsters/low_growl.wav"])
+attack_sounds = Array[String](["res://assets/audio/sfx/monsters/mid_growl.wav"])
+hurt_sounds = Array[String](["res://assets/audio/sfx/monsters/low_growl.wav"])
+death_sounds = Array[String](["res://assets/audio/sfx/monsters/low_growl.wav"])

@@ -13,7 +13,7 @@ const _INTERNAL_OFFSET := Vector2i(12, 8)
 
 ## Grid bounds relative to Elder Moor
 const GRID_MIN := Vector2i(-12, -8)  # Top-left corner relative to Elder Moor
-const GRID_MAX := Vector2i(7, 11)    # Bottom-right corner relative to Elder Moor
+const GRID_MAX := Vector2i(7, 31)    # Bottom-right corner relative to Elder Moor (expanded south for sea travel)
 
 ## Terrain types
 enum Terrain { BLOCKED, HIGHLANDS, FOREST, WATER, COAST, SWAMP, ROAD, POI, DESERT }
@@ -125,31 +125,73 @@ const LOCATION_SCENES: Dictionary = {
 	"goblin_camp_southwest": "res://scenes/levels/goblin_camp.tscn",
 	"goblin_camp_south": "res://scenes/levels/goblin_camp.tscn",
 	"goblin_camp_west": "res://scenes/levels/goblin_camp.tscn",
+	# === SOUTHERN TERRITORIES (Sea Travel Expansion) ===
+	"larton": "res://scenes/levels/larton.tscn",
+	"aberdeen": "res://scenes/levels/aberdeen.tscn",
+	"duncaster": "res://scenes/levels/duncaster.tscn",
+	"east_hollow": "res://scenes/levels/dusty_hollow.tscn",
+	"whalers_abyss": "res://scenes/levels/whalers_abyss.tscn",
+	"tenger_camp": "res://scenes/levels/tenger_camp.tscn",
+	"border_wars_graveyard": "",  # Future dungeon
+	"pirate_stronghold": "",  # Future dungeon
+	"elven_city": "res://scenes/levels/elven_outpost.tscn",
+	"kazer_dun_south": "res://scenes/levels/kazan_dun_exit.tscn",
+	# === KAZER-DUN CONNECTIONS ===
+	"kazer_dun_road": "res://scenes/levels/kazan_dun_road_leading_up.tscn",
+	"kazer_dun_south_road": "res://scenes/levels/kazan_dun_south_road.tscn",
 }
 
-## The canonical 20x20 terrain grid (row 0 = North, row 19 = South)
+## The canonical 40-row terrain grid (row 0 = North, row 39 = South)
+## Expanded to include southern territories: Larton, Aberdeen, Tenger Desert, Pirate Stronghold
 const GRID_DATA: Array = [
-	["W","W","D","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"],
-	["W","W","D","B","F","F","F","F","F","F","F","F","F","F","B","B","B","B","B","P"],
-	["W","W","D","F","F","F","F","F","F","F","F","F","F","F","F","B","B","B","B","B"],
-	["W","W","D","F","F","F","F","P","F","F","F","F","F","F","F","H","B","B","B","B"],
-	["W","W","D","F","F","F","F","R","F","F","F","F","F","P","F","H","P","B","B","B"],
-	["W","W","D","F","F","F","F","R","F","F","F","F","F","F","F","H","B","B","B","B"],
-	["W","W","D","F","P","F","F","R","R","R","R","R","R","R","R","P","H","B","B","B"],
-	["W","W","D","F","F","F","F","R","F","F","F","F","F","F","F","H","B","B","B","B"],
-	["W","W","D","F","F","F","F","R","F","F","F","F","P","F","F","H","H","B","B","B"],
-	["W","W","D","F","F","F","F","R","F","F","F","F","F","F","F","F","H","B","B","B"],
-	["W","W","D","F","F","F","F","R","F","P","F","F","F","F","F","H","H","B","B","B"],
-	["W","W","D","F","F","F","F","R","F","F","F","F","F","F","H","H","B","B","B","B"],
-	["W","W","D","F","F","P","F","R","F","F","F","F","F","F","H","H","B","B","B","B"],
-	["W","W","D","F","F","F","F","R","F","F","F","F","F","H","H","B","B","B","B","B"],
-	["W","W","D","F","F","F","F","R","F","F","F","F","H","H","B","B","B","B","B","B"],
-	["W","W","D","F","F","F","F","R","F","F","F","F","H","H","B","B","B","B","B","B"],
-	["W","W","D","F","F","F","F","R","F","F","F","H","H","B","B","B","B","B","B","B"],
-	["W","W","D","F","F","F","F","P","F","F","H","H","B","B","B","B","B","B","B","B"],
-	["W","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"],
-	["W","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"]
+	# === NORTHERN REGION (Original 20 rows) ===
+	["W","W","D","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"],  # Row 0
+	["W","W","D","B","F","F","F","F","F","F","F","F","F","F","B","B","B","B","B","P"],  # Row 1
+	["W","W","D","F","F","F","F","F","F","F","F","F","F","F","F","B","B","B","B","B"],  # Row 2
+	["W","W","D","F","F","F","F","P","F","F","F","F","F","F","F","H","B","B","B","B"],  # Row 3
+	["W","W","D","F","F","F","F","R","F","F","F","F","F","P","F","H","P","B","B","B"],  # Row 4
+	["W","W","D","F","F","F","F","R","F","F","F","F","F","F","F","H","B","B","B","B"],  # Row 5
+	["W","W","D","F","P","F","F","R","R","R","R","R","R","R","R","P","H","B","B","B"],  # Row 6: Main east-west road
+	["W","W","D","F","F","F","F","R","F","F","F","F","F","F","F","H","B","B","B","B"],  # Row 7
+	["W","W","D","F","F","F","F","R","F","F","F","F","P","F","F","H","H","B","B","B"],  # Row 8: Elder Moor row
+	["W","W","D","F","F","F","F","R","F","F","F","F","F","F","F","F","H","B","B","B"],  # Row 9
+	["W","W","D","F","F","F","F","R","F","P","F","F","F","F","F","H","H","B","B","B"],  # Row 10
+	["W","W","D","F","F","F","F","R","F","F","F","F","F","F","H","H","B","B","B","B"],  # Row 11
+	["W","W","D","F","F","P","F","R","F","F","F","F","F","F","H","H","B","B","B","B"],  # Row 12: Millbrook row
+	["W","W","D","F","F","F","F","R","F","F","F","F","F","H","H","B","B","B","B","B"],  # Row 13
+	["W","W","D","F","F","F","F","R","F","F","F","F","H","H","B","B","B","B","B","B"],  # Row 14
+	["W","W","D","F","F","F","F","R","F","F","F","F","H","H","B","B","B","B","B","B"],  # Row 15
+	["W","W","D","F","F","F","F","R","F","F","F","H","H","B","B","B","B","B","B","B"],  # Row 16
+	["W","W","D","F","F","F","F","P","F","F","H","H","B","B","B","B","B","B","B","B"],  # Row 17: Kazer-Dun entrance
+	# === KAZER-DUN BARRIER (Goblin Siege blocks land route) ===
+	["W","W","D","B","B","B","B","P","B","B","B","B","B","B","B","B","B","B","B","B"],  # Row 18: Mountain barrier with pass
+	["W","W","D","B","B","B","B","P","B","B","B","B","B","B","B","B","B","B","B","B"],  # Row 19: Kazer-Dun interior (blocked)
+	# === SOUTHERN REGION (New 20 rows - Accessible via boat or clearing Kazer-Dun) ===
+	["W","W","W","D","F","F","F","P","F","F","H","H","B","B","B","B","B","B","B","B"],  # Row 20: South of Kazer-Dun
+	["W","W","W","D","F","F","F","R","F","F","F","H","H","B","B","B","B","B","B","P"],  # Row 21: Road continues south
+	["W","W","W","D","F","F","F","R","F","F","F","F","H","H","B","B","B","B","B","B"],  # Row 22: Aberdeen approach
+	["W","W","W","D","F","F","F","P","F","F","F","F","F","H","H","B","B","B","B","B"],  # Row 23: Aberdeen
+	["W","W","W","W","D","F","F","R","F","F","F","F","F","F","H","H","B","B","B","B"],  # Row 24: Bay widens
+	["W","W","W","W","D","F","F","R","F","F","F","F","F","F","F","H","H","B","B","B"],  # Row 25
+	["W","W","W","W","W","D","F","R","F","F","F","F","F","F","F","F","H","H","B","B"],  # Row 26: Bay widens more
+	["W","W","W","W","W","D","F","R","F","F","F","F","F","F","F","F","F","H","H","B"],  # Row 27
+	["W","W","W","W","W","W","D","P","F","F","F","F","F","F","F","F","F","F","H","B"],  # Row 28: Larton (south tip of bay)
+	["W","W","W","W","W","W","D","F","F","F","F","F","F","F","F","F","F","F","H","B"],  # Row 29
+	["W","W","W","W","W","W","D","F","F","F","F","P","F","F","F","F","F","F","H","B"],  # Row 30: Duncaster
+	["W","W","W","W","W","W","D","F","F","F","F","F","F","F","F","F","P","F","H","B"],  # Row 31: Border Wars area
+	["W","W","W","W","W","D","D","F","F","F","F","F","F","F","F","F","F","F","H","B"],  # Row 32: Transition to desert
+	["W","W","W","W","W","D","D","D","F","F","F","F","F","F","F","F","F","H","H","B"],  # Row 33
+	["W","W","W","W","D","D","D","D","D","F","F","F","P","F","F","F","F","H","B","B"],  # Row 34: East Hollow
+	["W","W","W","W","D","D","D","D","D","D","F","F","F","F","F","F","H","H","B","B"],  # Row 35: Tenger approach
+	["W","W","W","D","D","D","D","D","D","D","D","F","F","F","F","H","H","B","B","B"],  # Row 36: Desert expands
+	["W","W","W","D","D","D","D","D","D","D","D","D","P","D","D","H","B","B","B","B"],  # Row 37: Tenger Camp
+	["W","W","D","D","D","D","D","D","D","D","D","D","D","D","D","B","B","B","B","B"],  # Row 38: Deep desert
+	["W","W","D","D","D","D","D","D","D","D","D","D","D","D","B","B","B","B","B","B"],  # Row 39: Southern edge
 ]
+
+## Pirate Stronghold is located at approximately (-10, 25) - an island in the bay
+## Elven City is on the western coast at approximately (-11, 22)
+## These are marked with POI (P) cells and defined in LOCATIONS below
 
 ## Location definitions (coordinates are Elder Moor-relative)
 ## scene_size: [width, depth] in world units (default 100x100 if not specified)
@@ -207,19 +249,31 @@ const LOCATIONS: Array = [
 	 "description": "Goblins have made camp here, raiding nearby travelers and settlements."},
 	{"id": "goblin_camp_west", "name": "Goblin Camp", "x": -10, "y": 1, "type": "dungeon",
 	 "description": "A goblin warband has established a foothold in the western forest."},
-	# === PROCEDURAL SETTLEMENTS (generated by TownGenerator) ===
-	{"id": "riverford", "name": "Riverford", "x": -9, "y": -3, "type": "village",
-	 "description": "A small fishing village where the western road meets the river."},
-	{"id": "bramblewood", "name": "Bramblewood", "x": -3, "y": -4, "type": "village",
-	 "description": "A quiet hamlet nestled deep in the northern forest."},
-	{"id": "highwatch", "name": "Highwatch", "x": 4, "y": -4, "type": "town",
-	 "description": "A fortified trading post overlooking the eastern valleys."},
-	{"id": "stonehaven", "name": "Stonehaven", "x": -6, "y": 2, "type": "outpost",
-	 "description": "A rugged outpost built among the rocky southern hills."},
-	{"id": "greendale", "name": "Greendale", "x": -1, "y": -3, "type": "village",
-	 "description": "A pastoral village known for its orchards and friendly folk."},
-	{"id": "ironhollow", "name": "Ironhollow", "x": 1, "y": 2, "type": "town",
-	 "description": "A prosperous mining town that supplies ore to the region."},
+	# === KAZER-DUN ROAD CONNECTIONS ===
+	{"id": "kazer_dun_road", "name": "Road to Kazer-Dun", "x": -5, "y": 7, "type": "landmark",
+	 "description": "The mountain road leading up to the great dwarf hold of Kazer-Dun."},
+	# === SOUTHERN TERRITORIES (Accessible via boat or clearing Kazer-Dun) ===
+	{"id": "kazer_dun_south", "name": "Kazer-Dun South Gate", "x": -5, "y": 12, "type": "dungeon",
+	 "description": "The southern exit of Kazer-Dun, currently blocked by a goblin siege."},
+	{"id": "larton", "name": "Larton", "x": -5, "y": 20, "type": "town",
+	 "scene_size": [120, 120],
+	 "description": "A starving port town at the southern tip of the bay. Ghost pirates block all sea trade."},
+	{"id": "aberdeen", "name": "Aberdeen", "x": -5, "y": 15, "type": "town",
+	 "description": "A once-prosperous trade town now facing starvation. The land route through Kazer-Dun is blocked."},
+	{"id": "duncaster", "name": "Duncaster", "x": -1, "y": 22, "type": "village",
+	 "description": "A snowy mountain village nestled in the eastern peaks. Hardy folk mine the frozen slopes."},
+	{"id": "east_hollow", "name": "East Hollow", "x": 0, "y": 26, "type": "village",
+	 "description": "A dusty frontier settlement where humans and Tregar hybrids maintain an uneasy coexistence."},
+	{"id": "border_wars_graveyard", "name": "Border Wars Graveyard", "x": 4, "y": 23, "type": "dungeon",
+	 "description": "A valley cemetery where soldiers from ancient border conflicts were buried. The dead do not rest easy."},
+	{"id": "whalers_abyss", "name": "Whaler's Abyss", "x": 7, "y": 13, "type": "town",
+	 "description": "A canyon town built on bridges spanning a deep chasm. Whalers hunt the great beasts of the eastern seas."},
+	{"id": "tenger_camp", "name": "Tenger Camp", "x": 0, "y": 29, "type": "outpost",
+	 "description": "A nomadic desert encampment of the fierce Tenger people. Outsiders are viewed with suspicion."},
+	{"id": "pirate_stronghold", "name": "Pirate Stronghold", "x": -10, "y": 18, "type": "dungeon",
+	 "description": "A fortified island base where the ghost pirate captain commands his undead fleet."},
+	{"id": "elven_city", "name": "Silvanost", "x": -11, "y": 14, "type": "city",
+	 "description": "The ancient elven city on the western coast. Few humans are welcomed within its silver gates."},
 ]
 
 ## Road connections (Elder Moor-relative coordinates)
@@ -231,7 +285,7 @@ const ROAD_CONNECTIONS: Array = [
 	# East road: Crossroads to Thornfield
 	[[-5,-2], [-4,-2]], [[-4,-2], [-3,-2]], [[-3,-2], [-2,-2]], [[-2,-2], [-1,-2]],
 	[[-1,-2], [0,-2]], [[0,-2], [1,-2]], [[1,-2], [2,-2]], [[2,-2], [3,-2]],
-	# South road: Crossroads to Kazer-Dun
+	# South road: Crossroads to Kazer-Dun Entrance
 	[[-5,-2], [-5,-1]], [[-5,-1], [-5,0]], [[-5,0], [-5,1]], [[-5,1], [-5,2]],
 	[[-5,2], [-5,3]], [[-5,3], [-5,4]], [[-5,4], [-5,5]], [[-5,5], [-5,6]],
 	[[-5,6], [-5,7]], [[-5,7], [-5,8]], [[-5,8], [-5,9]],
@@ -242,7 +296,18 @@ const ROAD_CONNECTIONS: Array = [
 	# Spur to Elder Moor
 	[[0,-2], [0,-1]], [[0,-1], [0,0]],
 	# Spur to Bloodsand Arena (south of Elder Moor)
-	[[0,0], [0,1]], [[0,1], [0,2]], [[0,2], [0,3]]
+	[[0,0], [0,1]], [[0,1], [0,2]], [[0,2], [0,3]],
+	# === SOUTHERN ROAD (through Kazer-Dun - currently blocked by siege) ===
+	# Kazer-Dun passage (impassable until goblin siege cleared)
+	[[-5,9], [-5,10]], [[-5,10], [-5,11]], [[-5,11], [-5,12]],
+	# South from Kazer-Dun exit to Aberdeen
+	[[-5,12], [-5,13]], [[-5,13], [-5,14]], [[-5,14], [-5,15]],
+	# Aberdeen to Larton (coastal road)
+	[[-5,15], [-5,16]], [[-5,16], [-5,17]], [[-5,17], [-5,18]],
+	[[-5,18], [-5,19]], [[-5,19], [-5,20]],
+	# Spur from Aberdeen to Duncaster (mountain road)
+	[[-5,15], [-4,16]], [[-4,16], [-3,17]], [[-3,17], [-2,18]],
+	[[-2,18], [-1,19]], [[-1,19], [-1,20]], [[-1,20], [-1,21]], [[-1,21], [-1,22]],
 ]
 
 ## Region name constants
@@ -251,6 +316,9 @@ const REGION_ELDER_MOOR := "Elder Moor"
 const REGION_EASTERN_HIGHLANDS := "Eastern Highlands"
 const REGION_SOUTHERN_FOREST := "Southern Forest"
 const REGION_MOUNTAINS := "Iron Mountains"
+const REGION_LARTON_BAY := "Larton Bay"
+const REGION_TENGER_DESERT := "Tenger Desert"
+const REGION_SOUTHERN_REACHES := "Southern Reaches"
 
 
 ## Initialize the world grid
@@ -259,9 +327,12 @@ static func initialize() -> void:
 	locations.clear()
 	roads.clear()
 
+	var grid_rows: int = GRID_DATA.size()
+	var grid_cols: int = GRID_DATA[0].size() if grid_rows > 0 else 0
+
 	# First pass: Create cells from terrain grid
-	for row in range(20):
-		for col in range(20):
+	for row in range(grid_rows):
+		for col in range(grid_cols):
 			# Convert to Elder Moor-relative coordinates
 			var coords := Vector2i(col, row) - _INTERNAL_OFFSET
 
@@ -335,6 +406,24 @@ static func initialize() -> void:
 
 			roads.append([from_coords, to_coords])
 
+	# Fourth pass: Apply WorldForge overlay (if exists)
+	var forge_path := "user://world_forge_map.json"
+	if FileAccess.file_exists(forge_path):
+		# Get WorldForgeImporter autoload from scene tree (runtime only)
+		var main_loop: MainLoop = Engine.get_main_loop()
+		if main_loop and main_loop is SceneTree:
+			var scene_tree: SceneTree = main_loop as SceneTree
+			var scene_root: Window = scene_tree.root
+			if scene_root and scene_root.has_node("WorldForgeImporter"):
+				var forge_importer: Node = scene_root.get_node("WorldForgeImporter")
+				if forge_importer and forge_importer.has_method("import_and_apply"):
+					if forge_importer.import_and_apply(forge_path):
+						print("[WorldGrid] WorldForge overlay applied from: %s" % forge_path)
+					else:
+						push_warning("[WorldGrid] WorldForge overlay file exists but import failed: %s" % forge_path)
+			else:
+				push_warning("[WorldGrid] WorldForgeImporter autoload not found in scene tree")
+
 	print("[WorldGrid] Initialized with %d cells, %d locations" % [cells.size(), locations.size()])
 
 
@@ -345,6 +434,15 @@ static func _get_region_for_coords(coords: Vector2i) -> String:
 	var col: int = raw.x
 	var row: int = raw.y
 
+	# Southern territories (row 20+)
+	if row >= 35:
+		return REGION_TENGER_DESERT
+	if row >= 24 and col <= 6:
+		return REGION_LARTON_BAY
+	if row >= 20:
+		return REGION_SOUTHERN_REACHES
+
+	# Northern territories (original)
 	if col <= 2:
 		return REGION_WESTERN_SHORE
 	if col >= 14:
@@ -440,24 +538,40 @@ static func world_to_cell(world_pos: Vector3) -> Vector2i:
 ## map_size: size of the map image in pixels
 static func grid_to_map_pixel(coords: Vector2i, map_size: Vector2i) -> Vector2:
 	# Map center corresponds to Elder Moor (0,0)
-	var map_center := Vector2(map_size) / 2.0
-	var cell_pixel_size := float(map_size.x) / 20.0  # 20 cells across
+	# Grid dimensions: 20 cells wide (x: -12 to 7), 40 cells tall (y: -8 to 31)
+	var grid_width: int = GRID_MAX.x - GRID_MIN.x + 1  # 20
+	var grid_height: int = GRID_MAX.y - GRID_MIN.y + 1  # 40
 
-	return map_center + Vector2(
-		coords.x * cell_pixel_size,
-		coords.y * cell_pixel_size  # Y increases downward on map
+	# Calculate pixel size based on map dimensions and grid size
+	var cell_pixel_width := float(map_size.x) / float(grid_width)
+	var cell_pixel_height := float(map_size.y) / float(grid_height)
+
+	# Map center corresponds to Elder Moor (0,0)
+	# Elder Moor is at internal offset (12, 8) from grid origin
+	var map_center_x := float(map_size.x) * (float(-GRID_MIN.x) / float(grid_width))
+	var map_center_y := float(map_size.y) * (float(-GRID_MIN.y) / float(grid_height))
+
+	return Vector2(
+		map_center_x + coords.x * cell_pixel_width,
+		map_center_y + coords.y * cell_pixel_height  # Y increases downward on map
 	)
 
 
 ## Convert map pixel to grid coordinates
 static func map_pixel_to_grid(pixel: Vector2, map_size: Vector2i) -> Vector2i:
-	var map_center := Vector2(map_size) / 2.0
-	var cell_pixel_size := float(map_size.x) / 20.0
+	var grid_width: int = GRID_MAX.x - GRID_MIN.x + 1  # 20
+	var grid_height: int = GRID_MAX.y - GRID_MIN.y + 1  # 40
 
-	var offset: Vector2 = pixel - map_center
+	var cell_pixel_width := float(map_size.x) / float(grid_width)
+	var cell_pixel_height := float(map_size.y) / float(grid_height)
+
+	# Elder Moor (0,0) position on map
+	var map_center_x := float(map_size.x) * (float(-GRID_MIN.x) / float(grid_width))
+	var map_center_y := float(map_size.y) * (float(-GRID_MIN.y) / float(grid_height))
+
 	return Vector2i(
-		roundi(offset.x / cell_pixel_size),
-		roundi(offset.y / cell_pixel_size)
+		roundi((pixel.x - map_center_x) / cell_pixel_width),
+		roundi((pixel.y - map_center_y) / cell_pixel_height)
 	)
 
 

@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="SeaEncounter" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/travel/sea_encounter.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "kraken_attack"
+display_name = "Kraken Attack!"
+description = "The sea churns violently as massive tentacles erupt from the depths! The legendary kraken has found your vessel, and its writhing appendages reach hungrily over the railings, seeking to drag sailors to a watery grave."
+encounter_type = 2
+is_combat = true
+can_flee = false
+flee_difficulty = 10
+enemy_spawns = Array[String](["sea_tentacle"])
+enemy_counts = Array[Vector2i]([Vector2i(3, 5)])
+is_wave_encounter = false
+wave_count = 1
+npc_spawns = Array[String]([])
+gold_reward = Vector2i(300, 600)
+guaranteed_loot = Array[String](["kraken_ink"])
+loot_tier = 4
+loot_rolls = 3
+xp_reward = 400
+difficulty_rating = 7
+min_player_level = 5
+max_player_level = 0
+intro_dialogue_id = ""
+peaceful_dialogue_id = ""
+can_resolve_peacefully = false
+peaceful_skill = 0
+peaceful_skill_dc = 30
+storm_damage = 0
+cargo_loss_chance = 0.0
+storm_duration_hours = 0.0
+discovered_location_id = ""
+island_coords = Vector2i(-999, -999)
+procedural_island = true
+encounter_scene_path = ""
+background_path = ""
+icon_path = ""
+music_track = ""
+ambient_sound = ""

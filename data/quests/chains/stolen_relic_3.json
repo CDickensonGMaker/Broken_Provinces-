@@ -1,25 +1,25 @@
 {
 	"id": "stolen_relic_3",
 	"title": "Return the Relic",
-	"description": "You've recovered the sacred relic. Return it to the priest in Dalhurst.",
+	"description": "You've recovered the sacred relic. Return it to one of the priests at the Temple of the Three Gods in Dalhurst.",
 	"is_main_quest": false,
 	"quest_source": "chain",
-	"giver_npc_id": "",
-	"giver_npc_type": "",
-	"giver_region": "",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "priest",
+	"giver_region": "dalhurst",
 	"faction": "temple_of_three",
 	"objectives": [
 		{
 			"id": "return",
-			"description": "Return the relic to the priest",
+			"description": "Return the relic to Priestess of Gaela",
 			"type": "talk",
-			"target": "dalhurst_priest",
+			"target": "priest_gaela_dalhurst",
 			"target_zone": "dalhurst",
 			"required_count": 1
 		}
 	],
 	"turn_in_type": "npc_specific",
-	"turn_in_target": "dalhurst_priest",
+	"turn_in_target": "priest_gaela_dalhurst",
 	"turn_in_zone": "dalhurst",
 	"rewards": {
 		"gold": 200,

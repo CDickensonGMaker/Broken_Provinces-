@@ -1,11 +1,11 @@
 {
 	"id": "rescue_missing_child_1",
 	"title": "The Missing Child",
-	"description": "A child has vanished from Millbrook. Witnesses saw hooded figures near the forest. A grieving mother begs you to find her daughter before something terrible happens.",
+	"description": "A child has vanished from Millbrook. Witnesses saw hooded figures near the forest. Elder Bram begs you to find her before something terrible happens.",
 	"is_main_quest": false,
 	"quest_source": "npc",
-	"giver_npc_id": "millbrook_civilian",
-	"giver_npc_type": "civilian",
+	"giver_npc_id": "millbrook_elder",
+	"giver_npc_type": "quest_giver",
 	"giver_region": "millbrook",
 	"faction": "common_folk",
 	"objectives": [

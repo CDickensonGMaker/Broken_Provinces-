@@ -293,6 +293,9 @@ func _steal_from_player() -> void:
 		InventoryManager.remove_gold(steal_amount)
 		stolen_gold += steal_amount
 
+		# Visual and audio feedback for theft
+		_theft_feedback()
+
 		# Notification with thief description and direction
 		var direction_hint: String = _get_flee_direction_hint()
 		_show_notification("A %s snatched %d gold and fled %s!" % [_get_thief_description(), steal_amount, direction_hint])
@@ -325,6 +328,10 @@ func _steal_item_from_player() -> void:
 
 	if InventoryManager.remove_item(item_id, 1):
 		stolen_items.append({"item_id": item_id, "quantity": 1})
+
+		# Visual and audio feedback for theft
+		_theft_feedback()
+
 		var item_name: String = InventoryManager.get_item_name(item_id)
 		var direction_hint: String = _get_flee_direction_hint()
 		_show_notification("A %s stole your %s and fled %s!" % [_get_thief_description(), item_name, direction_hint])
@@ -381,6 +388,9 @@ func _change_state(new_state: ThiefState) -> void:
 
 	if new_state == ThiefState.FLEEING:
 		attempt_cooldown = ATTEMPT_COOLDOWN_TIME
+		# Highlight thief sprite with reddish tint when fleeing (makes them more visible)
+		if billboard and billboard.sprite:
+			billboard.sprite.modulate = Color(1.2, 0.8, 0.8)  # Noticeable reddish highlight
 
 
 func _update_facing() -> void:
@@ -515,6 +525,18 @@ func _show_notification(text: String) -> void:
 	var hud := get_tree().get_first_node_in_group("hud")
 	if hud and hud.has_method("show_notification"):
 		hud.show_notification(text)
+
+
+## Visual and audio feedback when theft occurs
+func _theft_feedback() -> void:
+	# Screen flash - red tint to indicate something bad happened
+	var hud: Node = get_tree().get_first_node_in_group("hud")
+	if hud and hud.has_method("flash_screen"):
+		hud.flash_screen(Color(1.0, 0.2, 0.2, 0.35), 0.4)
+
+	# Audio cue - coin jingle or alert sound
+	if AudioManager:
+		AudioManager.play_sfx("gold_drop")  # Coins being grabbed
 
 
 ## Get a description of the thief for notifications

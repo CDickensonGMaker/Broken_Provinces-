@@ -87,7 +87,7 @@ func _create_visual() -> void:
 		tex = load(enemy_data.icon_path) as Texture2D
 
 	if not tex:
-		tex = load("res://assets/sprites/enemies/human_bandit.png") as Texture2D
+		tex = load("res://assets/sprites/enemies/humanoid/human_bandit_alt.png") as Texture2D
 
 	if not tex:
 		tex = load("res://assets/sprites/npcs/civilians/man_civilian.png") as Texture2D

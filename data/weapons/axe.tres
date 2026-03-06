@@ -19,5 +19,5 @@ fps_v_frames = 4
 fps_sprite_size = Vector2(300, 300)
 fps_mesh_path = "res://assets/weapons/melee/right_fist_axe.glb"
 fps_mesh_scale = Vector3(0.85, 0.85, 0.85)
-fps_mesh_position = Vector3(-0.117, -0.450, 0.302)
+fps_mesh_position = Vector3(0.13312933, -0.45, 0.5521292)
 fps_mesh_rotation = Vector3(26.3, -82.4, 0.9)

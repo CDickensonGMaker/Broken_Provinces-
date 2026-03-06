@@ -2139,7 +2139,7 @@ func _get_enemy_config_for_biome() -> Dictionary:
 	var tier3_configs: Array[Dictionary] = [
 		{
 			"data_path": "res://data/enemies/ogre.tres",
-			"sprite_path": "res://assets/sprites/enemies/ogre_monster.png",
+			"sprite_path": "res://assets/sprites/enemies/beasts/troll.png",
 			"h_frames": 1, "v_frames": 1,
 			"display_name": "Ogre", "is_skeleton": false
 		},
@@ -2168,7 +2168,7 @@ func _get_enemy_config_for_biome() -> Dictionary:
 		},
 		{
 			"data_path": "res://data/enemies/abomination.tres",
-			"sprite_path": "res://assets/sprites/abomination.png",
+			"sprite_path": "res://assets/sprites/enemies/undead/abomination.png",
 			"h_frames": 1, "v_frames": 1,
 			"display_name": "Abomination", "is_skeleton": false
 		}
@@ -2183,7 +2183,7 @@ func _get_enemy_config_for_biome() -> Dictionary:
 			if danger >= 5:
 				biome_configs.append({
 					"data_path": "res://data/enemies/tree_ent.tres",
-					"sprite_path": "res://assets/sprites/enemies/tree_ent.png",
+					"sprite_path": "res://assets/sprites/enemies/beasts/treeent_massive.png",
 					"h_frames": 4, "v_frames": 4,
 					"display_name": "Ancient Treant", "is_skeleton": false
 				})

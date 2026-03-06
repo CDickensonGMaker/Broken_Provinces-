@@ -84,7 +84,7 @@ func _spawn_enemies_from_markers() -> void:
 				v_frames = sprite_config.get("v_frames", 1)
 			else:
 				# Fall back to defaults
-				sprite_path = "res://assets/sprites/enemies/human_bandit.png"
+				sprite_path = "res://assets/sprites/enemies/humanoid/human_bandit_alt.png"
 				h_frames = 4
 				v_frames = 1
 

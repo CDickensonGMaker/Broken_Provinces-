@@ -1,0 +1,54 @@
+{
+	"id": "ghost_pirate_investigation",
+	"title": "The Ghost Pirate Menace",
+	"description": "Mayor Aldric of Larton has asked you to investigate the ghost pirates that have been blockading the port. Their stronghold is said to be on an island in the bay. Old Torben the fisherman knows the exact location.",
+	"is_main_quest": true,
+	"quest_source": "story",
+	"giver_npc_id": "mayor_aldric_larton",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "larton",
+	"objectives": [
+		{
+			"id": "talk_torben",
+			"description": "Speak with Old Torben about the Pirate Stronghold location",
+			"type": "talk",
+			"target": "fisherman_torben_larton",
+			"required_count": 1
+		},
+		{
+			"id": "reach_stronghold",
+			"description": "Travel to the Pirate Stronghold in the bay",
+			"type": "reach",
+			"target": "pirate_stronghold",
+			"required_count": 1
+		},
+		{
+			"id": "kill_ghost_captain",
+			"description": "Defeat the Ghost Captain",
+			"type": "kill",
+			"target": "ghost_captain",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_mayor",
+			"description": "Report your success to Mayor Aldric",
+			"type": "talk",
+			"target": "mayor_aldric_larton",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "mayor_aldric_larton",
+	"turn_in_zone": "larton",
+	"rewards": {
+		"gold": 500,
+		"xp": 2000,
+		"items": ["ghost_captains_cutlass"],
+		"faction_reputation": {
+			"human_empire": 100
+		}
+	},
+	"prerequisites": [],
+	"next_quest": null,
+	"on_complete_flags": ["ghost_pirates_defeated", "larton_blockade_lifted"]
+}

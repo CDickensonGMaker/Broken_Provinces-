@@ -437,10 +437,11 @@ func get_available_topics(profile: NPCKnowledgeProfile) -> Array[ConversationTop
 	]:
 		topics.append(ConversationTopic.TopicType.TRADE)
 
-	# Also add TRADE if NPC is in merchants group
-	if is_instance_valid(current_npc) and current_npc.is_in_group("merchants"):
-		if ConversationTopic.TopicType.TRADE not in topics:
-			topics.append(ConversationTopic.TopicType.TRADE)
+	# Also add TRADE if NPC is in merchants, traveling_merchants, or shops group
+	if is_instance_valid(current_npc):
+		if current_npc.is_in_group("merchants") or current_npc.is_in_group("traveling_merchants") or current_npc.is_in_group("shops"):
+			if ConversationTopic.TopicType.TRADE not in topics:
+				topics.append(ConversationTopic.TopicType.TRADE)
 
 	# Add QUESTS topic if this NPC has quests to give or receive
 	if is_instance_valid(current_npc) and _npc_has_quests(current_npc):
@@ -603,7 +604,7 @@ func select_topic(topic_type: ConversationTopic.TopicType) -> void:
 
 	# Handle TRADE topic for merchants - open their shop
 	if topic_type == ConversationTopic.TopicType.TRADE:
-		if current_npc and current_npc.is_in_group("merchants"):
+		if current_npc and (current_npc.is_in_group("merchants") or current_npc.is_in_group("traveling_merchants") or current_npc.is_in_group("shops")):
 			topic_selected.emit(topic_type)
 			_handle_merchant_trade()
 			return
@@ -1532,11 +1533,11 @@ func _handle_merchant_trade() -> void:
 	# Check for innkeeper-specific method first
 	if npc.has_method("_open_inn_menu"):
 		npc._open_inn_menu()
-	# Then check for shop UI (merchants, blacksmiths)
+	# Then check for shop UI (merchants, blacksmiths, traveling merchants)
 	elif npc.has_method("_open_shop_ui"):
 		npc._open_shop_ui()
-	# Fallback - check if NPC is in merchants group
-	elif npc.is_in_group("merchants") and npc.has_method("open_shop"):
+	# Fallback - check if NPC is in merchants or shops group
+	elif (npc.is_in_group("merchants") or npc.is_in_group("shops")) and npc.has_method("open_shop"):
 		npc.open_shop()
 
 

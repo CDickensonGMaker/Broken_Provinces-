@@ -31,3 +31,41 @@ shadow_enabled = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 30)
 
 [node name="HUD" parent="." instance=ExtResource("3")]
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="from_wilderness" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 38)
+metadata/spawn_id = "from_wilderness"
+
+[node name="from_open_world" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 38)
+metadata/spawn_id = "from_open_world"
+
+[node name="default" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 30)
+metadata/spawn_id = "default"
+
+[node name="from_inn" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0.1, -10)
+metadata/spawn_id = "from_inn"
+
+[node name="EnemySpawns" type="Node3D" parent="."]
+
+[node name="DoorPositions" type="Node3D" parent="."]
+
+[node name="ExitPortal" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 42)
+metadata/target_scene = "__RETURN_TO_WILDERNESS__"
+metadata/spawn_id = "from_duncaster"
+metadata/door_label = "Travel to Wilderness"
+metadata/show_frame = false
+
+[node name="InnDoor" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 14, 0, -10)
+metadata/target_scene = "res://scenes/levels/inn_interior.tscn"
+metadata/spawn_id = "from_duncaster"
+metadata/door_label = "The Snowpeak Lodge"
+metadata/show_frame = true
+
+[node name="ChestPositions" type="Node3D" parent="."]

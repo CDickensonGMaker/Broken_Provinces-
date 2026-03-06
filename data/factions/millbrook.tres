@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "millbrook"
+display_name = "Millbrook"
+description = "The southern lakeside town of Millbrook, home to fishermen, millers, and farmers who work the fertile lands around the great lake. A peaceful community far from the troubles of the frontier."
+parent_faction = "human_empire"
+allies = ["human_empire", "elder_moor", "dalhurst", "thornfield"]
+enemies = ["goblins", "thieves_guild"]
+neutrals = []
+alignment = 15
+ranks = [{"name": "Outcast", "min_reputation": -100, "benefits": []}, {"name": "Stranger", "min_reputation": -50, "benefits": []}, {"name": "Visitor", "min_reputation": 0, "benefits": ["basic_services"]}, {"name": "Neighbor", "min_reputation": 30, "benefits": ["basic_services", "reduced_prices"]}, {"name": "Citizen", "min_reputation": 60, "benefits": ["basic_services", "reduced_prices", "free_lodging"]}, {"name": "Village Elder", "min_reputation": 90, "benefits": ["basic_services", "reduced_prices", "free_lodging", "town_champion"]}]
+default_reputation = 0
+joinable = false
+join_threshold = 0
+is_hidden = false
+faction_color = Color(0.4, 0.6, 0.5, 1.0)

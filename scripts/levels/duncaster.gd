@@ -25,7 +25,11 @@ func _ready() -> void:
 	_spawn_inn()
 	_spawn_npcs()
 	_spawn_fast_travel_shrine()
-	_spawn_portal_to_elder_moor()
+	_setup_spawn_point_metadata()
+
+	if is_main_scene:
+		_spawn_doors_from_markers()
+
 	_setup_navigation()
 	_setup_day_night_cycle()
 
@@ -659,25 +663,8 @@ func _spawn_inn() -> void:
 	inn_light.position = inn_pos + Vector3(0, height - 1.0, 0)
 	inn_root.add_child(inn_light)
 
-	# Door position (on west side of inn)
-	var door_pos := inn_pos + Vector3(-width / 2.0 - 0.5, 0, 0)
-
-	var inn_door := ZoneDoor.spawn_door(
-		self,
-		door_pos,
-		"res://scenes/levels/inn_interior.tscn",
-		"from_duncaster",
-		"The Snowpeak Lodge"
-	)
-	inn_door.rotation.y = PI / 2  # Face west
-
-	# Return spawn point
-	var return_spawn := Node3D.new()
-	return_spawn.name = "from_inn"
-	return_spawn.position = door_pos + Vector3(-2, 0.1, 0)
-	return_spawn.add_to_group("spawn_points")
-	return_spawn.set_meta("spawn_id", "from_inn")
-	add_child(return_spawn)
+	# Note: Inn door is now spawned from DoorPositions markers in _spawn_doors_from_markers()
+	# Note: from_inn spawn point is now in SpawnPoints in the .tscn file
 
 	# Rest spot inside/near inn
 	RestSpot.spawn_rest_spot(self, inn_pos + Vector3(3, 0, 2), "Lodge Hearth")
@@ -806,49 +793,60 @@ func _spawn_fast_travel_shrine() -> void:
 	print("[Duncaster] Spawned fast travel shrine")
 
 
-## Spawn portal back to Elder Moor
-func _spawn_portal_to_elder_moor() -> void:
-	# Exit through the southern passage
-	var exit_portal := ZoneDoor.spawn_door(
-		self,
-		Vector3(0, 0, 42),
-		SceneManager.RETURN_TO_WILDERNESS,
-		"from_duncaster",
-		"Travel to Wilderness"
-	)
-	exit_portal.rotation.y = PI  # Face south
+## ===========================================================================
+## SPAWN POINTS (Scene-Based)
+## ===========================================================================
 
-	# Spawn point for arriving from wilderness
-	var from_world := Node3D.new()
-	from_world.name = "from_wilderness"
-	from_world.position = Vector3(0, 0.1, 38)
-	from_world.add_to_group("spawn_points")
-	from_world.set_meta("spawn_id", "from_wilderness")
-	add_child(from_world)
+## Setup metadata on spawn points from scene markers
+func _setup_spawn_point_metadata() -> void:
+	var spawn_points: Node3D = get_node_or_null("SpawnPoints")
+	if not spawn_points:
+		push_warning("[Duncaster] SpawnPoints node not found in scene")
+		return
 
-	# Compatibility spawn point
-	var from_world_compat := Node3D.new()
-	from_world_compat.name = "from_open_world"
-	from_world_compat.position = Vector3(0, 0.1, 38)
-	from_world_compat.add_to_group("spawn_points")
-	from_world_compat.set_meta("spawn_id", "from_open_world")
-	add_child(from_world_compat)
+	for marker in spawn_points.get_children():
+		if marker.has_meta("spawn_id"):
+			marker.set_meta("spawn_id", marker.get_meta("spawn_id"))
+		marker.add_to_group("spawn_points")
 
-	# Default spawn point
-	var default_spawn := Node3D.new()
-	default_spawn.name = "default"
-	default_spawn.position = Vector3(0, 0.1, 30)
-	default_spawn.add_to_group("spawn_points")
-	default_spawn.set_meta("spawn_id", "default")
-	add_child(default_spawn)
+	print("[Duncaster] Spawn points configured from scene markers")
 
-	# Register as compass POI
-	exit_portal.add_to_group("compass_poi")
-	exit_portal.set_meta("poi_id", "elder_moor_exit")
-	exit_portal.set_meta("poi_name", "To Elder Moor")
-	exit_portal.set_meta("poi_color", Color(0.4, 0.6, 0.3))
 
-	print("[Duncaster] Spawned portal to Elder Moor")
+## Spawn doors from DoorPositions markers
+func _spawn_doors_from_markers() -> void:
+	var door_positions: Node3D = get_node_or_null("DoorPositions")
+	if not door_positions:
+		return
+
+	for marker in door_positions.get_children():
+		var target_scene: String = marker.get_meta("target_scene", "")
+		var spawn_id: String = marker.get_meta("spawn_id", "default")
+		var door_label: String = marker.get_meta("door_label", "Door")
+		var show_frame: bool = marker.get_meta("show_frame", true)
+
+		# Handle special wilderness return marker
+		if target_scene == "__RETURN_TO_WILDERNESS__":
+			target_scene = SceneManager.RETURN_TO_WILDERNESS
+
+		var door := ZoneDoor.spawn_door(
+			self,
+			marker.global_position,
+			target_scene,
+			spawn_id,
+			door_label,
+			show_frame
+		)
+		if door:
+			door.rotation = marker.rotation
+
+			# Register exit portal as compass POI
+			if marker.name == "ExitPortal":
+				door.add_to_group("compass_poi")
+				door.set_meta("poi_id", "elder_moor_exit")
+				door.set_meta("poi_name", "To Elder Moor")
+				door.set_meta("poi_color", Color(0.4, 0.6, 0.3))
+
+			print("[Duncaster] Spawned door: %s" % door_label)
 
 
 ## Setup navigation mesh

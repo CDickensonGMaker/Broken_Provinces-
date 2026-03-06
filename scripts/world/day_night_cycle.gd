@@ -10,6 +10,16 @@ var sun_light: DirectionalLight3D
 ## The world environment
 var world_environment: WorldEnvironment
 
+## Sky material for visible sun
+var sky_material: ProceduralSkyMaterial
+
+## Moon billboard (visible at night)
+var moon_sprite: Sprite3D
+
+## Cloud dome for atmosphere
+var cloud_dome: MeshInstance3D
+var cloud_material: ShaderMaterial
+
 ## PS1-style distance fog settings (tight visibility for retro feel)
 const FOG_START := 8.0     # Distance where fog begins (units) - closer for heavier fog
 const FOG_END := 35.0      # Distance where fog is fully opaque (units) - tighter visibility
@@ -95,6 +105,13 @@ func _ready() -> void:
 	# Apply immediately on start
 	_apply_lighting_instant()
 
+
+func _exit_tree() -> void:
+	# Disconnect from GameManager signals to prevent stale callbacks
+	if GameManager and GameManager.time_of_day_changed.is_connected(_on_time_of_day_changed):
+		GameManager.time_of_day_changed.disconnect(_on_time_of_day_changed)
+
+
 func _setup_lighting() -> void:
 	# Remove any existing static DirectionalLight3D in the parent scene to avoid conflicts
 	# Static lights override dynamic day/night cycle
@@ -140,8 +157,27 @@ func _setup_lighting() -> void:
 	world_environment.add_to_group("world_environment")
 
 	var env := Environment.new()
-	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.15, 0.12, 0.1)  # Dark murky background
+
+	# ====================================================================
+	# PROCEDURAL SKY WITH VISIBLE SUN DISC
+	# ====================================================================
+	env.background_mode = Environment.BG_SKY
+	var sky := Sky.new()
+	sky_material = ProceduralSkyMaterial.new()
+
+	# Sky colors - grim dark aesthetic
+	sky_material.sky_top_color = Color(0.25, 0.28, 0.35)      # Dark grey-blue
+	sky_material.sky_horizon_color = Color(0.4, 0.38, 0.35)   # Murky horizon
+	sky_material.ground_bottom_color = Color(0.1, 0.08, 0.06) # Dark ground
+	sky_material.ground_horizon_color = Color(0.25, 0.22, 0.2) # Dark horizon
+
+	# Sun disc - visible and follows DirectionalLight3D automatically
+	sky_material.sun_angle_max = 5.0  # Size of sun disc (degrees)
+	sky_material.sun_curve = 0.1      # Sun falloff sharpness
+
+	sky.sky_material = sky_material
+	env.sky = sky
+
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = MORNING_AMBIENT
 	env.ambient_light_energy = 0.3  # Low ambient for darker, moodier feel
@@ -188,6 +224,137 @@ func _setup_lighting() -> void:
 
 	world_environment.environment = env
 	add_child(world_environment)
+
+	# ====================================================================
+	# MOON BILLBOARD - Visible at night
+	# ====================================================================
+	_create_moon()
+
+	# ====================================================================
+	# CLOUD DOME - Atmospheric clouds that drift slowly
+	# ====================================================================
+	_create_cloud_dome()
+
+
+## Create moon sprite that appears at night
+func _create_moon() -> void:
+	moon_sprite = Sprite3D.new()
+	moon_sprite.name = "Moon"
+
+	# Try to load moon texture, fallback to white circle
+	var moon_tex: Texture2D = load("res://assets/textures/sky/moon.png")
+	if moon_tex:
+		moon_sprite.texture = moon_tex
+	else:
+		# Create a simple white gradient texture as fallback
+		var img := Image.create(64, 64, false, Image.FORMAT_RGBA8)
+		var center := Vector2(32, 32)
+		for x in range(64):
+			for y in range(64):
+				var dist: float = Vector2(x, y).distance_to(center)
+				var alpha: float = clampf(1.0 - (dist / 28.0), 0.0, 1.0)
+				var brightness: float = clampf(1.0 - (dist / 32.0), 0.6, 1.0)
+				img.set_pixel(x, y, Color(brightness, brightness * 0.95, brightness * 0.85, alpha))
+		moon_sprite.texture = ImageTexture.create_from_image(img)
+
+	moon_sprite.pixel_size = 0.5  # Large in the sky
+	moon_sprite.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	moon_sprite.no_depth_test = true  # Always render on top of sky
+	moon_sprite.modulate = Color(0.9, 0.92, 1.0, 0.0)  # Start invisible (fades in at night)
+
+	# Position far away in sky (will be updated in _process)
+	moon_sprite.position = Vector3(0, 50, -100)
+
+	add_child(moon_sprite)
+
+
+## Create cloud dome with drifting clouds
+func _create_cloud_dome() -> void:
+	cloud_dome = MeshInstance3D.new()
+	cloud_dome.name = "CloudDome"
+
+	# Create a large inverted sphere for the sky dome
+	var sphere := SphereMesh.new()
+	sphere.radius = 200.0
+	sphere.height = 400.0
+	sphere.radial_segments = 16
+	sphere.rings = 8
+	cloud_dome.mesh = sphere
+
+	# Create cloud shader material
+	var shader := Shader.new()
+	shader.code = """
+shader_type spatial;
+render_mode unshaded, cull_front, depth_draw_never;
+
+uniform sampler2D cloud_texture : source_color, filter_linear_mipmap, repeat_enable;
+uniform float cloud_speed : hint_range(0.0, 0.1) = 0.002;
+uniform float cloud_density : hint_range(0.0, 2.0) = 0.8;
+uniform float cloud_alpha : hint_range(0.0, 1.0) = 0.5;
+uniform vec4 cloud_color : source_color = vec4(0.9, 0.9, 0.9, 1.0);
+uniform float time_scale : hint_range(0.0, 2.0) = 1.0;
+
+void fragment() {
+	// Sample cloud texture with UV scrolling for drift effect
+	vec2 uv = UV * 2.0;  // Tile the texture
+	uv.x += TIME * cloud_speed * time_scale;
+	uv.y += TIME * cloud_speed * 0.3 * time_scale;  // Slower vertical drift
+
+	vec4 cloud = texture(cloud_texture, uv);
+
+	// Only show clouds above horizon (upper hemisphere)
+	float horizon_mask = smoothstep(0.4, 0.6, UV.y);
+
+	// Apply density and alpha
+	float alpha = cloud.r * cloud_density * cloud_alpha * horizon_mask;
+
+	ALBEDO = cloud_color.rgb;
+	ALPHA = alpha;
+}
+"""
+
+	cloud_material = ShaderMaterial.new()
+	cloud_material.shader = shader
+
+	# Try to load cloud texture, or create procedural one
+	var cloud_tex: Texture2D
+	if ResourceLoader.exists("res://assets/textures/sky/clouds.png"):
+		cloud_tex = load("res://assets/textures/sky/clouds.png")
+	if not cloud_tex:
+		cloud_tex = _create_procedural_cloud_texture()
+	cloud_material.set_shader_parameter("cloud_texture", cloud_tex)
+	cloud_material.set_shader_parameter("cloud_speed", 0.003)
+	cloud_material.set_shader_parameter("cloud_density", 1.0)
+	cloud_material.set_shader_parameter("cloud_alpha", 0.4)
+	cloud_material.set_shader_parameter("cloud_color", Color(0.85, 0.85, 0.85, 1.0))
+
+	cloud_dome.material_override = cloud_material
+	cloud_dome.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+
+	add_child(cloud_dome)
+
+
+## Create procedural cloud texture if none exists
+func _create_procedural_cloud_texture() -> ImageTexture:
+	var size := 256
+	var img := Image.create(size, size, false, Image.FORMAT_RGBA8)
+
+	# Simple noise-based cloud pattern
+	var noise := FastNoiseLite.new()
+	noise.seed = randi()
+	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
+	noise.frequency = 0.02
+	noise.fractal_octaves = 4
+	noise.fractal_lacunarity = 2.0
+	noise.fractal_gain = 0.5
+
+	for x in range(size):
+		for y in range(size):
+			var value: float = noise.get_noise_2d(x, y) * 0.5 + 0.5
+			value = clampf(value * 1.5 - 0.3, 0.0, 1.0)  # Contrast boost
+			img.set_pixel(x, y, Color(value, value, value, 1.0))
+
+	return ImageTexture.create_from_image(img)
 
 
 ## Apply grim dark post-processing to an existing environment
@@ -237,11 +404,171 @@ func _process(delta: float) -> void:
 		# Update ambient light ENERGY - this is critical for dark nights!
 		env.ambient_light_energy = lerpf(env.ambient_light_energy, target_ambient_energy, delta * transition_speed)
 
-		# Update background color to match ambient
-		env.background_color = env.background_color.lerp(target_ambient * 0.8, delta * transition_speed)
-
 		# Update PS1-style fog color
 		env.fog_light_color = env.fog_light_color.lerp(target_fog, delta * transition_speed)
+
+	# Update sky colors based on time of day
+	_update_sky_colors(delta)
+
+	# Update moon position and visibility
+	_update_moon(delta)
+
+	# Update cloud appearance
+	_update_clouds(delta)
+
+	# Update sky positions to follow player
+	_update_sky_position_to_follow_player()
+
+
+## Update procedural sky colors based on time
+func _update_sky_colors(delta: float) -> void:
+	if not sky_material:
+		return
+
+	var time: float = fmod(GameManager.game_time, 24.0)
+
+	# Sky top color (zenith) - changes dramatically with time
+	var sky_top: Color
+	var sky_horizon: Color
+
+	if time < 5.0:  # Night/Midnight
+		sky_top = Color(0.05, 0.06, 0.12)       # Deep dark blue
+		sky_horizon = Color(0.08, 0.08, 0.1)    # Slightly lighter
+	elif time < 7.0:  # Dawn
+		var t: float = (time - 5.0) / 2.0
+		sky_top = Color(0.05, 0.06, 0.12).lerp(Color(0.4, 0.35, 0.5), t)     # Purple dawn
+		sky_horizon = Color(0.08, 0.08, 0.1).lerp(Color(0.7, 0.45, 0.35), t) # Orange horizon
+	elif time < 10.0:  # Morning
+		var t: float = (time - 7.0) / 3.0
+		sky_top = Color(0.4, 0.35, 0.5).lerp(Color(0.35, 0.4, 0.5), t)       # Clearing to grey-blue
+		sky_horizon = Color(0.7, 0.45, 0.35).lerp(Color(0.55, 0.52, 0.5), t) # Fading orange
+	elif time < 17.0:  # Day
+		sky_top = Color(0.35, 0.4, 0.5)         # Muted grey-blue sky
+		sky_horizon = Color(0.55, 0.52, 0.5)    # Hazy horizon
+	elif time < 19.0:  # Dusk
+		var t: float = (time - 17.0) / 2.0
+		sky_top = Color(0.35, 0.4, 0.5).lerp(Color(0.3, 0.2, 0.35), t)       # Darkening purple
+		sky_horizon = Color(0.55, 0.52, 0.5).lerp(Color(0.6, 0.35, 0.25), t) # Blood red sunset
+	elif time < 21.0:  # Evening
+		var t: float = (time - 19.0) / 2.0
+		sky_top = Color(0.3, 0.2, 0.35).lerp(Color(0.08, 0.08, 0.15), t)     # Deep twilight
+		sky_horizon = Color(0.6, 0.35, 0.25).lerp(Color(0.15, 0.1, 0.12), t) # Fading red
+	else:  # Night
+		var t: float = (time - 21.0) / 3.0
+		sky_top = Color(0.08, 0.08, 0.15).lerp(Color(0.05, 0.06, 0.12), t)
+		sky_horizon = Color(0.15, 0.1, 0.12).lerp(Color(0.08, 0.08, 0.1), t)
+
+	# Smoothly interpolate sky colors
+	var current_top: Color = sky_material.sky_top_color
+	var current_horizon: Color = sky_material.sky_horizon_color
+	sky_material.sky_top_color = current_top.lerp(sky_top, delta * transition_speed)
+	sky_material.sky_horizon_color = current_horizon.lerp(sky_horizon, delta * transition_speed)
+	sky_material.ground_horizon_color = current_horizon.lerp(sky_horizon * 0.6, delta * transition_speed)
+
+
+## Get the player's current position for sky element tracking
+func _get_player_position() -> Vector3:
+	# Try to get player from scene tree
+	var player: Node3D = get_tree().get_first_node_in_group("player")
+	if player and is_instance_valid(player):
+		return player.global_position
+	return Vector3.ZERO
+
+
+## Update sky element positions to follow the player
+func _update_sky_position_to_follow_player() -> void:
+	var player_pos: Vector3 = _get_player_position()
+
+	# Cloud dome follows player exactly
+	if cloud_dome:
+		cloud_dome.global_position = player_pos
+
+	# Note: Moon position is updated in _update_moon() with player offset
+
+
+## Update moon visibility and position
+func _update_moon(delta: float) -> void:
+	if not moon_sprite:
+		return
+
+	var time: float = fmod(GameManager.game_time, 24.0)
+
+	# Moon is visible from dusk (18:00) to dawn (6:00)
+	var target_alpha: float = 0.0
+	if time >= 19.0 or time < 6.0:
+		# Full moon visibility at night
+		if time >= 21.0 or time < 5.0:
+			target_alpha = 0.9
+		else:
+			# Fade in/out during twilight
+			if time >= 19.0:
+				target_alpha = (time - 19.0) / 2.0 * 0.9
+			else:
+				target_alpha = (6.0 - time) / 1.0 * 0.9
+
+	# Smooth fade
+	var current_alpha: float = moon_sprite.modulate.a
+	moon_sprite.modulate.a = lerpf(current_alpha, target_alpha, delta * 2.0)
+
+	# Position moon opposite to sun (roughly)
+	# Moon rises in the east as sun sets in the west
+	var moon_angle: float = 0.0
+	if time >= 18.0:
+		# Evening to midnight: moon rises
+		moon_angle = (time - 18.0) / 6.0 * 70.0 - 10.0  # -10 to 60 degrees
+	elif time < 6.0:
+		# Midnight to dawn: moon sets
+		moon_angle = 60.0 - (time / 6.0) * 70.0  # 60 to -10 degrees
+
+	# Position moon in sky dome relative to player
+	var moon_distance: float = 150.0
+	var moon_y: float = sin(deg_to_rad(moon_angle)) * moon_distance
+	var moon_z: float = -cos(deg_to_rad(moon_angle)) * moon_distance
+	var player_pos: Vector3 = _get_player_position()
+	moon_sprite.global_position = player_pos + Vector3(30, moon_y, moon_z)  # Offset X so it's not directly opposite
+
+
+## Update cloud color and density based on time
+func _update_clouds(delta: float) -> void:
+	if not cloud_material:
+		return
+
+	var time: float = fmod(GameManager.game_time, 24.0)
+
+	# Cloud color changes with time of day
+	var cloud_color: Color
+	var cloud_alpha: float
+
+	if time < 5.0:  # Night
+		cloud_color = Color(0.15, 0.15, 0.2)  # Dark blue-grey
+		cloud_alpha = 0.25  # Subtle at night
+	elif time < 7.0:  # Dawn
+		var t: float = (time - 5.0) / 2.0
+		cloud_color = Color(0.15, 0.15, 0.2).lerp(Color(0.85, 0.65, 0.55), t)  # Pink/orange dawn clouds
+		cloud_alpha = lerpf(0.25, 0.5, t)
+	elif time < 10.0:  # Morning
+		cloud_color = Color(0.85, 0.82, 0.78)  # Bright white-ish
+		cloud_alpha = 0.45
+	elif time < 17.0:  # Day
+		cloud_color = Color(0.9, 0.88, 0.85)   # White clouds
+		cloud_alpha = 0.4
+	elif time < 19.0:  # Dusk
+		var t: float = (time - 17.0) / 2.0
+		cloud_color = Color(0.9, 0.88, 0.85).lerp(Color(0.9, 0.5, 0.35), t)  # Orange/red sunset clouds
+		cloud_alpha = lerpf(0.4, 0.55, t)
+	elif time < 21.0:  # Evening
+		var t: float = (time - 19.0) / 2.0
+		cloud_color = Color(0.9, 0.5, 0.35).lerp(Color(0.25, 0.2, 0.25), t)
+		cloud_alpha = lerpf(0.55, 0.3, t)
+	else:  # Night
+		cloud_color = Color(0.15, 0.15, 0.2)
+		cloud_alpha = 0.25
+
+	# Apply smoothly
+	var current_color: Color = cloud_material.get_shader_parameter("cloud_color")
+	var current_alpha: float = cloud_material.get_shader_parameter("cloud_alpha")
+	cloud_material.set_shader_parameter("cloud_color", current_color.lerp(cloud_color, delta * transition_speed))
+	cloud_material.set_shader_parameter("cloud_alpha", lerpf(current_alpha, cloud_alpha, delta * transition_speed))
 
 
 ## Calculate sun angle based on actual game time (0-24 hours)

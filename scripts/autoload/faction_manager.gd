@@ -18,6 +18,20 @@ var player_reputations: Dictionary = {}
 ## Faction memberships (faction_id -> {rank: String, joined_time: float})
 var faction_memberships: Dictionary = {}
 
+## Last crime day per faction (faction_id -> in-game day number)
+## Used for time decay of negative reputation
+var last_crime_day: Dictionary = {}
+
+## Last reputation decay day per faction (faction_id -> in-game day number)
+## Tracks when decay was last applied to prevent double-counting
+var last_decay_day: Dictionary = {}
+
+## Days required without crimes before reputation starts decaying toward 0
+const CRIME_COOLDOWN_DAYS: int = 7
+
+## Reputation decay amount per week (applied to negative rep only)
+const REPUTATION_DECAY_PER_WEEK: int = 1
+
 ## Cascade multipliers for reputation changes
 const ALLY_CASCADE_MULT: float = 0.25      # Allies get 25% of rep change
 const ENEMY_CASCADE_MULT: float = -0.5     # Enemies get -50% of rep change (opposite)
@@ -34,6 +48,10 @@ const FACTIONS_PATH: String = "res://data/factions/"
 func _ready() -> void:
 	_load_all_factions()
 	_initialize_player_reputations()
+
+	# Connect to day change for reputation decay processing
+	if GameManager:
+		GameManager.day_changed.connect(_on_day_changed)
 
 ## Load all faction data files from the factions directory
 func _load_all_factions() -> void:
@@ -73,6 +91,55 @@ func _initialize_player_reputations() -> void:
 		for faction_id: String in GameManager.player_data.faction_memberships:
 			faction_memberships[faction_id] = GameManager.player_data.faction_memberships[faction_id]
 
+## Handle day change - process reputation decay for negative values
+func _on_day_changed(new_day: int) -> void:
+	process_reputation_decay(new_day)
+
+
+## Process time decay for negative reputation
+## Negative reputation slowly decays toward 0 if no crimes committed in the past week
+## Rate: +1 reputation per week (called daily, checks if 7 days have passed since last decay)
+func process_reputation_decay(current_day: int) -> void:
+	for faction_id: String in player_reputations:
+		var rep: int = player_reputations[faction_id]
+
+		# Only apply decay to NEGATIVE reputation
+		if rep >= 0:
+			continue
+
+		# Check if player has committed a crime against this faction recently
+		var last_crime: int = last_crime_day.get(faction_id, 0)
+		var days_since_crime: int = current_day - last_crime
+
+		# Only decay if enough time has passed since last crime
+		if days_since_crime < CRIME_COOLDOWN_DAYS:
+			continue
+
+		# Check when we last applied decay for this faction
+		var last_decay: int = last_decay_day.get(faction_id, 0)
+		var days_since_decay: int = current_day - last_decay
+
+		# Apply decay if 7+ days have passed since last decay (or never decayed)
+		if days_since_decay >= CRIME_COOLDOWN_DAYS:
+			var new_rep: int = mini(rep + REPUTATION_DECAY_PER_WEEK, 0)
+			if new_rep != rep:
+				_apply_reputation_change(faction_id, REPUTATION_DECAY_PER_WEEK, "time decay")
+				last_decay_day[faction_id] = current_day
+				print("[Faction] %s reputation decayed toward neutral: %d -> %d (no crimes in %d days)" % [
+					faction_id, rep, new_rep, days_since_crime
+				])
+
+
+## Record that a crime was committed against a faction (updates last crime timestamp)
+## Called automatically when reputation decreases due to criminal activity
+## Also resets the decay timer so player must wait another full week for decay
+func record_crime_against_faction(faction_id: String) -> void:
+	last_crime_day[faction_id] = GameManager.current_day
+	# Reset decay timer - committing a new crime means they need to wait another week
+	last_decay_day[faction_id] = GameManager.current_day
+	print("[Faction] Crime recorded against %s on day %d" % [faction_id, GameManager.current_day])
+
+
 ## Get a faction by ID
 func get_faction(faction_id: String) -> FactionData:
 	return factions.get(faction_id, null)
@@ -109,10 +176,16 @@ func get_relationship(faction_a: String, faction_b: String) -> String:
 		return "neutral"
 
 ## Modify player reputation with a faction (with cascading)
-func modify_reputation(faction_id: String, amount: int, reason: String = "", cascade: bool = true) -> void:
+## is_crime: If true, records this as a crime for time decay tracking (resets the cooldown)
+func modify_reputation(faction_id: String, amount: int, reason: String = "", cascade: bool = true, is_crime: bool = false) -> void:
 	if not factions.has(faction_id):
 		push_warning("[FactionManager] Unknown faction: %s" % faction_id)
 		return
+
+	# Record crime if this is a criminal act (negative reputation from crime)
+	# This resets the time decay cooldown for this faction
+	if is_crime and amount < 0:
+		record_crime_against_faction(faction_id)
 
 	# Apply main reputation change
 	_apply_reputation_change(faction_id, amount, reason)
@@ -311,19 +384,25 @@ func _sync_to_player_data() -> void:
 func reset() -> void:
 	player_reputations.clear()
 	faction_memberships.clear()
+	last_crime_day.clear()
+	last_decay_day.clear()
 	_initialize_player_reputations()
 
 ## Save faction state to dictionary
 func to_dict() -> Dictionary:
 	return {
 		"reputations": player_reputations.duplicate(),
-		"memberships": faction_memberships.duplicate(true)
+		"memberships": faction_memberships.duplicate(true),
+		"last_crime_day": last_crime_day.duplicate(),
+		"last_decay_day": last_decay_day.duplicate()
 	}
 
 ## Load faction state from dictionary
 func from_dict(data: Dictionary) -> void:
 	player_reputations = data.get("reputations", {})
 	faction_memberships = data.get("memberships", {})
+	last_crime_day = data.get("last_crime_day", {})
+	last_decay_day = data.get("last_decay_day", {})
 
 	# Ensure all factions have a reputation entry
 	for faction_id: String in factions:
@@ -332,3 +411,92 @@ func from_dict(data: Dictionary) -> void:
 			player_reputations[faction_id] = faction.default_reputation
 
 	_sync_to_player_data()
+
+
+## Town faction IDs mapped to their location IDs
+const TOWN_FACTIONS: Dictionary = {
+	"elder_moor": "elder_moor",
+	"dalhurst": "dalhurst",
+	"thornfield": "thornfield",
+	"millbrook": "millbrook"
+}
+
+
+## Get the town faction ID for the current player location
+## Returns: The town faction ID, or "" if not in a town
+func get_town_faction() -> String:
+	if not PlayerGPS:
+		return ""
+
+	var location_id: String = PlayerGPS.current_location_id
+	if location_id.is_empty():
+		return ""
+
+	# Check if this location has an associated town faction
+	if TOWN_FACTIONS.has(location_id):
+		return TOWN_FACTIONS[location_id]
+
+	return ""
+
+
+## Get town faction for a specific location ID
+func get_town_faction_for_location(location_id: String) -> String:
+	if TOWN_FACTIONS.has(location_id):
+		return TOWN_FACTIONS[location_id]
+	return ""
+
+
+## Check if the player is HOSTILE or worse with a faction
+func is_hostile_with(faction_id: String) -> bool:
+	var status: FactionData.ReputationStatus = get_reputation_status(faction_id)
+	return status == FactionData.ReputationStatus.HOSTILE or status == FactionData.ReputationStatus.HATED
+
+
+## Check if the player is HATED by a faction
+func is_hated_by(faction_id: String) -> bool:
+	var status: FactionData.ReputationStatus = get_reputation_status(faction_id)
+	return status == FactionData.ReputationStatus.HATED
+
+
+## Check if the player is FRIENDLY or better with a faction
+func is_friendly_with(faction_id: String) -> bool:
+	var status: FactionData.ReputationStatus = get_reputation_status(faction_id)
+	return status == FactionData.ReputationStatus.FRIENDLY or \
+		   status == FactionData.ReputationStatus.HONORED or \
+		   status == FactionData.ReputationStatus.EXALTED
+
+
+## Check if the player is HONORED or better with a faction
+func is_honored_by(faction_id: String) -> bool:
+	var status: FactionData.ReputationStatus = get_reputation_status(faction_id)
+	return status == FactionData.ReputationStatus.HONORED or \
+		   status == FactionData.ReputationStatus.EXALTED
+
+
+## Check if the player is EXALTED with a faction
+func is_exalted_with(faction_id: String) -> bool:
+	var status: FactionData.ReputationStatus = get_reputation_status(faction_id)
+	return status == FactionData.ReputationStatus.EXALTED
+
+
+## Get discount percentage based on reputation status
+## Returns: Percentage discount (0.0 to 0.4) or negative for markup
+func get_reputation_price_modifier(faction_id: String) -> float:
+	var status: FactionData.ReputationStatus = get_reputation_status(faction_id)
+	match status:
+		FactionData.ReputationStatus.HATED:
+			return 1.0  # Double prices (merchants refuse anyway)
+		FactionData.ReputationStatus.HOSTILE:
+			return 0.75  # +75% markup (merchants refuse anyway)
+		FactionData.ReputationStatus.UNFRIENDLY:
+			return 0.5  # +50% markup
+		FactionData.ReputationStatus.NEUTRAL:
+			return 0.0  # Normal prices
+		FactionData.ReputationStatus.FRIENDLY:
+			return -0.1  # 10% discount
+		FactionData.ReputationStatus.HONORED:
+			return -0.25  # 25% discount
+		FactionData.ReputationStatus.EXALTED:
+			return -0.4  # 40% discount
+		_:
+			return 0.0

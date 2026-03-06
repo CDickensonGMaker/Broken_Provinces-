@@ -7,5 +7,5 @@ script = ExtResource("1_test")
 
 [node name="SpawnPoints" type="Node3D" parent="."]
 
-[node name="default" type="Marker3D" parent="SpawnPoints"]
+[node name="default" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)

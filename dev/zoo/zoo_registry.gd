@@ -73,7 +73,7 @@ static var ENEMIES: Array[Dictionary] = [
 		"name": "Bandit",
 		"category": "enemy",
 		"subcategory": "humanoid",
-		"sprite_path": "res://assets/sprites/enemies/human_bandit.png",
+		"sprite_path": "res://assets/sprites/enemies/humanoid/human_bandit_alt.png",
 		"h_frames": 1, "v_frames": 1,
 		"pixel_size": PIXEL_SIZE_ENEMY,
 		"offset_y": 0.0,
@@ -93,6 +93,32 @@ static var ENEMIES: Array[Dictionary] = [
 		"idle_frames": 4, "walk_frames": 4,
 		"idle_fps": 3.0, "walk_fps": 8.0,
 		"notes": "Has directional variants (away, right)"
+	},
+	{
+		"id": "deer",
+		"name": "Deer",
+		"category": "enemy",
+		"subcategory": "beast",
+		"sprite_path": "",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_ENEMY,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 4.0,
+		"notes": "Passive wildlife - flees when attacked - TODO: add sprite"
+	},
+	{
+		"id": "boar",
+		"name": "Wild Boar",
+		"category": "enemy",
+		"subcategory": "beast",
+		"sprite_path": "",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_ENEMY,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 4.0,
+		"notes": "Aggressive wildlife - charges when provoked - TODO: add sprite"
 	},
 	{
 		"id": "bat",
@@ -201,13 +227,13 @@ static var ENEMIES: Array[Dictionary] = [
 		"name": "Ogre",
 		"category": "enemy",
 		"subcategory": "monster",
-		"sprite_path": "res://assets/sprites/enemies/ogre_monster.png",
+		"sprite_path": "",  # TODO: ogre sprite missing
 		"h_frames": 1, "v_frames": 1,
 		"pixel_size": 0.05,  # Large creature
 		"offset_y": 0.0,
 		"idle_frames": 1, "walk_frames": 1,
 		"idle_fps": 2.0, "walk_fps": 2.0,
-		"notes": "Single frame sprite"
+		"notes": "Single frame sprite - TODO: add sprite"
 	},
 	{
 		"id": "basilisk",
@@ -358,7 +384,7 @@ static var ENEMIES: Array[Dictionary] = [
 		"name": "Ancient Treant",
 		"category": "enemy",
 		"subcategory": "monster",
-		"sprite_path": "res://assets/sprites/enemies/treeent_massive.png",
+		"sprite_path": "res://assets/sprites/enemies/beasts/treeent_massive.png",
 		"h_frames": 4, "v_frames": 1,
 		"pixel_size": 0.06,  # Very large
 		"offset_y": 0.0,
@@ -371,13 +397,13 @@ static var ENEMIES: Array[Dictionary] = [
 		"name": "Abomination",
 		"category": "enemy",
 		"subcategory": "monster",
-		"sprite_path": "res://assets/sprites/abomination_idle.png",
+		"sprite_path": "res://assets/sprites/enemies/undead/abomination_idle.png",
 		"h_frames": 4, "v_frames": 1,
 		"pixel_size": 0.06,
 		"offset_y": 0.0,
 		"idle_frames": 4, "walk_frames": 4,
 		"idle_fps": 3.0, "walk_fps": 4.0,
-		"attack_sprite_path": "res://assets/sprites/abomination_attack.png",
+		"attack_sprite_path": "res://assets/sprites/enemies/undead/abomination_attack.png",
 		"attack_h_frames": 4, "attack_v_frames": 1,
 		"attack_frames": 4,
 		"notes": "Horror enemy - has separate idle/attack textures"
@@ -387,16 +413,16 @@ static var ENEMIES: Array[Dictionary] = [
 		"name": "Dark General",
 		"category": "enemy",
 		"subcategory": "boss",
-		"sprite_path": "res://assets/sprites/enemies/dark_general_idle.png",
+		"sprite_path": "res://assets/sprites/enemies/Named Enemies/dark_general_idle.png",
 		"h_frames": 4, "v_frames": 1,
-		"pixel_size": 0.006,
+		"pixel_size": 0.06,
 		"offset_y": 0.0,
 		"idle_frames": 4, "walk_frames": 4,
 		"idle_fps": 3.0, "walk_fps": 6.0,
-		"attack_sprite_path": "res://assets/sprites/enemies/dark_general_attack.png",
+		"attack_sprite_path": "res://assets/sprites/enemies/Named Enemies/dark_general_attack.png",
 		"attack_h_frames": 4, "attack_v_frames": 1,
 		"attack_frames": 4,
-		"death_sprite_path": "res://assets/sprites/enemies/dark_general_death.png",
+		"death_sprite_path": "res://assets/sprites/enemies/Named Enemies/dark_general_death.png",
 		"death_h_frames": 4, "death_v_frames": 1,
 		"death_frames": 4,
 		"notes": "Level 35 boss - spiked black armor, massive blade"
@@ -410,16 +436,119 @@ static var ENEMIES: Array[Dictionary] = [
 		"name": "Ratfang Snotcheeze",
 		"category": "enemy",
 		"subcategory": "assassin",
-		"sprite_path": "res://assets/sprites/enemies/ratgan_idle.png",
+		"sprite_path": "res://assets/sprites/enemies/Named Enemies/ratgan_idle.png",
 		"h_frames": 1, "v_frames": 1,
 		"pixel_size": 0.025,
 		"offset_y": 0.0,
 		"idle_frames": 1, "walk_frames": 1,
 		"idle_fps": 2.0, "walk_fps": 2.0,
-		"attack_sprite_path": "res://assets/sprites/enemies/ratgan_walking.png",
+		"attack_sprite_path": "res://assets/sprites/enemies/Named Enemies/ratgan_walking.png",
 		"attack_h_frames": 4, "attack_v_frames": 1,
 		"attack_frames": 4,
 		"notes": "Level 18-22 rat assassin - scripted encounter with pre-battle dialogue"
+	},
+
+	# -------------------------------------------------------------------------
+	# PIRATES - Sea voyage encounters
+	# -------------------------------------------------------------------------
+	{
+		"id": "pirate_seadog",
+		"name": "Pirate Seadog",
+		"category": "enemy",
+		"subcategory": "pirate",
+		"sprite_path": "res://assets/sprites/enemies/humanoid/pirate_seadog.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": 0.03,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Basic pirate crewman - spawns during pirate boat encounters."
+	},
+	{
+		"id": "pirate_captain",
+		"name": "Pirate Captain",
+		"category": "enemy",
+		"subcategory": "pirate",
+		"sprite_path": "res://assets/sprites/enemies/humanoid/pirate_captain.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": 0.035,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Pirate captain boss - leads pirate boarding parties. Has flintlock ranged attack."
+	},
+
+	# -------------------------------------------------------------------------
+	# GHOST PIRATES - Undead boat voyage encounters
+	# -------------------------------------------------------------------------
+	{
+		"id": "ghost_pirate_seadog",
+		"name": "Ghost Pirate",
+		"category": "enemy",
+		"subcategory": "undead",
+		"sprite_path": "res://assets/sprites/enemies/undead/ghost_pirate_seadog.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": 0.03,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Spectral pirate crewman - spawns during ghost ship encounters. Necrotic damage, holy weakness."
+	},
+	{
+		"id": "ghost_pirate_captain",
+		"name": "Ghost Captain",
+		"category": "enemy",
+		"subcategory": "undead",
+		"sprite_path": "res://assets/sprites/enemies/undead/ghost_pirate_captian.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": 0.038,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Cursed ghost captain boss - leads phantom vessel. Soul Rend ranged attack, Captain's Wail fear AoE."
+	},
+
+	# -------------------------------------------------------------------------
+	# SEA CREATURES - Boat voyage encounters
+	# -------------------------------------------------------------------------
+	{
+		"id": "sea_tentacle_1",
+		"name": "Sea Tentacle (Variant 1)",
+		"category": "enemy",
+		"subcategory": "sea_creature",
+		"sprite_path": "res://assets/sprites/enemies/beasts/sea monsters/tentacle_1.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": 0.025,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Kraken tentacle - spawns during sea monster boat encounters. Stationary, no movement."
+	},
+	{
+		"id": "sea_tentacle_2",
+		"name": "Sea Tentacle (Variant 2)",
+		"category": "enemy",
+		"subcategory": "sea_creature",
+		"sprite_path": "res://assets/sprites/enemies/beasts/sea monsters/tentacle_2.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": 0.025,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Kraken tentacle alternate pose - spawns during sea monster boat encounters."
+	},
+	{
+		"id": "sea_tentacle_animated",
+		"name": "Sea Tentacle (Animated)",
+		"category": "enemy",
+		"subcategory": "sea_creature",
+		"sprite_path": "res://assets/sprites/enemies/beasts/sea monsters/tentacle_animation.png",
+		"h_frames": 4, "v_frames": 1,
+		"pixel_size": 0.025,
+		"offset_y": 0.0,
+		"idle_frames": 4, "walk_frames": 4,
+		"idle_fps": 4.0, "walk_fps": 4.0,
+		"notes": "Animated tentacle sprite sheet (4 frames) - writhing tentacle during boat encounters."
 	},
 ]
 

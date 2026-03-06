@@ -40,9 +40,13 @@ func _ready() -> void:
 	_create_treasure_room()
 	_create_flooded_corridor()
 	_create_boss_chamber()
-	_spawn_portals()
+	_setup_spawn_point_metadata()
+
+	if is_main_scene:
+		_spawn_doors_from_markers()
+
 	_spawn_enemies()
-	_spawn_loot()
+	_spawn_chests_from_markers()
 	_setup_cell_streaming()
 
 	print("[SunkenCrypt] Dungeon initialized")
@@ -295,35 +299,51 @@ func _create_stairs(start_pos: Vector3, end_pos: Vector3) -> void:
 
 
 ## ===========================================================================
-## PORTALS & SPAWN POINTS
+## SPAWN POINTS (Scene-Based)
 ## ===========================================================================
 
-func _spawn_portals() -> void:
-	# Exit portal back to wilderness
-	var exit_door := ZoneDoor.spawn_door(
-		self,
-		Vector3(0, FLOOR_1_Y, 5.5),
-		SceneManager.RETURN_TO_WILDERNESS,
-		"from_sunken_crypt",
-		"Exit to Wilderness"
-	)
-	exit_door.rotation.y = PI
+## Setup metadata on spawn points from scene markers
+func _setup_spawn_point_metadata() -> void:
+	var spawn_points: Node3D = get_node_or_null("SpawnPoints")
+	if not spawn_points:
+		push_warning("[SunkenCrypt] SpawnPoints node not found in scene")
+		return
 
-	# Spawn point for arriving from wilderness
-	var spawn := Node3D.new()
-	spawn.name = "from_wilderness"
-	spawn.position = Vector3(0, FLOOR_1_Y + 0.1, 3)
-	spawn.add_to_group("spawn_points")
-	spawn.set_meta("spawn_id", "from_wilderness")
-	add_child(spawn)
+	for marker in spawn_points.get_children():
+		if marker.has_meta("spawn_id"):
+			marker.set_meta("spawn_id", marker.get_meta("spawn_id"))
+		marker.add_to_group("spawn_points")
 
-	# Default spawn (fallback)
-	var default_spawn := Node3D.new()
-	default_spawn.name = "default_spawn"
-	default_spawn.position = spawn.position
-	default_spawn.add_to_group("spawn_points")
-	default_spawn.set_meta("spawn_id", "default")
-	add_child(default_spawn)
+	print("[SunkenCrypt] Spawn points configured from scene markers")
+
+
+## Spawn doors from DoorPositions markers
+func _spawn_doors_from_markers() -> void:
+	var door_positions: Node3D = get_node_or_null("DoorPositions")
+	if not door_positions:
+		return
+
+	for marker in door_positions.get_children():
+		var target_scene: String = marker.get_meta("target_scene", "")
+		var spawn_id: String = marker.get_meta("spawn_id", "default")
+		var door_label: String = marker.get_meta("door_label", "Door")
+		var show_frame: bool = marker.get_meta("show_frame", true)
+
+		# Handle special wilderness return marker
+		if target_scene == "__RETURN_TO_WILDERNESS__":
+			target_scene = SceneManager.RETURN_TO_WILDERNESS
+
+		var door := ZoneDoor.spawn_door(
+			self,
+			marker.global_position,
+			target_scene,
+			spawn_id,
+			door_label,
+			show_frame
+		)
+		if door:
+			door.rotation = marker.rotation
+			print("[SunkenCrypt] Spawned door: %s" % door_label)
 
 
 ## ===========================================================================
@@ -362,7 +382,7 @@ func _spawn_enemy(pos: Vector3, enemy_type: String) -> void:
 	match enemy_type:
 		"skeleton_shade":
 			data_path = "res://data/enemies/skeleton_shade.tres"
-			sprite_path = "res://assets/sprites/enemies/skeleton_shade.png"
+			sprite_path = "res://assets/sprites/enemies/undead/skeleton_shade_walking.png"
 		"skeleton_warrior":
 			data_path = "res://data/enemies/skeleton_warrior.tres"
 			sprite_path = "res://assets/sprites/enemies/undead/skeleton_warrior.png"
@@ -425,33 +445,58 @@ func _spawn_boss(pos: Vector3) -> void:
 
 
 ## ===========================================================================
-## LOOT - Edit positions here to adjust chest placement
+## LOOT (Scene-Based)
 ## ===========================================================================
 
-func _spawn_loot() -> void:
-	# Treasure Room chest (locked)
-	var chest1 := Chest.spawn_chest(
-		self,
-		Vector3(12, FLOOR_1_Y, -18),
-		"Waterlogged Chest",
-		true,
-		12,
-		false,
-		"sunken_crypt_treasure"
-	)
-	chest1.setup_with_loot(LootTables.LootTier.UNCOMMON)
+## Spawn chests from ChestPositions markers
+func _spawn_chests_from_markers() -> void:
+	var chest_positions: Node3D = get_node_or_null("ChestPositions")
+	if not chest_positions:
+		return
 
-	# Boss chamber reward (locked, better loot)
-	var chest2 := Chest.spawn_chest(
-		self,
-		Vector3(0, FLOOR_2_Y, -64),
-		"Ancient Sarcophagus",
-		true,
-		15,
-		false,
-		"sunken_crypt_boss"
-	)
-	chest2.setup_with_loot(LootTables.LootTier.RARE)
+	for marker in chest_positions.get_children():
+		var chest_id: String = marker.get_meta("chest_id", "")
+		var chest_name: String = marker.get_meta("chest_name", "Chest")
+		var is_locked: bool = marker.get_meta("is_locked", false)
+		var lock_difficulty: int = marker.get_meta("lock_difficulty", 0)
+		var is_persistent: bool = marker.get_meta("is_persistent", false)
+		var loot_tier_str: String = marker.get_meta("loot_tier", "common")
+
+		var loot_tier: LootTables.LootTier = _parse_loot_tier(loot_tier_str)
+
+		var chest := Chest.spawn_chest(
+			self,
+			marker.global_position,
+			chest_name,
+			is_locked,
+			lock_difficulty,
+			is_persistent,
+			chest_id
+		)
+		if chest:
+			chest.rotation = marker.rotation
+			chest.setup_with_loot(loot_tier)
+
+	print("[SunkenCrypt] Spawned loot chests from markers")
+
+
+## Parse loot tier string to enum
+func _parse_loot_tier(tier_str: String) -> LootTables.LootTier:
+	match tier_str.to_lower():
+		"junk":
+			return LootTables.LootTier.JUNK
+		"common":
+			return LootTables.LootTier.COMMON
+		"uncommon":
+			return LootTables.LootTier.UNCOMMON
+		"rare":
+			return LootTables.LootTier.RARE
+		"epic":
+			return LootTables.LootTier.EPIC
+		"legendary":
+			return LootTables.LootTier.LEGENDARY
+		_:
+			return LootTables.LootTier.COMMON
 
 
 ## Setup cell streaming if we're the main scene (has Player/HUD)

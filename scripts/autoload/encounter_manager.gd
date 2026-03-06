@@ -164,9 +164,9 @@ const ENEMY_SPAWN_CONFIG: Dictionary = {
 	"human_bandit": {
 		"enemy_type": "human_bandit",
 		"data_path": "res://data/enemies/human_bandit.tres",
-		"sprite_path": "res://assets/sprites/enemies/human_bandit.png",
-		"h_frames": 1,
-		"v_frames": 1,
+		"sprite_path": "res://assets/sprites/enemies/humanoid/human_bandit_alt.png",
+		"h_frames": 3,
+		"v_frames": 4,
 		"is_skeleton": false
 	},
 	"zombie": {
@@ -180,6 +180,14 @@ const ENEMY_SPAWN_CONFIG: Dictionary = {
 	"orc": {
 		"enemy_type": "orc",
 		"data_path": "res://data/enemies/orc.tres",
+		"sprite_path": "res://assets/sprites/enemies/humanoid/human_bandit_alt.png",
+		"h_frames": 3,
+		"v_frames": 4,
+		"is_skeleton": false
+	},
+	"bounty_hunter": {
+		"enemy_type": "bounty_hunter",
+		"data_path": "res://data/enemies/bounty_hunter.tres",
 		"sprite_path": "res://assets/sprites/enemies/humanoid/human_bandit_alt.png",
 		"h_frames": 3,
 		"v_frames": 4,
@@ -211,6 +219,9 @@ const SPECIAL_ENCOUNTERS: Array[Dictionary] = [
 
 ## Preload AssassinEncounter script for spawning
 const AssassinEncounterScript = preload("res://scripts/encounters/assassin_encounter.gd")
+
+## Preload SpockEasterEgg script for rare wilderness spawn
+const SpockEasterEggScript = preload("res://scripts/npcs/spock_easter_egg.gd")
 
 # =============================================================================
 # STATE
@@ -377,6 +388,10 @@ func _check_for_encounter() -> void:
 	# Don't spawn encounters in hand-crafted zones or cells covered by them
 	if _is_in_handcrafted_zone(hex):
 		return
+
+	# Check for bounty hunter spawn (if player is HATED by any town faction)
+	if _check_bounty_hunter_spawn():
+		return  # Bounty hunters spawned, skip regular encounter
 
 	# Check for special encounters first (one-time, level-gated)
 	if _check_special_encounters():
@@ -557,6 +572,89 @@ func force_special_encounter(encounter_id: String) -> void:
 	push_warning("[EncounterManager] Unknown special encounter: %s" % encounter_id)
 
 
+# =============================================================================
+# BOUNTY HUNTER SPAWNING (Faction reputation-based)
+# =============================================================================
+
+## Chance to spawn bounty hunters when player is HATED by a town faction
+const BOUNTY_HUNTER_SPAWN_CHANCE := 0.30  # 30% chance per check
+
+## Check if any town faction is HATED and spawn bounty hunters
+## Returns true if bounty hunters were spawned
+func _check_bounty_hunter_spawn() -> bool:
+	if not FactionManager:
+		return false
+
+	# Check all town factions for HATED status
+	for location_id: String in FactionManager.TOWN_FACTIONS.values():
+		if FactionManager.is_hated_by(location_id):
+			# Roll for bounty hunter spawn
+			var roll: float = _rng.randf()
+			if roll < BOUNTY_HUNTER_SPAWN_CHANCE:
+				var hunter_count: int = 1 + _rng.randi() % 2  # 1-2 hunters
+				_spawn_bounty_hunters(hunter_count, location_id)
+				return true
+
+	return false
+
+
+## Spawn bounty hunters sent by a specific faction
+func _spawn_bounty_hunters(count: int, faction_id: String) -> void:
+	if not _player:
+		return
+
+	# Set longer cooldown after bounty hunter spawn
+	_cooldown_timer = MIN_ENCOUNTER_COOLDOWN * 2.0
+
+	# Get spawn parent
+	var parent: Node3D = _get_spawn_parent()
+	if not parent:
+		push_warning("[EncounterManager] No spawn parent for bounty hunters")
+		return
+
+	# Get bounty hunter config
+	var config: Dictionary = ENEMY_SPAWN_CONFIG.get("bounty_hunter", {})
+	if config.is_empty():
+		push_warning("[EncounterManager] No spawn config for bounty_hunter")
+		return
+
+	# Calculate spawn position
+	var spawn_center: Vector3 = _calculate_spawn_position()
+
+	var spawned: Array[Node] = []
+	for i in range(count):
+		# Spread hunters around the spawn center
+		var offset := Vector3(
+			_rng.randf_range(-SPAWN_SPREAD, SPAWN_SPREAD),
+			0,
+			_rng.randf_range(-SPAWN_SPREAD, SPAWN_SPREAD)
+		)
+		var spawn_pos: Vector3 = spawn_center + offset
+
+		var hunter: Node = _spawn_single_enemy(parent, spawn_pos, config)
+		if hunter:
+			# Tag as bounty hunter and record which faction sent them
+			hunter.set_meta("bounty_hunter", true)
+			hunter.set_meta("sent_by_faction", faction_id)
+			spawned.append(hunter)
+			print("[EncounterManager] Spawned bounty hunter at %s (sent by %s)" % [spawn_pos, faction_id])
+
+	if not spawned.is_empty():
+		encounter_spawned.emit(spawned)
+
+		# Alert player to bounty hunters
+		var faction_name: String = faction_id.capitalize().replace("_", " ")
+		var hud: Node = get_tree().get_first_node_in_group("hud")
+		if hud and hud.has_method("show_notification"):
+			hud.show_notification("Bounty hunters are tracking you!", Color(1.0, 0.3, 0.1))
+
+		# Play alert sound
+		if AudioManager:
+			AudioManager.play_sfx("enemy_alert")
+
+		print("[EncounterManager] BOUNTY HUNTERS SPAWNED: %d hunters sent by %s" % [spawned.size(), faction_name])
+
+
 ## Trigger an encounter
 func _trigger_encounter(hex: Vector2i) -> void:
 	# Set cooldown
@@ -618,6 +716,17 @@ func _trigger_encounter(hex: Vector2i) -> void:
 		encounter_spawned.emit(spawned_enemies)
 		# Alert the player (special message for hordes)
 		_alert_player_to_encounter(spawned_enemies[0], is_horde)
+
+	# Easter egg: Spock encounter in dangerous wilderness
+	var danger_level_int: int = int(encounter_data.get("danger_level", 1))
+	var player_level: int = 1
+	if GameManager and GameManager.player_data:
+		player_level = GameManager.player_data.level
+	if SpockEasterEggScript.should_spawn(player_level, danger_level_int):
+		var spawn_pos: Vector3 = _calculate_spawn_position()
+		var parent: Node3D = _get_spawn_parent()
+		if parent:
+			SpockEasterEggScript.spawn_spock(parent, spawn_pos)
 
 
 ## Weighted random selection from encounter table
@@ -842,3 +951,5 @@ func reset_for_new_game() -> void:
 	_encounter_timer = 0.0
 	_cooldown_timer = 0.0
 	_triggered_special_encounters.clear()
+	# Reset Spock easter egg for new playthrough
+	SpockEasterEggScript.reset_for_new_game()

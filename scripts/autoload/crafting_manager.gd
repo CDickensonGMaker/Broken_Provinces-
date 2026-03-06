@@ -535,6 +535,175 @@ func _register_recipes() -> void:
 		"can_crit": false
 	})
 
+	# === TANNING & LEATHERWORK ===
+
+	# Tan Leather (raw_hide -> leather)
+	_add_recipe({
+		"recipe_id": "tan_leather",
+		"display_name": "Tan Leather",
+		"description": "Process raw animal hides into usable leather",
+		"category": "Material",
+		"materials": {"raw_hide": 2},
+		"gold_cost": 0,
+		"required_engineering": 0,
+		"output_item_id": "leather",
+		"base_quality": Enums.ItemQuality.AVERAGE,
+		"can_crit": false
+	})
+
+	# === MONSTER MATERIAL ARMOR ===
+
+	# Troll Armor
+	_add_recipe({
+		"recipe_id": "craft_troll_armor",
+		"display_name": "Troll Hide Armor",
+		"description": "Heavy armor crafted from regenerative troll hide",
+		"category": "Armor",
+		"materials": {"troll_hide": 4, "leather_strip": 2},
+		"gold_cost": 50,
+		"required_engineering": 5,
+		"output_item_id": "troll_armor",
+		"base_quality": Enums.ItemQuality.AVERAGE
+	})
+
+	# Wyvern Armor
+	_add_recipe({
+		"recipe_id": "craft_wyvern_armor",
+		"display_name": "Wyvern Scale Armor",
+		"description": "Scale armor crafted from the tough hide of a wyvern",
+		"category": "Armor",
+		"materials": {"wyvern_scale": 5, "leather_strip": 3},
+		"gold_cost": 100,
+		"required_engineering": 6,
+		"output_item_id": "wyvern_armor",
+		"base_quality": Enums.ItemQuality.AVERAGE
+	})
+
+	# Fur Cloak
+	_add_recipe({
+		"recipe_id": "craft_fur_cloak",
+		"display_name": "Fur Cloak",
+		"description": "A warm cloak crafted from wolf pelts",
+		"category": "Armor",
+		"materials": {"wolf_pelt": 3, "leather_strip": 2},
+		"gold_cost": 25,
+		"required_engineering": 2,
+		"output_item_id": "fur_cloak",
+		"base_quality": Enums.ItemQuality.AVERAGE
+	})
+
+	# === ADVANCED ALCHEMY (Poisons) ===
+
+	# Poison Vial
+	_add_recipe({
+		"recipe_id": "craft_poison_vial",
+		"display_name": "Poison Vial",
+		"description": "Concentrated basilisk venom in a vial - can be applied to weapons",
+		"category": "Alchemy",
+		"materials": {"basilisk_venom": 1, "empty_vial": 1},
+		"gold_cost": 15,
+		"required_arcana": 2,
+		"output_item_id": "poison_vial",
+		"base_quality": Enums.ItemQuality.AVERAGE,
+		"can_crit": false
+	})
+
+	# === VENOMOUS WEAPONS ===
+
+	# Venomous Dagger
+	_add_recipe({
+		"recipe_id": "craft_venomous_dagger",
+		"display_name": "Venomous Dagger",
+		"description": "A dagger permanently imbued with deadly venom",
+		"category": "Weapon",
+		"materials": {"iron_dagger": 1, "basilisk_venom": 2, "spider_venom": 1},
+		"gold_cost": 75,
+		"required_engineering": 4,
+		"required_arcana": 2,
+		"output_item_id": "venomous_dagger",
+		"base_quality": Enums.ItemQuality.AVERAGE
+	})
+
+	# === GEM JEWELRY (Resistance Bonuses) ===
+
+	# Ruby Ring (Fire Resist)
+	_add_recipe({
+		"recipe_id": "craft_ruby_ring",
+		"display_name": "Ruby Ring",
+		"description": "A gold ring set with a ruby that grants fire resistance",
+		"category": "Armor",
+		"materials": {"gold_ring": 1, "gem_ruby": 1},
+		"gold_cost": 200,
+		"required_engineering": 4,
+		"output_item_id": "ruby_ring",
+		"base_quality": Enums.ItemQuality.AVERAGE
+	})
+
+	# Sapphire Ring (Frost Resist)
+	_add_recipe({
+		"recipe_id": "craft_sapphire_ring",
+		"display_name": "Sapphire Ring",
+		"description": "A gold ring set with a sapphire that grants frost resistance",
+		"category": "Armor",
+		"materials": {"gold_ring": 1, "gem_sapphire": 1},
+		"gold_cost": 200,
+		"required_engineering": 4,
+		"output_item_id": "sapphire_ring",
+		"base_quality": Enums.ItemQuality.AVERAGE
+	})
+
+	# Emerald Amulet (Poison Resist)
+	_add_recipe({
+		"recipe_id": "craft_emerald_amulet",
+		"display_name": "Emerald Amulet",
+		"description": "A gold amulet set with an emerald that grants poison resistance",
+		"category": "Armor",
+		"materials": {"gold_amulet": 1, "gem_emerald": 1},
+		"gold_cost": 250,
+		"required_engineering": 4,
+		"output_item_id": "emerald_amulet",
+		"base_quality": Enums.ItemQuality.AVERAGE
+	})
+
+	# Amethyst Amulet (Magic Resist)
+	_add_recipe({
+		"recipe_id": "craft_amethyst_amulet",
+		"display_name": "Amethyst Amulet",
+		"description": "A gold amulet set with an amethyst that grants magic resistance",
+		"category": "Armor",
+		"materials": {"gold_amulet": 1, "gem_amethyst": 1},
+		"gold_cost": 250,
+		"required_engineering": 4,
+		"output_item_id": "amethyst_amulet",
+		"base_quality": Enums.ItemQuality.AVERAGE
+	})
+
+	# Diamond Ring (All Resist)
+	_add_recipe({
+		"recipe_id": "craft_diamond_ring",
+		"display_name": "Diamond Ring",
+		"description": "A gold ring set with a diamond that grants resistance to all elements",
+		"category": "Armor",
+		"materials": {"gold_ring": 1, "gem_diamond": 1},
+		"gold_cost": 500,
+		"required_engineering": 5,
+		"output_item_id": "diamond_ring",
+		"base_quality": Enums.ItemQuality.AVERAGE
+	})
+
+	# Pearl Amulet (Sea-themed)
+	_add_recipe({
+		"recipe_id": "craft_pearl_amulet",
+		"display_name": "Pearl Amulet",
+		"description": "A gold amulet set with sea pearls, granting protection from water-based magic",
+		"category": "Armor",
+		"materials": {"gold_amulet": 1, "sea_pearl": 2},
+		"gold_cost": 300,
+		"required_engineering": 4,
+		"output_item_id": "pearl_amulet",
+		"base_quality": Enums.ItemQuality.AVERAGE
+	})
+
 	print("[CraftingManager] Registered %d recipes" % recipes.size())
 
 
@@ -591,6 +760,10 @@ func craft_recipe(recipe_id: String) -> Dictionary:
 
 	if result.success:
 		recipe_crafted.emit(recipe_id, result)
+
+		# Auto-discover recipe in codex
+		if CodexManager:
+			CodexManager.discover_recipe(recipe_id)
 
 		# Award XP for crafting (5-15 based on recipe complexity)
 		var xp_reward: int = _calculate_crafting_xp(recipe)

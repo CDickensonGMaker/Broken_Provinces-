@@ -42,6 +42,8 @@ func _ready() -> void:
 	_setup_western_coastline()
 	# Spawn forest border around the town edges (lush trees/bushes around perimeter)
 	_spawn_forest_border()
+	# Decorate the Temple of Three Gods with monastery assets
+	_decorate_temple_of_three_gods()
 	print("[Dalhurst] Port city loaded - Tier 4 Major City")
 
 
@@ -155,7 +157,7 @@ func _spawn_npcs() -> void:
 		npcs_container.name = "NPCs"
 		add_child(npcs_container)
 
-	# === HARBOR MASTER ===
+	# === HARBOR MASTER (Boat Travel NPC) ===
 	# Near HarbormasterOffice at (-50, 0, 38)
 	var harbor_master := QuestGiver.spawn_quest_giver(
 		npcs_container,
@@ -164,20 +166,28 @@ func _spawn_npcs() -> void:
 		"harbor_master_dalhurst",
 		null,  # Uses default sprite
 		8, 2,
-		[],  # No quests currently
-		true  # is_talk_target
+		[],  # No quests - uses dialogue tree for boat travel
+		false  # is_talk_target = false, uses dialogue_data instead
 	)
 	harbor_master.region_id = ZONE_ID
 	harbor_master.faction_id = "human_empire"
-	# Set knowledge profile for conversation
+	# Load boat travel dialogue from JSON
+	var harbor_dialogue: DialogueData = DialogueLoader.load_from_json("res://data/dialogue/harbor_master_dalhurst.json")
+	if harbor_dialogue:
+		harbor_master.dialogue_data = harbor_dialogue
+		harbor_master.use_legacy_dialogue = false
+		print("[Dalhurst] Loaded boat travel dialogue for Harbor Master")
+	else:
+		push_warning("[Dalhurst] Failed to load Harbor Master dialogue")
+	# Set knowledge profile for conversation fallback
 	var harbor_master_profile := NPCKnowledgeProfile.new()
 	harbor_master_profile.archetype = NPCKnowledgeProfile.Archetype.MERCHANT
-	harbor_master_profile.personality_traits = ["authoritative", "busy"]
-	harbor_master_profile.knowledge_tags = ["dalhurst", "local_area", "guards", "trade", "authority"]
+	harbor_master_profile.personality_traits = ["authoritative", "busy", "seafaring"]
+	harbor_master_profile.knowledge_tags = ["dalhurst", "local_area", "harbor", "ships", "trade", "ghost_pirates", "larton", "silvanost"]
 	harbor_master_profile.base_disposition = 45
 	harbor_master_profile.speech_style = "formal"
 	harbor_master.npc_profile = harbor_master_profile
-	print("[Dalhurst] Spawned Harbor Master at HarbormasterOffice")
+	print("[Dalhurst] Spawned Harbor Master at HarbormasterOffice (offers boat travel)")
 
 	# === GUARDS ===
 	# Guard positions at key entry/watch points
@@ -199,12 +209,13 @@ func _spawn_npcs() -> void:
 		print("[Dalhurst] Spawned Guard at %s" % guard_positions[i])
 
 	# === TEMPLE PRIESTS (Quest Givers) ===
-	# Temple of the Three Gods is at (8, 0, -15) - priests stand near the altar
+	# Temple of the Three Gods is at (-2, 0, -7) with altar at local (0, 0.6, -5)
+	# Altar world position is approximately (-2, 0.6, -12)
 	# Priest of Chronos (God of Time) - Left side of altar
 	var priest_chronos_quests: Array[String] = ["temple_prophecy_chronos"]
 	var priest_chronos := QuestGiver.spawn_quest_giver(
 		npcs_container,
-		Vector3(5, 0, -18),
+		Vector3(-4, 0, -10),  # Inside temple, left of altar
 		"Priest of Chronos",
 		"priest_chronos_dalhurst",
 		null,  # Uses default sprite - will be overridden
@@ -224,7 +235,7 @@ func _spawn_npcs() -> void:
 	var priest_gaela_quests: Array[String] = ["temple_blessing_quest"]
 	var priest_gaela := QuestGiver.spawn_quest_giver(
 		npcs_container,
-		Vector3(8, 0, -18),
+		Vector3(-2, 0, -10),  # Inside temple, center near altar
 		"Priestess of Gaela",
 		"priest_gaela_dalhurst",
 		null,  # Uses default sprite
@@ -244,7 +255,7 @@ func _spawn_npcs() -> void:
 	var priest_morthane_quests: Array[String] = ["temple_undead_menace"]
 	var priest_morthane := QuestGiver.spawn_quest_giver(
 		npcs_container,
-		Vector3(11, 0, -18),
+		Vector3(0, 0, -10),  # Inside temple, right of altar
 		"Priest of Morthane",
 		"priest_morthane_dalhurst",
 		null,  # Uses default sprite
@@ -261,7 +272,7 @@ func _spawn_npcs() -> void:
 	print("[Dalhurst] Spawned Priest of Morthane at Temple of the Three Gods")
 
 	# Temple acolyte (wanders around temple area - not a quest giver)
-	var acolyte := CivilianNPC.spawn_monk_brown(npcs_container, Vector3(8, 0, -12), ZONE_ID)
+	var acolyte := CivilianNPC.spawn_monk_brown(npcs_container, Vector3(-2, 0, -5), ZONE_ID)
 	acolyte.npc_id = "temple_acolyte_dalhurst"
 	acolyte.npc_name = "Temple Acolyte"
 	acolyte.wander_radius = 6.0  # Stays within temple
@@ -334,12 +345,8 @@ func _spawn_npcs() -> void:
 	print("[Dalhurst] Spawned Innkeeper at DalhurstInn")
 
 	# === BOUNTY BOARD ===
-	var bounty_board := BountyBoard.spawn_bounty_board(
-		npcs_container,
-		Vector3(35, 0, 10),  # Near market area
-		"Dalhurst Bounty Board"
-	)
-	print("[Dalhurst] Spawned Bounty Board")
+	# NOTE: Bounty board is placed in dalhurst.tscn at (-18.76, 0, -5)
+	# Do NOT spawn a second one here via code
 
 	# === WORRIED MERCHANT (willow_dale_investigation quest giver) ===
 	var worried_merchant_quests: Array[String] = ["willow_dale_investigation"]
@@ -465,6 +472,10 @@ func _spawn_npcs() -> void:
 		nightshade_profile.base_disposition = 40  # Aloof
 		nightshade_profile.speech_style = "formal"
 		nightshade.npc_profile = nightshade_profile
+		# Add empty soulstones to magic shop inventory
+		nightshade._add_shop_item("soulstone_petty_empty", 50, 5, Enums.ItemQuality.AVERAGE)
+		nightshade._add_shop_item("soulstone_lesser_empty", 150, 3, Enums.ItemQuality.AVERAGE)
+		nightshade._add_shop_item("soulstone_common_empty", 400, 2, Enums.ItemQuality.AVERAGE)
 		print("[Dalhurst] Spawned Lady Nightshade at Shop of Curiosities")
 
 	# Enchanting Table inside Lady Nightshade's shop
@@ -476,11 +487,11 @@ func _spawn_npcs() -> void:
 	print("[Dalhurst] Spawned Enchanting Table at Lady Nightshade's Curiosities")
 
 	# === TEMPLE MONKS (Magic Teachers) ===
-	# Temple is at (8, 0, -15) - monks who teach spells and sell scrolls
+	# Temple is at (-2, 0, -7) - monks who teach spells and sell scrolls
 	# Brother Aldwin - Fire/Combat magic specialist
 	var monk_aldwin: Merchant = Merchant.spawn_merchant(
 		npcs_container,
-		Vector3(12, 0, -10),  # Right side of temple courtyard
+		Vector3(1, 0, -6),  # Inside temple, right side near entrance
 		"Brother Aldwin",
 		LootTables.LootTier.UNCOMMON,
 		"magic"  # Sells spell scrolls
@@ -500,7 +511,7 @@ func _spawn_npcs() -> void:
 	# Sister Maeve - Healing/Restoration magic specialist
 	var monk_maeve: Merchant = Merchant.spawn_merchant(
 		npcs_container,
-		Vector3(4, 0, -10),  # Left side of temple courtyard
+		Vector3(-5, 0, -6),  # Inside temple, left side near entrance
 		"Sister Maeve",
 		LootTables.LootTier.UNCOMMON,
 		"magic"  # Sells spell scrolls
@@ -573,7 +584,7 @@ func _spawn_civilian_population(parent: Node3D) -> void:
 		{"center": Vector3(75, 0, -66), "half_size": Vector2(8, 8)},          # DalhurstInn
 		{"center": Vector3(48, 0, 33), "half_size": Vector2(8, 6)},           # Shop_DalhurstGeneralGoods
 		{"center": Vector3(-15, 0, 8), "half_size": Vector2(8, 6)},           # Shop_HarborBlacksmith area
-		{"center": Vector3(8, 0, -15), "half_size": Vector2(10, 8)},          # Temple of Three Gods
+		{"center": Vector3(-2, 0, -7), "half_size": Vector2(10, 8)},           # Temple of Three Gods (actual position)
 		{"center": Vector3(65, 0, 25), "half_size": Vector2(10, 8)},          # Adventurer's Guild
 	]
 
@@ -1001,3 +1012,174 @@ func _setup_western_coastline() -> void:
 	coast_container.add_child(collision_wall)
 
 	print("[Dalhurst] Western coastline decoration added (water extends %d units)" % int(water_extent))
+
+
+## Decorate the Temple of Three Gods with monastery assets
+## Adds statues representing the three gods, floor decorations, and hangings
+func _decorate_temple_of_three_gods() -> void:
+	var temple: Node3D = get_node_or_null("Buildings/TempleOfThreeGods")
+	if not temple:
+		push_warning("[Dalhurst] TempleOfThreeGods not found - skipping decoration")
+		return
+
+	# Create container for temple decorations
+	var decorations: Node3D = Node3D.new()
+	decorations.name = "TempleDecorations"
+	temple.add_child(decorations)
+
+	# === STATUE OF CHRONOS (God of Time) - Left side behind altar ===
+	# statue_decay2.png - Hooded figure holding an hourglass
+	var chronos_tex: Texture2D = load("res://assets/sprites/props/monastery/statue_decay2.png")
+	if chronos_tex:
+		var chronos_statue: Sprite3D = Sprite3D.new()
+		chronos_statue.name = "StatueChronos"
+		chronos_statue.texture = chronos_tex
+		chronos_statue.pixel_size = 0.012  # Appropriate size for interior
+		chronos_statue.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		chronos_statue.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+		chronos_statue.transparent = true
+		chronos_statue.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+		# Position: left of altar, against back wall
+		var statue_height: float = chronos_tex.get_height() * chronos_statue.pixel_size
+		chronos_statue.position = Vector3(-4.5, statue_height / 2.0 + 0.2, -5.5)
+		decorations.add_child(chronos_statue)
+		print("[Dalhurst] Placed Statue of Chronos (God of Time)")
+
+	# === STATUE OF GAELA (Goddess of Harvest) - Center behind altar ===
+	# statue_decay1.png - Mother/rebirth figure
+	var gaela_tex: Texture2D = load("res://assets/sprites/props/monastery/statue_decay1.png")
+	if gaela_tex:
+		var gaela_statue: Sprite3D = Sprite3D.new()
+		gaela_statue.name = "StatueGaela"
+		gaela_statue.texture = gaela_tex
+		gaela_statue.pixel_size = 0.014  # Slightly larger (main deity position)
+		gaela_statue.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		gaela_statue.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+		gaela_statue.transparent = true
+		gaela_statue.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+		# Position: center, behind altar
+		var statue_height: float = gaela_tex.get_height() * gaela_statue.pixel_size
+		gaela_statue.position = Vector3(0, statue_height / 2.0 + 0.2, -5.5)
+		decorations.add_child(gaela_statue)
+		print("[Dalhurst] Placed Statue of Gaela (Goddess of Harvest)")
+
+	# === STATUE OF MORTHANE (God/Goddess of Death & Rebirth) - Right side behind altar ===
+	# statue_decay4.png - Skeletal/death figure
+	var morthane_tex: Texture2D = load("res://assets/sprites/props/monastery/statue_decay4.png")
+	if morthane_tex:
+		var morthane_statue: Sprite3D = Sprite3D.new()
+		morthane_statue.name = "StatueMorthane"
+		morthane_statue.texture = morthane_tex
+		morthane_statue.pixel_size = 0.012
+		morthane_statue.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		morthane_statue.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+		morthane_statue.transparent = true
+		morthane_statue.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+		# Position: right of altar, against back wall
+		var statue_height: float = morthane_tex.get_height() * morthane_statue.pixel_size
+		morthane_statue.position = Vector3(4.5, statue_height / 2.0 + 0.2, -5.5)
+		decorations.add_child(morthane_statue)
+		print("[Dalhurst] Placed Statue of Morthane (God of Death & Rebirth)")
+
+	# === HANGING ORNAMENTS (from ceiling) ===
+	# Hanging brass/gold ornaments between the columns
+	var hanging_tex1: Texture2D = load("res://assets/sprites/props/monastery/monastary_hanging1.png")
+	var hanging_tex2: Texture2D = load("res://assets/sprites/props/monastery/monastary_hanging2.png")
+
+	# Left column hanging
+	if hanging_tex1:
+		var hanging_left: Sprite3D = Sprite3D.new()
+		hanging_left.name = "HangingLeft"
+		hanging_left.texture = hanging_tex1
+		hanging_left.pixel_size = 0.008
+		hanging_left.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		hanging_left.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+		hanging_left.transparent = true
+		hanging_left.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+		# Hang from ceiling near left columns
+		var hang_height: float = hanging_tex1.get_height() * hanging_left.pixel_size
+		hanging_left.position = Vector3(-3, 6.5, 3)
+		decorations.add_child(hanging_left)
+
+	# Right column hanging
+	if hanging_tex2:
+		var hanging_right: Sprite3D = Sprite3D.new()
+		hanging_right.name = "HangingRight"
+		hanging_right.texture = hanging_tex2
+		hanging_right.pixel_size = 0.008
+		hanging_right.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		hanging_right.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+		hanging_right.transparent = true
+		hanging_right.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+		hanging_right.position = Vector3(3, 6.5, 3)
+		decorations.add_child(hanging_right)
+
+	# Center hanging above altar
+	if hanging_tex1:
+		var hanging_center: Sprite3D = Sprite3D.new()
+		hanging_center.name = "HangingCenter"
+		hanging_center.texture = hanging_tex1
+		hanging_center.pixel_size = 0.010  # Slightly larger for prominence
+		hanging_center.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		hanging_center.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+		hanging_center.transparent = true
+		hanging_center.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+		hanging_center.position = Vector3(0, 6.5, -3)
+		decorations.add_child(hanging_center)
+
+	# === ALTAR DECORATION (stone altar/lectern on the altar surface) ===
+	var altar_tex: Texture2D = load("res://assets/sprites/props/monastery/monastary_altar1.png")
+	if altar_tex:
+		var altar_prop: Sprite3D = Sprite3D.new()
+		altar_prop.name = "AltarDecoration"
+		altar_prop.texture = altar_tex
+		altar_prop.pixel_size = 0.006
+		altar_prop.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		altar_prop.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+		altar_prop.transparent = true
+		altar_prop.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+		# Position on top of the altar (altar is at Y=0.6 with height 1, so top is at Y=1.1)
+		var prop_height: float = altar_tex.get_height() * altar_prop.pixel_size
+		altar_prop.position = Vector3(0, 1.1 + prop_height / 2.0, -5)
+		decorations.add_child(altar_prop)
+
+	# === FLOOR DECORATION (monastery floor tiles in front of altar) ===
+	# Create a decorative floor overlay using the ornate monastery floor
+	var floor_tex: Texture2D = load("res://assets/sprites/props/monastery/monastary_floor2.png")
+	if floor_tex:
+		# Create a floor material with the monastery texture
+		var floor_mat: StandardMaterial3D = StandardMaterial3D.new()
+		floor_mat.albedo_texture = floor_tex
+		floor_mat.albedo_color = Color(0.7, 0.65, 0.55)  # Slightly faded stone
+		floor_mat.roughness = 0.9
+		floor_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		floor_mat.uv1_scale = Vector3(4, 4, 1)  # Tile the texture
+
+		# Create a thin floor overlay in front of the altar (prayer area)
+		var prayer_floor: CSGBox3D = CSGBox3D.new()
+		prayer_floor.name = "PrayerFloor"
+		prayer_floor.size = Vector3(10, 0.05, 8)
+		prayer_floor.position = Vector3(0, 0.21, 0)  # Just above the main floor
+		prayer_floor.material = floor_mat
+		prayer_floor.use_collision = false
+		decorations.add_child(prayer_floor)
+
+	# === WALL DECORATION (monastery wall texture on back wall) ===
+	# Add wall banners/tapestries using the wall texture as Sprite3D
+	var wall_tex: Texture2D = load("res://assets/sprites/props/monastery/monastary_wall1.png")
+	if wall_tex:
+		var wall_banner: Sprite3D = Sprite3D.new()
+		wall_banner.name = "WallBanner"
+		wall_banner.texture = wall_tex
+		wall_banner.pixel_size = 0.008
+		wall_banner.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		# Not billboard - flat against wall
+		wall_banner.billboard = BaseMaterial3D.BILLBOARD_DISABLED
+		wall_banner.transparent = true
+		wall_banner.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+		# Position against the back wall (rotate to face forward)
+		wall_banner.position = Vector3(0, 4, -6.4)
+		wall_banner.rotation_degrees = Vector3(0, 180, 0)  # Face outward
+		decorations.add_child(wall_banner)
+
+	print("[Dalhurst] Temple of Three Gods decorated with monastery assets")

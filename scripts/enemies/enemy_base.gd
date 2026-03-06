@@ -978,6 +978,30 @@ func _update_target() -> void:
 		has_line_of_sight = false
 		return
 
+	# Check for forced target (e.g., boat pirates assigned to attack crew)
+	if has_meta("forced_target"):
+		var forced: Node3D = get_meta("forced_target") as Node3D
+		if is_instance_valid(forced):
+			# Check if forced target is still alive
+			var target_dead: bool = false
+			if forced.has_method("is_dead"):
+				target_dead = forced.is_dead
+			elif forced is BoatCrewMember:
+				target_dead = forced.is_dead
+
+			if not target_dead:
+				if current_target != forced:
+					current_target = forced
+					last_known_target_position = forced.global_position
+					target_acquired.emit(forced)
+					_change_alert_state(AlertState.COMBAT)
+					_change_state(AIState.CHASE)
+				return
+			else:
+				# Forced target died, clear metadata and fall through to normal targeting
+				remove_meta("forced_target")
+				remove_meta("targets_crew")
+
 	if not current_target or not is_instance_valid(current_target):
 		var had_target := current_target != null
 		current_target = null
@@ -2071,6 +2095,12 @@ func _perform_basic_attack() -> void:
 	# Basic melee attack
 	if hitbox:
 		hitbox.set_damage_values(10, Enums.DamageType.PHYSICAL)
+
+	# Play attack sound from enemy data if available, otherwise play generic melee sound
+	if enemy_data and not enemy_data.attack_sounds.is_empty():
+		AudioManager.play_enemy_sound(enemy_data.attack_sounds, global_position, 1.0)
+	elif AudioManager:
+		AudioManager.play_melee_hit_sound_3d(global_position)
 
 	get_tree().create_timer(0.3).timeout.connect(_activate_attack_hitbox)
 	get_tree().create_timer(0.8).timeout.connect(_end_attack)

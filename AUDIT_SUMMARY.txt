@@ -1,0 +1,167 @@
+================================================================================
+CATACOMBS OF GORE - COMPREHENSIVE COMBAT & ENEMY SYSTEMS AUDIT
+================================================================================
+
+AUDIT DATE: 2026-03-04
+SCOPE: Enemy scripts, combat manager, death handling, loot tables, registries
+STATUS: PASS WITH CRITICAL FIXES NEEDED
+
+================================================================================
+QUICK FINDINGS
+================================================================================
+
+CRITICAL ISSUES FOUND: 4
+- 7 enemies missing sprite_path (will be invisible)
+- 19 enemies missing icon_path (UI broken)
+- Ogre boss HP too low (dies in 3-4 hits instead of 8-10)
+- Vampire Lord missing level field (stat scaling broken)
+
+RECOMMENDED FIXES: 26 enemy files need updates
+ESTIMATED FIX TIME: 70 minutes
+BLOCKER FOR .EXE EXPORT: YES (missing sprites will cause visual bugs)
+
+================================================================================
+WHAT WORKS WELL (✅)
+================================================================================
+
+ENEMY BASE CLASS (C:\Users\caleb\CatacombsOfGore\scripts\enemies\enemy_base.gd)
+✅ Proper extension of CharacterBody3D
+✅ Complete death handling with:
+   - Death sounds, collision disabling, quest notification
+   - Lootable corpse spawning, XP rewards
+   - Persistent ID tracking for save system
+✅ Memory cleanup on _exit_tree() - no memory leaks
+✅ Origin shift handling for world streaming
+✅ Comprehensive AI state machine with 10 states
+✅ Line 2422-2423: is_dead() properly implemented
+✅ Line 2433-2481: Full death sequence implemented
+
+COMBAT MANAGER (C:\Users\caleb\CatacombsOfGore\scripts\autoload\combat_manager.gd)
+✅ Line 14-15: active_enemies properly tracked
+✅ Line 55-63: _clear_node_references() prevents "freed object" crashes
+✅ Line 693-698: Cleanup timer runs every 5 seconds
+✅ Line 45: Scene load signal properly connected
+✅ Line 549: Humanoid dialogue signal properly connected
+✅ Lines 103-305: All damage functions check is_instance_valid() before casting
+
+LOOT SYSTEM
+✅ All 52 enemies have drop_table dictionaries configured
+✅ Line 2504-2530: _spawn_lootable_corpse() properly wired
+✅ Line 2523-2526: Faction-aware loot generation (humanoid vs creature)
+
+REGISTRIES
+✅ world_lexicon.gd: All 52 creatures registered with correct tiers
+✅ zoo_registry.gd: Complete sprite documentation
+✅ All .tres files: Have valid EnemyData script references
+
+================================================================================
+CRITICAL ISSUES (MUST FIX)
+================================================================================
+
+ISSUE 1: Missing sprite_path (7 enemies - HIGH SEVERITY)
+Files affected:
+- C:\Users\caleb\CatacombsOfGore\data\enemies\boar.tres
+- C:\Users\caleb\CatacombsOfGore\data\enemies\deer.tres
+- C:\Users\caleb\CatacombsOfGore\data\enemies\tenger_archer.tres
+- C:\Users\caleb\CatacombsOfGore\data\enemies\tenger_shaman.tres
+- C:\Users\caleb\CatacombsOfGore\data\enemies\tenger_warlord.tres
+- C:\Users\caleb\CatacombsOfGore\data\enemies\tenger_raider.tres
+- C:\Users\caleb\CatacombsOfGore\data\enemies\tenger_warrior.tres
+
+Impact: Enemies will be invisible or show broken meshes
+Fix: Add sprite_path and sprite frame fields to each .tres file
+Time: 15 minutes
+
+ISSUE 2: Missing icon_path (19 enemies - MEDIUM SEVERITY)
+Files affected:
+- boar, deer, goblin_soldier, goblin_archer, goblin_leader, goblin_mage
+- goblin_warboss, skeleton_warrior, skeleton_shade
+- tenger_archer, tenger_cavalry, tenger_infantry, tenger_raider
+- tenger_berserker, tenger_shaman, tenger_warbanner, tenger_warlord, tenger_warrior
+- vampire_lord
+
+Impact: Codex/Bestiary displays blank icons
+Fix: Add icon_path field to each .tres file
+Time: 20 minutes
+
+ISSUE 3: Ogre boss HP too low (MEDIUM SEVERITY)
+File: C:\Users\caleb\CatacombsOfGore\data\enemies\ogre.tres
+- Current: max_hp = 84
+- Expected for level 15 boss: 150-180 HP
+- Problem: Dies in 3-4 hits vs intended 8-10 hits
+- Fix: Change max_hp = 84 to max_hp = 150
+- Time: 2 minutes
+
+ISSUE 4: Vampire Lord missing level field (MEDIUM SEVERITY)
+File: C:\Users\caleb\CatacombsOfGore\data\enemies\vampire_lord.tres
+- Missing: level = 25 (or appropriate value)
+- Impact: Stat scaling formula is undefined
+- Fix: Add "level = 25" field at top of resource definition
+- Time: 2 minutes
+
+================================================================================
+AUDIT DETAILS
+================================================================================
+
+For detailed findings, analysis, and technical breakdown, see:
+→ C:\Users\caleb\CatacombsOfGore\COMBAT_AUDIT_REPORT.md
+
+For step-by-step action plan with file content examples, see:
+→ C:\Users\caleb\CatacombsOfGore\AUDIT_ACTION_PLAN.md
+
+================================================================================
+ACTION PRIORITY
+================================================================================
+
+PRIORITY 1 - DO FIRST (Rendering): Add 7 missing sprite_path fields
+→ Boar, Deer, 5x Tenger enemies
+→ 15 minutes
+
+PRIORITY 2 - DO NEXT (Boss Balance): Fix 2 boss enemies
+→ Ogre HP: 84 → 150
+→ Vampire Lord: Add level = 25
+→ 5 minutes
+
+PRIORITY 3 - DO LAST (Polish): Add 19 missing icon_path fields
+→ Better UI in Codex/Bestiary
+→ 20 minutes
+
+VALIDATION - TEST: Spawn enemies, verify rendering, check boss difficulty
+→ 30 minutes
+
+TOTAL TIME: ~70 minutes (1 hour 10 minutes)
+
+================================================================================
+RECOMMENDATIONS
+================================================================================
+
+IMMEDIATE:
+1. Follow AUDIT_ACTION_PLAN.md step by step
+2. Test each fix (spawn enemies, verify rendering)
+3. Commit all 26 fixed enemy files
+
+BEFORE EXPORTING .EXE:
+1. Run full playthrough with all enemy types
+2. Verify no invisible enemies
+3. Verify Ogre boss fight takes 8-10 hits
+4. Check Codex for all 52 enemy icons
+
+FUTURE ENHANCEMENTS:
+- Zoo registry should auto-validate against .tres files
+- Sprite frame counts should be verified at load time
+- Consider adding asset validation pipeline
+
+================================================================================
+VERDICT
+================================================================================
+
+Overall System Health: GOOD (Well-architected, no memory leaks)
+Blocking Issues: YES (Missing sprites, boss balance)
+Ready for .exe Export: NO (Fix critical issues first)
+
+The combat system is fundamentally sound. The issues are straightforward data
+missing from enemy definitions - once added, the system will be release-ready.
+
+Priority: Fix sprite_path first (blocks visuals), then balance (blocks fun).
+
+================================================================================

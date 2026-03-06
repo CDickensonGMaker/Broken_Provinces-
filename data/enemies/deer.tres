@@ -1,0 +1,93 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/enemy_attack_data.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+id = "deer_kick"
+display_name = "Kick"
+damage = Array[int]([1, 4, 0])
+damage_type = 0
+windup_time = 0.3
+active_time = 0.15
+recovery_time = 0.3
+cooldown = 2.0
+range_distance = 2.0
+is_ranged = false
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 0.0
+inflicts_condition = 0
+condition_chance = 0.0
+condition_duration = 0.0
+stagger_power = 0.3
+knockback_force = 1.0
+weight = 1.0
+min_range = 0.0
+max_range = 2.0
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[resource]
+script = ExtResource("1")
+id = "deer"
+display_name = "Deer"
+description = "A graceful woodland creature. Typically flees when threatened but may kick if cornered."
+level = 1
+min_level = 1
+max_level = 5
+max_hp = 15
+armor_value = 5
+movement_speed = 8.0
+turn_speed = 6.0
+grit = 3
+agility = 8
+will = 2
+knowledge = 1
+behavior = 1
+faction = 5
+aggro_range = 20.0
+attack_range = 2.0
+preferred_distance = 15.0
+flee_hp_threshold = 0.9
+is_boss = false
+attacks = Array[ExtResource("2")]([SubResource("1")])
+can_block = false
+block_chance = 0.0
+stagger_resistance = 0.0
+fire_resistance = 0.0
+frost_resistance = 0.0
+lightning_resistance = 0.0
+poison_resistance = 0.0
+necrotic_resistance = 0.0
+physical_resistance = 0.0
+fire_weakness = 0.0
+frost_weakness = 0.0
+lightning_weakness = 0.0
+holy_weakness = 0.0
+causes_horror = false
+horror_difficulty = 0
+loot_table_av = 1
+gold_drop = Array[int]([0, 0])
+guaranteed_drops = Array[String]([])
+drop_table = {
+"raw_hide": 0.75,
+"raw_meat": 0.6
+}
+xp_reward = 15
+scene_path = ""
+icon_path = ""
+scale = 1.0
+sprite_path = ""
+attack_sprite_path = ""
+sprite_hframes = 1
+sprite_vframes = 1
+attack_hframes = 1
+attack_vframes = 1
+sprite_pixel_size = 0.004
+idle_sounds = Array[String](["res://assets/audio/sfx/monsters/low_growl.wav"])
+attack_sounds = Array[String](["res://assets/audio/sfx/monsters/low_growl.wav"])
+hurt_sounds = Array[String](["res://assets/audio/sfx/monsters/low_growl.wav"])
+death_sounds = Array[String](["res://assets/audio/sfx/monsters/low_growl.wav"])

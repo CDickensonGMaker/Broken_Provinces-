@@ -1,0 +1,152 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/enemy_attack_data.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+id = "cursed_saber"
+display_name = "Cursed Saber"
+damage = Array[int]([8, 14, 5])
+damage_type = 5
+windup_time = 0.35
+active_time = 0.25
+recovery_time = 0.3
+cooldown = 1.3
+range_distance = 3.0
+is_ranged = false
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 0.0
+inflicts_condition = 0
+condition_chance = 0.0
+condition_duration = 0.0
+stagger_power = 1.0
+knockback_force = 3.5
+weight = 1.0
+min_range = 0.0
+max_range = 3.0
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+id = "soul_rend"
+display_name = "Soul Rend"
+damage = Array[int]([6, 12, 6])
+damage_type = 5
+windup_time = 0.5
+active_time = 0.3
+recovery_time = 0.4
+cooldown = 3.5
+range_distance = 8.0
+is_ranged = true
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 15.0
+inflicts_condition = 5
+condition_chance = 0.3
+condition_duration = 4.0
+stagger_power = 0.8
+knockback_force = 2.0
+weight = 0.4
+min_range = 3.0
+max_range = 10.0
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[sub_resource type="Resource" id="3"]
+script = ExtResource("2")
+id = "captains_wail"
+display_name = "Captain's Wail"
+damage = Array[int]([0, 0, 0])
+damage_type = 5
+windup_time = 0.4
+active_time = 0.6
+recovery_time = 0.5
+cooldown = 10.0
+range_distance = 8.0
+is_ranged = false
+is_aoe = true
+aoe_radius = 8.0
+projectile_speed = 0.0
+inflicts_condition = 7
+condition_chance = 0.75
+condition_duration = 4.0
+stagger_power = 0.3
+knockback_force = 0.0
+weight = 0.15
+min_range = 0.0
+max_range = 8.0
+requires_los = false
+animation_name = "attack"
+sound_effect = ""
+
+[resource]
+script = ExtResource("1")
+id = "ghost_pirate_captain"
+display_name = "Ghost Captain"
+description = "The cursed spirit of a legendary pirate captain who made a dark pact to cheat death. His spectral form radiates malevolent power, and his hollow eyes burn with an insatiable hunger for souls. He commands his ghostly crew with the same iron will that made him feared in life."
+level = 15
+min_level = 10
+max_level = 30
+max_hp = 180
+armor_value = 10
+movement_speed = 4.5
+turn_speed = 5.5
+grit = 9
+agility = 8
+will = 12
+knowledge = 7
+bravery = 10
+behavior = 0
+faction = 2
+aggro_range = 18.0
+attack_range = 3.0
+preferred_distance = 4.0
+flee_hp_threshold = 0.0
+is_boss = true
+attacks = Array[ExtResource("2")]([SubResource("1"), SubResource("2"), SubResource("3")])
+can_block = true
+block_chance = 0.25
+stagger_resistance = 0.5
+fire_resistance = 0.0
+frost_resistance = 0.4
+lightning_resistance = 0.3
+poison_resistance = 1.0
+necrotic_resistance = 0.75
+physical_resistance = 0.5
+fire_weakness = 0.15
+frost_weakness = 0.0
+lightning_weakness = 0.0
+holy_weakness = 0.6
+causes_horror = true
+horror_difficulty = 16
+loot_table_av = 6
+gold_drop = Array[int]([150, 400])
+guaranteed_drops = Array[String]([])
+drop_table = {
+"health_potion": 0.35,
+"ectoplasm": 0.5,
+"cursed_coin": 0.4,
+"captains_soul_gem": 0.1,
+"ghost_captain_hat": 0.05,
+"treasure_map": 0.15
+}
+xp_reward = 350
+scene_path = ""
+icon_path = "res://assets/sprites/enemies/undead/ghost_pirate_captian.png"
+scale = 1.15
+sprite_path = "res://assets/sprites/enemies/undead/ghost_pirate_captian.png"
+attack_sprite_path = ""
+sprite_hframes = 1
+sprite_vframes = 1
+attack_hframes = 1
+attack_vframes = 1
+sprite_pixel_size = 0.038
+idle_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_1.wav"])
+attack_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_1.wav", "res://assets/audio/sfx/monsters/undead_2.wav"])
+hurt_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_2.wav"])
+death_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_1.wav"])

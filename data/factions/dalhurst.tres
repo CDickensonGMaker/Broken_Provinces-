@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "dalhurst"
+display_name = "Dalhurst"
+description = "The bustling harbor town of Dalhurst on the western coast. A center of maritime trade, fishing, and sea travel. The harbor master controls passage across the great lake."
+parent_faction = "human_empire"
+allies = ["human_empire", "elder_moor", "thornfield", "millbrook"]
+enemies = ["goblins", "thieves_guild"]
+neutrals = []
+alignment = 10
+ranks = [{"name": "Outcast", "min_reputation": -100, "benefits": []}, {"name": "Stranger", "min_reputation": -50, "benefits": []}, {"name": "Visitor", "min_reputation": 0, "benefits": ["basic_services"]}, {"name": "Dockworker", "min_reputation": 30, "benefits": ["basic_services", "reduced_prices"]}, {"name": "Citizen", "min_reputation": 60, "benefits": ["basic_services", "reduced_prices", "free_lodging"]}, {"name": "Harbor Friend", "min_reputation": 90, "benefits": ["basic_services", "reduced_prices", "free_lodging", "boat_discounts"]}]
+default_reputation = 0
+joinable = false
+join_threshold = 0
+is_hidden = false
+faction_color = Color(0.3, 0.5, 0.7, 1.0)

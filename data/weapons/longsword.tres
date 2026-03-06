@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3 uid="uid://74e85bb0dqjg"]
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
 
-[ext_resource type="Script" uid="uid://cwspkt7cn0gou" path="res://scripts/data/weapon_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
 
 [resource]
 script = ExtResource("1")
@@ -18,5 +18,5 @@ fps_v_frames = 4
 fps_sprite_size = Vector2(300, 300)
 fps_mesh_path = "res://assets/weapons/melee/right_fist_sword.glb"
 fps_mesh_scale = Vector3(0.85, 0.85, 0.85)
-fps_mesh_position = Vector3(-0.117, -0.315, 0.323)
-fps_mesh_rotation = Vector3(19.7, -82.4, 0.9)
+fps_mesh_position = Vector3(0.080916665, -0.3358333, 0.6046617)
+fps_mesh_rotation = Vector3(18.7625, -79.5875, 0.9)

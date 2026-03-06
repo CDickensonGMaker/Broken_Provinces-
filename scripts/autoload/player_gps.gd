@@ -28,6 +28,10 @@ var current_region: String = "Elder Moor"
 ## Current location ID (empty if in wilderness)
 var current_location_id: String = "elder_moor"
 
+## Location name override - set by special scenes (e.g., boat voyage) to display custom location names
+## When set, this takes priority over cell-based location names in the HUD
+var location_name_override: String = ""
+
 ## Dictionary of discovered cells: Vector2i -> discovery_timestamp (float)
 var discovered_cells: Dictionary = {}
 

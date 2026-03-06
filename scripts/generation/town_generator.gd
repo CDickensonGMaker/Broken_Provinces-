@@ -94,7 +94,18 @@ func generate_from_cell(cell: WorldGrid.CellInfo, coords: Vector2i, seed_value: 
 	grid_coords = coords
 	town_seed = seed_value
 
+	# Generate unique location_id for procedurally generated towns
+	if location_id.is_empty():
+		location_id = "generated_town_%d_%d" % [coords.x, coords.y]
+		# Also generate a name if empty
+		if location_name.is_empty():
+			location_name = _generate_town_name(seed_value)
+
 	generate()
+
+	# Discover this location for fast travel
+	if PlayerGPS:
+		PlayerGPS.discover_location(location_id)
 
 
 ## Generate the town
@@ -902,3 +913,25 @@ func _setup_audio() -> void:
 	AudioManager.play_zone_music("village")
 
 	print("[TownGenerator] Audio setup complete for %s" % location_name)
+
+
+## Generate a random town name using seed
+func _generate_town_name(seed_value: int) -> String:
+	var name_rng := RandomNumberGenerator.new()
+	name_rng.seed = seed_value
+
+	var prefixes: Array[String] = [
+		"Oak", "River", "Stone", "Green", "High", "Low", "North", "South",
+		"East", "West", "Red", "White", "Black", "Gold", "Silver", "Iron",
+		"Wolf", "Bear", "Elk", "Crow", "Hawk", "Fox", "Stag", "Boar"
+	]
+	var suffixes: Array[String] = [
+		"wood", "brook", "ford", "field", "vale", "dale", "holm", "ton",
+		"bury", "bridge", "haven", "keep", "hold", "watch", "gate", "wall",
+		"hollow", "ridge", "meadow", "moor", "stead", "crest", "grove", "well"
+	]
+
+	var prefix: String = prefixes[name_rng.randi() % prefixes.size()]
+	var suffix: String = suffixes[name_rng.randi() % suffixes.size()]
+
+	return prefix + suffix

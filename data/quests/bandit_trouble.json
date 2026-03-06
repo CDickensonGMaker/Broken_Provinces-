@@ -31,7 +31,7 @@
 		}
 	],
 	"turn_in_type": "bounty_board",
-	"turn_in_target": "bounty_board_dalhurst",
+	"turn_in_target": "bounty_board",
 	"turn_in_zone": "dalhurst",
 	"rewards": {
 		"gold": 100,

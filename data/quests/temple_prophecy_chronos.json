@@ -11,8 +11,8 @@
 		{
 			"id": "receive_prophecy",
 			"description": "Receive the sealed prophecy from the Priest of Chronos",
-			"type": "collect",
-			"target": "sealed_prophecy",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
 			"required_count": 1
 		},
 		{

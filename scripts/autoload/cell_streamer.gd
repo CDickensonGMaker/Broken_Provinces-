@@ -57,6 +57,9 @@ var _main_scene_cell: Vector2i = Vector2i(-9999, -9999)  # Invalid until set
 ## Cells that were externally registered (not loaded by CellStreamer)
 var _external_cells: Dictionary = {}
 
+## Cells that are pending free (prevents reloading during deferred queue_free)
+var _pending_free_cells: Dictionary[Vector2i, bool] = {}
+
 ## PERFORMANCE: Cached camera reference - updated each frame
 ## Use CellStreamer.cached_camera instead of get_viewport().get_camera_3d()
 var cached_camera: Camera3D = null
@@ -198,6 +201,11 @@ func _update_loaded_cells() -> void:
 
 ## Load a cell at the given coordinates
 func _load_cell(coords: Vector2i) -> void:
+	# Don't load cells that are being freed (prevents race condition on teleport)
+	if _pending_free_cells.has(coords):
+		print("[CellStreamer] Skipping cell %s - pending free" % coords)
+		return
+
 	# Skip if this cell is already registered as the main scene
 	# This prevents double-loading on save/load when the main scene is already present
 	if coords == _main_scene_cell and loaded_cells.has(coords):
@@ -934,6 +942,7 @@ func stop_streaming() -> void:
 	loaded_cells.clear()
 	_loading_cells.clear()
 	_external_cells.clear()
+	_pending_free_cells.clear()
 	_main_scene_cell = Vector2i(-9999, -9999)
 
 	# Reset world offset for next streaming session
@@ -1021,6 +1030,14 @@ func teleport_to_cell(coords: Vector2i, spawn_position: Vector3 = Vector3.ZERO) 
 	if loaded_cells.has(saved_main_cell):
 		saved_main_node = loaded_cells.get(saved_main_cell, null) as Node3D
 
+	# CRITICAL: Mark old main scene cell as pending free BEFORE clearing tracking
+	# This prevents _load_cell() from reloading it during the deferred queue_free() window
+	if saved_main_cell != Vector2i(-9999, -9999) and not is_returning_to_main:
+		_pending_free_cells[saved_main_cell] = true
+		# Also explicitly remove from tracking immediately
+		loaded_cells.erase(saved_main_cell)
+		_external_cells.erase(saved_main_cell)
+
 	# Free ALL loaded cells EXCEPT the main scene if we're returning to it
 	for cell_coords: Vector2i in loaded_cells.keys():
 		var cell_node: Node3D = loaded_cells.get(cell_coords, null) as Node3D
@@ -1028,6 +1045,14 @@ func teleport_to_cell(coords: Vector2i, spawn_position: Vector3 = Vector3.ZERO) 
 			# Don't free the main scene node if we're returning to it
 			if is_returning_to_main and cell_coords == saved_main_cell:
 				continue
+			# Mark as pending free to prevent reload race
+			_pending_free_cells[cell_coords] = true
+			# Connect to tree_exited to clean up pending_free tracking
+			# Use default parameter to capture value, not reference (GDScript lambdas capture by reference)
+			cell_node.tree_exited.connect(
+				func(coords: Vector2i = cell_coords): _pending_free_cells.erase(coords),
+				CONNECT_ONE_SHOT
+			)
 			cell_node.queue_free()
 
 	# Clear all tracking
@@ -1063,13 +1088,22 @@ func teleport_to_cell(coords: Vector2i, spawn_position: Vector3 = Vector3.ZERO) 
 		_main_scene_cell = saved_main_cell
 		_external_cells[saved_main_cell] = true
 		loaded_cells[saved_main_cell] = saved_main_node
+		# Clear from pending free since we're keeping it
+		_pending_free_cells.erase(saved_main_cell)
 		print("[CellStreamer] Restored main scene cell at %s" % saved_main_cell)
 	else:
 		# Not returning to main - clear main scene tracking and FREE the old node
 		_main_scene_cell = Vector2i(-9999, -9999)
 		# Free the old main scene node to prevent orphaning
 		if is_instance_valid(saved_main_node):
+			# Connect to tree_exited to clean up pending_free tracking when actually freed
+			# Use default parameter to capture value, not reference (GDScript lambdas capture by reference)
+			saved_main_node.tree_exited.connect(
+				func(coords: Vector2i = saved_main_cell): _pending_free_cells.erase(coords),
+				CONNECT_ONE_SHOT
+			)
 			saved_main_node.queue_free()
+			print("[CellStreamer] Old main scene %s marked for cleanup" % saved_main_cell)
 
 	# Start streaming from new location
 	active_cell = coords

@@ -24,10 +24,10 @@
 		},
 		{
 			"id": "win_tournament",
-			"description": "Win the novice tournament (3 rounds)",
-			"type": "custom",
-			"target": "tournament_novice_trial",
-			"required_count": 1
+			"description": "Defeat arena opponents (0/9)",
+			"type": "kill",
+			"target": "arena_gladiator",
+			"required_count": 9
 		}
 	],
 	"turn_in_type": "npc_specific",

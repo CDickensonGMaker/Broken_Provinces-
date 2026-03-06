@@ -54,7 +54,8 @@ enum ActionType {
 	OPEN_SHOP,          ## Open shop interface
 	PLAY_SOUND,         ## Play a sound effect
 	SET_NPC_STATE,      ## Change NPC state/behavior
-	SPAWN_ERRAND        ## Spawn an errand quest from a rumor
+	SPAWN_ERRAND,       ## Spawn an errand quest from a rumor
+	START_BOAT_VOYAGE   ## Start boat travel (param_string = route_id)
 }
 
 

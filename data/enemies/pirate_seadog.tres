@@ -1,0 +1,123 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/enemy_attack_data.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+id = "cutlass_slash"
+display_name = "Cutlass Slash"
+damage = Array[int]([5, 10, 0])
+damage_type = 0
+windup_time = 0.35
+active_time = 0.2
+recovery_time = 0.3
+cooldown = 1.2
+range_distance = 2.5
+is_ranged = false
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 0.0
+inflicts_condition = 0
+condition_chance = 0.0
+condition_duration = 0.0
+stagger_power = 0.7
+knockback_force = 2.5
+weight = 1.0
+min_range = 0.0
+max_range = 2.5
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+id = "pirate_kick"
+display_name = "Boot Kick"
+damage = Array[int]([2, 5, 0])
+damage_type = 0
+windup_time = 0.25
+active_time = 0.15
+recovery_time = 0.2
+cooldown = 1.0
+range_distance = 1.8
+is_ranged = false
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 0.0
+inflicts_condition = 0
+condition_chance = 0.0
+condition_duration = 0.0
+stagger_power = 0.8
+knockback_force = 4.0
+weight = 0.4
+min_range = 0.0
+max_range = 1.8
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[resource]
+script = ExtResource("1")
+id = "pirate_seadog"
+display_name = "Pirate Seadog"
+description = "A weathered sailor turned to piracy. Scars and salt-stained clothes tell of many voyages and battles at sea."
+level = 6
+min_level = 4
+max_level = 18
+max_hp = 45
+armor_value = 8
+movement_speed = 4.5
+turn_speed = 5.0
+grit = 6
+agility = 6
+will = 4
+knowledge = 3
+bravery = 5
+behavior = 0
+faction = 6
+aggro_range = 14.0
+attack_range = 2.5
+preferred_distance = 2.0
+flee_hp_threshold = 0.15
+is_boss = false
+attacks = Array[ExtResource("2")]([SubResource("1"), SubResource("2")])
+can_block = true
+block_chance = 0.2
+stagger_resistance = 0.15
+fire_resistance = 0.0
+frost_resistance = 0.1
+lightning_resistance = 0.0
+poison_resistance = 0.1
+necrotic_resistance = 0.0
+physical_resistance = 0.1
+fire_weakness = 0.0
+frost_weakness = 0.0
+lightning_weakness = 0.0
+holy_weakness = 0.0
+causes_horror = false
+horror_difficulty = 10
+loot_table_av = 3
+gold_drop = Array[int]([30, 100])
+guaranteed_drops = Array[String]([])
+drop_table = {
+"health_potion": 0.2,
+"rum_bottle": 0.3,
+"gold_coin": 0.25,
+"lockpick": 0.1
+}
+xp_reward = 85
+scene_path = ""
+icon_path = "res://assets/sprites/enemies/humanoid/pirate_seadog.png"
+scale = 1.0
+sprite_path = "res://assets/sprites/enemies/humanoid/pirate_seadog.png"
+attack_sprite_path = ""
+sprite_hframes = 1
+sprite_vframes = 1
+attack_hframes = 1
+attack_vframes = 1
+sprite_pixel_size = 0.03
+idle_sounds = Array[String](["res://assets/audio/sfx/monsters/mid_growl.wav"])
+attack_sounds = Array[String](["res://assets/audio/sfx/weapons/sword_clank_1.wav", "res://assets/audio/sfx/weapons/sword_clank_2.wav"])
+hurt_sounds = Array[String](["res://assets/audio/sfx/monsters/mid_growl.wav"])
+death_sounds = Array[String](["res://assets/audio/sfx/monsters/low_growl.wav"])

@@ -321,5 +321,30 @@
     "gold_cost": 5,
     "skill_required": "None",
     "output": "rat_poison"
+  },
+  {
+    "id": "tan_leather",
+    "title": "Tanned Leather",
+    "category": "materials",
+    "description": "Raw animal hides are soaked in tannin-rich bark solutions, stretched, scraped, and cured to produce supple leather. The process takes time and skill, but the resulting material is essential for crafting armor, bags, and weapon grips.",
+    "materials": {
+      "raw_hide": 2
+    },
+    "gold_cost": 5,
+    "skill_required": "None",
+    "output": "leather"
+  },
+  {
+    "id": "craft_leather_strips",
+    "title": "Leather Strips",
+    "category": "materials",
+    "description": "Leather is cut into thin, uniform strips used for binding, stitching, and crafting grips. A fundamental material for armorers and weapon smiths alike.",
+    "materials": {
+      "leather": 1
+    },
+    "gold_cost": 0,
+    "skill_required": "None",
+    "output": "leather_strip",
+    "output_quantity": 3
   }
 ]

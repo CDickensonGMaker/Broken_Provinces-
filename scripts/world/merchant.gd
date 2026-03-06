@@ -39,6 +39,12 @@ var npc_type: String = "merchant"  # For NPC_TYPE_IN_REGION turn-ins
 @export var dialogue_data: DialogueData
 ## Knowledge profile for topic-based conversations (if no dialogue_data)
 @export var knowledge_profile: NPCKnowledgeProfile
+## Alias for knowledge_profile (for compatibility with other NPC types)
+var npc_profile: NPCKnowledgeProfile:
+	get:
+		return knowledge_profile
+	set(value):
+		knowledge_profile = value
 ## Use topic-based conversation instead of direct shop
 @export var use_conversation_system: bool = false
 
@@ -259,6 +265,14 @@ func _setup_default_inventory() -> void:
 		_add_shop_item("torch", 15, -1, Enums.ItemQuality.AVERAGE)  # Light source
 		_add_shop_item("empty_vial", 10, -1, Enums.ItemQuality.AVERAGE)  # Alchemy supplies
 
+		# Food and cooking ingredients (infinite stock)
+		_add_shop_item("bread", 5, -1, Enums.ItemQuality.AVERAGE)  # Basic food
+		_add_shop_item("cheese", 8, -1, Enums.ItemQuality.AVERAGE)  # Basic food
+		_add_shop_item("water", 2, -1, Enums.ItemQuality.AVERAGE)  # Cooking ingredient
+		_add_shop_item("flour", 5, -1, Enums.ItemQuality.AVERAGE)  # Baking ingredient
+		_add_shop_item("carrot", 3, -1, Enums.ItemQuality.AVERAGE)  # Stew ingredient
+		_add_shop_item("potato", 3, -1, Enums.ItemQuality.AVERAGE)  # Stew ingredient
+
 		# Optional inventory - small chance to have potions (marked up vs magic shops)
 		# Use RNG seeded by merchant position for consistent stock per merchant
 		var stock_rng := RandomNumberGenerator.new()
@@ -361,6 +375,11 @@ func _add_shop_item(item_id: String, base_price: int, quantity: int, quality: En
 
 ## Called by player interaction system
 func interact(_interactor: Node) -> void:
+	# Check faction reputation first - refuse trade at HOSTILE/HATED
+	if should_refuse_trade():
+		_show_refuse_trade_message()
+		return
+
 	# Priority 0: Check for quest turn-ins using central turn-in system
 	var turnin_quests := QuestManager.get_turnin_quests_for_entity(self)
 	if not turnin_quests.is_empty():
@@ -377,6 +396,33 @@ func interact(_interactor: Node) -> void:
 
 	# Fallback: Open shop directly if no profile
 	_open_shop_ui()
+
+
+## Show message when merchant refuses to trade due to bad reputation
+func _show_refuse_trade_message() -> void:
+	# Build scripted dialogue lines
+	var lines: Array = []
+
+	var town_faction: String = FactionManager.get_town_faction()
+	var status_name: String = FactionManager.get_status_name(town_faction) if not town_faction.is_empty() else "hostile"
+
+	# Line 0: Merchant's refusal
+	lines.append(ConversationSystem.create_scripted_line(
+		merchant_name,
+		"Get out of my shop! I don't do business with criminals like you. Your reputation in this town is %s." % status_name.to_lower(),
+		[ConversationSystem.create_scripted_choice("Fine. I'll leave.", 1)]
+	))
+
+	# Line 1: End
+	lines.append(ConversationSystem.create_scripted_line(
+		merchant_name,
+		"Good. Don't come back until you've made amends with the people of this town.",
+		[],
+		true  # is_end
+	))
+
+	# Start scripted dialogue
+	ConversationSystem.start_scripted_dialogue(lines, func(): pass)
 
 
 ## Pending quest to complete after dialogue
@@ -522,12 +568,17 @@ func buy_item(shop_index: int) -> bool:
 		return false
 
 	var shop_item: Dictionary = shop_inventory[shop_index]
-	var item_id: String = shop_item.item_id
-	var price: int = shop_item.price
-	var quality: Enums.ItemQuality = shop_item.quality
+	var item_id: String = shop_item.get("item_id", "")
+	var price: int = shop_item.get("price", 0)
+	var quality: Enums.ItemQuality = shop_item.get("quality", Enums.ItemQuality.AVERAGE)
+
+	# Validate item exists
+	if item_id.is_empty():
+		push_warning("[Merchant] Invalid shop item at index: %d" % shop_index)
+		return false
 
 	# Check stock
-	if shop_item.quantity == 0:
+	if shop_item.get("quantity", 0) == 0:
 		push_warning("[Merchant] Item out of stock: " + item_id)
 		return false
 
@@ -644,8 +695,64 @@ func get_dialogue_price_modifier() -> float:
 	# Ensure modifier doesn't go below a minimum (can't get free items)
 	return maxf(0.5, modifier)
 
+
+## Get faction reputation-based price modifier for BUYING
+## Returns a multiplier: <1.0 = discount, >1.0 = markup
+## Based on player's standing with the town faction
+func get_faction_buy_modifier() -> float:
+	if not FactionManager:
+		return 1.0
+
+	var town_faction: String = FactionManager.get_town_faction()
+	if town_faction.is_empty():
+		return 1.0
+
+	# get_reputation_price_modifier returns:
+	# HATED: 1.0 (double prices), HOSTILE: 0.75 (+75% markup)
+	# UNFRIENDLY: 0.5 (+50% markup), NEUTRAL: 0.0
+	# FRIENDLY: -0.1 (10% discount), HONORED: -0.25 (25% discount), EXALTED: -0.4 (40% discount)
+	var rep_mod: float = FactionManager.get_reputation_price_modifier(town_faction)
+
+	# Convert to multiplier: positive = markup, negative = discount
+	# UNFRIENDLY +0.5 -> 1.5x price, FRIENDLY -0.1 -> 0.9x price
+	return 1.0 + rep_mod
+
+
+## Get faction reputation-based price modifier for SELLING
+## Returns a multiplier: >1.0 = get more gold, <1.0 = get less gold
+## Based on player's standing with the town faction
+func get_faction_sell_modifier() -> float:
+	if not FactionManager:
+		return 1.0
+
+	var town_faction: String = FactionManager.get_town_faction()
+	if town_faction.is_empty():
+		return 1.0
+
+	# For selling, invert the modifier:
+	# FRIENDLY = player gets MORE gold (multiply by 1.1)
+	# UNFRIENDLY = player gets LESS gold (multiply by 0.67)
+	var rep_mod: float = FactionManager.get_reputation_price_modifier(town_faction)
+
+	# Invert: if rep_mod is -0.1 (friendly discount on buys), selling should give 10% more
+	# if rep_mod is 0.5 (unfriendly markup), selling should give 33% less
+	return 1.0 - rep_mod
+
+
+## Check if merchant will refuse to trade based on faction reputation
+## Returns true if merchant refuses to trade (HOSTILE or HATED)
+func should_refuse_trade() -> bool:
+	if not FactionManager:
+		return false
+
+	var town_faction: String = FactionManager.get_town_faction()
+	if town_faction.is_empty():
+		return false
+
+	return FactionManager.is_hostile_with(town_faction)
+
 ## Get Speech skill sell price modifier (better Speech = better sell prices)
-## Formula: 1.0 + (speech * 0.02) + (persuasion * 0.02) + (negotiation * 0.05) + dialogue_modifier
+## Formula: 1.0 + (speech * 0.02) + (persuasion * 0.02) + (negotiation * 0.05) + dialogue_modifier + faction_modifier
 func get_speech_sell_modifier() -> float:
 	var speech := 0
 	var persuasion := 0
@@ -666,10 +773,13 @@ func get_speech_sell_modifier() -> float:
 	# If dialogue gives 0.9 (10% discount on buys), sells get 1.1 (10% better)
 	var inverted_dialogue := 2.0 - dialogue_mod
 
-	return skill_modifier * inverted_dialogue
+	# Faction reputation modifier (FRIENDLY = get more gold, UNFRIENDLY = get less)
+	var faction_mod := get_faction_sell_modifier()
+
+	return skill_modifier * inverted_dialogue * faction_mod
 
 ## Get Speech skill buy price modifier (better Speech = lower buy prices)
-## Formula: Speech -1% per point, PERSUASION -1% per level, NEGOTIATION -3% per level, + dialogue modifiers, capped at 50% off
+## Formula: Speech -1% per point, PERSUASION -1% per level, NEGOTIATION -3% per level, + dialogue modifiers + faction modifiers, capped at 50% off
 func get_speech_buy_modifier() -> float:
 	var speech := 0
 	var persuasion := 0
@@ -687,8 +797,12 @@ func get_speech_buy_modifier() -> float:
 	# Apply dialogue-based modifier (haggle success, intimidate, befriend/angered)
 	var dialogue_mod := get_dialogue_price_modifier()
 
+	# Apply faction reputation modifier (FRIENDLY = cheaper, UNFRIENDLY = more expensive)
+	var faction_mod := get_faction_buy_modifier()
+
 	# Cap at 50% minimum (can't get items for less than half price)
-	return maxf(0.5, skill_modifier * dialogue_mod)
+	# But allow faction penalties to push above 1.0 (for UNFRIENDLY markup)
+	return maxf(0.5, skill_modifier * dialogue_mod * faction_mod)
 
 ## Get sell price with Speech skill modifier applied
 func get_sell_price_with_speech(inventory_index: int) -> int:

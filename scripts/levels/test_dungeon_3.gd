@@ -1,8 +1,9 @@
-## test_dungeon_3.gd - Shadow Depths procedural dungeon
-## Red-themed crypt for testing persistence across multiple dungeons
+## test_dungeon_3.gd - Shadow Depths procedural dungeon (production)
+## NOTE: "test" in filename is historical - this is an active gameplay level
+## Red-themed crypt dungeon
 extends Node3D
 
-const ZONE_ID := "test_dungeon_3"
+const ZONE_ID := "shadow_depths"
 
 var generator: DungeonGenerator
 var dungeon_seed: int = 0
@@ -109,7 +110,7 @@ func _create_entrance_template() -> void:
 	# Portal back to town
 	template.has_portal = true
 	template.portal_target_scene = "res://scenes/levels/elder_moor.tscn"
-	template.portal_spawn_id = "from_test_dungeon_3"
+	template.portal_spawn_id = "from_shadow_depths"
 	template.portal_display_name = "Return to Town"
 
 	# Blood-red stone colors
@@ -140,7 +141,7 @@ func _create_corridor_template() -> void:
 	template.max_enemies = 1
 	template.enemy_spawn_zones = [Vector3(0, 0, 0)]
 	template.enemy_data_paths = ["res://data/enemies/skeleton_shade.tres"]
-	template.enemy_sprite_paths = ["res://assets/sprites/enemies/skeleton_shade.png"]
+	template.enemy_sprite_paths = ["res://assets/sprites/enemies/undead/skeleton_shade_walking.png"]
 	template.enemy_h_frames = [4]
 	template.enemy_v_frames = [4]
 
@@ -177,7 +178,7 @@ func _create_guard_room_template() -> void:
 		Vector3(0, 0, -2),
 	]
 	template.enemy_data_paths = ["res://data/enemies/skeleton_shade.tres"]
-	template.enemy_sprite_paths = ["res://assets/sprites/enemies/skeleton_shade.png"]
+	template.enemy_sprite_paths = ["res://assets/sprites/enemies/undead/skeleton_shade_walking.png"]
 	template.enemy_h_frames = [4]
 	template.enemy_v_frames = [4]
 
@@ -217,7 +218,7 @@ func _create_empty_room_template() -> void:
 
 	# Enemy data for generator override
 	template.enemy_data_paths = ["res://data/enemies/skeleton_shade.tres"]
-	template.enemy_sprite_paths = ["res://assets/sprites/enemies/skeleton_shade.png"]
+	template.enemy_sprite_paths = ["res://assets/sprites/enemies/undead/skeleton_shade_walking.png"]
 	template.enemy_h_frames = [4]
 	template.enemy_v_frames = [4]
 
@@ -259,7 +260,7 @@ func _create_treasure_room_template() -> void:
 	template.max_enemies = 2
 	template.enemy_spawn_zones = [Vector3(-2, 0, 0), Vector3(2, 0, 0)]
 	template.enemy_data_paths = ["res://data/enemies/skeleton_shade.tres"]
-	template.enemy_sprite_paths = ["res://assets/sprites/enemies/skeleton_shade.png"]
+	template.enemy_sprite_paths = ["res://assets/sprites/enemies/undead/skeleton_shade_walking.png"]
 	template.enemy_h_frames = [4]
 	template.enemy_v_frames = [4]
 
@@ -376,7 +377,7 @@ func _create_boss_template() -> void:
 		Vector3(-3, 0, -3),
 	]
 	template.enemy_data_paths = ["res://data/enemies/skeleton_shade.tres"]
-	template.enemy_sprite_paths = ["res://assets/sprites/enemies/skeleton_shade.png"]
+	template.enemy_sprite_paths = ["res://assets/sprites/enemies/undead/skeleton_shade_walking.png"]
 	template.enemy_h_frames = [4]
 	template.enemy_v_frames = [4]
 

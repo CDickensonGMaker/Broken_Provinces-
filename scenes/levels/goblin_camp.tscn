@@ -13,3 +13,44 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 45)
 [node name="HUD" parent="." instance=ExtResource("3")]
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="from_open_world" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 45)
+metadata/spawn_id = "from_open_world"
+
+[node name="default" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 45)
+metadata/spawn_id = "default"
+
+[node name="EnemySpawns" type="Node3D" parent="."]
+
+[node name="DoorPositions" type="Node3D" parent="."]
+
+[node name="ExitPortal" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 48)
+metadata/target_scene = "__RETURN_TO_WILDERNESS__"
+metadata/spawn_id = "from_goblin_camp"
+metadata/door_label = "Exit to Wilderness"
+metadata/show_frame = false
+
+[node name="ChestPositions" type="Node3D" parent="."]
+
+[node name="SupplyChest" type="Marker3D" parent="ChestPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 0)
+metadata/chest_id = "goblin_supply_chest"
+metadata/chest_name = "Goblin Supplies"
+metadata/is_locked = false
+metadata/lock_difficulty = 0
+metadata/is_persistent = false
+metadata/loot_tier = "common"
+
+[node name="BossChest" type="Marker3D" parent="ChestPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8)
+metadata/chest_id = "goblin_warboss_hoard"
+metadata/chest_name = "Warboss Hoard"
+metadata/is_locked = true
+metadata/lock_difficulty = 15
+metadata/is_persistent = false
+metadata/loot_tier = "uncommon"

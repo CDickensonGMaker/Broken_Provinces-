@@ -327,7 +327,7 @@ size = Vector3(1.5, 8, 35.9834)
 material = SubResource("mat_wall")
 
 [node name="EastWall4" type="CSGBox3D" parent="Walls"]
-transform = Transform3D(-0.03334707, 0, -0.9994438, 0, 1, 0, 0.9994438, 0, -0.03334707, -41.343018, 4, 49.584335)
+transform = Transform3D(-0.03334707, 0, -0.9994438, 0, 1, 0, 0.9994438, 0, -0.03334707, -38.70121, 4, 94.919014)
 use_collision = true
 size = Vector3(1.5, 8, 35.9834)
 material = SubResource("mat_wall")
@@ -347,21 +347,21 @@ material = SubResource("mat_wall")
 [node name="Towers" type="Node3D" parent="Walls"]
 
 [node name="CornerTowerSW" type="CSGCylinder3D" parent="Walls/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 5, 50)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -57.358192, 5, 95.33468)
 use_collision = true
 radius = 3.0
 height = 10.0
 material = SubResource("mat_wall")
 
 [node name="CornerTowerSWCap" type="CSGCylinder3D" parent="Walls/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 10.75, 50)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -57.358192, 10.75, 95.33468)
 use_collision = true
 radius = 3.5
 height = 1.5
 material = SubResource("mat_wall")
 
 [node name="CornerTowerSWCap2" type="CSGCylinder3D" parent="Walls/Towers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.871922, 10.75, 50)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.230114, 10.75, 95.33468)
 use_collision = true
 radius = 3.5
 height = 1.5
@@ -396,7 +396,7 @@ height = 10.0
 material = SubResource("mat_wall")
 
 [node name="CornerTowerSE5" type="CSGCylinder3D" parent="Walls/Towers"]
-transform = Transform3D(-0.03334707, 0, -0.9994438, 0, 1, 0, 0.9994438, 0, -0.03334707, -23.938553, 5, 50.165047)
+transform = Transform3D(-0.03334707, 0, -0.9994438, 0, 1, 0, 0.9994438, 0, -0.03334707, -21.296745, 5, 95.499725)
 use_collision = true
 radius = 3.0
 height = 10.0
@@ -629,7 +629,7 @@ material = SubResource("mat_sail")
 [node name="Buildings" type="Node3D" parent="."]
 
 [node name="HarbormasterOffice" type="Node3D" parent="Buildings"]
-transform = Transform3D(-0.99999285, 0, 0.0037698895, 0, 1, 0, -0.0037698895, 0, -0.99999285, -50.494385, -0.28497505, 38.161613)
+transform = Transform3D(-0.99999285, 0, 0.0037698895, 0, 1, 0, -0.0037698895, 0, -0.99999285, -55.5013, -0.28497505, 44.678356)
 
 [node name="MainBuilding" type="CSGBox3D" parent="Buildings/HarbormasterOffice"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.183159, 3, -2.9537659)
@@ -1347,24 +1347,28 @@ omni_range = 6.0
 [node name="SpawnPoints" type="Node3D" parent="."]
 
 [node name="from_wilderness" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.522896, 0.1, 0)
 
 [node name="from_wilderness_south" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.522896, 0.1, 25)
 
 [node name="from_wilderness_north" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.522896, 0.1, -25)
 
 [node name="from_wilderness_east" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.522896, 0.1, 0)
 
 [node name="from_inn" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.5, 0.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.022896, 0.1, 0)
 
 [node name="from_fast_travel" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6425095, 0.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.880386, 0.1, 0)
+
+[node name="harbor_spawn" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 0.5, 35)
 
 [node name="NPCSpawns" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44.21518, 0, -12.486515)
 
 [node name="GuardPosts" type="Node3D" parent="."]
 
@@ -1542,7 +1546,7 @@ merchant_name = "Dalhurst General Goods"
 shop_tier = 2
 
 [node name="Merchant_Blacksmith" parent="NPCs/Merchants" instance=ExtResource("7")]
-transform = Transform3D(1.9361106, 0, 0, 0, 1, 0, 0, 0, 1.311084, 99.80145, 0, 14.613898)
+transform = Transform3D(1.9361106, 0, 0, 0, 1, 0, 0, 0, 1.311084, 104.4227, 0, 12.841569)
 merchant_name = "Harbor Blacksmith"
 shop_tier = 2
 shop_type = "blacksmith"
@@ -1566,12 +1570,12 @@ shop_tier = 2
 shop_type = "weapon"
 
 [node name="Merchant_Supplies" parent="NPCs/Merchants" instance=ExtResource("7")]
-transform = Transform3D(1.9361106, 0, 0, 0, 1, 0, 0, 0, 1.311084, -42.24663, 0, 11.798291)
+transform = Transform3D(1.9361106, 0, 0, 0, 1, 0, 0, 0, 1.311084, -5.3199883, 0, -11.212471)
 merchant_name = "Seafarer's Supplies"
 shop_tier = 2
 
 [node name="Merchant_Bar" parent="NPCs/Merchants" instance=ExtResource("7")]
-transform = Transform3D(1.9361106, 0, 0, 0, 1, 0, 0, 0, 1.311084, 77.52874, 0.021261573, -2.031273)
+transform = Transform3D(1.9361106, 0, 0, 0, 1, 0, 0, 0, 1.311084, 111.19299, 0.021261573, -54.42019)
 merchant_name = "Gilded Grog Bar"
 
 [node name="QuestGivers" type="Node3D" parent="NPCs"]
@@ -1585,19 +1589,19 @@ faction_id = "the_keepers"
 dialogue_data = ExtResource("aldric_dialogue")
 
 [node name="HarborCaptain" parent="NPCs/QuestGivers" instance=ExtResource("11")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, -35)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.23027, 0, 38.298466)
 npc_id = "harbor_captain"
 display_name = "Harbor Captain"
 quest_ids = Array[String](["harbor_ghost_ship"])
 
 [node name="WorriedMerchant" parent="NPCs/QuestGivers" instance=ExtResource("11")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.627035, 0, 7.3276854)
 npc_id = "worried_merchant_dalhurst"
 display_name = "Worried Merchant"
 quest_ids = Array[String](["willow_dale_investigation"])
 
 [node name="WizardMaelorn" parent="NPCs/QuestGivers" instance=ExtResource("11")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.61619, 0, 25.48919)
 npc_id = "wizard_dalhurst"
 display_name = "Maelorn the Wizard"
 quest_ids = Array[String](["lost_apprentice"])
@@ -1605,7 +1609,7 @@ quest_ids = Array[String](["lost_apprentice"])
 [node name="Interactables" type="Node3D" parent="."]
 
 [node name="BountyBoard" parent="Interactables" instance=ExtResource("8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.756374, 0, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.182325, 0, -16.494595)
 board_name = "Dalhurst Bounty Board"
 
 [node name="RestSpot" parent="Interactables" instance=ExtResource("9")]
@@ -1614,14 +1618,14 @@ display_name = "Gilded Grog Table"
 rest_type = 1
 
 [node name="FastTravelShrine" parent="Interactables" instance=ExtResource("10")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -0.632658)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.850273, 0, -0.632658)
 display_name = "Dalhurst Shrine"
 shrine_id = "dalhurst_shrine"
 
 [node name="Doors" type="Node3D" parent="."]
 
 [node name="InnDoor" parent="Doors" instance=ExtResource("12")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 34, 0, 0)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 67.9086, 0, -69.49302)
 target_scene = "res://scenes/levels/inn_interior.tscn"
 spawn_point_id = "from_dalhurst"
 door_name = "The Sailor's Rest Inn"
@@ -1683,13 +1687,13 @@ transform = Transform3D(-0.028793965, 0, 0.99958545, 0, 1, 0, -0.99958545, 0, -0
 [node name="ModularHouses" type="Node3D" parent="."]
 
 [node name="HouseBlock_0" parent="ModularHouses" instance=ExtResource("house_blocks_0")]
-transform = Transform3D(-0.6861414, 0, -0.065783486, 0, 0.69109297, 0, 0.046211, 0, -0.9767539, 40.471302, 0, 60.34371)
+transform = Transform3D(-0.6861414, 0, -0.065783486, 0, 0.69109297, 0, 0.046211, 0, -0.9767539, 40.471302, -0.19435024, 60.34371)
 
 [node name="HouseBlock_1" parent="ModularHouses" instance=ExtResource("house_blocks_1")]
-transform = Transform3D(0.58296233, 0, 0, 0, 1, 0, 0, 0, 0.71864176, 29.945244, 0, 10.03949)
+transform = Transform3D(0.58296233, 0, 0, 0, 1, 0, 0, 0, 0.71864176, 29.945244, -0.91419554, 10.03949)
 
 [node name="HouseBlock_2" parent="ModularHouses" instance=ExtResource("house_blocks_2")]
-transform = Transform3D(-0.9365315, 0, -0.35058346, 0, 1, 0, 0.35058346, 0, -0.9365315, 41.867416, -0.6176863, -30.255463)
+transform = Transform3D(-0.9365315, 0, -0.35058346, 0, 1, 0, 0.35058346, 0, -0.9365315, 41.867416, -0.8003607, -30.255463)
 
 [node name="HouseBlock_3" parent="ModularHouses" instance=ExtResource("house_blocks_2")]
 transform = Transform3D(-0.8966402, 0, -0.2904933, 0, 0.7647583, 0, 0.33565047, 0, -0.77600956, 41.867416, 9.482693, -30.255463)
@@ -1698,19 +1702,19 @@ transform = Transform3D(-0.8966402, 0, -0.2904933, 0, 0.7647583, 0, 0.33565047, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.581085, -1.4541779, 26.183212)
 
 [node name="HouseBlock_One2" parent="ModularHouses" instance=ExtResource("house_blocks_one")]
-transform = Transform3D(0.87614685, 0, 0.48204425, 0, 1, 0, -0.48204425, 0, 0.87614685, -20.677683, 3.2081757, 65.34423)
+transform = Transform3D(0.87614685, 0, 0.48204425, 0, 1, 0, -0.48204425, 0, 0.87614685, -25.694452, -0.1250019, 59.565483)
 
 [node name="HouseBlock_One5" parent="ModularHouses" instance=ExtResource("house_blocks_one")]
-transform = Transform3D(-0.4380044, 0, 1.0553068, 0, 1, 0, -0.753898, 0, -0.61311877, 88.83608, -2.3640747, -76.01472)
+transform = Transform3D(-0.4380044, 0, 1.0553068, 0, 1, 0, -0.753898, 0, -0.61311877, 88.39298, -2.3640747, -76.01472)
 
 [node name="HouseBlock_One6" parent="ModularHouses" instance=ExtResource("house_blocks_one")]
 transform = Transform3D(-0.4465836, 0, 1.0298904, 0, 1, 0, -0.76866466, 0, -0.5983522, 88.83608, -2.3640747, -64.44242)
 
 [node name="HouseBlock_One7" parent="ModularHouses" instance=ExtResource("house_blocks_one")]
-transform = Transform3D(-0.3438944, 0, 0.6764317, 0, 1.0145168, 0, -0.59191483, 0, -0.39299753, 88.83608, 6.8253393, -72.617386)
+transform = Transform3D(-0.3438944, 0, 0.6764317, 0, 1.0145168, 0, -0.59191483, 0, -0.39299753, 87.668594, 6.8253393, -72.617386)
 
 [node name="HouseBlock_One4" parent="ModularHouses" instance=ExtResource("house_blocks_one")]
 transform = Transform3D(-0.3809842, 0, 0.54132515, 0, 0.67773914, 0, -0.69289297, 0, -0.2976453, 54.923866, -0.1580782, -8.831628)
 
 [node name="HouseBlock_One3" parent="ModularHouses" instance=ExtResource("house_blocks_one")]
-transform = Transform3D(0.41556653, 0, -0.90956277, 0, 1, 0, 0.90956277, 0, 0.41556653, -43.51066, 3.2081757, 98.50721)
+transform = Transform3D(0.41556653, 0, -0.90956277, 0, 1, 0, 0.90956277, 0, 0.41556653, -48.527428, -0.21562481, 92.72846)

@@ -73,6 +73,8 @@ const REGIONS := {
 const CREATURES := {
 	"wolf": {"display": "Wolves", "singular": "wolf", "tier": 1},
 	"dire_wolf": {"display": "Dire Wolves", "singular": "dire wolf", "tier": 2},
+	"deer": {"display": "Deer", "singular": "deer", "tier": 1},
+	"boar": {"display": "Wild Boars", "singular": "wild boar", "tier": 1},
 	"giant_rat": {"display": "Giant Rats", "singular": "giant rat", "tier": 1},
 	"giant_spider": {"display": "Giant Spiders", "singular": "giant spider", "tier": 1},
 	"goblin_soldier": {"display": "Goblin Soldiers", "singular": "goblin", "tier": 1},
@@ -90,7 +92,11 @@ const CREATURES := {
 	"abomination": {"display": "Abominations", "singular": "abomination", "tier": 4},
 	"vampire_lord": {"display": "Vampire Lords", "singular": "vampire", "tier": 4},
 	"wyvern": {"display": "Wyverns", "singular": "wyvern", "tier": 4},
-	"basilisk": {"display": "Basilisks", "singular": "basilisk", "tier": 4}
+	"basilisk": {"display": "Basilisks", "singular": "basilisk", "tier": 4},
+	"pirate_seadog": {"display": "Pirate Seadogs", "singular": "pirate", "tier": 2},
+	"pirate_captain": {"display": "Pirate Captains", "singular": "pirate captain", "tier": 3},
+	"ghost_pirate_seadog": {"display": "Ghost Pirates", "singular": "ghost pirate", "tier": 3},
+	"ghost_pirate_captain": {"display": "Ghost Captains", "singular": "ghost captain", "tier": 4}
 }
 
 # =============================================================================

@@ -47,6 +47,8 @@ func _ready() -> void:
 	_spawn_locked_doors()
 	# Spawn thieves that lurk in the area
 	_spawn_thieves()
+	# Spawn guards to patrol the area
+	_spawn_guards()
 
 	# Spawn fall leaves on the ground for forest atmosphere
 	_spawn_fall_leaves()
@@ -688,3 +690,23 @@ func _on_intro_dialogue_finished(intro_ui: Node) -> void:
 	if intro_ui:
 		intro_ui.queue_free()
 	print("[Elder Moor] Intro dialogue finished")
+
+
+## Spawn guards to patrol the logging camp
+func _spawn_guards() -> void:
+	var npcs_container: Node3D = get_node_or_null("NPCs")
+	if not npcs_container:
+		npcs_container = Node3D.new()
+		npcs_container.name = "NPCs"
+		add_child(npcs_container)
+
+	# Elder Moor Watchman - guards the logging camp center
+	var guard := GuardNPC.spawn_guard(
+		npcs_container,
+		Vector3(5, 0, 10),  # Near logging camp center
+		[],  # No patrol points
+		ZONE_ID
+	)
+	guard.npc_id = "guard_elder_moor_1"
+	guard.npc_name = "Elder Moor Watchman"
+	print("[Elder Moor] Spawned Elder Moor Watchman")

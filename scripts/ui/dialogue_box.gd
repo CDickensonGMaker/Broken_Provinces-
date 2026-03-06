@@ -190,6 +190,7 @@ func _build_ui() -> void:
 	panel_style.set_border_width_all(2)
 	panel_style.set_content_margin_all(20)
 	panel.add_theme_stylebox_override("panel", panel_style)
+	panel.gui_input.connect(_on_panel_clicked)  # Click anywhere on panel to advance
 	root_control.add_child(panel)
 
 	# Main vertical container
@@ -240,7 +241,7 @@ func _build_ui() -> void:
 	text_label.custom_minimum_size.y = 100
 	text_label.add_theme_color_override("default_color", COL_TEXT)
 	text_label.add_theme_font_size_override("normal_font_size", 14)
-	text_label.mouse_filter = Control.MOUSE_FILTER_PASS  # Don't block mouse events
+	text_label.mouse_filter = Control.MOUSE_FILTER_PASS  # Pass mouse events (original)
 	vbox.add_child(text_label)
 
 	# Choice container - 2 column grid layout
@@ -409,11 +410,11 @@ func _update_choices() -> void:
 		choice_container.visible = false
 		continue_indicator.visible = true
 
-		# Update indicator text based on node state
+		# Update indicator text based on node state (click or E to continue)
 		if DialogueManager.is_at_end_node():
-			continue_indicator.text = "[E] End Conversation"
+			continue_indicator.text = "Click or [E] to End"
 		else:
-			continue_indicator.text = "[E] Continue"
+			continue_indicator.text = "Click or [E] to Continue"
 	else:
 		# Has choices - show choice buttons in 2-column grid
 		choice_container.visible = true
@@ -447,6 +448,24 @@ func _update_choices() -> void:
 func _has_no_choices() -> bool:
 	var available := DialogueManager.get_available_choices()
 	return available.is_empty()
+
+
+## Handle click on panel to advance dialogue (click-to-advance feature)
+func _on_panel_clicked(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if is_showing_skill_check:
+			return
+
+		if is_typing:
+			# Skip to end of text
+			skip_typewriter = true
+			visible_chars = full_text.length()
+			text_label.visible_characters = visible_chars
+			is_typing = false
+			_on_typing_complete()
+		elif _has_no_choices():
+			# Continue to next node
+			DialogueManager.continue_dialogue()
 
 
 func _on_choice_pressed(index: int) -> void:

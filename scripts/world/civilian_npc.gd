@@ -269,6 +269,14 @@ func _create_interaction_area() -> void:
 
 ## Called by player interaction system
 func interact(_interactor: Node) -> void:
+	# Check faction reputation before allowing conversation
+	var town_faction: String = FactionManager.get_town_faction()
+	if not town_faction.is_empty():
+		# At HOSTILE or HATED status, refuse to talk
+		if FactionManager.is_hostile_with(town_faction):
+			_show_hostile_refusal()
+			return
+
 	# Always use topic-based ConversationSystem
 	var profile := knowledge_profile
 	if not profile:
@@ -277,6 +285,27 @@ func interact(_interactor: Node) -> void:
 
 	if profile:
 		ConversationSystem.start_conversation(self, profile)
+
+
+## Show hostile refusal dialogue when faction reputation is too low
+func _show_hostile_refusal() -> void:
+	var hostile_lines: Array[String] = [
+		"I have nothing to say to the likes of you.",
+		"Get away from me, criminal!",
+		"Don't talk to me. I know what you've done.",
+		"Leave me alone before I call the guards!",
+		"Your kind isn't welcome here.",
+		"I won't speak with someone of your... reputation.",
+	]
+	var line: String = hostile_lines[randi() % hostile_lines.size()]
+	var lines: Array = []
+	lines.append(ConversationSystem.create_scripted_line(
+		npc_name,
+		line,
+		[],
+		true  # is_end
+	))
+	ConversationSystem.start_scripted_dialogue(lines)
 
 
 ## Get the default knowledge profile for this NPC type
@@ -509,6 +538,16 @@ func _report_attack_crime(attacker: Node) -> void:
 
 	# Report assault
 	CrimeManager.report_crime(CrimeManager.CrimeType.ASSAULT, crime_region, witnesses)
+
+	# Alert nearby guards to respond immediately
+	var attacker_node: Node3D = attacker as Node3D if attacker is Node3D else null
+	if attacker_node:
+		for guard in get_tree().get_nodes_in_group("guards"):
+			if not guard is Node3D:
+				continue
+			var dist: float = (guard as Node3D).global_position.distance_to(global_position)
+			if dist < 30.0 and guard.has_method("respond_to_backup_call"):
+				guard.respond_to_backup_call(global_position, attacker_node)
 
 
 ## Report murder crime when NPC dies

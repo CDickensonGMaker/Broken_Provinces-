@@ -307,9 +307,9 @@ func _spawn_wolves() -> void:
 
 
 func _spawn_wolf(pos: Vector3) -> void:
-	var sprite: Texture2D = load("res://assets/sprites/enemies/wolf.png")
+	var sprite: Texture2D = load("res://assets/sprites/enemies/beasts/wolf.png")
 	if not sprite:
-		sprite = load("res://assets/sprites/enemies/skeleton_shade.png")
+		sprite = load("res://assets/sprites/enemies/undead/skeleton_shade_walking.png")
 	if not sprite:
 		push_warning("[WolfDenForest] Missing wolf sprite")
 		return
@@ -333,9 +333,9 @@ func _spawn_wolf(pos: Vector3) -> void:
 
 
 func _spawn_dire_wolf(pos: Vector3) -> void:
-	var sprite: Texture2D = load("res://assets/sprites/enemies/wolf.png")
+	var sprite: Texture2D = load("res://assets/sprites/enemies/beasts/wolf.png")
 	if not sprite:
-		sprite = load("res://assets/sprites/enemies/skeleton_shade.png")
+		sprite = load("res://assets/sprites/enemies/undead/skeleton_shade_walking.png")
 	if not sprite:
 		push_warning("[WolfDenForest] Missing dire wolf sprite")
 		return

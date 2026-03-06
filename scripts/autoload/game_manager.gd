@@ -5,6 +5,7 @@ signal game_paused
 signal game_resumed
 signal time_of_day_changed(new_time: Enums.TimeOfDay)
 signal day_changed(new_day: int)
+signal time_advanced(hours: float)  # Emitted when time is advanced via waiting/resting
 signal weather_changed(new_weather: Enums.Weather)
 signal player_died
 
@@ -173,6 +174,10 @@ func advance_time(hours: float) -> void:
 	if new_time != current_time_of_day:
 		current_time_of_day = new_time
 		time_of_day_changed.emit(current_time_of_day)
+
+	# Notify systems that time was advanced (for jail time, etc.)
+	time_advanced.emit(hours)
+
 
 ## Rest until morning (6 AM) - returns hours slept
 func rest_until_morning() -> float:

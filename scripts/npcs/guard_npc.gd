@@ -219,10 +219,24 @@ func _update_guard_ai(delta: float) -> void:
 			_combat_state_logic(distance_to_player)
 
 
-## Patrol state - check for player bounty
+## Patrol state - check for player bounty or faction standing
 func _patrol_state_logic(distance: float) -> void:
-	# Check if player is in detection range and has bounty
+	# Check if player is in detection range
 	if distance <= DETECTION_RANGE and _alert_cooldown <= 0:
+		# First check faction reputation - if HOSTILE or HATED, attack on sight
+		var town_faction: String = FactionManager.get_town_faction()
+		if not town_faction.is_empty() and FactionManager.is_hostile_with(town_faction):
+			# Attack on sight - no arrest option for hostile/hated players
+			_change_state(GuardState.COMBAT)
+			print("[Guard] Player is %s with %s - attacking on sight!" % [
+				FactionManager.get_status_name(town_faction),
+				town_faction
+			])
+			if wander:
+				wander.pause()
+			return
+
+		# Normal bounty check for neutral/better reputation
 		var bounty: int = CrimeManager.get_bounty(region_id)
 		if bounty > 0:
 			_change_state(GuardState.ALERT)
@@ -444,18 +458,20 @@ func _on_arrest_scripted_ended() -> void:
 	_arrest_dialogue_active = false
 
 	# Process the choice based on which line we ended on
-	match _last_arrest_line_index:
+	# Note: Go to jail case uses await for scene transition
+	var choice: int = _last_arrest_line_index
+	_last_arrest_line_index = 0
+
+	match choice:
 		1:  # Pay fine
 			_handle_pay_fine()
-		2:  # Go to jail
-			_handle_go_to_jail()
+		2:  # Go to jail - await the scene transition
+			await _handle_go_to_jail()
 		3:  # Resist arrest
 			_handle_resist_arrest()
 		_:
 			# Dialogue cancelled or unknown - treat as resist
 			_handle_resist_arrest()
-
-	_last_arrest_line_index = 0
 
 
 ## Handle player paying fine
@@ -485,8 +501,8 @@ func _handle_go_to_jail() -> void:
 	CrimeManager.serve_time(region_id)
 	CrimeManager.player_arrested.emit(region_id)
 
-	# Find prison and teleport player
-	_teleport_player_to_jail()
+	# Find prison and teleport player (await scene change completion)
+	await _teleport_player_to_jail()
 
 	# Return to patrol
 	_change_state(GuardState.PATROL)
@@ -544,19 +560,24 @@ func on_crime_reported(crime_region_id: String) -> void:
 		print("[Guard] Heard about crime in %s, becoming alert" % region_id)
 
 
-## Teleport player to jail
+## Teleport player to jail via scene change
 func _teleport_player_to_jail() -> void:
-	# Find prison in scene
-	var prisons := get_tree().get_nodes_in_group("prisons")
-	if prisons.is_empty():
-		push_warning("[Guard] No prison found in scene!")
+	if not _target_player:
+		push_warning("[Guard] No target player to teleport!")
 		return
 
-	var prison: Node3D = prisons[0]
-	if prison.has_method("jail_player"):
-		prison.jail_player(_target_player)
-	elif "cell_spawn_point" in prison:
-		_target_player.global_position = prison.cell_spawn_point
+	# Store return info BEFORE scene change
+	var current_scene: Node = get_tree().current_scene
+	if current_scene:
+		CrimeManager.return_scene = current_scene.scene_file_path
+	else:
+		CrimeManager.return_scene = ""
+	CrimeManager.return_position = _target_player.global_position
+
+	print("[Guard] Storing return info: scene=%s, pos=%s" % [CrimeManager.return_scene, CrimeManager.return_position])
+
+	# Load prison scene - AWAIT to ensure old scene is unloaded before prison loads
+	await SceneManager.change_scene("res://scenes/world/prison.tscn", "cell")
 
 
 ## Show notification via HUD
@@ -564,6 +585,33 @@ func _show_notification(text: String) -> void:
 	var hud := get_tree().get_first_node_in_group("hud")
 	if hud and hud.has_method("show_notification"):
 		hud.show_notification(text)
+
+
+## Show friendly warning for minor crimes (FRIENDLY+ status gives leniency)
+func _show_friendly_warning(bounty: int) -> void:
+	# Build scripted dialogue lines
+	var lines: Array = []
+
+	# Line 0: Guard's friendly warning with single choice
+	lines.append(ConversationSystem.create_scripted_line(
+		"Town Guard",
+		"You there! I've heard some reports about you. Consider this a warning - keep out of trouble. Your bounty of %d gold has been forgiven this time." % bounty,
+		[ConversationSystem.create_scripted_choice("Thank you, I'll be more careful.", 1)]
+	))
+
+	# Line 1: Guard's dismissal
+	lines.append(ConversationSystem.create_scripted_line(
+		"Town Guard",
+		"See that you do. The townspeople respect you, but don't test their patience.",
+		[],
+		true  # is_end
+	))
+
+	# Clear the bounty as a friendly gesture
+	CrimeManager.clear_bounty(region_id)
+
+	# Start scripted dialogue
+	ConversationSystem.start_scripted_dialogue(lines, func(): pass)
 
 
 ## Update guard visual based on state (using billboard sprite modulate)
@@ -609,10 +657,25 @@ func set_combat_state(in_combat: bool) -> void:
 ## Override interact to use conversation system for guards (limited topics)
 ## If player has bounty, initiate arrest instead
 ## Also checks for completable quests that can be turned in to any guard
+## Guards refuse to talk to HOSTILE/HATED players and attack on sight
 func interact(_interactor: Node) -> void:
+	# Check faction reputation first
+	var town_faction: String = FactionManager.get_town_faction()
+	if not town_faction.is_empty():
+		# HOSTILE/HATED: Attack on sight, no conversation
+		if FactionManager.is_hostile_with(town_faction):
+			_show_notification("The guard attacks you on sight!")
+			_change_state(GuardState.COMBAT)
+			return
+
 	# Check if player has bounty - initiate arrest
 	var bounty: int = CrimeManager.get_bounty(region_id)
 	if bounty > 0:
+		# FRIENDLY+ status: Give warning for minor bounties (< 100 gold)
+		if not town_faction.is_empty() and FactionManager.is_friendly_with(town_faction) and bounty < 100:
+			_show_friendly_warning(bounty)
+			return
+
 		_change_state(GuardState.ARRESTING)
 		_initiate_arrest()
 		return
@@ -828,6 +891,11 @@ func _die(killer: Node = null) -> void:
 	# Spawn lootable corpse with guard equipment
 	_spawn_guard_corpse()
 
+	# Hydra mechanic: spawn 2 replacement guards in town areas (not in prison)
+	# This discourages fighting guards as a solution
+	if not _is_in_prison():
+		_spawn_replacement_guards()
+
 	# Emit killed signal via CombatManager
 	CombatManager.entity_killed.emit(self, killer)
 
@@ -837,6 +905,61 @@ func _die(killer: Node = null) -> void:
 
 	# Queue removal after short delay
 	get_tree().create_timer(0.1).timeout.connect(queue_free)
+
+
+## Check if we're in a prison scene (no guard respawns there)
+func _is_in_prison() -> bool:
+	var current_scene: Node = get_tree().current_scene
+	if current_scene:
+		var scene_path: String = current_scene.scene_file_path
+		if scene_path.contains("prison"):
+			return true
+		# Also check if parent is a Prison node
+		if current_scene is Prison:
+			return true
+	return false
+
+
+## Spawn 2 replacement guards nearby after a delay
+func _spawn_replacement_guards() -> void:
+	var spawn_parent: Node = get_parent()
+	var death_position: Vector3 = global_position
+	var guard_region: String = region_id
+
+	# Spawn after a short delay so player sees the death first
+	get_tree().create_timer(3.0).timeout.connect(func():
+		if not is_instance_valid(spawn_parent):
+			return
+
+		# Spawn 2 guards at offset positions
+		var offsets: Array[Vector3] = [
+			Vector3(5, 0, 5),
+			Vector3(-5, 0, 5)
+		]
+
+		for offset: Vector3 in offsets:
+			var spawn_pos: Vector3 = death_position + offset
+			var new_guard: GuardNPC = GuardNPC.spawn_guard(
+				spawn_parent,
+				spawn_pos,
+				[],  # No patrol points
+				guard_region,
+				-1  # Random sprite variant
+			)
+			if new_guard:
+				# New guards are immediately hostile and chase the player
+				new_guard._target_player = new_guard.get_tree().get_first_node_in_group("player") as Node3D
+				if new_guard._target_player:
+					new_guard._change_state(GuardState.CHASE)
+					if new_guard.wander:
+						new_guard.wander.pause()
+				print("[Guard] Replacement guard spawned at %s" % spawn_pos)
+
+		# Notify player
+		var hud: Node = spawn_parent.get_tree().get_first_node_in_group("hud")
+		if hud and hud.has_method("show_notification"):
+			hud.show_notification("More guards have arrived!")
+	)
 
 
 ## Spawn guard-specific corpse with equipment

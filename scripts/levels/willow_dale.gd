@@ -34,6 +34,9 @@ func _ready() -> void:
 		if SceneManager:
 			SceneManager.set_current_region(ZONE_ID)
 		SaveManager.set_current_zone(ZONE_ID, "Willow Dale Watchtower")
+		# Discover this location for fast travel
+		if PlayerGPS:
+			PlayerGPS.discover_location("willow_dale")
 		# Play ruins ambient and dungeon music
 		AudioManager.play_zone_ambiance("ruins")
 		AudioManager.play_zone_music("ruins")

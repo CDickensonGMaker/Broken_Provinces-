@@ -36,6 +36,15 @@ const CRIME_NAMES: Dictionary = {
 	CrimeType.PICKPOCKET: "Pickpocketing"
 }
 
+## Reputation penalties per crime type (applied to town faction)
+const REPUTATION_PENALTIES: Dictionary = {
+	CrimeType.ASSAULT: -10,
+	CrimeType.THEFT: -5,
+	CrimeType.MURDER: -25,
+	CrimeType.TRESPASSING: -3,
+	CrimeType.PICKPOCKET: -5
+}
+
 ## Bounty tracking per region
 ## Format: { "region_id": bounty_amount }
 var bounties: Dictionary = {}
@@ -57,12 +66,44 @@ var jail_region: String = ""
 ## Time remaining in jail (in game hours)
 var jail_time_remaining: float = 0.0
 
+## Return scene/position tracking (for returning after jail)
+var return_scene: String = ""
+var return_position: Vector3 = Vector3.ZERO
+
 ## Bounty to time conversion rate (gold per game hour)
 const BOUNTY_PER_HOUR: int = 100
 
 
 func _ready() -> void:
 	print("[CrimeManager] Initialized")
+
+	# Connect to scene load to validate jail state
+	if SceneManager:
+		SceneManager.scene_load_completed.connect(_on_scene_loaded)
+
+	# Connect to time advanced signal (for hard waiting while in jail)
+	if GameManager:
+		GameManager.time_advanced.connect(_on_time_advanced)
+
+
+## Validate jail state when scene loads - fix corrupted save data
+func _on_scene_loaded(scene_path: String) -> void:
+	if is_jailed and not scene_path.contains("prison"):
+		push_warning("[CrimeManager] Clearing invalid jail state - was jailed but loaded into %s" % scene_path)
+		is_jailed = false
+		jail_region = ""
+		jail_time_remaining = 0.0
+		confiscated_items.clear()
+
+
+## Handle time being advanced via waiting/resting (decreases jail time)
+func _on_time_advanced(hours: float) -> void:
+	if is_jailed and jail_time_remaining > 0.0:
+		jail_time_remaining -= hours
+		print("[CrimeManager] Jail time decreased by %.1f hours, %.1f remaining" % [hours, jail_time_remaining])
+
+		if jail_time_remaining <= 0.0:
+			_release_from_jail()
 
 
 func _process(delta: float) -> void:
@@ -116,6 +157,9 @@ func report_crime(crime_type: CrimeType, region_id: String, witnesses: Array = [
 
 	# Affect disposition with witnesses
 	_affect_witness_disposition(witnesses, crime_type)
+
+	# Apply reputation penalty to town faction
+	_apply_faction_reputation_penalty(crime_type, region_id)
 
 	# Show notification
 	_show_crime_notification(crime_type, witnesses.size())
@@ -281,6 +325,16 @@ func serve_time(region_id: String) -> void:
 	player_jailed.emit(region_id)
 
 
+## Set bounty to a specific value (for negotiations, partial payments)
+func set_bounty(region_id: String, amount: int) -> void:
+	var old_bounty: int = bounties.get(region_id, 0)
+	bounties[region_id] = maxi(0, amount)
+	if bounties[region_id] == 0:
+		last_crimes.erase(region_id)
+	bounty_changed.emit(region_id, bounties[region_id])
+	print("[CrimeManager] Bounty in %s set to %d (was %d)" % [region_id, bounties[region_id], old_bounty])
+
+
 ## Clear bounty (for pardons, escapes, or completing jail time)
 func clear_bounty(region_id: String) -> void:
 	if bounties.has(region_id):
@@ -302,6 +356,27 @@ func _alert_guards(region_id: String) -> void:
 	for guard in guards:
 		if guard.has_method("on_crime_reported"):
 			guard.on_crime_reported(region_id)
+
+
+## Apply reputation penalty to the appropriate town faction
+func _apply_faction_reputation_penalty(crime_type: CrimeType, _region_id: String) -> void:
+	if not FactionManager:
+		return
+
+	# Get the town faction for the current location
+	var town_faction: String = FactionManager.get_town_faction()
+	if town_faction.is_empty():
+		# Not in a town with a faction - no reputation penalty
+		return
+
+	# Get the penalty for this crime type
+	var penalty: int = REPUTATION_PENALTIES.get(crime_type, -5)
+
+	# Apply reputation change with cascading (mark as crime for time decay tracking)
+	var crime_name: String = CRIME_NAMES.get(crime_type, "crime")
+	FactionManager.modify_reputation(town_faction, penalty, "committed %s" % crime_name, true, true)
+
+	print("[CrimeManager] Applied %d reputation penalty to %s for %s" % [penalty, town_faction, crime_name])
 
 
 ## Confiscate player's equipped weapons when jailed
@@ -398,7 +473,9 @@ func to_dict() -> Dictionary:
 		"confiscated_items": confiscated_items.duplicate(true),
 		"is_jailed": is_jailed,
 		"jail_region": jail_region,
-		"jail_time_remaining": jail_time_remaining
+		"jail_time_remaining": jail_time_remaining,
+		"return_scene": return_scene,
+		"return_position": {"x": return_position.x, "y": return_position.y, "z": return_position.z}
 	}
 
 
@@ -410,6 +487,12 @@ func from_dict(data: Dictionary) -> void:
 	is_jailed = data.get("is_jailed", false)
 	jail_region = data.get("jail_region", "")
 	jail_time_remaining = data.get("jail_time_remaining", 0.0)
+	return_scene = data.get("return_scene", "")
+	var pos_data: Dictionary = data.get("return_position", {})
+	if not pos_data.is_empty():
+		return_position = Vector3(pos_data.get("x", 0.0), pos_data.get("y", 0.0), pos_data.get("z", 0.0))
+	else:
+		return_position = Vector3.ZERO
 
 
 ## Reset for new game
@@ -420,3 +503,5 @@ func reset_for_new_game() -> void:
 	is_jailed = false
 	jail_region = ""
 	jail_time_remaining = 0.0
+	return_scene = ""
+	return_position = Vector3.ZERO

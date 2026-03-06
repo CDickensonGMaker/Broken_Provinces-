@@ -1156,12 +1156,11 @@ func _setup_death_screen() -> void:
 	const DESIGN_WIDTH := 640
 	const DESIGN_HEIGHT := 480
 
-	# Create full-screen black background at design resolution
+	# Create full-screen black background using anchors for proper scaling
 	death_screen = ColorRect.new()
 	death_screen.name = "DeathScreen"
 	death_screen.color = Color(0, 0, 0, 0.95)
-	death_screen.position = Vector2.ZERO
-	death_screen.size = Vector2(DESIGN_WIDTH, DESIGN_HEIGHT)
+	death_screen.set_anchors_preset(Control.PRESET_FULL_RECT)
 	death_screen.visible = false
 	death_screen.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(death_screen)
@@ -1291,6 +1290,10 @@ func show_death_screen() -> void:
 
 ## Handle player death signal
 func _on_player_died() -> void:
+	# Don't show death screen during boat voyage encounters (soft defeat handles it)
+	var boat_voyage: Node = get_tree().get_first_node_in_group("boat_voyage")
+	if boat_voyage and boat_voyage.is_in_encounter:
+		return  # Boat voyage handles defeat with soft mechanics
 	show_death_screen()
 
 ## Load autosave on death - prefer exit autosave, fallback to periodic
@@ -1771,24 +1774,119 @@ func _setup_minimap() -> void:
 
 
 ## Update minimap cell coordinates display
-## Shows: zone name for current region/area
+## Shows: zone name for current region/area using WorldGrid data directly
 func _update_minimap_coordinates() -> void:
 	if not minimap_coord_label or not _cached_player:
 		return
 
-	# Show zone name from PlayerGPS or SceneManager
-	var zone_id: String = ""
-	if PlayerGPS:
-		zone_id = PlayerGPS.current_location_id
-
-	if zone_id.is_empty() and SceneManager:
-		zone_id = SceneManager.get_current_region_id()
-
-	if zone_id.is_empty():
+	# Get cell info directly from WorldGrid using PlayerGPS.current_cell
+	if not PlayerGPS:
 		minimap_coord_label.visible = false
-	else:
-		minimap_coord_label.text = _get_friendly_region_name(zone_id)
+		return
+
+	# Check for location name override (set by special scenes like boat voyage)
+	if not PlayerGPS.location_name_override.is_empty():
+		minimap_coord_label.text = PlayerGPS.location_name_override
 		minimap_coord_label.visible = true
+		return
+
+	var cell_info: WorldGrid.CellInfo = WorldGrid.get_cell(PlayerGPS.current_cell)
+	if not cell_info:
+		minimap_coord_label.text = "Unknown"
+		minimap_coord_label.visible = true
+		return
+
+	# Use location_name if available, otherwise show directional wilderness name
+	if not cell_info.location_name.is_empty():
+		minimap_coord_label.text = cell_info.location_name
+	else:
+		minimap_coord_label.text = _get_wilderness_name(PlayerGPS.current_cell, cell_info)
+
+	minimap_coord_label.visible = true
+
+
+## Get wilderness name with directional context relative to nearest named location
+## Returns "Direction of LocationName" or falls back to "Biome Wilderness"
+func _get_wilderness_name(cell_coords: Vector2i, cell_info: WorldGrid.CellInfo) -> String:
+	# Maximum distance (in cells) to consider for directional naming
+	const MAX_DIRECTION_DISTANCE := 8
+
+	var nearest_location_id: String = ""
+	var nearest_location_name: String = ""
+	var nearest_coords := Vector2i.ZERO
+	var nearest_distance: int = 999
+
+	# Search through all locations to find the nearest named one
+	for loc_id: String in WorldGrid.locations:
+		var loc_coords: Vector2i = WorldGrid.locations[loc_id]
+		var loc_cell: WorldGrid.CellInfo = WorldGrid.get_cell(loc_coords)
+
+		# Skip locations without names or dungeons (they often have generic names like "Ruined Temple")
+		if not loc_cell or loc_cell.location_name.is_empty():
+			continue
+
+		# Skip dungeon-type locations for directional references (use towns/villages/landmarks)
+		if loc_cell.location_type == WorldGrid.LocationType.DUNGEON:
+			continue
+
+		var distance: int = WorldGrid.grid_distance(cell_coords, loc_coords)
+		if distance < nearest_distance and distance > 0:  # distance > 0 to skip self
+			nearest_distance = distance
+			nearest_location_id = loc_id
+			nearest_location_name = loc_cell.location_name
+			nearest_coords = loc_coords
+
+	# If no nearby location found within range, fall back to biome name
+	if nearest_location_name.is_empty() or nearest_distance > MAX_DIRECTION_DISTANCE:
+		var biome_name: String = WorldGrid.Biome.keys()[cell_info.biome].capitalize()
+		return "%s Wilderness" % biome_name
+
+	# Calculate cardinal direction from the location to the player
+	var direction: String = _get_cardinal_direction(nearest_coords, cell_coords)
+
+	return "%s of %s" % [direction, nearest_location_name]
+
+
+## Get cardinal direction from source to target coordinates
+## Returns "North", "South", "East", "West", or intercardinals like "Northeast"
+func _get_cardinal_direction(from_coords: Vector2i, to_coords: Vector2i) -> String:
+	var dx: int = to_coords.x - from_coords.x  # Positive = East
+	var dy: int = to_coords.y - from_coords.y  # Positive = South (grid Y increases southward)
+
+	# Determine primary and secondary directions
+	var ns: String = ""
+	var ew: String = ""
+
+	if dy < 0:
+		ns = "North"
+	elif dy > 0:
+		ns = "South"
+
+	if dx > 0:
+		ew = "East"
+	elif dx < 0:
+		ew = "West"
+
+	# If movement is primarily in one direction (ratio > 2:1), use single cardinal
+	var abs_dx: int = abs(dx)
+	var abs_dy: int = abs(dy)
+
+	if abs_dx == 0 and abs_dy == 0:
+		return "Near"
+
+	# Check if strongly one direction or diagonal
+	if abs_dx > abs_dy * 2:
+		return ew  # Primarily east/west
+	elif abs_dy > abs_dx * 2:
+		return ns  # Primarily north/south
+	elif not ns.is_empty() and not ew.is_empty():
+		return ns + ew  # Diagonal: "Northeast", "Southwest", etc.
+	elif not ns.is_empty():
+		return ns
+	elif not ew.is_empty():
+		return ew
+
+	return "Near"
 
 
 ## Convert zone ID to friendly display name
@@ -1884,6 +1982,12 @@ func _on_cell_changed_hud(old_cell: Vector2i, new_cell: Vector2i) -> void:
 	if not minimap_coord_label:
 		return
 
+	# Check for location name override (set by special scenes like boat voyage)
+	if PlayerGPS and not PlayerGPS.location_name_override.is_empty():
+		minimap_coord_label.text = PlayerGPS.location_name_override
+		minimap_coord_label.visible = true
+		return
+
 	# Get cell info from WorldGrid
 	var cell_info: WorldGrid.CellInfo = WorldGrid.get_cell(new_cell)
 	if not cell_info:
@@ -1895,9 +1999,8 @@ func _on_cell_changed_hud(old_cell: Vector2i, new_cell: Vector2i) -> void:
 	if not cell_info.location_name.is_empty():
 		minimap_coord_label.text = cell_info.location_name
 	else:
-		# Show "Biome Wilderness" for unnamed cells
-		var biome_name: String = WorldGrid.Biome.keys()[cell_info.biome].capitalize()
-		minimap_coord_label.text = "%s Wilderness" % biome_name
+		# Show directional wilderness name relative to nearest location
+		minimap_coord_label.text = _get_wilderness_name(new_cell, cell_info)
 
 	minimap_coord_label.visible = true
 
@@ -3579,3 +3682,17 @@ func _update_debug_overlay() -> void:
 		debug_fps_label.add_theme_color_override("font_color", Color.YELLOW)
 	else:
 		debug_fps_label.add_theme_color_override("font_color", Color.RED)
+
+
+## Flash the screen with a color (used for pickpocket alerts, damage, etc.)
+func flash_screen(color: Color = Color(1.0, 0.2, 0.2, 0.3), duration: float = 0.3) -> void:
+	var flash := ColorRect.new()
+	flash.color = color
+	flash.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(flash)
+
+	# Fade out the flash
+	var tween := create_tween()
+	tween.tween_property(flash, "color:a", 0.0, duration)
+	tween.tween_callback(flash.queue_free)

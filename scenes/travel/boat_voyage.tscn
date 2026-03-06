@@ -1,26 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://c30jlrow0xw4w"]
+[gd_scene load_steps=16 format=3 uid="uid://c30jlrow0xw4w"]
 
 [ext_resource type="Script" uid="uid://sgby8g51aucr" path="res://scripts/travel/boat_voyage.gd" id="1_voyage"]
-[ext_resource type="PackedScene" uid="uid://difnuj7lily8h" path="res://assets/models/vehicles/boat_v1.glb" id="2_boat_model"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ocean"]
-albedo_color = Color(0.08, 0.18, 0.32, 1)
-roughness = 0.2
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_deck"]
-size = Vector3(4.9050293, 0.5, 20)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_wall_side"]
-size = Vector3(0.5, 3, 22.547949)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_wall_front"]
-size = Vector3(12, 3, 0.5)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_wall_back"]
-size = Vector3(2.9246216, 3, 1.7167969)
+[ext_resource type="PackedScene" uid="uid://dpcpxkjs7jomr" path="res://assets/models/terrain/boat_v2.glb" id="2_boat_model"]
 
 [sub_resource type="Sky" id="Sky_ocean"]
-sky_material = null
 
 [sub_resource type="Environment" id="Environment_ocean"]
 background_mode = 2
@@ -32,6 +15,56 @@ ambient_light_energy = 0.8
 fog_enabled = true
 fog_light_color = Color(0.5, 0.6, 0.7, 1)
 fog_density = 0.005
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ocean"]
+albedo_color = Color(0.08, 0.18, 0.32, 1)
+roughness = 0.2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_deck"]
+size = Vector3(32.427002, 0.5, 77.86737)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_side"]
+size = Vector3(0.5, 21.746063, 69.03917)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_front"]
+size = Vector3(23.106567, 6.2645264, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_back"]
+size = Vector3(1.6636677, 5.9141846, 2.631836)
+
+[sub_resource type="SphereMesh" id="SphereMesh_marker"]
+radius = 0.3
+height = 0.6
+
+[sub_resource type="StandardMaterial3D" id="Material_player_spawn"]
+albedo_color = Color(0.2, 0.8, 0.2, 1)
+emission_enabled = true
+emission = Color(0.2, 0.8, 0.2, 1)
+emission_energy_multiplier = 0.5
+
+[sub_resource type="StandardMaterial3D" id="Material_enemy_spawn"]
+albedo_color = Color(0.9, 0.2, 0.2, 1)
+emission_enabled = true
+emission = Color(0.9, 0.2, 0.2, 1)
+emission_energy_multiplier = 0.5
+
+[sub_resource type="StandardMaterial3D" id="Material_ship_spawn"]
+albedo_color = Color(0.9, 0.5, 0.1, 1)
+emission_enabled = true
+emission = Color(0.9, 0.5, 0.1, 1)
+emission_energy_multiplier = 0.5
+
+[sub_resource type="StandardMaterial3D" id="Material_tentacle_spawn"]
+albedo_color = Color(0.6, 0.2, 0.8, 1)
+emission_enabled = true
+emission = Color(0.6, 0.2, 0.8, 1)
+emission_energy_multiplier = 0.5
+
+[sub_resource type="StandardMaterial3D" id="Material_crew_spawn"]
+albedo_color = Color(0.2, 0.6, 0.9, 1)
+emission_enabled = true
+emission = Color(0.2, 0.6, 0.9, 1)
+emission_energy_multiplier = 0.5
 
 [node name="BoatVoyage" type="Node3D"]
 script = ExtResource("1_voyage")
@@ -46,17 +79,17 @@ environment = SubResource("Environment_ocean")
 
 [node name="Ocean" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0)
-size = Vector3(500, 1, 500)
+size = Vector3(800, 1, 800)
 material = SubResource("StandardMaterial3D_ocean")
 
 [node name="BoatModel" parent="." instance=ExtResource("2_boat_model")]
-transform = Transform3D(3.2522619, 0, 0, 0, 1, 0, 0, 0, 3.4714415, -0.8620949, 0, 0)
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 
 [node name="DeckCollision" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.207984, 0)
 
 [node name="DeckShape" type="CollisionShape3D" parent="DeckCollision"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1348877, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15037107, 0)
 shape = SubResource("BoxShape3D_deck")
 
 [node name="InvisibleWalls" type="Node3D" parent="."]
@@ -65,98 +98,229 @@ shape = SubResource("BoxShape3D_deck")
 transform = Transform3D(0.9793112, 0, -0.20236002, 0, 1, 0, 0.20236002, 0, 0.9793112, -6.4814014, 1.5, -8.684371)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InvisibleWalls/PortWall"]
-transform = Transform3D(0.9999158, 0, 0.013159379, 0, 1, 0, -0.013159379, 0, 0.9999158, 0.040136337, 0, -0.07065344)
+transform = Transform3D(0.99991995, 0, 0.013159454, 0, 1, 0, -0.013159454, 0, 0.99991995, -7.8083105, 4.467804, -15.730574)
 shape = SubResource("BoxShape3D_wall_side")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InvisibleWalls/PortWall/CollisionShape3D"]
-transform = Transform3D(0.93864596, 0, 0.34488946, 0, 1, 0, -0.34488946, 0, 0.93864596, 2.8174748, 0, 14.323444)
+transform = Transform3D(0.9386458, 0, 0.3448894, 0, 1, 0, -0.3448894, 0, 0.9386458, 7.08008, 0, 34.33378)
 shape = SubResource("BoxShape3D_wall_side")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="InvisibleWalls/PortWall"]
-transform = Transform3D(0.20630755, 0, -0.97849184, 0, 1, 0, 0.97849184, 0, 0.20630755, -0.44374275, 0, -11.242985)
+transform = Transform3D(0.20630755, 0, -0.97849184, 0, 1, 0, 0.97849184, 0, 0.20630755, -5.819826, 2.2643147, -37.26029)
 shape = SubResource("BoxShape3D_wall_side")
 
 [node name="StarboardWall" type="StaticBody3D" parent="InvisibleWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.25, 1.5, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InvisibleWalls/StarboardWall"]
-transform = Transform3D(0.99063385, 0, -0.13654554, 0, 1, 0, 0.13654554, 0, 0.99063385, -1.2935948, 0, 8.234616)
+transform = Transform3D(0.99063385, 0, -0.13654554, 0, 1, 0, 0.13654554, 0, 0.99063385, 5.6820736, 2.3944244, 8.234616)
 shape = SubResource("BoxShape3D_wall_side")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InvisibleWalls/StarboardWall/CollisionShape3D"]
-transform = Transform3D(0.9438741, 0, 0.3303001, 0, 1, 0, -0.3303001, 0, 0.9438741, -3.35391, 0, -18.87331)
+transform = Transform3D(0.9438741, 0, 0.3303001, 0, 1, 0, -0.3303001, 0, 0.9438741, -4.360837, 0, -27.464195)
 shape = SubResource("BoxShape3D_wall_side")
 
 [node name="BowWall" type="StaticBody3D" parent="InvisibleWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 10.25)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InvisibleWalls/BowWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.1980667)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6328745, 1.6322632, 16.738182)
 shape = SubResource("BoxShape3D_wall_front")
 
 [node name="SternWall" type="StaticBody3D" parent="InvisibleWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -10.25)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InvisibleWalls/SternWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9026184, 0, 19.749117)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0037574768, 1.4570923, 23.761152)
+shape = SubResource("BoxShape3D_wall_back")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InvisibleWalls/SternWall/CollisionShape3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03959942, 1.4570923, -19.091677)
 shape = SubResource("BoxShape3D_wall_back")
 
 [node name="SpawnPoints" type="Node3D" parent="."]
 
 [node name="PlayerSpawn" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.264434, 0.5, 11.848274)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.31, 0)
+gizmo_extents = 1.0
+
+[node name="VisualMarker" type="MeshInstance3D" parent="SpawnPoints/PlayerSpawn"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_player_spawn")
 
 [node name="EnemySpawn1" type="Marker3D" parent="SpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.31, 4)
+gizmo_extents = 0.75
+
+[node name="VisualMarker" type="MeshInstance3D" parent="SpawnPoints/EnemySpawn1"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_enemy_spawn")
 
 [node name="EnemySpawn2" type="Marker3D" parent="SpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.5, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.31, 4)
+gizmo_extents = 0.75
+
+[node name="VisualMarker" type="MeshInstance3D" parent="SpawnPoints/EnemySpawn2"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_enemy_spawn")
 
 [node name="EnemySpawn3" type="Marker3D" parent="SpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.31, 6)
+gizmo_extents = 0.75
+
+[node name="VisualMarker" type="MeshInstance3D" parent="SpawnPoints/EnemySpawn3"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_enemy_spawn")
 
 [node name="EnemySpawn4" type="Marker3D" parent="SpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 2.31, 0)
+gizmo_extents = 0.75
+
+[node name="VisualMarker" type="MeshInstance3D" parent="SpawnPoints/EnemySpawn4"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_enemy_spawn")
 
 [node name="EnemySpawn5" type="Marker3D" parent="SpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 2.31, 0)
+gizmo_extents = 0.75
+
+[node name="VisualMarker" type="MeshInstance3D" parent="SpawnPoints/EnemySpawn5"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_enemy_spawn")
 
 [node name="EnemyShipSpawns" type="Node3D" parent="."]
 
 [node name="PortShipSpawn" type="Marker3D" parent="EnemyShipSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 2, 0)
+gizmo_extents = 2.0
+
+[node name="VisualMarker" type="MeshInstance3D" parent="EnemyShipSpawns/PortShipSpawn"]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_ship_spawn")
 
 [node name="StarboardShipSpawn" type="Marker3D" parent="EnemyShipSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 2, 0)
+gizmo_extents = 2.0
+
+[node name="VisualMarker" type="MeshInstance3D" parent="EnemyShipSpawns/StarboardShipSpawn"]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_ship_spawn")
 
 [node name="BowShipSpawn" type="Marker3D" parent="EnemyShipSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 50)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 50)
+gizmo_extents = 2.0
+
+[node name="VisualMarker" type="MeshInstance3D" parent="EnemyShipSpawns/BowShipSpawn"]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_ship_spawn")
 
 [node name="TentacleSpawns" type="Node3D" parent="."]
 
 [node name="PortBow" type="Marker3D" parent="TentacleSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.755434, -2, 5)
+gizmo_extents = 1.0
+
+[node name="VisualMarker" type="MeshInstance3D" parent="TentacleSpawns/PortBow"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_tentacle_spawn")
 
 [node name="PortStern" type="Marker3D" parent="TentacleSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.317604, -2, -3)
+gizmo_extents = 1.0
+
+[node name="VisualMarker" type="MeshInstance3D" parent="TentacleSpawns/PortStern"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_tentacle_spawn")
 
 [node name="PortCenter" type="Marker3D" parent="TentacleSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.208995, -2, 1)
+gizmo_extents = 1.0
+
+[node name="VisualMarker" type="MeshInstance3D" parent="TentacleSpawns/PortCenter"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_tentacle_spawn")
 
 [node name="StarboardBow" type="Marker3D" parent="TentacleSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6439934, -2, 5)
+gizmo_extents = 1.0
+
+[node name="VisualMarker" type="MeshInstance3D" parent="TentacleSpawns/StarboardBow"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_tentacle_spawn")
 
 [node name="StarboardStern" type="Marker3D" parent="TentacleSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, -2, -3)
+gizmo_extents = 1.0
+
+[node name="VisualMarker" type="MeshInstance3D" parent="TentacleSpawns/StarboardStern"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_tentacle_spawn")
 
 [node name="StarboardCenter" type="Marker3D" parent="TentacleSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, -2, 1)
+gizmo_extents = 1.0
+
+[node name="VisualMarker" type="MeshInstance3D" parent="TentacleSpawns/StarboardCenter"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_tentacle_spawn")
 
 [node name="FarBow" type="Marker3D" parent="TentacleSpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.9853554, -2, 9.229)
+gizmo_extents = 1.0
+
+[node name="VisualMarker" type="MeshInstance3D" parent="TentacleSpawns/FarBow"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_tentacle_spawn")
 
 [node name="NPCs" type="Node3D" parent="."]
 
+[node name="CrewSpawns" type="Node3D" parent="."]
+
+[node name="HelmsmanSpawn" type="Marker3D" parent="CrewSpawns"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 2.31, -6)
+gizmo_extents = 0.75
+
+[node name="VisualMarker" type="MeshInstance3D" parent="CrewSpawns/HelmsmanSpawn"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_crew_spawn")
+
+[node name="DeckHand1Spawn" type="Marker3D" parent="CrewSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 2.31, 2)
+gizmo_extents = 0.75
+
+[node name="VisualMarker" type="MeshInstance3D" parent="CrewSpawns/DeckHand1Spawn"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_crew_spawn")
+
+[node name="DeckHand2Spawn" type="Marker3D" parent="CrewSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 2.31, 0)
+gizmo_extents = 0.75
+
+[node name="VisualMarker" type="MeshInstance3D" parent="CrewSpawns/DeckHand2Spawn"]
+visible = false
+mesh = SubResource("SphereMesh_marker")
+surface_material_override/0 = SubResource("Material_crew_spawn")
+
 [node name="FallbackCamera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.866, 0.5, 0, -0.5, 0.866, 0, 8, -12)
-fov = 75.0

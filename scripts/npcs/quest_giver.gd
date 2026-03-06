@@ -288,6 +288,12 @@ func interact(_interactor: Node) -> void:
 		_is_interacting = false
 		return
 
+	# Priority 1: Use custom dialogue_data if set (e.g., Harbor Master, special NPCs)
+	if dialogue_data and not use_legacy_dialogue:
+		DialogueManager.start_dialogue(dialogue_data, display_name)
+		_is_interacting = false
+		return
+
 	# Use ConversationSystem for all other NPC interactions
 	_open_conversation()
 	_is_interacting = false

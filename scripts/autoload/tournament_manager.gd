@@ -237,7 +237,7 @@ func _spawn_enemy(arena: Node, spawn_pos: Vector3, enemy_type: String) -> void:
 				v_frames = sprite_config.get("v_frames", v_frames)
 
 		if sprite_path.is_empty():
-			sprite_path = "res://assets/sprites/enemies/human_bandit.png"
+			sprite_path = "res://assets/sprites/enemies/humanoid/human_bandit_alt.png"
 
 		var sprite_texture: Texture2D = load(sprite_path) as Texture2D
 		if sprite_texture:

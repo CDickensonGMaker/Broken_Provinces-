@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "elder_moor"
+display_name = "Elder Moor"
+description = "The logging camp settlement of Elder Moor, nestled at the edge of the great forest. A hardworking community of woodcutters, traders, and travelers passing through to larger towns."
+parent_faction = "human_empire"
+allies = ["human_empire", "dalhurst", "thornfield", "millbrook"]
+enemies = ["goblins", "thieves_guild"]
+neutrals = []
+alignment = 15
+ranks = [{"name": "Outcast", "min_reputation": -100, "benefits": []}, {"name": "Stranger", "min_reputation": -50, "benefits": []}, {"name": "Visitor", "min_reputation": 0, "benefits": ["basic_services"]}, {"name": "Resident", "min_reputation": 30, "benefits": ["basic_services", "reduced_prices"]}, {"name": "Citizen", "min_reputation": 60, "benefits": ["basic_services", "reduced_prices", "free_lodging"]}, {"name": "Pillar", "min_reputation": 90, "benefits": ["basic_services", "reduced_prices", "free_lodging", "town_champion"]}]
+default_reputation = 0
+joinable = false
+join_threshold = 0
+is_hidden = false
+faction_color = Color(0.4, 0.6, 0.3, 1.0)

@@ -45,7 +45,7 @@ func _setup_environment() -> void:
 	env.background_color = Color(0.04, 0.03, 0.02)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.18, 0.14, 0.1)
-	env.ambient_light_energy = 0.35
+	env.ambient_light_energy = 0.6  # Increased from 0.35 for better interior visibility
 	env.fog_enabled = true
 	env.fog_light_color = Color(0.1, 0.07, 0.04)
 	env.fog_density = 0.02
@@ -60,7 +60,7 @@ func _setup_environment() -> void:
 		var light := DirectionalLight3D.new()
 		light.name = "DirectionalLight3D"
 		light.light_color = Color(1.0, 0.85, 0.6)
-		light.light_energy = 0.1
+		light.light_energy = 0.35  # Increased from 0.1 for better visibility
 		light.rotation_degrees = Vector3(-45, 30, 0)
 		add_child(light)
 
@@ -131,7 +131,7 @@ func _spawn_enemy_at_marker(marker: Node3D) -> void:
 		v_frames = sprite_config.get("v_frames", 1)
 	else:
 		# Fall back to marker metadata
-		sprite_path = marker.get_meta("sprite_path", "res://assets/sprites/enemies/human_bandit.png")
+		sprite_path = marker.get_meta("sprite_path", "res://assets/sprites/enemies/humanoid/human_bandit_alt.png")
 		h_frames = marker.get_meta("h_frames", 4)
 		v_frames = marker.get_meta("v_frames", 1)
 

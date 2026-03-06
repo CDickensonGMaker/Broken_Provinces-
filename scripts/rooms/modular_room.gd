@@ -252,7 +252,7 @@ func _spawn_enemy_from_marker(marker: Node3D) -> Node:
 	var enemy_type: String = marker.get_meta("enemy_type", "human_bandit")
 
 	# Default values from marker metadata
-	var sprite_path: String = marker.get_meta("sprite_path", "res://assets/sprites/enemies/human_bandit.png")
+	var sprite_path: String = marker.get_meta("sprite_path", "res://assets/sprites/enemies/humanoid/human_bandit_alt.png")
 	var h_frames: int = marker.get_meta("h_frames", 1)
 	var v_frames: int = marker.get_meta("v_frames", 1)
 	var patrol_radius: float = marker.get_meta("patrol_radius", 0.0)

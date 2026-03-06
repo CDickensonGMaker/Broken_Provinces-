@@ -132,7 +132,7 @@ func _spawn_enemy_at_marker(marker: Node3D) -> void:
 		v_frames = sprite_config.get("v_frames", 1)
 	else:
 		# Fall back to marker metadata
-		sprite_path = marker.get_meta("sprite_path", "res://assets/sprites/enemies/human_bandit.png")
+		sprite_path = marker.get_meta("sprite_path", "res://assets/sprites/enemies/humanoid/human_bandit_alt.png")
 		h_frames = marker.get_meta("h_frames", 4)
 		v_frames = marker.get_meta("v_frames", 1)
 

@@ -109,3 +109,12 @@ static func play_sound(sound_name: String) -> DialogueAction:
 	action.type = DialogueData.ActionType.PLAY_SOUND
 	action.param_string = sound_name
 	return action
+
+
+## Create a "start boat voyage" action
+## route_id: The boat route ID to start (e.g., "dalhurst_to_larton")
+static func start_boat_voyage(route_id: String) -> DialogueAction:
+	var action := DialogueAction.new()
+	action.type = DialogueData.ActionType.START_BOAT_VOYAGE
+	action.param_string = route_id
+	return action

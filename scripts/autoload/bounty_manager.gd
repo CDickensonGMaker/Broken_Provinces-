@@ -379,6 +379,9 @@ func get_turnin_bounty(npc_id: String) -> Bounty:
 	return null
 
 
+## Faction reputation reward for completing bounties
+const BOUNTY_REPUTATION_REWARD: int = 10
+
 ## Turn in a completed bounty
 func turn_in_bounty(bounty_id: String) -> bool:
 	if not bounties.has(bounty_id):
@@ -395,6 +398,9 @@ func turn_in_bounty(bounty_id: String) -> bool:
 	bounty.is_turned_in = true
 	completed_bounty_ids.append(bounty_id)
 
+	# Award faction reputation for completing bounty
+	_award_faction_reputation(bounty)
+
 	# Clear NPC's offered bounty so they can offer a new one
 	if npc_offered_bounties.get(bounty.giver_npc_id) == bounty_id:
 		npc_offered_bounties.erase(bounty.giver_npc_id)
@@ -404,9 +410,29 @@ func turn_in_bounty(bounty_id: String) -> bool:
 	# Show notification
 	var hud := get_tree().get_first_node_in_group("hud")
 	if hud and hud.has_method("show_notification"):
-		hud.show_notification("Bounty Complete! +%d Gold, +%d XP" % [bounty.reward_gold, bounty.reward_xp])
+		hud.show_notification("Bounty Complete! +%d Gold, +%d XP, +%d Rep" % [bounty.reward_gold, bounty.reward_xp, BOUNTY_REPUTATION_REWARD])
 
 	return true
+
+
+## Award faction reputation when completing a bounty
+func _award_faction_reputation(bounty: Bounty) -> void:
+	# Use the settlement where the bounty was given as the faction
+	var faction_id: String = bounty.giver_settlement
+	if faction_id.is_empty():
+		# Fallback to current town faction
+		faction_id = FactionManager.get_town_faction()
+
+	if faction_id.is_empty():
+		return
+
+	# Award reputation for helping the settlement
+	FactionManager.modify_reputation(
+		faction_id,
+		BOUNTY_REPUTATION_REWARD,
+		"completed bounty for %s" % bounty.giver_npc_name,
+		true  # cascade to parent factions
+	)
 
 
 ## Get turn-in dialogue text

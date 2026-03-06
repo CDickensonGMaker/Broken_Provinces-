@@ -1,10 +1,10 @@
 {
 	"id": "stolen_relic_1",
 	"title": "The Stolen Temple Relic",
-	"description": "Cultists raided the temple in Dalhurst and stole a sacred relic. The priest believes they've taken it to their temple in the east. Recover it before they can corrupt it with dark magic.",
+	"description": "Cultists raided the temple in Dalhurst and stole a sacred relic. Priestess of Gaela believes they've taken it to their temple in the east. Recover it before they can corrupt it with dark magic.",
 	"is_main_quest": false,
 	"quest_source": "npc",
-	"giver_npc_id": "dalhurst_priest",
+	"giver_npc_id": "priest_gaela_dalhurst",
 	"giver_npc_type": "priest",
 	"giver_region": "dalhurst",
 	"faction": "temple_of_three",

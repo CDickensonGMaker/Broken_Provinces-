@@ -1,9 +1,9 @@
-## test_dungeon.gd - Procedural dungeon level (production)
-## NOTE: "test" in name is historical - this is an active gameplay level
+## test_dungeon.gd - Abandoned Vault procedural dungeon (production)
+## NOTE: "test" in filename is historical - this is an active gameplay level
 ## Accessible from town portal, demonstrates procedural generation
 extends Node3D
 
-const ZONE_ID := "test_dungeon"
+const ZONE_ID := "abandoned_vault"
 
 var generator: DungeonGenerator
 var dungeon_seed: int = 0
@@ -11,7 +11,7 @@ var dungeon_seed: int = 0
 
 func _ready() -> void:
 	# Register this zone with SaveManager for proper autosave tracking
-	SaveManager.set_current_zone(ZONE_ID, "Test Dungeon")
+	SaveManager.set_current_zone(ZONE_ID, "Abandoned Vault")
 
 	_initialize_seed()
 	_create_environment()
@@ -30,7 +30,7 @@ func _initialize_seed() -> void:
 		dungeon_seed = randi()
 		SaveManager.set_dungeon_seed(ZONE_ID, dungeon_seed)
 
-	print("[TestDungeon] Using seed: %d" % dungeon_seed)
+	print("[AbandonedVault] Using seed: %d" % dungeon_seed)
 
 
 ## Run the dungeon generation after generator is set up
@@ -110,7 +110,7 @@ func _create_entrance_template() -> void:
 	# Portal back to town
 	template.has_portal = true
 	template.portal_target_scene = "res://scenes/levels/elder_moor.tscn"
-	template.portal_spawn_id = "from_test_dungeon"
+	template.portal_spawn_id = "from_abandoned_vault"
 	template.portal_display_name = "Return to Town"
 
 	# Dark stone colors
@@ -145,7 +145,7 @@ func _create_corridor_template() -> void:
 		"res://data/enemies/skeleton_warrior.tres"
 	]
 	template.enemy_sprite_paths = [
-		"res://assets/sprites/enemies/skeleton_shade.png",
+		"res://assets/sprites/enemies/undead/skeleton_shade_walking.png",
 		"res://assets/sprites/enemies/undead/skeleton_warrior.png"
 	]
 	template.enemy_h_frames = [4, 8]
@@ -187,7 +187,7 @@ func _create_guard_room_template() -> void:
 		"res://data/enemies/skeleton_warrior.tres"
 	]
 	template.enemy_sprite_paths = [
-		"res://assets/sprites/enemies/skeleton_shade.png",
+		"res://assets/sprites/enemies/undead/skeleton_shade_walking.png",
 		"res://assets/sprites/enemies/undead/skeleton_warrior.png"
 	]
 	template.enemy_h_frames = [4, 8]
@@ -230,7 +230,7 @@ func _create_empty_room_template() -> void:
 
 	# But still has enemy data in case generator wants to spawn here
 	template.enemy_data_paths = ["res://data/enemies/skeleton_shade.tres"]
-	template.enemy_sprite_paths = ["res://assets/sprites/enemies/skeleton_shade.png"]
+	template.enemy_sprite_paths = ["res://assets/sprites/enemies/undead/skeleton_shade_walking.png"]
 	template.enemy_h_frames = [4]
 	template.enemy_v_frames = [4]
 
@@ -272,7 +272,7 @@ func _create_treasure_room_template() -> void:
 	template.max_enemies = 1
 	template.enemy_spawn_zones = [Vector3(0, 0, 0)]
 	template.enemy_data_paths = ["res://data/enemies/skeleton_shade.tres"]
-	template.enemy_sprite_paths = ["res://assets/sprites/enemies/skeleton_shade.png"]
+	template.enemy_sprite_paths = ["res://assets/sprites/enemies/undead/skeleton_shade_walking.png"]
 	template.enemy_h_frames = [4]
 	template.enemy_v_frames = [4]
 
@@ -388,7 +388,7 @@ func _create_boss_template() -> void:
 		Vector3(0, 0, 4),
 	]
 	template.enemy_data_paths = ["res://data/enemies/skeleton_shade.tres"]
-	template.enemy_sprite_paths = ["res://assets/sprites/enemies/skeleton_shade.png"]
+	template.enemy_sprite_paths = ["res://assets/sprites/enemies/undead/skeleton_shade_walking.png"]
 	template.enemy_h_frames = [4]
 	template.enemy_v_frames = [4]
 
@@ -428,12 +428,12 @@ func _create_spawn_point() -> void:
 	if entrance:
 		# Position in entrance room
 		spawn.position = entrance.room_center + Vector3(0, 1.0, -2)
-		print("[TestDungeon] Spawn point created at: %s" % spawn.position)
+		print("[AbandonedVault] Spawn point created at: %s" % spawn.position)
 	else:
 		# Fallback to origin with safety floor
 		spawn.position = Vector3(0, 1.0, 0)
 		_create_fallback_floor()
-		push_warning("[TestDungeon] No entrance room found! Using fallback spawn at origin.")
+		push_warning("[AbandonedVault] No entrance room found! Using fallback spawn at origin.")
 
 	add_child(spawn)
 
@@ -459,10 +459,10 @@ func _create_fallback_floor() -> void:
 	floor_mesh.material = mat
 
 	add_child(floor_mesh)
-	print("[TestDungeon] Created fallback floor due to generation failure!")
+	print("[AbandonedVault] Created fallback floor due to generation failure!")
 
 
 func _on_generator_complete(_dungeon: DungeonGenerator) -> void:
 	# Note: spawn point is already created in _run_generation() after generate()
 	# Don't create duplicate spawn points here
-	print("[TestDungeon] Dungeon generation complete!")
+	print("[AbandonedVault] Dungeon generation complete!")

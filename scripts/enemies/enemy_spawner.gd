@@ -371,7 +371,7 @@ func _on_spawned_enemy_died(_killer: Node, enemy: Node) -> void:
 func _spawn_warboss(attacker: Node) -> void:
 	warboss_spawned = true
 
-	var sprite_texture: Texture2D = load("res://assets/sprites/enemies/goblin_warboss.png")
+	var sprite_texture: Texture2D = load("res://assets/sprites/enemies/goblins/goblin_warboss_walking.png")
 	if not sprite_texture:
 		push_warning("[EnemySpawner] Failed to load goblin_warboss sprite")
 		return

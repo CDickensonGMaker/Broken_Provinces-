@@ -19,3 +19,44 @@ transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 10, 0)
 light_color = Color(0.5, 0.6, 0.5, 1)
 light_energy = 0.3
 shadow_enabled = true
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="from_wilderness" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 3)
+metadata/spawn_id = "from_wilderness"
+
+[node name="default" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 3)
+metadata/spawn_id = "default"
+
+[node name="EnemySpawns" type="Node3D" parent="."]
+
+[node name="DoorPositions" type="Node3D" parent="."]
+
+[node name="ExitDoor" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 5.5)
+metadata/target_scene = "__RETURN_TO_WILDERNESS__"
+metadata/spawn_id = "from_sunken_crypt"
+metadata/door_label = "Exit to Wilderness"
+metadata/show_frame = true
+
+[node name="ChestPositions" type="Node3D" parent="."]
+
+[node name="TreasureRoomChest" type="Marker3D" parent="ChestPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, -18)
+metadata/chest_id = "sunken_crypt_treasure"
+metadata/chest_name = "Waterlogged Chest"
+metadata/is_locked = true
+metadata/lock_difficulty = 12
+metadata/is_persistent = false
+metadata/loot_tier = "uncommon"
+
+[node name="BossChest" type="Marker3D" parent="ChestPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, -64)
+metadata/chest_id = "sunken_crypt_boss"
+metadata/chest_name = "Ancient Sarcophagus"
+metadata/is_locked = true
+metadata/lock_difficulty = 15
+metadata/is_persistent = false
+metadata/loot_tier = "rare"

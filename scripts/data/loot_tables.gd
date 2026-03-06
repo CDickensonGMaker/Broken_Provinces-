@@ -69,9 +69,10 @@ var food_pools: Dictionary = {
 var material_pools: Dictionary = {
 	LootTier.JUNK: ["stone_block", "coal"],
 	LootTier.COMMON: ["iron_ore", "leather", "wood_plank", "empty_vial"],
-	LootTier.UNCOMMON: ["iron_ingot", "leather_strip", "red_herb", "silver_ore"],
-	LootTier.RARE: ["steel_ingot", "silver_ingot"],
-	LootTier.EPIC: ["gold_ore", "gold_ingot"],
+	LootTier.UNCOMMON: ["iron_ingot", "leather_strip", "red_herb", "silver_ore", "healing_herb"],
+	LootTier.RARE: ["steel_ingot", "silver_ingot", "gem_amethyst", "gem_ruby"],
+	LootTier.EPIC: ["gold_ore", "gold_ingot", "gem_emerald", "gem_sapphire"],
+	LootTier.LEGENDARY: ["gem_diamond"],
 }
 
 var ammo_pools: Dictionary = {
@@ -89,6 +90,15 @@ var tool_pools: Dictionary = {
 	LootTier.COMMON: ["lockpick"],
 }
 
+## Soulstone pool - empty soulstones for soul capture enchanting
+## Soulstones drop from magical enemies (undead, mages, demons) based on tier
+var soulstone_pools: Dictionary = {
+	LootTier.UNCOMMON: ["soulstone_petty_empty"],
+	LootTier.RARE: ["soulstone_lesser_empty"],
+	LootTier.EPIC: ["soulstone_common_empty"],
+	LootTier.LEGENDARY: ["soulstone_greater_empty"],
+}
+
 ## Shop type definitions - what pools each shop type draws from
 const SHOP_TYPE_POOLS: Dictionary = {
 	"general": ["consumable", "material", "ammo", "tool"],
@@ -97,7 +107,7 @@ const SHOP_TYPE_POOLS: Dictionary = {
 	"alchemist": ["consumable", "scroll"],
 	"weapon": ["weapon", "ammo"],
 	"armor": ["armor"],
-	"magic": ["scroll", "magic_consumable", "jewelry"],  # scrolls, mana potions, rings/amulets
+	"magic": ["scroll", "magic_consumable", "jewelry", "soulstone"],  # scrolls, mana potions, rings/amulets, soulstones
 	"innkeeper": ["food", "consumable"],  # food ingredients, drinks, basic consumables
 }
 
@@ -194,6 +204,7 @@ func get_pool_by_name(pool_name: String) -> Dictionary:
 		"scroll": return scroll_pools
 		"tool": return tool_pools
 		"food": return food_pools
+		"soulstone": return soulstone_pools
 	return {}
 
 
@@ -357,7 +368,9 @@ func generate_shop_inventory(shop_tier: LootTier, shop_type: String = "general")
 
 		# Pick a random item from available
 		var pick: Dictionary = available_items[randi() % available_items.size()]
-		var item_id: String = pick.item_id
+		var item_id: String = pick.get("item_id", "")
+		if item_id.is_empty():
+			continue
 
 		# Avoid too many duplicates (allow some for consumables)
 		var already_count := items_added.count(item_id)
@@ -457,6 +470,7 @@ func generate_enemy_loot(difficulty: int) -> Array[Dictionary]:
 func _generate_single_drop(tier: LootTier) -> Dictionary:
 	# Weighted pool selection
 	# Consumables most common, then materials, then equipment
+	# Soulstones have a small chance at UNCOMMON+ tiers
 	var roll := randf()
 	var pool: Dictionary
 	var pool_name: String
@@ -470,9 +484,16 @@ func _generate_single_drop(tier: LootTier) -> Dictionary:
 	elif roll < 0.75:
 		pool = ammo_pools
 		pool_name = "ammo"
-	elif roll < 0.90:
+	elif roll < 0.85:
 		pool = armor_pools
 		pool_name = "armor"
+	elif roll < 0.95:
+		pool = weapon_pools
+		pool_name = "weapon"
+	elif tier >= LootTier.UNCOMMON:
+		# 5% chance for soulstone drop at UNCOMMON+ tier
+		pool = soulstone_pools
+		pool_name = "soulstone"
 	else:
 		pool = weapon_pools
 		pool_name = "weapon"
@@ -658,3 +679,77 @@ func _item_exists_in_database(item_id: String) -> bool:
 	if InventoryManager.item_database.has(item_id):
 		return true
 	return false
+
+
+# ============================================================================
+# ENEMY FACTION SOULSTONE DROPS
+# ============================================================================
+
+## Factions that can drop soulstones (magical creatures)
+const SOULSTONE_DROP_FACTIONS: Array[int] = [
+	Enums.Faction.UNDEAD,    # Undead always have trapped souls
+	Enums.Faction.DEMON,     # Demons carry soul energy
+	Enums.Faction.CULTIST,   # Mages/cultists use soulstones in rituals
+]
+
+## Base drop chance for soulstones by faction
+const SOULSTONE_BASE_CHANCE: Dictionary = {
+	Enums.Faction.UNDEAD: 0.15,   # 15% base chance - common for undead
+	Enums.Faction.DEMON: 0.20,    # 20% base chance - demons are rich in soul energy
+	Enums.Faction.CULTIST: 0.10,  # 10% base chance - mages sometimes carry them
+}
+
+## Check if a faction can drop soulstones
+func faction_drops_soulstones(faction: Enums.Faction) -> bool:
+	return int(faction) in SOULSTONE_DROP_FACTIONS
+
+
+## Generate soulstone drop for an enemy based on faction and difficulty tier
+## Returns Dictionary with {item_id: String, quantity: int} or empty if no drop
+func roll_soulstone_drop(faction: Enums.Faction, tier: LootTier) -> Dictionary:
+	# Check if this faction drops soulstones
+	if not faction_drops_soulstones(faction):
+		return {}
+
+	# Get base drop chance for faction
+	var base_chance: float = SOULSTONE_BASE_CHANCE.get(int(faction), 0.0)
+	if base_chance <= 0.0:
+		return {}
+
+	# Tier increases drop chance: +5% per tier above COMMON
+	var tier_bonus: float = maxf(0.0, (int(tier) - int(LootTier.COMMON))) * 0.05
+	var final_chance: float = base_chance + tier_bonus
+
+	# Roll for drop
+	if randf() >= final_chance:
+		return {}
+
+	# Determine soulstone type based on tier
+	# Higher tier enemies drop better soulstones
+	var soulstone_id: String = ""
+	match tier:
+		LootTier.JUNK, LootTier.COMMON:
+			# Low tier: small chance for petty soulstone
+			if randf() < 0.3:
+				soulstone_id = "soulstone_petty_empty"
+		LootTier.UNCOMMON:
+			soulstone_id = "soulstone_petty_empty"
+		LootTier.RARE:
+			soulstone_id = "soulstone_lesser_empty"
+		LootTier.EPIC:
+			soulstone_id = "soulstone_common_empty"
+		LootTier.LEGENDARY:
+			soulstone_id = "soulstone_greater_empty"
+
+	if soulstone_id.is_empty():
+		return {}
+
+	# Verify item exists in database
+	if not _item_exists_in_database(soulstone_id):
+		print("[LootTables] WARNING: Soulstone '%s' not found in item database!" % soulstone_id)
+		return {}
+
+	return {
+		"item_id": soulstone_id,
+		"quantity": 1
+	}

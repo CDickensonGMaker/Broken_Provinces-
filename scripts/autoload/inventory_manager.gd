@@ -90,7 +90,7 @@ func _load_item_databases() -> void:
 
 	# Load armor - explicitly list known armor files
 	var armor_files := [
-		"leather_armor", "chainmail", "wooden_shield",
+		"leather_armor", "chainmail", "plate_armor", "wooden_shield",
 		"ring_of_protection", "ring_of_strength",
 		"amulet_of_vitality", "amulet_of_wisdom",
 		# Basic jewelry (no stats - for enchanting)
@@ -98,7 +98,12 @@ func _load_item_databases() -> void:
 		"copper_amulet", "silver_amulet", "gold_amulet",
 		# Special jewelry (unique effects)
 		"bone_ring", "serpent_ring", "flame_heart_ring", "signet_ring",
-		"wolf_fang_necklace", "spider_silk_pendant", "frost_crystal_pendant", "scholars_medallion"
+		"wolf_fang_necklace", "spider_silk_pendant", "frost_crystal_pendant", "scholars_medallion",
+		# Monster material armor
+		"troll_armor", "wyvern_armor", "fur_cloak", "scale_mail",
+		# Gem jewelry (resistance bonuses)
+		"ruby_ring", "sapphire_ring", "emerald_amulet", "amethyst_amulet",
+		"diamond_ring", "pearl_amulet"
 	]
 	for armor_id in armor_files:
 		var path := "res://data/armor/%s.tres" % armor_id
@@ -130,17 +135,45 @@ func _load_item_databases() -> void:
 		"stone_block", "steel_ingot", "coal", "leather", "leather_strip",
 		"wood_plank", "red_herb", "empty_vial",
 		# Harvestable plant materials
-		"wild_berry", "blue_flower", "mushroom",
+		"wild_berry", "blue_flower", "mushroom", "healing_herb",
+		# Food ingredients
+		"carrot", "potato", "flour", "water",
 		# Food and consumables
 		"bread", "cheese", "cooked_meat", "ale",
+		# Crafted consumables
+		"agility_elixir", "regeneration_potion", "strength_tonic", "hearty_stew",
 		# Tools
 		"lockpick", "repair_kit", "bedroll",
+		# Keys
+		"jail_key",
 		# Light sources
 		"torch",
 		# Monster drops - wolf
 		"wolf_pelt", "wolf_fang", "raw_meat",
+		# Monster drops - wildlife (deer, boar)
+		"raw_hide",
 		# Monster drops - spider
 		"spider_silk", "spider_venom", "spider_fang",
+		# Monster drops - bat
+		"bat_wing",
+		# Monster drops - beast
+		"beast_heart",
+		# Monster drops - basilisk
+		"basilisk_scale", "basilisk_venom",
+		# Monster drops - troll
+		"troll_blood", "troll_hide",
+		# Monster drops - wyvern/dragon
+		"wyvern_scale",
+		# Monster drops - misc creatures
+		"rat_tail", "diseased_meat",
+		# Monster drops - sea creatures
+		"tentacle_meat", "kraken_ink", "sea_pearl",
+		# Magical materials
+		"soul_essence", "ember_dust",
+		# Gems (for jewelry crafting and enchanting)
+		"gem_amethyst", "gem_diamond", "gem_emerald", "gem_ruby", "gem_sapphire",
+		# Misc items
+		"silk_rope", "poison_vial", "rat_poison", "broken_sword",
 		# Soulstones
 		"soulstone_petty_empty", "soulstone_petty_filled",
 		"soulstone_lesser_empty", "soulstone_lesser_filled",

@@ -378,6 +378,9 @@ func generate_humanoid_loot(enemy_data: EnemyData) -> void:
 		if randf() < chance:
 			add_item(item_id, 1, quality_func.call())
 
+	# Soulstone drops for magical factions (undead, demons, cultists/mages)
+	_try_add_soulstone_drop(enemy_data.faction, tier)
+
 	if DEBUG:
 		print("[LootableCorpse] Generated humanoid loot for %s (level %d, tier %d): %d gold, %d items" % [
 			corpse_name, enemy_level, tier, gold, contents.size()
@@ -418,6 +421,9 @@ func generate_creature_loot(enemy_data: EnemyData) -> void:
 			if item_id.contains("fang") or item_id.contains("claw") or item_id.contains("scale"):
 				qty = randi_range(1, 2 + int(tier))
 			add_item(item_id, qty, quality_func.call())
+
+	# Soulstone drops for magical creatures (undead, demons)
+	_try_add_soulstone_drop(enemy_data.faction, tier)
 
 	if DEBUG:
 		print("[LootableCorpse] Generated creature loot for %s (level %d): %d items" % [
@@ -703,3 +709,42 @@ func _add_utility_items_for_tier(tier: LootTier) -> void:
 	if randf() < 0.08:
 		if InventoryManager.item_database.has("rope"):
 			add_item("rope", 1, Enums.ItemQuality.AVERAGE)
+
+
+## Try to add a soulstone drop based on enemy faction and tier
+## Soulstones drop from magical enemies: undead, demons, and cultists/mages
+func _try_add_soulstone_drop(faction: Enums.Faction, tier: LootTier) -> void:
+	# Convert our internal LootTier to LootTables.LootTier
+	var loot_tier: LootTables.LootTier = _convert_to_loot_tables_tier(tier)
+
+	# Roll for soulstone drop via LootTables
+	var soulstone_drop: Dictionary = LootTables.roll_soulstone_drop(faction, loot_tier)
+
+	if soulstone_drop.is_empty():
+		return
+
+	var item_id: String = soulstone_drop.get("item_id", "")
+	var quantity: int = soulstone_drop.get("quantity", 1)
+
+	if not item_id.is_empty():
+		add_item(item_id, quantity, Enums.ItemQuality.AVERAGE)
+		if DEBUG:
+			print("[LootableCorpse] Added soulstone drop: %s x%d" % [item_id, quantity])
+
+
+## Convert internal LootTier enum to LootTables.LootTier
+func _convert_to_loot_tables_tier(tier: LootTier) -> LootTables.LootTier:
+	match tier:
+		LootTier.BASIC:
+			return LootTables.LootTier.JUNK
+		LootTier.COMMON:
+			return LootTables.LootTier.COMMON
+		LootTier.UNCOMMON:
+			return LootTables.LootTier.UNCOMMON
+		LootTier.RARE:
+			return LootTables.LootTier.RARE
+		LootTier.EPIC:
+			return LootTables.LootTier.EPIC
+		LootTier.LEGENDARY:
+			return LootTables.LootTier.LEGENDARY
+	return LootTables.LootTier.COMMON

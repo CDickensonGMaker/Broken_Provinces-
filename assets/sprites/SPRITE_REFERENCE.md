@@ -189,8 +189,7 @@ This document lists all character sprites used in the game with their paths, fra
 ### Props/Decorations
 | Name | Path | Notes |
 |------|------|-------|
-| Torch Animated | `res://assets/sprites/props/torch_animated.png` | Flickering torch |
-| 4x4 Flickering Torch | `res://Sprite folders grab bag/4x4flickeringtorch.png` | Torch |
+| Torch Animated | `res://assets/sprites/props/torch_animated.png` | Flickering torch (ACTIVE) |
 | Candle Pentagram | `res://Sprite folders grab bag/candlepentagram.png` | Dungeon decor |
 | Skull Pillar | `res://Sprite folders grab bag/skullpillar.png` | Dungeon decor |
 | Pile of Skulls | `res://Sprite folders grab bag/pile of skulls.png` | Gore decor |

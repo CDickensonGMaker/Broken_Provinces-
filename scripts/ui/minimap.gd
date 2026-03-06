@@ -213,7 +213,7 @@ func _process(_delta: float) -> void:
 func _on_cell_changed_minimap(_old_cell: Vector2i, _new_cell: Vector2i) -> void:
 	queue_redraw()
 
-func _on_location_discovered(_location_id: String) -> void:
+func _on_location_discovered(_location_id: String, _location_name: String) -> void:
 	queue_redraw()
 
 

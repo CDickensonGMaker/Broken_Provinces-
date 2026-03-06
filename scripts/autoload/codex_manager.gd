@@ -250,8 +250,20 @@ func get_discovered_lore(category: String) -> Array:
 func get_lore(lore_id: String) -> Dictionary:
 	return all_lore.get(lore_id, {})
 
+## Humanoid enemy prefixes to filter from bestiary (not true creatures)
+const HUMANOID_PREFIXES: Array[String] = [
+	"human_bandit", "bandit", "cultist", "goblin",
+	"tenger", "pirate", "ghost_pirate", "gladiator", "arena"
+]
+
 ## Discover a bestiary entry when killing a creature
+## Filters out humanoid enemies (bandits, cultists, etc.) - only true creatures go in the bestiary
 func discover_bestiary_entry(creature_id: String, creature_data: Dictionary = {}) -> bool:
+	# Filter out humanoid enemies from bestiary
+	for prefix: String in HUMANOID_PREFIXES:
+		if creature_id.begins_with(prefix):
+			return false  # Not a true creature, don't add to bestiary
+
 	if bestiary_entries.has(creature_id):
 		return false  # Already known
 
