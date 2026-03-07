@@ -33,6 +33,11 @@ var status_label: Label
 var zoom_label: Label
 var coords_label: Label
 
+# ButtonGroups for exclusive brush selection
+var terrain_brush_group: ButtonGroup
+var road_brush_group: ButtonGroup
+var poi_brush_group: ButtonGroup
+
 
 func _ready() -> void:
 	map_state = WorldForgeData.MapState.new()
@@ -41,37 +46,48 @@ func _ready() -> void:
 	_build_ui()
 	_connect_signals()
 
-	# Load from WorldGrid if available
-	call_deferred("_load_from_world_grid")
+	# First try to load from exported JSON, fall back to WorldGrid
+	call_deferred("_load_on_startup")
+
+
+func _load_on_startup() -> void:
+	# Priority: Load from exported JSON file first
+	if FileAccess.file_exists(EXPORT_PATH):
+		_on_import_pressed()
+		print("[WorldForge] Loaded from exported JSON: %s" % EXPORT_PATH)
+	else:
+		# Fall back to WorldGrid hardcoded data
+		_load_from_world_grid()
+		print("[WorldForge] No JSON found, loaded from WorldGrid GRID_DATA")
 
 
 func _build_ui() -> void:
-	custom_minimum_size = Vector2(300, 600)
+	custom_minimum_size = Vector2(700, 500)
+	size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 	var main_vbox := VBoxContainer.new()
 	main_vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
 	main_vbox.add_theme_constant_override("separation", 4)
 	add_child(main_vbox)
 
-	# Header
+	# Header row (title + grid settings)
 	var header := _create_header()
 	main_vbox.add_child(header)
 
-	# Layer tabs with brush palettes
-	layer_tabs = TabContainer.new()
-	layer_tabs.custom_minimum_size.y = 120
-	main_vbox.add_child(layer_tabs)
-	_create_layer_tabs()
+	# Main content area: HSplitContainer with canvas on left, tools on right
+	var split := HSplitContainer.new()
+	split.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	split.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	split.split_offset = -250  # Tools panel starts at 250px from right
+	main_vbox.add_child(split)
 
-	# Toolbar
-	var toolbar := _create_toolbar()
-	main_vbox.add_child(toolbar)
-
-	# Canvas container with scroll
+	# LEFT SIDE: Canvas
 	var canvas_container := PanelContainer.new()
 	canvas_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	canvas_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	main_vbox.add_child(canvas_container)
+	canvas_container.custom_minimum_size = Vector2(300, 300)
+	split.add_child(canvas_container)
 
 	canvas = WorldForgeCanvas.new()
 	canvas.map_state = map_state
@@ -79,6 +95,23 @@ func _build_ui() -> void:
 	canvas.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	canvas_container.add_child(canvas)
+
+	# RIGHT SIDE: Tools panel
+	var tools_panel := VBoxContainer.new()
+	tools_panel.custom_minimum_size.x = 200
+	tools_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	split.add_child(tools_panel)
+
+	# Layer tabs with brush palettes
+	layer_tabs = TabContainer.new()
+	layer_tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	layer_tabs.custom_minimum_size.y = 200
+	tools_panel.add_child(layer_tabs)
+	_create_layer_tabs()
+
+	# Toolbar (brush size, eraser)
+	var toolbar := _create_toolbar()
+	tools_panel.add_child(toolbar)
 
 	# Info bar
 	var info_bar := _create_info_bar()
@@ -151,20 +184,20 @@ func _create_header() -> Control:
 
 
 func _create_layer_tabs() -> void:
-	# Biome tab
-	var biome_tab := _create_brush_tab("Biome", WorldForgeData.BIOME_VALUES, WorldForgeData.LAYER_COLORS["biome"])
-	biome_tab.name = "Biome"
-	layer_tabs.add_child(biome_tab)
+	# Create ButtonGroups for exclusive selection
+	terrain_brush_group = ButtonGroup.new()
+	road_brush_group = ButtonGroup.new()
+	poi_brush_group = ButtonGroup.new()
 
-	# Elevation tab
-	var elevation_tab := _create_brush_tab("Elevation", WorldForgeData.ELEVATION_VALUES, WorldForgeData.LAYER_COLORS["elevation"])
-	elevation_tab.name = "Elevation"
-	layer_tabs.add_child(elevation_tab)
+	# Terrain tab - unified biome/elevation/water
+	var terrain_tab := _create_brush_tab_with_group("terrain", WorldForgeData.TERRAIN_VALUES, WorldForgeData.LAYER_COLORS["terrain"], terrain_brush_group)
+	terrain_tab.name = "Terrain"
+	layer_tabs.add_child(terrain_tab)
 
-	# Water tab
-	var water_tab := _create_brush_tab("Water", WorldForgeData.WATER_VALUES, WorldForgeData.LAYER_COLORS["water"])
-	water_tab.name = "Water"
-	layer_tabs.add_child(water_tab)
+	# Road tab
+	var road_tab := _create_brush_tab_with_group("road", WorldForgeData.ROAD_VALUES, WorldForgeData.LAYER_COLORS["road"], road_brush_group)
+	road_tab.name = "Road"
+	layer_tabs.add_child(road_tab)
 
 	# POI tab
 	var poi_tab := _create_poi_tab()
@@ -172,19 +205,27 @@ func _create_layer_tabs() -> void:
 	layer_tabs.add_child(poi_tab)
 
 
-func _create_brush_tab(layer_name: String, values: Array[String], colors: Dictionary) -> Control:
+func _create_brush_tab_with_group(layer_name: String, values: Array[String], colors: Dictionary, button_group: ButtonGroup) -> Control:
 	var vbox := VBoxContainer.new()
+
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size.y = 90
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	vbox.add_child(scroll)
 
 	var grid := GridContainer.new()
 	grid.columns = 3
 	grid.add_theme_constant_override("h_separation", 4)
 	grid.add_theme_constant_override("v_separation", 4)
+	scroll.add_child(grid)
 
+	var first_button: Button = null
 	for value: String in values:
 		var btn := Button.new()
-		btn.text = value.capitalize()
+		btn.text = value.capitalize().replace("_", " ")
 		btn.custom_minimum_size = Vector2(80, 30)
 		btn.toggle_mode = true
+		btn.button_group = button_group  # Add to exclusive group
 
 		# Add color indicator
 		var color: Color = colors.get(value, Color.GRAY)
@@ -194,16 +235,36 @@ func _create_brush_tab(layer_name: String, values: Array[String], colors: Dictio
 		style.border_color = Color.BLACK
 		btn.add_theme_stylebox_override("normal", style)
 
-		btn.pressed.connect(_on_brush_selected.bind(layer_name.to_lower(), value))
+		# Pressed style with highlight
+		var pressed_style := StyleBoxFlat.new()
+		pressed_style.bg_color = color.lightened(0.2)
+		pressed_style.border_width_left = 4
+		pressed_style.border_width_bottom = 3
+		pressed_style.border_color = Color.WHITE
+		btn.add_theme_stylebox_override("pressed", pressed_style)
+
+		btn.pressed.connect(_on_brush_selected.bind(layer_name, value))
 		grid.add_child(btn)
 
-	vbox.add_child(grid)
+		if first_button == null:
+			first_button = btn
+
+	# Select first button by default
+	if first_button:
+		first_button.button_pressed = true
+
 	return vbox
 
 
 func _create_poi_tab() -> Control:
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 4)
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(vbox)
 
 	# POI type palette
 	var type_label := Label.new()
@@ -356,7 +417,7 @@ func _create_poi_tab() -> Control:
 
 	vbox.add_child(selected_poi_panel)
 
-	return vbox
+	return scroll
 
 
 func _create_toolbar() -> Control:
@@ -389,7 +450,7 @@ func _create_toolbar() -> Control:
 
 	# Visibility toggles
 	hbox.add_child(_make_label("Show:"))
-	for layer: String in ["biome", "elevation", "water", "poi"]:
+	for layer: String in ["terrain", "road", "poi"]:
 		var check := CheckButton.new()
 		check.text = layer.substr(0, 1).to_upper()
 		check.tooltip_text = layer.capitalize()
@@ -453,6 +514,12 @@ func _create_footer() -> Control:
 	reload_btn.pressed.connect(_on_reload_pressed)
 	row2.add_child(reload_btn)
 
+	var sync_pois_btn := Button.new()
+	sync_pois_btn.text = "Sync POIs"
+	sync_pois_btn.tooltip_text = "Add missing POIs from WorldGrid.LOCATIONS"
+	sync_pois_btn.pressed.connect(_on_sync_pois_pressed)
+	row2.add_child(sync_pois_btn)
+
 	vbox.add_child(row2)
 
 	status_label = Label.new()
@@ -501,17 +568,15 @@ func _on_center_pressed() -> void:
 
 
 func _on_layer_tab_changed(tab: int) -> void:
-	var layer_names: Array[String] = ["biome", "elevation", "water", "poi"]
+	var layer_names: Array[String] = ["terrain", "road", "poi"]
 	if tab >= 0 and tab < layer_names.size():
 		editor_state.current_layer = layer_names[tab]
 		# Set default brush for layer
 		match editor_state.current_layer:
-			"biome":
+			"terrain":
 				editor_state.current_brush = "forest"
-			"elevation":
-				editor_state.current_brush = "hill"
-			"water":
-				editor_state.current_brush = "lake"
+			"road":
+				editor_state.current_brush = "dirt_road"
 			"poi":
 				editor_state.current_brush = "town"
 
@@ -535,17 +600,25 @@ func _on_visibility_toggled(pressed: bool, layer: String) -> void:
 	canvas.queue_redraw()
 
 
-func _on_cell_painted(x: int, y: int, layer: String, value) -> void:
-	map_state.set_layer_value(layer, x, y, value)
+func _on_cell_painted(x: int, y: int, layer: String, value: Variant) -> void:
+	var final_value: Variant = value
+
+	# Smart bridge logic: auto-convert road to bridge over water
+	if layer == "road" and value != null:
+		var terrain: Variant = map_state.get_layer_value("terrain", x, y)
+		if terrain in ["ocean", "lake", "river"]:
+			final_value = "bridge"
+
+	map_state.set_layer_value(layer, x, y, final_value)
 
 	# If painting a POI, create poi_data entry
-	if layer == "poi" and value != null:
+	if layer == "poi" and final_value != null:
 		var index: int = map_state.get_cell_index(x, y)
 		if not map_state.poi_data.has(str(index)):
 			var world_coords := canvas.editor_to_world(Vector2i(x, y))
 			map_state.poi_data[str(index)] = {
 				"name": "",
-				"type": value,
+				"type": final_value,
 				"notes": "",
 				"x": x,
 				"y": y,
@@ -597,6 +670,13 @@ func _on_poi_moved(index: int, new_x: int, new_y: int) -> void:
 	# Validate we actually have POI data
 	if poi_type == null:
 		_set_status("No POI data found at source position")
+		return
+
+	# Check if destination already has a POI
+	var dest_index: int = map_state.get_cell_index(new_x, new_y)
+	if dest_index != index and map_state.poi_data.has(str(dest_index)):
+		_set_status("Cannot move: POI already exists at (%d, %d)" % [new_x, new_y])
+		canvas.queue_redraw()
 		return
 
 	# Clear old position
@@ -855,9 +935,13 @@ func _on_apply_pressed() -> void:
 	# Export first
 	_on_export_pressed()
 
-	# Note: In editor, we can't directly call runtime autoloads
-	# The WorldForgeImporter will load on next game run
-	_set_status("Exported. Changes will apply on next game run.")
+	# Force WorldGrid to reload from the new JSON
+	var world_grid_script = load("res://scripts/data/world_grid.gd")
+	if world_grid_script and world_grid_script.has_method("force_reload"):
+		world_grid_script.force_reload()
+		_set_status("Exported and applied! WorldGrid reloaded.")
+	else:
+		_set_status("Exported. Run game to apply changes.")
 
 
 func _on_clear_pressed() -> void:
@@ -871,23 +955,99 @@ func _on_reload_pressed() -> void:
 	_load_from_world_grid()
 
 
+func _on_sync_pois_pressed() -> void:
+	# Load WorldGrid.LOCATIONS and add any missing POIs to the current map
+	var world_grid_script = load("res://scripts/data/world_grid.gd")
+	if not world_grid_script:
+		_set_status("ERROR: Could not load WorldGrid script")
+		return
+
+	var locations_data: Array = world_grid_script.LOCATIONS
+
+	# Build set of existing location_ids on the map (to avoid duplicates)
+	var existing_ids: Dictionary = {}
+	for key: String in map_state.poi_data:
+		var poi_info: Dictionary = map_state.poi_data[key]
+		var loc_id: String = poi_info.get("location_id", "")
+		if not loc_id.is_empty():
+			existing_ids[loc_id] = true
+		# Also track by name as fallback
+		var name: String = poi_info.get("name", "")
+		if not name.is_empty():
+			existing_ids[name] = true
+
+	var added_count: int = 0
+	var skipped_count: int = 0
+
+	for loc: Dictionary in locations_data:
+		var game_x: int = loc.get("x", 0)
+		var game_y: int = loc.get("y", 0)
+		var loc_id: String = loc.get("id", "")
+		var loc_name: String = loc.get("name", "Unknown")
+		var loc_type: String = loc.get("type", "landmark")
+		var description: String = loc.get("description", "")
+
+		# Skip if this location already exists (by ID or name)
+		if existing_ids.has(loc_id) or existing_ids.has(loc_name):
+			skipped_count += 1
+			continue
+
+		# Convert game coords to editor coords
+		var editor_x: int = map_state.origin.x + game_x
+		var editor_y: int = map_state.origin.y + game_y
+
+		# Skip if out of bounds
+		if editor_x < 0 or editor_x >= map_state.grid_width:
+			continue
+		if editor_y < 0 or editor_y >= map_state.grid_height:
+			continue
+
+		var cell_index: int = map_state.get_cell_index(editor_x, editor_y)
+
+		# Check if POI already exists at this exact cell
+		var existing_poi: Variant = map_state.layers["poi"][cell_index]
+		if existing_poi != null:
+			skipped_count += 1
+			continue
+
+		# Add new POI
+		var poi_key: String = str(cell_index)
+		map_state.layers["poi"][cell_index] = loc_type
+		map_state.poi_data[poi_key] = {
+			"name": loc_name,
+			"type": loc_type,
+			"notes": description,
+			"scene_path": "",
+			"location_id": loc_id,
+			"x": editor_x,
+			"y": editor_y
+		}
+		added_count += 1
+		print("[WorldForge] Added POI: %s at (%d, %d)" % [loc_name, game_x, game_y])
+
+	_update_location_list()
+	canvas.queue_redraw()
+	_set_status("Synced: %d added, %d skipped (already exist)" % [added_count, skipped_count])
+
+
 func _load_from_world_grid() -> void:
 	# This runs in the editor, so we need to load the WorldGrid script
 	var world_grid_script = load("res://scripts/data/world_grid.gd")
 	if not world_grid_script:
-		_set_status("Could not load WorldGrid script")
+		_set_status("ERROR: Could not load WorldGrid script")
 		return
 
 	# Get constants from the script
 	var grid_data: Array = world_grid_script.GRID_DATA
 	var locations_data: Array = world_grid_script.LOCATIONS
 	var road_connections: Array = world_grid_script.ROAD_CONNECTIONS
-	var terrain_map: Dictionary = world_grid_script.TERRAIN_MAP
 	var internal_offset: Vector2i = world_grid_script._INTERNAL_OFFSET
 
 	if grid_data.is_empty():
-		_set_status("WorldGrid GRID_DATA is empty")
+		_set_status("ERROR: WorldGrid GRID_DATA is empty")
 		return
+
+	print("[WorldForge] Loading from WorldGrid: %d rows" % grid_data.size())
 
 	# Clear and resize map state
 	var grid_rows: int = grid_data.size()
@@ -908,27 +1068,17 @@ func _load_from_world_grid() -> void:
 	origin_x_spin.value = map_state.origin.x
 	origin_y_spin.value = map_state.origin.y
 
-	# Map terrain characters to biome values
-	var terrain_to_biome: Dictionary = {
+	# Map terrain characters to unified terrain values
+	var terrain_char_to_terrain: Dictionary = {
 		"F": "forest",
 		"S": "swamp",
 		"D": "desert",
-		"H": "tundra",  # Highlands -> tundra
-		"R": "plains",  # Road -> plains
-		"P": "plains",  # POI -> plains
-		"B": null,      # Blocked -> no biome
-		"W": null,      # Water -> no biome
-		"C": null       # Coast -> no biome
-	}
-
-	var terrain_to_elevation: Dictionary = {
-		"B": "mountain",
-		"H": "hill"
-	}
-
-	var terrain_to_water: Dictionary = {
-		"W": "ocean",
-		"C": "river"
+		"H": "hill",      # Highlands -> hill terrain
+		"R": "plains",    # Road cells have plains underneath
+		"P": "plains",    # POI -> plains
+		"B": "mountain",  # Blocked -> mountain
+		"W": "ocean",     # Water -> ocean
+		"C": "river"      # Coast -> river
 	}
 
 	# First pass: terrain data
@@ -946,20 +1096,14 @@ func _load_from_world_grid() -> void:
 			if editor_coords.y < 0 or editor_coords.y >= map_state.grid_height:
 				continue
 
-			# Set biome
-			var biome_val = terrain_to_biome.get(terrain_char)
-			if biome_val != null:
-				map_state.set_layer_value("biome", editor_coords.x, editor_coords.y, biome_val)
+			# Set terrain (single unified layer)
+			var terrain_val = terrain_char_to_terrain.get(terrain_char)
+			if terrain_val != null:
+				map_state.set_layer_value("terrain", editor_coords.x, editor_coords.y, terrain_val)
 
-			# Set elevation
-			var elev_val = terrain_to_elevation.get(terrain_char)
-			if elev_val != null:
-				map_state.set_layer_value("elevation", editor_coords.x, editor_coords.y, elev_val)
-
-			# Set water
-			var water_val = terrain_to_water.get(terrain_char)
-			if water_val != null:
-				map_state.set_layer_value("water", editor_coords.x, editor_coords.y, water_val)
+			# Set road layer for road cells
+			if terrain_char == "R":
+				map_state.set_layer_value("road", editor_coords.x, editor_coords.y, "dirt_road")
 
 	# Second pass: location data
 	var location_type_map: Dictionary = {
@@ -1014,7 +1158,22 @@ func _load_from_world_grid() -> void:
 
 	canvas.set_road_connections(road_display)
 
+	# Count terrain cells loaded for debugging
+	var terrain_count: int = 0
+	var road_count: int = 0
+	var poi_count: int = 0
+	for i: int in range(map_state.layers["terrain"].size()):
+		if map_state.layers["terrain"][i] != null:
+			terrain_count += 1
+		if map_state.layers["road"][i] != null:
+			road_count += 1
+		if map_state.layers["poi"][i] != null:
+			poi_count += 1
+
 	_update_location_list()
 	canvas.queue_redraw()
 	canvas.center_on_origin()
-	_set_status("Loaded %d cells, %d locations from WorldGrid" % [grid_rows * grid_cols, locations_data.size()])
+
+	var msg: String = "Loaded %d terrain, %d roads, %d POIs from WorldGrid" % [terrain_count, road_count, poi_count]
+	print("[WorldForge] " + msg)
+	_set_status(msg)
