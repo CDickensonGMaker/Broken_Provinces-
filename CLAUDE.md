@@ -556,29 +556,36 @@ The humanoid dialogue system allows pacifist resolution for certain enemies. **T
 
 ---
 
-## DUNGEONROOM API
+## DUNGEON GENERATION (SimpleDungeons)
 
-When working with procedurally generated rooms:
+All dungeon generation uses the **SimpleDungeons** addon exclusively.
 
+**Key Classes:**
+- `DungeonGenerator3D` - Main generator node from SimpleDungeons addon
+- `DungeonRoom3D` - Room nodes in generated dungeons
+- `DungeonConfig` - Custom resource for dungeon configuration
+- `DungeonManager` - Autoload that wraps SimpleDungeons generation
+
+**Room Sets Available:**
+| Room Set | Description |
+|----------|-------------|
+| `cave_rooms` | Organic cave with overlapping spheres |
+| `crypt_rooms` | Tomb/crypt with coffins and pillars |
+| `dev_textures` | Debug/testing rooms |
+| `flat_wide` | Wide flat rooms |
+| `lowpoly` | Low-poly kit rooms |
+
+**Usage:**
 ```gdscript
-# DungeonRoom properties (NOT methods!)
-var room: DungeonRoom = generator.rooms[0]
+# Generate dungeon from config
+var config := DungeonConfig.new()
+config.dungeon_type = "crypt"
+config.room_set = "crypt_rooms"
+config.size = "MEDIUM"
+DungeonManager.generate_from_config("my_dungeon", config)
 
-room.room_center      # Vector3 - center position of the room (USE THIS)
-room.room_index       # int - index in generator.rooms array
-room.template         # RoomTemplate - the template used to create this room
-room.connected_rooms  # Dictionary[Vector3, DungeonRoom] - connections by direction
-room.is_explored      # bool - has player entered this room
-room.is_cleared       # bool - are all enemies dead
-```
-
-### Common Mistake
-```gdscript
-# WRONG - get_center() does not exist!
-spawn.global_position = entrance_room.get_center() + Vector3(0, 0.5, 0)  # ERROR!
-
-# CORRECT - use room_center property
-spawn.global_position = entrance_room.room_center + Vector3(0, 0.5, 0)
+# Get rooms from active dungeon
+var rooms: Array[DungeonRoom3D] = DungeonManager.get_dungeon_rooms()
 ```
 
 ---
@@ -1820,6 +1827,15 @@ These features are deferred until after initial playtest release:
 - Multiple completion paths per quest (see PLANNED FEATURES section)
 - OR objectives, method-based rewards
 - World state tracking and pre-completion detection
+
+### Quest-Triggered World Changes
+- **Mountain Pass Opening** - Clear blocked mountain cells between middle and eastern regions after main quest chain
+- WorldState autoload to track persistent world modifications
+- `world_modifications` dictionary saved/loaded with game
+- QuestManager hook: when specific quests complete, trigger terrain changes
+- CellStreamer respawns affected cells with new terrain
+- World map updates to show newly accessible areas
+- Example: `"main_quest_clear_pass"` → blocked mountains become passable road
 
 ### Boat Travel
 - Sea travel across the lake to Elven City

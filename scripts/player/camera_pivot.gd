@@ -98,7 +98,6 @@ func _apply_race_height() -> void:
 		var race: Enums.Race = GameManager.player_data.race
 		if RACE_HEIGHT_OFFSETS.has(race):
 			first_person_height_offset = RACE_HEIGHT_OFFSETS[race]
-			print("[CameraPivot] Set eye height for race %s: offset %.2f" % [Enums.Race.keys()[race], first_person_height_offset])
 
 
 ## Public method to update camera height when race changes (e.g., after character creation)

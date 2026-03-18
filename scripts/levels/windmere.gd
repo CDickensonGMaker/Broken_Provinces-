@@ -23,8 +23,6 @@ func _ready() -> void:
 	_spawn_loot()
 	_setup_fire_flickering()
 
-	print("[Windmere] Destroyed hamlet loaded - HOSTILE ZONE")
-
 
 ## Setup the WorldEnvironment with smoky atmosphere
 func _setup_environment() -> void:
@@ -83,7 +81,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Windmere] Navigation mesh baked!")
 
 
 ## Zone exits (no fast travel - hostile zone)
@@ -124,8 +121,6 @@ func _spawn_zone_exits() -> void:
 	)
 	to_west.rotation.y = PI/2
 	to_west.show_frame = false
-
-	print("[Windmere] Spawned doors")
 
 
 ## Spawn Tenger enemies from marker positions
@@ -204,8 +199,6 @@ func _spawn_tenger_enemies() -> void:
 			if enemy:
 				enemy.add_to_group("tenger_patrol")
 
-	print("[Windmere] Spawned Tenger enemies")
-
 
 ## Spawn loot from marker positions
 func _spawn_loot() -> void:
@@ -252,8 +245,6 @@ func _spawn_loot() -> void:
 		)
 		if merchant_remains:
 			merchant_remains.setup_with_loot(LootTables.LootTier.COMMON)
-
-	print("[Windmere] Spawned loot")
 
 
 ## Setup flickering for fire lights

@@ -69,12 +69,10 @@ func update_weapon_display() -> void:
 
 	# Try to load the weapon mesh
 	if weapon.mesh_path.is_empty():
-		print("[TPWeapon] No mesh_path for weapon: %s" % weapon.display_name)
 		return
 
 	var mesh_resource = load(weapon.mesh_path)
 	if mesh_resource == null:
-		print("[TPWeapon] Failed to load mesh: %s" % weapon.mesh_path)
 		return
 
 	# Handle different resource types
@@ -88,7 +86,6 @@ func update_weapon_display() -> void:
 			# Store scene root for cleanup and animation
 			weapon_scene_root = scene_instance
 			weapon_mesh_instance = scene_instance  # Animate the root
-			print("[TPWeapon] Displayed weapon (GLB): %s" % weapon.display_name)
 		return
 
 	# Create mesh instance for direct Mesh resources
@@ -100,7 +97,6 @@ func update_weapon_display() -> void:
 	elif mesh_resource is ArrayMesh:
 		weapon_mesh_instance.mesh = mesh_resource
 	else:
-		print("[TPWeapon] Unsupported mesh type: %s" % mesh_resource.get_class())
 		weapon_mesh_instance.queue_free()
 		weapon_mesh_instance = null
 		return
@@ -112,7 +108,6 @@ func update_weapon_display() -> void:
 	_apply_weapon_transform(weapon)
 
 	add_child(weapon_mesh_instance)
-	print("[TPWeapon] Displayed weapon: %s" % weapon.display_name)
 
 
 func _apply_weapon_transform(weapon: WeaponData) -> void:

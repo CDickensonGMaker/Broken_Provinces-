@@ -44,7 +44,6 @@ func _ready() -> void:
 	_setup_spawn_point_metadata()
 	_setup_navigation()
 	_setup_cell_streaming()
-	print("[Thornfield] Forest hamlet loaded - Woodcutters & Hunters Theme")
 
 
 ## Apply materials to all CSG geometry in the scene
@@ -202,8 +201,6 @@ func _apply_materials() -> void:
 			if stone_ring:
 				stone_ring.material = campfire_stone_mat
 
-	print("[Thornfield] Applied materials to CSG geometry")
-
 
 ## Apply materials to a building structure
 func _apply_building_materials(building: Node3D, wood_mat: StandardMaterial3D, stone_mat: StandardMaterial3D, roof_mat: StandardMaterial3D) -> void:
@@ -336,7 +333,6 @@ func _spawn_npcs() -> void:
 	elder_profile.base_disposition = 60
 	elder_profile.speech_style = "formal"
 	elder_vorn.npc_profile = elder_profile
-	print("[Thornfield] Spawned Elder Vorn (town leader) - npc_id: elder_vorn_thornfield")
 
 	# Woodcutter 1 (green vest guy - fits woodcutter theme)
 	var woodcutter1_pos: Marker3D = npc_spawn_points.get_node_or_null("Civilian_Woodcutter1")
@@ -381,8 +377,6 @@ func _spawn_npcs() -> void:
 		if civilian.wander:
 			civilian.wander.wander_radius = 5.0
 
-	print("[Thornfield] Spawned NPCs")
-
 
 ## Spawn interactables using positions from Marker3D nodes
 func _spawn_interactables() -> void:
@@ -410,8 +404,6 @@ func _spawn_interactables() -> void:
 			"Lodge Bench"
 		)
 
-	print("[Thornfield] Spawned interactables")
-
 
 ## Spawn zone doors for interiors only
 func _spawn_doors() -> void:
@@ -421,8 +413,6 @@ func _spawn_doors() -> void:
 
 	# Only spawn doors for INTERIOR connections (buildings, dungeons)
 	# Cell boundary transitions are handled by CellStreamer
-
-	print("[Thornfield] Spawned interior doors")
 
 
 ## Spawn locked doors from markers placed in the scene
@@ -451,7 +441,7 @@ func _spawn_locked_doors() -> void:
 		doors_spawned += 1
 
 	if doors_spawned > 0:
-		print("[Thornfield] Spawned %d locked doors from markers" % doors_spawned)
+		pass
 
 
 
@@ -490,7 +480,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Thornfield] Navigation mesh baked!")
 
 
 ## Setup cell streaming if we're the main scene (has Player/HUD)
@@ -509,6 +498,5 @@ func _setup_cell_streaming() -> void:
 	var my_coords: Vector2i = WorldGrid.get_location_coords(ZONE_ID)
 	CellStreamer.register_main_scene_cell(my_coords, self)
 	CellStreamer.start_streaming(my_coords)
-	print("[%s] Registered as main scene, streaming started at %s" % [ZONE_ID, my_coords])
 
 

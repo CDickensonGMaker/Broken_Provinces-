@@ -27,7 +27,6 @@ func _ready() -> void:
 	_spawn_portal()
 	_setup_temple_group()
 	_setup_navigation()
-	print("[Rotherhine] Dwarf hold loaded")
 
 
 ## Configure spawn points from pre-placed markers
@@ -80,8 +79,6 @@ func _spawn_merchants() -> void:
 			"general"
 		)
 
-	print("[Rotherhine] Spawned merchants")
-
 
 ## Spawn quest-giving NPCs from pre-placed markers
 func _spawn_quest_npcs() -> void:
@@ -115,8 +112,6 @@ func _spawn_quest_npcs() -> void:
 		millers_daughter.npc_id = "elise_miller"
 		if millers_daughter.wander:
 			millers_daughter.wander.wander_radius = 3.0
-
-	print("[Rotherhine] Spawned quest NPCs")
 
 
 ## Spawn the three priests at Temple of the Three
@@ -161,8 +156,6 @@ func _spawn_priests() -> void:
 		if priest_rebirth.wander:
 			priest_rebirth.wander.wander_radius = 3.0
 
-	print("[Rotherhine] Spawned Temple priests")
-
 
 ## Spawn ambient villagers from pre-placed markers
 func _spawn_villagers() -> void:
@@ -174,8 +167,6 @@ func _spawn_villagers() -> void:
 		if marker:
 			# Use gendered_random for proper variety with correct name/gender matching
 			CivilianNPC.spawn_gendered_random(self, marker.position, ZONE_ID)
-
-	print("[Rotherhine] Spawned villagers")
 
 
 ## Spawn inn entrance door
@@ -191,8 +182,6 @@ func _spawn_inn_door() -> void:
 	)
 	inn_door.rotation.y = -PI / 2
 
-	print("[Rotherhine] Spawned inn door")
-
 
 ## Spawn fast travel shrine
 func _spawn_fast_travel_shrine() -> void:
@@ -205,16 +194,12 @@ func _spawn_fast_travel_shrine() -> void:
 		"rotherhine_shrine"
 	)
 
-	print("[Rotherhine] Spawned fast travel shrine")
-
 
 ## Spawn rest spot
 func _spawn_rest_spot() -> void:
 	var rest_marker := $Interactables/RestSpotPosition
 
 	RestSpot.spawn_rest_spot(self, rest_marker.position, "Riverside Inn Bench")
-
-	print("[Rotherhine] Spawned rest spot")
 
 
 ## Spawn portal to wilderness
@@ -235,8 +220,6 @@ func _spawn_portal() -> void:
 	exit_portal.set_meta("poi_id", "open_world")
 	exit_portal.set_meta("poi_name", "Open World")
 	exit_portal.set_meta("poi_color", Color(0.3, 0.7, 0.3))
-
-	print("[Rotherhine] Spawned wilderness portal")
 
 
 ## Setup Temple of the Three as a group for minimap
@@ -270,4 +253,3 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Rotherhine] Navigation mesh baked!")

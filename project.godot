@@ -19,8 +19,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 GameManager="*res://scripts/autoload/game_manager.gd"
-WorldForgeImporter="*res://scripts/autoload/world_forge_importer.gd"
 WorldGrid="*res://scripts/data/world_grid.gd"
+WorldForgeImporter="*res://scripts/autoload/world_forge_importer.gd"
 PlayerGPS="*res://scripts/autoload/player_gps.gd"
 CellStreamer="*res://scripts/autoload/cell_streamer.gd"
 SceneManager="*res://scripts/autoload/scene_manager.gd"
@@ -63,7 +63,7 @@ window/stretch/mode="viewport"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/world_forge/plugin.cfg")
+enabled=PackedStringArray("res://addons/dungeon_editor/plugin.cfg", "res://addons/level_editors/plugin.cfg", "res://addons/world_forge/plugin.cfg")
 
 [input]
 

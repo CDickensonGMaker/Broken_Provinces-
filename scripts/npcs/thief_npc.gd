@@ -270,8 +270,6 @@ func _attempt_steal() -> void:
 	if CombatManager.is_in_combat():
 		thief_roll += 5
 
-	print("[Thief] Steal attempt: thief_roll=%d vs detect=%d" % [thief_roll, detect_roll])
-
 	if thief_roll > detect_roll:
 		# Success! Steal something
 		_steal_from_player()
@@ -299,7 +297,6 @@ func _steal_from_player() -> void:
 		# Notification with thief description and direction
 		var direction_hint: String = _get_flee_direction_hint()
 		_show_notification("A %s snatched %d gold and fled %s!" % [_get_thief_description(), steal_amount, direction_hint])
-		print("[Thief] Stole %d gold from player!" % steal_amount)
 	else:
 		# Player has no gold, try to steal an item
 		_steal_item_from_player()
@@ -335,7 +332,6 @@ func _steal_item_from_player() -> void:
 		var item_name: String = InventoryManager.get_item_name(item_id)
 		var direction_hint: String = _get_flee_direction_hint()
 		_show_notification("A %s stole your %s and fled %s!" % [_get_thief_description(), item_name, direction_hint])
-		print("[Thief] Stole %s from player!" % item_name)
 
 
 ## Player noticed the theft attempt
@@ -470,8 +466,6 @@ func _die(killer: Node = null) -> void:
 		return
 
 	_is_dead = true
-
-	print("[Thief] %s has been killed" % npc_name)
 
 	# Spawn corpse with stolen goods
 	_spawn_corpse()

@@ -3,7 +3,6 @@
 extends CharacterBody3D
 class_name PlayerController
 
-const DEBUG := false
 const DEBUG_UNLIMITED_STAMINA := false  # For testing - disable stamina drain
 
 # --- Movement tuning ---
@@ -96,8 +95,6 @@ func _ready() -> void:
 	# Set up hurtbox so enemies can damage us
 	if hurtbox:
 		hurtbox.set_owner_entity(self)
-		if DEBUG:
-			print("[Player] Hurtbox set up with owner_entity")
 
 	# Create and attach buff VFX manager
 	buff_vfx_manager = BuffVFXManager.new()
@@ -135,8 +132,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		WaitUI.open_wait_menu()
 
 func _physics_process(delta: float) -> void:
-	# Don't process if dead
+	# Don't process if dead or in menu/dialogue
 	if is_dead:
+		return
+
+	# Don't process movement if in menu or dialogue
+	if GameManager and (GameManager.is_in_menu or GameManager.is_in_dialogue):
 		return
 
 	# --- Crouch toggle ---
@@ -320,7 +321,6 @@ func _do_light_attack() -> void:
 
 	# Check if spell is equipped (takes priority over weapon)
 	var equipped_spell: SpellData = InventoryManager.get_equipped_spell()
-	print("[Player] _do_light_attack - equipped_spell: ", equipped_spell.display_name if equipped_spell else "NONE")
 	if equipped_spell:
 		_do_spell_attack(equipped_spell)
 		return
@@ -393,9 +393,7 @@ func _do_light_attack() -> void:
 
 ## Perform a spell attack with the equipped spell
 func _do_spell_attack(spell: SpellData) -> void:
-	print("[Player] _do_spell_attack called with: ", spell.display_name)
 	if not spell_caster:
-		print("[Player] ERROR: No spell_caster node!")
 		_show_cast_feedback("No spell caster!")
 		can_attack = true
 		return
@@ -408,7 +406,6 @@ func _do_spell_attack(spell: SpellData) -> void:
 
 	# Check mana cost
 	var mana_cost := spell.get_mana_cost()
-	print("[Player] Mana check: current=%d, cost=%d" % [char_data.current_mana, mana_cost])
 	if char_data.current_mana < mana_cost:
 		_show_cast_feedback("Not enough mana! (%d/%d)" % [char_data.current_mana, mana_cost])
 		can_attack = true
@@ -437,9 +434,7 @@ func _do_spell_attack(spell: SpellData) -> void:
 		camera_pivot.play_cast_animation(spell)
 
 	# Start casting the spell
-	print("[Player] Calling spell_caster.start_cast...")
 	var success := spell_caster.start_cast(spell)
-	print("[Player] start_cast returned: ", success)
 	if not success:
 		_show_cast_feedback("Cannot cast right now")
 		can_attack = true
@@ -477,14 +472,10 @@ func _do_ranged_attack(weapon: WeaponData) -> void:
 		projectile_data = load(weapon.projectile_data_path) as ProjectileData
 
 	if not projectile_data:
-		if DEBUG:
-			print("[Player] No projectile data for ranged weapon: ", weapon.id)
 		# Fallback to default arrow
 		projectile_data = load("res://resources/projectiles/arrow_basic.tres") as ProjectileData
 
 	if not projectile_data:
-		if DEBUG:
-			print("[Player] Could not load any projectile data!")
 		can_attack = true
 		return
 
@@ -539,9 +530,6 @@ func _do_ranged_attack(weapon: WeaponData) -> void:
 
 ## Handle weapon backfire (musket mechanic)
 func _handle_backfire(_weapon: WeaponData) -> void:
-	if DEBUG:
-		print("[Player] Weapon backfired!")
-
 	# Player takes a portion of the weapon's damage
 	var backfire_damage := randi_range(2, 6)  # 2-6 damage on backfire
 	take_damage(backfire_damage, Enums.DamageType.FIRE, self)
@@ -606,8 +594,6 @@ func _show_out_of_ammo_message(ammo_type: String) -> void:
 	if ammo_name == ammo_type:
 		# Fallback to capitalize the id if no display name found
 		ammo_name = ammo_type.capitalize()
-
-	print("[Player] Out of ammo: ", ammo_name)
 
 	# Try to show message via HUD
 	var hud := get_tree().get_first_node_in_group("hud")
@@ -728,8 +714,6 @@ func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> 
 	if is_dead:
 		return 0
 
-	if DEBUG:
-		print("[Player] take_damage called! amount=", amount, " type=", damage_type, " from=", str(attacker.name) if attacker else "unknown")
 	if not GameManager.player_data:
 		return 0
 
@@ -807,16 +791,12 @@ func draw_weapon() -> void:
 	if not weapon_drawn:
 		weapon_drawn = true
 		weapon_state_changed.emit(true)
-		if DEBUG:
-			print("[Player] Weapon drawn")
 
 ## Sheathe weapon
 func sheathe_weapon() -> void:
 	if weapon_drawn:
 		weapon_drawn = false
 		weapon_state_changed.emit(false)
-		if DEBUG:
-			print("[Player] Weapon sheathed")
 
 ## Toggle weapon drawn state
 func toggle_weapon() -> void:
@@ -831,9 +811,6 @@ func is_weapon_drawn() -> bool:
 
 ## Show spell casting feedback
 func _show_cast_feedback(message: String) -> void:
-	if DEBUG:
-		print("[Player] ", message)
-
 	var hud := get_tree().get_first_node_in_group("hud")
 	if hud and hud.has_method("show_notification"):
 		hud.show_notification(message)
@@ -851,8 +828,6 @@ func _update_conditions(delta: float) -> void:
 		var amount: int = dot_damage[damage_type]
 		if amount > 0:
 			take_damage(amount, damage_type, null)
-			if DEBUG:
-				print("[Player] DOT damage: ", amount, " type: ", damage_type)
 
 ## Update footstep audio based on movement
 func _update_footsteps(delta: float, is_moving: bool) -> void:
@@ -932,8 +907,6 @@ func _on_death() -> void:
 		return  # Already dead, don't process again
 
 	is_dead = true
-	if DEBUG:
-		print("[Player] Player has died!")
 
 	# Disable hurtbox so we stop taking damage
 	if hurtbox:
@@ -967,9 +940,6 @@ func _crouch_down() -> void:
 	if camera_pivot and camera_pivot.has_method("set_crouch"):
 		camera_pivot.set_crouch(true)
 
-	if DEBUG:
-		print("[Player] Crouched")
-
 ## Exit crouch state
 func _stand_up() -> void:
 	# Check if there's room to stand (raycast upward)
@@ -984,8 +954,6 @@ func _stand_up() -> void:
 
 	if result:
 		# Something above us, can't stand
-		if DEBUG:
-			print("[Player] Cannot stand - obstruction above")
 		return
 
 	is_crouching = false
@@ -999,9 +967,6 @@ func _stand_up() -> void:
 	# Notify camera to raise
 	if camera_pivot and camera_pivot.has_method("set_crouch"):
 		camera_pivot.set_crouch(false)
-
-	if DEBUG:
-		print("[Player] Stood up")
 
 ## Update visibility calculation for stealth
 func _update_visibility() -> void:

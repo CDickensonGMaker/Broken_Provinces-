@@ -32,7 +32,6 @@ func _ready() -> void:
 	_spawn_dynamic_npcs()
 	# NOTE: Frozen corpse decorations are now pre-placed in aberdeen.tscn
 	# under the Decorations node (FrozenCorpse_0 through FrozenCorpse_4)
-	print("[Aberdeen] Snowy mountain town loaded (Zone size: %dx%d)" % [ZONE_SIZE, ZONE_SIZE])
 
 
 ## Setup spawn point metadata for spawn points defined in .tscn
@@ -73,7 +72,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Aberdeen] Navigation mesh baked")
 
 
 ## Create invisible collision walls at borders to prevent player leaving except through exits
@@ -125,8 +123,6 @@ func _spawn_dynamic_npcs() -> void:
 
 	# Spawn under-equipped guards at exits
 	_spawn_guards(npc_container)
-
-	print("[Aberdeen] Spawned %d civilians and %d guards" % [civilian_spawn_count, guard_spawn_count])
 
 
 func _spawn_civilians(container: Node3D) -> void:
@@ -191,5 +187,3 @@ func _create_frozen_corpse_decorations() -> void:
 		# Apply a slight blue tint to make it look frozen
 		if billboard.sprite:
 			billboard.sprite.modulate = Color(0.8, 0.85, 1.0, 1.0)
-
-	print("[Aberdeen] Spawned %d frozen corpse decorations" % frozen_positions.size())

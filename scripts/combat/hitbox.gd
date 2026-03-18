@@ -3,8 +3,6 @@
 class_name Hitbox
 extends Area3D
 
-const DEBUG := false  # DISABLED - was causing freeze from excessive prints
-
 signal hit_landed(target: Node)
 
 ## Configuration
@@ -53,16 +51,6 @@ func activate() -> void:
 	monitoring = true
 	monitorable = true  # Allow detection in both directions
 
-	if DEBUG:
-		print("[Hitbox] Activated! layer=", collision_layer, " mask=", collision_mask, " owner=", str(owner_entity.name) if owner_entity else "none")
-		print("[Hitbox] Global position: ", global_position)
-		var player_hurtboxes := get_tree().get_nodes_in_group("player_hurtbox")
-		print("[Hitbox] Player hurtboxes in scene: ", player_hurtboxes.size())
-		for hb in player_hurtboxes:
-			if hb is Area3D:
-				var area := hb as Area3D
-				print("[Hitbox] - ", area.name, " at ", area.global_position, " layer=", area.collision_layer, " monitorable=", area.monitorable)
-
 	# Force physics update to detect overlaps immediately
 	force_update_transform()
 
@@ -75,28 +63,9 @@ func _check_initial_overlaps() -> void:
 		return
 
 	var overlapping := get_overlapping_areas()
-	if DEBUG:
-		print("[Hitbox] Checking initial overlaps, found: ", overlapping.size())
 	for area in overlapping:
-		if DEBUG:
-			print("[Hitbox] - Overlapping: ", area.name, " layer=", area.collision_layer, " monitorable=", area.monitorable)
 		if area not in hit_targets:
 			_on_area_entered(area)
-
-	# If no overlaps found, do a manual proximity check
-	if DEBUG and overlapping.is_empty():
-		print("[Hitbox] No overlaps detected! Checking player hurtboxes manually...")
-		var player_hurtboxes := get_tree().get_nodes_in_group("player_hurtbox")
-		for hb in player_hurtboxes:
-			if hb is Area3D:
-				var hb_area := hb as Area3D
-				var dist := global_position.distance_to(hb_area.global_position)
-				print("[Hitbox] Distance to ", hb_area.name, ": ", snapped(dist, 0.1))
-				if dist < 3.0:
-					print("[Hitbox] Player hurtbox is close but not detected! This is the collision bug.")
-					print("[Hitbox] My mask=", collision_mask, " their layer=", hb_area.collision_layer)
-					print("[Hitbox] Mask & Layer = ", collision_mask & hb_area.collision_layer)
-					print("[Hitbox] My monitoring=", monitoring, " their monitorable=", hb_area.monitorable)
 
 ## Deactivate the hitbox (call when attack ends)
 func deactivate() -> void:
@@ -105,8 +74,6 @@ func deactivate() -> void:
 
 ## Called when we overlap with another Area3D (hurtbox)
 func _on_area_entered(area: Area3D) -> void:
-	if DEBUG:
-		print("[Hitbox] Area entered: ", area.name, " is_active=", is_active)
 	if not is_active:
 		return
 
@@ -114,28 +81,20 @@ func _on_area_entered(area: Area3D) -> void:
 	if not area is Hurtbox:
 		# Fallback: check group
 		if not area.is_in_group("hurtbox") and not area.is_in_group("enemy_hurtbox") and not area.is_in_group("player_hurtbox"):
-			if DEBUG:
-				print("[Hitbox] Area is not a hurtbox, ignoring")
 			return
 
 	var target := area.get_parent()
 	if not target:
-		if DEBUG:
-			print("[Hitbox] No parent found for hurtbox")
 		return
 
 	# Don't hit ourselves
 	if target == owner_entity:
-		if DEBUG:
-			print("[Hitbox] Ignoring self-hit")
 		return
 
 	# Don't hit same target twice per activation
 	if target in hit_targets:
 		return
 
-	if DEBUG:
-		print("[Hitbox] Hitting target: ", target.name)
 	hit_targets.append(target)
 	_apply_hit(target)
 
@@ -162,14 +121,10 @@ func _on_body_entered(body: Node3D) -> void:
 ## Apply the hit to a target
 func _apply_hit(target: Node) -> void:
 	hit_landed.emit(target)
-	if DEBUG:
-		print("[Hitbox] Applying hit to ", target.name, " damage=", damage, " type=", damage_type)
 
 	# Apply damage if target can receive it
 	if target.has_method("take_damage"):
 		target.take_damage(damage, damage_type, owner_entity)
-	elif DEBUG:
-		print("[Hitbox] Target has no take_damage method!")
 
 	# Apply stagger
 	if stagger_power > 0 and target.has_method("apply_stagger"):

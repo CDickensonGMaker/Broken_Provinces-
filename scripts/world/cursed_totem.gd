@@ -59,8 +59,6 @@ func _ready() -> void:
 	current_spawn_interval = randf_range(spawn_interval_min, spawn_interval_max)
 	spawn_timer = 0.0
 
-	print("[CursedTotem] Initialized at ", global_position)
-
 
 ## Spawn initial batch of skeletons when totem is placed
 func _spawn_initial_skeletons() -> void:
@@ -69,7 +67,6 @@ func _spawn_initial_skeletons() -> void:
 		return
 
 	var count := mini(initial_spawn_count, max_spawned_enemies)
-	print("[CursedTotem] Spawning %d initial skeletons..." % count)
 
 	for i in count:
 		var angle := (float(i) / count) * TAU  # Evenly spaced around totem
@@ -238,8 +235,6 @@ func _try_spawn_skeleton() -> void:
 			if enemy.has_signal("died"):
 				enemy.died.connect(_on_spawned_enemy_died.bind(enemy))
 
-			print("[CursedTotem] Spawned skeleton at ", spawn_pos)
-
 	if actual_count > 0:
 		# Play spawn effect - pulse the glow
 		_pulse_glow()
@@ -322,8 +317,6 @@ func _on_destroyed(destroyer: Node) -> void:
 
 	QuestManager.on_interact(spawner_id)
 	QuestManager.update_progress("destroy", spawner_id, 1)
-
-	print("[CursedTotem] Destroyed by ", str(destroyer.name) if destroyer else "unknown")
 
 	_play_destruction_effect()
 

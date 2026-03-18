@@ -33,7 +33,6 @@ func _ready() -> void:
 
 func _on_visibility_changed() -> void:
 	if visible:
-		print("[MagicPanel] Panel became visible, refreshing...")
 		refresh()
 
 func _connect_buttons() -> void:
@@ -50,40 +49,28 @@ func _connect_buttons() -> void:
 		assign_slot_4_button.pressed.connect(func(): _assign_to_slot(3))
 
 func refresh() -> void:
-	print("[MagicPanel] refresh() called")
 	_load_known_spells()
 	_refresh_spell_list()
 	_update_quick_slots_display()
 
 func _load_known_spells() -> void:
 	known_spells.clear()
-	print("[MagicPanel] _load_known_spells called")
 
 	# Get player's SpellCaster component - this is where known spells are stored
 	var player := get_tree().get_first_node_in_group("player")
 	if not player:
-		print("[MagicPanel] ERROR: No player found in group 'player'")
 		return
-
-	print("[MagicPanel] Found player: %s" % player.name)
 
 	var spell_caster: SpellCaster = player.get_node_or_null("SpellCaster")
 	if not spell_caster:
-		print("[MagicPanel] SpellCaster not found as direct child, searching children...")
 		# Try to find it as any child
 		for child in player.get_children():
-			print("[MagicPanel]   Child: %s (%s)" % [child.name, child.get_class()])
 			if child is SpellCaster:
 				spell_caster = child
 				break
 
 	if spell_caster:
-		print("[MagicPanel] Found SpellCaster with %d known spells" % spell_caster.known_spells.size())
 		known_spells = spell_caster.known_spells.duplicate()
-		for spell in known_spells:
-			print("[MagicPanel]   - %s" % (spell.display_name if spell else "null"))
-	else:
-		print("[MagicPanel] ERROR: No SpellCaster found on player!")
 	# No fallback - only show spells the player has actually learned
 
 func _refresh_spell_list() -> void:

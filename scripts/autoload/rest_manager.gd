@@ -246,7 +246,6 @@ func _check_time_based_respawns() -> void:
 func _trigger_zone_respawn(zone_id: String) -> void:
 	zone_respawn_data[zone_id].enemies_cleared = false
 	respawn_triggered.emit(zone_id)
-	print("[RestManager] Triggered respawn for zone: %s" % zone_id)
 
 ## Get respawn mode for a zone based on its ID
 func _get_zone_respawn_mode(zone_id: String) -> RespawnMode:

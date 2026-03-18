@@ -83,8 +83,6 @@ func _ready() -> void:
 	# First taunt comes quickly to help player understand they can interact
 	next_taunt_time = randf_range(8.0, 12.0)
 
-	print("[JailGuard] Initialized at %s" % global_position)
-
 
 func _exit_tree() -> void:
 	# Clean up signal connections
@@ -338,7 +336,6 @@ func _attack_player() -> void:
 	# Deal damage
 	if _target_player.has_method("take_damage"):
 		_target_player.take_damage(DAMAGE, Enums.DamageType.PHYSICAL, self)
-		print("[JailGuard] Attacked player for %d damage" % DAMAGE)
 
 
 ## Get interaction prompt
@@ -731,7 +728,6 @@ func take_damage(amount: int, damage_type: Enums.DamageType = Enums.DamageType.P
 		_target_player = attacker as Node3D
 		if not is_in_combat:
 			is_in_combat = true
-			print("[JailGuard] ENTERING COMBAT with %s!" % attacker.name)
 			attack_cooldown = 0.3  # Quick first response
 
 		# Report crime - attacking a guard
@@ -741,17 +737,6 @@ func take_damage(amount: int, damage_type: Enums.DamageType = Enums.DamageType.P
 	# Check for death
 	if current_health <= 0:
 		_die(attacker)
-
-	var damage_type_name: String = Enums.DamageType.keys()[damage_type] if damage_type < Enums.DamageType.size() else "UNKNOWN"
-	var attacker_name: String = attacker.name if attacker else "unknown"
-	print("[JailGuard] Took %d %s damage (reduced from %d) from %s (HP: %d/%d)" % [
-		actual_damage,
-		damage_type_name,
-		amount,
-		attacker_name,
-		current_health,
-		MAX_HEALTH
-	])
 
 	return actual_damage
 
@@ -768,8 +753,6 @@ func _die(killer: Node = null) -> void:
 
 	_is_dead = true
 	is_in_combat = false
-
-	print("[JailGuard] Killed by %s" % (killer.name if killer else "unknown"))
 
 	# Report murder crime
 	if killer and killer.is_in_group("player"):

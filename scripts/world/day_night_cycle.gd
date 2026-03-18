@@ -119,7 +119,6 @@ func _setup_lighting() -> void:
 	if parent_node:
 		for child in parent_node.get_children():
 			if child is DirectionalLight3D and child != self:
-				print("[DayNightCycle] Removing static DirectionalLight3D '%s' to enable dynamic lighting" % child.name)
 				child.queue_free()
 
 	# Create our dynamic directional light (sun/moon)
@@ -141,14 +140,12 @@ func _setup_lighting() -> void:
 	# Remove any WorldEnvironment in the "world_environment" group
 	var existing_env := get_tree().get_first_node_in_group("world_environment")
 	if existing_env and existing_env is WorldEnvironment:
-		print("[DayNightCycle] Removing existing WorldEnvironment from group to use consistent lighting")
 		existing_env.queue_free()
 
 	# Also remove any WorldEnvironment in the parent scene (even if not in group)
 	if parent_node:
 		for child in parent_node.get_children():
 			if child is WorldEnvironment:
-				print("[DayNightCycle] Removing scene WorldEnvironment '%s' to use consistent lighting" % child.name)
 				child.queue_free()
 
 	# Create our own WorldEnvironment with consistent settings for ALL scenes
@@ -685,7 +682,6 @@ static func add_to_level(parent: Node3D) -> DayNightCycle:
 		# CellStreamer names its container "_CellContainer" or "CellContainer"
 		if node.name == "_CellContainer" or node.name == "CellContainer":
 			# We're inside a streamed cell - don't add lighting
-			print("[DayNightCycle] Skipping add_to_level - parent is inside cell container (streaming context)")
 			return null
 		node = node.get_parent()
 

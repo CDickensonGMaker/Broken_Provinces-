@@ -274,6 +274,69 @@ const LOCATIONS: Array = [
 	 "description": "A fortified island base where the ghost pirate captain commands his undead fleet."},
 	{"id": "elven_city", "name": "Silvanost", "x": -11, "y": 14, "type": "city",
 	 "description": "The ancient elven city on the western coast. Few humans are welcomed within its silver gates."},
+	# === EASTERN TERRITORIES (Beyond the mountain pass) ===
+	{"id": "falkenhaften", "name": "Falkenhaften", "x": 7, "y": -9, "type": "capital",
+	 "scene_size": [200, 200],
+	 "description": "The grand capital of the realm. The King has been absent for 40 years, and political intrigue fills the court."},
+	{"id": "kings_watch", "name": "King's Watch", "x": 5, "y": -7, "type": "outpost",
+	 "scene_size": [100, 100],
+	 "description": "An ancient fortress guarding the approach to Falkenhaften. Now in ruins after the mountain pass collapsed."},
+	{"id": "pola_perron", "name": "Pola Perron", "x": 3, "y": -5, "type": "town",
+	 "description": "A mountain town at the base of the eastern pass. Cut off from the capital by the collapse."},
+	{"id": "rotherhine", "name": "Rotherhine", "x": 6, "y": -4, "type": "town",
+	 "description": "A prosperous trade town on the eastern plains. Known for its horse markets."},
+	{"id": "keerzhar_bridge", "name": "Keerzhar Bridge", "x": 4, "y": 10, "type": "landmark",
+	 "description": "A massive dwarf-built bridge spanning a deep canyon. The only crossing to the southern territories."},
+	# === NORTHERN TUNDRA CAMPS ===
+	{"id": "bandit_camp_tundra_west", "name": "Frostbitten Camp", "x": -10, "y": -12, "type": "dungeon",
+	 "description": "A hardy band of northern bandits who prey on fur traders. They've adapted to the frozen wastes."},
+	{"id": "bandit_camp_tundra_east", "name": "Snowbound Outpost", "x": 5, "y": -14, "type": "dungeon",
+	 "description": "Bandits who raid the northern trade routes. Their camp is hidden among the snow drifts."},
+	{"id": "goblin_camp_tundra", "name": "Frost Goblin Warren", "x": -3, "y": -10, "type": "dungeon",
+	 "description": "Ice goblins have dug into the frozen earth. They emerge at night to raid nearby settlements."},
+	{"id": "ruined_temple_frost", "name": "Frozen Temple", "x": 0, "y": -15, "type": "ruins",
+	 "description": "An ancient temple to a forgotten frost god. Ice has claimed most of its halls."},
+	{"id": "ruined_temple_north", "name": "Northern Sanctum", "x": -8, "y": -8, "type": "ruins",
+	 "description": "Crumbling ruins where cultists once gathered. Dark rituals still echo in the stones."},
+	# === EASTERN CAMPS ===
+	{"id": "bandit_camp_eastern_road", "name": "Highwayman's Rest", "x": 8, "y": -6, "type": "dungeon",
+	 "description": "Bandits who ambush merchants traveling to Falkenhaften. Well-organized and dangerous."},
+	{"id": "goblin_camp_eastern_hills", "name": "Hillside Goblin Den", "x": 10, "y": -3, "type": "dungeon",
+	 "description": "Goblins have infested the eastern hills, raiding farms and caravans."},
+	{"id": "ruined_temple_eastern", "name": "Overgrown Shrine", "x": 12, "y": 0, "type": "ruins",
+	 "description": "A temple swallowed by the forest. Cultists have recently returned to its altars."},
+	# === SOUTHERN DESERT CAMPS ===
+	{"id": "bandit_camp_desert", "name": "Sand Raider Camp", "x": 8, "y": 25, "type": "dungeon",
+	 "description": "Desert bandits who strike from the dunes. They know the wasteland's secrets."},
+	{"id": "bandit_camp_desert_south", "name": "Oasis Hideout", "x": 3, "y": 28, "type": "dungeon",
+	 "description": "Bandits control a small oasis, demanding tribute from travelers."},
+	{"id": "goblin_camp_desert", "name": "Desert Goblin Burrow", "x": -3, "y": 24, "type": "dungeon",
+	 "description": "Goblins adapted to desert life. They raid at dusk when the heat fades."},
+	{"id": "ruined_temple_desert", "name": "Sand-Buried Temple", "x": 5, "y": 30, "type": "ruins",
+	 "description": "Half-buried by centuries of sand, this temple still draws dark worshippers."},
+	{"id": "ruined_temple_tenger", "name": "Tenger Ancestral Ruins", "x": -2, "y": 27, "type": "ruins",
+	 "description": "Ancient Tenger burial grounds. The nomads say spirits still walk here."},
+	# === ISLAND CAMPS ===
+	{"id": "smuggler_cove", "name": "Smuggler's Cove", "x": -15, "y": 8, "type": "dungeon",
+	 "description": "A hidden cove where smugglers cache their goods. Pirates use it as a waypoint."},
+	{"id": "pirate_camp_island", "name": "Corsair Island", "x": -18, "y": 12, "type": "dungeon",
+	 "description": "A lawless island where pirates rest between raids. Danger awaits the unwary."},
+	{"id": "ruined_temple_island", "name": "Sea God's Shrine", "x": -14, "y": 16, "type": "ruins",
+	 "description": "An island temple once dedicated to the sea god. Now home to dark creatures."},
+	# === SWAMP CAMPS ===
+	{"id": "goblin_camp_swamp", "name": "Mire Goblin Nest", "x": -6, "y": 6, "type": "dungeon",
+	 "description": "Goblins thrive in the fetid swamp, using the murky waters to ambush prey."},
+	{"id": "bandit_camp_swamp", "name": "Marsh Marauders", "x": -4, "y": 8, "type": "dungeon",
+	 "description": "Desperate outlaws hiding in the swamp. They've made dark pacts to survive."},
+	{"id": "ruined_temple_swamp", "name": "Sunken Shrine", "x": -8, "y": 5, "type": "ruins",
+	 "description": "A temple slowly sinking into the bog. Strange lights flicker within at night."},
+	# === FOREST CAMPS (filling gaps) ===
+	{"id": "goblin_camp_forest_north", "name": "Forest Goblin Tribe", "x": 2, "y": -6, "type": "dungeon",
+	 "description": "A large goblin tribe has claimed this section of forest. They breed wolves for war."},
+	{"id": "bandit_camp_forest", "name": "Greenwood Bandits", "x": -2, "y": 1, "type": "dungeon",
+	 "description": "Forest bandits who style themselves as rebels. They rob the rich, keep everything."},
+	{"id": "ruined_temple_forest", "name": "Vine-Choked Ruins", "x": 1, "y": 4, "type": "ruins",
+	 "description": "Nature has reclaimed this temple, but something still lurks in its depths."},
 ]
 
 ## Road connections (Elder Moor-relative coordinates)
@@ -320,6 +383,152 @@ const REGION_LARTON_BAY := "Larton Bay"
 const REGION_TENGER_DESERT := "Tenger Desert"
 const REGION_SOUTHERN_REACHES := "Southern Reaches"
 
+## World Forge map path
+const FORGE_MAP_PATH := "user://world_forge_map.json"
+
+## Terrain value to Terrain enum mapping (for World Forge)
+const FORGE_TERRAIN_MAP: Dictionary = {
+	"plains": Terrain.POI,
+	"forest": Terrain.FOREST,
+	"swamp": Terrain.SWAMP,
+	"tundra": Terrain.HIGHLANDS,
+	"desert": Terrain.DESERT,
+	"badlands": Terrain.HIGHLANDS,
+	"hill": Terrain.HIGHLANDS,
+	"mountain": Terrain.BLOCKED,
+	"ocean": Terrain.WATER,
+	"lake": Terrain.WATER,
+	"river": Terrain.COAST,
+}
+
+## Load world from World Forge JSON if it exists
+static func _load_from_forge_map() -> bool:
+	if not FileAccess.file_exists(FORGE_MAP_PATH):
+		return false
+
+	var file := FileAccess.open(FORGE_MAP_PATH, FileAccess.READ)
+	if not file:
+		return false
+
+	var json_str: String = file.get_as_text()
+	file.close()
+
+	var json := JSON.new()
+	if json.parse(json_str) != OK:
+		push_error("[WorldGrid] Failed to parse forge map: %s" % json.get_error_message())
+		return false
+
+	if not json.data is Dictionary:
+		return false
+
+	var data: Dictionary = json.data
+	var grid_info: Dictionary = data.get("grid", {})
+	var grid_width: int = grid_info.get("width", 64)
+	var grid_height: int = grid_info.get("height", 64)
+
+	var origin_info: Dictionary = data.get("editor_origin", {})
+	var origin := Vector2i(origin_info.get("x", 32), origin_info.get("y", 32))
+
+	var layers: Dictionary = data.get("layers", {})
+	var poi_data: Dictionary = data.get("poi_data", {})
+
+	# Detect format
+	var terrain_layer: Array = layers.get("terrain", [])
+	var road_layer: Array = layers.get("road", [])
+	var poi_layer: Array = layers.get("poi", [])
+
+	# Handle legacy format
+	if terrain_layer.is_empty() and layers.has("biome"):
+		terrain_layer = _merge_legacy_layers(layers, grid_width * grid_height)
+
+	if terrain_layer.is_empty():
+		return false
+
+	# Create cells from forge data
+	for y: int in range(grid_height):
+		for x: int in range(grid_width):
+			var index: int = y * grid_width + x
+			var world_coords := Vector2i(x - origin.x, y - origin.y)
+
+			# Get terrain value
+			var terrain_val: Variant = terrain_layer[index] if index < terrain_layer.size() else null
+			if terrain_val == null:
+				continue
+
+			var terrain: Terrain = FORGE_TERRAIN_MAP.get(terrain_val, Terrain.FOREST)
+			var biome: Biome = TERRAIN_TO_BIOME.get(terrain, Biome.FOREST)
+
+			var cell := CellInfo.new(terrain, biome)
+			cell.region_name = _get_region_for_coords(world_coords)
+			cell.danger_level = _get_danger_level(world_coords)
+
+			# Check road layer
+			if index < road_layer.size() and road_layer[index] != null:
+				cell.is_road = true
+				cell.terrain = Terrain.ROAD
+
+			# Check POI layer
+			if index < poi_layer.size() and poi_layer[index] != null:
+				var poi_type: String = poi_layer[index]
+				var poi_info: Dictionary = poi_data.get(str(index), {})
+
+				match poi_type:
+					"town": cell.location_type = LocationType.TOWN
+					"village": cell.location_type = LocationType.VILLAGE
+					"city": cell.location_type = LocationType.CITY
+					"capital": cell.location_type = LocationType.CAPITAL
+					"dungeon", "cave", "ruins": cell.location_type = LocationType.DUNGEON
+					"landmark", "shrine": cell.location_type = LocationType.LANDMARK
+					"outpost": cell.location_type = LocationType.OUTPOST
+
+				if not poi_info.is_empty():
+					cell.location_name = poi_info.get("name", "")
+					cell.location_id = poi_info.get("location_id", "")
+					cell.description = poi_info.get("notes", "")
+					var scene: String = poi_info.get("scene_path", "")
+					if not scene.is_empty():
+						cell.scene_path = scene
+
+					if not cell.location_id.is_empty():
+						locations[cell.location_id] = world_coords
+
+			cells[world_coords] = cell
+
+	return true
+
+
+## Merge legacy biome/elevation/water layers into terrain
+static func _merge_legacy_layers(layers: Dictionary, total_size: int) -> Array:
+	var biome_layer: Array = layers.get("biome", [])
+	var elevation_layer: Array = layers.get("elevation", [])
+	var water_layer: Array = layers.get("water", [])
+
+	var result: Array = []
+	result.resize(total_size)
+
+	for i: int in range(total_size):
+		if i < biome_layer.size() and biome_layer[i] != null:
+			result[i] = biome_layer[i]
+		if i < elevation_layer.size() and elevation_layer[i] != null:
+			result[i] = elevation_layer[i]
+		if i < water_layer.size() and water_layer[i] != null:
+			result[i] = water_layer[i]
+
+	return result
+
+
+## Track if we've loaded from forge map this session
+static var _forge_map_loaded: bool = false
+static var _forge_map_timestamp: int = 0
+
+## Force reload from World Forge map (call after editing in World Forge)
+static func force_reload() -> void:
+	_forge_map_loaded = false
+	_forge_map_timestamp = 0
+	cells.clear()
+	locations.clear()
+	roads.clear()
+	initialize()
 
 ## Initialize the world grid
 static func initialize() -> void:
@@ -327,6 +536,12 @@ static func initialize() -> void:
 	locations.clear()
 	roads.clear()
 
+	# Check if World Forge map exists and load from it
+	if _load_from_forge_map():
+		_forge_map_loaded = true
+		return
+
+	# Fall back to hardcoded GRID_DATA
 	var grid_rows: int = GRID_DATA.size()
 	var grid_cols: int = GRID_DATA[0].size() if grid_rows > 0 else 0
 
@@ -418,13 +633,11 @@ static func initialize() -> void:
 				var forge_importer: Node = scene_root.get_node("WorldForgeImporter")
 				if forge_importer and forge_importer.has_method("import_and_apply"):
 					if forge_importer.import_and_apply(forge_path):
-						print("[WorldGrid] WorldForge overlay applied from: %s" % forge_path)
+						pass
 					else:
 						push_warning("[WorldGrid] WorldForge overlay file exists but import failed: %s" % forge_path)
 			else:
 				push_warning("[WorldGrid] WorldForgeImporter autoload not found in scene tree")
-
-	print("[WorldGrid] Initialized with %d cells, %d locations" % [cells.size(), locations.size()])
 
 
 ## Get region name for coordinates

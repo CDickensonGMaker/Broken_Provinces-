@@ -52,6 +52,12 @@ class Quest:
 	var cooldown_days: int = 0  # Days before this bounty can be taken again (0 = no cooldown)
 	var possible_zones: Array[String] = []  # Random zone selection for objectives (empty = use fixed target_zone)
 
+	# Dungeon generation (for procedural dungeon quests)
+	var dungeon_type: String = ""  # Type of dungeon to generate (e.g., "crypt", "cave")
+	var dungeon_seed: int = 0  # Seed for reproducible generation (0 = random from quest_id hash)
+	var dungeon_room_set: String = ""  # Room set to use (empty = default)
+	var dungeon_size: String = "MEDIUM"  # Size preset: SMALL, MEDIUM, LARGE, HUGE
+
 class Objective:
 	var id: String
 	var description: String
@@ -62,6 +68,16 @@ class Objective:
 	var current_count: int = 0
 	var is_completed: bool = false
 	var is_optional: bool = false
+
+	## Dungeon spawn configuration (for spawning quest-specific content in dungeons)
+	## Format: {dungeon_id, room_type, spawn_type, entity_id, guaranteed_count}
+	var dungeon_spawn: Dictionary = {}
+	# dungeon_spawn fields:
+	#   - dungeon_id: String - which dungeon to spawn in
+	#   - room_type: String - "any", "boss", "entrance", "treasure"
+	#   - spawn_type: String - "npc", "enemy", "item", "chest"
+	#   - entity_id: String - ID of the NPC, enemy, or item to spawn
+	#   - guaranteed_count: int - minimum number to spawn (for enemies)
 
 
 ## Navigation data for compass/minimap
@@ -139,8 +155,6 @@ func _on_item_added(item_id: String, _quantity: int) -> void:
 
 			# Start the quest
 			if start_quest(quest_id):
-				print("[QuestManager] Triggered quest '%s' from item: %s" % [quest_id, item_id])
-
 				# Show notification
 				var hud := get_tree().get_first_node_in_group("hud")
 				if hud and hud.has_method("show_notification"):
@@ -159,7 +173,6 @@ func _on_item_sold(item_id: String, _quantity: int, _quality: Enums.ItemQuality)
 
 		# Check if this item is a quest item for this quest
 		if item_id in quest.quest_items:
-			print("[QuestManager] TEMPTATION: Player sold quest item '%s' from quest '%s'" % [item_id, quest_id])
 			fail_quest(quest_id, "temptation")
 			return
 
@@ -181,7 +194,6 @@ func _on_equipment_changed(slot: String, _old_item: Dictionary, new_item: Dictio
 
 		# Check if this item is a quest item for this quest
 		if item_id in quest.quest_items:
-			print("[QuestManager] TEMPTATION: Player equipped quest item '%s' (slot: %s) from quest '%s'" % [item_id, slot, quest_id])
 			fail_quest(quest_id, "temptation")
 			return
 
@@ -192,7 +204,6 @@ func _load_quest_database() -> void:
 		return
 
 	_load_quests_from_directory(quest_dir)
-	print("[QuestManager] Loaded %d quest templates" % quest_database.size())
 
 
 ## Recursively load quests from a directory and its subdirectories
@@ -217,8 +228,6 @@ func _load_quests_from_directory(dir_path: String) -> void:
 					var json_dict: Dictionary = json as Dictionary
 					# Skip disabled quests (preserved for later re-enabling)
 					if json_dict.get("disabled", false):
-						var disabled_reason: String = json_dict.get("disabled_reason", "Quest disabled")
-						print("[QuestManager] Skipping disabled quest '%s': %s" % [json_dict.get("id", "unknown"), disabled_reason])
 						file_name = dir.get_next()
 						continue
 					var quest := _parse_quest(json_dict)
@@ -273,6 +282,8 @@ func _parse_quest(data: Dictionary) -> Quest:
 		obj.target_zone = obj_data.get("target_zone", "")
 		obj.required_count = obj_data.get("required_count", 1)
 		obj.is_optional = obj_data.get("is_optional", false)
+		# Dungeon spawn configuration for quest-specific content
+		obj.dungeon_spawn = obj_data.get("dungeon_spawn", {})
 		quest.objectives.append(obj)
 
 	# Starter items (given to player when quest starts)
@@ -309,6 +320,12 @@ func _parse_quest(data: Dictionary) -> Quest:
 		if zone_id is String:
 			quest.possible_zones.append(zone_id as String)
 
+	# Dungeon generation settings
+	quest.dungeon_type = data.get("dungeon_type", "")
+	quest.dungeon_seed = data.get("dungeon_seed", 0)
+	quest.dungeon_room_set = data.get("dungeon_room_set", "")
+	quest.dungeon_size = data.get("dungeon_size", "MEDIUM")
+
 	return quest
 
 
@@ -342,7 +359,6 @@ func start_quest(quest_id: String) -> bool:
 
 	# Check if bounty is on cooldown
 	if is_bounty_on_cooldown(quest_id):
-		print("[QuestManager] Bounty '%s' is on cooldown until day %d" % [quest_id, bounty_cooldowns.get(quest_id, 0)])
 		return false
 
 	# Check prerequisites
@@ -382,11 +398,16 @@ func start_quest(quest_id: String) -> bool:
 	for zone: String in template.possible_zones:
 		quest.possible_zones.append(zone)
 
+	# Copy dungeon settings
+	quest.dungeon_type = template.dungeon_type
+	quest.dungeon_seed = template.dungeon_seed if template.dungeon_seed != 0 else quest_id.hash()
+	quest.dungeon_room_set = template.dungeon_room_set
+	quest.dungeon_size = template.dungeon_size
+
 	# Select random zone if possible_zones is set
 	var selected_zone: String = ""
 	if template.possible_zones.size() > 0:
 		selected_zone = template.possible_zones[randi() % template.possible_zones.size()]
-		print("[QuestManager] Selected random zone '%s' for quest '%s'" % [selected_zone, quest_id])
 
 	for obj in template.objectives:
 		var new_obj := Objective.new()
@@ -411,9 +432,6 @@ func start_quest(quest_id: String) -> bool:
 	quest.faction = template.faction
 
 	quests[quest_id] = quest
-	print("[QuestManager] Quest STARTED: id='%s', title='%s', turn_in_type=%s, turn_in_target='%s', turn_in_zone='%s'" % [
-		quest.id, quest.title, quest.turn_in_type, quest.turn_in_target, quest.turn_in_zone
-	])
 	quest_started.emit(quest_id)
 
 	# Execute spawn_on_accept spawns (chests, camps, etc.)
@@ -453,8 +471,6 @@ func _give_starter_items(items: Array[Dictionary], quest_title: String) -> void:
 		# Try to add the item to inventory
 		var success: bool = InventoryManager.add_item(item_id, quantity)
 		if success:
-			print("[QuestManager] Gave starter item: %s x%d for quest '%s'" % [item_id, quantity, quest_title])
-
 			# Show notification to player
 			var item_name: String = InventoryManager.get_item_name(item_id)
 			if item_name.is_empty():
@@ -494,13 +510,12 @@ func _execute_spawn_on_accept(quest: Quest) -> void:
 					spawned_nodes.append(node)
 			"camp":
 				# Future: spawn bandit camp instance
-				print("[QuestManager] Camp spawning not yet implemented for quest: %s" % quest.id)
+				pass
 			_:
 				push_warning("[QuestManager] Unknown spawn type: %s" % spawn_type)
 
 	if spawned_nodes.size() > 0:
 		_quest_spawns[quest.id] = spawned_nodes
-		print("[QuestManager] Spawned %d objects for quest '%s'" % [spawned_nodes.size(), quest.id])
 
 
 ## Spawn a quest-specific chest at the designated location
@@ -560,7 +575,6 @@ func _spawn_quest_chest(spawn_data: Dictionary, quest_id: String) -> Node:
 	chest.set_meta("quest_id", quest_id)
 	chest.add_to_group("quest_spawns")
 
-	print("[QuestManager] Spawned quest chest at %s for quest '%s'" % [world_pos, quest_id])
 	return chest
 
 
@@ -608,7 +622,6 @@ func _spawn_quest_hostage(spawn_data: Dictionary, quest_id: String) -> Node:
 	hostage.set_meta("quest_id", quest_id)
 	hostage.add_to_group("quest_spawns")
 
-	print("[QuestManager] Spawned hostage '%s' at %s for quest '%s'" % [hostage_name, world_pos, quest_id])
 	return hostage
 
 
@@ -635,7 +648,6 @@ func _cleanup_quest_spawns(quest_id: String) -> void:
 			(node as Node).queue_free()
 
 	_quest_spawns.erase(quest_id)
-	print("[QuestManager] Cleaned up spawns for quest '%s'" % quest_id)
 
 
 # =============================================================================
@@ -655,18 +667,12 @@ func _cache_objective_locations(quest_id: String) -> void:
 		var location: Dictionary = _resolve_objective_location(obj)
 		if not location.is_empty():
 			locations[obj.id] = location
-			print("[QuestManager] Cached location for objective '%s': hex=%s, zone=%s" % [
-				obj.id, location.get("hex", Vector2i.ZERO), location.get("zone_id", "")
-			])
 
 	# Also cache turn-in location if applicable
 	if quest.turn_in_type != Enums.TurnInType.AUTO_COMPLETE:
 		var turnin_location: Dictionary = _resolve_turnin_location(quest)
 		if not turnin_location.is_empty():
 			locations["_turnin"] = turnin_location
-			print("[QuestManager] Cached turn-in location: hex=%s, zone=%s" % [
-				turnin_location.get("hex", Vector2i.ZERO), turnin_location.get("zone_id", "")
-			])
 
 	objective_locations[quest_id] = locations
 
@@ -867,9 +873,6 @@ func update_progress(objective_type: String, target: String, amount: int = 1) ->
 
 				if obj.current_count >= obj.required_count:
 					obj.is_completed = true
-					print("[QuestManager] Objective COMPLETED: quest='%s', objective='%s', type='%s', target='%s'" % [
-						quest_id, obj.id, obj.type, obj.target
-					])
 					objective_completed.emit(quest_id, obj.id)
 
 		# Check if quest is complete
@@ -954,18 +957,13 @@ func are_objectives_complete(quest_id: String) -> bool:
 ## Complete a quest and give rewards
 func complete_quest(quest_id: String) -> void:
 	if not quests.has(quest_id):
-		print("[QuestManager] complete_quest() FAILED: quest '%s' not found" % quest_id)
 		return
 
 	var quest: Quest = quests[quest_id]
 	if quest.state != Enums.QuestState.ACTIVE:
-		print("[QuestManager] complete_quest() FAILED: quest '%s' not active (state=%s)" % [quest_id, quest.state])
 		return
 
 	quest.state = Enums.QuestState.COMPLETED
-	print("[QuestManager] Quest COMPLETED: id='%s', title='%s', next_quest='%s'" % [
-		quest.id, quest.title, quest.next_quest
-	])
 
 	# Give rewards
 	if quest.rewards.has("gold"):
@@ -985,7 +983,6 @@ func complete_quest(quest_id: String) -> void:
 			var amount: int = rep_changes[faction_id]
 			if FactionManager:
 				FactionManager.modify_reputation(faction_id as String, amount, "completed quest: %s" % quest.title)
-				print("[QuestManager] Applied +%d reputation to %s for completing '%s'" % [amount, faction_id, quest.title])
 
 	quest_completed.emit(quest_id)
 
@@ -1039,7 +1036,6 @@ func fail_quest(quest_id: String, reason: String = "") -> void:
 		return
 
 	quest.state = Enums.QuestState.FAILED
-	print("[QuestManager] Quest FAILED: id='%s', title='%s', reason='%s'" % [quest_id, quest.title, reason])
 
 	# Apply negative faction reputation for failing
 	if not quest.faction.is_empty() and FactionManager:
@@ -1047,7 +1043,6 @@ func fail_quest(quest_id: String, reason: String = "") -> void:
 		if reason == "temptation":
 			rep_loss = -25  # Extra penalty for betrayal
 		FactionManager.modify_reputation(quest.faction, rep_loss, "failed quest: %s" % quest.title)
-		print("[QuestManager] Applied %d reputation to %s for failing '%s'" % [rep_loss, quest.faction, quest.title])
 
 		# Set betrayal flag if failed via temptation
 		if reason == "temptation" and DialogueManager:
@@ -1177,7 +1172,6 @@ func _set_bounty_cooldown(quest_id: String, cooldown_days: int) -> void:
 	var current_day: int = _get_current_game_day()
 	var available_day: int = current_day + cooldown_days
 	bounty_cooldowns[quest_id] = available_day
-	print("[QuestManager] Bounty '%s' on cooldown until day %d (current day: %d)" % [quest_id, available_day, current_day])
 
 
 ## Get current in-game day from GameManager
@@ -1335,27 +1329,17 @@ func can_accept_turnin(entity: Node, quest_id: String) -> bool:
 	var entity_npc_type: String = entity.get("npc_type") if "npc_type" in entity else ""
 	var entity_region: String = entity.get("region_id") if "region_id" in entity else ""
 
-	print("[QuestManager] can_accept_turnin() called: quest='%s', entity_npc_id='%s', entity_npc_type='%s', entity_region='%s'" % [
-		quest_id, entity_npc_id, entity_npc_type, entity_region
-	])
-
 	if not quests.has(quest_id):
-		print("[QuestManager] can_accept_turnin() -> FALSE (quest not found)")
 		return false
 
 	var quest: Quest = quests[quest_id]
-	print("[QuestManager] Quest state: turn_in_type=%s, turn_in_target='%s', turn_in_region='%s'" % [
-		quest.turn_in_type, quest.turn_in_target, quest.turn_in_region
-	])
 
 	# Quest must be active
 	if quest.state != Enums.QuestState.ACTIVE:
-		print("[QuestManager] can_accept_turnin() -> FALSE (quest not active, state=%s)" % quest.state)
 		return false
 
 	# Primary objectives must be complete
 	if not _are_primary_objectives_complete(quest_id):
-		print("[QuestManager] can_accept_turnin() -> FALSE (objectives not complete)")
 		return false
 
 	# Check based on turn-in type
@@ -1363,13 +1347,6 @@ func can_accept_turnin(entity: Node, quest_id: String) -> bool:
 		Enums.TurnInType.NPC_SPECIFIC:
 			# Entity must match exact NPC ID
 			var matches: bool = entity_npc_id == quest.turn_in_target
-			print("[QuestManager] NPC_SPECIFIC check: entity_npc_id='%s' == turn_in_target='%s' -> %s" % [
-				entity_npc_id, quest.turn_in_target, matches
-			])
-			if matches:
-				print("[QuestManager] can_accept_turnin() -> TRUE")
-			else:
-				print("[QuestManager] can_accept_turnin() -> FALSE (npc_id mismatch)")
 			return matches
 
 		Enums.TurnInType.NPC_TYPE_IN_REGION:
@@ -1379,43 +1356,25 @@ func can_accept_turnin(entity: Node, quest_id: String) -> bool:
 			var type_matches: bool = entity_npc_type == quest.turn_in_target
 			var region_matches: bool = required_region.is_empty() or entity_region == required_region
 			var matches: bool = type_matches and region_matches
-			print("[QuestManager] NPC_TYPE_IN_REGION check: entity_type='%s' == target='%s' (%s), entity_region='%s' == required='%s' (%s) -> %s" % [
-				entity_npc_type, quest.turn_in_target, type_matches,
-				entity_region, required_region, region_matches,
-				matches
-			])
-			if matches:
-				print("[QuestManager] can_accept_turnin() -> TRUE")
-			else:
-				print("[QuestManager] can_accept_turnin() -> FALSE (type/region mismatch)")
 			return matches
 
 		Enums.TurnInType.WORLD_OBJECT:
 			# Entity must match object ID
 			var entity_object_id: String = entity.get("object_id") if "object_id" in entity else ""
 			var matches: bool = entity_object_id == quest.turn_in_target
-			print("[QuestManager] WORLD_OBJECT check: entity_object_id='%s' == target='%s' -> %s" % [
-				entity_object_id, quest.turn_in_target, matches
-			])
 			return matches
 
 		Enums.TurnInType.AUTO_COMPLETE:
 			# Auto-complete quests don't need entity turn-in
-			print("[QuestManager] can_accept_turnin() -> FALSE (auto-complete type)")
 			return false
 
-	print("[QuestManager] can_accept_turnin() -> FALSE (no match)")
 	return false
 
 
 ## Attempt to turn in a quest to an entity
 ## Returns {success: bool, rewards: Dictionary, message: String}
 func try_turnin(entity: Node, quest_id: String) -> Dictionary:
-	var entity_npc_id: String = entity.get("npc_id") if "npc_id" in entity else ""
-	print("[QuestManager] try_turnin() called: quest='%s', entity_npc_id='%s'" % [quest_id, entity_npc_id])
-
 	if not can_accept_turnin(entity, quest_id):
-		print("[QuestManager] try_turnin() -> FAILED (can_accept_turnin returned false)")
 		return {
 			"success": false,
 			"rewards": {},
@@ -1425,7 +1384,6 @@ func try_turnin(entity: Node, quest_id: String) -> Dictionary:
 	var quest: Quest = quests[quest_id]
 
 	# Complete the quest and give rewards
-	print("[QuestManager] try_turnin() -> SUCCESS, completing quest '%s'" % quest_id)
 	complete_quest(quest_id)
 
 	return {
@@ -1742,6 +1700,108 @@ func _find_location_position(location_id: String) -> Vector3:
 	return Vector3.ZERO
 
 
+# =============================================================================
+# DUNGEON GENERATION INTEGRATION
+# =============================================================================
+
+## Generate a dungeon for a quest (called when player enters dungeon area)
+## Returns true if dungeon generation started successfully
+## TODO: Reimplement with Dingo Room Generator
+func generate_quest_dungeon(quest_id: String) -> bool:
+	if not quests.has(quest_id):
+		push_warning("[QuestManager] Quest not found for dungeon generation: %s" % quest_id)
+		return false
+
+	var quest: Quest = quests[quest_id]
+
+	# No dungeon configured for this quest
+	if quest.dungeon_type.is_empty() and quest.dungeon_room_set.is_empty():
+		push_warning("[QuestManager] Quest has no dungeon configuration: %s" % quest_id)
+		return false
+
+	# TODO: Dungeon generation system being reworked (switching to Dingo Room Generator)
+	push_warning("[QuestManager] Dungeon generation not yet implemented with new system")
+	return false
+
+
+## Check if a quest has a dungeon that needs to be generated
+func quest_has_dungeon(quest_id: String) -> bool:
+	if not quests.has(quest_id):
+		return false
+	var quest: Quest = quests[quest_id]
+	return not quest.dungeon_type.is_empty() or not quest.dungeon_room_set.is_empty()
+
+
+## Get dungeon info for a quest (for UI display)
+func get_quest_dungeon_info(quest_id: String) -> Dictionary:
+	if not quests.has(quest_id):
+		return {}
+	var quest: Quest = quests[quest_id]
+	return {
+		"type": quest.dungeon_type,
+		"seed": quest.dungeon_seed,
+		"room_set": quest.dungeon_room_set,
+		"size": quest.dungeon_size
+	}
+
+
+## Get all dungeon spawn requirements for active quests targeting a specific dungeon
+## Returns array of spawn configs: [{quest_id, objective_id, spawn_type, entity_id, room_type, count}]
+func get_dungeon_spawn_requirements(dungeon_id: String) -> Array[Dictionary]:
+	var spawns: Array[Dictionary] = []
+
+	for quest_id in quests:
+		var quest: Quest = quests[quest_id]
+
+		# Only active quests
+		if quest.state != Enums.QuestState.ACTIVE:
+			continue
+
+		for obj in quest.objectives:
+			# Skip completed objectives
+			if obj.is_completed:
+				continue
+
+			# Check if this objective has dungeon spawn config
+			if obj.dungeon_spawn.is_empty():
+				continue
+
+			var spawn_dungeon_id: String = obj.dungeon_spawn.get("dungeon_id", "")
+
+			# Match dungeon ID (or empty means "any dungeon this quest generates")
+			if not spawn_dungeon_id.is_empty() and spawn_dungeon_id != dungeon_id:
+				continue
+
+			spawns.append({
+				"quest_id": quest_id,
+				"objective_id": obj.id,
+				"spawn_type": obj.dungeon_spawn.get("spawn_type", "enemy"),
+				"entity_id": obj.dungeon_spawn.get("entity_id", obj.target),
+				"room_type": obj.dungeon_spawn.get("room_type", "any"),
+				"guaranteed_count": obj.dungeon_spawn.get("guaranteed_count", obj.required_count),
+			})
+
+	return spawns
+
+
+## Get all enemy types that should be guaranteed in a dungeon for active quests
+func get_quest_guaranteed_enemies(dungeon_id: String) -> Dictionary:
+	# Returns: {enemy_id: minimum_count}
+	var enemies: Dictionary = {}
+
+	var spawns: Array[Dictionary] = get_dungeon_spawn_requirements(dungeon_id)
+	for spawn in spawns:
+		if spawn.spawn_type == "enemy":
+			var enemy_id: String = spawn.entity_id
+			var count: int = spawn.guaranteed_count
+			if enemies.has(enemy_id):
+				enemies[enemy_id] = maxi(enemies[enemy_id], count)
+			else:
+				enemies[enemy_id] = count
+
+	return enemies
+
+
 ## Serialize for saving
 func to_dict() -> Dictionary:
 	var data := {
@@ -1765,6 +1825,11 @@ func to_dict() -> Dictionary:
 			"turn_in_zone": quest.turn_in_zone,
 			# Quest chains
 			"next_quest": quest.next_quest,
+			# Dungeon settings
+			"dungeon_type": quest.dungeon_type,
+			"dungeon_seed": quest.dungeon_seed,
+			"dungeon_room_set": quest.dungeon_room_set,
+			"dungeon_size": quest.dungeon_size,
 			"objectives": []
 		}
 		for obj in quest.objectives:
@@ -1818,6 +1883,12 @@ func from_dict(data: Dictionary) -> void:
 		# Restore quest chain info (handle null values)
 		var saved_next: Variant = quests_data[quest_id].get("next_quest", template.next_quest)
 		quest.next_quest = saved_next if saved_next != null else ""
+
+		# Restore dungeon settings
+		quest.dungeon_type = quests_data[quest_id].get("dungeon_type", template.dungeon_type)
+		quest.dungeon_seed = quests_data[quest_id].get("dungeon_seed", template.dungeon_seed)
+		quest.dungeon_room_set = quests_data[quest_id].get("dungeon_room_set", template.dungeon_room_set)
+		quest.dungeon_size = quests_data[quest_id].get("dungeon_size", template.dungeon_size)
 
 		var saved_objectives: Array = quests_data[quest_id].get("objectives", [])
 		for i in range(template.objectives.size()):

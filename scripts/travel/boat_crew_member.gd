@@ -175,8 +175,6 @@ func _attack_target() -> void:
 	elif current_target is EnemyBase:
 		current_target.take_damage(damage)
 
-	print("[BoatCrew] %s attacks for %d damage!" % [display_name, damage])
-
 
 ## Called when enemies appear - crew enters combat mode
 func enter_combat() -> void:
@@ -198,7 +196,6 @@ func take_damage(amount: int, _attacker: Node = null) -> void:
 		return
 
 	current_health -= amount
-	print("[BoatCrew] %s took %d damage (%d/%d HP)" % [display_name, amount, current_health, max_health])
 
 	# Visual feedback
 	if billboard:
@@ -212,8 +209,6 @@ func _die() -> void:
 	is_dead = true
 	in_combat = false
 	velocity = Vector3.ZERO
-
-	print("[BoatCrew] %s has been killed!" % display_name)
 
 	if billboard:
 		billboard.play_death()

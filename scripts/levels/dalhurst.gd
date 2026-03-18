@@ -44,7 +44,6 @@ func _ready() -> void:
 	_spawn_forest_border()
 	# Decorate the Temple of Three Gods with monastery assets
 	_decorate_temple_of_three_gods()
-	print("[Dalhurst] Port city loaded - Tier 4 Major City")
 
 
 ## Setup spawn point metadata for spawn points defined in .tscn
@@ -76,7 +75,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Dalhurst] Navigation mesh baked!")
 
 
 ## Add collision to GLB buildings (ModularHouses) so player can't walk through them
@@ -111,7 +109,7 @@ func _setup_building_collision() -> void:
 			collision_added += 1
 
 	if collision_added > 0:
-		print("[Dalhurst] Added collision to %d building meshes" % collision_added)
+		pass
 
 
 ## Recursively find all MeshInstance3D nodes
@@ -145,7 +143,6 @@ func _setup_cell_streaming() -> void:
 	var my_coords: Vector2i = WorldGrid.get_location_coords(ZONE_ID)
 	CellStreamer.register_main_scene_cell(my_coords, self)
 	CellStreamer.start_streaming(my_coords)
-	print("[%s] Registered as main scene, streaming started at %s" % [ZONE_ID, my_coords])
 
 
 ## Spawn NPCs (guards, civilians, service NPCs)
@@ -176,7 +173,6 @@ func _spawn_npcs() -> void:
 	if harbor_dialogue:
 		harbor_master.dialogue_data = harbor_dialogue
 		harbor_master.use_legacy_dialogue = false
-		print("[Dalhurst] Loaded boat travel dialogue for Harbor Master")
 	else:
 		push_warning("[Dalhurst] Failed to load Harbor Master dialogue")
 	# Set knowledge profile for conversation fallback
@@ -187,7 +183,6 @@ func _spawn_npcs() -> void:
 	harbor_master_profile.base_disposition = 45
 	harbor_master_profile.speech_style = "formal"
 	harbor_master.npc_profile = harbor_master_profile
-	print("[Dalhurst] Spawned Harbor Master at HarbormasterOffice (offers boat travel)")
 
 	# === GUARDS ===
 	# Guard positions at key entry/watch points
@@ -206,7 +201,6 @@ func _spawn_npcs() -> void:
 		guard.npc_id = "guard_dalhurst_%d" % i
 		# Guard knowledge profile is set by GuardNPC._get_guard_profile()
 		# but we can add dalhurst-specific knowledge
-		print("[Dalhurst] Spawned Guard at %s" % guard_positions[i])
 
 	# === TEMPLE PRIESTS (Quest Givers) ===
 	# Temple of the Three Gods is at (-2, 0, -7) with altar at local (0, 0.6, -5)
@@ -229,7 +223,6 @@ func _spawn_npcs() -> void:
 	chronos_profile.knowledge_tags = ["dalhurst", "temple", "religion", "priest_chronos", "time", "fate", "prophecy"]
 	chronos_profile.personality_traits = ["pious", "mysterious", "patient"]
 	priest_chronos.npc_profile = chronos_profile
-	print("[Dalhurst] Spawned Priest of Chronos at Temple of the Three Gods")
 
 	# Priestess of Gaela (Goddess of the Harvest) - Center of altar
 	var priest_gaela_quests: Array[String] = ["temple_blessing_quest"]
@@ -249,7 +242,6 @@ func _spawn_npcs() -> void:
 	gaela_profile.knowledge_tags = ["dalhurst", "temple", "religion", "priest_gaela", "harvest", "nature", "blessings"]
 	gaela_profile.personality_traits = ["pious", "nurturing", "kind"]
 	priest_gaela.npc_profile = gaela_profile
-	print("[Dalhurst] Spawned Priestess of Gaela at Temple of the Three Gods")
 
 	# Priest of Morthane (God/Goddess of Death & Rebirth) - Right side of altar
 	var priest_morthane_quests: Array[String] = ["temple_undead_menace"]
@@ -269,7 +261,6 @@ func _spawn_npcs() -> void:
 	morthane_profile.knowledge_tags = ["dalhurst", "temple", "religion", "priest_morthane", "death", "rebirth", "undead"]
 	morthane_profile.personality_traits = ["pious", "solemn", "wise"]
 	priest_morthane.npc_profile = morthane_profile
-	print("[Dalhurst] Spawned Priest of Morthane at Temple of the Three Gods")
 
 	# Temple acolyte (wanders around temple area - not a quest giver)
 	var acolyte := CivilianNPC.spawn_monk_brown(npcs_container, Vector3(-2, 0, -5), ZONE_ID)
@@ -281,7 +272,6 @@ func _spawn_npcs() -> void:
 	acolyte_profile.personality_traits = ["pious", "humble", "helpful"]
 	acolyte_profile.base_disposition = 60  # Friendly
 	acolyte.knowledge_profile = acolyte_profile
-	print("[Dalhurst] Spawned Temple Acolyte")
 
 	# === ADVENTURER'S GUILD NPCs ===
 	# Guild Hall is at (65, 0, 25)
@@ -307,7 +297,6 @@ func _spawn_npcs() -> void:
 	gm_profile.base_disposition = 50
 	gm_profile.speech_style = "formal"
 	guild_master.npc_profile = gm_profile
-	print("[Dalhurst] Spawned Guildmaster Vorn at Adventurer's Guild")
 
 	# Guild clerk - handles paperwork
 	var guild_clerk := CivilianNPC.spawn_man(npcs_container, Vector3(62, 0, 22), ZONE_ID)
@@ -320,7 +309,6 @@ func _spawn_npcs() -> void:
 	clerk_profile.knowledge_tags = ["dalhurst", "adventurers_guild", "contracts", "local_area"]
 	clerk_profile.base_disposition = 55
 	guild_clerk.knowledge_profile = clerk_profile
-	print("[Dalhurst] Spawned Guild Clerk")
 
 	# Adventurers hanging out at the guild (2-3)
 	var adventurer1 := CivilianNPC.spawn_male_gladiator(npcs_container, Vector3(68, 0, 27), ZONE_ID)
@@ -332,7 +320,6 @@ func _spawn_npcs() -> void:
 	var adventurer3 := CivilianNPC.spawn_wizard_civilian(npcs_container, Vector3(66, 0, 26), ZONE_ID)
 	adventurer3.npc_id = "adventurer_3_dalhurst"
 	adventurer3.wander_radius = 4.0
-	print("[Dalhurst] Spawned adventurers at Guild Hall")
 
 	# === INNKEEPER ===
 	# Near DalhurstInn at (75, 0, -66)
@@ -342,7 +329,6 @@ func _spawn_npcs() -> void:
 	var innkeeper_profile := NPCKnowledgeProfile.innkeeper()
 	innkeeper_profile.knowledge_tags = ["dalhurst", "innkeeper", "local_area", "rumors", "inn_location"]
 	innkeeper.knowledge_profile = innkeeper_profile
-	print("[Dalhurst] Spawned Innkeeper at DalhurstInn")
 
 	# === BOUNTY BOARD ===
 	# NOTE: Bounty board is placed in dalhurst.tscn at (-18.76, 0, -5)
@@ -368,7 +354,6 @@ func _spawn_npcs() -> void:
 	worried_profile.knowledge_tags = ["dalhurst", "trade", "local_area"]
 	worried_profile.base_disposition = 55
 	worried_merchant.npc_profile = worried_profile
-	print("[Dalhurst] Spawned Worried Merchant (willow_dale_investigation quest)")
 
 	# === WIZARD (lost_apprentice quest giver) ===
 	var wizard_quests: Array[String] = ["lost_apprentice"]
@@ -390,7 +375,6 @@ func _spawn_npcs() -> void:
 	wizard_profile.knowledge_tags = ["dalhurst", "magic", "willow_dale", "undead"]
 	wizard_profile.base_disposition = 60
 	wizard.npc_profile = wizard_profile
-	print("[Dalhurst] Spawned Wizard (lost_apprentice quest)")
 
 	# === ALDRIC VANE - THE KEEPERS CONTACT (keepers_initiation quest giver) ===
 	var aldric_quests: Array[String] = ["keepers_initiation"]
@@ -412,7 +396,6 @@ func _spawn_npcs() -> void:
 	aldric_profile.knowledge_tags = ["dalhurst", "keepers", "secrets", "willow_dale", "cultists"]
 	aldric_profile.base_disposition = 45
 	aldric.npc_profile = aldric_profile
-	print("[Dalhurst] Spawned Aldric Vane (keepers_initiation quest)")
 
 	# === HALVARD THE SUPPLIER (talk target for Tharin's supply run quest) ===
 	var halvard := QuestGiver.spawn_quest_giver(
@@ -435,7 +418,6 @@ func _spawn_npcs() -> void:
 	halvard_profile.base_disposition = 50
 	halvard_profile.speech_style = "casual"
 	halvard.npc_profile = halvard_profile
-	print("[Dalhurst] Spawned Halvard the Supplier (Tharin's supply quest target)")
 
 	# === CONAN EASTER EGG ===
 	# The Mighty Barbarian is partying at The Gilded Grog Tavern at (-9, 0, -39)
@@ -443,7 +425,6 @@ func _spawn_npcs() -> void:
 		npcs_container,
 		Vector3(-9, 0, -39)  # Inside the tavern area
 	)
-	print("[Dalhurst] The Mighty Barbarian has arrived at The Gilded Grog!")
 
 	# === TAVERN WENCHES ===
 	# Barmaids for Conan to party with
@@ -451,7 +432,6 @@ func _spawn_npcs() -> void:
 	wench1.wander_radius = 4.0  # Stay near Conan
 	var wench2 := CivilianNPC.spawn_barmaid(npcs_container, Vector3(-8, 0, -40), ZONE_ID)
 	wench2.wander_radius = 4.0  # Stay near Conan
-	print("[Dalhurst] Spawned tavern wenches at The Gilded Grog")
 
 	# === LADY NIGHTSHADE'S CURIOSITIES (Magic Shop) ===
 	# Building is at (35, 0, 15) - sells magical items, weapons, and spell scrolls
@@ -476,7 +456,6 @@ func _spawn_npcs() -> void:
 		nightshade._add_shop_item("soulstone_petty_empty", 50, 5, Enums.ItemQuality.AVERAGE)
 		nightshade._add_shop_item("soulstone_lesser_empty", 150, 3, Enums.ItemQuality.AVERAGE)
 		nightshade._add_shop_item("soulstone_common_empty", 400, 2, Enums.ItemQuality.AVERAGE)
-		print("[Dalhurst] Spawned Lady Nightshade at Shop of Curiosities")
 
 	# Enchanting Table inside Lady Nightshade's shop
 	var enchanting_table := EnchantingStation.new()
@@ -484,7 +463,6 @@ func _spawn_npcs() -> void:
 	npcs_container.add_child(enchanting_table)  # Add first so _ready() runs
 	enchanting_table.name = "EnchantingTable"
 	enchanting_table.station_name = "Arcane Enchanting Table"
-	print("[Dalhurst] Spawned Enchanting Table at Lady Nightshade's Curiosities")
 
 	# === TEMPLE MONKS (Magic Teachers) ===
 	# Temple is at (-2, 0, -7) - monks who teach spells and sell scrolls
@@ -506,7 +484,6 @@ func _spawn_npcs() -> void:
 		aldwin_profile.base_disposition = 55
 		aldwin_profile.speech_style = "formal"
 		monk_aldwin.npc_profile = aldwin_profile
-		print("[Dalhurst] Spawned Brother Aldwin (Fire Magic Teacher) at Temple")
 
 	# Sister Maeve - Healing/Restoration magic specialist
 	var monk_maeve: Merchant = Merchant.spawn_merchant(
@@ -526,7 +503,6 @@ func _spawn_npcs() -> void:
 		maeve_profile.base_disposition = 65
 		maeve_profile.speech_style = "formal"
 		monk_maeve.npc_profile = maeve_profile
-		print("[Dalhurst] Spawned Sister Maeve (Healing Magic Teacher) at Temple")
 
 	# === SEAFARER'S SUPPLIES (Hodgepodge Shop by the Docks) ===
 	# Position around (-46, 0, -12) near harbor - sells miscellaneous adventuring goods
@@ -549,7 +525,6 @@ func _spawn_npcs() -> void:
 		morley_profile.base_disposition = 45
 		morley_profile.speech_style = "casual"
 		supplies_keeper.npc_profile = morley_profile
-		print("[Dalhurst] Spawned Old Salt Morley at Seafarer's Supplies")
 
 	# === GENERIC CIVILIAN NPCs (100+ wandering townsfolk) ===
 	_spawn_civilian_population(npcs_container)
@@ -706,8 +681,6 @@ func _spawn_civilian_population(parent: Node3D) -> void:
 
 			total_spawned += 1
 
-	print("[Dalhurst] Spawned %d civilian NPCs across the town" % total_spawned)
-
 	# Store reference for day/night management
 	set_meta("civilians_container", civilians_container)
 
@@ -775,9 +748,6 @@ func _spawn_locked_doors() -> void:
 		door.rotation = marker.rotation
 		doors_spawned += 1
 
-	if doors_spawned > 0:
-		print("[Dalhurst] Spawned %d locked doors from markers" % doors_spawned)
-
 
 ## Spawn thieves that lurk in the city
 ## Dalhurst is a major port city - more thieves here
@@ -804,8 +774,6 @@ func _spawn_thieves() -> void:
 	for i in range(mini(thief_count, thief_positions.size())):
 		var skill: int = randi_range(5, 8)  # Higher skill in bigger city
 		var thief := ThiefNPC.spawn_thief(npcs_container, thief_positions[i], ZONE_ID, skill)
-
-	print("[Dalhurst] %d thieves lurk in the shadows..." % thief_count)
 
 
 ## Spawn lush forest border around the perimeter of Dalhurst
@@ -860,8 +828,6 @@ func _spawn_forest_border() -> void:
 		town_center_x + town_half_width + border_inner, town_center_x + town_half_width + border_outer,
 		town_center_z - town_half_depth, town_center_z + town_half_depth,
 		35, 20, "East")
-
-	print("[Dalhurst] Forest border spawned around town perimeter")
 
 
 ## Helper to spawn vegetation along an edge
@@ -1011,8 +977,6 @@ func _setup_western_coastline() -> void:
 	collision_wall.add_child(collision_shape)
 	coast_container.add_child(collision_wall)
 
-	print("[Dalhurst] Western coastline decoration added (water extends %d units)" % int(water_extent))
-
 
 ## Decorate the Temple of Three Gods with monastery assets
 ## Adds statues representing the three gods, floor decorations, and hangings
@@ -1043,7 +1007,6 @@ func _decorate_temple_of_three_gods() -> void:
 		var statue_height: float = chronos_tex.get_height() * chronos_statue.pixel_size
 		chronos_statue.position = Vector3(-4.5, statue_height / 2.0 + 0.2, -5.5)
 		decorations.add_child(chronos_statue)
-		print("[Dalhurst] Placed Statue of Chronos (God of Time)")
 
 	# === STATUE OF GAELA (Goddess of Harvest) - Center behind altar ===
 	# statue_decay1.png - Mother/rebirth figure
@@ -1061,7 +1024,6 @@ func _decorate_temple_of_three_gods() -> void:
 		var statue_height: float = gaela_tex.get_height() * gaela_statue.pixel_size
 		gaela_statue.position = Vector3(0, statue_height / 2.0 + 0.2, -5.5)
 		decorations.add_child(gaela_statue)
-		print("[Dalhurst] Placed Statue of Gaela (Goddess of Harvest)")
 
 	# === STATUE OF MORTHANE (God/Goddess of Death & Rebirth) - Right side behind altar ===
 	# statue_decay4.png - Skeletal/death figure
@@ -1079,7 +1041,6 @@ func _decorate_temple_of_three_gods() -> void:
 		var statue_height: float = morthane_tex.get_height() * morthane_statue.pixel_size
 		morthane_statue.position = Vector3(4.5, statue_height / 2.0 + 0.2, -5.5)
 		decorations.add_child(morthane_statue)
-		print("[Dalhurst] Placed Statue of Morthane (God of Death & Rebirth)")
 
 	# === HANGING ORNAMENTS (from ceiling) ===
 	# Hanging brass/gold ornaments between the columns
@@ -1181,5 +1142,3 @@ func _decorate_temple_of_three_gods() -> void:
 		wall_banner.position = Vector3(0, 4, -6.4)
 		wall_banner.rotation_degrees = Vector3(0, 180, 0)  # Face outward
 		decorations.add_child(wall_banner)
-
-	print("[Dalhurst] Temple of Three Gods decorated with monastery assets")

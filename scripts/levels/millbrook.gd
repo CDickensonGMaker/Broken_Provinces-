@@ -33,7 +33,6 @@ func _ready() -> void:
 	_spawn_locked_doors()
 	_setup_navigation()
 	_setup_cell_streaming()
-	print("[Mill Brook] Farming hamlet loaded")
 
 
 ## Register pre-placed spawn points with groups and metadata
@@ -63,7 +62,6 @@ func _spawn_merchants() -> void:
 		LootTables.LootTier.COMMON,
 		"general"
 	)
-	print("[Mill Brook] Spawned general store merchant")
 
 
 ## Spawn NPCs at marker positions
@@ -141,8 +139,6 @@ func _spawn_npcs() -> void:
 	victim2.npc_type = "millbrook_victim"  # Same type for quest counting
 	victim2.no_quest_dialogue = "I saw the bandit captain - scarred face, black cloak.\nThey've made camp somewhere in the eastern woods.\nPlease, someone has to stop them!"
 
-	print("[Mill Brook] Spawned NPCs including Elder Bram and quest victims")
-
 
 ## Spawn fast travel shrine at marker position
 func _spawn_fast_travel_shrine() -> void:
@@ -155,7 +151,6 @@ func _spawn_fast_travel_shrine() -> void:
 		"Mill Brook Shrine",
 		"millbrook_shrine"
 	)
-	print("[Mill Brook] Spawned fast travel shrine")
 
 
 ## Spawn rest spot at marker position
@@ -164,7 +159,6 @@ func _spawn_rest_spot() -> void:
 	var pos: Vector3 = rest_marker.global_position if rest_marker else Vector3(-2, 0, 8)
 
 	RestSpot.spawn_rest_spot(self, pos, "Mill Brook Bench")
-	print("[Mill Brook] Spawned rest spot")
 
 
 ## Spawn locked doors from markers placed in the scene
@@ -193,7 +187,7 @@ func _spawn_locked_doors() -> void:
 		doors_spawned += 1
 
 	if doors_spawned > 0:
-		print("[Mill Brook] Spawned %d locked doors from markers" % doors_spawned)
+		pass
 
 
 ## Setup navigation mesh
@@ -220,7 +214,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Mill Brook] Navigation mesh baked!")
 
 
 ## Setup cell streaming if we're the main scene (has Player/HUD)
@@ -239,4 +232,3 @@ func _setup_cell_streaming() -> void:
 	var my_coords: Vector2i = WorldGrid.get_location_coords(ZONE_ID)
 	CellStreamer.register_main_scene_cell(my_coords, self)
 	CellStreamer.start_streaming(my_coords)
-	print("[%s] Registered as main scene, streaming started at %s" % [ZONE_ID, my_coords])

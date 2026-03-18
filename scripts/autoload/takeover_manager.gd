@@ -105,7 +105,6 @@ var current_node: Node:
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	print("[TakeoverManager] Initialized")
 
 
 # =============================================================================
@@ -146,7 +145,6 @@ func push_takeover(
 	if current_takeover == takeover:
 		active_takeover_changed.emit(type, node)
 
-	print("[TakeoverManager] Pushed takeover: %s (stack size: %d)" % [type, _takeover_stack.size()])
 	return takeover
 
 
@@ -168,12 +166,10 @@ func pop_takeover() -> TakeoverData:
 
 	if _takeover_stack.is_empty():
 		all_takeovers_cleared.emit()
-		print("[TakeoverManager] All takeovers cleared")
 	else:
 		var new_current: TakeoverData = current_takeover
 		active_takeover_changed.emit(new_current.type, new_current.node)
 
-	print("[TakeoverManager] Popped takeover: %s (stack size: %d)" % [popped_type, _takeover_stack.size()])
 	return popped
 
 
@@ -197,7 +193,6 @@ func pop_takeover_by_type(type: String) -> TakeoverData:
 				var new_current: TakeoverData = current_takeover
 				active_takeover_changed.emit(new_current.type, new_current.node)
 
-			print("[TakeoverManager] Popped takeover by type: %s" % type)
 			return popped
 
 	push_warning("[TakeoverManager] Takeover type not found: %s" % type)
@@ -224,7 +219,6 @@ func pop_takeover_by_node(node: Node) -> TakeoverData:
 				var new_current: TakeoverData = current_takeover
 				active_takeover_changed.emit(new_current.type, new_current.node)
 
-			print("[TakeoverManager] Popped takeover by node: %s" % popped.type)
 			return popped
 
 	push_warning("[TakeoverManager] Takeover node not found")
@@ -250,7 +244,6 @@ func clear_all_takeovers() -> void:
 		takeover_ended.emit(type)
 
 	all_takeovers_cleared.emit()
-	print("[TakeoverManager] Cleared all %d takeovers" % types.size())
 
 
 # =============================================================================

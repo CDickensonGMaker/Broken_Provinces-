@@ -334,8 +334,6 @@ func get_interaction_prompt() -> String:
 func modify_disposition(amount: int) -> void:
 	var old_modifier: int = disposition_modifier
 	disposition_modifier = clampi(disposition_modifier + amount, -50, 50)
-	if disposition_modifier != old_modifier:
-		print("[NPC] %s disposition changed by %d: %d -> %d" % [npc_name, amount, old_modifier, disposition_modifier])
 
 
 ## Get the NPC's current disposition toward the player
@@ -459,17 +457,6 @@ func take_damage(amount: int, damage_type: Enums.DamageType = Enums.DamageType.P
 			_go_unconscious()
 		else:
 			_die(attacker)
-
-	var damage_type_name: String = Enums.DamageType.keys()[damage_type] if damage_type < Enums.DamageType.size() else "UNKNOWN"
-	var attacker_name: String = attacker.name if attacker else "unknown"
-	print("[NPC] %s took %d %s damage from %s (HP: %d/%d)" % [
-		npc_name,
-		actual_damage,
-		damage_type_name,
-		attacker_name,
-		current_health,
-		max_health
-	])
 
 	return actual_damage
 
@@ -639,8 +626,6 @@ func _die(killer: Node = null) -> void:
 
 	_is_dead = true
 
-	print("[NPC] %s has been killed by %s" % [npc_name, killer.name if killer else "unknown"])
-
 	# Report murder crime
 	if killer and killer.is_in_group("player"):
 		_report_murder_crime(killer)
@@ -705,8 +690,6 @@ func _spawn_corpse() -> void:
 
 ## Handle essential NPC going unconscious
 func _go_unconscious() -> void:
-	print("[NPC] %s (essential) has been knocked unconscious" % npc_name)
-
 	# Visual feedback - darken sprite
 	if billboard and billboard.sprite:
 		billboard.sprite.modulate = Color(0.4, 0.4, 0.4)
@@ -734,8 +717,6 @@ func _recover_from_unconscious() -> void:
 	# Resume behavior
 	if wander:
 		wander.resume()
-
-	print("[NPC] %s has recovered" % npc_name)
 
 
 ## Heal this NPC

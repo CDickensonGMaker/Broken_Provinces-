@@ -16,7 +16,6 @@ func _ready() -> void:
 	_setup_day_night_cycle()
 	_setup_spawn_point_metadata()
 	_spawn_dwarf_npcs()
-	print("[Kazan-Dun South Road] Mountain road zone initialized (Zone size: %dx%d)" % [ZONE_SIZE, ZONE_SIZE])
 
 
 ## Setup navigation mesh for NPC pathfinding
@@ -42,7 +41,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Kazan-Dun South Road] Navigation mesh baked")
 
 
 ## Setup dynamic day/night lighting
@@ -79,5 +77,3 @@ func _spawn_dwarf_npcs() -> void:
 	# Patrol on the southern road
 	CivilianNPC.spawn_dwarf_warrior(npcs_node, Vector3(-10, 0, 10), ZONE_ID)
 	CivilianNPC.spawn_dwarf_warrior(npcs_node, Vector3(15, 0, 30), ZONE_ID)
-
-	print("[Kazan-Dun South Road] Spawned dwarf guards")

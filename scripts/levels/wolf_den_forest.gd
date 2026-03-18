@@ -32,8 +32,6 @@ func _ready() -> void:
 	# Quest trigger for reaching the wolf den
 	QuestManager.on_location_reached("wolf_den_forest")
 
-	print("[WolfDenForest] Wolf den initialized!")
-
 
 func _create_materials() -> void:
 	# Forest grass
@@ -84,7 +82,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[WolfDenForest] Navigation mesh baked!")
 
 
 ## ============================================================================
@@ -119,8 +116,6 @@ func _create_forest_clearing() -> void:
 
 	# Surrounding trees (forest border)
 	_create_forest_border()
-
-	print("[WolfDenForest] Forest clearing created")
 
 
 func _create_rock(pos: Vector3, size_mult: float) -> void:
@@ -228,8 +223,6 @@ func _create_wolf_den() -> void:
 	_create_bone_scatter(den, Vector3(1.5, 0, 5))
 	_create_bone_scatter(den, Vector3(-0.5, 0, 6))
 
-	print("[WolfDenForest] Wolf den created")
-
 
 func _create_bone_scatter(parent: Node3D, pos: Vector3) -> void:
 	# Simple bone representation using small white cylinders
@@ -270,8 +263,6 @@ func _spawn_spawn_points() -> void:
 	default_spawn.set_meta("spawn_id", "default")
 	add_child(default_spawn)
 
-	print("[WolfDenForest] Spawn points created at: ", from_thornfield.position)
-
 
 func _spawn_exit_door() -> void:
 	# Exit portal at south end (back to wilderness near Thornfield)
@@ -284,7 +275,6 @@ func _spawn_exit_door() -> void:
 	)
 	portal.rotation.y = PI
 	portal.show_frame = false
-	print("[WolfDenForest] Spawned exit portal")
 
 
 ## ============================================================================
@@ -302,8 +292,6 @@ func _spawn_wolves() -> void:
 
 	# Dire wolf pack leader boss
 	_spawn_dire_wolf(Vector3(0, 0, -8))
-
-	print("[WolfDenForest] Spawned wolf pack")
 
 
 func _spawn_wolf(pos: Vector3) -> void:
@@ -329,7 +317,6 @@ func _spawn_wolf(pos: Vector3) -> void:
 	if enemy:
 		enemy.add_to_group("wolf_pack")
 		enemy.add_to_group("wolf")  # For quest objective tracking
-		print("[WolfDenForest] Spawned wolf at %s" % pos)
 
 
 func _spawn_dire_wolf(pos: Vector3) -> void:
@@ -355,7 +342,6 @@ func _spawn_dire_wolf(pos: Vector3) -> void:
 		enemy.add_to_group("wolf_pack")
 		enemy.add_to_group("dire_wolf")  # For quest objective tracking
 		enemy.add_to_group("bosses")
-		print("[WolfDenForest] Spawned Dire Wolf (BOSS) at %s" % pos)
 
 
 ## ============================================================================
@@ -373,9 +359,6 @@ func _spawn_loot() -> void:
 	)
 	if den_chest:
 		den_chest.setup_with_loot(LootTables.LootTier.UNCOMMON)
-
-	# Wolf pelts can also drop from wolf corpses via loot system
-	print("[WolfDenForest] Spawned loot")
 
 
 ## ============================================================================
@@ -409,5 +392,3 @@ func _create_lighting() -> void:
 	den_light.omni_range = 8.0
 	den_light.position = Vector3(0, 2, -10)
 	add_child(den_light)
-
-	print("[WolfDenForest] Created lighting")

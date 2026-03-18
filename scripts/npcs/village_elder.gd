@@ -483,8 +483,6 @@ func _die(killer: Node = null) -> void:
 
 	_is_dead = true
 
-	print("[VillageElderNPC] %s has been killed" % display_name)
-
 	# Report crime - killing an elder is murder AND causes huge rep loss
 	if killer and killer.is_in_group("player"):
 		var crime_region: String = region_id if not region_id.is_empty() else "unknown"

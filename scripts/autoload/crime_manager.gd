@@ -75,8 +75,6 @@ const BOUNTY_PER_HOUR: int = 100
 
 
 func _ready() -> void:
-	print("[CrimeManager] Initialized")
-
 	# Connect to scene load to validate jail state
 	if SceneManager:
 		SceneManager.scene_load_completed.connect(_on_scene_loaded)
@@ -100,7 +98,6 @@ func _on_scene_loaded(scene_path: String) -> void:
 func _on_time_advanced(hours: float) -> void:
 	if is_jailed and jail_time_remaining > 0.0:
 		jail_time_remaining -= hours
-		print("[CrimeManager] Jail time decreased by %.1f hours, %.1f remaining" % [hours, jail_time_remaining])
 
 		if jail_time_remaining <= 0.0:
 			_release_from_jail()
@@ -129,7 +126,6 @@ func report_crime(crime_type: CrimeType, region_id: String, witnesses: Array = [
 
 	# No witnesses = no crime reported
 	if witnesses.is_empty():
-		print("[CrimeManager] Crime committed but no witnesses")
 		return false
 
 	# Get bounty value for this crime
@@ -139,14 +135,6 @@ func report_crime(crime_type: CrimeType, region_id: String, witnesses: Array = [
 	var current_bounty: int = bounties.get(region_id, 0)
 	bounties[region_id] = current_bounty + bounty_value
 	last_crimes[region_id] = crime_type
-
-	print("[CrimeManager] Crime reported: %s in %s (+%d bounty, total: %d) - %d witnesses" % [
-		CRIME_NAMES.get(crime_type, "Unknown"),
-		region_id,
-		bounty_value,
-		bounties[region_id],
-		witnesses.size()
-	])
 
 	# Emit signal for UI updates
 	bounty_changed.emit(region_id, bounties[region_id])
@@ -294,7 +282,6 @@ func pay_bounty(region_id: String) -> bool:
 	bounties[region_id] = 0
 	last_crimes.erase(region_id)
 
-	print("[CrimeManager] Bounty paid: %d gold in %s" % [bounty, region_id])
 	bounty_changed.emit(region_id, 0)
 
 	return true
@@ -321,7 +308,6 @@ func serve_time(region_id: String) -> void:
 	# Confiscate equipped weapons
 	_confiscate_weapons(region_id)
 
-	print("[CrimeManager] Player jailed in %s for %.1f hours" % [region_id, jail_time_remaining])
 	player_jailed.emit(region_id)
 
 
@@ -332,7 +318,6 @@ func set_bounty(region_id: String, amount: int) -> void:
 	if bounties[region_id] == 0:
 		last_crimes.erase(region_id)
 	bounty_changed.emit(region_id, bounties[region_id])
-	print("[CrimeManager] Bounty in %s set to %d (was %d)" % [region_id, bounties[region_id], old_bounty])
 
 
 ## Clear bounty (for pardons, escapes, or completing jail time)
@@ -341,7 +326,6 @@ func clear_bounty(region_id: String) -> void:
 		bounties[region_id] = 0
 		last_crimes.erase(region_id)
 		bounty_changed.emit(region_id, 0)
-		print("[CrimeManager] Bounty cleared in %s" % region_id)
 
 
 ## Clear all bounties (for pardons or special events)
@@ -376,8 +360,6 @@ func _apply_faction_reputation_penalty(crime_type: CrimeType, _region_id: String
 	var crime_name: String = CRIME_NAMES.get(crime_type, "crime")
 	FactionManager.modify_reputation(town_faction, penalty, "committed %s" % crime_name, true, true)
 
-	print("[CrimeManager] Applied %d reputation penalty to %s for %s" % [penalty, town_faction, crime_name])
-
 
 ## Confiscate player's equipped weapons when jailed
 func _confiscate_weapons(region_id: String) -> void:
@@ -388,14 +370,12 @@ func _confiscate_weapons(region_id: String) -> void:
 		var weapon: Dictionary = InventoryManager.equipment.main_hand.duplicate()
 		confiscated.append(weapon)
 		InventoryManager.equipment.main_hand = {}
-		print("[CrimeManager] Confiscated main hand: %s" % weapon.get("item_id", "unknown"))
 
 	# Get off hand (shield/secondary)
 	if not InventoryManager.equipment.off_hand.is_empty():
 		var off_hand: Dictionary = InventoryManager.equipment.off_hand.duplicate()
 		confiscated.append(off_hand)
 		InventoryManager.equipment.off_hand = {}
-		print("[CrimeManager] Confiscated off hand: %s" % off_hand.get("item_id", "unknown"))
 
 	confiscated_items[region_id] = confiscated
 
@@ -412,7 +392,6 @@ func _return_confiscated_items(region_id: String) -> void:
 
 		if not item_id.is_empty():
 			InventoryManager.add_item(item_id, 1, quality)
-			print("[CrimeManager] Returned confiscated item: %s" % item_id)
 
 	confiscated_items.erase(region_id)
 
@@ -435,7 +414,6 @@ func _release_from_jail() -> void:
 	jail_region = ""
 	jail_time_remaining = 0.0
 
-	print("[CrimeManager] Player released from jail in %s" % region)
 	player_released.emit(region)
 
 
@@ -446,7 +424,6 @@ func on_jail_escape(region_id: String) -> void:
 	var current_bounty: int = bounties.get(region_id, 0)
 	bounties[region_id] = current_bounty + escape_bounty
 
-	print("[CrimeManager] Jail escape! Additional bounty: %d" % escape_bounty)
 	bounty_changed.emit(region_id, bounties[region_id])
 
 	# Return items (player managed to grab them)

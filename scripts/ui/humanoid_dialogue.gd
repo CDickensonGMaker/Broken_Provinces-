@@ -17,8 +17,6 @@ enum DialogueResult {
 	CANCELLED   ## Player closed dialogue (treated as fight)
 }
 
-const DEBUG := false
-
 ## UI elements
 var panel: Panel
 var title_label: Label
@@ -163,12 +161,6 @@ func open(enemy: EnemyBase, group: Array[EnemyBase] = []) -> void:
 	get_tree().paused = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
-	if DEBUG:
-		print("[HumanoidDialogue] Opened for %s (group of %d)" % [
-			enemy.enemy_data.display_name if enemy.enemy_data else "Enemy",
-			target_group.size()
-		])
-
 
 func _calculate_bribe_cost() -> void:
 	bribe_cost = BRIBE_BASE_COST
@@ -271,12 +263,6 @@ func _on_negotiate_pressed() -> void:
 	var player_total := player_speech + player_negotiation + player_roll
 	var enemy_total := enemy_will + enemy_roll
 
-	if DEBUG:
-		print("[HumanoidDialogue] Negotiate: Player(%d+%d+%d=%d) vs Enemy(%d+%d=%d)" % [
-			player_speech, player_negotiation, player_roll, player_total,
-			enemy_will, enemy_roll, enemy_total
-		])
-
 	if player_total > enemy_total:
 		_show_result("You convince them to stand down.", Color(0.3, 1.0, 0.3))
 
@@ -315,12 +301,6 @@ func _on_intimidate_pressed() -> void:
 	var player_total := player_grit + player_intimidation + player_roll
 	var enemy_total := enemy_will + enemy_bravery + enemy_roll
 
-	if DEBUG:
-		print("[HumanoidDialogue] Intimidate: Player(%d+%d+%d=%d) vs Enemy(%d+%d+%d=%d)" % [
-			player_grit, player_intimidation, player_roll, player_total,
-			enemy_will, enemy_bravery, enemy_roll, enemy_total
-		])
-
 	if player_total > enemy_total:
 		_show_result("They cower and flee!", Color(0.8, 0.3, 1.0))
 
@@ -353,11 +333,6 @@ func _close_with_result(result: DialogueResult) -> void:
 	# Unpause and capture mouse
 	get_tree().paused = false
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
-	if DEBUG:
-		var result_names := ["FIGHT", "BRIBE_SUCCESS", "BRIBE_FAIL", "NEGOTIATE_SUCCESS",
-							 "NEGOTIATE_FAIL", "INTIMIDATE_SUCCESS", "INTIMIDATE_FAIL", "CANCELLED"]
-		print("[HumanoidDialogue] Closed with result: %s" % result_names[result])
 
 	dialogue_closed.emit(result)
 

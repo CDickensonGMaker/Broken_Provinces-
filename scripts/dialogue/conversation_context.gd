@@ -46,7 +46,7 @@ var custom_variables: Dictionary = {}
 ## Replace placeholders in text with actual values
 ## Supported placeholders:
 ## {npc_name}, {town_name}, {region_name}, {dungeon_name}, {player_name},
-## {time_of_day}, {weather}, and any custom variables
+## {time_of_day}, {weather}, {player_career}, and any custom variables
 func inject_variables(text: String) -> String:
 	var result: String = text
 
@@ -58,6 +58,9 @@ func inject_variables(text: String) -> String:
 	result = result.replace("{player_name}", player_name)
 	result = result.replace("{time_of_day}", time_of_day)
 	result = result.replace("{weather}", weather)
+
+	# Player career name
+	result = result.replace("{player_career}", _get_player_career_name())
 
 	# Archetype name if profile exists
 	if npc_profile:
@@ -170,6 +173,44 @@ func get_disposition_label() -> String:
 		return "Unfriendly"
 	else:
 		return "Hostile"
+
+
+# =============================================================================
+# PLAYER DATA HELPERS
+# =============================================================================
+
+## Get the player's career name as a displayable string
+func _get_player_career_name() -> String:
+	if not GameManager.player_data:
+		return "adventurer"
+
+	match GameManager.player_data.career:
+		Enums.Career.APPRENTICE:
+			return "apprentice"
+		Enums.Career.FARMER:
+			return "farmer"
+		Enums.Career.GRAVE_DIGGER:
+			return "grave digger"
+		Enums.Career.SCOUT:
+			return "scout"
+		Enums.Career.SOLDIER:
+			return "soldier"
+		Enums.Career.MERCHANT:
+			return "merchant"
+		Enums.Career.PRIEST:
+			return "priest"
+		Enums.Career.THIEF:
+			return "thief"
+		Enums.Career.NOBLE:
+			return "noble"
+		Enums.Career.CULTIST:
+			return "cultist"
+		Enums.Career.ALCHEMIST:
+			return "alchemist"
+		Enums.Career.BEGGAR:
+			return "beggar"
+
+	return "adventurer"
 
 
 # =============================================================================

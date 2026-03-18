@@ -2,6 +2,8 @@
 extends Node
 
 const SaveDataClass = preload("res://scripts/data/save_data.gd")
+# TODO: DungeonState system being reworked for Dingo Room Generator
+# const DungeonStateScript := preload("res://scripts/dungeons/dungeon_state.gd")
 
 signal save_completed(slot: int)
 signal load_completed(slot: int)
@@ -51,8 +53,12 @@ var current_zone_name: String = ""
 var persistent_chest_contents: Dictionary = {}
 
 ## Dungeon seeds for procedural generation persistence
-## Format: { "zone_id": seed_int }
+## Format: { "dungeon_id": seed_int }
 var dungeon_seeds: Dictionary = {}
+
+## Dungeon states for persistence (main/minor dungeon tracking)
+## Format: { "dungeon_id": DungeonState.to_dict() }
+var dungeon_states: Dictionary = {}
 
 ## Pending data to apply after scene load
 var pending_known_spells: Array = []
@@ -211,7 +217,7 @@ func autosave_on_exit() -> void:
 		return
 
 	if save_game(AUTOSAVE_EXIT_SLOT):
-		print("[SaveManager] Exit autosave completed")
+		pass
 
 ## Ensure save directory exists
 func _ensure_save_directory() -> void:
@@ -518,6 +524,7 @@ func _collect_world_data(world_data) -> void:
 	world_data.opened_containers = opened_containers.duplicate()
 	world_data.unlocked_shortcuts = unlocked_shortcuts.duplicate()
 	world_data.dungeon_seeds = dungeon_seeds.duplicate()
+	world_data.dungeon_states = dungeon_states.duplicate()
 
 	# RestManager data (diminishing returns, respawn tracking)
 	if RestManager:
@@ -786,6 +793,10 @@ func _apply_world_data(world_data) -> void:
 	opened_containers = world_data.opened_containers.duplicate()
 	unlocked_shortcuts = world_data.unlocked_shortcuts.duplicate()
 	dungeon_seeds = world_data.dungeon_seeds.duplicate()
+	if "dungeon_states" in world_data and world_data.dungeon_states is Dictionary:
+		dungeon_states = world_data.dungeon_states.duplicate()
+	else:
+		dungeon_states = {}
 
 	# RestManager data
 	if RestManager and not world_data.rest_manager.is_empty():
@@ -1024,18 +1035,10 @@ func _apply_pending_cell_streamer_data() -> void:
 	# don't apply pending data - the scene has already set up streaming correctly.
 	# This prevents duplicate cell loading on save/load.
 	if CellStreamer.streaming_enabled:
-		print("[SaveManager] Skipping pending cell streamer data - streaming already active")
 		_pending_cell_streamer_data.clear()
 		return
 
 	CellStreamer.load_save_data(_pending_cell_streamer_data)
-	print("[SaveManager] Applied cell streamer data: cell (%d, %d), offset (%0.1f, %0.1f, %0.1f)" % [
-		_pending_cell_streamer_data.get("active_cell_x", 0),
-		_pending_cell_streamer_data.get("active_cell_y", 0),
-		_pending_cell_streamer_data.get("world_offset_x", 0.0),
-		_pending_cell_streamer_data.get("world_offset_y", 0.0),
-		_pending_cell_streamer_data.get("world_offset_z", 0.0)
-	])
 	_pending_cell_streamer_data.clear()
 
 
@@ -1316,7 +1319,6 @@ func _refresh_compass_after_load() -> void:
 	var hud: Node = get_tree().get_first_node_in_group("hud")
 	if hud and hud.has_method("refresh_compass_quest_marker"):
 		hud.refresh_compass_quest_marker()
-		print("[SaveManager] Refreshed compass quest marker after load")
 
 
 ## Apply pending known spells to player's SpellCaster with retry mechanism
@@ -1358,7 +1360,6 @@ func _apply_pending_known_spells_with_retry(attempt: int) -> void:
 	for spell_id in pending_known_spells:
 		spell_caster.learn_spell_by_id(spell_id)
 
-	print("[SaveManager] Applied %d pending spells (attempt %d)" % [pending_known_spells.size(), attempt + 1])
 	pending_known_spells.clear()
 
 ## World state tracking methods
@@ -1498,6 +1499,77 @@ func _load_dungeon_seeds_cache() -> void:
 				dungeon_seeds[zone_id] = int(json.data[zone_id])
 
 
+## Get or create a seed for a dungeon (random on first visit, persistent after)
+## Returns the seed value to use for generation
+func get_or_create_dungeon_seed(dungeon_id: String) -> int:
+	if dungeon_id.is_empty():
+		return randi()
+
+	# Check if we already have a seed
+	if dungeon_seeds.has(dungeon_id):
+		return dungeon_seeds[dungeon_id]
+
+	# First visit - generate random seed
+	var new_seed: int = randi()
+	dungeon_seeds[dungeon_id] = new_seed
+	_save_dungeon_seeds_cache()
+
+	print("[SaveManager] Generated new seed for dungeon '%s': %d" % [dungeon_id, new_seed])
+	return new_seed
+
+
+## Check if a dungeon has been visited before
+func has_visited_dungeon(dungeon_id: String) -> bool:
+	return dungeon_seeds.has(dungeon_id)
+
+
+## Get dungeon state (creates new state if doesn't exist)
+## TODO: Dungeon state system being reworked for Dingo Room Generator
+func get_dungeon_state(dungeon_id: String, _is_main: bool = false) -> Dictionary:
+	if dungeon_states.has(dungeon_id):
+		return dungeon_states[dungeon_id]
+	# Return empty state dict
+	return {
+		"dungeon_id": dungeon_id,
+		"seed_value": get_or_create_dungeon_seed(dungeon_id),
+		"first_visited_timestamp": int(Time.get_unix_time_from_system()),
+		"last_visited_timestamp": int(Time.get_unix_time_from_system()),
+		"visit_count": 1,
+		"cleared": false
+	}
+
+
+## Save dungeon state
+## TODO: Dungeon state system being reworked for Dingo Room Generator
+func save_dungeon_state(state: Dictionary) -> void:
+	var dungeon_id: String = state.get("dungeon_id", "")
+	if dungeon_id.is_empty():
+		return
+	state["last_visited_timestamp"] = int(Time.get_unix_time_from_system())
+	state["visit_count"] = state.get("visit_count", 0) + 1
+	dungeon_states[dungeon_id] = state
+
+
+## Get main dungeon state (permanent clear tracking)
+## TODO: Dungeon state system being reworked for Dingo Room Generator
+func get_main_dungeon_state(dungeon_id: String) -> Dictionary:
+	return get_dungeon_state(dungeon_id, true)
+
+
+## Get minor dungeon state (respawning)
+## TODO: Dungeon state system being reworked for Dingo Room Generator
+func get_minor_dungeon_state(dungeon_id: String) -> Dictionary:
+	return get_dungeon_state(dungeon_id, false)
+
+
+## Check if a main dungeon has been cleared
+func is_dungeon_cleared(dungeon_id: String) -> bool:
+	if not dungeon_states.has(dungeon_id):
+		return false
+	var data: Dictionary = dungeon_states[dungeon_id]
+	return data.get("cleared", false)
+
+
 ## Reset world state (for new game)
 func reset_world_state() -> void:
 	discovered_locations.clear()
@@ -1508,6 +1580,7 @@ func reset_world_state() -> void:
 	unlocked_shortcuts.clear()
 	persistent_chest_contents.clear()
 	dungeon_seeds.clear()
+	dungeon_states.clear()
 	current_zone_id = ""
 	current_zone_name = ""
 	total_play_time = 0.0

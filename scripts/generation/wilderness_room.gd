@@ -164,8 +164,6 @@ static func _init_texture_cache() -> void:
 	# Plains tree textures (same as forest)
 	_tree_textures_plains = _tree_textures_forest.duplicate()
 
-	print("[WildernessRoom] Texture cache initialized: %d grass, %d forest trees, %d swamp trees" % [
-		_grass_textures.size(), _tree_textures_forest.size(), _tree_textures_swamp.size()])
 
 
 ## PERFORMANCE: Get a cached texture by path (avoids repeated load() calls)
@@ -218,8 +216,6 @@ func generate(seed_value: int = 0, coords: Vector2i = Vector2i.ZERO) -> void:
 	var cell_info: WorldGrid.CellInfo = WorldGrid.get_cell(coords)
 	var is_handcrafted: bool = cell_info != null and cell_info.scene_path != ""
 	if is_handcrafted:
-		print("[WildernessRoom] Skipping procedural content for hand-crafted cell %s (%s)" % [
-			coords, cell_info.location_name])
 		room_generated.emit(self)
 		return
 
@@ -230,15 +226,9 @@ func generate(seed_value: int = 0, coords: Vector2i = Vector2i.ZERO) -> void:
 	var coverage: Dictionary = WorldGrid.is_covered_by_scene(coords)
 	if coverage.get("covered", false):
 		is_covered_by_handcrafted = true
-		print("[WildernessRoom] Cell %s covered by %s - will generate terrain but skip enemies/ruins" % [
-			coords, coverage.get("by_location", "unknown")])
 
 	# Check if this is a road cell
 	is_road_cell = WorldGrid.is_road(coords)
-
-	print("[WildernessRoom] Generating room at %s with seed %d, biome: %s, is_road: %s, seamless: %s, covered: %s" % [
-		coords, room_seed, Biome.keys()[biome], is_road_cell, seamless_mode, is_covered_by_handcrafted
-	])
 
 	_setup_materials()
 	_create_ground()
@@ -362,7 +352,6 @@ func _create_water_cell() -> void:
 
 	# Create boundary walls (impassable water)
 	CellEdge.create_boundary_walls(self, grid_coords, room_size)
-	print("[WildernessRoom] Created water cell at %s" % grid_coords)
 
 
 ## Create a coastal cell (sandy beach with water on water-adjacent edges)
@@ -415,7 +404,6 @@ func _create_coast_cell(coords: Vector2i) -> void:
 
 	# Create edges where needed
 	CellEdge.create_boundary_walls(self, grid_coords, room_size)
-	print("[WildernessRoom] Created coast cell at %s" % coords)
 
 
 ## Add a water plane along a specific edge direction
@@ -667,9 +655,6 @@ func _create_road_if_needed() -> void:
 			stub.material = road_mat
 			road_container.add_child(stub)
 
-	print("[WildernessRoom] Created dirt road (N:%s S:%s E:%s W:%s)" % [
-		north_road, south_road, east_road, west_road
-	])
 
 
 ## Spawn environmental props (trees, grass, gravestones) based on biome
@@ -1029,8 +1014,6 @@ func _create_invisible_walls() -> void:
 		wall.add_child(col_shape)
 		wall_container.add_child(wall)
 
-	print("[WildernessRoom] Created invisible boundary walls")
-
 
 ## Handle player entering an edge (legacy - kept for compatibility)
 func _on_edge_entered(direction: int) -> void:
@@ -1038,7 +1021,6 @@ func _on_edge_entered(direction: int) -> void:
 	if seamless_mode:
 		return
 
-	print("[WildernessRoom] Edge triggered: %s" % CellEdge.Direction.keys()[direction])
 	edge_triggered.emit(direction)
 
 
@@ -1071,8 +1053,6 @@ func _create_spawn_points() -> void:
 		point.add_to_group("spawn_points")
 		point.position = data["pos"]
 		spawn_container.add_child(point)
-
-	print("[WildernessRoom] Created 4 directional spawn points with metadata")
 
 
 ## Set the background - BackgroundManager removed, handled by environment
@@ -1165,8 +1145,6 @@ func _spawn_observation_tower(existing_positions: Array[Vector3]) -> void:
 		if chest:
 			chest.setup_with_loot(LootTables.LootTier.UNCOMMON)
 
-	print("[WildernessRoom] Spawned Observation Tower at %s" % pos)
-
 
 ## Spawn Cursed Totems near ruins (skeleton spawners)
 func _spawn_cursed_totems() -> void:
@@ -1190,7 +1168,6 @@ func _spawn_cursed_totems() -> void:
 		var totem := CursedTotem.spawn_totem(self, totem_pos, totem_id)
 		if totem:
 			cursed_totems.append(totem)
-			print("[WildernessRoom] Spawned Cursed Totem near ruin at %s" % totem_pos)
 
 
 ## Create a ruin structure
@@ -1449,7 +1426,6 @@ func _spawn_environment() -> void:
 		cross.position = _get_random_content_position()  # Use content position to keep away from edges
 		add_child(cross)
 		props.append(cross)
-		print("[WildernessRoom] Spawned hillcross at %s" % cross.position)
 
 	# Spawn mushrooms (harvestable without tools)
 	for i in range(mushroom_count):
@@ -1973,8 +1949,6 @@ func _spawn_enemies() -> void:
 	var placed_positions: Array[Vector3] = []
 	var min_enemy_distance := 6.0  # Reduced from 8 to allow more enemies
 
-	print("[WildernessRoom] Spawning %d enemies (danger %d, range %d-%d)" % [count, danger, scaled_min, scaled_max])
-
 	for i in range(count):
 		var attempts := 0
 		var max_attempts := 15
@@ -2056,9 +2030,6 @@ func _spawn_enemies() -> void:
 		if enemy:
 			enemies.append(enemy)
 			placed_positions.append(pos)
-			print("[WildernessRoom] Spawned %s at %s (zone_danger: %d)" % [enemy_config.display_name, pos, danger])
-
-	print("[WildernessRoom] Spawned %d enemies" % enemies.size())
 
 
 ## Get enemy configuration based on biome AND danger level
@@ -2280,7 +2251,6 @@ func _spawn_fireplace() -> void:
 	fireplace.set_meta("display_name", "Wild Campfire")
 
 	add_child(fireplace)
-	print("[WildernessRoom] Spawned wild fireplace at %s" % pos)
 
 
 ## Spawn traveling merchant (rare encounter)
@@ -2301,9 +2271,6 @@ func _spawn_traveling_merchant() -> void:
 		traveling_merchant.set_meta("poi_icon", "$")  # Dollar sign for merchant
 		traveling_merchant.set_meta("poi_color", Color(1.0, 0.85, 0.2))  # Gold color
 		traveling_merchant.set_meta("display_name", traveling_merchant.get_display_name())
-		print("[WildernessRoom] Spawned traveling merchant '%s' at %s" % [
-			traveling_merchant.get_display_name(), pos
-		])
 
 
 ## Spawn Spock easter egg (ultra rare encounter)
@@ -2331,7 +2298,6 @@ func _spawn_spock_easter_egg() -> void:
 		spock_easter_egg.set_meta("poi_icon", "?")  # Mystery icon
 		spock_easter_egg.set_meta("poi_color", Color(0.4, 0.6, 1.0))  # Blue color
 		spock_easter_egg.set_meta("display_name", "Pointed-Eared Stranger")
-		print("[WildernessRoom] !!! RARE SPAWN: The Pointed-Eared Stranger has appeared at %s !!!" % pos)
 
 
 ## Create boundary props (trees/rocks at edges to indicate room boundary)
@@ -2402,9 +2368,6 @@ func _create_mountain_barriers() -> void:
 	for dir_data: Dictionary in directions:
 		# Skip the direction the player entered from - don't block their return path
 		if entry_direction >= 0 and dir_data["dir"] == entry_direction:
-			print("[WildernessRoom] Skipping barrier on %s edge (player entry direction)" % [
-				["North", "South", "East", "West"][dir_data["dir"]]
-			])
 			continue
 
 		var adjacent_coords: Vector2i = grid_coords + dir_data["offset"]
@@ -2415,23 +2378,12 @@ func _create_mountain_barriers() -> void:
 			if adjacent_cell.terrain == WorldGrid.Terrain.BLOCKED:
 				# Mountains/blocked terrain - spawn mountain wall
 				_spawn_mountain_wall(dir_data)
-				print("[WildernessRoom] Added mountain barrier on %s edge (adjacent cell %s is BLOCKED)" % [
-					["North", "South", "East", "West"][dir_data["dir"]],
-					adjacent_coords
-				])
 			elif adjacent_cell.terrain == WorldGrid.Terrain.WATER or adjacent_cell.terrain == WorldGrid.Terrain.COAST:
 				# Water/coast - spawn water boundary (visual only, collision handled by CellStreamer)
 				_spawn_water_boundary(dir_data)
-				print("[WildernessRoom] Added water boundary on %s edge (adjacent cell %s is water/coast)" % [
-					["North", "South", "East", "West"][dir_data["dir"]],
-					adjacent_coords
-				])
 		elif not WorldGrid.is_in_bounds(adjacent_coords):
 			# Out of bounds - treat as blocked
 			_spawn_mountain_wall(dir_data)
-			print("[WildernessRoom] Added mountain barrier on %s edge (out of bounds)" % [
-				["North", "South", "East", "West"][dir_data["dir"]]
-			])
 
 
 ## Spawn a wall of mountain blocks along an edge
@@ -2853,9 +2805,6 @@ func _spawn_signposts_if_road() -> void:
 		signpost.rotation.y = dir_data["rot"]
 		add_child(signpost)
 		signposts.append(signpost)
-
-	if signposts.size() > 0:
-		print("[WildernessRoom] Spawned %d signposts" % signposts.size())
 
 
 ## Find the nearest named destination in a given direction

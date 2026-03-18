@@ -87,5 +87,3 @@ func _spawn_fire_bats() -> void:
 		"res://assets/sprites/enemies/beasts/bat_fire.png",
 		Vector3(0, 4, 0)
 	)
-
-	print("[KD Level 4] Spawned fire bats in forge areas")

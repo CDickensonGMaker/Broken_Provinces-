@@ -8,8 +8,6 @@ signal critical_hit(attacker: Node, target: Node)
 signal horror_check_triggered(source: Node, target: Node, passed: bool)
 signal humanoid_dialogue_requested(enemy: Node, group: Array)  ## Emitted when humanoid combat dialogue should open
 
-const DEBUG := false
-
 ## Active combatants tracking
 var active_enemies: Array[Node] = []
 var player: Node = null
@@ -143,8 +141,6 @@ func apply_melee_damage(
 			var stealth_skill: int = attacker_data.get_skill(Enums.Skill.STEALTH)
 			var stealth_mult: float = StealthConstants.get_stealth_backstab_multiplier(stealth_skill, true)
 			total_damage = int(total_damage * stealth_mult)
-			if DEBUG:
-				print("[CombatManager] Stealth attack! Multiplier: %.2f" % stealth_mult)
 
 	# Critical hit check
 	var crit_chance: float = weapon.crit_chance

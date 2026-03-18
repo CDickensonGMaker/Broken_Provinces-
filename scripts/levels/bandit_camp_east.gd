@@ -23,7 +23,6 @@ func _ready() -> void:
 	var is_main_scene: bool = get_node_or_null("Player") != null
 	if is_main_scene:
 		DayNightCycle.add_to_level(self)
-	print("[BanditCampEast] Camp loaded")
 
 
 func _setup_environment() -> void:
@@ -101,8 +100,6 @@ func _spawn_enemies_from_markers() -> void:
 				h_frames,
 				v_frames
 			)
-
-	print("[BanditCampEast] Spawned enemies from %d markers" % enemy_spawns.get_child_count())
 
 
 func _spawn_chests_from_markers() -> void:
@@ -200,4 +197,3 @@ func _setup_cell_streaming() -> void:
 	var my_coords: Vector2i = WorldGrid.get_location_coords("bandit_camp_east")
 	CellStreamer.register_main_scene_cell(my_coords, self)
 	CellStreamer.start_streaming(my_coords)
-	print("[BanditCampEast] Streaming started at %s" % my_coords)

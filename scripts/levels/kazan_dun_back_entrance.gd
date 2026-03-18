@@ -16,7 +16,6 @@ func _ready() -> void:
 	_setup_navigation()
 	_setup_spawn_point_metadata()
 	_spawn_dwarf_npcs()
-	print("[Kazan-Dun South Entrance] Grand southern entrance initialized (Zone size: %dx%d)" % [ZONE_SIZE_X, ZONE_SIZE_Z])
 
 
 ## Setup navigation mesh for NPC pathfinding
@@ -42,7 +41,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Kazan-Dun Back Entrance] Navigation mesh baked")
 
 
 ## Add metadata to spawn points for proper identification
@@ -77,5 +75,3 @@ func _spawn_dwarf_npcs() -> void:
 	# Wandering guards on patrol
 	CivilianNPC.spawn_dwarf_warrior(npcs_node, Vector3(-20, 0, 0), ZONE_ID)
 	CivilianNPC.spawn_dwarf_warrior(npcs_node, Vector3(20, 0, 10), ZONE_ID)
-
-	print("[Kazan-Dun South Entrance] Spawned dwarf guards")

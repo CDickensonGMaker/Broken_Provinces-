@@ -61,9 +61,6 @@ func _load_enchantment_database() -> void:
 			var ench: EnchantmentData = load(path) as EnchantmentData
 			if ench and ench.id:
 				enchantment_database[ench.id] = ench
-				print("[EnchantmentManager] Loaded enchantment: ", ench.id)
-
-	print("[EnchantmentManager] Loaded %d enchantments" % enchantment_database.size())
 
 ## Get enchantment by ID
 func get_enchantment(enchantment_id: String) -> EnchantmentData:
@@ -159,7 +156,6 @@ func apply_enchantment(enchantment_id: String, slot: String) -> bool:
 	# Emit signal
 	enchantment_applied.emit(equip_data.get("item_id", ""), slot, enchantment_id)
 
-	print("[EnchantmentManager] Applied %s to %s" % [enchantment_id, slot])
 	return true
 
 ## Get enchantments on an equipped item
@@ -275,7 +271,6 @@ func _add_soul_energy(energy: int, enemy_level: int) -> void:
 				soulstone_energy.erase(empty_id)
 
 				soulstone_filled.emit(filled_id, tier)
-				print("[EnchantmentManager] Soulstone filled: %s" % filled_id)
 
 				# Show notification
 				var hud := get_tree().get_first_node_in_group("hud")

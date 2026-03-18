@@ -58,8 +58,6 @@ func _ready() -> void:
 	_spawn_enemies()
 	_spawn_chests_from_markers()
 
-	print("[MosshallTombs] Dungeon initialized with %d rooms" % 13)
-
 
 func _create_materials() -> void:
 	# Base stone - green moss tint
@@ -353,8 +351,6 @@ func _setup_spawn_point_metadata() -> void:
 			marker.set_meta("spawn_id", marker.get_meta("spawn_id"))
 		marker.add_to_group("spawn_points")
 
-	print("[MosshallTombs] Spawn points configured from scene markers")
-
 
 ## Spawn doors from DoorPositions markers
 func _spawn_doors_from_markers() -> void:
@@ -382,7 +378,6 @@ func _spawn_doors_from_markers() -> void:
 		)
 		if door:
 			door.rotation = marker.rotation
-			print("[MosshallTombs] Spawned door: %s" % door_label)
 
 
 ## ===========================================================================
@@ -522,8 +517,6 @@ func _spawn_chests_from_markers() -> void:
 		if chest:
 			chest.rotation = marker.rotation
 			chest.setup_with_loot(loot_tier)
-
-	print("[MosshallTombs] Spawned loot chests from markers")
 
 
 ## Parse loot tier string to enum

@@ -51,12 +51,6 @@ func _initialize_room() -> void:
 	_setup_room_trigger()
 
 	is_initialized = true
-	print("[ModularRoom] %s initialized (NPCs: %d, Enemies: %d, Chests: %d)" % [
-		room_id if room_id else name,
-		spawned_npcs.size(),
-		spawned_enemies.size(),
-		spawned_chests.size()
-	])
 
 
 ## Process NPC spawn markers (Marker3D nodes with npc_type metadata)

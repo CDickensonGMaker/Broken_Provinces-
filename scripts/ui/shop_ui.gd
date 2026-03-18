@@ -433,30 +433,21 @@ func _refresh_player_list() -> void:
 		child.queue_free()
 
 	if not merchant:
-		print("[ShopUI] _refresh_player_list: No merchant!")
 		return
 
 	# Get merchant buy categories
 	var buy_categories := _get_merchant_buy_categories()
-	print("[ShopUI] Player inventory size: %d, buy_categories: %s, shop_type: %s" % [InventoryManager.inventory.size(), str(buy_categories), merchant.shop_type])
 
 	# Add player inventory items (filtered by what merchant buys)
-	var added_count: int = 0
 	for i in range(InventoryManager.inventory.size()):
 		var inv_item: Dictionary = InventoryManager.inventory[i]
-		var item_type := LootTables._get_item_type(inv_item.item_id)
 
 		# Check if merchant will buy this item
 		if not _merchant_will_buy(inv_item.item_id, buy_categories):
-			print("[ShopUI]   Item %d: %s (type=%s) - FILTERED" % [i, inv_item.item_id, item_type])
 			continue
 
-		print("[ShopUI]   Item %d: %s (type=%s) - ADDING" % [i, inv_item.item_id, item_type])
 		var row := _create_player_row(i, inv_item)
 		player_list.add_child(row)
-		added_count += 1
-
-	print("[ShopUI] Added %d player items to list" % added_count)
 
 func _refresh_shop_list() -> void:
 	# Clear existing items

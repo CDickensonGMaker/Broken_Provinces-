@@ -39,7 +39,6 @@ func add_note(text: String, source_npc: String = "Player", source_location: Stri
 	next_note_id += 1
 
 	note_added.emit(note)
-	print("[Journal] Note added: %s" % text.substr(0, 50))
 	return note
 
 
@@ -122,7 +121,6 @@ func record_creature_kill(creature_id: String, creature_name: String, creature_t
 			"resistances": resistances,
 			"discovered_time": Time.get_unix_time_from_system()
 		}
-		print("[Journal] Bestiary entry created: %s" % creature_name)
 
 	# Increment kill count
 	bestiary[creature_id]["kill_count"] += 1
@@ -211,7 +209,6 @@ func unlock_bestiary_from_book(creature_id: String) -> bool:
 			"discovered_time": Time.get_unix_time_from_system(),
 			"from_book": true  # Mark as learned from book
 		}
-		print("[Journal] Bestiary entry created from book: %s" % creature_id)
 	else:
 		# Already have entry from kills - mark as also learned from book for full knowledge
 		bestiary[creature_id]["from_book"] = true
@@ -280,7 +277,6 @@ func unlock_codex_entry(entry_id: String, category: String = "") -> bool:
 		CodexManager.discover_recipe(entry_id)
 
 	codex_entry_unlocked.emit(entry_id, category)
-	print("[Journal] Codex entry unlocked: %s" % entry_id)
 
 	if StatsTracker:
 		StatsTracker.track_stat("recipes_discovered")

@@ -169,7 +169,6 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var key_event: InputEventKey = event
 		if key_event.pressed and key_event.keycode == KEY_ESCAPE:
-			print("[FastTravelUI] ESC pressed - closing")
 			hide_ui()
 			get_viewport().set_input_as_handled()
 			return
@@ -407,7 +406,6 @@ func _on_location_selected(index: int) -> void:
 		return
 
 	var location_id: String = btn.get_meta("location_id")
-	print("[FastTravelUI] Selected destination: %s" % location_id)
 
 	destination_selected.emit(location_id)
 
@@ -420,14 +418,8 @@ func _on_location_selected(index: int) -> void:
 
 ## Execute the actual travel (async)
 func _execute_travel(location_id: String) -> void:
-	print("[FastTravelUI] Executing travel to: %s" % location_id)
-
 	if SceneManager:
-		print("[FastTravelUI] Calling SceneManager.dev_fast_travel_to()")
 		await SceneManager.dev_fast_travel_to(location_id)
-		print("[FastTravelUI] Travel complete")
-	else:
-		print("[FastTravelUI] ERROR: SceneManager not found!")
 
 
 ## Handle close button

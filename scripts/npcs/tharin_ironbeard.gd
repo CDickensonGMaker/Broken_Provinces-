@@ -83,10 +83,7 @@ func _ready() -> void:
 	for q_id: String in quest_ids:
 		if QuestManager.is_quest_active(q_id) or QuestManager.is_quest_completed(q_id):
 			has_given_quest = true
-			print("[TharinIronbeard] Quest '%s' already active/completed - has_given_quest = true" % q_id)
 			break
-
-	print("[TharinIronbeard] Initialized. has_given_quest: %s" % has_given_quest)
 
 	# Connect to ConversationSystem signals for quest handling
 	if not ConversationSystem.conversation_ended.is_connected(_on_conversation_ended):
@@ -130,7 +127,6 @@ func _check_player_exit_distance() -> void:
 	if distance_from_center > EXIT_DISTANCE_THRESHOLD:
 		if not _player_near_exit:
 			_player_near_exit = true
-			print("[TharinIronbeard] Player at distance %.1f - intercepting!" % distance_from_center)
 			_intercept_player()
 	else:
 		_player_near_exit = false
@@ -225,7 +221,7 @@ func _create_collision() -> void:
 ## Simple distance-based check instead of complex Area3D zones
 func _setup_exit_detection() -> void:
 	# No complex Area3D setup needed - we check distance in _physics_process
-	print("[TharinIronbeard] Exit detection initialized (distance-based)")
+	pass
 
 
 ## Intercept player trying to leave without the quest
@@ -433,8 +429,6 @@ func _die(killer: Node = null) -> void:
 		return
 
 	_is_dead = true
-
-	print("[TharinIronbeard] Tharin Ironbeard has been killed!")
 
 	# Report crime - killing Tharin is murder (and a major story consequence!)
 	if killer and killer.is_in_group("player"):

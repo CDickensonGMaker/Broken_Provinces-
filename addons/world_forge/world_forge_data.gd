@@ -4,30 +4,42 @@ extends RefCounted
 ## Data structures for the World Forge editor state
 
 ## Layer value definitions
-const BIOME_VALUES: Array[String] = ["plains", "forest", "swamp", "tundra", "desert", "badlands"]
-const ELEVATION_VALUES: Array[String] = ["flat", "hill", "mountain"]
-const WATER_VALUES: Array[String] = ["ocean", "lake", "river"]
-const POI_VALUES: Array[String] = ["town", "village", "city", "capital", "dungeon", "landmark", "outpost", "cave", "ruins", "shrine"]
+const TERRAIN_VALUES: Array[String] = [
+	"plains", "forest", "swamp", "tundra", "desert", "badlands",
+	"hill", "mountain",
+	"ocean", "lake", "river"
+]
+
+const ROAD_VALUES: Array[String] = [
+	"dirt_road", "stone_road", "cobblestone", "path", "bridge"
+]
+
+const POI_VALUES: Array[String] = ["town", "village", "city", "capital", "dungeon", "landmark", "outpost", "cave", "ruins", "shrine", "fortress", "port", "camp", "bridge"]
 
 ## Layer colors for rendering
 const LAYER_COLORS: Dictionary = {
-	"biome": {
+	"terrain": {
+		# Land biomes
 		"plains": Color(0.55, 0.70, 0.38),
 		"forest": Color(0.24, 0.42, 0.19),
 		"swamp": Color(0.18, 0.29, 0.16),
 		"tundra": Color(0.63, 0.78, 0.82),
 		"desert": Color(0.83, 0.72, 0.59),
-		"badlands": Color(0.55, 0.27, 0.07)
+		"badlands": Color(0.55, 0.27, 0.07),
+		# Elevation
+		"hill": Color(0.6, 0.5, 0.4),
+		"mountain": Color(0.3, 0.3, 0.35),
+		# Water
+		"ocean": Color(0.2, 0.35, 0.6),
+		"lake": Color(0.25, 0.45, 0.7),
+		"river": Color(0.3, 0.5, 0.75)
 	},
-	"elevation": {
-		"flat": Color(0.4, 0.4, 0.4, 0.0),
-		"hill": Color(0.6, 0.5, 0.4, 0.6),
-		"mountain": Color(0.3, 0.3, 0.35, 0.8)
-	},
-	"water": {
-		"ocean": Color(0.2, 0.35, 0.6, 0.9),
-		"lake": Color(0.25, 0.45, 0.7, 0.8),
-		"river": Color(0.3, 0.5, 0.75, 0.7)
+	"road": {
+		"dirt_road": Color(0.55, 0.45, 0.35),
+		"stone_road": Color(0.5, 0.5, 0.5),
+		"cobblestone": Color(0.45, 0.45, 0.48),
+		"path": Color(0.6, 0.5, 0.4),
+		"bridge": Color(0.5, 0.4, 0.3)
 	},
 	"poi": {
 		"town": Color(0.9, 0.75, 0.4),
@@ -39,7 +51,11 @@ const LAYER_COLORS: Dictionary = {
 		"outpost": Color(0.5, 0.5, 0.3),
 		"cave": Color(0.4, 0.35, 0.3),
 		"ruins": Color(0.5, 0.45, 0.4),
-		"shrine": Color(0.6, 0.5, 0.7)
+		"shrine": Color(0.6, 0.5, 0.7),
+		"fortress": Color(0.4, 0.4, 0.5),
+		"port": Color(0.3, 0.5, 0.7),
+		"camp": Color(0.6, 0.4, 0.3),
+		"bridge": Color(0.5, 0.45, 0.35)
 	}
 }
 
@@ -54,7 +70,11 @@ const POI_ICONS: Dictionary = {
 	"outpost": "O",
 	"cave": "c",
 	"ruins": "R",
-	"shrine": "S"
+	"shrine": "S",
+	"fortress": "F",
+	"port": "P",
+	"camp": "^",
+	"bridge": "="
 }
 
 
@@ -65,12 +85,11 @@ class MapState:
 	var grid_height: int = 64
 	var origin: Vector2i = Vector2i(32, 32)
 	var layers: Dictionary = {
-		"biome": [],
-		"elevation": [],
-		"water": [],
+		"terrain": [],
+		"road": [],
 		"poi": []
 	}
-	var poi_data: Dictionary = {}  # String(index) -> Dictionary {name, type, notes, x, y, scene_path, location_id}
+	var poi_data: Dictionary = {}  # String(index) -> Dictionary {name, type, notes, x, y, scene_path, layout_path, location_id}
 
 	func _init() -> void:
 		_init_layers()
@@ -127,18 +146,67 @@ class MapState:
 
 		var loaded_layers: Dictionary = data.get("layers", {})
 		_init_layers()
-		for layer_name: String in loaded_layers.keys():
-			if layers.has(layer_name):
-				var loaded_array: Array = loaded_layers[layer_name]
-				for i: int in range(mini(loaded_array.size(), layers[layer_name].size())):
-					layers[layer_name][i] = loaded_array[i]
+
+		# Check if this is old format (has biome/elevation/water) or new format (has terrain/road)
+		var is_old_format: bool = loaded_layers.has("biome") and not loaded_layers.has("terrain")
+
+		if is_old_format:
+			# Migrate old format: merge biome/elevation/water into terrain
+			var biome_array: Array = loaded_layers.get("biome", [])
+			var elevation_array: Array = loaded_layers.get("elevation", [])
+			var water_array: Array = loaded_layers.get("water", [])
+			var poi_array: Array = loaded_layers.get("poi", [])
+
+			# Map old elevation values to terrain values
+			var elevation_to_terrain: Dictionary = {
+				"hill": "hill",
+				"mountain": "mountain"
+			}
+
+			# Map old water values to terrain values
+			var water_to_terrain: Dictionary = {
+				"ocean": "ocean",
+				"lake": "lake",
+				"river": "river"
+			}
+
+			# Build terrain layer: start with biome, overlay elevation, overlay water
+			for i: int in range(mini(biome_array.size(), layers["terrain"].size())):
+				var terrain_val: Variant = biome_array[i]
+
+				# Elevation overwrites biome (hill, mountain)
+				if i < elevation_array.size() and elevation_array[i] != null:
+					var elev_val: Variant = elevation_array[i]
+					if elev_val in elevation_to_terrain:
+						terrain_val = elevation_to_terrain[elev_val]
+
+				# Water overwrites everything (ocean, lake, river)
+				if i < water_array.size() and water_array[i] != null:
+					var water_val: Variant = water_array[i]
+					if water_val in water_to_terrain:
+						terrain_val = water_to_terrain[water_val]
+
+				layers["terrain"][i] = terrain_val
+
+			# POI layer stays the same
+			for i: int in range(mini(poi_array.size(), layers["poi"].size())):
+				layers["poi"][i] = poi_array[i]
+
+			# Road layer starts empty (old format didn't have painted roads)
+		else:
+			# New format: load layers directly
+			for layer_name: String in loaded_layers.keys():
+				if layers.has(layer_name):
+					var loaded_array: Array = loaded_layers[layer_name]
+					for i: int in range(mini(loaded_array.size(), layers[layer_name].size())):
+						layers[layer_name][i] = loaded_array[i]
 
 		poi_data = data.get("poi_data", {}).duplicate(true)
 
 
 ## Editor state container - UI/tool state
 class EditorState:
-	var current_layer: String = "biome"
+	var current_layer: String = "terrain"
 	var current_brush: String = "forest"
 	var brush_size: int = 1
 	var is_eraser: bool = false
@@ -148,11 +216,10 @@ class EditorState:
 	var zoom: float = 1.0
 	var pan_offset: Vector2 = Vector2.ZERO
 	var layer_visibility: Dictionary = {
-		"biome": true,
-		"elevation": true,
-		"water": true,
+		"terrain": true,
+		"road": true,
 		"poi": true
 	}
 	var show_grid: bool = true
 	var show_origin: bool = true
-	var show_roads: bool = true
+	var show_roads: bool = true  # Deprecated, use layer_visibility["road"]

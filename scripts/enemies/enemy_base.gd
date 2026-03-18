@@ -2,8 +2,6 @@
 class_name EnemyBase
 extends CharacterBody3D
 
-const DEBUG := true  # Set to true for AI diagnosis - TESTING FIX
-
 signal damaged(amount: int, damage_type: Enums.DamageType, attacker: Node)
 signal died(killer: Node)
 signal state_changed(old_state: int, new_state: int)
@@ -255,8 +253,6 @@ func _ready() -> void:
 
 	# Store spawn position for stationary enemies
 	spawn_position = global_position
-	var enemy_name: String = enemy_data.display_name if enemy_data else name
-	print("[Enemy] ", enemy_name, " _ready() - spawn_position set to: ", spawn_position, " (global_pos=", global_position, ")")
 
 	# Connect to floating origin shift signal to update stored positions
 	if CellStreamer and CellStreamer.has_signal("origin_shifted"):
@@ -289,10 +285,6 @@ func _ready() -> void:
 	if hitbox:
 		hitbox.set_owner_entity(self)
 		hitbox.add_to_group("enemy_hitbox")
-		if DEBUG:
-			print("[Enemy] Hitbox configured: ", hitbox.name, " layer=", hitbox.collision_layer, " mask=", hitbox.collision_mask)
-	elif DEBUG:
-		print("[Enemy] WARNING: No hitbox found!")
 
 	# Setup hurtbox
 	if hurtbox:
@@ -365,10 +357,6 @@ func _on_origin_shifted(shift: Vector3) -> void:
 	# Update patrol points
 	for i in range(patrol_points.size()):
 		patrol_points[i] -= shift
-
-	if DEBUG:
-		var enemy_name: String = enemy_data.display_name if enemy_data else name
-		print("[Enemy] ", enemy_name, " origin shifted by ", shift, " - spawn_position now: ", spawn_position)
 
 
 func _initialize_from_data() -> void:
@@ -449,20 +437,14 @@ func _select_random_behavior() -> void:
 	cumulative += stationary_weight
 	if roll < cumulative:
 		behavior_mode = BehaviorMode.STATIONARY
-		if DEBUG:
-			print("[Enemy] Random behavior selected: STATIONARY")
 		return
 
 	cumulative += patrol_weight
 	if roll < cumulative:
 		behavior_mode = BehaviorMode.PATROL
-		if DEBUG:
-			print("[Enemy] Random behavior selected: PATROL")
 		return
 
 	behavior_mode = BehaviorMode.WANDER
-	if DEBUG:
-		print("[Enemy] Random behavior selected: WANDER")
 
 ## Randomly become a ranged enemy based on ranged_chance
 func _try_become_ranged() -> void:
@@ -476,8 +458,6 @@ func _try_become_ranged() -> void:
 			var default_arrow := load("res://resources/projectiles/arrow_basic.tres") as ProjectileData
 			if default_arrow:
 				ranged_attack_projectile = default_arrow
-		if DEBUG:
-			print("[Enemy] Randomly became RANGED enemy")
 
 ## Generate random patrol points around spawn position
 func _generate_patrol_points() -> void:
@@ -490,10 +470,6 @@ func _generate_patrol_points() -> void:
 		var point := spawn_position + offset
 		patrol_points.append(point)
 
-	if DEBUG:
-		print("[Enemy] Generated ", patrol_point_count, " patrol points within radius ", patrol_radius)
-		for i in range(patrol_points.size()):
-			print("  Point ", i, ": ", patrol_points[i])
 
 ## Wait for navigation mesh to be ready before starting behavior
 ## Simple approach: wait 2 physics frames for NavigationServer3D to sync after baking
@@ -507,41 +483,21 @@ func _wait_for_navigation_then_start() -> void:
 
 ## Start the initial behavior state immediately
 func _start_initial_behavior() -> void:
-	if DEBUG:
-		print("[Enemy] _start_initial_behavior called")
-		print("[Enemy]   behavior_mode=", behavior_mode, " nav_agent=", nav_agent)
-		print("[Enemy]   patrol_points=", patrol_points.size(), " spawn_position=", spawn_position)
-
 	match behavior_mode:
 		BehaviorMode.STATIONARY:
-			if DEBUG:
-				print("[Enemy]   Starting STATIONARY -> IDLE")
 			_change_state(AIState.IDLE)
 		BehaviorMode.PATROL:
 			if patrol_points.size() > 0:
 				current_patrol_index = 0
-				if DEBUG:
-					print("[Enemy]   Starting PATROL with ", patrol_points.size(), " points")
 				_change_state(AIState.PATROL)
 			else:
-				if DEBUG:
-					print("[Enemy]   No patrol points, falling back to IDLE")
 				_change_state(AIState.IDLE)
 		BehaviorMode.WANDER:
 			has_wander_target = false
-			if DEBUG:
-				print("[Enemy]   Starting WANDER")
 			_change_state(AIState.WANDER)
 
-var _physics_frame_count: int = 0
 
 func _physics_process(delta: float) -> void:
-	_physics_frame_count += 1
-
-	# Debug: confirm physics process is running
-	if DEBUG and _physics_frame_count <= 5:
-		print("[Enemy] _physics_process frame ", _physics_frame_count, " state=", current_state, " velocity=", velocity)
-
 	if current_state == AIState.DEAD:
 		return
 
@@ -577,34 +533,12 @@ func _physics_process(delta: float) -> void:
 	if _cached_player_distance_sq > 3600.0:  # > 60 units
 		return  # Skip all updates for distant enemies
 	elif _cached_player_distance_sq > 900.0:  # > 30 units
-		if _physics_frame_count % 4 != 0:
+		if Engine.get_physics_frames() % 4 != 0:
 			return  # Update at 1/4 rate
 	elif _cached_player_distance_sq > 400.0:  # > 20 units
-		if _physics_frame_count % 2 != 0:
+		if Engine.get_physics_frames() % 2 != 0:
 			return  # Update at 1/2 rate
 	# else: full update rate for nearby enemies
-
-	# AI THOUGHT PROCESS DEBUG - every 60 frames (~1 second)
-	if _physics_frame_count % 60 == 0:
-		var enemy_name: String = enemy_data.display_name if enemy_data else name
-		var state_name: String = AIState.keys()[current_state] if current_state < AIState.size() else str(current_state)
-		var dist_to_player: float = sqrt(_cached_player_distance_sq)
-		var dist_to_spawn: float = global_position.distance_to(spawn_position)
-		var aggro_range_val: float = enemy_data.aggro_range if enemy_data else 12.0
-		print("═══════════════════════════════════════════════════════════")
-		print("[AI] ", enemy_name, " THOUGHT PROCESS:")
-		print("  State: ", state_name, " | Alert: ", AlertState.keys()[current_alert_state])
-		print("  Position: ", snapped(global_position, Vector3(0.1, 0.1, 0.1)))
-		print("  Spawn Position: ", snapped(spawn_position, Vector3(0.1, 0.1, 0.1)))
-		print("  Distance to PLAYER: ", snapped(dist_to_player, 0.1), " (aggro_range=", aggro_range_val, ")")
-		print("  Distance to SPAWN: ", snapped(dist_to_spawn, 0.1), " (leash_radius=", leash_radius, ")")
-		print("  Target: ", current_target.name if current_target else "NONE")
-		print("  Has LOS: ", has_line_of_sight)
-		print("  Disengage Cooldown: ", snapped(disengage_cooldown, 0.1))
-		print("  Nav Agent: ", nav_agent != null, " | Nav Target: ", nav_agent.target_position if nav_agent else "N/A")
-		if nav_agent:
-			print("  Nav Finished: ", nav_agent.is_navigation_finished(), " | Reachable: ", nav_agent.is_target_reachable())
-		print("═══════════════════════════════════════════════════════════")
 
 	_update_timers(delta)
 	_update_conditions(delta)
@@ -619,9 +553,6 @@ func _physics_process(delta: float) -> void:
 	if _is_rat_enemy:
 		_update_rat_directional_sprite()
 
-	# Debug: confirm movement is being applied
-	if DEBUG and _physics_frame_count <= 10:
-		print("[Enemy] After move_and_slide: position=", global_position, " velocity=", velocity)
 
 func _update_timers(delta: float) -> void:
 	if attack_cooldown > 0:
@@ -654,8 +585,6 @@ func _update_timers(delta: float) -> void:
 	if current_state == AIState.CHASE:
 		chase_timer += delta
 		if chase_timer >= CHASE_TIMEOUT:
-			if DEBUG:
-				print("[Enemy] Chase timeout reached, disengaging")
 			chase_timer = 0.0
 			_change_state(AIState.DISENGAGE)
 
@@ -725,8 +654,6 @@ func _update_stuck_detection(delta: float) -> void:
 		unstuck_timer -= delta
 		if unstuck_timer <= 0:
 			is_unstucking = false
-			if DEBUG:
-				print("[Enemy] Unstuck behavior complete, resuming normal movement")
 		return
 
 	# Periodic stuck check
@@ -741,8 +668,6 @@ func _update_stuck_detection(delta: float) -> void:
 		if distance_moved < STUCK_THRESHOLD:
 			# Haven't moved enough - accumulate stuck time
 			stuck_time_accumulated += STUCK_CHECK_INTERVAL
-			if DEBUG:
-				print("[Enemy] Stuck check: moved ", snapped(distance_moved, 0.01), " (threshold: ", STUCK_THRESHOLD, ") - stuck time: ", snapped(stuck_time_accumulated, 0.1))
 
 			# Trigger unstuck behavior if stuck too long
 			if stuck_time_accumulated >= STUCK_TIME_TRIGGER:
@@ -775,13 +700,8 @@ func _trigger_unstuck_behavior() -> void:
 	unstuck_attempts += 1
 	stuck_time_accumulated = 0.0
 
-	if DEBUG:
-		print("[Enemy] Triggering unstuck behavior (attempt ", unstuck_attempts, "/", MAX_UNSTUCK_ATTEMPTS, ")")
-
 	# If too many attempts, give up temporarily and force path recalculation
 	if unstuck_attempts >= MAX_UNSTUCK_ATTEMPTS:
-		if DEBUG:
-			print("[Enemy] Max unstuck attempts reached, forcing path recalc and cooldown")
 		unstuck_attempts = 0
 		_force_path_recalculation()
 		# Add small random offset to target to try different path
@@ -820,8 +740,6 @@ func _unstuck_strafe() -> void:
 	var strafe_vector := intended_dir.cross(Vector3.UP) * strafe_dir
 	unstuck_target = global_position + strafe_vector * 3.0
 
-	if DEBUG:
-		print("[Enemy] Unstuck: strafing ", "right" if strafe_dir > 0 else "left", " to ", unstuck_target)
 
 ## Unstuck strategy: Pick a random nearby point
 func _unstuck_random_nearby() -> void:
@@ -830,16 +748,12 @@ func _unstuck_random_nearby() -> void:
 	var offset := Vector3(cos(angle) * distance, 0, sin(angle) * distance)
 	unstuck_target = global_position + offset
 
-	if DEBUG:
-		print("[Enemy] Unstuck: moving to random nearby point ", unstuck_target)
 
 ## Unstuck strategy: Back up from current position
 func _unstuck_backup() -> void:
 	var backup_dir := Vector3.BACK.rotated(Vector3.UP, mesh_root.rotation.y if mesh_root else 0)
 	unstuck_target = global_position + backup_dir * 2.5
 
-	if DEBUG:
-		print("[Enemy] Unstuck: backing up to ", unstuck_target)
 
 ## Periodic path recalculation to handle moving targets and changing environments
 func _update_path_recalculation(delta: float) -> void:
@@ -894,14 +808,12 @@ func _recalculate_nav_path() -> void:
 
 	if new_target != Vector3.ZERO:
 		nav_agent.target_position = new_target
-		if DEBUG and Engine.get_physics_frames() % 90 == 0:
-			print("[Enemy] Path recalculated to ", new_target)
+
 
 ## Force immediate path recalculation
 func _force_path_recalculation() -> void:
 	path_recalc_timer = PATH_RECALC_INTERVAL  # This will trigger recalc on next update
-	if DEBUG:
-		print("[Enemy] Forced path recalculation")
+
 
 func _update_conditions(delta: float) -> void:
 	var to_remove: Array = []
@@ -964,8 +876,7 @@ func _update_awareness(delta: float) -> void:
 		# Become alerted
 		investigation_position = player.global_position
 		_change_alert_state(AlertState.ALERTED)
-		if DEBUG:
-			print("[Enemy] Became ALERTED - awareness=%.2f, player visibility=%.2f" % [awareness_level, player_visibility])
+
 
 ## Check if enemy is unaware (for backstab)
 func is_unaware() -> bool:
@@ -1039,8 +950,6 @@ func _scan_for_player() -> void:
 			last_known_target_position = _cached_player.global_position
 			target_acquired.emit(_cached_player)
 			_change_state(AIState.CHASE)
-			if DEBUG:
-				print("[Enemy] Backup scan found player at distance: ", dist)
 			return
 
 	# Second priority: scan for hostile faction enemies
@@ -1048,19 +957,12 @@ func _scan_for_player() -> void:
 
 ## Active player detection during movement states - checks aggro range + LOS
 func _check_for_player_during_movement() -> bool:
-	if DEBUG:
-		print("[Enemy] _check_for_player_during_movement() called - state=", current_state)
-
 	# Skip if in disengage cooldown
 	if disengage_cooldown > 0:
-		if DEBUG:
-			print("[Enemy]   Skipped: disengage_cooldown=", snapped(disengage_cooldown, 0.1))
 		return false
 
 	# Already have a target
 	if current_target and is_instance_valid(current_target):
-		if DEBUG:
-			print("[Enemy]   Already has target: ", current_target.name)
 		return true
 
 	# PERFORMANCE: Use cached player reference instead of get_nodes_in_group()
@@ -1069,30 +971,17 @@ func _check_for_player_during_movement() -> bool:
 
 	var aggro_range := enemy_data.aggro_range if enemy_data else 12.0
 
-	if DEBUG:
-		print("[Enemy]   Checking player aggro_range=", aggro_range)
-
 	var dist := global_position.distance_to(_cached_player.global_position)
-	if DEBUG:
-		print("[Enemy]   Checking player '", _cached_player.name, "' at distance=", snapped(dist, 0.1))
 	if dist <= aggro_range:
 		# Check line of sight before acquiring target
 		var has_los := CombatManager.has_line_of_sight(self, _cached_player)
-		if DEBUG:
-			print("[Enemy]   In range! LOS check=", has_los)
 		if has_los:
 			current_target = _cached_player
 			last_known_target_position = _cached_player.global_position
 			target_acquired.emit(_cached_player)
 			_change_alert_state(AlertState.COMBAT)
 			_change_state(AIState.CHASE)
-			if DEBUG:
-				print("[Enemy] Movement scan found player at distance: ", dist)
 			return true
-		elif DEBUG:
-			print("[Enemy]   LOS blocked - not acquiring target")
-	elif DEBUG:
-		print("[Enemy]   Out of aggro range (", dist, " > ", aggro_range, ")")
 
 	return false
 
@@ -1270,10 +1159,6 @@ func _pick_random_wander_point() -> void:
 	else:
 		has_wander_target = true
 
-	if DEBUG:
-		print("[Enemy] New wander target: ", wander_target_position, " (distance from spawn: ", distance, ")")
-
-var _chase_debug_timer: float = 0.0
 
 func _state_chase(delta: float) -> void:
 	if not current_target or not is_instance_valid(current_target):
@@ -1282,13 +1167,6 @@ func _state_chase(delta: float) -> void:
 		return
 
 	var distance := global_position.distance_to(current_target.global_position)
-
-	# Debug output every second
-	_chase_debug_timer += delta
-	if DEBUG and _chase_debug_timer >= 1.0:
-		_chase_debug_timer = 0.0
-		var debug_attack_range := enemy_data.attack_range if enemy_data else 2.0
-		print("[Enemy] CHASE: distance=", snapped(distance, 0.1), " attack_range=", debug_attack_range, " cooldown=", snapped(attack_cooldown, 0.1), " is_ranged=", is_ranged)
 
 	# Check if should retreat (low HP)
 	if enemy_data and float(current_hp) / max_hp < enemy_data.flee_hp_threshold:
@@ -1387,8 +1265,7 @@ func _state_disengage(_delta: float) -> void:
 		# Return to normal behavior
 		_change_alert_state(AlertState.IDLE)
 		_return_to_normal_behavior()
-		if DEBUG:
-			print("[Enemy] Returned to spawn, fully healed, cooldown started")
+
 
 func _state_ranged_attack(delta: float) -> void:
 	if not current_target or not is_instance_valid(current_target):
@@ -1502,12 +1379,10 @@ func _fire_ranged_attack() -> void:
 
 	# Decrement ammo and check for depletion
 	current_ammo -= 1
-	if DEBUG:
-		var target_name: String = current_target.name if is_instance_valid(current_target) else "unknown"
-		print("[Enemy] Fired ranged attack at ", target_name, " (ammo: ", current_ammo, "/", max_ammo, ")")
 
 	if current_ammo <= 0:
 		_on_ammo_depleted()
+
 
 ## Called when ranged enemy runs out of ammo - switch to melee mode
 func _on_ammo_depleted() -> void:
@@ -1519,8 +1394,6 @@ func _on_ammo_depleted() -> void:
 	# Start random restock timer (30-120 seconds)
 	ammo_restock_timer = randf_range(ammo_restock_time_min, ammo_restock_time_max)
 
-	if DEBUG:
-		print("[Enemy] Out of ammo! Switching to melee. Restock in ", snapped(ammo_restock_timer, 0.1), " seconds")
 
 ## Called when ammo restock timer expires - restore ranged capability
 func _on_ammo_restocked() -> void:
@@ -1535,8 +1408,6 @@ func _on_ammo_restocked() -> void:
 	# Re-enable ranged mode
 	is_ranged = true
 
-	if DEBUG:
-		print("[Enemy] Ammo restocked! (", current_ammo, "/", max_ammo, ") - Ranged mode re-enabled")
 
 ## Apply red tint to ranged enemies for visual distinction
 func _apply_ranged_tint() -> void:
@@ -1587,12 +1458,6 @@ func _change_state(new_state: AIState) -> void:
 	_reset_stuck_state()
 	last_position_check = global_position
 
-	if DEBUG:
-		var state_names: Array[String] = ["IDLE", "PATROL", "WANDER", "CHASE", "ATTACK", "RETREAT", "STAGGERED", "DEAD", "DISENGAGE", "RANGED_ATTACK", "STRAFE"]
-		var prev_name: String = state_names[previous_state] if previous_state < state_names.size() else str(previous_state)
-		var new_name: String = state_names[new_state] if new_state < state_names.size() else str(new_state)
-		print("[Enemy] State change: ", prev_name, " -> ", new_name)
-
 	# State entry logic
 	match new_state:
 		AIState.ATTACK:
@@ -1620,14 +1485,11 @@ func _change_state(new_state: AIState) -> void:
 			# Set nav target to first patrol point immediately
 			if nav_agent and patrol_points.size() > 0:
 				nav_agent.target_position = patrol_points[current_patrol_index]
-			if DEBUG:
-				print("[Enemy] Entering PATROL state, patrol_points=", patrol_points.size())
 		AIState.WANDER:
 			# Pick a wander target immediately on entering wander state
 			if not has_wander_target:
 				_pick_random_wander_point()
-			if DEBUG:
-				print("[Enemy] Entering WANDER state, target=", wander_target_position)
+
 
 ## Alert State Management
 
@@ -1638,10 +1500,6 @@ func _change_alert_state(new_alert_state: AlertState) -> void:
 	previous_alert_state = current_alert_state
 	current_alert_state = new_alert_state
 	alert_state_changed.emit(previous_alert_state, new_alert_state)
-
-	if DEBUG:
-		var alert_names := ["IDLE", "ALERTED", "COMBAT", "SEARCHING"]
-		print("[Enemy] Alert state change: ", alert_names[previous_alert_state], " -> ", alert_names[new_alert_state])
 
 	# Alert state entry logic
 	match new_alert_state:
@@ -1672,8 +1530,6 @@ func trigger_alert(alert_position: Vector3) -> void:
 	investigation_position = alert_position
 	_change_alert_state(AlertState.ALERTED)
 
-	if DEBUG:
-		print("[Enemy] Alert triggered at position: ", alert_position)
 
 ## Alert enemy to a specific target and set totem defense mode
 ## Called by EnemySpawner when the totem is attacked
@@ -1693,8 +1549,6 @@ func alert_to_target(target: Node, defend_position: Vector3) -> void:
 		_change_alert_state(AlertState.COMBAT)
 		_change_state(AIState.CHASE)
 
-		if DEBUG:
-			print("[Enemy] TOTEM DEFENSE: Alerted to attack ", target.name, " - leash disabled!")
 
 ## Attempt to intimidate this enemy
 ## Returns true if intimidation succeeded, false otherwise
@@ -1705,14 +1559,10 @@ func attempt_intimidation(_intimidator: Node) -> bool:
 	if current_state == AIState.DEAD:
 		return false
 	if is_intimidated or intimidation_cooldown > 0:
-		if DEBUG:
-			print("[Enemy] Cannot be intimidated - already intimidated or on cooldown")
 		return false
 
 	# Bosses cannot be intimidated
 	if enemy_data and enemy_data.is_boss:
-		if DEBUG:
-			print("[Enemy] Cannot intimidate a boss!")
 		return false
 
 	# Get intimidator's stats (must be player with CharacterData)
@@ -1734,11 +1584,6 @@ func attempt_intimidation(_intimidator: Node) -> bool:
 	var intimidator_total := intimidator_grit + intimidator_intimidation + intimidator_roll
 	var enemy_total := enemy_will + enemy_bravery + enemy_roll
 
-	if DEBUG:
-		print("[Enemy] Intimidation check:")
-		print("  Intimidator: Grit(%d) + Intimidation(%d) + Roll(%d) = %d" % [intimidator_grit, intimidator_intimidation, intimidator_roll, intimidator_total])
-		print("  Enemy: Will(%d) + Bravery(%d) + Roll(%d) = %d" % [enemy_will, enemy_bravery, enemy_roll, enemy_total])
-
 	# Check if intimidation succeeded
 	if intimidator_total > enemy_total:
 		# Success! Enemy is intimidated and flees
@@ -1747,16 +1592,10 @@ func attempt_intimidation(_intimidator: Node) -> bool:
 		current_target = null
 		_change_alert_state(AlertState.IDLE)
 		_change_state(AIState.DISENGAGE)
-
-		if DEBUG:
-			print("[Enemy] INTIMIDATED! Fleeing to spawn position.")
-
 		return true
 	else:
 		# Failed intimidation - enemy is now angry and has a brief cooldown
 		intimidation_cooldown = 5.0  # Short cooldown to prevent spam even on failure
-		if DEBUG:
-			print("[Enemy] Intimidation failed! Enemy resisted.")
 		return false
 
 ## Check if this enemy can be intimidated (for UI feedback)
@@ -1813,8 +1652,6 @@ func _pick_next_search_point() -> void:
 
 	look_around_timer = look_around_time
 
-	if DEBUG:
-		print("[Enemy] Searching point ", search_points_checked, ": ", current_search_point)
 
 ## Return to normal behavior after alert/search ends
 func _return_to_normal_behavior() -> void:
@@ -1877,8 +1714,6 @@ func _update_movement(delta: float) -> void:
 	# Safeguard: ensure speed is at least a minimum value
 	if speed < 0.5:
 		speed = 4.0
-		if DEBUG:
-			print("[Enemy] WARNING: movement_speed too low (", enemy_data.movement_speed if enemy_data else 0, "), using default 4.0")
 	var direction := Vector3.ZERO
 
 	# Apply investigation speed multiplier when alerted/searching
@@ -1937,52 +1772,32 @@ func _update_movement(delta: float) -> void:
 			direction = nav_direction.normalized()
 			use_nav_agent = true
 
-	# Debug movement state periodically
-	if DEBUG and Engine.get_physics_frames() % 60 == 0:
-		print("[Enemy] _update_movement: state=", current_state, " nav_agent=", nav_agent != null, " nav_finished=", nav_finished, " use_nav=", use_nav_agent, " speed=", speed)
-		if nav_agent:
-			print("[Enemy]   nav target=", nav_agent.target_position, " distance_to_target=", nav_agent.distance_to_target(), " is_target_reachable=", nav_agent.is_target_reachable())
-
 	# IMPORTANT: If nav reports finished but we're still far from target, force fallback
 	# This handles cases where the nav mesh isn't ready or target is unreachable
 	if use_nav_agent == false and nav_agent and nav_finished:
 		var dist_to_nav_target := global_position.distance_to(nav_agent.target_position)
 		if dist_to_nav_target > 1.5:
 			# Nav says finished but we're not there - force fallback movement
-			if DEBUG and Engine.get_physics_frames() % 60 == 0:
-				print("[Enemy]   Nav finished but far from target (", dist_to_nav_target, ") - using fallback")
+			pass
 
 	# If nav agent didn't provide direction, use fallback movement
 	if not use_nav_agent:
 		if current_target and is_instance_valid(current_target):
 			# Fallback: direct movement toward target (no navmesh)
 			direction = (current_target.global_position - global_position).normalized()
-			if DEBUG and Engine.get_physics_frames() % 60 == 0:
-				print("[Enemy]   Fallback: moving toward target")
 		elif current_state == AIState.PATROL and patrol_points.size() > 0:
 			# Fallback for patrol: direct movement toward patrol point
 			var target_point := patrol_points[current_patrol_index]
 			direction = (target_point - global_position).normalized()
-			if DEBUG and Engine.get_physics_frames() % 60 == 0:
-				print("[Enemy]   Fallback: patrol toward point ", current_patrol_index, " at ", target_point)
 		elif current_state == AIState.WANDER and has_wander_target:
 			# Fallback for wander: direct movement toward wander target
 			direction = (wander_target_position - global_position).normalized()
-			if DEBUG and Engine.get_physics_frames() % 60 == 0:
-				print("[Enemy]   Fallback: wander toward ", wander_target_position)
 		elif current_state == AIState.DISENGAGE:
 			# Fallback for disengage: direct movement toward spawn
 			direction = (spawn_position - global_position).normalized()
-			if DEBUG and Engine.get_physics_frames() % 60 == 0:
-				print("[Enemy]   Fallback: disengage toward spawn")
 		elif current_state == AIState.CHASE and last_known_target_position != Vector3.ZERO:
 			# Fallback for chase: move toward last known position
 			direction = (last_known_target_position - global_position).normalized()
-			if DEBUG and Engine.get_physics_frames() % 60 == 0:
-				print("[Enemy]   Fallback: chase toward last known position")
-	else:
-		if DEBUG and Engine.get_physics_frames() % 60 == 0:
-			print("[Enemy]   Using nav_agent, direction=", direction)
 
 	direction.y = 0
 
@@ -2001,8 +1816,6 @@ func _update_movement(delta: float) -> void:
 			if dist <= MIN_COMBAT_DISTANCE and current_state == AIState.CHASE:
 				velocity.x = 0
 				velocity.z = 0
-				if DEBUG and Engine.get_physics_frames() % 60 == 0:
-					print("[Enemy]   At min combat distance (", snapped(dist, 0.1), "), stopping to attack")
 				if attack_cooldown <= 0:
 					_change_state(AIState.ATTACK)
 				return
@@ -2014,9 +1827,6 @@ func _update_movement(delta: float) -> void:
 		velocity.x = direction.x * speed
 		velocity.z = direction.z * speed
 
-		if DEBUG and Engine.get_physics_frames() % 60 == 0:
-			print("[Enemy]   MOVING: velocity=", Vector2(velocity.x, velocity.z), " speed=", speed)
-
 		# Face movement direction
 		if mesh_root:
 			var target_rotation := atan2(direction.x, direction.z)
@@ -2024,8 +1834,7 @@ func _update_movement(delta: float) -> void:
 	else:
 		velocity.x = 0
 		velocity.z = 0
-		if DEBUG and Engine.get_physics_frames() % 60 == 0:
-			print("[Enemy]   NOT MOVING: direction too small (", direction.length(), ")")
+
 
 ## Combat
 
@@ -2107,30 +1916,17 @@ func _perform_basic_attack() -> void:
 	attack_cooldown = 1.5
 
 func _activate_attack_hitbox() -> void:
-	if DEBUG:
-		print("[Enemy] _activate_attack_hitbox called. hitbox=", hitbox, " is_attacking=", is_attacking)
-
 	# Check if this is a ranged attack - spawn a visual projectile instead of melee hitbox
 	if current_attack and current_attack.is_ranged and is_attacking:
 		_spawn_attack_projectile()
 		return
 
 	if hitbox and is_attacking:
-		if DEBUG:
-			print("[Enemy] Activating attack hitbox! Target=", str(current_target.name) if current_target else "none")
-			print("[Enemy] Hitbox layer=", hitbox.collision_layer, " mask=", hitbox.collision_mask)
-			print("[Enemy] Hitbox global_position=", hitbox.global_position)
-			if current_target:
-				print("[Enemy] Target global_position=", current_target.global_position)
-				print("[Enemy] Distance to target=", hitbox.global_position.distance_to(current_target.global_position))
-
 		var dmg: int = 10
 		var dmg_type: Enums.DamageType = Enums.DamageType.PHYSICAL
 		if current_attack:
 			dmg = current_attack.roll_damage()
 			dmg_type = current_attack.damage_type
-			if DEBUG:
-				print("[Enemy] Attack damage: ", dmg, " type: ", dmg_type)
 			hitbox.set_damage_values(dmg, dmg_type)
 			hitbox.stagger_power = current_attack.stagger_power
 			hitbox.knockback_force = current_attack.knockback_force
@@ -2138,8 +1934,6 @@ func _activate_attack_hitbox() -> void:
 			hitbox.condition_chance = current_attack.condition_chance
 			hitbox.condition_duration = current_attack.condition_duration
 		else:
-			if DEBUG:
-				print("[Enemy] No current_attack, using defaults")
 			hitbox.set_damage_values(dmg, dmg_type)
 
 		hitbox.activate()
@@ -2198,9 +1992,6 @@ func _spawn_attack_projectile() -> void:
 
 	# Play cast sound
 	AudioManager.play_sfx_3d("projectile_fire", projectile_spawn)
-
-	if DEBUG:
-		print("[Enemy] Spawned ranged attack projectile toward ", current_target.name)
 
 
 ## Create a visual magic projectile based on attack damage type
@@ -2523,8 +2314,6 @@ func _drop_loot() -> void:
 		# Apply player's XP multiplier from Knowledge stat
 		xp = int(xp * GameManager.player_data.get_xp_multiplier())
 		GameManager.player_data.add_ip(xp)
-		if DEBUG:
-			print("[Enemy] Awarded %d XP for killing %s" % [xp, enemy_data.display_name if enemy_data else "enemy"])
 
 	# Spawn lootable corpse instead of dropping items
 	_spawn_lootable_corpse(world, drop_pos)
@@ -2555,9 +2344,6 @@ func _spawn_lootable_corpse(world: Node, pos: Vector3) -> void:
 	else:
 		corpse.generate_creature_loot(enemy_data)
 
-	if DEBUG:
-		print("[Enemy] Spawned lootable corpse for %s at %v" % [corpse_name, pos])
-
 
 ## Check if enemy is humanoid (carries gear, gold) vs creature (drops materials)
 func _is_humanoid_faction() -> bool:
@@ -2579,12 +2365,8 @@ func _is_humanoid_faction() -> bool:
 ## Aggro detection
 
 func _on_aggro_area_body_entered(body: Node3D) -> void:
-	var enemy_name: String = enemy_data.display_name if enemy_data else name
-	print("[AI] ", enemy_name, " AGGRO AREA entered by: ", body.name, " groups: ", body.get_groups())
-
 	# Ignore while disengaging or during disengage cooldown
 	if current_state == AIState.DISENGAGE or disengage_cooldown > 0:
-		print("[AI]   IGNORED - disengaging=", current_state == AIState.DISENGAGE, " cooldown=", snapped(disengage_cooldown, 0.1))
 		return
 
 	# Player detection - use visibility-based awareness system
@@ -2601,28 +2383,21 @@ func _on_aggro_area_body_entered(body: Node3D) -> void:
 		# If player IS hidden, use awareness system for gradual detection
 		if not StealthConstants.is_hidden(player_visibility):
 			_detect_player_immediately(body)
-		else:
-			# Hidden player - start awareness tracking
-			if DEBUG:
-				print("[Enemy] Player is hidden (visibility=%.2f), tracking awareness" % player_visibility)
+		# else: Hidden player - awareness system handles gradual detection
+
 
 ## Immediately detect player (when not hidden or awareness threshold reached)
 func _detect_player_immediately(body: Node3D) -> void:
-	var enemy_name: String = enemy_data.display_name if enemy_data else name
 	if current_target:
-		print("[AI] ", enemy_name, " _detect_player_immediately - ALREADY HAS TARGET: ", current_target.name)
 		return  # Already have a target
 
 	current_target = body
 	last_known_target_position = body.global_position
-	print("[AI] ", enemy_name, " TARGET ACQUIRED: ", body.name, " at ", body.global_position)
 	target_acquired.emit(body)
 
 	# Check for humanoid dialogue (pacifist option for human/elf/dwarf enemies)
 	# If dialogue triggers, enemy will wait in IDLE state for result
 	if CombatManager.check_humanoid_dialogue(self):
-		if DEBUG:
-			print("[Enemy] Humanoid dialogue triggered - waiting for player response")
 		return  # Don't enter combat yet, wait for dialogue result
 
 	_change_alert_state(AlertState.COMBAT)
@@ -2639,8 +2414,6 @@ func _detect_player_immediately(body: Node3D) -> void:
 		if other_enemy and _is_hostile_faction(other_enemy):
 			current_target = body
 			last_known_target_position = body.global_position
-			if DEBUG:
-				print("[Enemy] Hostile faction target acquired: ", body.name)
 			target_acquired.emit(body)
 			_change_alert_state(AlertState.COMBAT)
 			_change_state(AIState.CHASE)
@@ -2709,8 +2482,6 @@ func _scan_for_hostile_enemies() -> bool:
 				target_acquired.emit(other_enemy)
 				_change_alert_state(AlertState.COMBAT)
 				_change_state(AIState.CHASE)
-				if DEBUG:
-					print("[Enemy] Found hostile faction enemy: ", other_enemy.enemy_data.display_name if other_enemy.enemy_data else "Unknown")
 				return true
 
 	return false
@@ -3136,8 +2907,6 @@ func _setup_skeleton_sprites() -> void:
 		state_changed.connect(_on_state_changed_for_sprite)
 	if not damaged.is_connected(_on_damaged_for_sprite):
 		damaged.connect(_on_damaged_for_sprite)
-
-	print("[EnemyBase] Skeleton sprites setup: walk (8 frames), attack (6 frames)")
 
 
 ## Add a colored glow light emanating from the enemy

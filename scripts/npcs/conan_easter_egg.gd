@@ -122,5 +122,4 @@ static func spawn_conan(parent: Node, pos: Vector3) -> ConanEasterEgg:
 	var instance := ConanEasterEgg.new()
 	instance.position = pos
 	parent.add_child(instance)
-	print("[ConanEasterEgg] The Mighty Barbarian has entered the tavern!")
 	return instance

@@ -65,8 +65,6 @@ func _ready() -> void:
 		QuestManager.on_location_reached("willow_dale")
 		QuestManager.on_location_reached("willow_dale_depths")
 
-	print("[WillowDale] Dungeon initialized!")
-
 
 func _create_materials() -> void:
 	# Mossy stone material for GLB model walls/structure
@@ -139,7 +137,6 @@ func _load_terrain_model() -> void:
 			add_child(terrain_model)
 
 	# Apply materials and collision to all meshes
-	print("[WillowDale] Applying texture: %s (valid: %s)" % [MOSSY_STONE_TEX, MOSSY_STONE_TEX != null])
 	_process_model_meshes(terrain_model)
 
 
@@ -218,7 +215,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[WillowDale] Navigation mesh baked!")
 
 
 ## ============================================================================
@@ -242,8 +238,6 @@ func _spawn_spawn_points() -> void:
 	default_spawn.set_meta("spawn_id", "default")
 	add_child(default_spawn)
 
-	print("[WillowDale] Spawn points created at: ", from_world.position)
-
 
 func _spawn_exit_portal() -> void:
 	# Portal at south end of cemetery (entrance)
@@ -257,7 +251,6 @@ func _spawn_exit_portal() -> void:
 	if portal:
 		portal.rotation.y = PI  # Face into the dungeon
 		portal.show_frame = false  # No door frame for outdoor exit
-		print("[WillowDale] Spawned exit portal")
 
 
 ## ============================================================================
@@ -324,7 +317,6 @@ func _spawn_skeleton_shade(pos: Vector3) -> void:
 	if enemy:
 		enemy.add_to_group("willow_dale_undead")
 		enemy.add_to_group("skeleton_shade")
-		print("[WillowDale] Spawned skeleton shade at %s" % pos)
 
 
 ## ============================================================================
@@ -353,8 +345,6 @@ func _spawn_loot() -> void:
 	)
 	if tower_chest:
 		tower_chest.setup_with_loot(LootTables.LootTier.UNCOMMON)
-
-	print("[WillowDale] Spawned loot chests")
 
 
 ## ============================================================================
@@ -385,8 +375,6 @@ func _create_lighting() -> void:
 	# Tower entrance (slightly brighter)
 	_spawn_eerie_light(Vector3(0, 3, 8), Color(0.5, 0.5, 0.6), 10.0, 0.6)
 
-	print("[WillowDale] Created spooky lighting")
-
 
 func _spawn_eerie_light(pos: Vector3, color: Color, range_val: float, energy: float) -> void:
 	var light := OmniLight3D.new()
@@ -414,14 +402,12 @@ func _setup_cell_streaming() -> void:
 	# Check if we're being run directly (F6) for testing vs through normal game flow
 	# SceneManager.has_transitioned is true if a scene was loaded through normal game flow
 	if not SceneManager.has_transitioned:
-		print("[%s] Direct scene test mode - skipping cell streaming" % ZONE_ID)
 		return
 
 	# Use WorldGrid location_id (may differ from ZONE_ID for save compatibility)
 	var my_coords: Vector2i = WorldGrid.get_location_coords("willow_dale")
 	CellStreamer.register_main_scene_cell(my_coords, self)
 	CellStreamer.start_streaming(my_coords)
-	print("[%s] Registered as main scene, streaming started at %s" % [ZONE_ID, my_coords])
 
 
 ## ============================================================================
@@ -441,8 +427,6 @@ func _spawn_cultists() -> void:
 
 	# Cult leader near the altar
 	_spawn_cult_leader(Vector3(0, 0, -5))
-
-	print("[WillowDale] Spawned cultists for keepers_initiation quest")
 
 
 ## Helper: Spawn a cultist enemy
@@ -485,7 +469,6 @@ func _spawn_cultist(pos: Vector3) -> void:
 	if enemy:
 		enemy.add_to_group("willow_dale_cultists")
 		enemy.add_to_group("cultist")  # For quest objective tracking
-		print("[WillowDale] Spawned cultist at %s" % pos)
 
 
 ## Helper: Spawn the cult leader (mini-boss)
@@ -529,7 +512,6 @@ func _spawn_cult_leader(pos: Vector3) -> void:
 		enemy.add_to_group("willow_dale_cultists")
 		enemy.add_to_group("cultist")
 		enemy.add_to_group("bosses")
-		print("[WillowDale] Spawned Cult Leader at %s" % pos)
 
 
 ## ============================================================================
@@ -559,8 +541,6 @@ func _spawn_quest_objectives() -> void:
 
 	# Dark altar inside the tower (cultist ritual site)
 	_spawn_willow_dale_altar(Vector3(0, 0, -7))
-
-	print("[WillowDale] Spawned quest objectives")
 
 
 ## Spawn wrecked caravan for willow_dale_investigation quest
@@ -613,8 +593,6 @@ func _spawn_wrecked_caravan(pos: Vector3) -> void:
 	# Connect to quest system when examined
 	area.area_entered.connect(_on_caravan_examined)
 
-	print("[WillowDale] Spawned wrecked caravan at %s" % pos)
-
 
 func _on_caravan_examined(_area: Area3D) -> void:
 	QuestManager.on_interact("wrecked_caravan")
@@ -632,7 +610,6 @@ func _spawn_merchant_goods(pos: Vector3) -> void:
 	)
 	if goods:
 		goods.add_to_group("quest_items")
-		print("[WillowDale] Spawned merchant goods at %s" % pos)
 
 
 ## Spawn apprentice belongings (satchel) for lost_apprentice quest
@@ -691,8 +668,6 @@ func _spawn_apprentice_belongings(pos: Vector3) -> void:
 	belongings.add_child(area)
 
 	area.area_entered.connect(_on_belongings_examined)
-
-	print("[WillowDale] Spawned apprentice belongings at %s" % pos)
 
 
 func _on_belongings_examined(_area: Area3D) -> void:
@@ -757,8 +732,6 @@ func _spawn_apprentice_marcus(pos: Vector3) -> void:
 	marcus.add_child(area)
 
 	area.area_entered.connect(_on_marcus_examined)
-
-	print("[WillowDale] Spawned apprentice Marcus at %s" % pos)
 
 
 func _on_marcus_examined(_area: Area3D) -> void:
@@ -849,8 +822,6 @@ func _spawn_willow_dale_altar(pos: Vector3) -> void:
 	altar.add_child(area)
 
 	area.area_entered.connect(_on_altar_examined)
-
-	print("[WillowDale] Spawned dark altar at %s" % pos)
 
 
 func _on_altar_examined(_area: Area3D) -> void:
@@ -957,8 +928,6 @@ func _spawn_cursed_totem() -> void:
 	# Connect interaction
 	area.area_entered.connect(_on_totem_area_entered)
 
-	print("[WillowDale] Spawned cursed totem at %s" % totem_pos)
-
 
 func _on_totem_area_entered(_area: Area3D) -> void:
 	# When player gets close, they can interact to destroy
@@ -970,7 +939,6 @@ func _on_totem_area_entered(_area: Area3D) -> void:
 func _on_totem_destroyed() -> void:
 	# Trigger quest objective completion
 	QuestManager.on_interact("cursed_totem")
-	print("[WillowDale] Cursed totem destroyed!")
 
 
 ## ============================================================================
@@ -996,8 +964,6 @@ func _spawn_environmental_lore() -> void:
 	_spawn_lore_item(Vector3(5, 0, -2), "watchers_journal_page",
 		"Watcher's Journal Fragment",
 		"...the signs grow more troubling. The wards we placed centuries ago are failing. Something stirs beneath the old stones, something that remembers when there was no Empire, no kingdoms - only the darkness and those who fed upon it. We Keepers have watched too long to be fooled. The cultists think they summon power, but they summon only their own doom. When the barrier breaks, nothing will save them - or us...")
-
-	print("[WillowDale] Spawned environmental lore elements")
 
 
 ## Spawn a readable tombstone with lore text

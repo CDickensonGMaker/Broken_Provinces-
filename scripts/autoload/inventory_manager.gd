@@ -69,8 +69,6 @@ func _initialize_hotbar() -> void:
 
 ## Load all item resources into databases
 func _load_item_databases() -> void:
-	print("[InventoryManager] Starting database loading...")
-
 	# Load weapons - explicitly list known weapon files for reliability
 	# Use direct load() instead of ResourceLoader.exists() which can be unreliable
 	var weapon_files := [
@@ -84,9 +82,6 @@ func _load_item_databases() -> void:
 		var weapon = load(path)
 		if weapon and weapon is WeaponData and weapon.id:
 			weapon_database[weapon.id] = weapon
-			print("[InventoryManager] Loaded weapon: %s (id=%s)" % [path, weapon.id])
-		else:
-			print("[InventoryManager] FAILED to load weapon: %s" % path)
 
 	# Load armor - explicitly list known armor files
 	var armor_files := [
@@ -110,9 +105,6 @@ func _load_item_databases() -> void:
 		var armor = load(path)
 		if armor and armor is ArmorData and armor.id:
 			armor_database[armor.id] = armor
-			print("[InventoryManager] Loaded armor: %s (id=%s)" % [path, armor.id])
-		else:
-			print("[InventoryManager] FAILED to load armor: %s" % path)
 
 	# Load items - explicitly list known item files
 	var item_files := [
@@ -186,9 +178,6 @@ func _load_item_databases() -> void:
 		var item = load(path)
 		if item and item is ItemData and item.id:
 			item_database[item.id] = item
-			print("[InventoryManager] Loaded item: %s (id=%s)" % [path, item.id])
-		else:
-			print("[InventoryManager] FAILED to load item: %s" % path)
 
 	# Load bestiary books
 	var book_files := [
@@ -202,9 +191,6 @@ func _load_item_databases() -> void:
 		var item = load(path)
 		if item and item is ItemData and item.id:
 			item_database[item.id] = item
-			print("[InventoryManager] Loaded item: %s (id=%s)" % [path, item.id])
-		else:
-			print("[InventoryManager] FAILED to load item: %s" % path)
 
 	# Load spells - explicitly list known spell files
 	var spell_files := [
@@ -219,17 +205,6 @@ func _load_item_databases() -> void:
 		var spell = load(path)
 		if spell and spell is SpellData and spell.id:
 			spell_database[spell.id] = spell
-			print("[InventoryManager] Loaded spell: %s (id=%s)" % [path, spell.id])
-		else:
-			print("[InventoryManager] FAILED to load spell: %s" % path)
-
-	print("[InventoryManager] Database loading complete:")
-	print("[InventoryManager]   Loaded %d weapons, %d armor, %d items, %d spells" % [
-		weapon_database.size(), armor_database.size(), item_database.size(), spell_database.size()
-	])
-	print("[InventoryManager] Weapon IDs: %s" % str(weapon_database.keys()))
-	print("[InventoryManager] Armor IDs: %s" % str(armor_database.keys()))
-	print("[InventoryManager] Item IDs: %s" % str(item_database.keys()))
 
 ## Add an item to inventory
 func add_item(item_id: String, quantity: int = 1, quality: Enums.ItemQuality = Enums.ItemQuality.AVERAGE) -> bool:
@@ -550,18 +525,13 @@ func use_item(inventory_index: int) -> bool:
 
 ## Use a spell scroll to learn the spell
 func _use_scroll(item: ItemData) -> bool:
-	print("[InventoryManager] _use_scroll called for: %s" % item.id)
-
 	if item.teaches_spell_id.is_empty():
 		push_warning("Scroll has no teaches_spell_id: " + item.id)
 		return false
 
-	print("[InventoryManager] Scroll teaches spell: %s" % item.teaches_spell_id)
-
 	# Get player's SpellCaster component
 	var player := GameManager.get_tree().get_first_node_in_group("player")
 	if not player:
-		print("[InventoryManager] ERROR: No player found!")
 		return false
 
 	var spell_caster: SpellCaster = player.get_node_or_null("SpellCaster")
@@ -574,10 +544,7 @@ func _use_scroll(item: ItemData) -> bool:
 
 	if not spell_caster:
 		push_warning("Player has no SpellCaster component")
-		print("[InventoryManager] ERROR: No SpellCaster component found on player!")
 		return false
-
-	print("[InventoryManager] Found SpellCaster at path: %s, current known spells: %d" % [spell_caster.get_path(), spell_caster.known_spells.size()])
 
 	# Check if already knows the spell
 	for known in spell_caster.known_spells:
@@ -605,9 +572,7 @@ func _use_scroll(item: ItemData) -> bool:
 	# 		return false
 
 	# Learn the spell
-	print("[InventoryManager] Attempting to learn spell: %s" % item.teaches_spell_id)
 	if spell_caster.learn_spell_by_id(item.teaches_spell_id):
-		print("[InventoryManager] SUCCESS: Spell learned!")
 		# Show notification for new spell learned
 		var hud = GameManager.get_tree().get_first_node_in_group("hud")
 		if hud and hud.has_method("show_notification"):
@@ -616,14 +581,11 @@ func _use_scroll(item: ItemData) -> bool:
 			hud.show_notification("NEW SPELL LEARNED: " + spell_name)
 		return true
 
-	print("[InventoryManager] FAILED: learn_spell_by_id returned false")
 	return false
 
 
 ## Use a bestiary book to unlock creature knowledge
 func _use_book(item: ItemData) -> bool:
-	print("[InventoryManager] _use_book called for: %s" % item.id)
-
 	if item.unlocks_bestiary.is_empty():
 		push_warning("Book has no unlocks_bestiary entries: " + item.id)
 		return false
@@ -1142,11 +1104,6 @@ func _get_max_stack(item_id: String) -> int:
 
 ## Give player fixed starter items for testing
 func _give_starter_items() -> void:
-	print("[InventoryManager] _give_starter_items called")
-	print("[InventoryManager] Database sizes at starter: weapons=%d, armor=%d, items=%d" % [
-		weapon_database.size(), armor_database.size(), item_database.size()
-	])
-
 	# Give fixed starter loadout
 	add_item("longsword", 1, Enums.ItemQuality.ABOVE_AVERAGE)  # Fine longsword
 	add_item("hunting_bow", 1, Enums.ItemQuality.AVERAGE)

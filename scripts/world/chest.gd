@@ -3,8 +3,6 @@
 class_name Chest
 extends StaticBody3D
 
-const DEBUG := false
-
 ## Signals
 signal opened
 signal lockpick_success
@@ -208,11 +206,6 @@ func _attempt_lockpick() -> void:
 		LOCKPICK_BONUS
 	)
 
-	if DEBUG:
-		print("[Chest] Lockpick attempt: total=%d vs DC %d, success=%s" % [
-			roll_result.total, lock_difficulty, roll_result.success
-		])
-
 	if roll_result.success:
 		# Success!
 		is_locked = false
@@ -358,9 +351,6 @@ func _check_if_should_disappear() -> void:
 	if is_persistent:
 		return  # Persistent chests never disappear
 	if contents.is_empty() and has_been_opened:
-		if DEBUG:
-			print("[Chest] %s is empty and will disappear" % chest_name)
-
 		# Close UI first if open (prevents game freeze)
 		if _active_ui_canvas and is_instance_valid(_active_ui_canvas):
 			# Manually handle UI close before freeing
@@ -383,8 +373,6 @@ func _load_persistent_contents() -> void:
 		contents.clear()
 		for item in saved:
 			contents.append(item)
-		if DEBUG:
-			print("[Chest] Loaded %d items from persistent storage for %s" % [contents.size(), chest_id])
 
 
 ## Save contents to SaveManager if persistent
@@ -399,8 +387,6 @@ func _save_if_persistent() -> void:
 			"quality": slot.quality
 		})
 	SaveManager.save_chest_contents(chest_id, save_data)
-	if DEBUG:
-		print("[Chest] Saved %d items to persistent storage for %s" % [save_data.size(), chest_id])
 
 
 ## Setup chest with random loot based on tier

@@ -577,9 +577,6 @@ func _register_with_world_data() -> void:
 		zone_id = region_id if not region_id.is_empty() else "town_unknown"
 
 	PlayerGPS.register_npc(self, effective_id, npc_type, zone_id)
-	print("[QuestGiver] Registered with PlayerGPS: npc_id='%s', cell=%s, zone='%s', type='%s'" % [
-		effective_id, cell, zone_id, npc_type
-	])
 
 
 ## Unregister from PlayerGPS when removed from scene
@@ -709,12 +706,9 @@ static func _find_clear_spawn_position(parent: Node, start_pos: Vector3) -> Vect
 	for offset: Vector3 in offsets:
 		test_pos = start_pos + offset
 		if _is_position_clear(parent, test_pos):
-			if offset != Vector3.ZERO:
-				print("[QuestGiver] Moved spawn from %s to %s to avoid obstacle" % [start_pos, test_pos])
 			return test_pos
 
-	# If no clear position found, use original but print warning
-	print("[QuestGiver] Warning: Could not find clear spawn position, using original: %s" % start_pos)
+	# If no clear position found, use original
 	return start_pos
 
 
@@ -899,8 +893,6 @@ func _die(killer: Node = null) -> void:
 
 	_is_dead = true
 
-	print("[QuestGiver] %s has been killed" % display_name)
-
 	# Report crime - killing an NPC is murder
 	if killer and killer.is_in_group("player"):
 		var crime_region: String = region_id if not region_id.is_empty() else "unknown"
@@ -967,9 +959,6 @@ func _setup_shop_inventory() -> void:
 		return
 
 	shop_inventory = LootTables.generate_shop_inventory(shop_tier, shop_type)
-	print("[QuestGiver] %s shop initialized with %d items (type: %s, tier: %d)" % [
-		display_name, shop_inventory.size(), shop_type, shop_tier
-	])
 
 
 ## Open the shop UI (called by ConversationSystem when player selects TRADE topic)
@@ -1010,8 +999,6 @@ func _open_shop_ui() -> void:
 	if shop_ui.has_method("open"):
 		shop_ui.open(self)
 
-	print("[QuestGiver] %s opened shop UI" % display_name)
-
 
 ## Called when shop UI is closed
 func _on_shop_ui_closed(canvas: CanvasLayer) -> void:
@@ -1025,7 +1012,6 @@ func _on_shop_ui_closed(canvas: CanvasLayer) -> void:
 		canvas.queue_free()
 
 	shop_ui = null
-	print("[QuestGiver] %s closed shop UI" % display_name)
 
 
 ## ============================================================================

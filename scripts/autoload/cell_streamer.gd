@@ -74,8 +74,6 @@ func _ready() -> void:
 	# Initialize WorldGrid
 	WorldGrid.initialize()
 
-	print("[CellStreamer] Ready")
-
 
 func _physics_process(_delta: float) -> void:
 	# PERFORMANCE: Cache camera reference each frame for billboard sprites
@@ -136,9 +134,6 @@ func _check_cell_boundary() -> void:
 		# Update loaded cells
 		_update_loaded_cells()
 
-		print("[CellStreamer] Player crossed into cell %s (%s)" % [new_cell,
-			cell_info.location_name if cell_info and not cell_info.location_name.is_empty() else "wilderness"])
-
 
 ## Check and perform floating origin shift if needed
 func _check_floating_origin() -> void:
@@ -166,8 +161,6 @@ func _shift_floating_origin(shift: Vector3) -> void:
 
 	# Track cumulative offset
 	world_offset += shift
-
-	print("[CellStreamer] Origin shifted by %s (cumulative: %s)" % [shift, world_offset])
 
 	# Notify all entities to update their stored positions (spawn_position, patrol_points, etc.)
 	origin_shifted.emit(shift)
@@ -203,13 +196,11 @@ func _update_loaded_cells() -> void:
 func _load_cell(coords: Vector2i) -> void:
 	# Don't load cells that are being freed (prevents race condition on teleport)
 	if _pending_free_cells.has(coords):
-		print("[CellStreamer] Skipping cell %s - pending free" % coords)
 		return
 
 	# Skip if this cell is already registered as the main scene
 	# This prevents double-loading on save/load when the main scene is already present
 	if coords == _main_scene_cell and loaded_cells.has(coords):
-		print("[CellStreamer] Skipping cell %s - already registered as main scene" % coords)
 		return
 
 	# Mark as loading
@@ -227,13 +218,10 @@ func _load_cell(coords: Vector2i) -> void:
 	if cell_info.location_id.begins_with("goblin_camp_"):
 		if not GameManager.is_goblin_camp_active(cell_info.location_id):
 			effective_scene_path = ""  # Treat as wilderness
-			print("[CellStreamer] Goblin camp '%s' not active this playthrough, generating wilderness" % cell_info.location_id)
 
 	# Debug: Log what type of cell we're loading
 	if effective_scene_path != "":
 		var exists: bool = ResourceLoader.exists(effective_scene_path)
-		print("[CellStreamer] Cell %s has scene_path '%s', exists=%s, location='%s'" % [
-			coords, effective_scene_path, exists, cell_info.location_id])
 		if exists:
 			# Hand-crafted scene - pass effective path to loader
 			cell_node = await _load_handcrafted_cell_with_path(coords, cell_info, effective_scene_path)
@@ -275,8 +263,6 @@ func _load_cell(coords: Vector2i) -> void:
 	_create_cell_boundaries(cell_node, coords)
 
 	cell_loaded.emit(coords)
-	print("[CellStreamer] Loaded cell %s (%s)" % [coords,
-		cell_info.location_name if cell_info.location_name != "" else "wilderness"])
 
 
 ## Load a hand-crafted scene
@@ -303,12 +289,10 @@ func _load_handcrafted_cell_with_path(coords: Vector2i, cell_info: WorldGrid.Cel
 	var embedded_player: Node = instance.get_node_or_null("Player")
 	if embedded_player:
 		embedded_player.queue_free()
-		print("[CellStreamer] Stripped embedded Player from cell %s" % coords)
 
 	var embedded_hud: Node = instance.get_node_or_null("HUD")
 	if embedded_hud:
 		embedded_hud.queue_free()
-		print("[CellStreamer] Stripped embedded HUD from cell %s" % coords)
 
 	# Strip ALL lighting nodes - only the main scene should own lighting
 	# This prevents light doubling when crossing cell boundaries
@@ -369,9 +353,6 @@ func _add_cell_ground_extension(instance: Node3D, coords: Vector2i, cell_info: W
 	ground.material = material
 	instance.add_child(ground)
 
-	print("[CellStreamer] Added ground extension (%.0fx%.0f) to cell %s" % [
-		extension_size, extension_size, coords])
-
 
 ## Generate a procedural wilderness cell
 func _generate_procedural_cell(coords: Vector2i, cell_info: WorldGrid.CellInfo) -> Node3D:
@@ -424,13 +405,6 @@ func _generate_procedural_town(coords: Vector2i, cell_info: WorldGrid.CellInfo) 
 	# Generate the town with persistent seed
 	if town.has_method("generate_from_cell"):
 		town.call("generate_from_cell", cell_info, coords, seed_value)
-
-	print("[CellStreamer] Generated procedural %s '%s' at %s (seed: %d)" % [
-		WorldGrid.LocationType.keys()[cell_info.location_type],
-		cell_info.location_name,
-		coords,
-		seed_value
-	])
 
 	return town
 
@@ -586,7 +560,6 @@ func _unload_cell(coords: Vector2i) -> void:
 		cell_node.queue_free()
 
 	cell_unloaded.emit(coords)
-	print("[CellStreamer] Unloaded cell %s" % coords)
 
 
 ## Create boundary walls for edges with impassable adjacent cells
@@ -730,9 +703,6 @@ func _create_boundary_wall(cell_node: Node3D, direction: Vector2i, coords: Vecto
 
 			wall_container.add_child(rock)
 
-	print("[CellStreamer] Created boundary on %s edge of cell %s (water=%s)" % [
-		_dir_name(direction), coords, is_water_edge])
-
 
 ## Add coastal decoration (sand strip and LARGE water plane) on edges adjacent to water
 ## Water plane is flat at Y=-0.5 and extends far enough to fill view to fog distance
@@ -807,9 +777,6 @@ func _add_coastal_decoration(cell_node: Node3D, direction: Vector2i, coords: Vec
 	coast_container.add_child(sand)
 	coast_container.add_child(water)
 
-	print("[CellStreamer] Added coastal decoration on %s edge of cell %s (water extends %s units)" % [
-		_dir_name(direction), coords, water_extent])
-
 
 ## Strip ALL lighting nodes recursively from a cell instance
 ## This prevents light doubling when cells are loaded as neighbors
@@ -837,10 +804,6 @@ func _strip_lighting_recursive(instance: Node3D, coords: Vector2i) -> void:
 			# Add children to check (only if not stripping this node)
 			for child in current.get_children():
 				nodes_to_check.append(child)
-
-	if stripped > 0:
-		print("[CellStreamer] Stripped %d lighting nodes from cell %s" % [stripped, coords])
-
 
 ## Deferred stripping - runs after a frame to catch late additions
 func _deferred_strip_lighting(instance: Node3D, coords: Vector2i) -> void:
@@ -883,10 +846,6 @@ func _strip_zone_doors(instance: Node3D, coords: Vector2i) -> void:
 		# We'll rely on the script not spawning doors when not the main scene
 		pass
 
-	if doors_stripped > 0:
-		print("[CellStreamer] Stripped %d ZoneDoors from cell %s" % [doors_stripped, coords])
-
-
 ## Helper to get direction name for debug output
 func _dir_name(direction: Vector2i) -> String:
 	if direction == Vector2i(0, -1):
@@ -922,7 +881,6 @@ func start_streaming(start_coords: Vector2i) -> void:
 	_start_encounter_manager()
 
 	streaming_resumed.emit()
-	print("[CellStreamer] Streaming started at %s" % start_coords)
 
 
 ## Stop streaming (called when entering interior or changing scenes)
@@ -960,7 +918,6 @@ func stop_streaming() -> void:
 			child.queue_free()
 
 	streaming_paused.emit()
-	print("[CellStreamer] Streaming stopped and state reset")
 
 
 ## Pause streaming without unloading (for menus, etc.)
@@ -1014,14 +971,11 @@ func register_main_scene_cell(coords: Vector2i, cell_node: Node3D) -> void:
 	_external_cells[coords] = true
 	if not loaded_cells.has(coords):
 		loaded_cells[coords] = cell_node
-	print("[CellStreamer] Registered main scene cell at %s" % coords)
 
 
 ## Teleport player to a specific cell (used for fast travel)
 ## This WILL reposition the player
 func teleport_to_cell(coords: Vector2i, spawn_position: Vector3 = Vector3.ZERO) -> void:
-	print("[CellStreamer] Teleporting to cell %s (current main: %s)" % [coords, _main_scene_cell])
-
 	# Check if we're returning to the current main scene
 	var saved_main_cell: Vector2i = _main_scene_cell
 	var is_returning_to_main: bool = (coords == saved_main_cell and saved_main_cell != Vector2i(-9999, -9999))
@@ -1090,7 +1044,6 @@ func teleport_to_cell(coords: Vector2i, spawn_position: Vector3 = Vector3.ZERO) 
 		loaded_cells[saved_main_cell] = saved_main_node
 		# Clear from pending free since we're keeping it
 		_pending_free_cells.erase(saved_main_cell)
-		print("[CellStreamer] Restored main scene cell at %s" % saved_main_cell)
 	else:
 		# Not returning to main - clear main scene tracking and FREE the old node
 		_main_scene_cell = Vector2i(-9999, -9999)
@@ -1103,7 +1056,6 @@ func teleport_to_cell(coords: Vector2i, spawn_position: Vector3 = Vector3.ZERO) 
 				CONNECT_ONE_SHOT
 			)
 			saved_main_node.queue_free()
-			print("[CellStreamer] Old main scene %s marked for cleanup" % saved_main_cell)
 
 	# Start streaming from new location
 	active_cell = coords
@@ -1120,7 +1072,6 @@ func teleport_to_cell(coords: Vector2i, spawn_position: Vector3 = Vector3.ZERO) 
 	call_deferred("_update_loaded_cells")
 
 	streaming_resumed.emit()
-	print("[CellStreamer] Teleported to cell %s" % coords)
 
 
 ## ============================================================================
@@ -1172,7 +1123,6 @@ func _start_encounter_manager() -> void:
 		return
 
 	EncounterManager.start(_player)
-	print("[CellStreamer] EncounterManager started for wilderness encounters")
 
 
 ## Stop the EncounterManager when leaving wilderness
@@ -1181,4 +1131,3 @@ func _stop_encounter_manager() -> void:
 		return
 
 	EncounterManager.stop()
-	print("[CellStreamer] EncounterManager stopped")

@@ -42,7 +42,6 @@ func _ready() -> void:
 		push_warning("[PostProcess] Failed to load ps1_post_process.gdshader")
 
 	add_child(effect_rect)
-	print("[PostProcess] Initialized with GRIM_DARK preset")
 
 
 func _process(_delta: float) -> void:
@@ -176,4 +175,3 @@ func toggle() -> void:
 func cycle_preset() -> void:
 	var next_preset: int = (current_preset + 1) % 3
 	apply_preset(next_preset as Preset)
-	print("[PostProcess] Switched to preset: %s" % Preset.keys()[current_preset])

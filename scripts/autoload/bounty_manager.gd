@@ -261,13 +261,6 @@ func accept_bounty(bounty_id: String) -> bool:
 	# Register quest with QuestManager
 	_register_bounty_quest(quest_data)
 
-	# Debug logging for quest turn-in configuration
-	print("[BountyManager] Quest created: turn_in_type=%s, turn_in_target=%s, turn_in_region=%s" % [
-		quest_data.get("turn_in_type", "unknown"),
-		quest_data.get("turn_in_target", "unknown"),
-		quest_data.get("turn_in_region", "unknown")
-	])
-
 	# Start the quest
 	if QuestManager.start_quest(bounty.quest_id):
 		bounty.is_accepted = true

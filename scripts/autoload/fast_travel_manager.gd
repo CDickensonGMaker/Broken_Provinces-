@@ -414,7 +414,6 @@ func travel_by_caravan(from_location: String, to_location: String) -> bool:
 		caravan_segments.append(Vector2i(int(hex_array[0]), int(hex_array[1])))
 	caravan_current_segment = 0
 
-	print("[FastTravelManager] Caravan travel started: %s -> %s, cost: %d gold" % [from_location, to_location, cost])
 	caravan_travel_started.emit(from_location, to_location, cost)
 
 	# Process travel segments
@@ -443,7 +442,6 @@ func travel_by_caravan(from_location: String, to_location: String) -> bool:
 		await SceneManager.dev_fast_travel_to(to_location)
 
 	caravan_travel_completed.emit(to_location, cost)
-	print("[FastTravelManager] Caravan travel completed. Encounters: %d" % encounters_happened)
 
 	return true
 

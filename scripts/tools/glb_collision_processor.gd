@@ -112,9 +112,6 @@ static func process_node(root: Node, verbose: bool = true) -> ProcessResult:
 	var result := ProcessResult.new()
 	_process_recursive(root, result, verbose)
 
-	if verbose:
-		print("[GLBCollisionProcessor] %s" % result.get_summary())
-
 	return result
 
 
@@ -164,20 +161,14 @@ static func _process_mesh_instance(mesh_instance: MeshInstance3D, result: Proces
 			mesh_instance.create_trimesh_collision()
 			result.trimesh_count += 1
 			result.meshes_processed.append(mesh_instance.name)
-			if verbose:
-				print("[GLBCollisionProcessor] Added trimesh collision: %s" % mesh_instance.name)
 
 		"convex":
 			mesh_instance.create_convex_collision()
 			result.convex_count += 1
 			result.meshes_processed.append(mesh_instance.name)
-			if verbose:
-				print("[GLBCollisionProcessor] Added convex collision: %s" % mesh_instance.name)
 
 		"none":
 			result.skipped_count += 1
-			if verbose:
-				print("[GLBCollisionProcessor] Skipped (decorative): %s" % mesh_instance.name)
 
 		_:  # "unknown" - no recognized suffix, skip by default
 			result.skipped_count += 1

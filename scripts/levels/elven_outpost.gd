@@ -12,7 +12,6 @@ func _ready() -> void:
 	_spawn_fast_travel_shrine()
 	_create_spawn_points()
 	_setup_navigation()
-	print("[Elven Outpost] Elven settlement loaded")
 
 
 func _create_terrain() -> void:

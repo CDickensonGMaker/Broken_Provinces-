@@ -79,7 +79,6 @@ func _setup_custom_cursor() -> void:
 			# Hotspot at the tip of the sword (top-left area)
 			var hotspot := Vector2(4, 4)
 			Input.set_custom_mouse_cursor(cursor_texture, Input.CURSOR_ARROW, hotspot)
-			print("[GameManager] Custom cursor set")
 	else:
 		push_warning("[GameManager] Custom cursor not found at: %s" % cursor_path)
 
@@ -275,7 +274,6 @@ func on_player_death() -> void:
 func reset_for_new_game() -> void:
 	# Generate unique world seed for procedural generation
 	world_seed = randi()
-	print("[GameManager] New game world seed: %d" % world_seed)
 
 	# Create fresh player data
 	player_data = CharacterData.new()
@@ -318,8 +316,6 @@ func _randomize_goblin_camps() -> void:
 	for i in range(camp_count):
 		active_goblin_camps.append(camps_copy[i])
 
-	print("[GameManager] Active goblin camps for this playthrough: %s" % str(active_goblin_camps))
-
 
 ## Check if a goblin camp is active in this playthrough
 func is_goblin_camp_active(location_id: String) -> bool:
@@ -341,8 +337,6 @@ func create_new_character(char_name: String, race: Enums.Race, career: Enums.Car
 ## Apply dev/testing stats to a character (high magic stats for testing spells)
 ## Call this during development to quickly test magic systems
 func apply_dev_stats(char_data: CharacterData) -> void:
-	print("[DEV] Applying dev stats for magic testing...")
-
 	# High base stats for magic
 	char_data.will = 10          # High mana pool
 	char_data.knowledge = 10     # Spell power, prereqs
@@ -359,13 +353,6 @@ func apply_dev_stats(char_data: CharacterData) -> void:
 	char_data.current_hp = char_data.max_hp
 	char_data.current_stamina = char_data.max_stamina
 	char_data.current_mana = char_data.max_mana
-
-	print("[DEV] Stats applied - Will: %d, Knowledge: %d, Arcana Lore: %d, Concentration: %d" % [
-		char_data.will,
-		char_data.knowledge,
-		char_data.get_skill(Enums.Skill.ARCANA_LORE),
-		char_data.get_skill(Enums.Skill.CONCENTRATION)
-	])
 
 ## Get weather effects
 func get_weather_effects() -> Dictionary:

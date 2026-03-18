@@ -3,8 +3,6 @@
 class_name Merchant
 extends StaticBody3D
 
-const DEBUG := false
-
 ## Visual representation
 var mesh_root: Node3D
 var body_mesh: MeshInstance3D
@@ -185,8 +183,6 @@ func _create_merchant_mesh() -> void:
 						h_frames_to_use = config.get("h_frames", h_frames_to_use)
 						v_frames_to_use = config.get("v_frames", v_frames_to_use)
 						sprite_pixel_size = config.get("pixel_size", sprite_pixel_size)
-						if DEBUG:
-							print("[Merchant] Using ActorRegistry sprite for %s (id: %s)" % [merchant_name, check_id])
 						break
 
 	if not texture_to_use:
@@ -211,8 +207,6 @@ func _create_merchant_mesh() -> void:
 				h_frames_to_use = fallback["h"]
 				v_frames_to_use = fallback["v"]
 				sprite_pixel_size = fallback.get("size", sprite_pixel_size)
-				if DEBUG:
-					print("[Merchant] Using fallback sprite %s for %s" % [fallback["path"], merchant_name])
 				break
 
 	if not texture_to_use:
@@ -230,8 +224,6 @@ func _create_merchant_mesh() -> void:
 	billboard_sprite.idle_fps = 4.0  # Slow idle animation
 	billboard_sprite.name = "BillboardSprite"
 	mesh_root.add_child(billboard_sprite)
-	if DEBUG:
-		print("[Merchant] Created billboard sprite for %s" % merchant_name)
 
 func _create_interaction_area() -> void:
 	## Create Area3D for raycast detection by player
@@ -251,10 +243,6 @@ func _create_interaction_area() -> void:
 
 ## Setup default inventory using LootTables system
 func _setup_default_inventory() -> void:
-	if DEBUG:
-		print("[Merchant] Setting up inventory...")
-		print("[Merchant] Shop tier: %d, Shop type: %s" % [shop_tier, shop_type])
-
 	# General store uses fixed inventory (tools and supplies)
 	if shop_type == "general":
 		# Required inventory - always available (infinite stock)
@@ -291,23 +279,10 @@ func _setup_default_inventory() -> void:
 
 		# Bestiary books - general stores carry tiers 1-5 (common creatures)
 		_add_random_bestiary_books(stock_rng, 1, 5, 0.4)
-
-		if DEBUG:
-			print("[Merchant] General store: tools, supplies, and possibly potions")
 		return
 
 	# All shop types (including alchemist) use LootTables random generation
-	if DEBUG:
-		print("[Merchant] InventoryManager database sizes: weapons=%d, armor=%d, items=%d" % [
-			InventoryManager.weapon_database.size(),
-			InventoryManager.armor_database.size(),
-			InventoryManager.item_database.size()
-		])
-
 	var generated := LootTables.generate_shop_inventory(shop_tier, shop_type)
-
-	if DEBUG:
-		print("[Merchant] LootTables returned %d items" % generated.size())
 
 	for item in generated:
 		shop_inventory.append({
@@ -323,11 +298,6 @@ func _setup_default_inventory() -> void:
 		var book_rng := RandomNumberGenerator.new()
 		book_rng.seed = hash(merchant_name + str(global_position) + "books")
 		_add_random_bestiary_books(book_rng, 1, 10, 0.5)  # Higher chance, all tiers
-
-	if DEBUG:
-		print("[Merchant] Final shop_inventory count: %d item types" % shop_inventory.size())
-		if shop_inventory.is_empty():
-			print("[Merchant] WARNING: Shop inventory is empty! Check LootTables output above.")
 
 ## Add random bestiary books based on tier range and chance
 func _add_random_bestiary_books(rng: RandomNumberGenerator, min_tier: int, max_tier: int, base_chance: float) -> void:
@@ -929,8 +899,6 @@ func _die(killer: Node = null) -> void:
 		return
 
 	_is_dead = true
-
-	print("[Merchant] %s has been killed" % merchant_name)
 
 	# Report crime - killing a merchant is murder
 	if killer and killer.is_in_group("player"):

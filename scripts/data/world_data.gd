@@ -442,8 +442,6 @@ static func initialize() -> void:
 				if to_cell:
 					to_cell.is_road = true
 
-	print("[WorldData] Initialized demo zone grid with %d cells" % world_grid.size())
-
 
 ## Get region name for coordinates
 static func _get_region_for_coords(col: int, row: int) -> String:
@@ -597,7 +595,6 @@ static func discover_dungeon(coords: Vector2i) -> void:
 	var cell := get_cell(coords)
 	if cell and cell.location_type == LocationType.DUNGEON:
 		cell.dungeon_discovered = true
-		print("[WorldData] Dungeon discovered at %s: %s" % [coords, cell.location_name])
 
 
 ## Check if dungeon at coords has been discovered

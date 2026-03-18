@@ -25,6 +25,7 @@ var poi_name_edit: LineEdit
 var poi_type_option: OptionButton
 var poi_notes_edit: LineEdit
 var poi_scene_edit: LineEdit
+var poi_layout_path_edit: LineEdit
 var poi_location_id_edit: LineEdit
 var poi_position_label: Label
 var new_poi_name_edit: LineEdit
@@ -108,6 +109,9 @@ func _build_ui() -> void:
 	layer_tabs.custom_minimum_size.y = 200
 	tools_panel.add_child(layer_tabs)
 	_create_layer_tabs()
+
+	# POI inspector panel (always visible below tabs)
+	_create_poi_inspector_panel(tools_panel)
 
 	# Toolbar (brush size, eraser)
 	var toolbar := _create_toolbar()
@@ -288,7 +292,7 @@ func _create_poi_tab() -> Control:
 	vbox.add_child(list_label)
 
 	location_list = ItemList.new()
-	location_list.custom_minimum_size.y = 80
+	location_list.custom_minimum_size.y = 200
 	location_list.max_columns = 1
 	location_list.item_selected.connect(_on_location_list_selected)
 	vbox.add_child(location_list)
@@ -401,6 +405,15 @@ func _create_poi_tab() -> Control:
 	scene_row.add_child(poi_scene_edit)
 	selected_poi_panel.add_child(scene_row)
 
+	var layout_row := HBoxContainer.new()
+	layout_row.add_child(_make_label("Layout:"))
+	poi_layout_path_edit = LineEdit.new()
+	poi_layout_path_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	poi_layout_path_edit.placeholder_text = "res://data/layouts/..."
+	poi_layout_path_edit.text_changed.connect(_on_poi_layout_path_changed)
+	layout_row.add_child(poi_layout_path_edit)
+	selected_poi_panel.add_child(layout_row)
+
 	var id_row := HBoxContainer.new()
 	id_row.add_child(_make_label("ID:"))
 	poi_location_id_edit = LineEdit.new()
@@ -415,9 +428,36 @@ func _create_poi_tab() -> Control:
 	delete_btn.pressed.connect(_on_delete_poi_pressed)
 	selected_poi_panel.add_child(delete_btn)
 
-	vbox.add_child(selected_poi_panel)
+	# Editor buttons row
+	var editor_btns_row := HBoxContainer.new()
+	editor_btns_row.add_theme_constant_override("separation", 4)
+	selected_poi_panel.add_child(editor_btns_row)
+
+	var edit_town_btn := Button.new()
+	edit_town_btn.text = "Edit Town"
+	edit_town_btn.tooltip_text = "Open Town Editor for this location"
+	edit_town_btn.name = "EditTownBtn"
+	edit_town_btn.pressed.connect(_on_edit_town_pressed)
+	editor_btns_row.add_child(edit_town_btn)
+
+	var edit_dungeon_btn := Button.new()
+	edit_dungeon_btn.text = "Edit Dungeon"
+	edit_dungeon_btn.tooltip_text = "Open Dungeon Editor for this location"
+	edit_dungeon_btn.name = "EditDungeonBtn"
+	edit_dungeon_btn.pressed.connect(_on_edit_dungeon_pressed)
+	editor_btns_row.add_child(edit_dungeon_btn)
+
+	# Note: selected_poi_panel is NOT added here - it's added by _create_poi_inspector_panel
+	# to appear below the tabs (always visible)
 
 	return scroll
+
+
+func _create_poi_inspector_panel(parent: Control) -> void:
+	# Add the selected_poi_panel that was created in _create_poi_tab
+	# This makes it visible regardless of which tab is selected
+	if selected_poi_panel:
+		parent.add_child(selected_poi_panel)
 
 
 func _create_toolbar() -> Control:
@@ -625,6 +665,7 @@ func _on_cell_painted(x: int, y: int, layer: String, value: Variant) -> void:
 				"world_x": world_coords.x,
 				"world_y": world_coords.y,
 				"scene_path": "",
+				"layout_path": "",
 				"location_id": ""
 			}
 		_update_location_list()
@@ -763,6 +804,7 @@ func _on_add_poi_pressed() -> void:
 		"world_x": world_coords.x,
 		"world_y": world_coords.y,
 		"scene_path": "",
+		"layout_path": "",
 		"location_id": new_poi_name_edit.text.to_snake_case()
 	}
 
@@ -820,6 +862,13 @@ func _on_poi_scene_changed(new_text: String) -> void:
 			map_state.poi_data[key]["scene_path"] = new_text
 
 
+func _on_poi_layout_path_changed(new_text: String) -> void:
+	if editor_state.selected_poi_index >= 0:
+		var key: String = str(editor_state.selected_poi_index)
+		if map_state.poi_data.has(key):
+			map_state.poi_data[key]["layout_path"] = new_text
+
+
 func _on_poi_location_id_changed(new_text: String) -> void:
 	if editor_state.selected_poi_index >= 0:
 		var key: String = str(editor_state.selected_poi_index)
@@ -843,6 +892,7 @@ func _update_poi_panel() -> void:
 	poi_name_edit.text = poi_info.get("name", "")
 	poi_notes_edit.text = poi_info.get("notes", "")
 	poi_scene_edit.text = poi_info.get("scene_path", "")
+	poi_layout_path_edit.text = poi_info.get("layout_path", "")
 	poi_location_id_edit.text = poi_info.get("location_id", "")
 
 	var poi_type: String = poi_info.get("type", "town")
@@ -932,16 +982,19 @@ func _on_import_pressed() -> void:
 
 
 func _on_apply_pressed() -> void:
-	# Export first
 	_on_export_pressed()
+	_set_status("Exported to %s - changes apply on next game run." % EXPORT_PATH)
 
-	# Force WorldGrid to reload from the new JSON
-	var world_grid_script = load("res://scripts/data/world_grid.gd")
-	if world_grid_script and world_grid_script.has_method("force_reload"):
-		world_grid_script.force_reload()
-		_set_status("Exported and applied! WorldGrid reloaded.")
-	else:
-		_set_status("Exported. Run game to apply changes.")
+
+## Public method to update POI layout_path from external editors
+func update_poi_layout_path(location_id: String, layout_path: String) -> void:
+	for key: String in map_state.poi_data:
+		var poi_info: Dictionary = map_state.poi_data[key]
+		if poi_info.get("location_id", "") == location_id:
+			poi_info["layout_path"] = layout_path
+			_update_poi_panel()
+			_set_status("Linked: %s -> %s" % [poi_info.get("name", location_id), layout_path.get_file()])
+			return
 
 
 func _on_clear_pressed() -> void:
@@ -1018,6 +1071,7 @@ func _on_sync_pois_pressed() -> void:
 			"type": loc_type,
 			"notes": description,
 			"scene_path": "",
+			"layout_path": "",
 			"location_id": loc_id,
 			"x": editor_x,
 			"y": editor_y
@@ -1141,6 +1195,7 @@ func _load_from_world_grid() -> void:
 			"world_x": world_x,
 			"world_y": world_y,
 			"scene_path": world_grid_script.LOCATION_SCENES.get(loc.get("id", ""), ""),
+			"layout_path": "",
 			"location_id": loc.get("id", "")
 		}
 
@@ -1177,3 +1232,75 @@ func _load_from_world_grid() -> void:
 	var msg: String = "Loaded %d terrain, %d roads, %d POIs from WorldGrid" % [terrain_count, road_count, poi_count]
 	print("[WorldForge] " + msg)
 	_set_status(msg)
+
+
+## Open Town Editor for the selected POI
+func _on_edit_town_pressed() -> void:
+	if editor_state.selected_poi_index < 0:
+		_set_status("No POI selected")
+		return
+
+	var key: String = str(editor_state.selected_poi_index)
+	if not map_state.poi_data.has(key):
+		_set_status("Selected POI not found")
+		return
+
+	var poi_info: Dictionary = map_state.poi_data[key]
+	var layout_path: String = poi_info.get("layout_path", "")
+
+	var plugin: EditorPlugin = _get_level_editors_plugin()
+	if not plugin:
+		_set_status("Level Editors plugin not found")
+		return
+
+	if layout_path.is_empty():
+		# Create new town
+		if plugin.has_method("create_new_town"):
+			plugin.create_new_town(poi_info)
+		_set_status("Creating new town: " + poi_info.get("name", "New Town"))
+	else:
+		# Open existing layout
+		if plugin.has_method("open_town_editor"):
+			plugin.open_town_editor(layout_path)
+		_set_status("Opening town: " + layout_path.get_file())
+
+
+## Open Dungeon Editor for the selected POI
+func _on_edit_dungeon_pressed() -> void:
+	if editor_state.selected_poi_index < 0:
+		_set_status("No POI selected")
+		return
+
+	var key: String = str(editor_state.selected_poi_index)
+	if not map_state.poi_data.has(key):
+		_set_status("Selected POI not found")
+		return
+
+	var poi_info: Dictionary = map_state.poi_data[key]
+	var layout_path: String = poi_info.get("layout_path", "")
+
+	var plugin: EditorPlugin = _get_level_editors_plugin()
+	if not plugin:
+		_set_status("Level Editors plugin not found")
+		return
+
+	if layout_path.is_empty():
+		# Create new dungeon
+		if plugin.has_method("create_new_dungeon"):
+			plugin.create_new_dungeon(poi_info)
+		_set_status("Creating new dungeon: " + poi_info.get("name", "New Dungeon"))
+	else:
+		# Open existing layout
+		if plugin.has_method("open_dungeon_editor"):
+			plugin.open_dungeon_editor(layout_path)
+		_set_status("Opening dungeon: " + layout_path.get_file())
+
+
+## Helper to get the Level Editors plugin
+func _get_level_editors_plugin() -> EditorPlugin:
+	var node: Node = get_parent()
+	while node:
+		if node is EditorPlugin and node.has_method("open_dungeon_editor"):
+			return node
+		node = node.get_parent()
+	return null

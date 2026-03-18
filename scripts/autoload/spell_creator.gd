@@ -36,9 +36,6 @@ func _load_effect_database() -> void:
 			var effect: SpellEffectData = load(path) as SpellEffectData
 			if effect and effect.id:
 				effect_database[effect.id] = effect
-				print("[SpellCreator] Loaded effect: ", effect.id)
-
-	print("[SpellCreator] Loaded %d spell effects" % effect_database.size())
 
 ## Get a spell effect by ID (non-static, use SpellCreator.get_effect_by_id())
 func get_effect_by_id(effect_id: String) -> SpellEffectData:
@@ -132,7 +129,6 @@ func create_spell(
 		InventoryManager.spell_database[spell.id] = spell
 
 	spell_created.emit(spell)
-	print("[SpellCreator] Created spell: %s (cost: %d mana)" % [spell.display_name, spell.mana_cost])
 
 	return spell
 
@@ -227,4 +223,3 @@ func load_save_data(data: Dictionary) -> void:
 		# Also add to InventoryManager
 		if InventoryManager:
 			InventoryManager.spell_database[spell.id] = spell
-	print("[SpellCreator] Loaded %d custom spells" % custom_spells.size())

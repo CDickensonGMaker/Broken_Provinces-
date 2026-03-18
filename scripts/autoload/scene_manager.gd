@@ -235,7 +235,6 @@ func change_scene(scene_path: String, spawn_id: String = "", fade: bool = true) 
 	# The new scene will re-initialize streaming if needed
 	if CellStreamer and CellStreamer.is_streaming():
 		CellStreamer.stop_streaming()
-		print("[SceneManager] Stopped cell streaming for scene change")
 
 	if fade:
 		await _fade_out()
@@ -500,8 +499,6 @@ func return_to_previous_scene() -> void:
 
 ## Return to wilderness cell streaming (used by dungeon exits)
 func return_to_wilderness() -> void:
-	print("[SceneManager] Returning to wilderness")
-
 	# Get the coordinates we should return to
 	var return_coords := Vector2i.ZERO
 	if PlayerGPS:
@@ -517,8 +514,6 @@ func return_to_wilderness() -> void:
 
 	# Fade in
 	await _fade_in()
-
-	print("[SceneManager] Returned to wilderness at %s" % str(return_coords))
 
 
 func _is_interior_scene(scene_path: String) -> bool:
@@ -573,8 +568,6 @@ func get_current_room_coords() -> Vector2i:
 ## Fast travel to a location (works in both dev and normal mode)
 ## Handles both hand-crafted scenes (loaded directly) and procedural cells (via CellStreamer)
 func fast_travel_to(location_id: String) -> void:
-	print("[SceneManager] Fast traveling to: %s" % location_id)
-
 	var coords: Vector2i = WorldGrid.get_location_coords(location_id)
 	var cell_info: WorldGrid.CellInfo = WorldGrid.get_cell(coords)
 
@@ -583,8 +576,6 @@ func fast_travel_to(location_id: String) -> void:
 
 	# For hand-crafted scenes, load as MAIN SCENE (not streaming cell)
 	if cell_info and cell_info.scene_path != "":
-		print("[SceneManager] Fast travel to hand-crafted scene: %s" % cell_info.scene_path)
-
 		# Stop streaming completely to prevent conflicts
 		if CellStreamer:
 			CellStreamer.stop_streaming()
@@ -597,7 +588,6 @@ func fast_travel_to(location_id: String) -> void:
 		await get_tree().create_timer(0.2).timeout
 	else:
 		# Procedural cell - use teleport via CellStreamer
-		print("[SceneManager] Fast travel to procedural cell: %s" % str(coords))
 		if CellStreamer:
 			await CellStreamer.teleport_to_cell(coords)
 		else:
@@ -621,8 +611,6 @@ func fast_travel_to(location_id: String) -> void:
 
 	# Fade in
 	await _fade_in()
-
-	print("[SceneManager] Fast travel complete to %s" % location_id)
 
 
 ## Alias for backwards compatibility

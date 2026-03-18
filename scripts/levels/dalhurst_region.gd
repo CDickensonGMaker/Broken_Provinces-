@@ -14,7 +14,6 @@ func _ready() -> void:
 	_setup_spawn_point_metadata()
 	_spawn_enemies()
 	_spawn_herbs()
-	print("[Dalhurst Region] Region initialized")
 
 
 func _setup_navigation() -> void:

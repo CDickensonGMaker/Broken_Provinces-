@@ -309,8 +309,6 @@ func _open_shop_ui() -> void:
 		# Fallback to general shop open with first available type
 		if available_shop_types.size() > 0:
 			shop_ui.open(available_shop_types[0])
-	else:
-		print("[TravelingMerchant] %s: Shop UI not found or no open method" % merchant_name)
 
 
 ## Get interaction prompt for HUD
@@ -337,8 +335,6 @@ func _generate_shop_inventory() -> void:
 
 	# Generate actual shop inventory from each shop type
 	_populate_shop_inventory()
-
-	print("[TravelingMerchant] %s spawned with shops: %s, %d items" % [merchant_name, available_shop_types, shop_inventory.size()])
 
 
 func _populate_shop_inventory() -> void:

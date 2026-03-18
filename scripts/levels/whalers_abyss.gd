@@ -31,7 +31,6 @@ func _ready() -> void:
 	var is_main_scene: bool = get_node_or_null("Player") != null
 	if is_main_scene:
 		DayNightCycle.add_to_level(self)
-	print("[Whalers Abyss] Chasm town loaded (Multi-level)")
 
 
 ## Setup spawn point metadata from markers in scene
@@ -92,8 +91,6 @@ func _spawn_npcs() -> void:
 	if civilian3_marker:
 		CivilianNPC.spawn_man(self, civilian3_marker.global_position, ZONE_ID)
 
-	print("[Whalers Abyss] Spawned NPCs")
-
 
 ## Spawn merchants from marker positions
 func _spawn_merchants() -> void:
@@ -123,8 +120,6 @@ func _spawn_merchants() -> void:
 			LootTables.LootTier.UNCOMMON,
 			"blacksmith"
 		)
-
-	print("[Whalers Abyss] Spawned merchants")
 
 
 ## Spawn interactable objects from markers
@@ -157,8 +152,6 @@ func _spawn_interactables() -> void:
 			"Abyss Shrine",
 			"whalers_abyss_shrine"
 		)
-
-	print("[Whalers Abyss] Spawned interactables")
 
 
 ## Spawn zone doors from marker positions
@@ -213,8 +206,6 @@ func _spawn_doors() -> void:
 		)
 		inn_door.rotation = inn_marker.rotation
 
-	print("[Whalers Abyss] Spawned doors")
-
 
 ## Setup navigation mesh
 func _setup_navigation() -> void:
@@ -235,4 +226,3 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Whalers Abyss] Navigation mesh baked!")

@@ -12,7 +12,6 @@ func _ready() -> void:
 	_setup_navigation()
 	_setup_day_night_cycle()
 	_setup_spawn_point_metadata()
-	print("[Midlands Plains] Region initialized (placeholder)")
 
 
 func _setup_navigation() -> void:

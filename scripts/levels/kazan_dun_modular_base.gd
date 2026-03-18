@@ -48,7 +48,6 @@ func _initialize_level() -> void:
 	_find_player()
 
 	level_initialized.emit()
-	print("[KazanDunModularBase] %s initialized with %d rooms" % [zone_display_name, room_instances.size()])
 
 
 ## Setup environment (WorldEnvironment, lighting)
@@ -210,7 +209,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[KazanDunModularBase] Navigation mesh baked")
 
 
 ## Rebake navigation after room changes

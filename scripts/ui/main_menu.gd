@@ -325,22 +325,16 @@ func _on_new_game() -> void:
 		return
 	is_transitioning = true
 	AudioManager.play_ui_confirm()
-	print("[MainMenu] Starting new game...")
 
 	# Reset game state for new game
-	print("[MainMenu] Resetting GameManager...")
 	GameManager.reset_for_new_game()
-	print("[MainMenu] Clearing inventory...")
 	InventoryManager.clear_inventory_state()
-	print("[MainMenu] Resetting QuestManager...")
 	QuestManager.reset_for_new_game()
-	print("[MainMenu] Resetting SaveManager world state...")
 	SaveManager.reset_world_state()
 	# Reset easter egg spawn flags
 	SpockEasterEgg.reset_for_new_game()
 
 	# Go to character creation screen
-	print("[MainMenu] Going to character creation...")
 	_fade_to_scene("res://scenes/ui/character_creation.tscn")
 
 

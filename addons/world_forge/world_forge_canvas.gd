@@ -48,19 +48,19 @@ func _draw() -> void:
 	var end_x: int = mini(map_state.grid_width, int((-offset.x + size.x) / cell_size) + 1)
 	var end_y: int = mini(map_state.grid_height, int((-offset.y + size.y) / cell_size) + 1)
 
-	# Draw layers in order
-	if editor_state.layer_visibility.get("biome", true):
-		_draw_layer("biome", start_x, start_y, end_x, end_y, cell_size, offset)
-	if editor_state.layer_visibility.get("elevation", true):
-		_draw_layer("elevation", start_x, start_y, end_x, end_y, cell_size, offset)
-	if editor_state.layer_visibility.get("water", true):
-		_draw_layer("water", start_x, start_y, end_x, end_y, cell_size, offset)
+	# Draw layers in order: terrain -> road -> poi
+	if editor_state.layer_visibility.get("terrain", true):
+		_draw_layer("terrain", start_x, start_y, end_x, end_y, cell_size, offset)
 
-	# Draw roads
-	if editor_state.show_roads:
+	# Draw road overlay layer
+	if editor_state.layer_visibility.get("road", true):
+		_draw_roads_layer(start_x, start_y, end_x, end_y, cell_size, offset)
+
+	# Draw road connections (lines between POIs) - deprecated but keep for now
+	if editor_state.show_roads and _road_connections.size() > 0:
 		_draw_roads(cell_size, offset)
 
-	# Draw POIs
+	# Draw POIs on top
 	if editor_state.layer_visibility.get("poi", true):
 		_draw_pois(start_x, start_y, end_x, end_y, cell_size, offset)
 
@@ -96,6 +96,41 @@ func _draw_layer(layer: String, start_x: int, start_y: int, end_x: int, end_y: i
 				Vector2(cell_size, cell_size)
 			)
 			draw_rect(rect, color)
+
+
+func _draw_roads_layer(start_x: int, start_y: int, end_x: int, end_y: int, cell_size: float, offset: Vector2) -> void:
+	var colors: Dictionary = WorldForgeData.LAYER_COLORS.get("road", {})
+
+	for y: int in range(start_y, end_y):
+		for x: int in range(start_x, end_x):
+			var value: Variant = map_state.get_layer_value("road", x, y)
+			if value == null:
+				continue
+
+			var color: Color = colors.get(value, Color.MAGENTA)
+			var cell_pos := Vector2(x * cell_size, y * cell_size) + offset
+
+			# Draw road cells slightly smaller to show terrain underneath
+			var inset: float = cell_size * 0.15
+			var road_rect := Rect2(
+				cell_pos + Vector2(inset, inset),
+				Vector2(cell_size - inset * 2, cell_size - inset * 2)
+			)
+			draw_rect(road_rect, color)
+
+			# Draw special indicator for bridges
+			if value == "bridge":
+				# Draw bridge planks pattern
+				var plank_color := Color(0.4, 0.3, 0.2)
+				var plank_width: float = cell_size * 0.1
+				var center := cell_pos + Vector2(cell_size / 2, cell_size / 2)
+				for i: int in range(3):
+					var plank_offset: float = (i - 1) * cell_size * 0.25
+					draw_line(
+						center + Vector2(-cell_size * 0.3, plank_offset),
+						center + Vector2(cell_size * 0.3, plank_offset),
+						plank_color, plank_width
+					)
 
 
 func _draw_pois(start_x: int, start_y: int, end_x: int, end_y: int, cell_size: float, offset: Vector2) -> void:

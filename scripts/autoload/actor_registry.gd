@@ -47,10 +47,6 @@ func _load_registry() -> void:
 	_load_patches()
 
 	_initialized = true
-	print("[ActorRegistry] Initialized with %d actors (%d patches applied)" % [
-		_actor_configs.size(),
-		_patches.size()
-	])
 
 
 ## Load base actor data from ZooRegistry
@@ -101,7 +97,7 @@ func _load_patches() -> void:
 	patches_loaded.emit(_patches.size())
 
 	if _patches.size() > 0:
-		print("[ActorRegistry] Loaded %d patches from %s" % [_patches.size(), ZOO_PATCHES_PATH])
+		pass
 
 
 ## Apply a patch to an actor's configuration
@@ -111,7 +107,6 @@ func _apply_patch(actor_id: String, patch: Dictionary) -> void:
 		# Create a new entry with the patch data
 		_actor_configs[actor_id] = patch.duplicate()
 		_actor_configs[actor_id]["id"] = actor_id
-		print("[ActorRegistry] Created new actor from patch: %s" % actor_id)
 		return
 
 	# Merge patch values into existing config
@@ -264,5 +259,4 @@ func _save_patches_to_file() -> bool:
 	file.store_string(json_text)
 	file.close()
 
-	print("[ActorRegistry] Saved %d patches to %s" % [_patches.size(), ZOO_PATCHES_PATH])
 	return true

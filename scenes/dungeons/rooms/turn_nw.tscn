@@ -1,0 +1,101 @@
+[gd_scene load_steps=10 format=3 uid="uid://turnnw00001"]
+
+[ext_resource type="Texture2D" uid="uid://dta0hblwspyt5" path="res://assets/textures/environment/dungeon/stonefloor.png" id="1_floor"]
+[ext_resource type="Texture2D" uid="uid://ca8q0o7n04x0e" path="res://assets/textures/environment/dungeon/stonewall.png" id="2_wall"]
+[ext_resource type="Texture2D" uid="uid://bm3kw5y1lgwkq" path="res://assets/textures/environment/dungeon/stonefloor_2.png" id="3_ceiling"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
+albedo_texture = ExtResource("1_floor")
+uv1_scale = Vector3(4, 4, 4)
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wall"]
+albedo_texture = ExtResource("2_wall")
+uv1_scale = Vector3(2, 1, 2)
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ceiling"]
+albedo_texture = ExtResource("3_ceiling")
+uv1_scale = Vector3(4, 4, 4)
+texture_filter = 0
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor"]
+material = SubResource("StandardMaterial3D_floor")
+size = Vector3(16, 0.2, 16)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(16, 0.2, 16)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ceiling"]
+material = SubResource("StandardMaterial3D_ceiling")
+size = Vector3(16, 0.2, 16)
+
+[node name="TurnNW" type="Node3D"]
+
+[node name="Geometry" type="Node3D" parent="."]
+
+[node name="Floor" type="MeshInstance3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, -0.1, 8)
+mesh = SubResource("BoxMesh_floor")
+
+[node name="FloorBody" type="StaticBody3D" parent="Geometry/Floor"]
+
+[node name="FloorCollision" type="CollisionShape3D" parent="Geometry/Floor/FloorBody"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Ceiling" type="MeshInstance3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4.1, 8)
+mesh = SubResource("BoxMesh_ceiling")
+
+[node name="CeilingBody" type="StaticBody3D" parent="Geometry/Ceiling"]
+
+[node name="CeilingCollision" type="CollisionShape3D" parent="Geometry/Ceiling/CeilingBody"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Walls" type="Node3D" parent="Geometry"]
+
+[node name="WallNorthLeft" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 2, 0.25)
+use_collision = true
+size = Vector3(6, 4, 0.5)
+material = SubResource("StandardMaterial3D_wall")
+
+[node name="WallNorthRight" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 2, 0.25)
+use_collision = true
+size = Vector3(6, 4, 0.5)
+material = SubResource("StandardMaterial3D_wall")
+
+[node name="WallSouth" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 15.75)
+use_collision = true
+size = Vector3(16, 4, 0.5)
+material = SubResource("StandardMaterial3D_wall")
+
+[node name="WallEast" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 16)
+material = SubResource("StandardMaterial3D_wall")
+
+[node name="WallWestFront" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 2, 3)
+use_collision = true
+size = Vector3(0.5, 4, 6)
+material = SubResource("StandardMaterial3D_wall")
+
+[node name="WallWestBack" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 2, 13)
+use_collision = true
+size = Vector3(0.5, 4, 6)
+material = SubResource("StandardMaterial3D_wall")
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="SpawnPoint" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.5, 8)
+metadata/spawn_id = "default"
+
+[node name="EnemySpawns" type="Node3D" parent="."]
+
+[node name="ChestPositions" type="Node3D" parent="."]

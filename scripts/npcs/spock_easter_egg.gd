@@ -248,5 +248,4 @@ static func spawn_spock(parent: Node, pos: Vector3) -> SpockEasterEgg:
 	var instance := SpockEasterEgg.new()
 	instance.position = pos
 	parent.add_child(instance)
-	print("[SpockEasterEgg] The Pointed-Eared Stranger has appeared!")
 	return instance

@@ -89,8 +89,6 @@ func _ready() -> void:
 	# Connect to CrimeManager signals
 	CrimeManager.player_released.connect(_on_crime_manager_released)
 
-	print("[Prison] %s initialized at %s" % [prison_name, global_position])
-
 	# Auto-jail player if they have jail state
 	_on_scene_ready()
 
@@ -315,7 +313,6 @@ func _spawn_jail_guard() -> void:
 	jail_guard.set("region_id", region_id)
 
 	add_child(jail_guard)
-	print("[Prison] Spawned jail guard")
 
 
 ## Create interactable cell door using JailCellDoor class
@@ -436,7 +433,6 @@ func jail_player(player: Node3D) -> void:
 	# Move player into cell
 	player.global_position = global_position + cell_spawn_point
 
-	print("[Prison] Player jailed in %s" % prison_name)
 	player_jailed.emit(player)
 
 
@@ -457,8 +453,6 @@ func release_player() -> void:
 	is_player_inside = false
 	cell_door_locked = false
 	exit_door_locked = false
-
-	print("[Prison] Player released from %s" % prison_name)
 
 	# Get player reference before scene change
 	var player: Node3D = current_prisoner
@@ -481,9 +475,6 @@ func _teleport_to_return_scene() -> void:
 	if return_scene.is_empty():
 		return_scene = "res://scenes/levels/elder_moor.tscn"
 		return_pos = Vector3(0, 0.5, 0)
-		print("[Prison] No return scene stored, using fallback: %s" % return_scene)
-	else:
-		print("[Prison] Returning to %s at %s" % [return_scene, return_pos])
 
 	# Store spawn position for SceneManager
 	SceneManager.set_player_position(return_pos)
@@ -632,8 +623,6 @@ func _complete_escape() -> void:
 	CrimeManager.on_jail_escape(region_id)
 	is_player_inside = false
 
-	print("[Prison] Player escaped from %s!" % prison_name)
-
 	# Get player reference before scene change
 	var player: Node3D = current_prisoner
 	if not player:
@@ -672,9 +661,8 @@ func guard_releases_player() -> void:
 
 ## Called when guard is killed
 func on_guard_killed() -> void:
-	# Guard drops jail key
-	print("[Prison] Jail guard killed - player can loot key")
-	# The guard's corpse will have the key in its loot
+	# Guard drops jail key - the guard's corpse will have the key in its loot
+	pass
 
 
 ## Return confiscated items

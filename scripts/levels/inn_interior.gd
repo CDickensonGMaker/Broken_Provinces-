@@ -50,7 +50,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[InnInterior] Navigation mesh baked")
 
 ## Setup the main bar area geometry (walls, floor, bar counter)
 func _setup_main_bar_area() -> void:
@@ -159,8 +158,6 @@ func _setup_main_bar_area() -> void:
 	ceiling.use_collision = true
 	add_child(ceiling)
 
-	print("[InnInterior] Main bar area created")
-
 ## Spawn the innkeeper behind the bar
 func _spawn_innkeeper() -> void:
 	# Innkeeper stands behind the bar on west side
@@ -169,7 +166,6 @@ func _spawn_innkeeper() -> void:
 	innkeeper.room_cost = 25
 	# Give innkeeper reference to this level so they can unlock the door
 	innkeeper.set_inn_level(self)
-	print("[InnInterior] Spawned innkeeper: Barkeep Mira")
 
 ## Spawn the universal town storage chest
 func _spawn_town_storage() -> void:
@@ -183,7 +179,6 @@ func _spawn_town_storage() -> void:
 		true,  # Persistent
 		"town_storage_main"  # Universal ID - same everywhere
 	)
-	print("[InnInterior] Spawned universal Town Storage chest")
 
 
 ## Spawn the tavern fireplace (full rest + level up)
@@ -192,7 +187,6 @@ func _spawn_tavern_fireplace() -> void:
 	# Full recovery + allows leveling up (spending XP)
 	var fireplace := RestSpot.spawn_rest_spot(self, Vector3(-4, 0, -4), "Tavern Hearth")
 	fireplace.rest_type = RestSpot.RestSpotType.TAVERN_FIREPLACE
-	print("[InnInterior] Spawned tavern fireplace (full rest + level up)")
 
 
 ## Create the small rental room (4x4 with bed)
@@ -252,13 +246,11 @@ func _create_rental_room() -> void:
 
 	# Bed in the rental room (against east wall)
 	rental_room_bed = RentableBed.spawn_bed(self, Vector3(9.5, 0, 0), "Inn Bed", false)
-	print("[InnInterior] Created rental room with bed")
 
 ## Make the rental room bed available (called by innkeeper after payment)
 func make_bed_available() -> void:
 	if rental_room_bed:
 		rental_room_bed.make_available()
-		print("[InnInterior] Rental room bed now available")
 
 ## Create warm tavern lighting
 func _create_ambient_lighting() -> void:

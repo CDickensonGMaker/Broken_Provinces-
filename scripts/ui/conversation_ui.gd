@@ -867,13 +867,10 @@ func _set_topics_enabled(enabled: bool) -> void:
 # =============================================================================
 
 func _on_topic_pressed(index: int) -> void:
-	print("ConversationUI: _on_topic_pressed called with index %d" % index)
 	if is_typing:
-		print("ConversationUI: _on_topic_pressed blocked - is_typing=true")
 		return
 
 	if index < 0 or index >= dynamic_topic_menu.size():
-		print("ConversationUI: _on_topic_pressed blocked - invalid index")
 		return
 
 	var topic_data: Dictionary = dynamic_topic_menu[index]

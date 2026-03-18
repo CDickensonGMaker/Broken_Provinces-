@@ -50,14 +50,12 @@ func _ready() -> void:
 	if dialogue_box_scene:
 		dialogue_box = dialogue_box_scene.instantiate()
 		add_child(dialogue_box)
-		print("DialogueManager: DialogueBox UI instantiated")
 	else:
 		# Create from script if scene doesn't exist
 		var DialogueBoxScript = load("res://scripts/ui/dialogue_box.gd")
 		if DialogueBoxScript:
 			dialogue_box = DialogueBoxScript.new()
 			add_child(dialogue_box)
-			print("DialogueManager: DialogueBox UI created from script")
 		else:
 			push_error("DialogueManager: Could not load DialogueBox")
 
@@ -260,7 +258,6 @@ func _execute_node_actions(node: DialogueNode) -> void:
 	if not node or node.actions.is_empty():
 		return
 
-	print("[DialogueManager] Executing %d node actions for '%s'" % [node.actions.size(), node.id])
 	for action: DialogueAction in node.actions:
 		execute_action(action)
 
@@ -368,6 +365,26 @@ func _evaluate_condition_internal(condition: DialogueCondition) -> bool:
 				"elf": return player_race == Enums.Race.ELF
 				"halfling": return player_race == Enums.Race.HALFLING
 				"dwarf": return player_race == Enums.Race.DWARF
+			return false
+
+		DialogueData.ConditionType.PLAYER_CAREER:
+			if not GameManager.player_data:
+				return false
+			var player_career: Enums.Career = GameManager.player_data.career
+			var career_name: String = condition.param_string.to_lower().strip_edges()
+			match career_name:
+				"apprentice": return player_career == Enums.Career.APPRENTICE
+				"farmer": return player_career == Enums.Career.FARMER
+				"grave_digger": return player_career == Enums.Career.GRAVE_DIGGER
+				"scout": return player_career == Enums.Career.SCOUT
+				"soldier": return player_career == Enums.Career.SOLDIER
+				"merchant": return player_career == Enums.Career.MERCHANT
+				"priest": return player_career == Enums.Career.PRIEST
+				"thief": return player_career == Enums.Career.THIEF
+				"noble": return player_career == Enums.Career.NOBLE
+				"cultist": return player_career == Enums.Career.CULTIST
+				"alchemist": return player_career == Enums.Career.ALCHEMIST
+				"beggar": return player_career == Enums.Career.BEGGAR
 			return false
 
 	return true
@@ -535,7 +552,6 @@ func execute_action(action: DialogueAction) -> String:
 				var route_id: String = action.param_string
 				# Store route for processing after dialogue ends
 				set_flag("_pending_boat_voyage:" + route_id)
-				print("[DialogueManager] Queued boat voyage: %s" % route_id)
 			else:
 				push_warning("[DialogueManager] BoatTravelManager not found")
 
@@ -739,17 +755,13 @@ func _check_pending_boat_voyage() -> void:
 	if route_id.is_empty():
 		return
 
-	print("[DialogueManager] Starting boat voyage: %s" % route_id)
-
 	if not BoatTravelManager:
 		push_error("[DialogueManager] BoatTravelManager not available")
 		return
 
 	# Start the voyage (skip_cost=true because dialogue already deducted gold)
 	var success: bool = BoatTravelManager.start_journey(route_id, true)
-	if success:
-		print("[DialogueManager] Boat voyage started successfully")
-	else:
+	if not success:
 		push_warning("[DialogueManager] Failed to start boat voyage: %s" % route_id)
 
 

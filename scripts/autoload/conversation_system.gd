@@ -172,14 +172,12 @@ func _instantiate_conversation_ui() -> void:
 	if conversation_ui_scene:
 		conversation_ui = conversation_ui_scene.instantiate()
 		add_child(conversation_ui)
-		print("ConversationSystem: ConversationUI instantiated")
 	else:
 		# Create from script if scene doesn't exist
 		var ConversationUIScript = load("res://scripts/ui/conversation_ui.gd")
 		if ConversationUIScript:
 			conversation_ui = ConversationUIScript.new()
 			add_child(conversation_ui)
-			print("ConversationSystem: ConversationUI created from script")
 		else:
 			push_error("ConversationSystem: Could not load ConversationUI")
 
@@ -196,7 +194,9 @@ func _load_response_pools() -> void:
 		"personal.json",
 		"trade.json",
 		"quests.json",
-		"directions.json"
+		"directions.json",
+		"career_greetings.json",
+		"career_topics.json"
 	]
 
 	var total_responses := 0
@@ -223,9 +223,6 @@ func _load_response_pools() -> void:
 		var pool_data: Dictionary = json.data
 		var responses_loaded := _load_responses_from_dict(pool_data)
 		total_responses += responses_loaded
-		print("ConversationSystem: Loaded pool '%s' with %d responses" % [file_name, responses_loaded])
-
-	print("ConversationSystem: Total responses loaded - %d topics, %d responses" % [response_pools.size(), total_responses])
 
 
 ## Register all responses from a pool (legacy .tres support)
@@ -249,7 +246,6 @@ func _load_responses_from_dict(pool_data: Dictionary) -> int:
 			quest_turnin_responses[archetype_key] = []
 			for variant: Variant in variants:
 				quest_turnin_responses[archetype_key].append(str(variant))
-		print("ConversationSystem: Loaded %d quest turn-in archetype variants" % quest_turnin_responses.size())
 
 	for resp_data: Variant in responses:
 		if not resp_data is Dictionary:
@@ -948,7 +944,6 @@ func unlock_topic(topic_id: String) -> void:
 	if topic_id not in player_known_topics:
 		player_known_topics.append(topic_id)
 		topic_unlocked.emit(topic_id)
-		print("[ConversationSystem] Topic unlocked: %s" % topic_id)
 
 
 ## Check if player knows a topic
@@ -2220,6 +2215,29 @@ func _evaluate_condition_internal(condition: DialogueCondition) -> bool:
 				"elf": return player_race == Enums.Race.ELF
 				"halfling": return player_race == Enums.Race.HALFLING
 				"dwarf": return player_race == Enums.Race.DWARF
+			return false
+
+		DialogueData.ConditionType.PLAYER_CAREER:
+			# Check player's starting career against param_string
+			# Valid values: "apprentice", "farmer", "grave_digger", "scout", "soldier",
+			# "merchant", "priest", "thief", "noble", "cultist", "alchemist", "beggar"
+			if not GameManager.player_data:
+				return false
+			var player_career: Enums.Career = GameManager.player_data.career
+			var career_name: String = condition.param_string.to_lower().strip_edges()
+			match career_name:
+				"apprentice": return player_career == Enums.Career.APPRENTICE
+				"farmer": return player_career == Enums.Career.FARMER
+				"grave_digger": return player_career == Enums.Career.GRAVE_DIGGER
+				"scout": return player_career == Enums.Career.SCOUT
+				"soldier": return player_career == Enums.Career.SOLDIER
+				"merchant": return player_career == Enums.Career.MERCHANT
+				"priest": return player_career == Enums.Career.PRIEST
+				"thief": return player_career == Enums.Career.THIEF
+				"noble": return player_career == Enums.Career.NOBLE
+				"cultist": return player_career == Enums.Career.CULTIST
+				"alchemist": return player_career == Enums.Career.ALCHEMIST
+				"beggar": return player_career == Enums.Career.BEGGAR
 			return false
 
 	return true

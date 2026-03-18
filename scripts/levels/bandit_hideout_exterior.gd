@@ -28,7 +28,6 @@ func _ready() -> void:
 	var is_main_scene: bool = get_node_or_null("Player") != null
 	if is_main_scene:
 		DayNightCycle.add_to_level(self)
-	print("[BanditHideoutExterior] Bandit camp loaded")
 
 
 ## Setup the dark forest environment
@@ -110,8 +109,6 @@ func _spawn_enemies_from_markers() -> void:
 				v_frames
 			)
 
-	print("[BanditHideoutExterior] Spawned enemies from %d markers" % enemy_spawns.get_child_count())
-
 
 ## Spawn chests from Marker3D positions in ChestPositions node
 func _spawn_chests_from_markers() -> void:
@@ -141,8 +138,6 @@ func _spawn_chests_from_markers() -> void:
 				randomize_loot,
 				persistent_id
 			)
-
-	print("[BanditHideoutExterior] Spawned chests from markers")
 
 
 ## Spawn zone doors from Marker3D positions in DoorPositions node
@@ -178,8 +173,6 @@ func _spawn_doors_from_markers() -> void:
 				door.rotation = marker.rotation
 				door.show_frame = show_frame
 
-	print("[BanditHideoutExterior] Spawned doors from markers")
-
 
 ## Setup navigation mesh (baked at runtime from pre-placed geometry)
 func _setup_navigation() -> void:
@@ -205,7 +198,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[BanditHideoutExterior] Navigation mesh baked!")
 
 
 ## Setup cell streaming if we're the main scene (has Player/HUD)
@@ -225,4 +217,3 @@ func _setup_cell_streaming() -> void:
 	var my_coords: Vector2i = WorldGrid.get_location_coords("bandit_hideout")
 	CellStreamer.register_main_scene_cell(my_coords, self)
 	CellStreamer.start_streaming(my_coords)
-	print("[%s] Registered as main scene, streaming started at %s" % [ZONE_ID, my_coords])

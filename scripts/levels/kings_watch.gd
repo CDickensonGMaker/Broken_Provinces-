@@ -28,7 +28,6 @@ func _ready() -> void:
 	var is_main_scene: bool = get_node_or_null("Player") != null
 	if is_main_scene:
 		DayNightCycle.add_to_level(self)
-	print("[Kings Watch] Ancient ruins loaded (Zone size: %dx%d)" % [ZONE_SIZE, ZONE_SIZE])
 
 
 ## Setup spawn point metadata from Marker3D nodes
@@ -71,7 +70,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Kings Watch] Navigation mesh baked!")
 
 
 ## Spawn zone exit portals
@@ -106,8 +104,6 @@ func _spawn_zone_exits() -> void:
 		"Ancient Path (Dangerous)"
 	)
 	north_portal.show_frame = false
-
-	print("[Kings Watch] Spawned zone exits")
 
 
 ## Spawn enemies from EnemySpawnPoints markers
@@ -164,8 +160,6 @@ func _spawn_enemies() -> void:
 					enemy.leash_radius = 25.0
 					enemy_count += 1
 
-	print("[Kings Watch] Spawned %d enemies" % enemy_count)
-
 
 ## Spawn chests from ChestPositions markers
 func _spawn_chests() -> void:
@@ -196,8 +190,6 @@ func _spawn_chests() -> void:
 				true,  # randomize_loot
 				persistent_id
 			)
-
-	print("[Kings Watch] Spawned chests")
 
 
 ## Setup light flickering effects

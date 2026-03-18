@@ -107,8 +107,6 @@ func update_cell(new_cell: Vector2i) -> void:
 	# Emit cell changed signal
 	cell_changed.emit(old_cell, new_cell)
 
-	print("[PlayerGPS] Cell changed: %s -> %s" % [old_cell, new_cell])
-
 
 ## Discover a cell (reveal on map)
 func discover_cell(coords: Vector2i) -> void:
@@ -162,7 +160,6 @@ func _discover_location_at(coords: Vector2i, award_xp: bool = true) -> void:
 			_award_discovery_xp(xp_reward, cell_info.location_name)
 
 	location_discovered.emit(cell_info.location_id, cell_info.location_name)
-	print("[PlayerGPS] Location discovered: %s (XP: %d)" % [cell_info.location_name, xp_reward])
 
 
 ## Get discovery XP reward based on location type
@@ -287,7 +284,6 @@ func discover_location(location_id: String) -> void:
 		_award_discovery_xp(xp_reward, cell_info.location_name)
 
 	location_discovered.emit(location_id, cell_info.location_name)
-	print("[PlayerGPS] Location discovered via shrine: %s (XP: %d)" % [cell_info.location_name, xp_reward])
 
 
 ## Set current position directly (used for loading saves or fast travel)
@@ -379,10 +375,6 @@ func load_save_data(data: Dictionary) -> void:
 			"discovered_time": info.get("discovered_time", 0.0)
 		}
 
-	print("[PlayerGPS] Loaded save data: %d cells, %d locations" % [
-		discovered_cells.size(), discovered_locations.size()
-	])
-
 
 ## Reset all tracking (for new game)
 func reset() -> void:
@@ -444,10 +436,6 @@ func from_dict(data: Dictionary) -> void:
 
 	# Load discovered locations
 	discovered_locations = data.get("discovered_locations", {}).duplicate(true)
-
-	print("[PlayerGPS] Loaded from dict: %d cells, %d locations" % [
-		discovered_cells.size(), discovered_locations.size()
-	])
 
 
 ## ============================================================================

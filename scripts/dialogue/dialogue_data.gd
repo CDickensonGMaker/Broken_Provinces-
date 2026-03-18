@@ -31,7 +31,8 @@ enum ConditionType {
 	TIME_OF_DAY,        ## Check current time of day
 	REPUTATION,         ## Check faction reputation (future)
 	RANDOM_CHANCE,      ## Random percentage chance
-	PLAYER_RACE         ## Check player's race (param_string: "human", "elf", "halfling", "dwarf")
+	PLAYER_RACE,        ## Check player's race (param_string: "human", "elf", "halfling", "dwarf")
+	PLAYER_CAREER       ## Check player's career (param_string: "merchant", "thief", "soldier", etc.)
 }
 
 ## Action types that can trigger when a choice is selected

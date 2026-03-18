@@ -47,8 +47,6 @@ func _ready() -> void:
 	# Register with CellStreamer and start streaming
 	_setup_cell_streaming()
 
-	print("[Bloodsand Arena] Combat arena initialized")
-
 
 ## Spike pit radius - center area with no floor
 const SPIKE_PIT_RADIUS := 4.0
@@ -103,8 +101,6 @@ func _setup_ground_plane() -> void:
 
 	# Add outer ground plane for the rest of the cell (outside arena)
 	_create_outer_ground(ground_container, material)
-
-	print("[Bloodsand Arena] Arena floor created with spike pit hole (radius %.1f)" % SPIKE_PIT_RADIUS)
 
 
 ## Create a single floor section with mesh and collision
@@ -245,7 +241,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Bloodsand Arena] Navigation mesh baked")
 
 
 ## Setup dynamic day/night lighting
@@ -269,11 +264,9 @@ func _setup_spawn_point_metadata() -> void:
 func _generate_wall_collision() -> void:
 	var terrain: Node3D = get_node_or_null("Terrain")
 	if not terrain:
-		print("[Bloodsand Arena] No Terrain node found for wall collision")
 		return
 
-	var wall_count: int = _add_wall_collision_recursive(terrain)
-	print("[Bloodsand Arena] Generated collision for %d wall meshes" % wall_count)
+	_add_wall_collision_recursive(terrain)
 
 
 ## Recursively find wall meshes and add collision
@@ -352,7 +345,6 @@ func _generate_terrain_collision() -> void:
 	var terrain: Node3D = get_node_or_null("Terrain")
 	if terrain:
 		_add_collision_to_meshes(terrain)
-		print("[Bloodsand Arena] Generated collision for terrain")
 
 
 ## Recursively add collision to all MeshInstance3D nodes
@@ -418,8 +410,6 @@ func _spawn_arena_master_at(pos: Vector3) -> void:
 	# Set position AFTER adding to tree (ensures proper transform)
 	arena_master.position = pos
 
-	print("[Bloodsand Arena] Arena Master (Gormund) spawned at %s" % pos)
-
 
 ## Spawn shops at positions defined in scene
 func _spawn_shops() -> void:
@@ -463,8 +453,6 @@ func _spawn_shops() -> void:
 			_:
 				push_warning("[Bloodsand Arena] Unknown shop type: %s" % shop_type)
 
-	print("[Bloodsand Arena] Spawned arena shops")
-
 
 ## Spawn tavern with innkeeper
 func _spawn_tavern(parent: Node3D, pos: Vector3, npc_name: String = "Innkeeper") -> void:
@@ -507,8 +495,6 @@ func _spawn_tavern(parent: Node3D, pos: Vector3, npc_name: String = "Innkeeper")
 	light.position = Vector3(0, 3, 0)
 	tavern.add_child(light)
 
-	print("[Bloodsand Arena] Tavern spawned with innkeeper %s" % npc_name)
-
 
 ## Spawn a merchant at a position with given parameters
 func _spawn_merchant_at(parent: Node3D, pos: Vector3, npc_name: String, tier: LootTables.LootTier, shop_type: String) -> void:
@@ -521,7 +507,6 @@ func _spawn_merchant_at(parent: Node3D, pos: Vector3, npc_name: String, tier: Lo
 	)
 	if merchant:
 		merchant.region_id = ZONE_ID
-		print("[Bloodsand Arena] %s (%s) spawned" % [npc_name, shop_type])
 
 
 ## Spawn alchemist with purple glow
@@ -543,8 +528,6 @@ func _spawn_alchemist(parent: Node3D, pos: Vector3, npc_name: String, tier: Loot
 		light.omni_range = 6.0
 		light.position = Vector3(0, 2, 0)
 		merchant.add_child(light)
-
-		print("[Bloodsand Arena] Alchemist %s spawned" % npc_name)
 
 
 ## Get gladiator spawn positions for tournament fights
@@ -670,14 +653,12 @@ func _connect_tournament_signals() -> void:
 func enable_arena_barrier() -> void:
 	if arena_barrier:
 		arena_barrier.collision_layer = 1  # Enable collision
-		print("[Bloodsand Arena] Arena barrier ENABLED")
 
 
 ## Disable the arena barrier (allows leaving between waves)
 func disable_arena_barrier() -> void:
 	if arena_barrier:
 		arena_barrier.collision_layer = 0  # Disable collision
-		print("[Bloodsand Arena] Arena barrier DISABLED")
 
 
 func _exit_tree() -> void:

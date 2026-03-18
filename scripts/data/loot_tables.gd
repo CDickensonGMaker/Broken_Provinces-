@@ -151,7 +151,7 @@ const SHOP_BUY_MARKUP: float = 1.5
 const SHOP_SELL_MARKDOWN: float = 0.4
 
 func _ready() -> void:
-	print("[LootTables] Loot table system initialized")
+	pass
 
 
 # ============================================================================
@@ -316,27 +316,17 @@ func roll_quality_for_tier(tier: LootTier) -> Enums.ItemQuality:
 func generate_shop_inventory(shop_tier: LootTier, shop_type: String = "general") -> Array[Dictionary]:
 	var inventory: Array[Dictionary] = []
 
-	print("[LootTables] generate_shop_inventory called - tier: %s (%d), type: %s" % [get_tier_name(shop_tier), shop_tier, shop_type])
-	print("[LootTables] InventoryManager DB sizes: weapons=%d, armor=%d, items=%d" % [
-		InventoryManager.weapon_database.size(),
-		InventoryManager.armor_database.size(),
-		InventoryManager.item_database.size()
-	])
-
 	# Get pools for this shop type
 	var pool_names: Array = SHOP_TYPE_POOLS.get(shop_type, ["consumable"])
-	print("[LootTables] Pool names for shop type '%s': %s" % [shop_type, pool_names])
 
 	# Determine how many items to generate
 	var item_count: int = SHOP_ITEM_COUNTS.get(shop_tier, 6)
-	print("[LootTables] Target item count: %d" % item_count)
 
 	# Build a combined available items list
 	var available_items: Array[Dictionary] = []
 	for pool_name in pool_names:
 		var pool: Dictionary = get_pool_by_name(pool_name)
 		var items: Array[String] = get_all_up_to_tier(pool, shop_tier)
-		print("[LootTables] Pool '%s' items up to tier %d: %s" % [pool_name, shop_tier, items])
 
 		# Check which items actually exist in the databases
 		for item_id in items:
@@ -346,13 +336,8 @@ func generate_shop_inventory(shop_tier: LootTier, shop_type: String = "general")
 					"item_id": item_id,
 					"pool_name": pool_name
 				})
-			else:
-				print("[LootTables] WARNING: Item '%s' from pool '%s' does NOT exist in any database!" % [item_id, pool_name])
-
-	print("[LootTables] Total available items after validation: %d" % available_items.size())
 
 	if available_items.is_empty():
-		print("[LootTables] WARNING: No available items! Returning empty inventory.")
 		return inventory
 
 	# Shuffle for randomization
@@ -401,11 +386,6 @@ func generate_shop_inventory(shop_tier: LootTier, shop_type: String = "general")
 			"quality": quality
 		})
 		items_added.append(item_id)
-
-	print("[LootTables] Final inventory count: %d items" % inventory.size())
-	for i in range(inventory.size()):
-		var item = inventory[i]
-		print("[LootTables]   [%d] %s (type: %s, price: %d, qty: %d)" % [i, item.item_id, item.item_type, item.price, item.quantity])
 
 	return inventory
 
@@ -746,7 +726,6 @@ func roll_soulstone_drop(faction: Enums.Faction, tier: LootTier) -> Dictionary:
 
 	# Verify item exists in database
 	if not _item_exists_in_database(soulstone_id):
-		print("[LootTables] WARNING: Soulstone '%s' not found in item database!" % soulstone_id)
 		return {}
 
 	return {

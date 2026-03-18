@@ -2,6 +2,9 @@
 class_name SpellCaster
 extends Node
 
+# TODO: False wall system being reworked for Dingo Room Generator
+# const FalseWallScript := preload("res://scripts/dungeons/false_wall.gd")
+
 signal cast_started(spell: SpellData)
 signal cast_completed(spell: SpellData)
 signal cast_interrupted
@@ -174,6 +177,11 @@ func _cast_self_spell(spell: SpellData) -> void:
 
 	var target_pos := owner_entity.global_position + Vector3(0, 1.0, 0)
 
+	# Special handling for utility spells
+	if spell.id == "detect_secrets":
+		_cast_detect_secrets(spell)
+		return
+
 	if spell.is_healing:
 		CombatManager.apply_spell_damage(owner_entity, owner_entity, spell)
 		# Spawn healing VFX
@@ -187,6 +195,79 @@ func _cast_self_spell(spell: SpellData) -> void:
 			var buff_mgr := owner_entity.get_node_or_null("BuffVFXManager")
 			if buff_mgr and buff_mgr.has_method("on_condition_applied"):
 				buff_mgr.on_condition_applied(spell.inflicts_condition, spell.condition_duration)
+
+
+## Cast Detect Secrets spell - reveals hidden walls and passages
+func _cast_detect_secrets(spell: SpellData) -> void:
+	if not owner_entity:
+		return
+
+	var caster_pos: Vector3 = owner_entity.global_position
+	var detection_range: float = spell.aoe_radius
+
+	# TODO: False wall system being reworked for Dingo Room Generator
+	# For now, just show the visual effect
+	_spawn_detection_pulse(caster_pos, detection_range)
+
+	var hud: Node = get_tree().get_first_node_in_group("hud")
+	if hud and hud.has_method("show_notification"):
+		hud.show_notification("No secrets detected nearby.")
+
+
+## Spawn detection pulse visual effect
+func _spawn_detection_pulse(center: Vector3, radius: float) -> void:
+	# Create a simple expanding ring effect
+	var effect := MeshInstance3D.new()
+	var torus := TorusMesh.new()
+	torus.inner_radius = radius * 0.9
+	torus.outer_radius = radius
+	torus.rings = 16
+	torus.ring_segments = 32
+	effect.mesh = torus
+	effect.rotation.x = PI / 2  # Lay flat
+
+	var material := StandardMaterial3D.new()
+	material.albedo_color = Color(0.5, 0.3, 1.0, 0.5)
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.emission_enabled = true
+	material.emission = Color(0.5, 0.3, 1.0)
+	material.emission_energy_multiplier = 2.0
+	effect.material_override = material
+
+	get_tree().current_scene.add_child(effect)
+	effect.global_position = center + Vector3(0, 0.5, 0)
+
+	# Animate and remove
+	var tween := effect.create_tween()
+	tween.tween_property(material, "albedo_color:a", 0.0, 1.5)
+	tween.parallel().tween_property(effect, "scale", Vector3(1.2, 1.0, 1.2), 1.5)
+	tween.tween_callback(effect.queue_free)
+
+
+## Spawn effect at detected secret location
+func _spawn_detection_effect(pos: Vector3) -> void:
+	var effect := MeshInstance3D.new()
+	var sphere := SphereMesh.new()
+	sphere.radius = 0.3
+	sphere.height = 0.6
+	effect.mesh = sphere
+
+	var material := StandardMaterial3D.new()
+	material.albedo_color = Color(1.0, 0.8, 0.2, 0.8)
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.emission_enabled = true
+	material.emission = Color(1.0, 0.8, 0.2)
+	material.emission_energy_multiplier = 3.0
+	effect.material_override = material
+
+	get_tree().current_scene.add_child(effect)
+	effect.global_position = pos + Vector3(0, 1.5, 0)
+
+	# Animate upward and fade
+	var tween := effect.create_tween()
+	tween.tween_property(effect, "position:y", pos.y + 3.0, 1.0)
+	tween.parallel().tween_property(material, "albedo_color:a", 0.0, 1.0)
+	tween.tween_callback(effect.queue_free)
 
 ## Single target spell (debuffs like Blind, Slow)
 func _cast_single_target_spell(spell: SpellData, target_allies: bool) -> void:
@@ -1066,23 +1147,16 @@ func equip_spell(spell: SpellData, slot: int) -> void:
 
 ## Learn a new spell
 func learn_spell(spell: SpellData) -> bool:
-	print("[SpellCaster] learn_spell called for: %s (id=%s)" % [spell.display_name if spell else "null", spell.id if spell else ""])
 	if spell in known_spells:
-		print("[SpellCaster] Spell already known!")
 		return false
 	known_spells.append(spell)
-	print("[SpellCaster] Spell learned! Now know %d spells." % known_spells.size())
 	return true
 
 ## Learn spell by ID
 func learn_spell_by_id(spell_id: String) -> bool:
-	print("[SpellCaster] learn_spell_by_id called for: %s" % spell_id)
-	print("[SpellCaster] Spell database has %d spells: %s" % [spell_database.size(), spell_database.keys()])
 	if not spell_database.has(spell_id):
-		print("[SpellCaster] ERROR: Spell '%s' not found in database!" % spell_id)
 		return false
 	var result := learn_spell(spell_database[spell_id])
-	print("[SpellCaster] learn_spell result: %s, total known spells: %d" % [result, known_spells.size()])
 	return result
 
 ## Cast equipped spell by slot

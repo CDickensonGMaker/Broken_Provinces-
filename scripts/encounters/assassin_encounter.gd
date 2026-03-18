@@ -150,8 +150,6 @@ func _spawn_and_fight() -> void:
 
 	combat_started.emit(_spawned_enemy)
 
-	print("[AssassinEncounter] Spawned %s at %s" % [enemy_data.display_name, spawn_pos])
-
 
 ## Called when the assassin dies
 func _on_enemy_died() -> void:

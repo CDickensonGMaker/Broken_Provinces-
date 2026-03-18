@@ -124,7 +124,6 @@ func start_tournament() -> bool:
 	# Lock equipment
 	_set_equipment_locked(true)
 
-	print("[TournamentManager] Tournament started!")
 	tournament_started.emit()
 
 	# Start first wave
@@ -144,8 +143,6 @@ func start_next_wave() -> void:
 		# Tournament complete!
 		_complete_tournament()
 		return
-
-	print("[TournamentManager] Starting wave %d/%d" % [current_wave, TOTAL_WAVES])
 
 	# Enable arena barrier
 	barrier_enabled.emit()
@@ -199,7 +196,6 @@ func _spawn_wave_enemies() -> void:
 
 			_spawn_enemy(arena, spawn_pos, enemy_type)
 
-	print("[TournamentManager] Spawned %d enemies for wave %d" % [current_wave_enemies.size(), current_wave])
 
 
 ## Spawn a single enemy
@@ -310,8 +306,6 @@ func _on_wave_complete() -> void:
 		GameManager.player_data.gold += gold_earned
 	total_gold_earned += gold_earned
 
-	print("[TournamentManager] Wave %d complete! Earned %d gold" % [current_wave, gold_earned])
-
 	# Disable arena barrier
 	barrier_disabled.emit()
 
@@ -350,8 +344,6 @@ func on_player_defeated() -> void:
 	if not is_tournament_active:
 		return
 
-	print("[TournamentManager] Player defeated in wave %d" % current_wave)
-
 	# Clean up remaining enemies
 	for enemy: Node in current_wave_enemies:
 		if is_instance_valid(enemy):
@@ -376,8 +368,6 @@ func leave_tournament() -> void:
 	if not is_tournament_active:
 		return
 
-	print("[TournamentManager] Player left tournament after wave %d with %d gold" % [current_wave, total_gold_earned])
-
 	# Unlock equipment
 	_set_equipment_locked(false)
 
@@ -390,8 +380,6 @@ func leave_tournament() -> void:
 
 ## Complete the tournament successfully
 func _complete_tournament() -> void:
-	print("[TournamentManager] Tournament complete! Total gold earned: %d" % total_gold_earned)
-
 	# Unlock equipment
 	_set_equipment_locked(false)
 
@@ -410,7 +398,6 @@ func _complete_tournament() -> void:
 func _set_equipment_locked(locked: bool) -> void:
 	is_equipment_locked = locked
 	equipment_lock_changed.emit(locked)
-	print("[TournamentManager] Equipment lock: %s" % ("LOCKED" if locked else "UNLOCKED"))
 
 
 ## Check if equipment changes are allowed

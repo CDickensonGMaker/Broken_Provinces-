@@ -32,7 +32,6 @@ func _ready() -> void:
 	_spawn_portals()
 	_setup_day_night_cycle()
 	_bake_navigation()
-	print("[Falkenhaften] Capital city loaded - Tier 5 Capital")
 
 
 ## Setup dynamic day/night lighting
@@ -82,8 +81,6 @@ func _spawn_merchants() -> void:
 			config.type
 		)
 
-	print("[Falkenhaften] Spawned %d merchant shops" % merchant_configs.size())
-
 
 ## Spawn multiple inns
 func _spawn_inns() -> void:
@@ -96,8 +93,6 @@ func _spawn_inns() -> void:
 
 	for config in inn_configs:
 		_create_inn_door(config.pos, config.name, config.door_rotation)
-
-	print("[Falkenhaften] Spawned %d inns" % inn_configs.size())
 
 
 ## Create inn door and rest spot (building geometry is in .tscn)
@@ -142,8 +137,6 @@ func _spawn_guild_halls() -> void:
 	# Other guild masters
 	_spawn_guild_master(Vector3(-55, 0, -60), "Mage's Guild")
 	_spawn_guild_master(Vector3(-35, 0, -50), "Merchant's Guild")
-
-	print("[Falkenhaften] Spawned guild halls (Fighters Guild HQ + 2 other guilds)")
 
 
 ## Spawn the Fighters Guild headquarters NPCs
@@ -192,8 +185,6 @@ func _spawn_npcs() -> void:
 
 	# Temple priests
 	_spawn_temple_priests()
-
-	print("[Falkenhaften] Spawned NPCs")
 
 
 ## Spawn priests for each temple
@@ -248,8 +239,6 @@ func _spawn_grond_stoneheart() -> void:
 	grond.position = Vector3(-15, 0, -10)
 	add_child(grond)
 
-	print("[Falkenhaften] Spawned Grond Stoneheart (quest completion target)")
-
 
 ## Spawn guard posts
 func _spawn_guard_posts() -> void:
@@ -283,8 +272,6 @@ func _spawn_guard_posts() -> void:
 	for pos in guard_positions:
 		_spawn_guard(pos)
 
-	print("[Falkenhaften] Spawned %d guard posts" % guard_positions.size())
-
 
 ## Spawn a guard at position
 func _spawn_guard(pos: Vector3) -> void:
@@ -302,7 +289,6 @@ func _spawn_fast_travel_shrine() -> void:
 		"Falkenhaften Shrine",
 		"falkenhaften_shrine"
 	)
-	print("[Falkenhaften] Spawned fast travel shrine")
 
 
 ## Spawn portal connections
@@ -338,11 +324,8 @@ func _spawn_portals() -> void:
 	north_portal.set_meta("poi_name", "King's Watch")
 	north_portal.set_meta("poi_color", Color(0.7, 0.6, 0.2))
 
-	print("[Falkenhaften] Spawned portals")
-
 
 ## Bake navigation mesh
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Falkenhaften] Navigation mesh baked!")

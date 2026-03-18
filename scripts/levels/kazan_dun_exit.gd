@@ -13,7 +13,6 @@ const ZONE_SIZE := 60.0
 func _ready() -> void:
 	_setup_navigation()
 	_setup_spawn_point_metadata()
-	print("[Kazan-Dun Exit] Back Exit initialized (Zone size: %dx%d)" % [ZONE_SIZE, ZONE_SIZE])
 
 
 ## Setup navigation mesh for NPC pathfinding
@@ -39,7 +38,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Kazan-Dun Exit] Navigation mesh baked")
 
 
 ## Add metadata to spawn points for proper identification

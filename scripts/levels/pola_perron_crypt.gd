@@ -25,7 +25,6 @@ func _ready() -> void:
 	_setup_chest_spawns()
 	_spawn_portals()
 	_setup_navigation()
-	print("[Pola Perron Crypt] Evil crypt dungeon loaded (3 levels)")
 
 
 ## Configure spawn points from pre-placed markers
@@ -80,8 +79,6 @@ func _setup_enemy_spawns() -> void:
 			if config.get("is_boss", false):
 				child.set_meta("is_boss", true)
 
-	print("[Pola Perron Crypt] Configured %d enemy spawn points" % enemy_spawns.get_child_count())
-
 
 ## Configure chest spawn points from pre-placed markers
 func _setup_chest_spawns() -> void:
@@ -102,8 +99,6 @@ func _setup_chest_spawns() -> void:
 			var tier: String = chest_configs.get(child.name, "common")
 			child.set_meta("tier", tier)
 
-	print("[Pola Perron Crypt] Configured %d loot chest positions" % chest_positions.get_child_count())
-
 
 ## Spawn portal connections
 func _spawn_portals() -> void:
@@ -118,8 +113,6 @@ func _spawn_portals() -> void:
 		"Return to Monastery"
 	)
 	monastery_portal.rotation.y = PI
-
-	print("[Pola Perron Crypt] Spawned portal connections")
 
 
 ## Setup navigation mesh
@@ -145,4 +138,3 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Pola Perron Crypt] Navigation mesh baked!")

@@ -383,7 +383,6 @@ func _clear_all_poi_markers() -> void:
 	for marker in quest_target_markers_to_free:
 		marker.queue_free()
 
-	print("[HUD] Cleared all POI, enemy, plant, and quest target markers for scene transition")
 
 
 ## Refresh compass quest marker after loading a save
@@ -403,7 +402,6 @@ func refresh_compass_quest_marker() -> void:
 	# Clear cached enemy references to force fresh lookup
 	_cached_enemies.clear()
 
-	print("[HUD] Refreshed compass quest marker for tracked quest: %s" % tracked_id)
 
 
 ## Rebuild zone connection map from doors in current scene
@@ -483,12 +481,10 @@ func _setup_health_frame() -> void:
 	# Try to load the skull frame HUD scene (editable in Godot editor)
 	var scene_path := "res://scenes/ui/skull_frame_hud.tscn"
 	if not ResourceLoader.exists(scene_path):
-		print("[HUD] Skull frame scene not found, using default health bars")
 		return
 
 	var skull_scene: PackedScene = load(scene_path)
 	if not skull_scene:
-		print("[HUD] Failed to load skull frame scene, using default health bars")
 		return
 
 	# Get the TopLeft VBoxContainer (parent of health bars)
@@ -497,7 +493,6 @@ func _setup_health_frame() -> void:
 		top_left = health_bar.get_parent() as VBoxContainer
 
 	if not top_left:
-		print("[HUD] Could not find TopLeft container, using default health bars")
 		return
 
 	# Hide the original TopLeft container - we use the scene instead
@@ -520,8 +515,6 @@ func _setup_health_frame() -> void:
 	if new_mana_bar:
 		mana_bar = new_mana_bar
 	health_label = null  # No more text label
-
-	print("[HUD] Skull frame HUD loaded from scene")
 
 
 func _setup_spell_slots() -> void:
@@ -1346,7 +1339,6 @@ func _load_save_slot(slot: int) -> void:
 	death_load_failure_count = 0
 
 	# Change to the saved scene
-	print("[HUD] Loading save - changing to scene: %s" % scene_path)
 	SceneManager.change_scene(scene_path)
 
 ## Open save select panel
@@ -2475,13 +2467,11 @@ func _update_compass_quest_marker(player: Node3D, yaw_degrees: float, ppd: float
 
 	var tracked_id := QuestManager.get_tracked_quest_id()
 	if should_log and not tracked_id.is_empty():
-		print("[Compass] Tracking quest ID: %s" % tracked_id)
+		pass
 
 	# Get the tracked quest (user-selected from journal)
 	var target_quest := QuestManager.get_tracked_quest()
 	if not target_quest:
-		if not tracked_id.is_empty():
-			print("[Compass] WARNING: Quest ID '%s' is tracked but quest not found in quests dict" % tracked_id)
 		if compass_quest_marker and is_instance_valid(compass_quest_marker):
 			compass_quest_marker.visible = false
 		return
@@ -2496,8 +2486,6 @@ func _update_compass_quest_marker(player: Node3D, yaw_degrees: float, ppd: float
 
 	if all_objectives_complete:
 		# Quest is ready for turn-in - point to quest giver
-		if should_log:
-			print("[Compass] All objectives complete for quest '%s', finding turn-in NPC" % target_quest.id)
 
 		# Try to find turn-in NPC in current zone first
 		var turnin_location := _find_turnin_npc_in_current_zone(target_quest)
@@ -2505,8 +2493,6 @@ func _update_compass_quest_marker(player: Node3D, yaw_degrees: float, ppd: float
 			target_pos = turnin_location.position
 			has_target = true
 			target_name = "Return to " + turnin_location.name
-			if should_log:
-				print("[Compass] Found turn-in NPC in zone: %s at %s" % [target_name, target_pos])
 		else:
 			# Turn-in NPC not in current zone - find exit to their zone
 			var giver_zone := _get_quest_giver_zone(target_quest)
@@ -2516,8 +2502,6 @@ func _update_compass_quest_marker(player: Node3D, yaw_degrees: float, ppd: float
 					target_pos = exit_door.global_position
 					has_target = true
 					target_name = "Return to turn in quest"
-					if should_log:
-						print("[Compass] Found exit to turn-in zone: %s at %s" % [giver_zone, target_pos])
 	else:
 		# Quest not complete - find first incomplete objective
 		var target_objective: QuestManager.Objective = null
@@ -2542,9 +2526,6 @@ func _update_compass_quest_marker(player: Node3D, yaw_degrees: float, ppd: float
 			target_pos = objective_location.position
 			has_target = true
 			target_name = objective_location.name
-			if should_log:
-				var turnin_status: String = " (TURN-IN)" if objective_location.get("is_turnin", false) else ""
-				print("[Compass] Found objective in zone: %s at %s%s" % [target_name, target_pos, turnin_status])
 		else:
 			# Objective is not in current zone - determine where to go
 			var target_zone: String = ""
@@ -2557,22 +2538,16 @@ func _update_compass_quest_marker(player: Node3D, yaw_degrees: float, ppd: float
 				if not giver_zone.is_empty():
 					target_zone = giver_zone
 					target_name = "Return to turn-in NPC"
-					if should_log:
-						print("[Compass] Objective complete, pointing to turn-in zone: %s" % target_zone)
 
 			# If not complete (or no giver zone found), find the objective's zone
 			if target_zone.is_empty():
 				target_zone = _get_objective_target_zone(target_objective)
-				if should_log:
-					print("[Compass] Objective type: %s, target: %s, target_zone: %s" % [target_objective.type, target_objective.target, target_zone])
 
 			# Fallback: if target_zone is empty and we're in town, point to outdoor region
 			if target_zone.is_empty():
 				var current_zone: String = PlayerGPS.current_location_id if PlayerGPS else ""
 				if current_zone in ["town", "riverside_village", "elder_moor", "village_elder_moor"]:
 					target_zone = "open_world"
-					if should_log:
-						print("[Compass] Fallback: pointing to open_world from town")
 
 			if not target_zone.is_empty():
 				var exit_door := _find_exit_door_to_zone(target_zone)
@@ -2580,8 +2555,6 @@ func _update_compass_quest_marker(player: Node3D, yaw_degrees: float, ppd: float
 					target_pos = exit_door.global_position
 					has_target = true
 					target_name = "Exit: " + exit_door.door_name
-					if should_log:
-						print("[Compass] Found exit door: %s at %s" % [target_name, target_pos])
 
 		# FALLBACK: Use QuestManager's cached world position (same as minimap)
 		# This handles outdoor objectives like Bloodsand Arena that are reached via cell streaming
@@ -2591,8 +2564,6 @@ func _update_compass_quest_marker(player: Node3D, yaw_degrees: float, ppd: float
 				target_pos = cached_pos
 				has_target = true
 				target_name = target_objective.description
-				if should_log:
-					print("[Compass] Using cached world position: %s at %s" % [target_name, target_pos])
 
 	if not has_target:
 		if compass_quest_marker and is_instance_valid(compass_quest_marker):
@@ -2638,11 +2609,6 @@ func _update_compass_quest_marker(player: Node3D, yaw_degrees: float, ppd: float
 	var marker_visible: bool = abs(rel_angle) < 50.0
 	compass_quest_marker.visible = marker_visible
 
-	# Debug: Log once per second when debug is enabled
-	if should_log:
-		print("[Compass] Marker '%s': rel_angle=%.1f, visible=%s, x_pos=%.1f, player_pos=%s, target_pos=%s" % [
-			target_name, rel_angle, marker_visible, x_pos, player.global_position, target_pos
-		])
 
 
 ## Create the quest tracker marker (distinct from POI markers)
@@ -3624,7 +3590,6 @@ func _toggle_debug_overlay() -> void:
 	debug_overlay_visible = not debug_overlay_visible
 	if debug_overlay_container:
 		debug_overlay_container.visible = debug_overlay_visible
-	print("[HUD] Debug overlay: %s" % ("ON" if debug_overlay_visible else "OFF"))
 
 
 ## ============================================================================
@@ -3642,7 +3607,6 @@ func _setup_border_frame() -> void:
 
 	# Add to scene tree at root level so it's independent of HUD hierarchy
 	get_tree().root.call_deferred("add_child", border_frame)
-	print("[HUD] Border frame initialized")
 
 
 func _update_debug_overlay() -> void:

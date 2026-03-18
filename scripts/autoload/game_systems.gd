@@ -119,8 +119,6 @@ func _initialize_systems() -> void:
 	if _initialized:
 		return
 
-	print("[GameSystems] Initializing cross-system connections...")
-
 	# Connect CrimeManager to MoralityManager
 	_connect_crime_to_morality()
 
@@ -146,7 +144,6 @@ func _initialize_systems() -> void:
 	_connect_dialogue_signals()
 
 	_initialized = true
-	print("[GameSystems] All systems connected.")
 	systems_ready.emit()
 
 
@@ -162,7 +159,6 @@ func _connect_crime_to_morality() -> void:
 
 	if CrimeManager.has_signal("crime_reported"):
 		CrimeManager.crime_reported.connect(_on_crime_reported)
-		print("[GameSystems] Connected CrimeManager.crime_reported -> MoralityManager")
 
 
 ## Handle crime reported event
@@ -195,7 +191,6 @@ func _connect_quest_to_reputation() -> void:
 
 	if QuestManager.has_signal("quest_completed"):
 		QuestManager.quest_completed.connect(_on_quest_completed)
-		print("[GameSystems] Connected QuestManager.quest_completed -> Faction/Morality")
 
 
 ## Handle quest completion - apply faction and morality rewards
@@ -302,7 +297,6 @@ func _connect_combat_signals() -> void:
 
 	if CombatManager.has_signal("entity_killed"):
 		CombatManager.entity_killed.connect(_on_entity_killed)
-		print("[GameSystems] Connected CombatManager.entity_killed -> Kill tracking")
 
 
 ## Handle entity killed event
@@ -373,8 +367,6 @@ func _connect_bounty_signals() -> void:
 	if BountyManager.has_signal("bounty_turned_in"):
 		BountyManager.bounty_turned_in.connect(_on_bounty_turned_in)
 
-	print("[GameSystems] Connected BountyManager signals")
-
 
 ## Handle bounty accepted
 func _on_bounty_accepted(bounty) -> void:
@@ -422,8 +414,6 @@ func _connect_inventory_signals() -> void:
 	if InventoryManager.has_signal("item_removed"):
 		InventoryManager.item_removed.connect(_on_item_removed)
 
-	print("[GameSystems] Connected InventoryManager signals")
-
 
 ## Handle item added to inventory
 func _on_item_added(item_id: String, quantity: int) -> void:
@@ -451,7 +441,6 @@ func _connect_dialogue_signals() -> void:
 
 	if DialogueManager.has_signal("flag_changed"):
 		DialogueManager.flag_changed.connect(_on_dialogue_flag_changed)
-		print("[GameSystems] Connected DialogueManager.flag_changed")
 
 
 ## Handle dialogue flag change

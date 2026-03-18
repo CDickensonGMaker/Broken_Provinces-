@@ -31,8 +31,6 @@ func _ready() -> void:
 	# Quest trigger for reaching the roost
 	QuestManager.on_location_reached("wyverns_roost")
 
-	print("[WyvernsRoost] Rocky outcropping initialized!")
-
 
 func _create_materials() -> void:
 	# Highland rock - gray/brown
@@ -73,7 +71,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[WyvernsRoost] Navigation mesh baked!")
 
 
 ## ============================================================================
@@ -104,8 +101,6 @@ func _create_rocky_terrain() -> void:
 		patch.material = dirt_mat
 		patch.use_collision = false
 		add_child(patch)
-
-	print("[WyvernsRoost] Rocky terrain created")
 
 
 ## ============================================================================
@@ -156,8 +151,6 @@ func _create_rock_formations() -> void:
 		# Avoid center roost area
 		if pos.distance_to(Vector3(0, 0, -15)) > 15:
 			_create_boulder(pos, randf_range(0.5, 2.0))
-
-	print("[WyvernsRoost] Rock formations created")
 
 
 func _create_rock_cluster(pos: Vector3, size_mult: float) -> void:
@@ -222,8 +215,6 @@ func _spawn_spawn_points() -> void:
 	from_wilderness.set_meta("spawn_id", "from_wilderness")
 	add_child(from_wilderness)
 
-	print("[WyvernsRoost] Spawn points created")
-
 
 func _spawn_exit_door() -> void:
 	# Exit at south edge (back to wilderness)
@@ -236,7 +227,6 @@ func _spawn_exit_door() -> void:
 	)
 	portal.rotation.y = PI
 	portal.show_frame = false
-	print("[WyvernsRoost] Spawned exit portal")
 
 
 ## ============================================================================
@@ -250,8 +240,6 @@ func _spawn_wyverns() -> void:
 	_spawn_wyvern(Vector3(-8, 0, 5))
 	_spawn_wyvern(Vector3(20, 0, -5))
 	_spawn_wyvern(Vector3(0, 0, -25))
-
-	print("[WyvernsRoost] Spawned wyvern pack")
 
 
 func _spawn_wyvern(pos: Vector3) -> void:
@@ -281,7 +269,6 @@ func _spawn_wyvern(pos: Vector3) -> void:
 	if enemy:
 		enemy.add_to_group("wyvern")
 		enemy.add_to_group("flying_enemy")
-		print("[WyvernsRoost] Spawned wyvern at %s" % pos)
 
 
 ## ============================================================================
@@ -299,8 +286,6 @@ func _spawn_loot() -> void:
 	)
 	if nest_loot:
 		nest_loot.setup_with_loot(LootTables.LootTier.RARE)
-
-	print("[WyvernsRoost] Spawned loot")
 
 
 ## ============================================================================
@@ -325,5 +310,3 @@ func _create_lighting() -> void:
 	ambient.omni_range = 60.0
 	ambient.position = Vector3(0, 15, 0)
 	add_child(ambient)
-
-	print("[WyvernsRoost] Created lighting")

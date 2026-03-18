@@ -113,7 +113,6 @@ func _ready() -> void:
 	super._ready()
 
 	# Debug logging for quest system debugging
-	print("[Guard] npc_id=%s, npc_type=%s, region_id=%s" % [npc_id, npc_type, region_id])
 
 
 ## Override parent registration to use guard-specific type
@@ -228,10 +227,6 @@ func _patrol_state_logic(distance: float) -> void:
 		if not town_faction.is_empty() and FactionManager.is_hostile_with(town_faction):
 			# Attack on sight - no arrest option for hostile/hated players
 			_change_state(GuardState.COMBAT)
-			print("[Guard] Player is %s with %s - attacking on sight!" % [
-				FactionManager.get_status_name(town_faction),
-				town_faction
-			])
 			if wander:
 				wander.pause()
 			return
@@ -240,7 +235,6 @@ func _patrol_state_logic(distance: float) -> void:
 		var bounty: int = CrimeManager.get_bounty(region_id)
 		if bounty > 0:
 			_change_state(GuardState.ALERT)
-			print("[Guard] Noticed player has bounty of %d in %s" % [bounty, region_id])
 			# Disable wander behavior
 			if wander:
 				wander.pause()
@@ -345,12 +339,10 @@ func _attack_player() -> void:
 	var damage := 15  # Base guard damage
 	if _target_player.has_method("take_damage"):
 		_target_player.take_damage(damage, Enums.DamageType.PHYSICAL, self)
-		print("[Guard] Attacked player for %d damage" % damage)
 
 
 ## Give up chase and return to patrol
 func _give_up_chase() -> void:
-	print("[Guard] Lost sight of suspect, returning to patrol")
 	_change_state(GuardState.PATROL)
 	_chase_timer = 0.0
 	_alert_cooldown = ALERT_COOLDOWN_TIME
@@ -542,7 +534,6 @@ func respond_to_backup_call(crime_location: Vector3, suspect: Node3D) -> void:
 	if guard_state == GuardState.PATROL or guard_state == GuardState.ALERT:
 		_target_player = suspect
 		_change_state(GuardState.CHASE)
-		print("[Guard] Responding to backup call!")
 
 		# Disable wander
 		if wander:
@@ -557,7 +548,6 @@ func on_crime_reported(crime_region_id: String) -> void:
 	# If patrolling, become alert
 	if guard_state == GuardState.PATROL:
 		_alert_cooldown = 0  # Reset cooldown to check immediately
-		print("[Guard] Heard about crime in %s, becoming alert" % region_id)
 
 
 ## Teleport player to jail via scene change
@@ -573,8 +563,6 @@ func _teleport_player_to_jail() -> void:
 	else:
 		CrimeManager.return_scene = ""
 	CrimeManager.return_position = _target_player.global_position
-
-	print("[Guard] Storing return info: scene=%s, pos=%s" % [CrimeManager.return_scene, CrimeManager.return_position])
 
 	# Load prison scene - AWAIT to ensure old scene is unloaded before prison loads
 	await SceneManager.change_scene("res://scenes/world/prison.tscn", "cell")
@@ -696,7 +684,6 @@ func interact(_interactor: Node) -> void:
 func _get_completable_guard_quests() -> Array[String]:
 	# Use the new central turn-in system
 	var result := QuestManager.get_turnin_quests_for_entity(self)
-	print("[Guard] Checking turn-in quests for npc_type='%s', region='%s' -> found %d quests" % [npc_type, region_id, result.size()])
 	return result
 
 
@@ -844,18 +831,6 @@ func take_damage(amount: int, damage_type: Enums.DamageType = Enums.DamageType.P
 	if current_health <= 0:
 		_die(attacker)
 
-	var damage_type_name: String = Enums.DamageType.keys()[damage_type] if damage_type < Enums.DamageType.size() else "UNKNOWN"
-	var attacker_name: String = attacker.name if attacker else "unknown"
-	print("[Guard] %s took %d %s damage (reduced from %d) from %s (HP: %d/%d)" % [
-		npc_name,
-		actual_damage,
-		damage_type_name,
-		amount,
-		attacker_name,
-		current_health,
-		max_health
-	])
-
 	return actual_damage
 
 
@@ -866,8 +841,6 @@ func _die(killer: Node = null) -> void:
 
 	_is_dead = true
 	is_in_combat = false
-
-	print("[Guard] %s has been killed by %s" % [npc_name, killer.name if killer else "unknown"])
 
 	# Report murder crime (killing a guard is very serious)
 	if killer and killer.is_in_group("player"):
@@ -953,7 +926,6 @@ func _spawn_replacement_guards() -> void:
 					new_guard._change_state(GuardState.CHASE)
 					if new_guard.wander:
 						new_guard.wander.pause()
-				print("[Guard] Replacement guard spawned at %s" % spawn_pos)
 
 		# Notify player
 		var hud: Node = spawn_parent.get_tree().get_first_node_in_group("hud")

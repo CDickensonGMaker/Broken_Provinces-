@@ -39,7 +39,6 @@ func _create_fog_image() -> void:
 	fog_image.fill(Color(0, 0, 0, 1))  # Black = fully fogged
 
 	fog_texture = ImageTexture.create_from_image(fog_image)
-	print("[MapFogOfWar] Created fog image: %dx%d" % [image_size.x, image_size.y])
 
 
 ## Reveal area around a cell coordinate
@@ -184,7 +183,6 @@ func from_dict(data: Dictionary) -> void:
 	# Bulk reveal all previously explored hexes
 	if hexes_to_reveal.size() > 0:
 		bulk_reveal(hexes_to_reveal)
-		print("[MapFogOfWar] Restored %d explored hexes" % hexes_to_reveal.size())
 
 
 ## Get count of explored hexes

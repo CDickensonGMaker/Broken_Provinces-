@@ -84,14 +84,12 @@ func _ready() -> void:
 	_load_route_data()
 	_load_sea_routes_from_hex_data()
 	_register_default_routes()
-	print("[BoatTravelManager] Initialized with %d routes, %d sea routes" % [routes.size(), sea_routes.size()])
 
 
 ## Load all encounter data from the data folder
 func _load_encounter_data() -> void:
 	var dir := DirAccess.open(ENCOUNTER_DATA_PATH)
 	if not dir:
-		print("[BoatTravelManager] No encounter data directory found at %s" % ENCOUNTER_DATA_PATH)
 		return
 
 	dir.list_dir_begin()
@@ -101,7 +99,7 @@ func _load_encounter_data() -> void:
 			var path: String = ENCOUNTER_DATA_PATH + filename
 			var resource: Resource = load(path)
 			if resource is SeaEncounter:
-				print("[BoatTravelManager] Loaded encounter: %s" % resource.id)
+				pass
 		filename = dir.get_next()
 	dir.list_dir_end()
 
@@ -110,7 +108,6 @@ func _load_encounter_data() -> void:
 func _load_route_data() -> void:
 	var dir := DirAccess.open(ROUTE_DATA_PATH)
 	if not dir:
-		print("[BoatTravelManager] No route data directory found at %s" % ROUTE_DATA_PATH)
 		return
 
 	dir.list_dir_begin()
@@ -213,7 +210,7 @@ func _register_default_routes() -> void:
 func _load_sea_routes_from_hex_data() -> void:
 	# Sea routes are now defined in the sea_routes dictionary above
 	# Additional routes can be loaded from data files when implemented
-	print("[BoatTravelManager] Using %d hardcoded sea routes" % sea_routes.size())
+	pass
 
 
 ## Register a new boat route
@@ -223,7 +220,6 @@ func register_route(route: BoatTravelData) -> void:
 		return
 
 	routes[route.id] = route
-	print("[BoatTravelManager] Registered route: %s" % route.id)
 
 	# Register reverse route if bidirectional
 	if route.is_bidirectional:
@@ -334,7 +330,6 @@ func start_journey(route_id: String, skip_cost: bool = false) -> bool:
 	current_state = JourneyState.TRAVELING
 
 	journey_started.emit(route)
-	print("[BoatTravelManager] Started journey: %s (cost: %d gold)" % [route.display_name, cost])
 
 	# Load the boat voyage scene to handle the visual journey experience
 	const BOAT_VOYAGE_SCENE := "res://scenes/travel/boat_voyage.tscn"
@@ -353,8 +348,6 @@ func _process_next_segment() -> void:
 
 	current_segment += 1
 	var total_segments: int = current_route.journey_segments
-
-	print("[BoatTravelManager] Processing segment %d/%d" % [current_segment, total_segments])
 
 	# Advance game time for this segment
 	var time_per_segment: float = current_route.travel_duration_hours / total_segments
@@ -386,7 +379,6 @@ func _trigger_encounter(encounter: SeaEncounter) -> void:
 	pending_encounter = encounter
 	encounters_this_journey += 1
 
-	print("[BoatTravelManager] Encounter triggered: %s" % encounter.display_name)
 	encounter_triggered.emit(encounter)
 
 	# The encounter scene/UI should call resolve_encounter when done
@@ -413,12 +405,10 @@ func _handle_storm_encounter(encounter: SeaEncounter) -> void:
 	# Apply damage to player
 	if GameManager and GameManager.player_data and results.damage_dealt > 0:
 		GameManager.player_data.take_damage(results.damage_dealt)
-		print("[BoatTravelManager] Storm dealt %d damage" % results.damage_dealt)
 
-	# Cargo loss chance
-	if randf() < results.get("cargo_loss_chance", 0.0):
-		# Could remove random items from inventory here
-		print("[BoatTravelManager] Lost some cargo in the storm!")
+	# Cargo loss chance - could remove random items from inventory here
+	# if randf() < results.get("cargo_loss_chance", 0.0):
+	#     pass
 
 	resolve_encounter(EncounterResult.STORM_SURVIVED)
 
@@ -426,9 +416,9 @@ func _handle_storm_encounter(encounter: SeaEncounter) -> void:
 ## Handle island discovery
 func _handle_island_discovery(encounter: SeaEncounter) -> void:
 	# Mark island as discovered in WorldData
-	if encounter.discovered_location_id:
-		print("[BoatTravelManager] Discovered island: %s" % encounter.discovered_location_id)
-		# WorldData integration would go here
+	# TODO: WorldData integration would go here
+	# if encounter.discovered_location_id:
+	#     pass
 
 	resolve_encounter(EncounterResult.DISCOVERED)
 
@@ -437,7 +427,6 @@ func _handle_island_discovery(encounter: SeaEncounter) -> void:
 func _load_encounter_scene(encounter: SeaEncounter) -> void:
 	if encounter.encounter_scene_path.is_empty():
 		# Use a default encounter scene or handle in-place
-		print("[BoatTravelManager] No scene for encounter, resolving immediately")
 		# For now, auto-resolve (in real implementation, show combat UI)
 		resolve_encounter(EncounterResult.VICTORY)
 		return
@@ -457,8 +446,6 @@ func resolve_encounter(result: EncounterResult) -> void:
 	if not pending_encounter:
 		push_warning("[BoatTravelManager] No pending encounter to resolve")
 		return
-
-	print("[BoatTravelManager] Encounter resolved: %s" % EncounterResult.keys()[result])
 
 	# Handle rewards based on result
 	match result:
@@ -500,13 +487,11 @@ func _award_encounter_loot(encounter: SeaEncounter) -> void:
 	var gold: int = encounter.roll_gold_reward()
 	if GameManager and GameManager.player_data:
 		GameManager.player_data.gold += gold
-		print("[BoatTravelManager] Awarded %d gold" % gold)
 
 	# Award guaranteed loot
 	for item_id in encounter.guaranteed_loot:
 		if InventoryManager:
 			InventoryManager.add_item(item_id, 1)
-			print("[BoatTravelManager] Awarded item: %s" % item_id)
 
 	# Roll loot table
 	if LootTables:
@@ -528,20 +513,15 @@ func _award_encounter_xp(encounter: SeaEncounter, multiplier: float) -> void:
 	var xp: int = int(encounter.xp_reward * multiplier)
 	if GameManager and GameManager.player_data:
 		GameManager.player_data.add_ip(xp)
-		print("[BoatTravelManager] Awarded %d XP" % xp)
 
 
 ## Complete the journey
 func _complete_journey() -> void:
 	current_state = JourneyState.COMPLETE
 
-	print("[BoatTravelManager] Journey complete: %s" % current_route.display_name)
-	print("[BoatTravelManager] Faced %d encounters" % encounters_this_journey)
-
 	# Teleport player to destination
 	# This would integrate with SceneManager/WorldData to load destination scene
 	var destination: String = current_route.destination_port
-	print("[BoatTravelManager] Player arrived at: %s" % destination)
 
 	journey_complete.emit(current_route, encounters_this_journey)
 	_reset_journey_state()
@@ -554,7 +534,6 @@ func attempt_flee() -> bool:
 		return false
 
 	if not pending_encounter.can_flee:
-		print("[BoatTravelManager] Cannot flee from this encounter")
 		return false
 
 	# Use AGILITY + ATHLETICS for flee check
@@ -581,7 +560,6 @@ func attempt_flee() -> bool:
 		resolve_encounter(EncounterResult.FLED)
 		return true
 	else:
-		print("[BoatTravelManager] Flee attempt failed!")
 		return false
 
 
@@ -591,7 +569,6 @@ func attempt_peaceful_resolution() -> bool:
 		return false
 
 	if not pending_encounter.can_resolve_peacefully:
-		print("[BoatTravelManager] Cannot resolve this encounter peacefully")
 		return false
 
 	# Get the skill for peaceful resolution
@@ -615,7 +592,6 @@ func attempt_peaceful_resolution() -> bool:
 		resolve_encounter(EncounterResult.PEACEFUL)
 		return true
 	else:
-		print("[BoatTravelManager] Peaceful resolution failed!")
 		return false
 
 
@@ -699,8 +675,6 @@ func start_sea_route_journey(route_id: String) -> bool:
 	encounters_this_journey = 0
 	current_state = JourneyState.TRAVELING
 
-	print("[BoatTravelManager] Started sea route: %s (cost: %d gold)" % [route_id, cost])
-
 	# Process waypoints
 	_process_sea_travel_segment()
 	return true
@@ -718,8 +692,6 @@ func _process_sea_travel_segment() -> void:
 	var waypoint: Vector2i = current_waypoints[current_waypoint_index]
 	current_segment += 1
 
-	print("[BoatTravelManager] Reached waypoint %d: %s" % [current_waypoint_index, waypoint])
-
 	# Advance time for this segment (1.5 hours per waypoint)
 	if GameManager and GameManager.has_method("advance_time"):
 		GameManager.advance_time(1.5)
@@ -730,7 +702,6 @@ func _process_sea_travel_segment() -> void:
 	var encounter_type: String = _check_sea_encounter(waypoint)
 	if not encounter_type.is_empty():
 		encounters_this_journey += 1
-		print("[BoatTravelManager] Sea encounter at waypoint: %s" % encounter_type)
 		_trigger_sea_encounter(encounter_type, waypoint)
 		return  # Encounter must resolve before continuing
 
@@ -775,22 +746,16 @@ func _trigger_sea_encounter(encounter_type: String, _waypoint: Vector2i) -> void
 
 	match encounter_type:
 		"pirate":
-			print("[BoatTravelManager] Pirates attacking!")
 			_handle_pirate_encounter()
 		"ghost_pirate":
-			print("[BoatTravelManager] Ghost pirates emerging from the mist!")
 			_handle_ghost_pirate_encounter()
 		"sea_monster":
-			print("[BoatTravelManager] Sea monster spotted!")
 			_handle_sea_monster_encounter()
 		"storm":
-			print("[BoatTravelManager] Storm approaching!")
 			_handle_storm_at_sea()
 		"floating_debris":
-			print("[BoatTravelManager] Debris in the water - may contain treasure!")
 			_handle_debris_encounter()
 		"dolphins":
-			print("[BoatTravelManager] Dolphins swimming alongside - good omen!")
 			_resolve_sea_encounter_peaceful()
 		_:
 			# Unknown encounter type - resolve peacefully
@@ -808,12 +773,10 @@ func _handle_pirate_encounter() -> void:
 	if GameManager and GameManager.player_data:
 		var damage: int = randi_range(10, 30)
 		GameManager.player_data.current_hp = maxi(1, GameManager.player_data.current_hp - damage)
-		print("[BoatTravelManager] Pirate battle - took %d damage" % damage)
 
 	# Award some loot
 	if InventoryManager:
 		InventoryManager.add_gold(randi_range(20, 50))
-		print("[BoatTravelManager] Looted pirate gold!")
 
 	_resolve_sea_encounter_victory()
 
@@ -828,12 +791,10 @@ func _handle_ghost_pirate_encounter() -> void:
 	if GameManager and GameManager.player_data:
 		var damage: int = randi_range(20, 40)
 		GameManager.player_data.current_hp = maxi(1, GameManager.player_data.current_hp - damage)
-		print("[BoatTravelManager] Ghost pirate battle - took %d damage" % damage)
 
 	# Rare loot chance
 	if randf() < 0.3 and InventoryManager:
 		InventoryManager.add_gold(randi_range(50, 100))
-		print("[BoatTravelManager] Found ghost pirate treasure!")
 
 	_resolve_sea_encounter_victory()
 
@@ -848,12 +809,10 @@ func _handle_sea_monster_encounter() -> void:
 	if GameManager and GameManager.player_data:
 		var damage: int = randi_range(30, 60)
 		GameManager.player_data.current_hp = maxi(1, GameManager.player_data.current_hp - damage)
-		print("[BoatTravelManager] Sea monster attack - took %d damage" % damage)
 
 	# High XP reward
 	if GameManager and GameManager.player_data:
 		GameManager.player_data.add_ip(100)
-		print("[BoatTravelManager] Sea monster slain - 100 XP!")
 
 	_resolve_sea_encounter_victory()
 
@@ -868,7 +827,6 @@ func _handle_storm_at_sea() -> void:
 	if randf() < 0.3 and GameManager and GameManager.player_data:
 		var damage: int = randi_range(5, 15)
 		GameManager.player_data.current_hp = maxi(1, GameManager.player_data.current_hp - damage)
-		print("[BoatTravelManager] Injured in storm - took %d damage" % damage)
 
 	_resolve_sea_encounter_peaceful()
 
@@ -879,7 +837,6 @@ func _handle_debris_encounter() -> void:
 	if randf() < 0.5 and InventoryManager:
 		var gold: int = randi_range(5, 25)
 		InventoryManager.add_gold(gold)
-		print("[BoatTravelManager] Found %d gold in debris!" % gold)
 
 	_resolve_sea_encounter_peaceful()
 
@@ -902,9 +859,6 @@ func _resolve_sea_encounter_peaceful() -> void:
 func _complete_sea_journey() -> void:
 	current_state = JourneyState.COMPLETE
 
-	print("[BoatTravelManager] Sea journey complete!")
-	print("[BoatTravelManager] Faced %d encounters" % encounters_this_journey)
-
 	# Get destination port
 	var destination: String = ""
 	for route_id: String in sea_routes:
@@ -914,7 +868,6 @@ func _complete_sea_journey() -> void:
 			break
 
 	if not destination.is_empty():
-		print("[BoatTravelManager] Arrived at: %s" % destination)
 		# Teleport to destination
 		if SceneManager:
 			await SceneManager.dev_fast_travel_to(destination)

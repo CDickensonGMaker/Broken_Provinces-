@@ -4,8 +4,6 @@
 class_name LootableCorpse
 extends StaticBody3D
 
-const DEBUG := false
-
 signal looted
 
 ## Visual representation
@@ -281,9 +279,6 @@ func _check_if_should_despawn() -> void:
 		# Set short despawn timer
 		despawn_timer = LOOTED_DESPAWN_TIME
 
-		if DEBUG:
-			print("[LootableCorpse] %s is empty, will despawn in %.1f seconds" % [corpse_name, LOOTED_DESPAWN_TIME])
-
 
 ## Get loot tier based on enemy level
 static func get_loot_tier(level: int) -> LootTier:
@@ -381,11 +376,6 @@ func generate_humanoid_loot(enemy_data: EnemyData) -> void:
 	# Soulstone drops for magical factions (undead, demons, cultists/mages)
 	_try_add_soulstone_drop(enemy_data.faction, tier)
 
-	if DEBUG:
-		print("[LootableCorpse] Generated humanoid loot for %s (level %d, tier %d): %d gold, %d items" % [
-			corpse_name, enemy_level, tier, gold, contents.size()
-		])
-
 
 ## Generate loot for a creature/animal (wolves, spiders, bears, etc.)
 func generate_creature_loot(enemy_data: EnemyData) -> void:
@@ -424,11 +414,6 @@ func generate_creature_loot(enemy_data: EnemyData) -> void:
 
 	# Soulstone drops for magical creatures (undead, demons)
 	_try_add_soulstone_drop(enemy_data.faction, tier)
-
-	if DEBUG:
-		print("[LootableCorpse] Generated creature loot for %s (level %d): %d items" % [
-			corpse_name, enemy_level, contents.size()
-		])
 
 
 ## Get quality roller function for given tier
@@ -728,8 +713,6 @@ func _try_add_soulstone_drop(faction: Enums.Faction, tier: LootTier) -> void:
 
 	if not item_id.is_empty():
 		add_item(item_id, quantity, Enums.ItemQuality.AVERAGE)
-		if DEBUG:
-			print("[LootableCorpse] Added soulstone drop: %s x%d" % [item_id, quantity])
 
 
 ## Convert internal LootTier enum to LootTables.LootTier

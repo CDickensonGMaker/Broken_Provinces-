@@ -520,7 +520,6 @@ func _finish_cast() -> void:
 
 ## Show the arms (called when entering first person)
 func show_arms() -> void:
-	print("[FPSArms] show_arms called")
 	_should_be_visible = true
 	visible = true  # Make the CanvasLayer visible
 	_position_sprites()
@@ -540,13 +539,9 @@ func hide_arms() -> void:
 ## Update the displayed weapon based on inventory
 func update_equipped_weapon() -> void:
 	var weapon: WeaponData = InventoryManager.get_equipped_weapon()
-	print("[FPSArms] update_equipped_weapon - weapon: %s" % [
-		weapon.display_name if weapon else "NONE"
-	])
 
 	# Check for 3D mesh first (takes priority over sprite)
 	if weapon and not weapon.fps_mesh_path.is_empty():
-		print("[FPSArms] Using 3D mesh: %s" % weapon.fps_mesh_path)
 		_setup_3d_weapon(weapon)
 		return
 
@@ -559,10 +554,8 @@ func update_equipped_weapon() -> void:
 		is_unarmed = false
 
 		# Load the FPS weapon sprite sheet
-		print("[FPSArms] Loading texture: %s" % weapon.fps_sprite_path)
 		var tex := load(weapon.fps_sprite_path) as Texture2D
 		if tex:
-			print("[FPSArms] Texture loaded OK: %dx%d" % [tex.get_width(), tex.get_height()])
 			# Store base texture and create atlas for frame animation
 			weapon_base_texture = tex
 			weapon_h_frames = weapon.fps_h_frames if weapon.fps_h_frames > 0 else 4
@@ -594,17 +587,9 @@ func update_equipped_weapon() -> void:
 			current_frame = 0
 			_position_sprites()
 			_update_sprite_frame()
-			print("[FPSArms] Setup complete - sprite.visible=%s, position=%s, size=%s, atlas_region=%s" % [
-				weapon_sprite.visible,
-				weapon_sprite.position,
-				weapon_sprite.size,
-				weapon_atlas.region
-			])
 		else:
-			print("[FPSArms] ERROR: Failed to load texture!")
 			_show_placeholder_weapon()
 	else:
-		print("[FPSArms] No weapon or empty fps_sprite_path")
 		_show_placeholder_weapon()
 
 	# Also check for spell (shows different sprite)
@@ -626,7 +611,6 @@ func _setup_3d_weapon(weapon: WeaponData) -> void:
 	# Load the mesh resource (GLB loads as PackedScene, OBJ loads as Mesh)
 	var resource = load(weapon.fps_mesh_path)
 	if not resource:
-		print("[FPSArms] ERROR: Failed to load 3D mesh: %s" % weapon.fps_mesh_path)
 		using_3d_weapon = false
 		_show_placeholder_weapon()
 		return
@@ -640,13 +624,11 @@ func _setup_3d_weapon(weapon: WeaponData) -> void:
 		mesh_inst.mesh = resource
 		weapon_mesh_instance = mesh_inst
 	else:
-		print("[FPSArms] ERROR: Unsupported resource type: %s" % resource.get_class())
 		using_3d_weapon = false
 		_show_placeholder_weapon()
 		return
 
 	if not weapon_mesh_instance:
-		print("[FPSArms] ERROR: Failed to create 3D mesh instance")
 		using_3d_weapon = false
 		_show_placeholder_weapon()
 		return
@@ -664,10 +646,6 @@ func _setup_3d_weapon(weapon: WeaponData) -> void:
 	using_3d_weapon = true
 	weapon_sprite.visible = false
 	weapon_viewport_container.visible = _should_be_visible
-
-	print("[FPSArms] 3D weapon setup complete - scale: %s, pos: %s, rot: %s" % [
-		weapon.fps_mesh_scale, weapon_3d_base_position, weapon_3d_base_rotation
-	])
 
 
 ## Clear any existing 3D weapon

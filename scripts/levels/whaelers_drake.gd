@@ -29,7 +29,6 @@ func _ready() -> void:
 	_spawn_portals()
 	_setup_navigation()
 	_setup_day_night_cycle()
-	print("[Whaeler's Drake] Canyon town loaded - Tier 3 Town")
 
 
 ## Setup dynamic day/night lighting
@@ -786,8 +785,6 @@ func _spawn_tavern() -> void:
 		"general"
 	)
 
-	print("[Whaeler's Drake] Spawned The Drunk Prospector Tavern")
-
 
 ## Spawn the inn
 func _spawn_inn() -> void:
@@ -812,8 +809,6 @@ func _spawn_inn() -> void:
 	return_spawn.add_to_group("spawn_points")
 	return_spawn.set_meta("spawn_id", "from_inn")
 	add_child(return_spawn)
-
-	print("[Whaeler's Drake] Spawned Cliffside Rest Inn")
 
 
 ## Create the inn building structure
@@ -989,8 +984,6 @@ func _spawn_cult_hints() -> void:
 		candle_light.position = candle_positions[i]
 		add_child(candle_light)
 
-	print("[Whaeler's Drake] Spawned cult presence hints")
-
 
 ## Spawn NPCs (quest givers, civilians)
 func _spawn_npcs() -> void:
@@ -1021,8 +1014,6 @@ func _spawn_npcs() -> void:
 	recruiter.no_quest_dialogue = "Greetings, weary traveler. You seem... tired.\nThe canyon takes its toll on all who dwell here.\nBut there is peace to be found, if you know where to look.\nPerhaps we shall speak again... when you are ready."
 	add_child(recruiter)
 
-	print("[Whaeler's Drake] Spawned NPCs")
-
 
 ## Spawn fast travel shrine
 func _spawn_fast_travel_shrine() -> void:
@@ -1033,7 +1024,6 @@ func _spawn_fast_travel_shrine() -> void:
 		"Drake's Crossing Shrine",
 		"whaelers_drake_shrine"
 	)
-	print("[Whaeler's Drake] Spawned fast travel shrine")
 
 
 ## Spawn portal connections to other areas
@@ -1139,8 +1129,6 @@ func _spawn_portals() -> void:
 	default_spawn.set_meta("spawn_id", "default")
 	add_child(default_spawn)
 
-	print("[Whaeler's Drake] Spawned portal connections")
-
 
 ## Setup navigation mesh for NPCs
 func _setup_navigation() -> void:
@@ -1165,4 +1153,3 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Whaeler's Drake] Navigation mesh baked!")

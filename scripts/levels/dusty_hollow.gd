@@ -20,7 +20,6 @@ func _ready() -> void:
 	_spawn_tenger_enemies()
 	_spawn_loot()
 	_setup_smolder_flickering()
-	print("[Dusty Hollow] Destroyed hamlet loaded - HOSTILE ZONE")
 
 
 ## Setup metadata on spawn points from the scene
@@ -56,7 +55,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Dusty Hollow] Navigation mesh baked!")
 
 
 ## Zone exits (no fast travel - hostile zone)
@@ -93,8 +91,6 @@ func _spawn_zone_exits() -> void:
 	)
 	to_elder_moor.rotation.y = PI
 	to_elder_moor.show_frame = false
-
-	print("[Dusty Hollow] Spawned zone exits")
 
 
 ## Spawn Tenger enemies from markers
@@ -147,8 +143,6 @@ func _spawn_tenger_enemies() -> void:
 				if enemy:
 					enemy.add_to_group("tenger_patrol")
 					enemy_count += 1
-
-	print("[Dusty Hollow] Spawned %d Tenger enemies" % enemy_count)
 
 
 ## Spawn loot from markers
@@ -209,8 +203,6 @@ func _spawn_loot() -> void:
 		)
 		if well_stash:
 			well_stash.setup_with_loot(LootTables.LootTier.UNCOMMON)
-
-	print("[Dusty Hollow] Spawned loot")
 
 
 ## Setup flickering for smolder lights

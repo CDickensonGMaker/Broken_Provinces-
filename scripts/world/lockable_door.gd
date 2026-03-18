@@ -3,8 +3,6 @@
 class_name LockableDoor
 extends StaticBody3D
 
-const DEBUG := false
-
 ## Signals
 signal lockpick_success
 signal lockpick_failed
@@ -231,11 +229,6 @@ func _attempt_lockpick() -> void:
 		LOCKPICK_BONUS
 	)
 
-	if DEBUG:
-		print("[Door] Lockpick attempt: total=%d vs DC %d, success=%s" % [
-			roll_result.total, lock_difficulty, roll_result.success
-		])
-
 	if roll_result.success:
 		# Success!
 		is_locked = false
@@ -285,9 +278,6 @@ func _search_house() -> void:
 
 	if not loot_summary.is_empty():
 		_show_notification("Found: " + ", ".join(loot_summary))
-
-	if DEBUG:
-		print("[Door] House searched, found %d items" % house_loot.size())
 
 
 func _player_has_lockpick() -> bool:

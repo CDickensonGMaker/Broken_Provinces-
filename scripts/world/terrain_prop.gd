@@ -47,7 +47,6 @@ func _load_model() -> void:
 	mesh_instance = scene.instantiate()
 	mesh_instance.scale = Vector3.ONE * prop_scale
 	add_child(mesh_instance)
-	print("[TerrainProp] Loaded model: %s at scale %.2f" % [model_path, prop_scale])
 
 	if use_ps1_material:
 		_apply_ps1_material()

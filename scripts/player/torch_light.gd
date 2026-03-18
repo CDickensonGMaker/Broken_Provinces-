@@ -3,8 +3,6 @@
 class_name TorchLight
 extends Node3D
 
-const DEBUG := false
-
 ## Light configuration
 @export var light_energy: float = 2.5  ## Brightness of the torch (increased 67%)
 @export var light_range: float = 22.0  ## Range in world units (increased 47%)
@@ -37,9 +35,6 @@ func _ready() -> void:
 		InventoryManager.equipment_changed.connect(_on_equipment_changed)
 		# Check if torch is already equipped (e.g., after scene load)
 		_check_current_equipment()
-
-	if DEBUG:
-		print("[TorchLight] Initialized")
 
 
 func _process(delta: float) -> void:
@@ -122,9 +117,6 @@ func _show_torch_light() -> void:
 	base_energy = light_energy
 	flicker_time = 0.0
 
-	if DEBUG:
-		print("[TorchLight] Torch equipped - light enabled")
-
 
 ## Hide the torch light
 func _hide_torch_light() -> void:
@@ -135,9 +127,6 @@ func _hide_torch_light() -> void:
 
 	if torch_light:
 		torch_light.visible = false
-
-	if DEBUG:
-		print("[TorchLight] Torch unequipped - light disabled")
 
 
 ## Deplete torch durability over time
@@ -166,10 +155,6 @@ func _deplete_durability(delta: float) -> void:
 	# Update durability in equipment
 	off_hand["durability"] = max(0, current_durability)
 
-	if DEBUG and current_durability % 60 == 0:  # Log every minute
-		var minutes_left := current_durability / 60
-		print("[TorchLight] Torch durability: %d seconds (%d minutes remaining)" % [current_durability, minutes_left])
-
 	# Check if torch burned out
 	if current_durability <= 0:
 		_torch_burned_out()
@@ -177,9 +162,6 @@ func _deplete_durability(delta: float) -> void:
 
 ## Handle torch burning out
 func _torch_burned_out() -> void:
-	if DEBUG:
-		print("[TorchLight] Torch burned out!")
-
 	# Hide the light
 	_hide_torch_light()
 

@@ -274,8 +274,6 @@ func _die(killer: Node = null) -> void:
 
 	is_dead = true
 
-	print("[GladiatorNPC] Gladiator defeated!")
-
 	# Play death animation
 	if billboard:
 		billboard.play_death()

@@ -31,8 +31,6 @@ func _ready() -> void:
 	_setup_chests()
 	_setup_navigation()
 
-	print("[BanditHideoutL1] Hand-crafted level loaded")
-
 
 func _setup_environment() -> void:
 	# Check if WorldEnvironment already exists in scene
@@ -78,7 +76,6 @@ func _setup_spawn_points() -> void:
 			# Extract spawn_id from node name (e.g., "SpawnPoint_Default" -> "default")
 			var spawn_id := child.name.replace("SpawnPoint_", "").to_lower()
 			child.set_meta("spawn_id", spawn_id)
-		print("[BanditHideoutL1] Found %d pre-placed spawn points" % spawn_points.get_child_count())
 	else:
 		# Create default spawn point if none exist
 		push_warning("[BanditHideoutL1] No SpawnPoints node found, creating default")
@@ -105,8 +102,6 @@ func _setup_enemies() -> void:
 		if marker is Marker3D or marker is Node3D:
 			_spawn_enemy_at_marker(marker)
 			enemy_count += 1
-
-	print("[BanditHideoutL1] Spawned %d enemies from markers" % enemy_count)
 
 
 func _spawn_enemy_at_marker(marker: Node3D) -> void:
@@ -182,8 +177,6 @@ func _setup_doors() -> void:
 			_spawn_door_at_marker(marker, doors_container)
 			door_count += 1
 
-	print("[BanditHideoutL1] Spawned %d doors from markers" % door_count)
-
 
 func _spawn_door_at_marker(marker: Node3D, parent: Node3D) -> void:
 	var target_scene: String = marker.get_meta("target_scene", "")
@@ -223,8 +216,6 @@ func _setup_chests() -> void:
 		if marker is Marker3D or marker is Node3D:
 			_spawn_chest_at_marker(marker)
 			chest_count += 1
-
-	print("[BanditHideoutL1] Spawned %d chests from markers" % chest_count)
 
 
 func _spawn_chest_at_marker(marker: Node3D) -> void:
@@ -276,4 +267,3 @@ func _setup_navigation() -> void:
 	var nav_region := get_node_or_null("NavigationRegion3D") as NavigationRegion3D
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[BanditHideoutL1] Navigation mesh baked")

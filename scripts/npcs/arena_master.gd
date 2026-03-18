@@ -137,7 +137,6 @@ func _register_compass_poi() -> void:
 func _register_with_player_gps() -> void:
 	var cell: Vector2i = WorldGrid.world_to_cell(global_position)
 	PlayerGPS.register_npc(self, npc_id, npc_type, region_id)
-	print("[ArenaMaster] Registered with PlayerGPS: %s at cell %s" % [npc_id, cell])
 
 
 ## Interaction interface
@@ -468,7 +467,6 @@ func _die(killer: Node = null) -> void:
 		return
 
 	_is_dead = true
-	print("[ArenaMaster] %s has been killed" % display_name)
 
 	# Report crime
 	if killer and killer.is_in_group("player"):

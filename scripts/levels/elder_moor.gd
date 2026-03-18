@@ -60,8 +60,6 @@ func _ready() -> void:
 	if is_main_scene:
 		_check_intro_dialogue()
 
-	print("[Elder Moor] Logging camp initialized")
-
 
 ## Legacy starter quest - disabled, using new quest system
 #func _start_starter_quest() -> void:
@@ -85,7 +83,6 @@ func _setup_cell_streaming() -> void:
 	var start_coords: Vector2i = Vector2i.ZERO
 	if SaveManager and SaveManager.has_pending_cell_data():
 		start_coords = SaveManager.get_pending_cell_coords()
-		print("[Elder Moor] Loading from save - starting streaming at cell (%d, %d)" % [start_coords.x, start_coords.y])
 
 	# Register this scene as the MAIN SCENE cell at (0, 0)
 	# This tells CellStreamer that Elder Moor is already loaded AND should never be unloaded
@@ -119,12 +116,10 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Elder Moor] Navigation mesh baked")
 		# Wait for NavigationServer3D to synchronize (needs physics frames)
 		await get_tree().physics_frame
 		await get_tree().physics_frame
 		navigation_ready.emit()
-		print("[Elder Moor] Navigation ready signal emitted")
 
 
 ## Setup dynamic day/night lighting
@@ -149,7 +144,6 @@ func _generate_terrain_collision() -> void:
 	var terrain := get_node_or_null("Terrain/ElderMoorTerrain")
 	if terrain:
 		_add_collision_to_meshes(terrain)
-		print("[Elder Moor] Generated collision for terrain")
 
 	# Also check for any modular house GLB instances
 	var buildings := get_node_or_null("Buildings")
@@ -243,8 +237,6 @@ func _spawn_fall_leaves() -> void:
 
 		leaves_container.add_child(leaf)
 
-	print("[Elder Moor] Spawned %d fall leaf patches" % leaf_count)
-
 
 ## Spawn enemy spawners at marker positions in the wilderness
 ## Only spawns 1 goblin totem (randomly selected) with patrolling goblins
@@ -292,7 +284,6 @@ func _spawn_enemy_spawners() -> void:
 		spawner.tertiary_data_path = "res://data/enemies/goblin_mage.tres"
 
 		add_child(spawner)
-		print("[Elder Moor] Spawned single goblin totem at %s with patrol radius" % marker.global_position)
 
 	# Spawn wolf dens (keep all of them but reduce count)
 	for marker in wolf_markers:
@@ -313,7 +304,6 @@ func _spawn_enemy_spawners() -> void:
 		spawner.secondary_enemy_enabled = false
 
 		add_child(spawner)
-		print("[Elder Moor] Spawned wolf den at %s" % marker.global_position)
 
 	# Remove the marker container since we no longer need it
 	spawners_container.queue_free()
@@ -333,7 +323,6 @@ func _spawn_harvestable_herbs() -> void:
 			"Red Herb",
 			1
 		)
-		print("[Elder Moor] Spawned herb at %s" % marker.global_position)
 
 	# Remove the marker container
 	herbs_container.queue_free()
@@ -397,8 +386,6 @@ func _spawn_civilian_population() -> void:
 			npc.knowledge_profile.knowledge_tags.append("local_area")
 
 			total_spawned += 1
-
-	print("[Elder Moor] Spawned %d civilian NPCs (loggers and workers)" % total_spawned)
 
 	# Store reference for day/night management
 	set_meta("civilians_container", civilians_container)
@@ -467,8 +454,6 @@ func _spawn_locked_doors() -> void:
 		door.rotation = marker.rotation
 		doors_spawned += 1
 
-	if doors_spawned > 0:
-		print("[Elder Moor] Spawned %d locked doors from markers" % doors_spawned)
 
 
 ## Spawn thieves that lurk around looking to pickpocket
@@ -486,7 +471,6 @@ func _spawn_thieves() -> void:
 
 	var spawn_pos: Vector3 = thief_positions[randi() % thief_positions.size()]
 	var thief := ThiefNPC.spawn_thief(self, spawn_pos, ZONE_ID, 4)  # Low skill (4)
-	print("[Elder Moor] A suspicious figure lurks nearby...")
 
 
 ## Spawn NPCs (merchants, quest givers, civilians)
@@ -504,19 +488,16 @@ func _spawn_crafting_stations() -> void:
 	# Position next to Grom the Smith's workspace
 	var anvil_pos := Vector3(-8.0, 0.0, -12.0)
 	var anvil := RepairStation.spawn_station(self, anvil_pos)
-	print("[Elder Moor] Spawned blacksmith anvil at %s" % anvil_pos)
 
 	# Cooking fire - south of the elder moor terrain
 	# Position at the gathering area where travelers rest
 	var cooking_pos := Vector3(5.0, 0.0, 30.0)
 	var cooking := CookingStation.spawn_cooking_station(self, cooking_pos)
-	print("[Elder Moor] Spawned cooking station at %s" % cooking_pos)
 
 	# Alchemy table - near the herbalist's tent/workspace
 	# Position where Old Sage Brennan works
 	var alchemy_pos := Vector3(10.0, 0.0, -5.0)
 	var alchemy := AlchemyStation.spawn_alchemy_station(self, alchemy_pos)
-	print("[Elder Moor] Spawned alchemy station at %s" % alchemy_pos)
 
 
 ## Spawn tutorial quest giver NPCs
@@ -563,7 +544,6 @@ func _spawn_martha_the_cook() -> void:
 
 	if martha:
 		martha.region_id = "elder_moor"
-		print("[Elder Moor] Spawned Martha the Cook at %s (via code - sprite fix)" % martha_pos)
 	else:
 		push_error("[Elder Moor] Failed to spawn Martha the Cook!")
 
@@ -607,7 +587,6 @@ func _spawn_varn_the_scarred() -> void:
 		varn_profile.knowledge_tags = ["elder_moor", "arena", "combat", "bloodsand_arena"]
 		varn_profile.base_disposition = 50
 		varn.npc_profile = varn_profile
-		print("[Elder Moor] Spawned Varn the Scarred at %s (via code - sprite fix)" % varn_pos)
 	else:
 		push_error("[Elder Moor] Failed to spawn Varn the Scarred!")
 
@@ -679,17 +658,11 @@ func _show_intro_dialogue() -> void:
 	intro_ui.dialogue_finished.connect(_on_intro_dialogue_finished.bind(intro_ui))
 	intro_ui.show_intro(intro_text)
 
-	print("[Elder Moor] Showing intro dialogue for %s %s" % [
-		Enums.Race.keys()[player_race],
-		Enums.Career.keys()[player_career]
-	])
-
 
 ## Called when intro dialogue is dismissed
 func _on_intro_dialogue_finished(intro_ui: Node) -> void:
 	if intro_ui:
 		intro_ui.queue_free()
-	print("[Elder Moor] Intro dialogue finished")
 
 
 ## Spawn guards to patrol the logging camp
@@ -709,4 +682,3 @@ func _spawn_guards() -> void:
 	)
 	guard.npc_id = "guard_elder_moor_1"
 	guard.npc_name = "Elder Moor Watchman"
-	print("[Elder Moor] Spawned Elder Moor Watchman")

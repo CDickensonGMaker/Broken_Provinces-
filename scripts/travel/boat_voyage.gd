@@ -186,11 +186,6 @@ func _ready() -> void:
 			voyage_started = true
 			# Calculate time progression rate from route duration
 			time_per_second = current_route.travel_duration_hours / VOYAGE_DURATION
-			print("[BoatVoyage] Voyage started: %s (%.1f hours over %.0f seconds)" % [
-				current_route.display_name,
-				current_route.travel_duration_hours,
-				VOYAGE_DURATION
-			])
 		else:
 			push_warning("[BoatVoyage] No current route - scene may have loaded incorrectly")
 
@@ -222,7 +217,6 @@ func _ensure_player_exists() -> void:
 		if player_scene:
 			player = player_scene.instantiate()
 			add_child(player)
-			print("[BoatVoyage] Spawned player on deck")
 
 			# Ensure HUD exists when spawning fresh player
 			_ensure_hud_exists()
@@ -247,7 +241,6 @@ func _ensure_hud_exists() -> void:
 		if hud_scene:
 			var hud_instance: Node = hud_scene.instantiate()
 			add_child(hud_instance)
-			print("[BoatVoyage] Spawned HUD for player")
 
 
 func _exit_tree() -> void:
@@ -477,11 +470,9 @@ func _position_player() -> void:
 	if player and player_spawn:
 		player.global_position = player_spawn.global_position
 		player.rotation.y = player_spawn.rotation.y
-		print("[BoatVoyage] Player positioned at spawn point: %s" % player_spawn.global_position)
 	elif player:
 		# Fallback position on deck - deck surface is at Y ~2.31
 		player.global_position = Vector3(0, 2.31, 0)
-		print("[BoatVoyage] Player positioned at fallback: (0, 2.31, 0)")
 
 
 func _setup_ocean_ambient() -> void:
@@ -489,11 +480,9 @@ func _setup_ocean_ambient() -> void:
 	var fallback_camera: Camera3D = get_node_or_null("FallbackCamera")
 	if player and fallback_camera:
 		fallback_camera.current = false
-		print("[BoatVoyage] Disabled fallback camera - using player camera")
 	elif fallback_camera:
 		# No player - use fallback camera for testing
 		fallback_camera.current = true
-		print("[BoatVoyage] Using fallback camera (no player)")
 
 	# Spawn crew NPCs using lightweight BoatCrewMember class
 	_spawn_crew()
@@ -605,9 +594,7 @@ func _setup_day_night_cycle() -> void:
 	# DayNightCycle.add_to_level will remove any existing WorldEnvironment
 	# and DirectionalLight3D, replacing them with dynamic time-synced versions
 	day_night_cycle = DayNightCycle.add_to_level(self)
-	if day_night_cycle:
-		print("[BoatVoyage] Day/night cycle initialized - synced to world time (%.1f)" % GameManager.game_time)
-	else:
+	if not day_night_cycle:
 		push_warning("[BoatVoyage] Failed to initialize day/night cycle")
 
 
@@ -635,7 +622,6 @@ func _update_world_time(delta: float) -> void:
 	if new_time != GameManager.current_time_of_day:
 		GameManager.current_time_of_day = new_time
 		GameManager.time_of_day_changed.emit(new_time)
-		print("[BoatVoyage] Time of day changed to: %s" % GameManager.get_time_of_day_name())
 
 
 ## Get time of day enum from hour (mirrors GameManager._get_time_of_day)
@@ -785,7 +771,6 @@ void fragment() {
 	water_material.set_shader_parameter("foam_threshold", 0.6)
 
 	ocean_mesh.material = water_material
-	print("[BoatVoyage] Water wave shader applied")
 
 
 ## Update water animation
@@ -828,9 +813,6 @@ func _roll_for_encounter() -> void:
 		encounter_pending = encounter
 		# Trigger encounter between 15-45 seconds into voyage
 		encounter_trigger_time = randf_range(15.0, 45.0)
-		print("[BoatVoyage] Encounter scheduled: %s at %.1fs" % [encounter.display_name, encounter_trigger_time])
-	else:
-		print("[BoatVoyage] Safe voyage - no encounter")
 
 
 ## Trigger the scheduled encounter
@@ -885,8 +867,6 @@ func _spawn_crew() -> void:
 		deck_hand_2.wander_radius = 4.0
 		deck_hand_2.set_meta("is_crew", true)
 		deck_hand_2.set_meta("helps_fight", true)
-
-	print("[BoatVoyage] Spawned crew: Helmsman + 2 Deck Hands")
 
 
 ## Spawn a crew member with custom sprite
@@ -952,7 +932,6 @@ func _spawn_ambient_ships() -> void:
 		_update_ship_sprite_direction(ship, pos)
 
 	ambient_ships_active = true
-	print("[BoatVoyage] Spawned %d ambient ships circling on horizon" % AMBIENT_SHIP_COUNT)
 
 
 ## Update ambient ships - slow circling motion
@@ -1065,8 +1044,6 @@ func _convert_ambient_ship_to_attacker() -> void:
 
 	ship_approach_progress = 0.0
 	ship_approaching = true
-
-	print("[BoatVoyage] Ambient ship breaks orbit - approaching head-on, will dock on %s!" % ["port", "starboard", "bow"][ship_approach_direction])
 
 
 # =============================================================================
@@ -1181,7 +1158,6 @@ func _toggle_debug_menu() -> void:
 func _debug_spawn_pirates() -> void:
 	_toggle_debug_menu()
 	if is_in_encounter:
-		print("[BoatVoyage] DEBUG: Already in encounter!")
 		return
 
 	# Create a pirate encounter resource
@@ -1193,13 +1169,11 @@ func _debug_spawn_pirates() -> void:
 	encounter.gold_reward = Vector2i(30, 80)
 
 	_start_encounter(encounter)
-	print("[BoatVoyage] DEBUG: Spawning Pirates!")
 
 
 func _debug_spawn_ghost_pirates() -> void:
 	_toggle_debug_menu()
 	if is_in_encounter:
-		print("[BoatVoyage] DEBUG: Already in encounter!")
 		return
 
 	var encounter := SeaEncounter.new()
@@ -1210,13 +1184,11 @@ func _debug_spawn_ghost_pirates() -> void:
 	encounter.gold_reward = Vector2i(50, 120)
 
 	_start_encounter(encounter)
-	print("[BoatVoyage] DEBUG: Spawning Ghost Pirates!")
 
 
 func _debug_spawn_sea_monster() -> void:
 	_toggle_debug_menu()
 	if is_in_encounter:
-		print("[BoatVoyage] DEBUG: Already in encounter!")
 		return
 
 	var encounter := SeaEncounter.new()
@@ -1227,13 +1199,11 @@ func _debug_spawn_sea_monster() -> void:
 	encounter.gold_reward = Vector2i(0, 0)
 
 	_start_encounter(encounter)
-	print("[BoatVoyage] DEBUG: Spawning Sea Monster!")
 
 
 func _debug_spawn_storm() -> void:
 	_toggle_debug_menu()
 	if is_in_encounter:
-		print("[BoatVoyage] DEBUG: Already in encounter!")
 		return
 
 	var encounter := SeaEncounter.new()
@@ -1243,18 +1213,15 @@ func _debug_spawn_storm() -> void:
 	encounter.storm_damage = 15
 
 	_start_encounter(encounter)
-	print("[BoatVoyage] DEBUG: Spawning Storm!")
 
 
 func _debug_skip_voyage() -> void:
 	_toggle_debug_menu()
-	print("[BoatVoyage] DEBUG: Skipping to destination!")
 	_complete_voyage()
 
 
 func _debug_kill_player() -> void:
 	_toggle_debug_menu()
-	print("[BoatVoyage] DEBUG: Killing player to test defeat!")
 	if GameManager and GameManager.player_data:
 		GameManager.player_data.current_hp = 0
 		GameManager.on_player_death()
@@ -1262,14 +1229,12 @@ func _debug_kill_player() -> void:
 
 func _debug_set_dawn() -> void:
 	_toggle_debug_menu()
-	print("[BoatVoyage] DEBUG: Setting time to Dawn (6:00)")
 	if GameManager:
 		GameManager.set_time(6.0)
 
 
 func _debug_set_night() -> void:
 	_toggle_debug_menu()
-	print("[BoatVoyage] DEBUG: Setting time to Night (22:00)")
 	if GameManager:
 		GameManager.set_time(22.0)
 
@@ -1305,8 +1270,6 @@ func _start_encounter(encounter: SeaEncounter) -> void:
 	# Initialize kraken sound timer for sea monsters
 	if encounter.encounter_type == SeaEncounter.EncounterType.SEA_MONSTER:
 		kraken_sound_timer = randf_range(1.0, 2.0)  # First sound comes quickly
-
-	print("[BoatVoyage] DANGER! Encounter incoming: %s" % encounter.display_name)
 
 	# Alert crew
 	_crew_engage_enemies()
@@ -1380,15 +1343,11 @@ func _spawn_approaching_enemy_ship(encounter: SeaEncounter) -> void:
 	ship_approach_progress = 0.0
 	ship_approaching = true
 
-	print("[BoatVoyage] Enemy ship spawned with FRONT sprite, will dock on %s" % ["port", "starboard", "bow"][ship_approach_direction])
-
 
 ## Spawn pirates with boarding arc animation
 func _spawn_boarding_pirates() -> void:
 	if not encounter_pending:
 		return
-
-	print("[BoatVoyage] Pirates boarding the ship!")
 
 	# Calculate pirate count based on player level
 	var pirate_count: int = _calculate_pirate_count()
@@ -1450,7 +1409,6 @@ func _calculate_pirate_count() -> int:
 	count += randi_range(-1, 1)  # Small variance
 	count = clampi(count, 2, PIRATES_MAX)
 
-	print("[BoatVoyage] Spawning %d pirates (player level %d)" % [count, player_level])
 	return count
 
 
@@ -1492,8 +1450,6 @@ func _spawn_boarding_pirate_async(enemy_data_path: String, start_pos: Vector3, e
 		# Animate the boarding arc
 		_animate_boarding_arc(enemy, start_pos, end_pos)
 
-		print("[BoatVoyage] %s boards the ship!" % display_name)
-
 	return enemy
 
 
@@ -1510,7 +1466,6 @@ func _assign_pirate_targets(enemies: Array[EnemyBase]) -> void:
 				crew_targets.append(crew_member)
 
 	if crew_targets.is_empty():
-		print("[BoatVoyage] No crew available to fight - all pirates target player")
 		return
 
 	# Assign ~40% of pirates to target crew members (captain always targets player)
@@ -1530,9 +1485,6 @@ func _assign_pirate_targets(enemies: Array[EnemyBase]) -> void:
 			enemy.set_meta("forced_target", target)
 			enemy.set_meta("targets_crew", true)
 			crew_assigned += 1
-			print("[BoatVoyage] Pirate %d assigned to attack %s" % [i, target.display_name if target.has_method("get") else "crew"])
-
-	print("[BoatVoyage] Target assignment: %d pirates attack crew, %d attack player" % [crew_assigned, enemies.size() - crew_assigned])
 
 
 ## Animate enemy flying through arc from ship to deck
@@ -1569,8 +1521,6 @@ func _quadratic_bezier(p0: Vector3, p1: Vector3, p2: Vector3, t: float) -> Vecto
 
 ## Start the kraken attack sequence with pre-attack warning
 func _start_kraken_attack() -> void:
-	print("[BoatVoyage] THE KRAKEN AWAKENS!")
-
 	# Pre-attack warning effects
 	_kraken_rumble_effect()
 
@@ -1717,8 +1667,6 @@ func _spawn_tentacle_with_rise_animation(pos: Vector3, sprite_path: String, inde
 		# Animate the rise
 		_animate_tentacle_rise(enemy, index)
 
-		print("[BoatVoyage] Spawned Tentacle %d at %s (rising from water)" % [index + 1, start_pos])
-
 
 ## Animate tentacle rising from the water
 func _animate_tentacle_rise(enemy: EnemyBase, index: int) -> void:
@@ -1777,8 +1725,6 @@ func _tentacle_sweep_attack(tentacle: EnemyBase) -> void:
 	if not is_instance_valid(tentacle):
 		return
 
-	print("[BoatVoyage] Tentacle sweeps across the deck!")
-
 	# Play attack sound from enemy data
 	if tentacle.enemy_data and not tentacle.enemy_data.attack_sounds.is_empty():
 		AudioManager.play_enemy_sound(tentacle.enemy_data.attack_sounds, tentacle.global_position, 3.0)
@@ -1813,15 +1759,12 @@ func _execute_sweep_damage(tentacle: EnemyBase) -> void:
 		var damage: int = randi_range(8, 15)
 		if GameManager and GameManager.player_data:
 			GameManager.player_data.take_damage(damage)
-			print("[BoatVoyage] Tentacle sweep hits player for %d damage!" % damage)
 
 
 ## Tentacle lunge attack - targeted at player
 func _tentacle_lunge_attack(tentacle: EnemyBase) -> void:
 	if not is_instance_valid(tentacle) or not player:
 		return
-
-	print("[BoatVoyage] Tentacle lunges at player!")
 
 	# Play attack sound
 	if tentacle.enemy_data and not tentacle.enemy_data.attack_sounds.is_empty():
@@ -1852,7 +1795,6 @@ func _execute_lunge_damage(tentacle: EnemyBase, target_pos: Vector3) -> void:
 		var damage: int = randi_range(12, 20)  # Higher damage for targeted attack
 		if GameManager and GameManager.player_data:
 			GameManager.player_data.take_damage(damage)
-			print("[BoatVoyage] Tentacle lunge hits player for %d damage!" % damage)
 
 
 func _handle_storm() -> void:
@@ -1860,7 +1802,6 @@ func _handle_storm() -> void:
 	if GameManager and GameManager.player_data:
 		var damage: int = randi_range(5, 15)
 		GameManager.player_data.take_damage(damage)
-		print("[BoatVoyage] Weathered the storm! (-%d HP)" % damage)
 
 	# Brief delay then continue
 	await get_tree().create_timer(2.0).timeout
@@ -1912,8 +1853,6 @@ func _check_enemies_remaining() -> void:
 				if not e.died.is_connected(_on_enemy_died):
 					e.died.connect(_on_enemy_died)
 
-	print("[BoatVoyage] Enemies remaining: %d" % alive_count)
-
 	if alive_count == 0 and is_in_encounter:
 		_resolve_current_encounter(BoatTravelManager.EncounterResult.VICTORY)
 
@@ -1927,8 +1866,6 @@ func _on_enemy_died(_enemy: EnemyBase) -> void:
 func _resolve_current_encounter(result: BoatTravelManager.EncounterResult) -> void:
 	if not encounter_pending:
 		return
-
-	print("[BoatVoyage] Encounter resolved: %s" % BoatTravelManager.EncounterResult.keys()[result])
 
 	# Award rewards for victory
 	if result == BoatTravelManager.EncounterResult.VICTORY:
@@ -1964,13 +1901,11 @@ func _award_encounter_rewards() -> void:
 	# XP reward
 	if GameManager and GameManager.player_data:
 		GameManager.player_data.add_ip(encounter_pending.xp_reward)
-		print("[BoatVoyage] Awarded %d XP" % encounter_pending.xp_reward)
 
 	# Gold reward
 	var gold: int = encounter_pending.roll_gold_reward()
 	if gold > 0 and InventoryManager:
 		InventoryManager.add_gold(gold)
-		print("[BoatVoyage] Awarded %d gold" % gold)
 
 	# Notify player
 	var hud: Node = get_tree().get_first_node_in_group("hud")
@@ -1994,17 +1929,12 @@ func _complete_voyage() -> void:
 			tween.tween_callback(ship.queue_free)
 	ambient_ships.clear()
 
-	print("[BoatVoyage] Voyage complete! Arrived at %s" % current_route.destination_port)
-
 	# Time was advanced continuously during voyage via _update_world_time()
 	# Only emit the time_advanced signal here for systems that need to know voyage ended
 	if current_route and GameManager:
 		# Calculate actual time elapsed (may differ slightly from route duration due to encounters)
 		var actual_elapsed: float = time_accumulated * time_per_second
 		GameManager.time_advanced.emit(actual_elapsed)
-		print("[BoatVoyage] Total voyage time: %.1f hours (world time now: %s)" % [
-			actual_elapsed, GameManager.get_time_string()
-		])
 
 	# Reset BoatTravelManager state
 	var encounters_count: int = 1 if encounter_pending else 0
@@ -2028,13 +1958,11 @@ func _travel_to_destination(port_id: String) -> void:
 		var coords: Vector2i = location_info.get("coords", Vector2i.ZERO)
 
 		if not scene_path.is_empty():
-			print("[BoatVoyage] Loading destination scene: %s" % scene_path)
 			if SceneManager:
 				SceneManager.change_scene(scene_path, "harbor_spawn")
 				return
 
 		# Scene path empty but location exists - teleport to wilderness at coords
-		print("[BoatVoyage] No scene for %s, loading wilderness at %s" % [port_id, coords])
 		if PlayerGPS:
 			PlayerGPS.set_position(coords)
 		if SceneManager:
@@ -2073,8 +2001,6 @@ func _on_journey_complete(_route: BoatTravelData, _encounters_count: int) -> voi
 
 
 func _on_journey_cancelled(_route: BoatTravelData, reason: String) -> void:
-	print("[BoatVoyage] Journey cancelled: %s" % reason)
-
 	# Return to departure port
 	await get_tree().create_timer(2.0).timeout
 	if SceneManager:
@@ -2091,7 +2017,6 @@ func _on_player_died() -> void:
 	if not is_in_encounter or not encounter_pending:
 		return
 
-	print("[BoatVoyage] Player died during encounter: %s" % encounter_pending.display_name)
 	_handle_player_defeat()
 
 
@@ -2135,13 +2060,10 @@ func _handle_pirate_defeat() -> void:
 
 	# Show notification
 	var encounter_name: String = encounter_pending.get_type_name() if encounter_pending else "pirates"
-	print("[BoatVoyage] You were overwhelmed...")
 
 	var hud: Node = get_tree().get_first_node_in_group("hud")
 	if hud and hud.has_method("show_notification"):
 		hud.show_notification("You lost %d gold to the %s!" % [gold_loss, encounter_name])
-
-	print("[BoatVoyage] Pirate defeat - lost %d gold, continuing to destination" % gold_loss)
 
 	# Brief delay then continue to destination (you're still rescued)
 	await get_tree().create_timer(2.0).timeout
@@ -2164,7 +2086,6 @@ func _handle_sea_monster_defeat() -> void:
 		GameManager.advance_time(96.0)
 
 	# No gold refund - the voyage cost is lost
-	print("[BoatVoyage] Sea monster defeat - 4 days lost, returning to %s" % BoatTravelManager.departure_port)
 
 	# Show shipwreck dialogue
 	var dialogue_text: String = SHIPWRECK_DIALOGUES[randi() % SHIPWRECK_DIALOGUES.size()]
@@ -2206,8 +2127,6 @@ func _return_to_departure_port() -> void:
 	var departure: String = BoatTravelManager.departure_port
 	if departure.is_empty():
 		departure = current_route.departure_port if current_route else "dalhurst"
-
-	print("[BoatVoyage] Returning to %s..." % departure)
 
 	# Reset boat travel state
 	if BoatTravelManager:

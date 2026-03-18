@@ -141,7 +141,6 @@ func _input(event: InputEvent) -> void:
 		if key_num >= 0 and key_num < choice_buttons.size():
 			var btn: Button = choice_buttons[key_num]
 			if btn.visible and not btn.disabled:
-				print("DialogueBox: Number key %d pressed, selecting choice" % (key_num + 1))
 				_on_choice_pressed(key_num)
 				get_viewport().set_input_as_handled()
 				return
@@ -403,7 +402,6 @@ func _on_typing_complete() -> void:
 
 func _update_choices() -> void:
 	var available_choices := DialogueManager.get_available_choices()
-	print("DialogueBox: _update_choices called with %d choices" % available_choices.size())
 
 	if available_choices.is_empty():
 		# No choices - show continue indicator
@@ -419,7 +417,6 @@ func _update_choices() -> void:
 		# Has choices - show choice buttons in 2-column grid
 		choice_container.visible = true
 		continue_indicator.visible = false
-		print("DialogueBox: Showing choice_container with %d columns" % choice_container.columns)
 
 		# Update choice buttons
 		for i in range(choice_buttons.size()):
@@ -432,7 +429,6 @@ func _update_choices() -> void:
 				btn.visible = true
 				btn.text = "[%d] %s" % [i + 1, choice.text]
 				btn.disabled = not is_available
-				print("DialogueBox: Button %d visible=%s text=%s" % [i, btn.visible, btn.text])
 
 				# Show unavailable reason as tooltip
 				if not is_available:
@@ -469,9 +465,7 @@ func _on_panel_clicked(event: InputEvent) -> void:
 
 
 func _on_choice_pressed(index: int) -> void:
-	print("DialogueBox: _on_choice_pressed called with index %d" % index)
 	if is_typing or is_showing_skill_check:
-		print("DialogueBox: _on_choice_pressed blocked - is_typing=%s is_showing_skill_check=%s" % [is_typing, is_showing_skill_check])
 		return
 
 	# Check if this choice has a skill check - if so, use delayed transition

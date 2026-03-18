@@ -49,8 +49,6 @@ func _ready() -> void:
 	_spawn_chests_from_markers()
 	_setup_cell_streaming()
 
-	print("[SunkenCrypt] Dungeon initialized")
-
 
 func _create_materials() -> void:
 	# Dark stone with green moss tint (water damage)
@@ -314,8 +312,6 @@ func _setup_spawn_point_metadata() -> void:
 			marker.set_meta("spawn_id", marker.get_meta("spawn_id"))
 		marker.add_to_group("spawn_points")
 
-	print("[SunkenCrypt] Spawn points configured from scene markers")
-
 
 ## Spawn doors from DoorPositions markers
 func _spawn_doors_from_markers() -> void:
@@ -343,7 +339,6 @@ func _spawn_doors_from_markers() -> void:
 		)
 		if door:
 			door.rotation = marker.rotation
-			print("[SunkenCrypt] Spawned door: %s" % door_label)
 
 
 ## ===========================================================================
@@ -477,8 +472,6 @@ func _spawn_chests_from_markers() -> void:
 			chest.rotation = marker.rotation
 			chest.setup_with_loot(loot_tier)
 
-	print("[SunkenCrypt] Spawned loot chests from markers")
-
 
 ## Parse loot tier string to enum
 func _parse_loot_tier(tier_str: String) -> LootTables.LootTier:
@@ -519,4 +512,3 @@ func _setup_cell_streaming() -> void:
 		return
 	CellStreamer.register_main_scene_cell(my_coords, self)
 	CellStreamer.start_streaming(my_coords)
-	print("[%s] Registered as main scene, streaming started at %s" % [ZONE_ID, my_coords])

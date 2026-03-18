@@ -23,6 +23,7 @@ const WEIGHT_BASE: float = 1.0
 const WEIGHT_FACTION_REP: float = 0.4
 const WEIGHT_MORALITY: float = 0.15
 const WEIGHT_RACE_MATCH: float = 0.1
+const WEIGHT_CAREER_AFFINITY: float = 0.25
 const WEIGHT_BOUNTY: float = 0.2
 const WEIGHT_WEAPON_DRAWN: float = 0.15
 const WEIGHT_PERSONAL: float = 1.0
@@ -59,15 +60,19 @@ static func calculate_disposition(npc: Node, player: Node = null) -> int:
 	var race_modifier: float = _calculate_race_modifier(npc, player_data)
 	disposition += race_modifier * WEIGHT_RACE_MATCH * 100.0
 
-	# Factor 5: Player bounty penalty
+	# Factor 5: Career affinity (fellow profession respect/suspicion)
+	var career_modifier: float = _calculate_career_modifier(npc, player_data)
+	disposition += career_modifier * WEIGHT_CAREER_AFFINITY * 100.0
+
+	# Factor 6: Player bounty penalty
 	var bounty_modifier: float = _calculate_bounty_modifier(npc)
 	disposition += bounty_modifier * WEIGHT_BOUNTY * 100.0
 
-	# Factor 6: Weapon drawn penalty
+	# Factor 7: Weapon drawn penalty
 	var weapon_modifier: float = _calculate_weapon_modifier(player)
 	disposition += weapon_modifier * WEIGHT_WEAPON_DRAWN * 100.0
 
-	# Factor 7: Personal disposition modifier (from previous interactions)
+	# Factor 8: Personal disposition modifier (from previous interactions)
 	var personal_modifier: int = _get_personal_modifier(npc)
 	disposition += personal_modifier * WEIGHT_PERSONAL
 
@@ -275,6 +280,147 @@ static func _calculate_race_modifier(npc: Node, player_data: CharacterData) -> f
 	# Check for allied/enemy races
 	# (Could expand this with race relationship data)
 	return 0.0
+
+
+## Calculate career affinity modifier (-0.5 to 0.5)
+## Fellow professionals get bonuses, suspicious relationships get penalties
+static func _calculate_career_modifier(npc: Node, player_data: CharacterData) -> float:
+	# Get NPC's archetype from knowledge profile
+	var npc_archetype: int = -1
+
+	# Try to get archetype from knowledge profile
+	if "knowledge_profile" in npc and npc.knowledge_profile:
+		npc_archetype = npc.knowledge_profile.archetype
+	elif "npc_profile" in npc and npc.npc_profile:
+		npc_archetype = npc.npc_profile.archetype
+	elif "archetype" in npc:
+		npc_archetype = npc.archetype
+
+	if npc_archetype < 0:
+		return 0.0
+
+	var player_career: Enums.Career = player_data.career
+
+	# Career-Archetype Affinity Matrix
+	# Positive = respect/kinship, Negative = suspicion/disdain
+	match npc_archetype:
+		NPCKnowledgeProfile.Archetype.MERCHANT:
+			match player_career:
+				Enums.Career.MERCHANT:
+					return 0.5  # Fellow traders
+				Enums.Career.NOBLE:
+					return 0.3  # Wealthy patrons
+				Enums.Career.THIEF:
+					return -0.3  # Suspicious of thieves
+				Enums.Career.BEGGAR:
+					return -0.2  # Seen as lowly
+
+		NPCKnowledgeProfile.Archetype.GUARD:
+			match player_career:
+				Enums.Career.SOLDIER:
+					return 0.4  # Military respect
+				Enums.Career.SCOUT:
+					return 0.2  # Fellow military-adjacent
+				Enums.Career.THIEF:
+					return -0.4  # Criminal element
+				Enums.Career.CULTIST:
+					return -0.3  # Dangerous troublemakers
+				Enums.Career.BEGGAR:
+					return -0.1  # Vagrants
+
+		NPCKnowledgeProfile.Archetype.PRIEST:
+			match player_career:
+				Enums.Career.PRIEST:
+					return 0.5  # Fellow clergy
+				Enums.Career.GRAVE_DIGGER:
+					return 0.3  # Works with the dead (respectful service)
+				Enums.Career.CULTIST:
+					return -0.5  # Heretics!
+				Enums.Career.THIEF:
+					return -0.2  # Sinful occupation
+
+		NPCKnowledgeProfile.Archetype.SCHOLAR:
+			match player_career:
+				Enums.Career.APPRENTICE:
+					return 0.5  # Fellow academics
+				Enums.Career.ALCHEMIST:
+					return 0.4  # Scholarly pursuit
+				Enums.Career.PRIEST:
+					return 0.2  # Literate, learned
+
+		NPCKnowledgeProfile.Archetype.FARMER:
+			match player_career:
+				Enums.Career.FARMER:
+					return 0.5  # Rural kinship
+				Enums.Career.SCOUT:
+					return 0.2  # Respect for outdoor skills
+				Enums.Career.NOBLE:
+					return -0.3  # Taxes and exploitation
+
+		NPCKnowledgeProfile.Archetype.INNKEEPER:
+			match player_career:
+				Enums.Career.NOBLE:
+					return 0.3  # Wealthy patron
+				Enums.Career.MERCHANT:
+					return 0.3  # Good for business
+				Enums.Career.THIEF:
+					return -0.2  # Watch your silverware
+				Enums.Career.BEGGAR:
+					return -0.2  # Can't pay for services
+
+		NPCKnowledgeProfile.Archetype.BLACKSMITH:
+			match player_career:
+				Enums.Career.SOLDIER:
+					return 0.3  # Regular customer
+				Enums.Career.APPRENTICE:
+					return 0.2  # Respect for craft learning
+				Enums.Career.ALCHEMIST:
+					return 0.2  # Fellow crafter
+
+		NPCKnowledgeProfile.Archetype.HUNTER:
+			match player_career:
+				Enums.Career.SCOUT:
+					return 0.4  # Fellow wilderness expert
+				Enums.Career.FARMER:
+					return 0.2  # Rural kinship
+				Enums.Career.NOBLE:
+					return -0.1  # Fancy folk don't understand
+
+		NPCKnowledgeProfile.Archetype.NOBLE:
+			match player_career:
+				Enums.Career.NOBLE:
+					return 0.4  # Fellow aristocrat
+				Enums.Career.MERCHANT:
+					return 0.1  # Useful, but lesser
+				Enums.Career.BEGGAR:
+					return -0.4  # Beneath notice
+				Enums.Career.THIEF:
+					return -0.3  # Criminal scum
+				Enums.Career.FARMER:
+					return -0.2  # Peasants
+
+		NPCKnowledgeProfile.Archetype.BEGGAR:
+			match player_career:
+				Enums.Career.BEGGAR:
+					return 0.4  # Fellow downtrodden
+				Enums.Career.THIEF:
+					return 0.2  # Understands the streets
+				Enums.Career.NOBLE:
+					return -0.3  # The wealthy don't help
+
+		NPCKnowledgeProfile.Archetype.THIEF:
+			match player_career:
+				Enums.Career.THIEF:
+					return 0.4  # Fellow professional
+				Enums.Career.BEGGAR:
+					return 0.2  # Street connections
+				Enums.Career.SOLDIER:
+					return -0.3  # Law enforcement adjacent
+				Enums.Career.NOBLE:
+					return -0.1  # Potential mark, but cautious
+
+	return 0.0
+
 
 ## Calculate bounty penalty (-1.0 to 0.0)
 static func _calculate_bounty_modifier(npc: Node) -> float:

@@ -30,7 +30,6 @@ func _ready() -> void:
 	_spawn_portals()
 	_setup_navigation()
 	_setup_day_night_cycle()
-	print("[Pola Perron] Mountain monastery loaded")
 
 
 ## Setup dynamic day/night lighting
@@ -116,8 +115,6 @@ func _spawn_monks() -> void:
 	CivilianNPC.spawn_woman(self, civ1_marker.global_position if civ1_marker else Vector3(-5, TERRACE_LEVEL, 3), ZONE_ID)
 	CivilianNPC.spawn_man(self, civ2_marker.global_position if civ2_marker else Vector3(-18, BASE_LEVEL, 24), ZONE_ID)
 
-	print("[Pola Perron] Spawned monastery NPCs")
-
 
 ## Spawn merchant
 func _spawn_merchant() -> void:
@@ -152,7 +149,6 @@ func _spawn_fast_travel_shrine() -> void:
 		"Pola Perron Shrine",
 		"pola_perron_shrine"
 	)
-	print("[Pola Perron] Spawned fast travel shrine")
 
 
 ## Spawn portal connections
@@ -201,8 +197,6 @@ func _spawn_portals() -> void:
 	wilderness_portal.rotation.y = -PI / 2
 	wilderness_portal.show_frame = false
 
-	print("[Pola Perron] Spawned portal connections")
-
 
 ## Setup navigation mesh
 func _setup_navigation() -> void:
@@ -228,4 +222,3 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Pola Perron] Navigation mesh baked!")

@@ -20,7 +20,6 @@ func _ready() -> void:
 	_spawn_tenger_enemies()
 	_spawn_loot()
 	_setup_light_flickering()
-	print("[Tenger Camp] Marauder base loaded - FULLY HOSTILE")
 
 
 ## Setup metadata on spawn points from the scene
@@ -56,7 +55,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Tenger Camp] Navigation mesh baked!")
 
 
 ## Zone exits (hostile - retreat only)
@@ -94,8 +92,6 @@ func _spawn_zone_exits() -> void:
 	)
 	to_desert.rotation.y = 0
 	to_desert.show_frame = false
-
-	print("[Tenger Camp] Spawned zone exits")
 
 
 ## Spawn Tenger enemies from markers - this is their base!
@@ -155,8 +151,6 @@ func _spawn_tenger_enemies() -> void:
 					if is_boss:
 						enemy.add_to_group("boss")
 					enemy_count += 1
-
-	print("[Tenger Camp] Spawned %d Tenger enemies (including Warlord)" % enemy_count)
 
 
 ## Spawn loot from markers (stolen goods, supply crates)
@@ -241,8 +235,6 @@ func _spawn_loot() -> void:
 		)
 		if shaman_chest:
 			shaman_chest.setup_with_loot(LootTables.LootTier.RARE)
-
-	print("[Tenger Camp] Spawned loot")
 
 
 ## Setup flickering for lights

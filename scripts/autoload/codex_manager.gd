@@ -85,7 +85,6 @@ func _load_recipe_data() -> void:
 	var recipes_path := "res://data/recipes/"
 	var dir := DirAccess.open(recipes_path)
 	if not dir:
-		print("[Codex] No recipes directory found at: %s" % recipes_path)
 		return
 
 	dir.list_dir_begin()
@@ -98,7 +97,6 @@ func _load_recipe_data() -> void:
 		file_name = dir.get_next()
 
 	dir.list_dir_end()
-	print("[Codex] Loaded %d recipes" % all_recipes.size())
 
 ## Load a single recipe file
 func _load_recipe_file(path: String) -> void:
@@ -135,7 +133,6 @@ func _load_lore_data() -> void:
 	var lore_path := "res://data/lore/"
 	var dir := DirAccess.open(lore_path)
 	if not dir:
-		print("[Codex] No lore directory found at: %s" % lore_path)
 		return
 
 	dir.list_dir_begin()
@@ -148,7 +145,6 @@ func _load_lore_data() -> void:
 		file_name = dir.get_next()
 
 	dir.list_dir_end()
-	print("[Codex] Loaded %d lore entries" % all_lore.size())
 
 ## Load a single lore file
 func _load_lore_file(path: String) -> void:
@@ -186,8 +182,6 @@ func discover_recipe(recipe_id: String) -> bool:
 	# Add to discovered
 	discovered_recipes[category].append(recipe_id)
 	recipe_discovered.emit(category, recipe_id)
-
-	print("[Codex] Discovered recipe: %s (%s)" % [recipe.get("name", recipe_id), category])
 	return true
 
 ## Check if a recipe is discovered
@@ -231,8 +225,6 @@ func discover_lore(lore_id: String) -> bool:
 
 	discovered_lore[category].append(lore_id)
 	lore_discovered.emit(category, lore_id)
-
-	print("[Codex] Discovered lore: %s (%s)" % [entry.get("title", lore_id), category])
 	return true
 
 ## Check if a lore entry is discovered
@@ -269,8 +261,6 @@ func discover_bestiary_entry(creature_id: String, creature_data: Dictionary = {}
 
 	bestiary_entries[creature_id] = creature_data
 	bestiary_entry_discovered.emit(creature_id)
-
-	print("[Codex] Discovered bestiary entry: %s" % creature_data.get("name", creature_id))
 	return true
 
 ## Check if a bestiary entry is discovered

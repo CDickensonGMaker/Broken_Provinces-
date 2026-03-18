@@ -117,13 +117,6 @@ func generate() -> void:
 	town_size = get_town_size(location_type)
 	half_size = town_size / 2.0
 
-	print("[TownGenerator] Generating %s '%s' at %s (seed: %d)" % [
-		WorldGrid.LocationType.keys()[location_type],
-		location_name,
-		grid_coords,
-		town_seed
-	])
-
 	_load_textures()
 	_create_ground()
 	_create_sky_environment()
@@ -137,7 +130,6 @@ func generate() -> void:
 	_setup_audio()
 
 	town_generated.emit(self)
-	print("[TownGenerator] Town generation complete: %d buildings, %d NPCs" % [buildings.size(), npcs.size()])
 
 
 func _load_textures() -> void:
@@ -691,7 +683,6 @@ func _on_exit_entered(body: Node3D, direction: int) -> void:
 	if not body.is_in_group("player"):
 		return
 
-	print("[TownGenerator] Player exiting town via direction %d" % direction)
 	# Transition to wilderness
 	if SceneManager:
 		SceneManager.transition_to_adjacent_room(direction)
@@ -911,8 +902,6 @@ func _setup_audio() -> void:
 
 	# Play village background music
 	AudioManager.play_zone_music("village")
-
-	print("[TownGenerator] Audio setup complete for %s" % location_name)
 
 
 ## Generate a random town name using seed

@@ -2,8 +2,6 @@
 class_name EnemySpawner
 extends StaticBody3D
 
-const DEBUG := false  ## Enable debug prints
-
 signal damaged(amount: int, damage_type: Enums.DamageType, attacker: Node)
 signal destroyed(destroyer: Node)
 
@@ -68,10 +66,6 @@ func _ready() -> void:
 
 	current_hp = max_hp
 
-	if DEBUG:
-		print("[EnemySpawner] _ready() called for ", display_name)
-		print("[EnemySpawner] max_hp=", max_hp, " spawn_interval=", spawn_interval_min, "-", spawn_interval_max, "s max_spawned=", max_spawned_enemies)
-
 	# Create visual mesh
 	_create_mesh()
 
@@ -90,10 +84,6 @@ func _ready() -> void:
 	# Initial spawn delay (don't spawn immediately, use half of a random interval)
 	current_spawn_interval = _get_random_spawn_interval() * 0.5
 	spawn_timer = 0.0
-	if DEBUG:
-		print("[EnemySpawner] Initial spawn in ", snapped(current_spawn_interval, 0.1), " seconds")
-
-var _debug_timer: float = 0.0
 
 func _physics_process(delta: float) -> void:
 	if is_destroyed:
@@ -104,13 +94,6 @@ func _physics_process(delta: float) -> void:
 
 	# Spawn timer
 	spawn_timer += delta
-
-	# Debug output every 10 seconds
-	if DEBUG:
-		_debug_timer += delta
-		if _debug_timer >= 10.0:
-			_debug_timer = 0.0
-			print("[EnemySpawner] Status: spawn_timer=", snapped(spawn_timer, 0.1), "/", snapped(current_spawn_interval, 0.1), " spawned_enemies=", spawned_enemies.size(), "/", max_spawned_enemies, " HP=", current_hp, "/", max_hp)
 
 	if spawn_timer >= current_spawn_interval:
 		spawn_timer = 0.0
@@ -226,17 +209,12 @@ func _get_random_spawn_interval() -> float:
 ## Try to spawn enemies if under the limit
 func _try_spawn_enemy() -> void:
 	if spawned_enemies.size() >= max_spawned_enemies:
-		if DEBUG:
-			print("[EnemySpawner] At max capacity (", spawned_enemies.size(), "/", max_spawned_enemies, "), skipping spawn")
 		return
 
 	# Determine how many enemies to spawn this wave
 	var desired_count := randi_range(spawn_count_min, spawn_count_max)
 	var available_slots := max_spawned_enemies - spawned_enemies.size()
 	var actual_count := mini(desired_count, available_slots)
-
-	if DEBUG:
-		print("[EnemySpawner] Spawning ", actual_count, " enemies (wanted ", desired_count, ", ", available_slots, " slots available)")
 
 	# Pre-load enemy data resources for all types
 	var primary_data: EnemyData = load(enemy_data_path) as EnemyData
@@ -291,9 +269,6 @@ func _try_spawn_enemy() -> void:
 			push_warning("[EnemySpawner] Failed to spawn %s at %s" % [enemy_type, spawn_pos])
 			continue
 
-		if DEBUG:
-			print("[EnemySpawner] Spawned %s at %s" % [enemy_type, spawn_pos])
-
 		# Configure spawned enemy behavior
 		if "wander_radius" in enemy:
 			enemy.wander_radius = spawned_wander_radius
@@ -322,8 +297,6 @@ func _try_spawn_enemy() -> void:
 		# Connect to death signal if available
 		if enemy.has_signal("died"):
 			enemy.died.connect(_on_spawned_enemy_died.bind(enemy))
-
-	print("[EnemySpawner] Spawned ", actual_count, " enemies (", spawned_enemies.size(), "/", max_spawned_enemies, " total)")
 
 
 ## Spawn a billboard enemy using sprite info from EnemyData
@@ -411,7 +384,6 @@ func _spawn_warboss(attacker: Node) -> void:
 		_start_warboss_buff_aura()
 
 		spawned_enemies.append(warboss)
-		print("[EnemySpawner] WARBOSS SPAWNED! The Goblin Warchief has arrived to defend the totem!")
 
 
 ## Buff nearby goblins with attack speed boost
@@ -457,14 +429,9 @@ func _alert_spawned_enemies(attacker: Node) -> void:
 	if not attacker or not attacker is Node3D:
 		return
 
-	var alerted_count := 0
 	for enemy in spawned_enemies:
 		if is_instance_valid(enemy) and enemy.has_method("alert_to_target"):
 			enemy.alert_to_target(attacker, global_position)
-			alerted_count += 1
-
-	if DEBUG and alerted_count > 0:
-		print("[EnemySpawner] Alerted ", alerted_count, " goblins to defend totem against ", attacker.name)
 
 ## Damage handling
 func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> int:
@@ -542,8 +509,6 @@ func _on_destroyed(destroyer: Node) -> void:
 	# Also use a "destroy" type for quest objectives
 	QuestManager.update_progress("destroy", spawner_id, 1)
 
-	print("[EnemySpawner] ", display_name, " destroyed by ", str(destroyer.name) if destroyer else "unknown")
-
 	# Drop quest item (Corrupted Totem Shard)
 	_drop_quest_item()
 
@@ -562,8 +527,6 @@ func _drop_quest_item() -> void:
 	# Spawn the item slightly above ground at totem position
 	var drop_pos := global_position + Vector3(0, 0.5, 0)
 	WorldItem.spawn_item(get_tree().current_scene, drop_pos, drop_item_id, Enums.ItemQuality.AVERAGE, 1)
-
-	print("[EnemySpawner] Dropped quest item: " + drop_item_id)
 
 ## Play destruction visual effect
 func _play_destruction_effect() -> void:

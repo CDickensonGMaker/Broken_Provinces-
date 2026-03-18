@@ -374,6 +374,9 @@ class WorldSaveData:
 	## Dungeon seeds for procedural generation (zone_id -> seed_int)
 	var dungeon_seeds: Dictionary = {}
 
+	## Dungeon states for tracking cleared rooms, opened chests, etc. (zone_id -> state_dict)
+	var dungeon_states: Dictionary = {}
+
 	## Rest manager state (diminishing returns, respawn tracking)
 	var rest_manager: Dictionary = {}
 

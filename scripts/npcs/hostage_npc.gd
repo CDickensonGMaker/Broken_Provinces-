@@ -142,7 +142,6 @@ func _rescue() -> void:
 	# Complete the talk objective in QuestManager
 	if not quest_id.is_empty() and not hostage_id.is_empty():
 		QuestManager.on_npc_talked(hostage_id)
-		print("[HostageNPC] Rescued %s - notified QuestManager" % hostage_name)
 
 	# Show notification
 	var hud := get_tree().get_first_node_in_group("hud")
@@ -183,5 +182,4 @@ static func spawn_hostage(
 	instance.position = pos
 
 	parent.add_child(instance)
-	print("[HostageNPC] Spawned hostage '%s' at %s" % [p_hostage_name, pos])
 	return instance

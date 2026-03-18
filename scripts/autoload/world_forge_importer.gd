@@ -4,27 +4,36 @@ extends Node
 
 const FORGE_MAP_PATH := "user://world_forge_map.json"
 
-## Biome to terrain mapping
-const BIOME_TO_TERRAIN: Dictionary = {
+## Unified terrain to WorldGrid terrain mapping (new format)
+const TERRAIN_TO_WORLDGRID: Dictionary = {
+	# Biomes
 	"plains": 7,   # WorldGrid.Terrain.POI (used for general passable terrain)
 	"forest": 2,   # WorldGrid.Terrain.FOREST
 	"swamp": 5,    # WorldGrid.Terrain.SWAMP
 	"tundra": 1,   # WorldGrid.Terrain.HIGHLANDS
 	"desert": 8,   # WorldGrid.Terrain.DESERT
 	"badlands": 1, # WorldGrid.Terrain.HIGHLANDS
-}
-
-## Elevation to terrain mapping (overrides biome)
-const ELEVATION_TO_TERRAIN: Dictionary = {
-	"mountain": 0, # WorldGrid.Terrain.BLOCKED
+	# Elevation
 	"hill": 1,     # WorldGrid.Terrain.HIGHLANDS
-}
-
-## Water to terrain mapping (overrides biome and elevation)
-const WATER_TO_TERRAIN: Dictionary = {
+	"mountain": 0, # WorldGrid.Terrain.BLOCKED
+	# Water
 	"ocean": 3,    # WorldGrid.Terrain.WATER
 	"lake": 3,     # WorldGrid.Terrain.WATER
 	"river": 4,    # WorldGrid.Terrain.COAST
+}
+
+## Road types (for reference, roads overlay terrain)
+const ROAD_TYPES: Array[String] = ["dirt_road", "stone_road", "cobblestone", "path", "bridge"]
+
+## Legacy mappings for old format compatibility
+const BIOME_TO_TERRAIN: Dictionary = {
+	"plains": 7, "forest": 2, "swamp": 5, "tundra": 1, "desert": 8, "badlands": 1,
+}
+const ELEVATION_TO_TERRAIN: Dictionary = {
+	"mountain": 0, "hill": 1,
+}
+const WATER_TO_TERRAIN: Dictionary = {
+	"ocean": 3, "lake": 3, "river": 4,
 }
 
 ## POI type to LocationType mapping
@@ -51,13 +60,15 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
 
-	# Attempt to preload forge data if file exists
+	# Automatically load and apply forge map if it exists
 	if not _preload_attempted:
 		_preload_attempted = true
 		if FileAccess.file_exists(FORGE_MAP_PATH):
 			var data: Dictionary = load_from_file(FORGE_MAP_PATH)
 			if not data.is_empty():
-				print("[WorldForgeImporter] Preloaded forge map data")
+				# Wait for WorldGrid to initialize first
+				await get_tree().process_frame
+				var count: int = apply_to_world_grid(data)
 
 
 ## Check if a forge map file exists
@@ -120,10 +131,37 @@ func apply_to_world_grid(data: Dictionary) -> int:
 	var layers: Dictionary = data.get("layers", {})
 	var poi_data: Dictionary = data.get("poi_data", {})
 
-	var biome_layer: Array = layers.get("biome", [])
-	var elevation_layer: Array = layers.get("elevation", [])
-	var water_layer: Array = layers.get("water", [])
-	var poi_layer: Array = layers.get("poi", [])
+	# Detect format: new format has "terrain" layer, old format has "biome" layer
+	var is_new_format: bool = layers.has("terrain")
+
+	var terrain_layer: Array = []
+	var road_layer: Array = []
+	var poi_layer: Array = []
+
+	if is_new_format:
+		# New format: terrain, road, poi
+		terrain_layer = layers.get("terrain", [])
+		road_layer = layers.get("road", [])
+		poi_layer = layers.get("poi", [])
+	else:
+		# Old format: biome, elevation, water, poi
+		var biome_layer: Array = layers.get("biome", [])
+		var elevation_layer: Array = layers.get("elevation", [])
+		var water_layer: Array = layers.get("water", [])
+		poi_layer = layers.get("poi", [])
+
+		# Merge old layers into terrain layer
+		terrain_layer.resize(grid_width * grid_height)
+		for i: int in range(terrain_layer.size()):
+			# Start with biome
+			if i < biome_layer.size() and biome_layer[i] != null:
+				terrain_layer[i] = biome_layer[i]
+			# Elevation overrides
+			if i < elevation_layer.size() and elevation_layer[i] != null:
+				terrain_layer[i] = elevation_layer[i]
+			# Water overrides everything
+			if i < water_layer.size() and water_layer[i] != null:
+				terrain_layer[i] = water_layer[i]
 
 	# Process each cell
 	for y: int in range(grid_height):
@@ -141,29 +179,20 @@ func apply_to_world_grid(data: Dictionary) -> int:
 
 			var was_modified: bool = false
 
-			# Apply biome (base terrain)
-			if index < biome_layer.size() and biome_layer[index] != null:
-				var biome_val: String = biome_layer[index]
-				var terrain_int: int = BIOME_TO_TERRAIN.get(biome_val, -1)
+			# Apply terrain
+			if index < terrain_layer.size() and terrain_layer[index] != null:
+				var terrain_val: String = terrain_layer[index]
+				var terrain_int: int = TERRAIN_TO_WORLDGRID.get(terrain_val, -1)
 				if terrain_int >= 0:
 					cell.terrain = terrain_int
 					was_modified = true
 
-			# Apply elevation (overrides biome for mountains/hills)
-			if index < elevation_layer.size() and elevation_layer[index] != null:
-				var elev_val: String = elevation_layer[index]
-				var terrain_int: int = ELEVATION_TO_TERRAIN.get(elev_val, -1)
-				if terrain_int >= 0:
-					cell.terrain = terrain_int
-					was_modified = true
-
-			# Apply water (overrides everything)
-			if index < water_layer.size() and water_layer[index] != null:
-				var water_val: String = water_layer[index]
-				var terrain_int: int = WATER_TO_TERRAIN.get(water_val, -1)
-				if terrain_int >= 0:
-					cell.terrain = terrain_int
-					was_modified = true
+			# Apply road (marks cell as road)
+			if index < road_layer.size() and road_layer[index] != null:
+				cell.is_road = true
+				# Roads are always passable
+				cell.terrain = WorldGrid.Terrain.ROAD
+				was_modified = true
 
 			# Apply POI
 			if index < poi_layer.size() and poi_layer[index] != null:
@@ -205,7 +234,6 @@ func import_and_apply(path: String = FORGE_MAP_PATH) -> bool:
 
 	var count := apply_to_world_grid(data)
 	if count > 0:
-		print("[WorldForgeImporter] Applied %d cell modifications from forge map" % count)
 		return true
 
 	return false
@@ -221,20 +249,14 @@ func get_loaded_data() -> Dictionary:
 func print_gdscript_patch() -> void:
 	if _loaded_data.is_empty():
 		if not load_from_file():
-			print("# No forge data loaded")
 			return
 
 	var poi_data: Dictionary = _loaded_data.get("poi_data", {})
 	if poi_data.is_empty():
-		print("# No POI data to patch")
 		return
 
 	var origin_info: Dictionary = _loaded_data.get("editor_origin", {})
 	var origin := Vector2i(origin_info.get("x", 32), origin_info.get("y", 32))
-
-	print("# ========== WorldForge Patch ==========")
-	print("# Add/modify these entries in the LOCATIONS array:")
-	print("")
 
 	for key: String in poi_data:
 		var poi: Dictionary = poi_data[key]
@@ -250,12 +272,6 @@ func print_gdscript_patch() -> void:
 		var type_str: String = poi.get("type", "landmark")
 		var desc_str: String = poi.get("notes", "")
 		var scene_str: String = poi.get("scene_path", "")
-
-		print('\t{"id": "%s", "name": "%s", "x": %d, "y": %d, "type": "%s",' % [id_str, name_str, world_coords.x, world_coords.y, type_str])
-		print('\t "description": "%s"},' % desc_str)
-
-	print("")
-	print("# ========== End Patch ==========")
 
 
 ## Clear loaded data

@@ -43,8 +43,6 @@ func _ready() -> void:
 		QuestManager.on_location_reached("goblin_camp")
 		DayNightCycle.add_to_level(self)
 
-	print("[GoblinCamp] Camp initialized!")
-
 
 func _create_materials() -> void:
 	ground_mat = StandardMaterial3D.new()
@@ -136,7 +134,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[GoblinCamp] Navigation mesh baked!")
 
 
 ## ============================================================================
@@ -154,8 +151,6 @@ func _setup_spawn_point_metadata() -> void:
 		if marker.has_meta("spawn_id"):
 			marker.set_meta("spawn_id", marker.get_meta("spawn_id"))
 		marker.add_to_group("spawn_points")
-
-	print("[GoblinCamp] Spawn points configured from scene markers")
 
 
 ## Spawn doors from DoorPositions markers
@@ -184,7 +179,6 @@ func _spawn_doors_from_markers() -> void:
 		)
 		if door:
 			door.rotation = marker.rotation
-			print("[GoblinCamp] Spawned door: %s" % door_label)
 
 
 ## ============================================================================
@@ -226,8 +220,6 @@ func _spawn_goblins() -> void:
 		var enemy_type := _get_random_goblin_type()
 		_spawn_goblin(spawn_positions[i], enemy_type)
 		spawned += 1
-
-	print("[GoblinCamp] Spawned %d goblins" % spawned)
 
 	# Spawn warboss at camp center
 	_spawn_goblin_warboss(Vector3(0, 0, -5))
@@ -318,7 +310,6 @@ func _spawn_goblin_warboss(pos: Vector3) -> void:
 		enemy.add_to_group("goblin_camp_enemies")
 		enemy.add_to_group("goblin_warboss")
 		enemy.add_to_group("bosses")
-		print("[GoblinCamp] Spawned Goblin Warboss at %s" % pos)
 
 
 ## ============================================================================
@@ -354,8 +345,6 @@ func _spawn_chests_from_markers() -> void:
 			chest.rotation = marker.rotation
 			chest.setup_with_loot(loot_tier)
 
-	print("[GoblinCamp] Spawned loot chests from markers")
-
 
 ## Parse loot tier string to enum
 func _parse_loot_tier(tier_str: String) -> LootTables.LootTier:
@@ -387,8 +376,6 @@ func _create_lighting() -> void:
 	_spawn_campfire_light(Vector3(8, 2, 5), Color(1.0, 0.5, 0.2), 8.0, 0.8)
 	_spawn_campfire_light(Vector3(0, 2, -5), Color(1.0, 0.7, 0.4), 12.0, 1.2)  # Warboss area
 
-	print("[GoblinCamp] Created lighting")
-
 
 func _spawn_campfire_light(pos: Vector3, color: Color, range_val: float, energy: float) -> void:
 	var light := OmniLight3D.new()
@@ -417,4 +404,3 @@ func _setup_cell_streaming() -> void:
 	var my_coords: Vector2i = WorldGrid.get_location_coords(location_id)
 	CellStreamer.register_main_scene_cell(my_coords, self)
 	CellStreamer.start_streaming(my_coords)
-	print("[GoblinCamp] Streaming started at %s" % my_coords)

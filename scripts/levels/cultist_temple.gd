@@ -45,8 +45,6 @@ func _ready() -> void:
 	_setup_vegetation()
 	_setup_wildlife()
 
-	print("[CultistTemple] Level initialized")
-
 
 func _setup_spawn_point() -> void:
 	if not spawn_points:
@@ -68,7 +66,6 @@ func _setup_spawn_point() -> void:
 			if marker_id == spawn_id or (spawn_id == "default" and marker_id == "default"):
 				player.global_position = child.global_position
 				player.global_rotation = child.global_rotation
-				print("[CultistTemple] Player spawned at: %s (spawn_id: %s)" % [child.name, marker_id])
 				return
 
 	# Fallback to first spawn point
@@ -76,7 +73,6 @@ func _setup_spawn_point() -> void:
 		if child is Marker3D:
 			player.global_position = child.global_position
 			player.global_rotation = child.global_rotation
-			print("[CultistTemple] Player spawned at fallback: %s" % child.name)
 			return
 
 
@@ -121,7 +117,6 @@ func _spawn_enemy_at_marker(marker: Marker3D) -> void:
 
 	if enemy:
 		enemy.add_to_group("enemies")
-		print("[CultistTemple] Spawned enemy at %s" % marker.name)
 
 
 func _setup_doors() -> void:
@@ -150,7 +145,6 @@ func _spawn_door_at_marker(marker: Marker3D) -> void:
 
 	if door:
 		door.rotation = marker.rotation
-		print("[CultistTemple] Spawned door: %s -> %s" % [door_label, target_scene])
 
 
 func _setup_chests() -> void:
@@ -183,7 +177,6 @@ func _spawn_chest_at_marker(marker: Marker3D) -> void:
 		chest.rotation = marker.rotation
 		var tier: LootTables.LootTier = _parse_loot_tier(loot_tier_str)
 		chest.setup_with_loot(tier)
-		print("[CultistTemple] Spawned chest: %s" % chest_name)
 
 
 func _parse_loot_tier(tier_str: String) -> LootTables.LootTier:
@@ -262,8 +255,6 @@ func _setup_vegetation() -> void:
 	for pos in fallen_log_positions:
 		_spawn_fallen_log(pos)
 
-	print("[CultistTemple] Spawned vegetation: willows, dead trees, fallen logs")
-
 
 ## Spawn a standing tree billboard
 func _spawn_tree(pos: Vector3, texture_path: String, pixel_size: float, tree_name: String) -> void:
@@ -339,8 +330,6 @@ func _setup_wildlife() -> void:
 
 	for pos in rat_positions:
 		_spawn_ambient_rat(pos)
-
-	print("[CultistTemple] Spawned wildlife: %d rats" % rat_positions.size())
 
 
 ## Spawn an ambient rat (non-hostile, just visual atmosphere)

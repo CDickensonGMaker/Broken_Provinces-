@@ -130,16 +130,10 @@ func modify_morality(amount: int, reason: String = "") -> void:
 	if morality_score != old_score:
 		morality_changed.emit(old_score, morality_score)
 
-		# Log the change if reason provided
-		if not reason.is_empty():
-			var direction: String = "increased" if amount > 0 else "decreased"
-			print("[Morality] Score %s by %d (%s): %d -> %d" % [direction, abs(amount), reason, old_score, morality_score])
-
 		# Check for tier change
 		var new_tier: MoralityTier = get_morality_tier()
 		if new_tier != old_tier:
 			tier_changed.emit(old_tier, new_tier)
-			print("[Morality] Tier changed from %s to %s" % [get_tier_name(old_tier), get_tier_name(new_tier)])
 
 ## Process morality decay over time (called by game time system)
 func process_time_passed(hours: float) -> void:

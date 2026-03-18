@@ -704,7 +704,6 @@ func _register_recipes() -> void:
 		"base_quality": Enums.ItemQuality.AVERAGE
 	})
 
-	print("[CraftingManager] Registered %d recipes" % recipes.size())
 
 
 ## Helper to create and register a recipe from dictionary
@@ -769,7 +768,6 @@ func craft_recipe(recipe_id: String) -> Dictionary:
 		var xp_reward: int = _calculate_crafting_xp(recipe)
 		if GameManager and GameManager.player_data:
 			GameManager.player_data.add_ip(xp_reward)
-			print("[CraftingManager] Awarded %d XP for crafting %s" % [xp_reward, recipe.display_name])
 
 	return result
 

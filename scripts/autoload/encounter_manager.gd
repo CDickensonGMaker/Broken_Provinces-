@@ -268,7 +268,6 @@ func _connect_signals() -> void:
 	if PlayerGPS and PlayerGPS.has_signal("cell_changed"):
 		if not PlayerGPS.cell_changed.is_connected(_on_cell_changed):
 			PlayerGPS.cell_changed.connect(_on_cell_changed)
-			print("[EncounterManager] Connected to PlayerGPS.cell_changed")
 
 
 ## Called when player enters a new cell - force encounter check
@@ -304,14 +303,12 @@ func start(player: Node3D) -> void:
 	_active = true
 	_encounter_timer = 0.0
 	_last_check_hex = WorldGrid.world_to_cell(player.global_position)
-	print("[EncounterManager] Started - checking every %.0f seconds" % ENCOUNTER_CHECK_INTERVAL)
 
 
 ## Stop the encounter system (call when entering towns/dungeons)
 func stop() -> void:
 	_active = false
 	_player = null
-	print("[EncounterManager] Stopped")
 
 
 ## Force an encounter check (e.g., when entering new hex)
@@ -403,10 +400,6 @@ func _check_for_encounter() -> void:
 
 	# Roll for encounter
 	var roll: float = _rng.randf()
-
-	print("[EncounterManager] Encounter check at hex %s - danger: %.2f, chance: %.2f%%, roll: %.2f" % [
-		hex, danger_level, encounter_chance * 100, roll
-	])
 
 	if roll < encounter_chance:
 		_trigger_encounter(hex)
@@ -505,10 +498,6 @@ func _check_special_encounters() -> bool:
 		var chance: float = encounter.get("chance", 0.5)
 		var roll: float = _rng.randf()
 
-		print("[EncounterManager] Special encounter check: %s (level %d >= %d) - chance: %.0f%%, roll: %.2f" % [
-			encounter_id, player_level, min_level, chance * 100, roll
-		])
-
 		if roll < chance:
 			_trigger_special_encounter(encounter)
 			return true
@@ -549,8 +538,6 @@ func _trigger_special_encounter(encounter: Dictionary) -> void:
 			await tree.create_timer(0.5).timeout
 			if is_instance_valid(assassin_encounter) and assassin_encounter.has_method("trigger_encounter"):
 				assassin_encounter.trigger_encounter(_player)
-
-		print("[EncounterManager] SPECIAL ENCOUNTER TRIGGERED: %s" % encounter_id)
 
 		# Alert the player
 		var hud: Node = get_tree().get_first_node_in_group("hud")
@@ -637,7 +624,6 @@ func _spawn_bounty_hunters(count: int, faction_id: String) -> void:
 			hunter.set_meta("bounty_hunter", true)
 			hunter.set_meta("sent_by_faction", faction_id)
 			spawned.append(hunter)
-			print("[EncounterManager] Spawned bounty hunter at %s (sent by %s)" % [spawn_pos, faction_id])
 
 	if not spawned.is_empty():
 		encounter_spawned.emit(spawned)
@@ -651,8 +637,6 @@ func _spawn_bounty_hunters(count: int, faction_id: String) -> void:
 		# Play alert sound
 		if AudioManager:
 			AudioManager.play_sfx("enemy_alert")
-
-		print("[EncounterManager] BOUNTY HUNTERS SPAWNED: %d hunters sent by %s" % [spawned.size(), faction_name])
 
 
 ## Trigger an encounter
@@ -698,15 +682,6 @@ func _trigger_encounter(hex: Vector2i) -> void:
 	}
 
 	encounters_triggered += 1
-
-	if is_horde:
-		print("[EncounterManager] HORDE ATTACK! %d x %s at hex %s" % [
-			count, encounter_data.enemy_type, hex
-		])
-	else:
-		print("[EncounterManager] ENCOUNTER TRIGGERED: %d x %s at hex %s" % [
-			count, encounter_data.enemy_type, hex
-		])
 
 	encounter_triggered.emit(encounter_data)
 
@@ -794,7 +769,6 @@ func _spawn_encounter_enemies(encounter_data: Dictionary) -> Array[Node]:
 		var enemy: Node = _spawn_single_enemy(parent, spawn_pos, config)
 		if enemy:
 			spawned.append(enemy)
-			print("[EncounterManager] Spawned %s at %s" % [enemy_type, spawn_pos])
 
 	return spawned
 

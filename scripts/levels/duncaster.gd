@@ -33,8 +33,6 @@ func _ready() -> void:
 	_setup_navigation()
 	_setup_day_night_cycle()
 
-	print("[Duncaster] Mountain town loaded - route blocked by rockslide")
-
 
 ## Setup dynamic day/night lighting
 func _setup_day_night_cycle() -> void:
@@ -241,8 +239,6 @@ func _create_rockslide_blockage() -> void:
 	# Warning sign near the blockage
 	_create_warning_sign(Vector3(0, 0, -20))
 
-	print("[Duncaster] Created rockslide blockage at northern passage")
-
 
 func _create_boulder(pos: Vector3, index: int, mat: Material) -> void:
 	var boulder := CSGBox3D.new()
@@ -396,8 +392,6 @@ func _spawn_merchants() -> void:
 
 	# Blacksmith (mining tools, weapons)
 	_create_merchant_shop(Vector3(-18, 0, 25), "Stonepick Smithy", "blacksmith", Color(0.4, 0.35, 0.4))
-
-	print("[Duncaster] Spawned 2 merchant shops")
 
 
 func _create_merchant_shop(pos: Vector3, shop_name: String, shop_type: String, trim_color: Color) -> void:
@@ -669,8 +663,6 @@ func _spawn_inn() -> void:
 	# Rest spot inside/near inn
 	RestSpot.spawn_rest_spot(self, inn_pos + Vector3(3, 0, 2), "Lodge Hearth")
 
-	print("[Duncaster] Spawned The Snowpeak Lodge Inn")
-
 
 ## Spawn NPCs talking about the rockslide
 func _spawn_npcs() -> void:
@@ -692,8 +684,6 @@ func _spawn_npcs() -> void:
 		"We were headed north, but now we'll have to go all the way around.",
 		"The southern route through Rotherhine is the only way now."
 	])
-
-	print("[Duncaster] Spawned NPCs discussing the rockslide")
 
 
 func _spawn_ambient_npc(pos: Vector3, npc_name: String, dialog_lines: Array) -> void:
@@ -790,7 +780,6 @@ func _spawn_fast_travel_shrine() -> void:
 		"Duncaster Shrine",
 		"duncaster_shrine"
 	)
-	print("[Duncaster] Spawned fast travel shrine")
 
 
 ## ===========================================================================
@@ -808,8 +797,6 @@ func _setup_spawn_point_metadata() -> void:
 		if marker.has_meta("spawn_id"):
 			marker.set_meta("spawn_id", marker.get_meta("spawn_id"))
 		marker.add_to_group("spawn_points")
-
-	print("[Duncaster] Spawn points configured from scene markers")
 
 
 ## Spawn doors from DoorPositions markers
@@ -846,8 +833,6 @@ func _spawn_doors_from_markers() -> void:
 				door.set_meta("poi_name", "To Elder Moor")
 				door.set_meta("poi_color", Color(0.4, 0.6, 0.3))
 
-			print("[Duncaster] Spawned door: %s" % door_label)
-
 
 ## Setup navigation mesh
 func _setup_navigation() -> void:
@@ -872,4 +857,3 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Duncaster] Navigation mesh baked!")

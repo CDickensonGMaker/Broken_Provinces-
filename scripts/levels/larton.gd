@@ -38,7 +38,6 @@ func _ready() -> void:
 	_spawn_npcs()
 	_spawn_environment()
 	_setup_cell_streaming()
-	print("[Larton] Starving port town loaded")
 
 
 ## Setup spawn point metadata
@@ -78,7 +77,6 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[Larton] Navigation mesh baked!")
 
 
 ## Setup day/night cycle
@@ -99,7 +97,6 @@ func _setup_cell_streaming() -> void:
 	var my_coords: Vector2i = WorldGrid.get_location_coords(ZONE_ID)
 	CellStreamer.register_main_scene_cell(my_coords, self)
 	CellStreamer.start_streaming(my_coords)
-	print("[%s] Registered as main scene, streaming started at %s" % [ZONE_ID, my_coords])
 
 
 ## Spawn NPCs
@@ -136,10 +133,8 @@ func _spawn_npcs() -> void:
 	if harbor_dialogue:
 		harbor_master.dialogue_data = harbor_dialogue
 		harbor_master.use_legacy_dialogue = false
-		print("[Larton] Loaded boat travel dialogue for Harbor Master Giles")
 	else:
 		push_warning("[Larton] Failed to load Harbor Master dialogue")
-	print("[Larton] Spawned Harbor Master Giles")
 
 	# === MAYOR ALDRIC (Main Quest Giver) ===
 	var mayor_quests: Array[String] = ["ghost_pirate_investigation"]
@@ -162,7 +157,6 @@ func _spawn_npcs() -> void:
 	mayor_profile.base_disposition = 70  # Very friendly to anyone who arrives
 	mayor_profile.speech_style = "formal"
 	mayor.npc_profile = mayor_profile
-	print("[Larton] Spawned Mayor Aldric (Ghost Pirate quest giver)")
 
 	# === OLD FISHERMAN TORBEN (Information about Pirate Stronghold) ===
 	var fisherman := QuestGiver.spawn_quest_giver(
@@ -185,7 +179,6 @@ func _spawn_npcs() -> void:
 	fisherman_profile.base_disposition = 55
 	fisherman_profile.speech_style = "informal"
 	fisherman.npc_profile = fisherman_profile
-	print("[Larton] Spawned Old Fisherman Torben (knows Pirate Stronghold location)")
 
 	# === SINGLE GUARD (Demoralized) ===
 	var guard := GuardNPC.spawn_guard(
@@ -195,7 +188,6 @@ func _spawn_npcs() -> void:
 		ZONE_ID
 	)
 	guard.npc_id = "guard_larton_0"
-	print("[Larton] Spawned single demoralized Guard")
 
 	# === FEW STARVING CIVILIANS ===
 	var civilian_positions: Array[Vector3] = [
@@ -213,7 +205,6 @@ func _spawn_npcs() -> void:
 		civ_profile.knowledge_tags = ["larton", "starvation", "ghost_pirates"]
 		civ_profile.base_disposition = 40  # Suspicious of strangers
 		civilian.knowledge_profile = civ_profile
-		print("[Larton] Spawned Starving Villager at %s" % civilian_positions[i])
 
 
 ## Spawn environmental elements

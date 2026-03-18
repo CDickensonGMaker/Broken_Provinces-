@@ -69,11 +69,9 @@ func _load_all_factions() -> void:
 			var faction: FactionData = load(path) as FactionData
 			if faction and not faction.id.is_empty():
 				factions[faction.id] = faction
-				print("[FactionManager] Loaded faction: %s" % faction.id)
 		file_name = dir.get_next()
 
 	dir.list_dir_end()
-	print("[FactionManager] Loaded %d factions" % factions.size())
 
 ## Initialize player reputations from faction defaults or player data
 func _initialize_player_reputations() -> void:
@@ -125,9 +123,6 @@ func process_reputation_decay(current_day: int) -> void:
 			if new_rep != rep:
 				_apply_reputation_change(faction_id, REPUTATION_DECAY_PER_WEEK, "time decay")
 				last_decay_day[faction_id] = current_day
-				print("[Faction] %s reputation decayed toward neutral: %d -> %d (no crimes in %d days)" % [
-					faction_id, rep, new_rep, days_since_crime
-				])
 
 
 ## Record that a crime was committed against a faction (updates last crime timestamp)
@@ -137,7 +132,6 @@ func record_crime_against_faction(faction_id: String) -> void:
 	last_crime_day[faction_id] = GameManager.current_day
 	# Reset decay timer - committing a new crime means they need to wait another week
 	last_decay_day[faction_id] = GameManager.current_day
-	print("[Faction] Crime recorded against %s on day %d" % [faction_id, GameManager.current_day])
 
 
 ## Get a faction by ID
@@ -208,12 +202,6 @@ func _apply_reputation_change(faction_id: String, amount: int, reason: String = 
 	if new_rep != old_rep:
 		reputation_changed.emit(faction_id, old_rep, new_rep)
 
-		var direction: String = "increased" if amount > 0 else "decreased"
-		if not reason.is_empty():
-			print("[Faction] %s reputation %s by %d (%s): %d -> %d" % [faction_id, direction, abs(amount), reason, old_rep, new_rep])
-		else:
-			print("[Faction] %s reputation %s by %d: %d -> %d" % [faction_id, direction, abs(amount), old_rep, new_rep])
-
 		# Check for status change
 		var new_status: int = FactionData.get_reputation_status(new_rep)
 		if new_status != old_status:
@@ -271,7 +259,6 @@ func _check_rank_change(faction_id: String, old_rep: int, new_rep: int) -> void:
 	if old_rank != new_rank:
 		faction_memberships[faction_id]["rank"] = new_rank
 		rank_changed.emit(faction_id, old_rank, new_rank)
-		print("[Faction] Rank changed in %s: %s -> %s" % [faction_id, old_rank, new_rank])
 
 ## Join a faction
 func join_faction(faction_id: String) -> bool:
@@ -281,16 +268,13 @@ func join_faction(faction_id: String) -> bool:
 		return false
 
 	if not faction.joinable:
-		print("[Faction] %s is not joinable" % faction_id)
 		return false
 
 	var rep: int = get_reputation(faction_id)
 	if rep < faction.join_threshold:
-		print("[Faction] Insufficient reputation to join %s (need %d, have %d)" % [faction_id, faction.join_threshold, rep])
 		return false
 
 	if faction_memberships.has(faction_id):
-		print("[Faction] Already a member of %s" % faction_id)
 		return false
 
 	var rank_name: String = faction.get_rank_name(rep)
@@ -300,7 +284,6 @@ func join_faction(faction_id: String) -> bool:
 	}
 
 	joined_faction.emit(faction_id, rank_name)
-	print("[Faction] Joined %s as %s" % [faction.display_name, rank_name])
 
 	_sync_to_player_data()
 	return true
@@ -308,7 +291,6 @@ func join_faction(faction_id: String) -> bool:
 ## Leave a faction
 func leave_faction(faction_id: String) -> bool:
 	if not faction_memberships.has(faction_id):
-		print("[Faction] Not a member of %s" % faction_id)
 		return false
 
 	faction_memberships.erase(faction_id)
