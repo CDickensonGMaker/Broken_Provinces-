@@ -218,10 +218,15 @@ func change_scene(scene_path: String, spawn_id: String = "", fade: bool = true) 
 		push_warning("[SceneManager] Already loading a scene")
 		return
 
-	# Track previous scene (for returning from interiors)
+	# Track previous scene (for returning from interiors/dungeons)
 	var current_scene := get_current_scene_path()
 	if not current_scene.is_empty() and current_scene != scene_path:
-		if not _is_interior_scene(current_scene):
+		# Save previous scene when entering dungeons OR interiors
+		if _is_dungeon_scene(scene_path) or _is_interior_scene(scene_path):
+			if not _is_interior_scene(current_scene) and not _is_dungeon_scene(current_scene):
+				previous_scene_path = current_scene
+				previous_spawn_id = "default"
+		elif not _is_interior_scene(current_scene):
 			previous_scene_path = current_scene
 			previous_spawn_id = "from_" + _get_scene_name(scene_path)
 
@@ -523,6 +528,10 @@ func _is_interior_scene(scene_path: String) -> bool:
 		if keyword in lower_path:
 			return true
 	return false
+
+
+func _is_dungeon_scene(path: String) -> bool:
+	return "dungeon" in path.to_lower()
 
 
 func _get_scene_name(scene_path: String) -> String:

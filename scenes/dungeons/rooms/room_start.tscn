@@ -104,7 +104,7 @@ material = SubResource("StandardMaterial3D_wall")
 
 [node name="SpawnPoints" type="Node3D" parent="."]
 
-[node name="SpawnPoint" type="Marker3D" parent="SpawnPoints"]
+[node name="SpawnPoint" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.5, 8)
 metadata/spawn_id = "default"
 

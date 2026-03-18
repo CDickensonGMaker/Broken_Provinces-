@@ -1,0 +1,187 @@
+[gd_scene load_steps=16 format=3 uid="uid://b1hqdx78gyeb"]
+
+[ext_resource type="Script" uid="uid://fdd4ags3s30d" path="res://scripts/dungeons/hand_crafted_dungeon.gd" id="1_uhubw"]
+[ext_resource type="PackedScene" uid="uid://bxstart001" path="res://scenes/dungeons/rooms/room_start.tscn" id="2_sgnff"]
+[ext_resource type="Texture2D" uid="uid://b6ii70bh4emrd" path="res://assets/textures/environment/dungeon/stonewall.png" id="3_a48xe"]
+[ext_resource type="PackedScene" uid="uid://corridorns01" path="res://scenes/dungeons/rooms/corridor_ns.tscn" id="4_6tkce"]
+[ext_resource type="PackedScene" uid="uid://cross0000001" path="res://scenes/dungeons/rooms/cross.tscn" id="5_7717m"]
+[ext_resource type="PackedScene" uid="uid://corridorew01" path="res://scenes/dungeons/rooms/corridor_ew.tscn" id="6_qh6ty"]
+[ext_resource type="PackedScene" uid="uid://tsouth00001" path="res://scenes/dungeons/rooms/t_south.tscn" id="7_p1p5b"]
+[ext_resource type="PackedScene" uid="uid://roomsmall001" path="res://scenes/dungeons/rooms/room_small.tscn" id="8_7u6fb"]
+[ext_resource type="PackedScene" uid="uid://roommed00001" path="res://scenes/dungeons/rooms/room_medium.tscn" id="9_567ao"]
+[ext_resource type="PackedScene" uid="uid://roomboss0001" path="res://scenes/dungeons/rooms/room_boss.tscn" id="10_0e8xw"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3gup1"]
+albedo_texture = ExtResource("3_a48xe")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j4pji"]
+albedo_texture = ExtResource("3_a48xe")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o1rtf"]
+albedo_texture = ExtResource("3_a48xe")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dnnbb"]
+albedo_texture = ExtResource("3_a48xe")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h0n6r"]
+albedo_texture = ExtResource("3_a48xe")
+texture_filter = 0
+
+[node name="Dungeon" type="Node3D"]
+script = ExtResource("1_uhubw")
+
+[node name="Rooms" type="Node3D" parent="."]
+
+[node name="start_-4_7" type="Node3D" parent="Rooms" instance=ExtResource("2_sgnff")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 112)
+metadata/grid_pos = Vector2i(-4, 7)
+metadata/room_type = 1
+
+[node name="DoorBlockerSouth" type="CSGBox3D" parent="Rooms/start_-4_7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 15.75)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_3gup1")
+
+[node name="DoorBlockerEast" type="CSGBox3D" parent="Rooms/start_-4_7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_3gup1")
+
+[node name="DoorBlockerWest" type="CSGBox3D" parent="Rooms/start_-4_7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_3gup1")
+
+[node name="corridor_ns_-4_6" type="Node3D" parent="Rooms" instance=ExtResource("4_6tkce")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 96)
+metadata/grid_pos = Vector2i(-4, 6)
+metadata/room_type = 2
+
+[node name="corridor_ns_-4_5" type="Node3D" parent="Rooms" instance=ExtResource("4_6tkce")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 80)
+metadata/grid_pos = Vector2i(-4, 5)
+metadata/room_type = 2
+
+[node name="cross_-4_4" type="Node3D" parent="Rooms" instance=ExtResource("5_7717m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 64)
+metadata/grid_pos = Vector2i(-4, 4)
+metadata/room_type = 12
+
+[node name="corridor_ew_-3_4" type="Node3D" parent="Rooms" instance=ExtResource("6_qh6ty")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48, 0, 64)
+metadata/grid_pos = Vector2i(-3, 4)
+metadata/room_type = 3
+
+[node name="t_south_-2_4" type="Node3D" parent="Rooms" instance=ExtResource("7_p1p5b")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, 64)
+metadata/grid_pos = Vector2i(-2, 4)
+metadata/room_type = 9
+
+[node name="corridor_ew_-1_4" type="Node3D" parent="Rooms" instance=ExtResource("6_qh6ty")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, 64)
+metadata/grid_pos = Vector2i(-1, 4)
+metadata/room_type = 3
+
+[node name="room_small_-2_5" type="Node3D" parent="Rooms" instance=ExtResource("8_7u6fb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, 80)
+metadata/grid_pos = Vector2i(-2, 5)
+metadata/room_type = 13
+
+[node name="DoorBlockerSouth" type="CSGBox3D" parent="Rooms/room_small_-2_5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 15.75)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_j4pji")
+
+[node name="DoorBlockerEast" type="CSGBox3D" parent="Rooms/room_small_-2_5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_j4pji")
+
+[node name="DoorBlockerWest" type="CSGBox3D" parent="Rooms/room_small_-2_5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_j4pji")
+
+[node name="room_medium_-4_2" type="Node3D" parent="Rooms" instance=ExtResource("9_567ao")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 32)
+metadata/grid_pos = Vector2i(-4, 2)
+metadata/room_type = 14
+
+[node name="DoorBlockerNorth" type="CSGBox3D" parent="Rooms/room_medium_-4_2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0.25)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_o1rtf")
+
+[node name="DoorBlockerEast" type="CSGBox3D" parent="Rooms/room_medium_-4_2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_o1rtf")
+
+[node name="DoorBlockerWest" type="CSGBox3D" parent="Rooms/room_medium_-4_2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_o1rtf")
+
+[node name="corridor_ns_-4_3" type="Node3D" parent="Rooms" instance=ExtResource("4_6tkce")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 48)
+metadata/grid_pos = Vector2i(-4, 3)
+metadata/room_type = 2
+
+[node name="room_boss_0_4" type="Node3D" parent="Rooms" instance=ExtResource("10_0e8xw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 64)
+metadata/grid_pos = Vector2i(0, 4)
+metadata/room_type = 16
+
+[node name="DoorBlockerNorth" type="CSGBox3D" parent="Rooms/room_boss_0_4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0.25)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_dnnbb")
+
+[node name="DoorBlockerSouth" type="CSGBox3D" parent="Rooms/room_boss_0_4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 15.75)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_dnnbb")
+
+[node name="DoorBlockerEast" type="CSGBox3D" parent="Rooms/room_boss_0_4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_dnnbb")
+
+[node name="room_medium_-5_4" type="Node3D" parent="Rooms" instance=ExtResource("9_567ao")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0, 64)
+metadata/grid_pos = Vector2i(-5, 4)
+metadata/room_type = 14
+
+[node name="DoorBlockerNorth" type="CSGBox3D" parent="Rooms/room_medium_-5_4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0.25)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_h0n6r")
+
+[node name="DoorBlockerSouth" type="CSGBox3D" parent="Rooms/room_medium_-5_4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 15.75)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_h0n6r")
+
+[node name="DoorBlockerWest" type="CSGBox3D" parent="Rooms/room_medium_-5_4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_h0n6r")

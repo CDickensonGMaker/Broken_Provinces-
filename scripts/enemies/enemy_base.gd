@@ -2758,8 +2758,13 @@ static func spawn_billboard_enemy(parent: Node, pos: Vector3, enemy_data_path: S
 	# Ensure spawn_position is correctly set after _ready (belt and suspenders)
 	enemy.spawn_position = enemy.global_position
 
+	# Get pixel_size from EnemyData (use sensible default if not set)
+	var pixel_size: float = 0.03
+	if data and data.sprite_pixel_size > 0.001:
+		pixel_size = data.sprite_pixel_size
+
 	# Setup billboard sprite (after _ready has run)
-	enemy.call_deferred("setup_billboard_sprite", sprite_texture, h_frames, v_frames)
+	enemy.call_deferred("setup_billboard_sprite", sprite_texture, h_frames, v_frames, pixel_size)
 
 	return enemy
 
