@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "lore_gods"
+display_name = "The Three Divine"
+description = "An illuminated manuscript explaining the tenets of the Three Gods: Chronos, Gaela, and Morthane. Contains prayers, hymns, and theological discussions of the divine cycle. Often given to initiates of the Church."
+item_type = 5
+is_stackable = true
+max_stack = 5
+unlocks_lore = Array[String](["chronos", "gaela", "morthane"])
+book_tier = 2
+base_value = 60
+weight = 0.5

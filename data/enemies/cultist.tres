@@ -100,7 +100,9 @@ drop_table = {
 "dark_robe": 0.2,
 "ritual_dagger": 0.15,
 "occult_tome": 0.1,
-"health_potion": 0.2
+"health_potion": 0.2,
+"soul_essence": 0.15,
+"ember_dust": 0.1
 }
 xp_reward = 60
 scene_path = ""

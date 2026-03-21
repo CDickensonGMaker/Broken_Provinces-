@@ -555,6 +555,16 @@ func execute_action(action: DialogueAction) -> String:
 			else:
 				push_warning("[DialogueManager] BoatTravelManager not found")
 
+		DialogueData.ActionType.DISCOVER_LORE:
+			# Discover a lore entry in the Codex
+			if CodexManager:
+				CodexManager.discover_lore(action.param_string)
+
+		DialogueData.ActionType.DISCOVER_RECIPE:
+			# Discover a recipe in the Codex
+			if CodexManager:
+				CodexManager.discover_recipe(action.param_string)
+
 	return ""
 
 

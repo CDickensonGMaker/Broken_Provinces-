@@ -611,6 +611,18 @@ func _connect_signals() -> void:
 		if not PlayerGPS.cell_changed.is_connected(_on_cell_changed_hud):
 			PlayerGPS.cell_changed.connect(_on_cell_changed_hud)
 
+	# Codex discovery signals - show notifications when things are discovered
+	if CodexManager:
+		if CodexManager.has_signal("recipe_discovered"):
+			if not CodexManager.recipe_discovered.is_connected(_on_recipe_discovered):
+				CodexManager.recipe_discovered.connect(_on_recipe_discovered)
+		if CodexManager.has_signal("lore_discovered"):
+			if not CodexManager.lore_discovered.is_connected(_on_lore_discovered):
+				CodexManager.lore_discovered.connect(_on_lore_discovered)
+		if CodexManager.has_signal("bestiary_entry_discovered"):
+			if not CodexManager.bestiary_entry_discovered.is_connected(_on_bestiary_discovered):
+				CodexManager.bestiary_entry_discovered.connect(_on_bestiary_discovered)
+
 ## Disconnect signals from old player_data to prevent "signal connected to freed object" errors
 func _disconnect_player_data_signals() -> void:
 	if _connected_player_data and is_instance_valid(_connected_player_data):
@@ -1527,6 +1539,28 @@ func _on_item_degraded(_slot: String, item_id: String, new_quality: Enums.ItemQu
 func _on_item_repaired(_slot: String, item_id: String, _durability_restored: int) -> void:
 	var item_name := InventoryManager.get_item_name(item_id)
 	show_notification("%s repaired!" % item_name)
+
+
+## Handle recipe discovered notification
+func _on_recipe_discovered(_category: String, recipe_id: String) -> void:
+	var recipe: Dictionary = CodexManager.get_recipe(recipe_id)
+	var recipe_name: String = recipe.get("display_name", recipe.get("name", recipe_id))
+	show_notification("Recipe Learned: " + recipe_name)
+
+
+## Handle lore discovered notification
+func _on_lore_discovered(_category: String, lore_id: String) -> void:
+	var lore: Dictionary = CodexManager.get_lore(lore_id)
+	var lore_title: String = lore.get("title", lore_id)
+	show_notification("Lore Discovered: " + lore_title)
+
+
+## Handle bestiary entry discovered notification
+func _on_bestiary_discovered(creature_id: String) -> void:
+	var entry: Dictionary = CodexManager.get_bestiary_entry(creature_id)
+	var creature_name: String = entry.get("name", creature_id)
+	show_notification("Bestiary Entry: " + creature_name)
+
 
 ## Get human-readable quality name
 func _get_quality_display_name(quality: Enums.ItemQuality) -> String:

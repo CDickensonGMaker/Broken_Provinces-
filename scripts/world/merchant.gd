@@ -279,6 +279,8 @@ func _setup_default_inventory() -> void:
 
 		# Bestiary books - general stores carry tiers 1-5 (common creatures)
 		_add_random_bestiary_books(stock_rng, 1, 5, 0.4)
+		# Lore books - general stores carry basic lore
+		_add_random_lore_books(stock_rng, 0.35)
 		return
 
 	# All shop types (including alchemist) use LootTables random generation
@@ -298,6 +300,13 @@ func _setup_default_inventory() -> void:
 		var book_rng := RandomNumberGenerator.new()
 		book_rng.seed = hash(merchant_name + str(global_position) + "books")
 		_add_random_bestiary_books(book_rng, 1, 10, 0.5)  # Higher chance, all tiers
+		_add_random_lore_books(book_rng, 0.5)  # Magic shops also sell lore books
+
+	# Add schematics to blacksmiths, weapon, and armor shops
+	if shop_type == "blacksmith" or shop_type == "weapon" or shop_type == "armor":
+		var schematic_rng := RandomNumberGenerator.new()
+		schematic_rng.seed = hash(merchant_name + str(global_position) + "schematics")
+		_add_random_schematics(schematic_rng, 0.6)  # Good chance for schematics
 
 ## Add random bestiary books based on tier range and chance
 func _add_random_bestiary_books(rng: RandomNumberGenerator, min_tier: int, max_tier: int, base_chance: float) -> void:
@@ -326,6 +335,52 @@ func _add_random_bestiary_books(rng: RandomNumberGenerator, min_tier: int, max_t
 		if rng.randf() < chance:
 			var marked_up_price: int = int(book["price"] * buy_price_multiplier * 1.2)  # 20% book markup
 			_add_shop_item(book["id"], marked_up_price, 1, Enums.ItemQuality.AVERAGE)
+
+
+## Add random lore books to shop inventory
+func _add_random_lore_books(rng: RandomNumberGenerator, base_chance: float) -> void:
+	var lore_book_data: Array[Dictionary] = [
+		{"id": "lore_factions", "tier": 2, "price": 75},
+		{"id": "lore_gods", "tier": 2, "price": 60},
+		{"id": "lore_enemies", "tier": 2, "price": 80},
+		{"id": "lore_dwarves", "tier": 3, "price": 100},
+		{"id": "lore_elves", "tier": 3, "price": 125},
+		{"id": "lore_underworld", "tier": 4, "price": 150}
+	]
+
+	for book: Dictionary in lore_book_data:
+		var tier: int = book["tier"]
+		# Higher tier books have lower chance
+		var tier_modifier: float = 1.0 - (tier - 2) * 0.15
+		var chance: float = base_chance * tier_modifier
+
+		if rng.randf() < chance:
+			var marked_up_price: int = int(book["price"] * buy_price_multiplier * 1.2)
+			_add_shop_item(book["id"], marked_up_price, 1, Enums.ItemQuality.AVERAGE)
+
+
+## Add random schematics to shop inventory (for blacksmiths)
+func _add_random_schematics(rng: RandomNumberGenerator, base_chance: float) -> void:
+	var schematic_data: Array[Dictionary] = [
+		{"id": "schematic_arrows", "tier": 1, "price": 20},
+		{"id": "schematic_health_potion", "tier": 1, "price": 25},
+		{"id": "schematic_repair_kit", "tier": 2, "price": 35},
+		{"id": "schematic_iron_sword", "tier": 2, "price": 50},
+		{"id": "schematic_lockpick", "tier": 2, "price": 40},
+		{"id": "schematic_leather_armor", "tier": 2, "price": 60},
+		{"id": "schematic_steel_sword", "tier": 3, "price": 100},
+		{"id": "schematic_chain_mail", "tier": 4, "price": 150}
+	]
+
+	for schematic: Dictionary in schematic_data:
+		var tier: int = schematic["tier"]
+		# Higher tier schematics have lower chance
+		var tier_modifier: float = 1.0 - (tier - 1) * 0.2
+		var chance: float = base_chance * tier_modifier
+
+		if rng.randf() < chance:
+			var marked_up_price: int = int(schematic["price"] * buy_price_multiplier * 1.3)  # 30% schematic markup
+			_add_shop_item(schematic["id"], marked_up_price, 1, Enums.ItemQuality.AVERAGE)
 
 
 ## Helper to add items to shop inventory

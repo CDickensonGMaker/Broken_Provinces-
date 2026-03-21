@@ -51,6 +51,17 @@ func _ready() -> void:
 	_load_recipe_data()
 	_load_lore_data()
 
+	# Connect to location discovery for auto-lore discovery
+	if PlayerGPS and PlayerGPS.has_signal("location_discovered"):
+		PlayerGPS.location_discovered.connect(_on_location_discovered)
+
+
+## Called when player discovers a location - auto-discover any matching lore
+func _on_location_discovered(location_id: String, _location_name: String) -> void:
+	# Try to discover lore for this location (fails silently if no matching lore)
+	# Location lore uses format: "village_elder_moor", "city_dalhurst", etc.
+	discover_lore(location_id)
+
 ## Initialize category dictionaries
 func _initialize_categories() -> void:
 	# Initialize recipe categories

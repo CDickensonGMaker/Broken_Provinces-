@@ -155,9 +155,19 @@ func _load_item_databases() -> void:
 		# Monster drops - troll
 		"troll_blood", "troll_hide",
 		# Monster drops - wyvern/dragon
-		"wyvern_scale",
+		"wyvern_scale", "wyvern_venom", "wyvern_wing",
 		# Monster drops - misc creatures
-		"rat_tail", "diseased_meat",
+		"rat_tail", "diseased_meat", "guano",
+		# Monster drops - basilisk
+		"basilisk_eye", "petrified_heart", "legendary_gem",
+		# Monster drops - troll misc
+		"crude_club", "rare_gem",
+		# Monster drops - fire bat
+		"fire_bat_wing",
+		# Cultist drops
+		"dark_robe", "ritual_dagger", "occult_tome",
+		# Undead drops
+		"skull_fragment",
 		# Monster drops - sea creatures
 		"tentacle_meat", "kraken_ink", "sea_pearl",
 		# Magical materials
@@ -184,10 +194,25 @@ func _load_item_databases() -> void:
 		"bestiary_vol_1_vermin", "bestiary_vol_2_predators", "bestiary_vol_3_arachnids",
 		"bestiary_vol_4_goblins", "bestiary_vol_5_bandits", "bestiary_vol_6_undead",
 		"bestiary_vol_7_cultists", "bestiary_vol_8_monsters", "bestiary_vol_9_tengers",
-		"bestiary_vol_10_legendary"
+		"bestiary_vol_10_legendary",
+		# Lore books
+		"lore_factions", "lore_dwarves", "lore_elves", "lore_gods",
+		"lore_underworld", "lore_enemies"
 	]
 	for book_id in book_files:
 		var path := "res://data/items/books/%s.tres" % book_id
+		var item = load(path)
+		if item and item is ItemData and item.id:
+			item_database[item.id] = item
+
+	# Load schematics
+	var schematic_files := [
+		"schematic_health_potion", "schematic_iron_sword", "schematic_steel_sword",
+		"schematic_leather_armor", "schematic_chain_mail", "schematic_lockpick",
+		"schematic_repair_kit", "schematic_arrows"
+	]
+	for schematic_id in schematic_files:
+		var path := "res://data/items/schematics/%s.tres" % schematic_id
 		var item = load(path)
 		if item and item is ItemData and item.id:
 			item_database[item.id] = item
@@ -509,6 +534,8 @@ func use_item(inventory_index: int) -> bool:
 			success = _use_bedroll()
 		ItemData.ItemType.BOOK:
 			success = _use_book(item)
+		ItemData.ItemType.SCHEMATIC:
+			success = _use_schematic(item)
 		_:
 			return false  # Other item types cannot be used
 
@@ -584,19 +611,29 @@ func _use_scroll(item: ItemData) -> bool:
 	return false
 
 
-## Use a bestiary book to unlock creature knowledge
+## Use a book to unlock bestiary entries and/or lore entries
 func _use_book(item: ItemData) -> bool:
-	if item.unlocks_bestiary.is_empty():
-		push_warning("Book has no unlocks_bestiary entries: " + item.id)
+	var has_bestiary: bool = not item.unlocks_bestiary.is_empty()
+	var has_lore: bool = not item.unlocks_lore.is_empty()
+
+	if not has_bestiary and not has_lore:
+		push_warning("Book has no unlocks_bestiary or unlocks_lore entries: " + item.id)
 		return false
 
 	var hud = GameManager.get_tree().get_first_node_in_group("hud")
 	var new_entries: int = 0
 	var already_known: int = 0
 
-	# Unlock each creature in the book
+	# Unlock bestiary entries
 	for creature_id: String in item.unlocks_bestiary:
-		if JournalManager and JournalManager.unlock_bestiary_from_book(creature_id):
+		if CodexManager and CodexManager.discover_bestiary_entry(creature_id, {"name": creature_id, "source": "book"}):
+			new_entries += 1
+		else:
+			already_known += 1
+
+	# Unlock lore entries
+	for lore_id: String in item.unlocks_lore:
+		if CodexManager and CodexManager.discover_lore(lore_id):
 			new_entries += 1
 		else:
 			already_known += 1
@@ -604,9 +641,9 @@ func _use_book(item: ItemData) -> bool:
 	# Show feedback
 	if new_entries > 0:
 		if hud and hud.has_method("show_notification"):
-			hud.show_notification("Learned about %d creature%s from %s!" % [
+			hud.show_notification("Learned %d new entr%s from %s!" % [
 				new_entries,
-				"s" if new_entries > 1 else "",
+				"ies" if new_entries > 1 else "y",
 				item.display_name
 			])
 		AudioManager.play_ui_confirm()
@@ -615,6 +652,29 @@ func _use_book(item: ItemData) -> bool:
 		# All entries already known
 		if hud and hud.has_method("show_notification"):
 			hud.show_notification("You already know everything in this book.")
+		return false
+
+
+## Use a schematic to learn a crafting recipe
+func _use_schematic(item: ItemData) -> bool:
+	if item.unlocks_recipe.is_empty():
+		push_warning("Schematic has no unlocks_recipe: " + item.id)
+		return false
+
+	var hud = GameManager.get_tree().get_first_node_in_group("hud")
+
+	# Try to learn the recipe
+	if CodexManager and CodexManager.discover_recipe(item.unlocks_recipe):
+		var recipe: Dictionary = CodexManager.get_recipe(item.unlocks_recipe)
+		var recipe_name: String = recipe.get("display_name", recipe.get("name", item.unlocks_recipe))
+		if hud and hud.has_method("show_notification"):
+			hud.show_notification("Learned recipe: " + recipe_name)
+		AudioManager.play_ui_confirm()
+		return true
+	else:
+		# Already know this recipe
+		if hud and hud.has_method("show_notification"):
+			hud.show_notification("You already know this recipe.")
 		return false
 
 

@@ -118,3 +118,21 @@ static func start_boat_voyage(route_id: String) -> DialogueAction:
 	action.type = DialogueData.ActionType.START_BOAT_VOYAGE
 	action.param_string = route_id
 	return action
+
+
+## Create a "discover lore" action - for NPC teaching lore via dialogue
+## lore_id: The lore entry ID to discover (e.g., "human_empire", "church_of_three")
+static func discover_lore(lore_id: String) -> DialogueAction:
+	var action := DialogueAction.new()
+	action.type = DialogueData.ActionType.DISCOVER_LORE
+	action.param_string = lore_id
+	return action
+
+
+## Create a "discover recipe" action - for NPC training/schematics
+## recipe_id: The recipe ID to discover (e.g., "iron_sword", "health_potion")
+static func discover_recipe(recipe_id: String) -> DialogueAction:
+	var action := DialogueAction.new()
+	action.type = DialogueData.ActionType.DISCOVER_RECIPE
+	action.param_string = recipe_id
+	return action

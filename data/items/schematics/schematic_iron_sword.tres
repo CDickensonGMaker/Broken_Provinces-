@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "schematic_iron_sword"
+display_name = "Schematic: Iron Sword"
+description = "Blacksmith's blueprints for forging an iron sword. Shows the proper techniques for heating, hammering, and tempering the blade."
+item_type = 11
+is_stackable = false
+max_stack = 1
+unlocks_recipe = "craft_iron_sword"
+base_value = 50
+weight = 0.1

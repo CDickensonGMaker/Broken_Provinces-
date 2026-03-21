@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "lore_underworld"
+display_name = "Shadows and Secrets"
+description = "A forbidden text detailing the criminal underworld and secret societies. Discusses the Thieves Guild and hints at the existence of the mysterious Keepers. Possession of this book may raise uncomfortable questions with the authorities."
+item_type = 5
+is_stackable = true
+max_stack = 5
+unlocks_lore = Array[String](["thieves_guild", "the_keepers"])
+book_tier = 4
+base_value = 150
+weight = 0.5

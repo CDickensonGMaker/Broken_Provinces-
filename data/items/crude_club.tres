@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "crude_club"
+display_name = "Crude Club"
+description = "A massive club fashioned from a tree trunk. Too heavy for most humans to wield effectively, but the iron reinforcements could be salvaged."
+item_type = 2
+is_stackable = false
+max_stack = 1
+base_value = 8
+weight = 15.0

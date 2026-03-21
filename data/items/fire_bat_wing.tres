@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "fire_bat_wing"
+display_name = "Fire Bat Wing"
+description = "A wing membrane from a fire bat, still warm to the touch. The magical flames have infused the tissue with fire essence. Useful for fire-based enchantments."
+item_type = 2
+is_stackable = true
+max_stack = 20
+base_value = 12
+weight = 0.1

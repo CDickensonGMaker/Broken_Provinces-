@@ -57,7 +57,8 @@ enum ItemType {
 	REPAIR_KIT,
 	AMMUNITION,
 	BEDROLL,  # Single-use camping item for wilderness rest
-	TORCH     # Light source - equippable in off-hand, depletes while equipped
+	TORCH,    # Light source - equippable in off-hand, depletes while equipped
+	SCHEMATIC # Recipe schematic - teaches a crafting recipe when used
 }
 
 enum ConsumableEffect {
@@ -106,7 +107,11 @@ enum ConsumableEffect {
 
 @export_group("Book Properties")
 @export var unlocks_bestiary: Array[String] = []  # Creature IDs to unlock in bestiary
+@export var unlocks_lore: Array[String] = []  # Lore entry IDs to unlock in codex
 @export var book_tier: int = 1  # Book tier 1-10 (affects price and rarity)
+
+@export_group("Schematic Properties")
+@export var unlocks_recipe: String = ""  # Recipe ID to unlock when used
 
 @export_group("Economy")
 @export var base_value: int = 10

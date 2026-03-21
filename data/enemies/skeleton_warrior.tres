@@ -98,7 +98,8 @@ gold_drop = Array[int]([15, 45])
 guaranteed_drops = Array[String]([])
 drop_table = {
 "iron_ingot": 0.15,
-"health_potion": 0.1
+"health_potion": 0.1,
+"soul_essence": 0.2
 }
 xp_reward = 95
 scene_path = ""

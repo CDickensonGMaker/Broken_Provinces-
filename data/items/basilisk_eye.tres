@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "basilisk_eye"
+display_name = "Basilisk Eye"
+description = "The preserved eye of a basilisk, still faintly glowing with petrifying magic. Alchemists and enchanters pay handsomely for these rare specimens."
+item_type = 2
+is_stackable = true
+max_stack = 5
+base_value = 150
+weight = 0.3

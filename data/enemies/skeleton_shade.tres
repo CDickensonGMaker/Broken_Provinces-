@@ -98,7 +98,8 @@ gold_drop = Array[int]([40, 100])
 guaranteed_drops = Array[String]([])
 drop_table = {
 "scroll_soul_drain": 0.15,
-"health_potion": 0.2
+"health_potion": 0.2,
+"soul_essence": 0.35
 }
 xp_reward = 175
 scene_path = ""

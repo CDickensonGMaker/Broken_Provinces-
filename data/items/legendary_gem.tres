@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "legendary_gem"
+display_name = "Legendary Gem"
+description = "An exceptionally rare gemstone that radiates faint magical energy. Said to form only in the presence of powerful magical creatures. Priceless to the right buyer."
+item_type = 2
+is_stackable = true
+max_stack = 5
+base_value = 500
+weight = 0.1

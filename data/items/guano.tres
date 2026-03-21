@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "guano"
+display_name = "Bat Guano"
+description = "Foul-smelling bat droppings, surprisingly useful in alchemy. A key ingredient in explosive mixtures and fertilizers."
+item_type = 2
+is_stackable = true
+max_stack = 20
+base_value = 3
+weight = 0.1

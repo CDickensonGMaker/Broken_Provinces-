@@ -56,7 +56,9 @@ enum ActionType {
 	PLAY_SOUND,         ## Play a sound effect
 	SET_NPC_STATE,      ## Change NPC state/behavior
 	SPAWN_ERRAND,       ## Spawn an errand quest from a rumor
-	START_BOAT_VOYAGE   ## Start boat travel (param_string = route_id)
+	START_BOAT_VOYAGE,  ## Start boat travel (param_string = route_id)
+	DISCOVER_LORE,      ## Discover a lore entry (param_string = lore_id)
+	DISCOVER_RECIPE     ## Discover a recipe (param_string = recipe_id)
 }
 
 

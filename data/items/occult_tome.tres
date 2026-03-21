@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "occult_tome"
+display_name = "Occult Tome"
+description = "A leather-bound book filled with forbidden knowledge. The pages contain rituals, summoning circles, and dark incantations. Dangerous in the wrong hands."
+item_type = 2
+is_stackable = true
+max_stack = 3
+base_value = 50
+weight = 1.5

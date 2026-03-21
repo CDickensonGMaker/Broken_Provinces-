@@ -1,0 +1,241 @@
+{
+  "id": "blacksmith_training",
+  "display_name": "Blacksmith Training",
+  "description": "Training dialogue for blacksmiths offering smithing recipes",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Blacksmith",
+      "text": "Looking to learn the smith's trade? I might be able to teach you a thing or two, for the right price.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What can you teach me?",
+          "next": "training_options",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Maybe later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "training_options",
+      "speaker": "Blacksmith",
+      "text": "I know a few techniques. Basic ones are cheap, but the good stuff costs more.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Teach me to forge an Iron Sword (50 gold)",
+          "next": "learn_iron_sword",
+          "conditions": [
+            {"type": "has_gold", "param": "", "value": 50},
+            {"type": "flag_not_set", "param": "learned_iron_sword", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Teach me to forge a Steel Sword (100 gold)",
+          "next": "learn_steel_sword",
+          "conditions": [
+            {"type": "has_gold", "param": "", "value": 100},
+            {"type": "flag_not_set", "param": "learned_steel_sword", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Teach me to craft Leather Armor (60 gold)",
+          "next": "learn_leather_armor",
+          "conditions": [
+            {"type": "has_gold", "param": "", "value": 60},
+            {"type": "flag_not_set", "param": "learned_leather_armor", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Teach me to craft Chain Mail (150 gold)",
+          "next": "learn_chain_mail",
+          "conditions": [
+            {"type": "has_gold", "param": "", "value": 150},
+            {"type": "flag_not_set", "param": "learned_chain_mail", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Teach me to make a Repair Kit (35 gold)",
+          "next": "learn_repair_kit",
+          "conditions": [
+            {"type": "has_gold", "param": "", "value": 35},
+            {"type": "flag_not_set", "param": "learned_repair_kit", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "[Already learned] I already know those recipes.",
+          "next": "already_learned",
+          "show_when_unavailable": false,
+          "conditions": [
+            {"type": "flag_set", "param": "learned_iron_sword", "value": 0},
+            {"type": "flag_set", "param": "learned_steel_sword", "value": 0},
+            {"type": "flag_set", "param": "learned_leather_armor", "value": 0},
+            {"type": "flag_set", "param": "learned_chain_mail", "value": 0},
+            {"type": "flag_set", "param": "learned_repair_kit", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Maybe later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "learn_iron_sword",
+      "speaker": "Blacksmith",
+      "text": "Right then. Heat three iron ingots until they glow, hammer them flat on the anvil, then fold and shape the blade. Wrap the tang with a leather strip for the grip. Simple but effective.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Got it.",
+          "next": "training_complete",
+          "conditions": [],
+          "actions": [
+            {"type": "take_gold", "param": "", "value": 50},
+            {"type": "discover_recipe", "param": "craft_iron_sword", "value": 0},
+            {"type": "set_flag", "param": "learned_iron_sword", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "learn_steel_sword",
+      "speaker": "Blacksmith",
+      "text": "Steel's trickier than iron. You need precise temperature control and repeated folding to work out the impurities. Three steel ingots, two leather strips for a proper grip. Takes skill, but the blade's worth it.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand.",
+          "next": "training_complete",
+          "conditions": [],
+          "actions": [
+            {"type": "take_gold", "param": "", "value": 100},
+            {"type": "discover_recipe", "param": "craft_steel_sword", "value": 0},
+            {"type": "set_flag", "param": "learned_steel_sword", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "learn_leather_armor",
+      "speaker": "Blacksmith",
+      "text": "Leather armor's about layering. Four pieces of good leather, stitched together with leather strips and reinforced at the vital spots. Light enough to wear all day, tough enough to stop a glancing blow.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Makes sense.",
+          "next": "training_complete",
+          "conditions": [],
+          "actions": [
+            {"type": "take_gold", "param": "", "value": 60},
+            {"type": "discover_recipe", "param": "craft_leather_armor", "value": 0},
+            {"type": "set_flag", "param": "learned_leather_armor", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "learn_chain_mail",
+      "speaker": "Blacksmith",
+      "text": "Chain mail's an art. Thousands of iron rings, each one individually linked. Five iron ingots worth of rings, two leather strips for padding underneath. Takes forever, but nothing stops a sword cut like good mail.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Thank you for the knowledge.",
+          "next": "training_complete",
+          "conditions": [],
+          "actions": [
+            {"type": "take_gold", "param": "", "value": 150},
+            {"type": "discover_recipe", "param": "craft_chain_mail", "value": 0},
+            {"type": "set_flag", "param": "learned_chain_mail", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "learn_repair_kit",
+      "speaker": "Blacksmith",
+      "text": "Every adventurer needs a repair kit. Files, whetstones, wire, leather patches. One iron ingot for the tools, one piece of leather for the case and patches. Simple but essential.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll remember that.",
+          "next": "training_complete",
+          "conditions": [],
+          "actions": [
+            {"type": "take_gold", "param": "", "value": 35},
+            {"type": "discover_recipe", "param": "craft_repair_kit", "value": 0},
+            {"type": "set_flag", "param": "learned_repair_kit", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training_complete",
+      "speaker": "Blacksmith",
+      "text": "Good. Now you know the technique. Practice it and you'll be forging like a proper smith in no time.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Can you teach me anything else?",
+          "next": "training_options",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Thanks. Farewell.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "already_learned",
+      "speaker": "Blacksmith",
+      "text": "Looks like you already know everything I can teach. Maybe find a master smith if you want advanced techniques.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll keep that in mind.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "speaker": "Blacksmith",
+      "text": "May your forge burn hot and your hammer strike true.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

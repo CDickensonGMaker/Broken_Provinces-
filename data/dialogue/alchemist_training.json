@@ -1,0 +1,185 @@
+{
+  "id": "alchemist_training",
+  "display_name": "Alchemist Training",
+  "description": "Training dialogue for alchemists offering potion recipes",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Alchemist",
+      "text": "Ah, a seeker of alchemical knowledge? The secrets of potions and elixirs can be yours... for a modest fee, of course.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What recipes can you teach me?",
+          "next": "training_options",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Perhaps another time.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "training_options",
+      "speaker": "Alchemist",
+      "text": "I know several formulas. From simple healing draughts to more... exotic concoctions.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Teach me to brew Health Potions (25 gold)",
+          "next": "learn_health_potion",
+          "conditions": [
+            {"type": "has_gold", "param": "", "value": 25},
+            {"type": "flag_not_set", "param": "learned_health_potion", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Teach me to make Agility Elixir (40 gold)",
+          "next": "learn_agility_elixir",
+          "conditions": [
+            {"type": "has_gold", "param": "", "value": 40},
+            {"type": "flag_not_set", "param": "learned_agility_elixir", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Teach me to brew Strength Tonic (50 gold)",
+          "next": "learn_strength_tonic",
+          "conditions": [
+            {"type": "has_gold", "param": "", "value": 50},
+            {"type": "flag_not_set", "param": "learned_strength_tonic", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Teach me to distill Poison (75 gold)",
+          "next": "learn_poison",
+          "conditions": [
+            {"type": "has_gold", "param": "", "value": 75},
+            {"type": "flag_not_set", "param": "learned_poison_vial", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Maybe later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "learn_health_potion",
+      "speaker": "Alchemist",
+      "text": "The most fundamental recipe. Two red herbs, carefully prepared and steeped in purified water within an empty vial. The mixture must turn deep crimson before it's ready. Simple, but endlessly useful.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand.",
+          "next": "training_complete",
+          "conditions": [],
+          "actions": [
+            {"type": "take_gold", "param": "", "value": 25},
+            {"type": "discover_recipe", "param": "craft_health_potion", "value": 0},
+            {"type": "set_flag", "param": "learned_health_potion", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "learn_agility_elixir",
+      "speaker": "Alchemist",
+      "text": "Three bat wings, ground to fine powder and dissolved in alchemical base. The essence of the bat's supernatural agility becomes yours. Thieves and acrobats pay handsomely for this formula.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Fascinating.",
+          "next": "training_complete",
+          "conditions": [],
+          "actions": [
+            {"type": "take_gold", "param": "", "value": 40},
+            {"type": "discover_recipe", "param": "craft_agility_elixir", "value": 0},
+            {"type": "set_flag", "param": "learned_agility_elixir", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "learn_strength_tonic",
+      "speaker": "Alchemist",
+      "text": "A beast's heart, still fresh, combined with two red herbs and sealed in a vial. The raw power of the beast transfers to the drinker. Warriors treasure this formula.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Excellent.",
+          "next": "training_complete",
+          "conditions": [],
+          "actions": [
+            {"type": "take_gold", "param": "", "value": 50},
+            {"type": "discover_recipe", "param": "craft_strength_tonic", "value": 0},
+            {"type": "set_flag", "param": "learned_strength_tonic", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "learn_poison",
+      "speaker": "Alchemist",
+      "text": "Basilisk venom, carefully extracted and concentrated into a weapon coating. Handle with extreme care - even experienced alchemists have lost fingers to carelessness. One application turns any blade deadly.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll be careful.",
+          "next": "training_complete",
+          "conditions": [],
+          "actions": [
+            {"type": "take_gold", "param": "", "value": 75},
+            {"type": "discover_recipe", "param": "craft_poison_vial", "value": 0},
+            {"type": "set_flag", "param": "learned_poison_vial", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training_complete",
+      "speaker": "Alchemist",
+      "text": "The knowledge is now yours. Use it wisely. Alchemy can heal or harm - the choice is always the brewer's.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Can you teach me more?",
+          "next": "training_options",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Thank you. Farewell.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "speaker": "Alchemist",
+      "text": "May your elixirs be potent and your experiments successful.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

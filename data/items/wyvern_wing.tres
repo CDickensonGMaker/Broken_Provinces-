@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "wyvern_wing"
+display_name = "Wyvern Wing"
+description = "A leathery wing membrane from a wyvern. The material is surprisingly light yet durable, prized by craftsmen for making flying apparatus and decorative items."
+item_type = 2
+is_stackable = true
+max_stack = 5
+base_value = 60
+weight = 1.0

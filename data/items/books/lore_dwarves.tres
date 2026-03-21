@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "lore_dwarves"
+display_name = "Beneath the Mountains"
+description = "A scholarly work detailing the dwarven kingdoms, their ancient traditions, and the internal divisions between the Dwarves of Birth and the Dwarves of Power. Contains insights into dwarven culture that few surface-dwellers possess."
+item_type = 5
+is_stackable = true
+max_stack = 5
+unlocks_lore = Array[String](["dwarves", "dwarves_birth", "dwarves_power"])
+book_tier = 3
+base_value = 100
+weight = 0.5

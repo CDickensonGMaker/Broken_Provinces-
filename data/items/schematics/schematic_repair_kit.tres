@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "schematic_repair_kit"
+display_name = "Schematic: Repair Kit"
+description = "Instructions for assembling a field repair kit. Essential knowledge for any adventurer who wants to keep their equipment in working order."
+item_type = 11
+is_stackable = false
+max_stack = 1
+unlocks_recipe = "craft_repair_kit"
+base_value = 35
+weight = 0.1

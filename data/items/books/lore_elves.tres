@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "lore_elves"
+display_name = "The Forest Kingdoms"
+description = "A rare collection of knowledge about the reclusive elven civilization. Documents both the diplomatic faction that engages with humans and the isolationists who would see all outsiders driven from their lands. Handle with discretion near elven territories."
+item_type = 5
+is_stackable = true
+max_stack = 5
+unlocks_lore = Array[String](["elves", "elves_anti_human", "elves_pro_human"])
+book_tier = 3
+base_value = 125
+weight = 0.5

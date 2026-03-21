@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "petrified_heart"
+display_name = "Petrified Heart"
+description = "A heart turned to stone by basilisk magic. Contains trace amounts of the creature's petrifying essence. Sought after for powerful enchantments."
+item_type = 2
+is_stackable = true
+max_stack = 5
+base_value = 200
+weight = 0.5
