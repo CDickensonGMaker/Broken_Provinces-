@@ -1,0 +1,97 @@
+[gd_scene format=3 uid="uid://door_entrance_001"]
+
+[sub_resource type="StandardMaterial3D" id="stone_frame_mat"]
+albedo_color = Color(0.4, 0.4, 0.35, 1)
+roughness = 0.95
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="wood_door_mat"]
+albedo_color = Color(0.4, 0.25, 0.1, 1)
+roughness = 0.9
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="metal_band_mat"]
+albedo_color = Color(0.25, 0.25, 0.3, 1)
+metallic = 0.7
+roughness = 0.6
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="torch_holder_mat"]
+albedo_color = Color(0.2, 0.18, 0.15, 1)
+metallic = 0.5
+roughness = 0.7
+texture_filter = 0
+
+[node name="DoorEntrance" type="Node3D"]
+
+[node name="StoneFrame" type="Node3D" parent="."]
+
+[node name="LeftPillar" type="CSGBox3D" parent="StoneFrame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7, 1.5, 0)
+size = Vector3(0.4, 3.0, 0.5)
+material = SubResource("stone_frame_mat")
+
+[node name="RightPillar" type="CSGBox3D" parent="StoneFrame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7, 1.5, 0)
+size = Vector3(0.4, 3.0, 0.5)
+material = SubResource("stone_frame_mat")
+
+[node name="TopLintel" type="CSGBox3D" parent="StoneFrame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 0)
+size = Vector3(3.8, 0.4, 0.5)
+material = SubResource("stone_frame_mat")
+
+[node name="LeftCapstone" type="CSGBox3D" parent="StoneFrame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7, 3.55, 0)
+size = Vector3(0.6, 0.3, 0.6)
+material = SubResource("stone_frame_mat")
+
+[node name="RightCapstone" type="CSGBox3D" parent="StoneFrame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7, 3.55, 0)
+size = Vector3(0.6, 0.3, 0.6)
+material = SubResource("stone_frame_mat")
+
+[node name="Door" type="Node3D" parent="."]
+
+[node name="DoorPanel" type="CSGBox3D" parent="Door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0.1)
+size = Vector3(3.0, 3.0, 0.15)
+material = SubResource("wood_door_mat")
+
+[node name="TopBand" type="CSGBox3D" parent="Door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, 0.18)
+size = Vector3(3.0, 0.12, 0.08)
+material = SubResource("metal_band_mat")
+
+[node name="MiddleBand" type="CSGBox3D" parent="Door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0.18)
+size = Vector3(3.0, 0.12, 0.08)
+material = SubResource("metal_band_mat")
+
+[node name="BottomBand" type="CSGBox3D" parent="Door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0.18)
+size = Vector3(3.0, 0.12, 0.08)
+material = SubResource("metal_band_mat")
+
+[node name="HandlePlate" type="CSGBox3D" parent="Door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 1.5, 0.2)
+size = Vector3(0.2, 0.3, 0.06)
+material = SubResource("metal_band_mat")
+
+[node name="TorchMarkers" type="Node3D" parent="."]
+
+[node name="LeftTorchHolder" type="CSGBox3D" parent="TorchMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 2.2, 0.2)
+size = Vector3(0.15, 0.4, 0.15)
+material = SubResource("torch_holder_mat")
+
+[node name="RightTorchHolder" type="CSGBox3D" parent="TorchMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 2.2, 0.2)
+size = Vector3(0.15, 0.4, 0.15)
+material = SubResource("torch_holder_mat")
+
+[node name="InteractionPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.5)

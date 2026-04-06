@@ -1,13 +1,14 @@
-## larton.gd - Larton Port Town (Starving Port Town)
-## A once-thriving port town now starving due to the ghost pirate blockade
-## No supplies can reach them by sea, and the land route through Kazer-Dun is blocked by goblins
-## Few guards remain, most having abandoned their posts or fled
+## larton.gd - Larton Port Town (Post-Apocalyptic Fishing Town)
+## A once-thriving port town now in ruins. Ghost pirates blockade the harbor,
+## bandits have occupied the warehouses, and survivors hide in a fortified building.
+## Dark, desperate, PS1 horror vibes - blood, bodies, few lights.
 ##
 ## Key NPCs:
-## - Harbor Master (for return trips)
-## - Mayor Aldric (quest giver - ghost pirate investigation)
-## - Old Fisherman Torben (knows about the Pirate Stronghold location)
-## - Few desperate civilians
+## - Mayor Aldric (quest giver - ghost_pirate_investigation, larton_famine, retake_harbor)
+## - Captain Harken (guard leader at survivor hideout)
+## - Old Salt Willem (fisherman - knows ghost ship location)
+## - 5 Survivors (generic civilians in hideout)
+## - 8 Bandits (hostile, in occupied warehouse and streets)
 extends Node3D
 
 const ZONE_ID := "larton"
@@ -19,7 +20,10 @@ const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/cities/port_city_1.wav" 
 
 func _ready() -> void:
 	# Only register with PlayerGPS if we're the main scene (have Player node)
-	var is_main_scene: bool = get_node_or_null("Player") != null
+	var is_main_scene: bool = false
+	var _player_check: Node = get_node_or_null("Player")
+	if _player_check and is_instance_valid(_player_check) and not _player_check.is_queued_for_deletion():
+		is_main_scene = true
 
 	if is_main_scene:
 		if PlayerGPS:
@@ -99,7 +103,7 @@ func _setup_cell_streaming() -> void:
 	CellStreamer.start_streaming(my_coords)
 
 
-## Spawn NPCs
+## Spawn NPCs - Post-apocalyptic survivors and hostile bandits
 func _spawn_npcs() -> void:
 	var npcs_container: Node3D = get_node_or_null("NPCs")
 	if not npcs_container:
@@ -107,104 +111,160 @@ func _spawn_npcs() -> void:
 		npcs_container.name = "NPCs"
 		add_child(npcs_container)
 
-	# === HARBOR MASTER (Return Trip NPC) ===
-	var harbor_master := QuestGiver.spawn_quest_giver(
-		npcs_container,
-		Vector3(-35, 0, 40),  # Near the harbor
-		"Harbor Master Giles",
-		"harbor_master_larton",
-		null,
-		8, 2,
-		[],  # No quests - uses dialogue for boat travel
-		false
-	)
-	harbor_master.region_id = ZONE_ID
-	harbor_master.faction_id = "human_empire"
-	# Load boat travel dialogue - create a basic one inline
-	var harbor_profile := NPCKnowledgeProfile.new()
-	harbor_profile.archetype = NPCKnowledgeProfile.Archetype.MERCHANT
-	harbor_profile.personality_traits = ["weary", "desperate", "hopeful"]
-	harbor_profile.knowledge_tags = ["larton", "harbor", "ships", "ghost_pirates", "dalhurst", "blockade"]
-	harbor_profile.base_disposition = 50
-	harbor_profile.speech_style = "informal"
-	harbor_master.npc_profile = harbor_profile
-	# Load return trip dialogue from JSON
-	var harbor_dialogue: DialogueData = DialogueLoader.load_from_json("res://data/dialogue/harbor_master_larton.json")
-	if harbor_dialogue:
-		harbor_master.dialogue_data = harbor_dialogue
-		harbor_master.use_legacy_dialogue = false
-	else:
-		push_warning("[Larton] Failed to load Harbor Master dialogue")
-
-	# === MAYOR ALDRIC (Main Quest Giver) ===
-	var mayor_quests: Array[String] = ["ghost_pirate_investigation"]
+	# === MAYOR ALDRIC (Main Quest Giver - in survivor hideout) ===
+	var mayor_quests: Array[String] = ["ghost_pirate_investigation", "retake_harbor"]
 	var mayor := QuestGiver.spawn_quest_giver(
 		npcs_container,
-		Vector3(10, 0, -10),  # Near town center
+		Vector3(20, 0.5, -8),  # Inside survivor hideout
 		"Mayor Aldric",
 		"mayor_aldric_larton",
-		null,
-		8, 2,
+		preload("res://assets/sprites/npcs/civilians/man_noble1.png"),
+		1, 1,
 		mayor_quests
 	)
 	mayor.region_id = ZONE_ID
 	mayor.faction_id = "human_empire"
-	mayor.no_quest_dialogue = "Thank the gods someone made it through! Our town is dying... the ghost pirates have blockaded us completely."
+	mayor.no_quest_dialogue = "Thank the gods someone made it through! Our town is dying... bandits have taken the warehouses, and the ghost pirates still blockade us."
 	var mayor_profile := NPCKnowledgeProfile.new()
 	mayor_profile.archetype = NPCKnowledgeProfile.Archetype.SCHOLAR
-	mayor_profile.personality_traits = ["worried", "desperate", "determined"]
-	mayor_profile.knowledge_tags = ["larton", "politics", "ghost_pirates", "blockade", "starvation", "kazer_dun", "goblins"]
-	mayor_profile.base_disposition = 70  # Very friendly to anyone who arrives
+	mayor_profile.personality_traits = ["worried", "desperate", "determined", "haunted"]
+	mayor_profile.knowledge_tags = ["larton", "politics", "ghost_pirates", "blockade", "starvation", "bandits", "survivors"]
+	mayor_profile.base_disposition = 70
 	mayor_profile.speech_style = "formal"
 	mayor.npc_profile = mayor_profile
 
-	# === OLD FISHERMAN TORBEN (Information about Pirate Stronghold) ===
-	var fisherman := QuestGiver.spawn_quest_giver(
+	# === CAPTAIN HARKEN (Guard Leader - at survivor hideout barricade) ===
+	var harken := QuestGiver.spawn_quest_giver(
 		npcs_container,
-		Vector3(-25, 0, 35),  # By the docks
-		"Old Torben",
-		"fisherman_torben_larton",
-		null,
-		8, 2,
-		[],  # No quests, just information
+		Vector3(14, 0.5, -6),  # At the barricade
+		"Captain Harken",
+		"captain_harken",
+		preload("res://assets/sprites/npcs/civilians/guard_civilian.png"),
+		1, 1,
+		[],  # No quests - turn-in target for retake_harbor
 		true  # is_talk_target
 	)
-	fisherman.region_id = ZONE_ID
-	fisherman.faction_id = "human_empire"
-	fisherman.no_quest_dialogue = "I've seen the ghost ships... they come from an island fortress in the bay. Few who've gone there have returned."
-	var fisherman_profile := NPCKnowledgeProfile.new()
-	fisherman_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
-	fisherman_profile.personality_traits = ["old", "weary", "knowledgeable", "superstitious"]
-	fisherman_profile.knowledge_tags = ["larton", "fishing", "sea", "ghost_pirates", "pirate_stronghold", "bay"]
-	fisherman_profile.base_disposition = 55
-	fisherman_profile.speech_style = "informal"
-	fisherman.npc_profile = fisherman_profile
+	harken.region_id = ZONE_ID
+	harken.faction_id = "human_empire"
+	harken.no_quest_dialogue = "Hold your ground. We've lost too many already. If you're here to help, speak to the Mayor."
+	var harken_profile := NPCKnowledgeProfile.new()
+	harken_profile.archetype = NPCKnowledgeProfile.Archetype.GUARD
+	harken_profile.personality_traits = ["grim", "determined", "protective", "exhausted"]
+	harken_profile.knowledge_tags = ["larton", "combat", "bandits", "defenses", "ghost_pirates", "survivors"]
+	harken_profile.base_disposition = 45
+	harken_profile.speech_style = "military"
+	harken.npc_profile = harken_profile
 
-	# === SINGLE GUARD (Demoralized) ===
-	var guard := GuardNPC.spawn_guard(
+	# === OLD SALT WILLEM (Fisherman - knows ghost ship location) ===
+	var willem := QuestGiver.spawn_quest_giver(
 		npcs_container,
-		Vector3(0, 0, 30),  # Main entrance
-		[],  # No patrol
+		Vector3(-42, 0.3, 40),  # Near the rotting docks
+		"Old Willem",
+		"old_salt_willem",
+		preload("res://assets/sprites/npcs/civilians/guy_civilian1.png"),
+		1, 1,
+		[],  # No quests - just information
+		true  # is_talk_target
+	)
+	willem.region_id = ZONE_ID
+	willem.faction_id = "human_empire"
+	willem.no_quest_dialogue = "I've seen the ghost ships... spectral lights in the fog, screams of drowned sailors. They come from an island fortress in the bay. Few who've gone there have returned."
+	var willem_profile := NPCKnowledgeProfile.new()
+	willem_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	willem_profile.personality_traits = ["old", "weary", "knowledgeable", "superstitious", "half_mad"]
+	willem_profile.knowledge_tags = ["larton", "fishing", "sea", "ghost_pirates", "ghost_ship", "pirate_stronghold", "bay"]
+	willem_profile.base_disposition = 55
+	willem_profile.speech_style = "informal"
+	willem.npc_profile = willem_profile
+
+	# === SURVIVOR GUARDS AT HIDEOUT (2 guards) ===
+	var guard_1 := GuardNPC.spawn_guard(
+		npcs_container,
+		Vector3(12, 0.5, -8),  # Left barricade
+		[],
 		ZONE_ID
 	)
-	guard.npc_id = "guard_larton_0"
+	guard_1.npc_id = "guard_larton_survivor_1"
+	guard_1.npc_name = "Battered Guard"
 
-	# === FEW STARVING CIVILIANS ===
-	var civilian_positions: Array[Vector3] = [
-		Vector3(5, 0, 5),
-		Vector3(-10, 0, 0),
-		Vector3(15, 0, -5),
+	var guard_2 := GuardNPC.spawn_guard(
+		npcs_container,
+		Vector3(28, 0.5, -8),  # Right barricade
+		[],
+		ZONE_ID
+	)
+	guard_2.npc_id = "guard_larton_survivor_2"
+	guard_2.npc_name = "Exhausted Guard"
+
+	# === 5 SURVIVORS IN HIDEOUT ===
+	var survivor_configs: Array[Dictionary] = [
+		{"pos": Vector3(18, 0.5, -12), "name": "Starving Survivor", "gender": "male"},
+		{"pos": Vector3(22, 0.5, -14), "name": "Frightened Woman", "gender": "female"},
+		{"pos": Vector3(16, 0.5, -10), "name": "Desperate Fisherman", "gender": "male"},
+		{"pos": Vector3(24, 0.5, -12), "name": "Weeping Widow", "gender": "female"},
+		{"pos": Vector3(20, 0.5, -16), "name": "Wounded Dockworker", "gender": "male"},
 	]
-	for i: int in range(civilian_positions.size()):
-		var civilian: CivilianNPC = CivilianNPC.spawn_man(npcs_container, civilian_positions[i], ZONE_ID)
-		civilian.npc_id = "beggar_larton_%d" % i
-		civilian.npc_name = "Starving Villager"
-		var civ_profile := NPCKnowledgeProfile.new()
-		civ_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
-		civ_profile.personality_traits = ["hungry", "desperate", "scared"]
-		civ_profile.knowledge_tags = ["larton", "starvation", "ghost_pirates"]
-		civ_profile.base_disposition = 40  # Suspicious of strangers
-		civilian.knowledge_profile = civ_profile
+	for i: int in range(survivor_configs.size()):
+		var cfg: Dictionary = survivor_configs[i]
+		var survivor: CivilianNPC
+		if cfg["gender"] == "male":
+			survivor = CivilianNPC.spawn_man(npcs_container, cfg["pos"], ZONE_ID)
+		else:
+			survivor = CivilianNPC.spawn_woman(npcs_container, cfg["pos"], ZONE_ID)
+		survivor.npc_id = "survivor_larton_%d" % i
+		survivor.npc_name = cfg["name"]
+		var surv_profile := NPCKnowledgeProfile.new()
+		surv_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+		surv_profile.personality_traits = ["hungry", "desperate", "scared", "traumatized"]
+		surv_profile.knowledge_tags = ["larton", "starvation", "ghost_pirates", "bandits", "horror"]
+		surv_profile.base_disposition = 40
+		survivor.knowledge_profile = surv_profile
+
+	# === 8 HOSTILE BANDITS ===
+	_spawn_bandits(npcs_container)
+
+
+## Spawn hostile bandits occupying the town
+func _spawn_bandits(parent: Node3D) -> void:
+	var bandit_data_path := "res://data/enemies/human_bandit.tres"
+	var bandit_captain_path := "res://data/enemies/bandit_captain.tres"
+	var bandit_sprite: Texture2D = preload("res://assets/sprites/enemies/humanoid/human_bandit_alt.png")
+
+	# Bandit positions - warehouse and streets
+	var bandit_positions: Array[Vector3] = [
+		Vector3(-20, 0.5, 42),   # Patrol near warehouse
+		Vector3(-25, 0.5, 45),   # Patrol near warehouse
+		Vector3(-22, 0.5, 52),   # Guard at warehouse entrance
+		Vector3(-18, 0.5, 52),   # Guard at warehouse entrance
+		Vector3(-22, 0.5, 48),   # Inside warehouse
+		Vector3(-20, 0.5, 48),   # Inside warehouse
+		Vector3(-5, 0.5, 25),    # Street patrol
+	]
+
+	for i: int in range(bandit_positions.size()):
+		var enemy: EnemyBase = EnemyBase.spawn_billboard_enemy(
+			parent,
+			bandit_positions[i],
+			bandit_data_path,
+			bandit_sprite,
+			1, 1
+		)
+		if enemy:
+			enemy.add_to_group("enemies")
+			enemy.add_to_group("bandits_larton")
+
+	# Spawn bandit lieutenant (mini-boss) in warehouse
+	var lieutenant: EnemyBase = EnemyBase.spawn_billboard_enemy(
+		parent,
+		Vector3(-22, 0.5, 50),
+		bandit_captain_path,
+		bandit_sprite,
+		1, 1
+	)
+	if lieutenant:
+		lieutenant.add_to_group("enemies")
+		lieutenant.add_to_group("bandits_larton")
+		lieutenant.add_to_group("boss")
 
 
 ## Spawn environmental elements

@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="NPCData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/npc_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+npc_id = "elric_thornwood"
+display_name = "Elric Thornwood"
+race = "Human"
+archetype = "quest_giver"
+location = "Thornfield"
+zone_id = "thornfield"
+faction_id = "human_empire"
+secondary_factions = []
+base_disposition = 55
+alignment = 25
+description = "A weathered man in his fifties with a thick grey beard and sharp eyes that have seen too many winters. As village leader of Thornfield, he carries the weight of frontier life on his broad shoulders. His hands are calloused from years of axe work before age and responsibility moved him to leadership."
+portrait_path = ""
+sprite_path = "res://assets/sprites/npcs/named/thornfield_leader.png"
+sprite_h_frames = 4
+sprite_v_frames = 4
+dialogue_topics = ["local_news", "rumors", "wolves", "bounties", "thornfield_history", "frontier_life"]
+has_unique_dialogue = true
+dialogue_data_path = "res://data/dialogues/elric_thornwood.tres"
+knowledge_profile_path = ""
+shop_type = "none"
+flags = {"is_quest_giver": true, "is_village_leader": true, "gives_bounties": true}
+can_wander = false
+wander_radius = 0.0

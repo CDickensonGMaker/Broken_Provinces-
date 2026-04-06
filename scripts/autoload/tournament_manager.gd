@@ -83,6 +83,10 @@ func _ready() -> void:
 	if SceneManager:
 		SceneManager.scene_load_started.connect(_on_scene_load_started)
 
+	# Connect to player death signal so tournament fails when player dies
+	if GameManager:
+		GameManager.player_died.connect(on_player_defeated)
+
 
 ## Called when a scene change begins - clear all node references to prevent stale casts
 func _on_scene_load_started(_scene_path: String) -> void:

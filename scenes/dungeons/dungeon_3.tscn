@@ -1,0 +1,726 @@
+[gd_scene load_steps=31 format=3 uid="uid://dq5s6ke1psf4l"]
+
+[ext_resource type="Script" uid="uid://fdd4ags3s30d" path="res://scripts/dungeons/hand_crafted_dungeon.gd" id="1_n5yd2"]
+[ext_resource type="PackedScene" uid="uid://bxstart001" path="res://scenes/dungeons/rooms/room_start.tscn" id="2_c53ns"]
+[ext_resource type="Texture2D" uid="uid://b6ii70bh4emrd" path="res://assets/textures/environment/dungeon/stonewall.png" id="3_ighn8"]
+[ext_resource type="PackedScene" uid="uid://hallwayew001" path="res://scenes/dungeons/rooms/hallway_ew.tscn" id="4_mkb8o"]
+[ext_resource type="PackedScene" uid="uid://turnnw00001" path="res://scenes/dungeons/rooms/turn_nw.tscn" id="5_riiii"]
+[ext_resource type="PackedScene" uid="uid://hallwayns001" path="res://scenes/dungeons/rooms/hallway_ns.tscn" id="6_c4hik"]
+[ext_resource type="PackedScene" uid="uid://turnsw00001" path="res://scenes/dungeons/rooms/turn_sw.tscn" id="7_4y17y"]
+[ext_resource type="PackedScene" uid="uid://turnne00001" path="res://scenes/dungeons/rooms/turn_ne.tscn" id="8_4i1rh"]
+[ext_resource type="PackedScene" uid="uid://turnse00001" path="res://scenes/dungeons/rooms/turn_se.tscn" id="9_iayw2"]
+[ext_resource type="PackedScene" uid="uid://tnorth00001" path="res://scenes/dungeons/rooms/t_north.tscn" id="10_xrmfo"]
+[ext_resource type="PackedScene" uid="uid://teast000001" path="res://scenes/dungeons/rooms/t_east.tscn" id="11_ccqt3"]
+[ext_resource type="PackedScene" uid="uid://tsouth00001" path="res://scenes/dungeons/rooms/t_south.tscn" id="12_v247l"]
+[ext_resource type="PackedScene" uid="uid://cross0000001" path="res://scenes/dungeons/rooms/cross.tscn" id="13_0g23b"]
+[ext_resource type="PackedScene" uid="uid://roomboss0001" path="res://scenes/dungeons/rooms/room_boss.tscn" id="14_jfadu"]
+[ext_resource type="PackedScene" uid="uid://roommed00001" path="res://scenes/dungeons/rooms/room_medium.tscn" id="15_qhpgf"]
+[ext_resource type="PackedScene" uid="uid://roomlarge001" path="res://scenes/dungeons/rooms/room_large.tscn" id="16_aswg1"]
+[ext_resource type="PackedScene" uid="uid://twest000001" path="res://scenes/dungeons/rooms/t_west.tscn" id="17_faa2e"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0er7y"]
+albedo_texture = ExtResource("3_ighn8")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wpq2b"]
+albedo_texture = ExtResource("3_ighn8")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_67cej"]
+albedo_texture = ExtResource("3_ighn8")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hoh0p"]
+albedo_texture = ExtResource("3_ighn8")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bixw4"]
+albedo_texture = ExtResource("3_ighn8")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g6oij"]
+albedo_texture = ExtResource("3_ighn8")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1v6ej"]
+albedo_texture = ExtResource("3_ighn8")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yyvxh"]
+albedo_texture = ExtResource("3_ighn8")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kr0sv"]
+albedo_texture = ExtResource("3_ighn8")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b6eog"]
+albedo_texture = ExtResource("3_ighn8")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5lhcl"]
+albedo_texture = ExtResource("3_ighn8")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4ufmp"]
+albedo_texture = ExtResource("3_ighn8")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gjgqb"]
+albedo_texture = ExtResource("3_ighn8")
+texture_filter = 0
+
+[node name="Dungeon" type="Node3D"]
+script = ExtResource("1_n5yd2")
+
+[node name="Rooms" type="Node3D" parent="."]
+
+[node name="start_-5_7" type="Node3D" parent="Rooms" instance=ExtResource("2_c53ns")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0, 112)
+metadata/grid_pos = Vector2i(-5, 7)
+metadata/room_type = 1
+
+[node name="DoorBlockerNorth" type="CSGBox3D" parent="Rooms/start_-5_7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0.25)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_0er7y")
+
+[node name="DoorBlockerSouth" type="CSGBox3D" parent="Rooms/start_-5_7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 15.75)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_0er7y")
+
+[node name="DoorBlockerWest" type="CSGBox3D" parent="Rooms/start_-5_7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_0er7y")
+
+[node name="hallway_ew_-4_7" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 112)
+metadata/grid_pos = Vector2i(-4, 7)
+metadata/room_type = 25
+
+[node name="turn_nw_1_7" type="Node3D" parent="Rooms" instance=ExtResource("5_riiii")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, 112)
+metadata/grid_pos = Vector2i(1, 7)
+metadata/room_type = 5
+
+[node name="hallway_ns_1_6" type="Node3D" parent="Rooms" instance=ExtResource("6_c4hik")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, 96)
+metadata/grid_pos = Vector2i(1, 6)
+metadata/room_type = 24
+
+[node name="turn_sw_1_5" type="Node3D" parent="Rooms" instance=ExtResource("7_4y17y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, 80)
+metadata/grid_pos = Vector2i(1, 5)
+metadata/room_type = 7
+
+[node name="turn_ne_-5_5" type="Node3D" parent="Rooms" instance=ExtResource("8_4i1rh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0, 80)
+metadata/grid_pos = Vector2i(-5, 5)
+metadata/room_type = 4
+
+[node name="hallway_ns_-5_4" type="Node3D" parent="Rooms" instance=ExtResource("6_c4hik")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0, 64)
+metadata/grid_pos = Vector2i(-5, 4)
+metadata/room_type = 24
+
+[node name="turn_se_-5_3" type="Node3D" parent="Rooms" instance=ExtResource("9_iayw2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0, 48)
+metadata/grid_pos = Vector2i(-5, 3)
+metadata/room_type = 6
+
+[node name="t_north_5_3" type="Node3D" parent="Rooms" instance=ExtResource("10_xrmfo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, 0, 48)
+metadata/grid_pos = Vector2i(5, 3)
+metadata/room_type = 8
+
+[node name="t_east_5_2" type="Node3D" parent="Rooms" instance=ExtResource("11_ccqt3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, 0, 32)
+metadata/grid_pos = Vector2i(5, 2)
+metadata/room_type = 10
+
+[node name="t_south_5_1" type="Node3D" parent="Rooms" instance=ExtResource("12_v247l")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, 0, 16)
+metadata/grid_pos = Vector2i(5, 1)
+metadata/room_type = 9
+
+[node name="turn_ne_-7_1" type="Node3D" parent="Rooms" instance=ExtResource("8_4i1rh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -112, 0, 16)
+metadata/grid_pos = Vector2i(-7, 1)
+metadata/room_type = 4
+
+[node name="t_east_-7_0" type="Node3D" parent="Rooms" instance=ExtResource("11_ccqt3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -112, 0, 0)
+metadata/grid_pos = Vector2i(-7, 0)
+metadata/room_type = 10
+
+[node name="t_east_-7_-1" type="Node3D" parent="Rooms" instance=ExtResource("11_ccqt3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -112, 0, -16)
+metadata/grid_pos = Vector2i(-7, -1)
+metadata/room_type = 10
+
+[node name="turn_se_-7_-2" type="Node3D" parent="Rooms" instance=ExtResource("9_iayw2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -112, 0, -32)
+metadata/grid_pos = Vector2i(-7, -2)
+metadata/room_type = 6
+
+[node name="t_south_-4_-2" type="Node3D" parent="Rooms" instance=ExtResource("12_v247l")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, -32)
+metadata/grid_pos = Vector2i(-4, -2)
+metadata/room_type = 9
+
+[node name="hallway_ew_4_-2" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64, 0, -32)
+metadata/grid_pos = Vector2i(4, -2)
+metadata/room_type = 25
+
+[node name="hallway_ns_6_-3" type="Node3D" parent="Rooms" instance=ExtResource("6_c4hik")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 96, 0, -48)
+metadata/grid_pos = Vector2i(6, -3)
+metadata/room_type = 24
+
+[node name="cross_6_-4" type="Node3D" parent="Rooms" instance=ExtResource("13_0g23b")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 96, 0, -64)
+metadata/grid_pos = Vector2i(6, -4)
+metadata/room_type = 12
+
+[node name="turn_sw_6_-5" type="Node3D" parent="Rooms" instance=ExtResource("7_4y17y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 96, 0, -80)
+metadata/grid_pos = Vector2i(6, -5)
+metadata/room_type = 7
+
+[node name="turn_ne_1_-5" type="Node3D" parent="Rooms" instance=ExtResource("8_4i1rh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, -80)
+metadata/grid_pos = Vector2i(1, -5)
+metadata/room_type = 4
+
+[node name="turn_sw_1_-6" type="Node3D" parent="Rooms" instance=ExtResource("7_4y17y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, -96)
+metadata/grid_pos = Vector2i(1, -6)
+metadata/room_type = 7
+
+[node name="hallway_ns_-6_-7" type="Node3D" parent="Rooms" instance=ExtResource("6_c4hik")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -96, 0, -112)
+metadata/grid_pos = Vector2i(-6, -7)
+metadata/room_type = 24
+
+[node name="cross_-6_-8" type="Node3D" parent="Rooms" instance=ExtResource("13_0g23b")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -96, 0, -128)
+metadata/grid_pos = Vector2i(-6, -8)
+metadata/room_type = 12
+
+[node name="turn_ne_-6_-6" type="Node3D" parent="Rooms" instance=ExtResource("8_4i1rh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -96, 0, -96)
+metadata/grid_pos = Vector2i(-6, -6)
+metadata/room_type = 4
+
+[node name="turn_nw_6_-2" type="Node3D" parent="Rooms" instance=ExtResource("5_riiii")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 96, 0, -32)
+metadata/grid_pos = Vector2i(6, -2)
+metadata/room_type = 5
+
+[node name="hallway_ew_-3_7" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48, 0, 112)
+metadata/grid_pos = Vector2i(-3, 7)
+metadata/room_type = 25
+
+[node name="hallway_ew_-2_7" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, 112)
+metadata/grid_pos = Vector2i(-2, 7)
+metadata/room_type = 25
+
+[node name="hallway_ew_-1_7" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, 112)
+metadata/grid_pos = Vector2i(-1, 7)
+metadata/room_type = 25
+
+[node name="hallway_ew_0_7" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 112)
+metadata/grid_pos = Vector2i(0, 7)
+metadata/room_type = 25
+
+[node name="hallway_ew_-4_5" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 80)
+metadata/grid_pos = Vector2i(-4, 5)
+metadata/room_type = 25
+
+[node name="hallway_ew_-3_5" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48, 0, 80)
+metadata/grid_pos = Vector2i(-3, 5)
+metadata/room_type = 25
+
+[node name="hallway_ew_-2_5" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, 80)
+metadata/grid_pos = Vector2i(-2, 5)
+metadata/room_type = 25
+
+[node name="hallway_ew_-1_5" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, 80)
+metadata/grid_pos = Vector2i(-1, 5)
+metadata/room_type = 25
+
+[node name="hallway_ew_0_5" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 80)
+metadata/grid_pos = Vector2i(0, 5)
+metadata/room_type = 25
+
+[node name="t_north_-6_1" type="Node3D" parent="Rooms" instance=ExtResource("10_xrmfo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -96, 0, 16)
+metadata/grid_pos = Vector2i(-6, 1)
+metadata/room_type = 8
+
+[node name="t_north_-5_1" type="Node3D" parent="Rooms" instance=ExtResource("10_xrmfo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0, 16)
+metadata/grid_pos = Vector2i(-5, 1)
+metadata/room_type = 8
+
+[node name="t_north_-4_1" type="Node3D" parent="Rooms" instance=ExtResource("10_xrmfo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 16)
+metadata/grid_pos = Vector2i(-4, 1)
+metadata/room_type = 8
+
+[node name="hallway_ew_-3_1" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48, 0, 16)
+metadata/grid_pos = Vector2i(-3, 1)
+metadata/room_type = 25
+
+[node name="hallway_ew_-2_1" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, 16)
+metadata/grid_pos = Vector2i(-2, 1)
+metadata/room_type = 25
+
+[node name="hallway_ew_-1_1" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, 16)
+metadata/grid_pos = Vector2i(-1, 1)
+metadata/room_type = 25
+
+[node name="hallway_ew_0_1" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 16)
+metadata/grid_pos = Vector2i(0, 1)
+metadata/room_type = 25
+
+[node name="hallway_ew_1_1" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, 16)
+metadata/grid_pos = Vector2i(1, 1)
+metadata/room_type = 25
+
+[node name="hallway_ew_2_1" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 0, 16)
+metadata/grid_pos = Vector2i(2, 1)
+metadata/room_type = 25
+
+[node name="hallway_ew_3_1" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 0, 16)
+metadata/grid_pos = Vector2i(3, 1)
+metadata/room_type = 25
+
+[node name="hallway_ew_4_1" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64, 0, 16)
+metadata/grid_pos = Vector2i(4, 1)
+metadata/room_type = 25
+
+[node name="hallway_ew_-4_3" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 48)
+metadata/grid_pos = Vector2i(-4, 3)
+metadata/room_type = 25
+
+[node name="hallway_ew_-3_3" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48, 0, 48)
+metadata/grid_pos = Vector2i(-3, 3)
+metadata/room_type = 25
+
+[node name="hallway_ew_-2_3" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, 48)
+metadata/grid_pos = Vector2i(-2, 3)
+metadata/room_type = 25
+
+[node name="hallway_ew_-1_3" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, 48)
+metadata/grid_pos = Vector2i(-1, 3)
+metadata/room_type = 25
+
+[node name="hallway_ew_0_3" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 48)
+metadata/grid_pos = Vector2i(0, 3)
+metadata/room_type = 25
+
+[node name="hallway_ew_1_3" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, 48)
+metadata/grid_pos = Vector2i(1, 3)
+metadata/room_type = 25
+
+[node name="hallway_ew_2_3" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 0, 48)
+metadata/grid_pos = Vector2i(2, 3)
+metadata/room_type = 25
+
+[node name="hallway_ew_3_3" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 0, 48)
+metadata/grid_pos = Vector2i(3, 3)
+metadata/room_type = 25
+
+[node name="hallway_ew_4_3" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64, 0, 48)
+metadata/grid_pos = Vector2i(4, 3)
+metadata/room_type = 25
+
+[node name="t_south_-6_-2" type="Node3D" parent="Rooms" instance=ExtResource("12_v247l")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -96, 0, -32)
+metadata/grid_pos = Vector2i(-6, -2)
+metadata/room_type = 9
+
+[node name="t_south_-5_-2" type="Node3D" parent="Rooms" instance=ExtResource("12_v247l")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0, -32)
+metadata/grid_pos = Vector2i(-5, -2)
+metadata/room_type = 9
+
+[node name="hallway_ew_-3_-2" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48, 0, -32)
+metadata/grid_pos = Vector2i(-3, -2)
+metadata/room_type = 25
+
+[node name="hallway_ew_-2_-2" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, -32)
+metadata/grid_pos = Vector2i(-2, -2)
+metadata/room_type = 25
+
+[node name="hallway_ew_-1_-2" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, -32)
+metadata/grid_pos = Vector2i(-1, -2)
+metadata/room_type = 25
+
+[node name="hallway_ew_0_-2" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -32)
+metadata/grid_pos = Vector2i(0, -2)
+metadata/room_type = 25
+
+[node name="hallway_ew_1_-2" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, -32)
+metadata/grid_pos = Vector2i(1, -2)
+metadata/room_type = 25
+
+[node name="hallway_ew_2_-2" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 0, -32)
+metadata/grid_pos = Vector2i(2, -2)
+metadata/room_type = 25
+
+[node name="hallway_ew_3_-2" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 0, -32)
+metadata/grid_pos = Vector2i(3, -2)
+metadata/room_type = 25
+
+[node name="hallway_ew_5_-2" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, 0, -32)
+metadata/grid_pos = Vector2i(5, -2)
+metadata/room_type = 25
+
+[node name="t_south_5_-5" type="Node3D" parent="Rooms" instance=ExtResource("12_v247l")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, 0, -80)
+metadata/grid_pos = Vector2i(5, -5)
+metadata/room_type = 9
+
+[node name="hallway_ew_4_-5" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64, 0, -80)
+metadata/grid_pos = Vector2i(4, -5)
+metadata/room_type = 25
+
+[node name="hallway_ew_3_-5" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 0, -80)
+metadata/grid_pos = Vector2i(3, -5)
+metadata/room_type = 25
+
+[node name="hallway_ew_2_-5" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 0, -80)
+metadata/grid_pos = Vector2i(2, -5)
+metadata/room_type = 25
+
+[node name="hallway_ew_0_-6" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -96)
+metadata/grid_pos = Vector2i(0, -6)
+metadata/room_type = 25
+
+[node name="hallway_ew_-1_-6" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, -96)
+metadata/grid_pos = Vector2i(-1, -6)
+metadata/room_type = 25
+
+[node name="cross_-2_-6" type="Node3D" parent="Rooms" instance=ExtResource("13_0g23b")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, -96)
+metadata/grid_pos = Vector2i(-2, -6)
+metadata/room_type = 12
+
+[node name="hallway_ew_-3_-6" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48, 0, -96)
+metadata/grid_pos = Vector2i(-3, -6)
+metadata/room_type = 25
+
+[node name="hallway_ew_-4_-6" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, -96)
+metadata/grid_pos = Vector2i(-4, -6)
+metadata/room_type = 25
+
+[node name="hallway_ew_-5_-6" type="Node3D" parent="Rooms" instance=ExtResource("4_mkb8o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0, -96)
+metadata/grid_pos = Vector2i(-5, -6)
+metadata/room_type = 25
+
+[node name="room_boss_-6_-9" type="Node3D" parent="Rooms" instance=ExtResource("14_jfadu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -96, 0, -144)
+metadata/grid_pos = Vector2i(-6, -9)
+metadata/room_type = 16
+
+[node name="DoorBlockerNorth" type="CSGBox3D" parent="Rooms/room_boss_-6_-9"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0.25)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_wpq2b")
+
+[node name="DoorBlockerEast" type="CSGBox3D" parent="Rooms/room_boss_-6_-9"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_wpq2b")
+
+[node name="DoorBlockerWest" type="CSGBox3D" parent="Rooms/room_boss_-6_-9"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_wpq2b")
+
+[node name="room_boss_-7_-8" type="Node3D" parent="Rooms" instance=ExtResource("14_jfadu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -112, 0, -128)
+metadata/grid_pos = Vector2i(-7, -8)
+metadata/room_type = 16
+
+[node name="DoorBlockerNorth" type="CSGBox3D" parent="Rooms/room_boss_-7_-8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0.25)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_67cej")
+
+[node name="DoorBlockerSouth" type="CSGBox3D" parent="Rooms/room_boss_-7_-8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 15.75)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_67cej")
+
+[node name="DoorBlockerWest" type="CSGBox3D" parent="Rooms/room_boss_-7_-8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_67cej")
+
+[node name="room_boss_-5_-8" type="Node3D" parent="Rooms" instance=ExtResource("14_jfadu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0, -128)
+metadata/grid_pos = Vector2i(-5, -8)
+metadata/room_type = 16
+
+[node name="DoorBlockerNorth" type="CSGBox3D" parent="Rooms/room_boss_-5_-8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0.25)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_hoh0p")
+
+[node name="DoorBlockerSouth" type="CSGBox3D" parent="Rooms/room_boss_-5_-8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 15.75)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_hoh0p")
+
+[node name="DoorBlockerEast" type="CSGBox3D" parent="Rooms/room_boss_-5_-8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_hoh0p")
+
+[node name="room_medium_-2_-5" type="Node3D" parent="Rooms" instance=ExtResource("15_qhpgf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, -80)
+metadata/grid_pos = Vector2i(-2, -5)
+metadata/room_type = 14
+
+[node name="DoorBlockerSouth" type="CSGBox3D" parent="Rooms/room_medium_-2_-5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 15.75)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_bixw4")
+
+[node name="DoorBlockerEast" type="CSGBox3D" parent="Rooms/room_medium_-2_-5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_bixw4")
+
+[node name="DoorBlockerWest" type="CSGBox3D" parent="Rooms/room_medium_-2_-5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_bixw4")
+
+[node name="room_medium_-2_-7" type="Node3D" parent="Rooms" instance=ExtResource("15_qhpgf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, -112)
+metadata/grid_pos = Vector2i(-2, -7)
+metadata/room_type = 14
+
+[node name="DoorBlockerNorth" type="CSGBox3D" parent="Rooms/room_medium_-2_-7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0.25)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_g6oij")
+
+[node name="DoorBlockerEast" type="CSGBox3D" parent="Rooms/room_medium_-2_-7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_g6oij")
+
+[node name="DoorBlockerWest" type="CSGBox3D" parent="Rooms/room_medium_-2_-7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_g6oij")
+
+[node name="room_medium_5_-4" type="Node3D" parent="Rooms" instance=ExtResource("15_qhpgf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, 0, -64)
+metadata/grid_pos = Vector2i(5, -4)
+metadata/room_type = 14
+
+[node name="DoorBlockerSouth" type="CSGBox3D" parent="Rooms/room_medium_5_-4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 15.75)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_1v6ej")
+
+[node name="DoorBlockerWest" type="CSGBox3D" parent="Rooms/room_medium_5_-4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_1v6ej")
+
+[node name="room_medium_7_-4" type="Node3D" parent="Rooms" instance=ExtResource("15_qhpgf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 112, 0, -64)
+metadata/grid_pos = Vector2i(7, -4)
+metadata/room_type = 14
+
+[node name="DoorBlockerNorth" type="CSGBox3D" parent="Rooms/room_medium_7_-4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0.25)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_yyvxh")
+
+[node name="DoorBlockerSouth" type="CSGBox3D" parent="Rooms/room_medium_7_-4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 15.75)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_yyvxh")
+
+[node name="DoorBlockerEast" type="CSGBox3D" parent="Rooms/room_medium_7_-4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_yyvxh")
+
+[node name="room_medium_7_1" type="Node3D" parent="Rooms" instance=ExtResource("15_qhpgf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 112, 0, 16)
+metadata/grid_pos = Vector2i(7, 1)
+metadata/room_type = 14
+
+[node name="DoorBlockerNorth" type="CSGBox3D" parent="Rooms/room_medium_7_1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0.25)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_kr0sv")
+
+[node name="DoorBlockerEast" type="CSGBox3D" parent="Rooms/room_medium_7_1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_kr0sv")
+
+[node name="room_medium_7_2" type="Node3D" parent="Rooms" instance=ExtResource("15_qhpgf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 112, 0, 32)
+metadata/grid_pos = Vector2i(7, 2)
+metadata/room_type = 14
+
+[node name="DoorBlockerEast" type="CSGBox3D" parent="Rooms/room_medium_7_2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_b6eog")
+
+[node name="room_medium_7_3" type="Node3D" parent="Rooms" instance=ExtResource("15_qhpgf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 112, 0, 48)
+metadata/grid_pos = Vector2i(7, 3)
+metadata/room_type = 14
+
+[node name="DoorBlockerSouth" type="CSGBox3D" parent="Rooms/room_medium_7_3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 15.75)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_5lhcl")
+
+[node name="DoorBlockerEast" type="CSGBox3D" parent="Rooms/room_medium_7_3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, 2, 8)
+use_collision = true
+size = Vector3(0.5, 4, 4)
+material = SubResource("StandardMaterial3D_5lhcl")
+
+[node name="room_medium_6_3" type="Node3D" parent="Rooms" instance=ExtResource("15_qhpgf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 96, 0, 48)
+metadata/grid_pos = Vector2i(6, 3)
+metadata/room_type = 14
+
+[node name="DoorBlockerSouth" type="CSGBox3D" parent="Rooms/room_medium_6_3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 15.75)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_4ufmp")
+
+[node name="room_medium_6_2" type="Node3D" parent="Rooms" instance=ExtResource("15_qhpgf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 96, 0, 32)
+metadata/grid_pos = Vector2i(6, 2)
+metadata/room_type = 14
+
+[node name="room_medium_6_1" type="Node3D" parent="Rooms" instance=ExtResource("15_qhpgf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 96, 0, 16)
+metadata/grid_pos = Vector2i(6, 1)
+metadata/room_type = 14
+
+[node name="DoorBlockerNorth" type="CSGBox3D" parent="Rooms/room_medium_6_1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0.25)
+use_collision = true
+size = Vector3(4, 4, 0.5)
+material = SubResource("StandardMaterial3D_gjgqb")
+
+[node name="room_large_-6_-1" type="Node3D" parent="Rooms" instance=ExtResource("16_aswg1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -96, 0, -16)
+metadata/grid_pos = Vector2i(-6, -1)
+metadata/room_type = 15
+
+[node name="room_large_-5_-1" type="Node3D" parent="Rooms" instance=ExtResource("16_aswg1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0, -16)
+metadata/grid_pos = Vector2i(-5, -1)
+metadata/room_type = 15
+
+[node name="room_large_-5_0" type="Node3D" parent="Rooms" instance=ExtResource("16_aswg1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0, 0)
+metadata/grid_pos = Vector2i(-5, 0)
+metadata/room_type = 15
+
+[node name="room_large_-6_0" type="Node3D" parent="Rooms" instance=ExtResource("16_aswg1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -96, 0, 0)
+metadata/grid_pos = Vector2i(-6, 0)
+metadata/room_type = 15
+
+[node name="t_west_-4_0" type="Node3D" parent="Rooms" instance=ExtResource("17_faa2e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 0)
+metadata/grid_pos = Vector2i(-4, 0)
+metadata/room_type = 11
+
+[node name="t_west_-4_-1" type="Node3D" parent="Rooms" instance=ExtResource("17_faa2e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, -16)
+metadata/grid_pos = Vector2i(-4, -1)
+metadata/room_type = 11

@@ -1,0 +1,7 @@
+{
+  "name": "Martha the Cook",
+  "who": "Camp cook at Elder Moor\nNotices player looks hungry after travels\nWarm and motherly",
+  "what": "Teaches cooking at campfire (tutorial)\nProvides starter ingredients\nGives 'A Warm Meal' tutorial quest",
+  "where": "Elder Moor - near cooking fire",
+  "quests": "Tutorial: Cooking (A Warm Meal)"
+}

@@ -288,6 +288,7 @@ func _load_handcrafted_cell_with_path(coords: Vector2i, cell_info: WorldGrid.Cel
 	# have its own Player or HUD since those already exist in the main scene
 	var embedded_player: Node = instance.get_node_or_null("Player")
 	if embedded_player:
+		embedded_player.get_parent().remove_child(embedded_player)
 		embedded_player.queue_free()
 
 	var embedded_hud: Node = instance.get_node_or_null("HUD")

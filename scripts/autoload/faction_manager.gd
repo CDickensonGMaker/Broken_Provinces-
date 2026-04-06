@@ -8,6 +8,8 @@ signal faction_status_changed(faction_id: String, old_status: int, new_status: i
 signal joined_faction(faction_id: String, rank_name: String)
 signal left_faction(faction_id: String)
 signal rank_changed(faction_id: String, old_rank: String, new_rank: String)
+signal daily_penalty_added(faction_id: String, reason: String, amount: int)
+signal daily_penalty_cleared(faction_id: String, reason: String)
 
 ## All loaded faction data (faction_id -> FactionData)
 var factions: Dictionary = {}
@@ -25,6 +27,11 @@ var last_crime_day: Dictionary = {}
 ## Last reputation decay day per faction (faction_id -> in-game day number)
 ## Tracks when decay was last applied to prevent double-counting
 var last_decay_day: Dictionary = {}
+
+## Daily penalties - accumulating reputation loss applied each day
+## Format: { faction_id: { reason_id: {amount: int, reason_display: String} } }
+## Example: { "merchant_guild": { "unpaid_debt": {amount: -5, reason_display: "Unpaid debt"} } }
+var daily_penalties: Dictionary = {}
 
 ## Days required without crimes before reputation starts decaying toward 0
 const CRIME_COOLDOWN_DAYS: int = 7
@@ -89,9 +96,10 @@ func _initialize_player_reputations() -> void:
 		for faction_id: String in GameManager.player_data.faction_memberships:
 			faction_memberships[faction_id] = GameManager.player_data.faction_memberships[faction_id]
 
-## Handle day change - process reputation decay for negative values
+## Handle day change - process reputation decay and daily penalties
 func _on_day_changed(new_day: int) -> void:
 	process_reputation_decay(new_day)
+	_process_daily_penalties(new_day)
 
 
 ## Process time decay for negative reputation
@@ -132,6 +140,95 @@ func record_crime_against_faction(faction_id: String) -> void:
 	last_crime_day[faction_id] = GameManager.current_day
 	# Reset decay timer - committing a new crime means they need to wait another week
 	last_decay_day[faction_id] = GameManager.current_day
+
+
+# =============================================================================
+# DAILY PENALTY SYSTEM
+# =============================================================================
+
+## Add a daily reputation penalty to a faction
+## penalty_id: Unique identifier for this penalty (allows clearing specific penalties)
+## faction_id: The faction receiving the penalty
+## amount: Reputation loss per day (should be negative)
+## reason_display: Human-readable reason for UI/notifications
+func add_daily_penalty(faction_id: String, penalty_id: String, amount: int, reason_display: String = "") -> void:
+	if not factions.has(faction_id):
+		push_warning("[FactionManager] Unknown faction for penalty: %s" % faction_id)
+		return
+
+	if not daily_penalties.has(faction_id):
+		daily_penalties[faction_id] = {}
+
+	daily_penalties[faction_id][penalty_id] = {
+		"amount": amount,
+		"reason_display": reason_display if not reason_display.is_empty() else penalty_id
+	}
+
+	daily_penalty_added.emit(faction_id, penalty_id, amount)
+
+
+## Clear a specific daily penalty from a faction
+## Returns true if the penalty was found and cleared
+func clear_daily_penalty(faction_id: String, penalty_id: String) -> bool:
+	if not daily_penalties.has(faction_id):
+		return false
+
+	if not daily_penalties[faction_id].has(penalty_id):
+		return false
+
+	daily_penalties[faction_id].erase(penalty_id)
+
+	# Clean up empty faction entries
+	if daily_penalties[faction_id].is_empty():
+		daily_penalties.erase(faction_id)
+
+	daily_penalty_cleared.emit(faction_id, penalty_id)
+	return true
+
+
+## Clear all daily penalties for a faction
+func clear_all_penalties_for_faction(faction_id: String) -> void:
+	if not daily_penalties.has(faction_id):
+		return
+
+	var penalty_ids: Array = daily_penalties[faction_id].keys()
+	for penalty_id in penalty_ids:
+		daily_penalty_cleared.emit(faction_id, penalty_id)
+
+	daily_penalties.erase(faction_id)
+
+
+## Get all active penalties for a faction
+## Returns: Dictionary { penalty_id: {amount: int, reason_display: String} }
+func get_faction_penalties(faction_id: String) -> Dictionary:
+	return daily_penalties.get(faction_id, {}).duplicate()
+
+
+## Get total daily penalty amount for a faction
+func get_total_daily_penalty(faction_id: String) -> int:
+	if not daily_penalties.has(faction_id):
+		return 0
+
+	var total: int = 0
+	for penalty_id: String in daily_penalties[faction_id]:
+		total += daily_penalties[faction_id][penalty_id].get("amount", 0)
+	return total
+
+
+## Check if a faction has a specific penalty
+func has_penalty(faction_id: String, penalty_id: String) -> bool:
+	if not daily_penalties.has(faction_id):
+		return false
+	return daily_penalties[faction_id].has(penalty_id)
+
+
+## Process daily penalties (called on day change)
+## Applies accumulated penalty amounts to faction reputation
+func _process_daily_penalties(_current_day: int) -> void:
+	for faction_id: String in daily_penalties:
+		var total_penalty: int = get_total_daily_penalty(faction_id)
+		if total_penalty != 0:
+			_apply_reputation_change(faction_id, total_penalty, "daily penalties")
 
 
 ## Get a faction by ID
@@ -206,6 +303,10 @@ func _apply_reputation_change(faction_id: String, amount: int, reason: String = 
 		var new_status: int = FactionData.get_reputation_status(new_rep)
 		if new_status != old_status:
 			faction_status_changed.emit(faction_id, old_status, new_status)
+
+			# Unlock secret faction lore when reaching HONORED status
+			if new_status >= FactionData.ReputationStatus.HONORED and old_status < FactionData.ReputationStatus.HONORED:
+				_unlock_secret_faction_lore(faction_id)
 
 		# Check for rank change if member
 		_check_rank_change(faction_id, old_rep, new_rep)
@@ -284,6 +385,13 @@ func join_faction(faction_id: String) -> bool:
 	}
 
 	joined_faction.emit(faction_id, rank_name)
+
+	# Unlock faction-specific lore in the Codex when joining
+	if CodexManager:
+		# Try to discover faction lore entry (e.g., "thieves_guild" -> discovers "thieves_guild" lore)
+		CodexManager.discover_lore(faction_id)
+		# Also try with common prefixes
+		CodexManager.discover_lore("faction_" + faction_id)
 
 	_sync_to_player_data()
 	return true
@@ -368,6 +476,7 @@ func reset() -> void:
 	faction_memberships.clear()
 	last_crime_day.clear()
 	last_decay_day.clear()
+	daily_penalties.clear()
 	_initialize_player_reputations()
 
 ## Save faction state to dictionary
@@ -376,7 +485,8 @@ func to_dict() -> Dictionary:
 		"reputations": player_reputations.duplicate(),
 		"memberships": faction_memberships.duplicate(true),
 		"last_crime_day": last_crime_day.duplicate(),
-		"last_decay_day": last_decay_day.duplicate()
+		"last_decay_day": last_decay_day.duplicate(),
+		"daily_penalties": daily_penalties.duplicate(true)
 	}
 
 ## Load faction state from dictionary
@@ -385,6 +495,7 @@ func from_dict(data: Dictionary) -> void:
 	faction_memberships = data.get("memberships", {})
 	last_crime_day = data.get("last_crime_day", {})
 	last_decay_day = data.get("last_decay_day", {})
+	daily_penalties = data.get("daily_penalties", {})
 
 	# Ensure all factions have a reputation entry
 	for faction_id: String in factions:
@@ -393,6 +504,34 @@ func from_dict(data: Dictionary) -> void:
 			player_reputations[faction_id] = faction.default_reputation
 
 	_sync_to_player_data()
+
+
+## Secret lore IDs for each faction - unlocked at HONORED reputation
+## These reveal deep secrets about the faction's true nature
+const SECRET_FACTION_LORE: Dictionary = {
+	"keepers": ["keeper_secrets"],              # Truth about the witch-king
+	"thieves_guild": ["thieves_guild_secrets"], # Guild operations and history
+	"church_of_three": ["church_secrets"],      # Ancient truths about the Three Gods
+	"mages_guild": ["mages_guild_secrets"],     # Hidden magical knowledge
+	"fighters_guild": ["fighters_guild_secrets"], # Guild's darker history
+	"merchants_guild": ["merchants_guild_secrets"], # Trade secrets and conspiracies
+}
+
+
+## Unlock secret lore entries for a faction when reaching HONORED status
+func _unlock_secret_faction_lore(faction_id: String) -> void:
+	if not CodexManager:
+		return
+
+	# Get secret lore IDs for this faction
+	var secret_lore_ids: Array = SECRET_FACTION_LORE.get(faction_id, [])
+
+	for lore_id in secret_lore_ids:
+		if CodexManager.discover_lore(lore_id):
+			# Show notification that secret lore was unlocked
+			var hud: Node = get_tree().get_first_node_in_group("hud")
+			if hud and hud.has_method("show_notification"):
+				hud.show_notification("Secret knowledge unlocked!")
 
 
 ## Town faction IDs mapped to their location IDs

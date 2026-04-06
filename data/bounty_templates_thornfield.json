@@ -1,27 +1,53 @@
 {
+  "settlement_id": "thornfield",
+  "bounty_givers": {
+    "elric_thornwood": {
+      "display_name": "Elric Thornwood",
+      "title": "Village Leader",
+      "location": "Town Center",
+      "specialty": ["kill", "clear"],
+      "dialogue_intro": "The eastern forest grows more dangerous by the day. If you're looking for work, I've got bounties that need filling."
+    },
+    "greta_wolfsbane": {
+      "display_name": "Greta Wolfsbane",
+      "title": "Master Hunter",
+      "location": "Hunter's Lodge",
+      "specialty": ["kill", "collect"],
+      "dialogue_intro": "You look like you can handle yourself. The forest is crawling with beasts that need thinning - and I pay well for pelts."
+    }
+  },
   "kill": {
     "standard": [
-      {"target": "wolf", "display": "Wolves", "count_min": 3, "count_max": 6},
-      {"target": "boar", "display": "Wild Boars", "count_min": 2, "count_max": 4}
+      {"target": "wolf", "display": "Wolves", "count_min": 3, "count_max": 6, "giver": "greta_wolfsbane"},
+      {"target": "boar", "display": "Wild Boars", "count_min": 2, "count_max": 4, "giver": "greta_wolfsbane"}
     ],
     "dangerous": [
-      {"target": "dire_wolf", "display": "Dire Wolves", "count_min": 2, "count_max": 4},
-      {"target": "bandit", "display": "Bandits", "count_min": 4, "count_max": 8}
+      {"target": "dire_wolf", "display": "Dire Wolves", "count_min": 2, "count_max": 4, "giver": "greta_wolfsbane"},
+      {"target": "bandit", "display": "Bandits", "count_min": 4, "count_max": 8, "giver": "elric_thornwood"}
     ],
     "deadly": [
-      {"target": "bandit_captain", "display": "Bandit Captain", "count_min": 1, "count_max": 1, "is_boss": true}
+      {"target": "bandit_captain", "display": "Bandit Captain", "count_min": 1, "count_max": 1, "is_boss": true, "giver": "elric_thornwood"}
     ],
     "extreme": [
-      {"target": "alpha_wolf", "display": "the Alpha Wolf", "count_min": 1, "count_max": 1, "is_boss": true}
+      {"target": "alpha_wolf", "display": "the Alpha Wolf", "count_min": 1, "count_max": 1, "is_boss": true, "giver": "greta_wolfsbane"}
     ]
   },
   "collect": {
     "standard": [
-      {"target": "wolf_pelt", "display": "Wolf Pelts", "count_min": 3, "count_max": 5},
-      {"target": "raw_meat", "display": "Raw Meat", "count_min": 5, "count_max": 10}
+      {"target": "wolf_pelt", "display": "Wolf Pelts", "count_min": 3, "count_max": 5, "giver": "greta_wolfsbane"},
+      {"target": "raw_meat", "display": "Raw Meat", "count_min": 5, "count_max": 10, "giver": "greta_wolfsbane"},
+      {"target": "boar_tusk", "display": "Boar Tusks", "count_min": 2, "count_max": 4, "giver": "greta_wolfsbane"}
     ],
     "dangerous": [
-      {"target": "dire_wolf_pelt", "display": "Dire Wolf Pelts", "count_min": 2, "count_max": 3}
+      {"target": "dire_wolf_pelt", "display": "Dire Wolf Pelts", "count_min": 2, "count_max": 3, "giver": "greta_wolfsbane"}
+    ]
+  },
+  "clear": {
+    "dangerous": [
+      {"target": "wolf_den", "display": "the Wolf Den", "enemy_count": 6, "enemy_type": "wolf", "giver": "elric_thornwood"}
+    ],
+    "deadly": [
+      {"target": "bandit_camp", "display": "the Bandit Camp", "enemy_count": 8, "enemy_type": "bandit", "giver": "elric_thornwood"}
     ]
   }
 }

@@ -1,0 +1,64 @@
+{
+    "id": "noble_soulstone_request",
+    "title": "A Noble's Request",
+    "description": "Lord Hakon Thornwick of Dalhurst requires a greater soulstone for an important enchantment. He is willing to pay handsomely, but warns that keeping such a valuable item for yourself would be... unwise.",
+    "is_main_quest": false,
+    "quest_source": "npc",
+    "giver_npc_id": "noble_hakon",
+    "giver_npc_type": "quest_giver",
+    "giver_region": "dalhurst",
+    "objectives": [
+        {
+            "id": "find_greater_soulstone",
+            "description": "Obtain a Greater Soulstone (tier 4 or higher)",
+            "type": "has_item",
+            "target": "soulstone_greater",
+            "required_count": 1
+        },
+        {
+            "id": "deliver_soulstone",
+            "description": "Deliver the soulstone to Lord Hakon",
+            "type": "deliver_soulstone",
+            "target": "noble_hakon",
+            "required_soulstone_tier": 4
+        }
+    ],
+    "turn_in_type": "npc_specific",
+    "turn_in_target": "noble_hakon",
+    "turn_in_zone": "dalhurst",
+    "rewards": {
+        "gold": 500,
+        "xp": 250,
+        "reputation_changes": {
+            "nobility": 15,
+            "dalhurst": 10
+        }
+    },
+    "soulstone_keep_penalty": {
+        "daily_penalties": [
+            {
+                "faction_id": "nobility",
+                "amount": -5,
+                "reason": "Withholding a soulstone promised to nobility"
+            },
+            {
+                "faction_id": "dalhurst",
+                "amount": -3,
+                "reason": "Breaking a contract with Dalhurst nobility"
+            }
+        ],
+        "max_penalty_days": 10
+    },
+    "choice_consequences": {
+        "deliver_soulstone": {
+            "flags_to_set": ["noble_hakon_satisfied"],
+            "reputation_changes": {"nobility": 15, "dalhurst": 10}
+        },
+        "keep_soulstone": {
+            "flags_to_set": ["noble_hakon_betrayed", "soulstone_debt_active"],
+            "reputation_changes": {"nobility": -25, "dalhurst": -15}
+        }
+    },
+    "prerequisites": [],
+    "next_quest": ""
+}

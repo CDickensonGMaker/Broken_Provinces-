@@ -27,7 +27,10 @@ var nav_region: NavigationRegion3D
 
 func _ready() -> void:
 	# Check if we're the main scene (have Player) or a streamed cell
-	var is_main_scene: bool = get_node_or_null("Player") != null
+	var is_main_scene: bool = false
+	var _player_check: Node = get_node_or_null("Player")
+	if _player_check and is_instance_valid(_player_check) and not _player_check.is_queued_for_deletion():
+		is_main_scene = true
 
 	# Set current region for world map tracking (only if main scene)
 	if is_main_scene:
@@ -534,8 +537,8 @@ func _spawn_quest_objectives() -> void:
 	# Apprentice belongings (satchel) near cemetery entrance
 	_spawn_apprentice_belongings(Vector3(-10, 0, 45))
 
-	# Apprentice Marcus body inside tower (tragic end)
-	_spawn_apprentice_marcus(Vector3(4, 0, -5))
+	# Crystal Hearts puzzle room - Marcus trapped in portal (replaces dead body)
+	_spawn_crystal_hearts_puzzle(Vector3(4, 0, -5))
 
 	# --- KEEPERS_INITIATION QUEST ---
 
@@ -674,68 +677,36 @@ func _on_belongings_examined(_area: Area3D) -> void:
 	QuestManager.on_interact("apprentice_belongings")
 
 
-## Spawn apprentice Marcus (body) for lost_apprentice quest
-func _spawn_apprentice_marcus(pos: Vector3) -> void:
-	var marcus := StaticBody3D.new()
-	marcus.name = "apprentice_marcus"
-	marcus.position = pos
-	marcus.add_to_group("interactable")
-	marcus.set_meta("object_id", "apprentice_marcus")
-	marcus.set_meta("display_name", "Apprentice Marcus")
-	marcus.set_meta("interaction_type", "examine")
-	marcus.set_meta("npc_type", "apprentice_marcus")
-	add_child(marcus)
+## Spawn Crystal Hearts puzzle room - Marcus trapped in portal
+## Replaces the old dead body spawn with an interactive puzzle
+func _spawn_crystal_hearts_puzzle(pos: Vector3) -> void:
+	# Create the puzzle room using the static factory
+	var puzzle_room := CrystalHeartsController.create_crystal_hearts_room(
+		self,
+		pos,
+		5.0  # pillar_radius
+	)
 
-	# Body mesh (simplified prone figure)
-	var body := CSGBox3D.new()
-	body.name = "BodyMesh"
-	body.size = Vector3(0.5, 0.2, 1.5)
-	body.position = Vector3(0, 0.1, 0)
-	body.rotation_degrees.y = 35  # Angled
-	var body_mat := StandardMaterial3D.new()
-	body_mat.albedo_color = Color(0.3, 0.25, 0.35)  # Dark robes
-	body_mat.roughness = 0.9
-	body.material = body_mat
-	body.use_collision = true
-	marcus.add_child(body)
+	if puzzle_room:
+		puzzle_room.add_to_group("puzzle_rooms")
 
-	# Staff nearby
-	var staff := CSGCylinder3D.new()
-	staff.name = "Staff"
-	staff.radius = 0.04
-	staff.height = 1.8
-	staff.sides = 6
-	staff.position = Vector3(0.5, 0.04, 0.3)
-	staff.rotation_degrees.z = 85
-	staff.material = wood_mat
-	marcus.add_child(staff)
-
-	# Collision shape
-	var collision := CollisionShape3D.new()
-	var shape := BoxShape3D.new()
-	shape.size = Vector3(0.6, 0.3, 1.6)
-	collision.shape = shape
-	collision.position.y = 0.15
-	marcus.add_child(collision)
-
-	# Interaction area
-	var area := Area3D.new()
-	area.name = "InteractionArea"
-	area.collision_layer = 256
-	area.collision_mask = 0
-	var area_col := CollisionShape3D.new()
-	var area_shape := SphereShape3D.new()
-	area_shape.radius = 2.0
-	area_col.shape = area_shape
-	area_col.position.y = 0.5
-	area.add_child(area_col)
-	marcus.add_child(area)
-
-	area.area_entered.connect(_on_marcus_examined)
+		# Connect signals for quest integration
+		puzzle_room.puzzle_completed.connect(_on_crystal_hearts_completed)
+		puzzle_room.apprentice_freed.connect(_on_apprentice_freed)
 
 
-func _on_marcus_examined(_area: Area3D) -> void:
+## Called when Crystal Hearts puzzle is completed
+func _on_crystal_hearts_completed() -> void:
+	# The puzzle controller already notifies QuestManager, but we can add
+	# zone-specific effects here
+	pass
+
+
+## Called when Marcus is freed from the portal
+func _on_apprentice_freed() -> void:
+	# Trigger quest objective for finding Marcus (now alive instead of dead!)
 	QuestManager.on_interact("apprentice_marcus")
+	QuestManager.on_npc_talked("apprentice_marcus")
 
 
 ## Spawn the dark altar for keepers_initiation quest

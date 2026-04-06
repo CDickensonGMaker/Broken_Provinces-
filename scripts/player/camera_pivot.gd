@@ -50,6 +50,7 @@ var crouch_lerp_speed: float = 10.0  # Speed of camera height transition
 # --- Internal State ---
 var yaw: float = 0.0   # radians
 var pitch: float = 0.0 # radians
+var lock_horizontal_look: bool = false  # Lock yaw rotation (e.g., while climbing)
 
 # --- Cached Node References ---
 var _spring_arm: SpringArm3D
@@ -162,7 +163,9 @@ func _process(delta: float) -> void:
 
 func _apply_look(dx: float, dy: float, sensitivity: float) -> void:
 	# dx/dy are "units" (mouse pixels or stick axis). sensitivity scales them into radians.
-	yaw -= dx * sensitivity
+	# Skip horizontal look if locked (e.g., while climbing a ladder)
+	if not lock_horizontal_look:
+		yaw -= dx * sensitivity
 
 	var pitch_delta: float = dy * sensitivity
 	if invert_y:

@@ -1,0 +1,50 @@
+{
+	"id": "lake_creature",
+	"title": "Terror in the Lake",
+	"description": "Something lurks beneath the waters of Millbrook Lake. Fishing nets are being torn apart, boats damaged, and the fishermen are too afraid to venture out. The village depends on the lake for food and trade - someone must discover what creature haunts these waters and put an end to it.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "millbrook_elder",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "millbrook",
+	"objectives": [
+		{
+			"id": "talk_fishermen",
+			"description": "Speak with the fishermen about the attacks",
+			"type": "talk",
+			"target": "millbrook_fisherman",
+			"required_count": 2
+		},
+		{
+			"id": "investigate_dock",
+			"description": "Examine the damaged fishing equipment at the dock",
+			"type": "reach",
+			"target": "millbrook_fishing_dock",
+			"required_count": 1
+		},
+		{
+			"id": "find_creature",
+			"description": "Track down the creature responsible",
+			"type": "reach",
+			"target": "lake_creature_lair",
+			"required_count": 1
+		},
+		{
+			"id": "kill_creature",
+			"description": "Slay the lake creature",
+			"type": "kill",
+			"target": "lake_serpent",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "millbrook_elder",
+	"turn_in_zone": "millbrook",
+	"rewards": {
+		"gold": 120,
+		"xp": 350,
+		"items": ["fish_oil"]
+	},
+	"prerequisites": [],
+	"next_quest": ""
+}

@@ -49,3 +49,11 @@ reference/
 *.pck
 *.console.exe
 *.7z
+
+# Gameplay recordings and video captures
+Gameplay footage/
+*.mp4
+*.avi
+*.mkv
+*.webm
+*.mov

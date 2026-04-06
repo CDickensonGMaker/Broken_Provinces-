@@ -213,6 +213,10 @@ var is_fading: bool = false
 ## Sound cache
 var sound_cache: Dictionary = {}
 
+## Global creature sound limit to prevent audio stacking
+const MAX_CONCURRENT_CREATURE_SOUNDS: int = 4
+var _active_creature_sounds: int = 0
+
 func _ready() -> void:
 	_setup_audio_buses()
 	_create_players()
@@ -301,13 +305,46 @@ func play_enemy_sound(sound_array: Array, position: Vector3, volume_db: float = 
 	if sound_array.is_empty():
 		return false
 
+	# Check global creature sound limit
+	if _active_creature_sounds >= MAX_CONCURRENT_CREATURE_SOUNDS:
+		return false
+
 	# Pick a random sound from the array
 	var sound_path: String = sound_array[randi() % sound_array.size()]
 	if sound_path.is_empty():
 		return false
 
-	play_sfx_3d(sound_path, position, volume_db)
+	var stream := _load_sound(sound_path)
+	if not stream:
+		return false
+
+	# Create a temporary 3D player with tracking
+	var player := AudioStreamPlayer3D.new()
+	player.stream = stream
+	player.volume_db = volume_db + _linear_to_db(sfx_volume)
+	player.bus = SFX_BUS
+
+	# PS1-style: simple distance attenuation
+	player.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
+	player.unit_size = 5.0
+	player.max_distance = 50.0
+
+	get_tree().current_scene.add_child(player)
+	player.global_position = position
+
+	# Increment counter and connect to finished signal
+	_active_creature_sounds += 1
+	player.finished.connect(_on_creature_sound_finished.bind(player))
+
+	player.play()
 	return true
+
+
+## Callback when a creature sound finishes playing
+func _on_creature_sound_finished(player: AudioStreamPlayer) -> void:
+	_active_creature_sounds = maxi(0, _active_creature_sounds - 1)
+	if is_instance_valid(player):
+		player.queue_free()
 
 
 ## Play music with optional crossfade

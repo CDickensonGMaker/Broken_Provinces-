@@ -1,0 +1,35 @@
+{
+    "id": "apprentice_marcus",
+    "display_name": "Marcus",
+    "description": "A young wizard's apprentice you rescued from a crystal prison in Willow Dale.",
+    "sprite_path": "res://assets/sprites/npcs/civilians/wizard_civilian.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0256,
+    "max_health": 40,
+    "damage": 15,
+    "armor": 3,
+    "combat_style": "magic",
+    "is_essential": true,
+    "follow_distance": 3.5,
+    "combat_range": 8.0,
+    "leash_range": 25.0,
+    "personality_traits": ["curious", "bookish", "eager"],
+    "combat_lines": [
+        "By the Three Gods!",
+        "My magic will protect you!",
+        "I've read about creatures like this!",
+        "Stand back - I'll handle this!",
+        "Time to put my studies to use!"
+    ],
+    "idle_lines": [
+        "This place has fascinating magical resonance...",
+        "I wonder what Master Aldric would say about this.",
+        "Thank you again for freeing me.",
+        "I've read about places like this in my studies.",
+        "My magical abilities grow stronger with each battle."
+    ],
+    "recruitment_quest": "lost_apprentice",
+    "recruitment_location": "willow_dale",
+    "home_location": "dalhurst"
+}

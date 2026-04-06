@@ -1,0 +1,137 @@
+[gd_scene format=3 uid="uid://archway_entrance_001"]
+
+[sub_resource type="StandardMaterial3D" id="weathered_stone_mat"]
+albedo_color = Color(0.5, 0.48, 0.4, 1)
+roughness = 1.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="dark_stone_mat"]
+albedo_color = Color(0.35, 0.33, 0.28, 1)
+roughness = 0.95
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="moss_stain_mat"]
+albedo_color = Color(0.3, 0.38, 0.25, 1)
+roughness = 1.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="rubble_mat"]
+albedo_color = Color(0.42, 0.4, 0.35, 1)
+roughness = 1.0
+texture_filter = 0
+
+[node name="ArchwayEntrance" type="Node3D"]
+
+[node name="Pillars" type="Node3D" parent="."]
+
+[node name="LeftPillarBase" type="CSGBox3D" parent="Pillars"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 0.25, 0)
+size = Vector3(0.7, 0.5, 0.7)
+material = SubResource("dark_stone_mat")
+
+[node name="LeftPillarShaft" type="CSGBox3D" parent="Pillars"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 1.75, 0)
+size = Vector3(0.5, 2.5, 0.5)
+material = SubResource("weathered_stone_mat")
+
+[node name="LeftPillarCapital" type="CSGBox3D" parent="Pillars"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 3.15, 0)
+size = Vector3(0.65, 0.3, 0.65)
+material = SubResource("dark_stone_mat")
+
+[node name="LeftPillarChip" type="CSGBox3D" parent="Pillars"]
+transform = Transform3D(0.97, 0.26, 0, -0.26, 0.97, 0, 0, 0, 1, -1.35, 2.4, 0.2)
+size = Vector3(0.15, 0.3, 0.2)
+material = SubResource("rubble_mat")
+
+[node name="RightPillarBase" type="CSGBox3D" parent="Pillars"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0.25, 0)
+size = Vector3(0.7, 0.5, 0.7)
+material = SubResource("dark_stone_mat")
+
+[node name="RightPillarShaft" type="CSGBox3D" parent="Pillars"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 1.5, 0)
+size = Vector3(0.5, 2.0, 0.5)
+material = SubResource("weathered_stone_mat")
+
+[node name="RightPillarCapital" type="CSGBox3D" parent="Pillars"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 2.65, 0)
+size = Vector3(0.6, 0.3, 0.6)
+material = SubResource("dark_stone_mat")
+
+[node name="RightPillarBroken" type="CSGBox3D" parent="Pillars"]
+transform = Transform3D(0.94, 0.34, 0, -0.34, 0.94, 0, 0, 0, 1, 1.6, 2.95, 0)
+size = Vector3(0.45, 0.3, 0.45)
+material = SubResource("rubble_mat")
+
+[node name="ArchStones" type="Node3D" parent="."]
+
+[node name="ArchLeft" type="CSGBox3D" parent="ArchStones"]
+transform = Transform3D(0.87, 0.5, 0, -0.5, 0.87, 0, 0, 0, 1, -1.0, 3.5, 0)
+size = Vector3(0.4, 0.8, 0.4)
+material = SubResource("weathered_stone_mat")
+
+[node name="ArchLeftMid" type="CSGBox3D" parent="ArchStones"]
+transform = Transform3D(0.97, 0.26, 0, -0.26, 0.97, 0, 0, 0, 1, -0.5, 3.85, 0)
+size = Vector3(0.4, 0.6, 0.4)
+material = SubResource("weathered_stone_mat")
+
+[node name="ArchKeystone" type="CSGBox3D" parent="ArchStones"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0, 0)
+size = Vector3(0.5, 0.5, 0.45)
+material = SubResource("dark_stone_mat")
+
+[node name="ArchRightMidBroken" type="CSGBox3D" parent="ArchStones"]
+transform = Transform3D(0.94, -0.34, 0, 0.34, 0.94, 0, 0, 0, 1, 0.4, 3.7, 0)
+size = Vector3(0.35, 0.4, 0.35)
+material = SubResource("weathered_stone_mat")
+
+[node name="Rubble" type="Node3D" parent="."]
+
+[node name="FallenStone1" type="CSGBox3D" parent="Rubble"]
+transform = Transform3D(0.94, 0, 0.34, 0, 1, 0, -0.34, 0, 0.94, 1.8, 0.15, 0.8)
+size = Vector3(0.4, 0.3, 0.35)
+material = SubResource("rubble_mat")
+
+[node name="FallenStone2" type="CSGBox3D" parent="Rubble"]
+transform = Transform3D(0.87, 0, -0.5, 0, 1, 0, 0.5, 0, 0.87, 2.1, 0.1, 0.5)
+size = Vector3(0.3, 0.2, 0.25)
+material = SubResource("rubble_mat")
+
+[node name="FallenStone3" type="CSGBox3D" parent="Rubble"]
+transform = Transform3D(0.77, 0, 0.64, 0, 1, 0, -0.64, 0, 0.77, 0.7, 0.12, 1.0)
+size = Vector3(0.35, 0.25, 0.3)
+material = SubResource("weathered_stone_mat")
+
+[node name="SmallDebris1" type="CSGBox3D" parent="Rubble"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.08, 1.1)
+size = Vector3(0.15, 0.15, 0.15)
+material = SubResource("rubble_mat")
+
+[node name="SmallDebris2" type="CSGBox3D" parent="Rubble"]
+transform = Transform3D(0.87, 0, 0.5, 0, 1, 0, -0.5, 0, 0.87, -0.3, 0.06, 0.9)
+size = Vector3(0.12, 0.12, 0.1)
+material = SubResource("rubble_mat")
+
+[node name="MossStains" type="Node3D" parent="."]
+
+[node name="MossOnLeftPillar" type="CSGBox3D" parent="MossStains"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.88, 1.2, 0)
+size = Vector3(0.08, 0.8, 0.3)
+material = SubResource("moss_stain_mat")
+
+[node name="MossOnBase" type="CSGBox3D" parent="MossStains"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.95, 0.3, 0.15)
+size = Vector3(0.05, 0.4, 0.25)
+material = SubResource("moss_stain_mat")
+
+[node name="MossOnRubble" type="CSGBox3D" parent="MossStains"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 0.32, 0.8)
+size = Vector3(0.2, 0.05, 0.15)
+material = SubResource("moss_stain_mat")
+
+[node name="InteractionPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.5)

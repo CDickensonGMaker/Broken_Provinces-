@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="NPCData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/npc_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+npc_id = "old_yoren"
+display_name = "Old Yoren"
+race = "Human"
+archetype = "civilian"
+location = "Thornfield"
+zone_id = "thornfield"
+faction_id = "human_empire"
+secondary_factions = []
+base_disposition = 50
+alignment = 20
+description = "An ancient woodsman with a face like weathered oak bark and only one good eye. Old Yoren has worked these forests since before Thornfield had a name. He knows every trail, every beast, and every dark corner of the eastern woods - knowledge that has kept him alive when younger men perished."
+portrait_path = ""
+sprite_path = "res://assets/sprites/npcs/named/old_man_sage.png"
+sprite_h_frames = 4
+sprite_v_frames = 4
+dialogue_topics = ["local_news", "rumors", "forest_lore", "old_stories", "wolves", "lost_woodsman", "wilderness_dangers"]
+has_unique_dialogue = true
+dialogue_data_path = "res://data/dialogues/old_yoren.tres"
+knowledge_profile_path = ""
+shop_type = "none"
+flags = {"is_lore_giver": true, "knows_forest_secrets": true}
+can_wander = true
+wander_radius = 8.0

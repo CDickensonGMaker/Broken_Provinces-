@@ -3,6 +3,9 @@
 class_name ZoneDoor
 extends StaticBody3D
 
+## Emitted when player interacts with this door (before scene transition)
+signal player_interacted
+
 ## Door visual styles
 enum DoorStyle { WOODEN, PORTAL }
 
@@ -282,6 +285,9 @@ func interact(_interactor: Node) -> void:
 		_handle_locked_door(_interactor)
 		return
 
+	# Emit signal for custom handling (e.g., cave test regeneration)
+	player_interacted.emit()
+
 	# Play door sound
 	AudioManager.play_sfx("door_open")
 
@@ -290,6 +296,7 @@ func interact(_interactor: Node) -> void:
 		SceneManager.return_to_previous_scene()
 		return
 
+	# If no target, just the signal was emitted - custom handler deals with it
 	if target_scene.is_empty():
 		return
 

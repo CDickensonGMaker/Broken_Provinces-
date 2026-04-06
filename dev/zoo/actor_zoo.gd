@@ -44,6 +44,16 @@ var camera_pitch: float = -0.5  # Looking down
 var is_orbiting: bool = false
 var last_mouse_pos: Vector2 = Vector2.ZERO
 
+## Player walk mode
+var walk_mode: bool = false
+var walk_position: Vector3 = Vector3(0, 1.5, 5)  # Player eye height (1.5m)
+var walk_yaw: float = 0.0
+var walk_pitch: float = 0.0
+const WALK_SPEED := 8.0
+const WALK_SPRINT_MULT := 2.5
+const WALK_MOUSE_SENS := 0.002
+const PLAYER_EYE_HEIGHT := 1.5  # Same as player.tscn camera pivot
+
 ## Label visibility
 var show_names: bool = true
 var show_ids: bool = false
@@ -68,7 +78,10 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	_handle_camera_input(delta)
+	if walk_mode:
+		_handle_walk_input(delta)
+	else:
+		_handle_camera_input(delta)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -113,6 +126,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				_set_filter("named")
 			KEY_5:
 				_set_filter("hostage")
+			KEY_P:
+				_toggle_walk_mode()
 			KEY_F1:
 				_set_all_cards_state(BillboardSprite.AnimState.IDLE)
 			KEY_F2:
@@ -136,24 +151,41 @@ func _unhandled_input(event: InputEvent) -> void:
 					_save_patches()
 					get_viewport().set_input_as_handled()
 
-	# Handle mouse for orbiting
-	if event is InputEventMouseButton:
-		var mb: InputEventMouseButton = event as InputEventMouseButton
-		if mb.button_index == MOUSE_BUTTON_RIGHT:
-			is_orbiting = mb.pressed
-			last_mouse_pos = mb.position
-		elif mb.button_index == MOUSE_BUTTON_WHEEL_UP:
-			camera_distance = maxf(camera_distance - ZOOM_SPEED, ZOOM_MIN)
-			_update_camera_position()
-		elif mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			camera_distance = minf(camera_distance + ZOOM_SPEED, ZOOM_MAX)
-			_update_camera_position()
+	# Handle mouse for orbiting / walk mode
+	if walk_mode:
+		# Walk mode mouse look
+		if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			var motion: InputEventMouseMotion = event as InputEventMouseMotion
+			walk_yaw -= motion.relative.x * WALK_MOUSE_SENS
+			walk_pitch -= motion.relative.y * WALK_MOUSE_SENS
+			walk_pitch = clampf(walk_pitch, -PI/2 + 0.1, PI/2 - 0.1)
+			_update_walk_camera()
 
-	if event is InputEventMouseMotion and is_orbiting:
-		var motion: InputEventMouseMotion = event as InputEventMouseMotion
-		camera_orbit_angle -= motion.relative.x * ORBIT_SENSITIVITY
-		camera_pitch = clampf(camera_pitch - motion.relative.y * ORBIT_SENSITIVITY, -1.4, -0.1)
-		_update_camera_position()
+		# Click to recapture in walk mode
+		if event is InputEventMouseButton:
+			var mb: InputEventMouseButton = event as InputEventMouseButton
+			if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+				if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+					Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	else:
+		# Orbit mode
+		if event is InputEventMouseButton:
+			var mb: InputEventMouseButton = event as InputEventMouseButton
+			if mb.button_index == MOUSE_BUTTON_RIGHT:
+				is_orbiting = mb.pressed
+				last_mouse_pos = mb.position
+			elif mb.button_index == MOUSE_BUTTON_WHEEL_UP:
+				camera_distance = maxf(camera_distance - ZOOM_SPEED, ZOOM_MIN)
+				_update_camera_position()
+			elif mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				camera_distance = minf(camera_distance + ZOOM_SPEED, ZOOM_MAX)
+				_update_camera_position()
+
+		if event is InputEventMouseMotion and is_orbiting:
+			var motion: InputEventMouseMotion = event as InputEventMouseMotion
+			camera_orbit_angle -= motion.relative.x * ORBIT_SENSITIVITY
+			camera_pitch = clampf(camera_pitch - motion.relative.y * ORBIT_SENSITIVITY, -1.4, -0.1)
+			_update_camera_position()
 
 
 ## ============================================================================
@@ -260,6 +292,17 @@ func _create_top_bar(parent: Control) -> void:
 	search.custom_minimum_size.x = 150
 	search.text_changed.connect(_on_search_changed)
 	top_bar.add_child(search)
+
+	# Walk mode toggle button
+	var btn_walk := Button.new()
+	btn_walk.name = "BtnWalkMode"
+	btn_walk.text = "Walk Mode (P)"
+	btn_walk.toggle_mode = true
+	btn_walk.toggled.connect(func(pressed: bool) -> void:
+		if pressed != walk_mode:
+			_toggle_walk_mode()
+	)
+	top_bar.add_child(btn_walk)
 
 	# Separator
 	var sep := VSeparator.new()
@@ -912,6 +955,73 @@ func _reset_camera() -> void:
 	camera_orbit_angle = 0.0
 	camera_pitch = -0.5
 	_update_camera_position()
+
+
+## ============================================================================
+## WALK MODE (Player-height camera)
+## ============================================================================
+
+func _toggle_walk_mode() -> void:
+	walk_mode = not walk_mode
+
+	# Update button state
+	var btn: Button = top_bar.get_node_or_null("BtnWalkMode") as Button
+	if btn:
+		btn.set_pressed_no_signal(walk_mode)
+
+	if walk_mode:
+		# Enter walk mode
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		# Start at current camera target but at player eye height
+		walk_position = Vector3(camera_target.x, PLAYER_EYE_HEIGHT, camera_target.z + 5)
+		walk_yaw = 0.0
+		walk_pitch = 0.0
+		_update_walk_camera()
+		print("[ActorZoo] Walk mode ON - WASD to move, mouse to look, Shift to sprint, P to exit")
+	else:
+		# Exit walk mode
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		# Return orbit camera to where we were walking
+		camera_target = Vector3(walk_position.x, 0, walk_position.z)
+		_update_camera_position()
+		print("[ActorZoo] Walk mode OFF - Orbit camera restored")
+
+
+func _handle_walk_input(delta: float) -> void:
+	# Escape releases mouse in walk mode
+	if Input.is_action_just_pressed("ui_cancel"):
+		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		return
+
+	# Movement
+	var speed: float = WALK_SPEED
+	if Input.is_key_pressed(KEY_SHIFT):
+		speed *= WALK_SPRINT_MULT
+
+	var input_dir := Vector3.ZERO
+
+	if Input.is_key_pressed(KEY_W):
+		input_dir.z -= 1
+	if Input.is_key_pressed(KEY_S):
+		input_dir.z += 1
+	if Input.is_key_pressed(KEY_A):
+		input_dir.x -= 1
+	if Input.is_key_pressed(KEY_D):
+		input_dir.x += 1
+
+	if input_dir.length_squared() > 0:
+		input_dir = input_dir.normalized()
+		# Rotate by camera yaw (horizontal only)
+		input_dir = input_dir.rotated(Vector3.UP, walk_yaw)
+		walk_position += input_dir * speed * delta
+		walk_position.y = PLAYER_EYE_HEIGHT  # Keep at eye height
+		_update_walk_camera()
+
+
+func _update_walk_camera() -> void:
+	camera.position = walk_position
+	camera.rotation = Vector3(walk_pitch, walk_yaw, 0)
 
 
 ## ============================================================================

@@ -57,7 +57,8 @@ enum DamageType {
 	FROST,
 	POISON,
 	NECROTIC,
-	HOLY
+	HOLY,
+	MAGIC
 }
 
 # Status Conditions
@@ -274,7 +275,16 @@ enum QuestState {
 	AVAILABLE,
 	ACTIVE,
 	COMPLETED,
-	FAILED
+	FAILED,
+	BETRAYED  # Player kept quest items or made selfish choice
+}
+
+# Quest Completion States - detailed outcome of quest ending
+enum QuestCompletionState {
+	NONE,      # Not completed yet
+	COMPLETED, # Normal completion
+	FAILED,    # Player failed objectives
+	BETRAYED   # Player kept quest items or made selfish choice
 }
 
 # Quest Sources - where did this quest originate

@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="NPCData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/npc_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+npc_id = "mayor_bjorn_aberdeen"
+display_name = "Mayor Bjorn"
+race = "Human"
+archetype = "quest_giver"
+location = "Aberdeen"
+zone_id = "aberdeen"
+faction_id = "human_empire"
+secondary_factions = []
+base_disposition = 50
+alignment = 25
+description = "A gaunt man in his fifties with hollow cheeks and eyes that carry the weight of a dying town. Once a prosperous merchant who rose to become Aberdeen's mayor, Bjorn now spends sleepless nights trying to find solutions to save his people. His fine clothes are fraying at the edges, and his hands tremble slightly when he speaks of the blocked trade routes. Despite everything, a stubborn spark of hope still burns in his tired eyes."
+portrait_path = ""
+sprite_path = "res://assets/sprites/npcs/civilians/man_noble1.png"
+sprite_h_frames = 1
+sprite_v_frames = 1
+dialogue_topics = ["local_news", "rumors", "trade_crisis", "goblins", "kazer_dun", "larton", "mining"]
+has_unique_dialogue = true
+dialogue_data_path = "res://data/dialogues/mayor_bjorn_aberdeen.tres"
+knowledge_profile_path = ""
+shop_type = "none"
+flags = {"is_quest_giver": true, "is_town_leader": true}
+can_wander = false
+wander_radius = 0.0

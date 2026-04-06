@@ -56,6 +56,8 @@ script = ExtResource("3")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("env")
 
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+
 [node name="SpawnPoints" type="Node3D" parent="."]
 
 [node name="DefaultSpawn" type="Node3D" parent="SpawnPoints" groups=["default_spawn", "spawn_points"]]

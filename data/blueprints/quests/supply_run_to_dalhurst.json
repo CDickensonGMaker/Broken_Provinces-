@@ -1,0 +1,8 @@
+{
+  "name": "Supply Run to Dalhurst",
+  "who": "Tharin Ironbeard gives it\nHalvard the Supplier has the goods\nReturn to Tharin",
+  "what": "Pick up specialized tools from Halvard\nSimple fetch quest to introduce Dalhurst\nBuilds relationship with Tharin",
+  "where": "Starts in Elder Moor\nTravel west to Dalhurst\nFind Halvard in market area\nReturn to Elder Moor",
+  "when": "After delivering Tharin's letter\nPart of main story chain",
+  "rewards": "40 gold, 75 XP, unlocks Wolf Problem"
+}

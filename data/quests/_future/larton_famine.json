@@ -4,7 +4,7 @@
 	"description": "The coastal town of Larton, south of the great mountain range, is facing starvation. Something in the western bay is disrupting the fishing - boats that venture too far don't return, and those that stay close catch nothing. The town desperately needs someone to investigate the bay and find out what's killing their livelihood.",
 	"is_main_quest": false,
 	"quest_source": "npc",
-	"giver_npc_id": "larton_mayor",
+	"giver_npc_id": "mayor_aldric_larton",
 	"giver_npc_type": "quest_giver",
 	"giver_region": "larton",
 	"objectives": [
@@ -31,7 +31,7 @@
 		}
 	],
 	"turn_in_type": "npc_specific",
-	"turn_in_target": "larton_mayor",
+	"turn_in_target": "mayor_aldric_larton",
 	"turn_in_zone": "larton",
 	"rewards": {
 		"gold": 100,

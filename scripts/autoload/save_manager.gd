@@ -20,7 +20,8 @@ const MAX_SAVE_SLOTS := 10
 ## Version 2: Added CellStreamer integration, deprecated hex system fields
 ## Version 3: Added MoralityManager, FactionManager, CodexManager, NPC dispositions
 ## Version 4: Added StatsTracker, JournalManager (notes, bestiary, codex unlocks)
-const SAVE_VERSION := 4
+## Version 5: Added SoulstoneEconomy (100 soulstone world limit, quest debt tracking)
+const SAVE_VERSION := 5
 
 ## Currently loaded save slot
 var current_slot: int = -1
@@ -447,6 +448,14 @@ func _collect_save_data():
 	if save_data.journal_data:
 		_collect_journal_data(save_data.journal_data)
 
+	# Soulstone economy data
+	if save_data.soulstone_data:
+		_collect_soulstone_data(save_data.soulstone_data)
+
+	# Follower system data
+	if save_data.follower_data:
+		_collect_follower_data(save_data.follower_data)
+
 	return save_data
 
 ## Collect player data
@@ -639,6 +648,11 @@ func _clear_all_autoload_node_references() -> void:
 	if TournamentManager and TournamentManager.has_method("_clear_node_references"):
 		TournamentManager._clear_node_references()
 
+	if has_node("/root/FollowerManager"):
+		var follower_manager := get_node("/root/FollowerManager")
+		if follower_manager.has_method("_clear_node_references"):
+			follower_manager._clear_node_references()
+
 
 ## Apply loaded save data
 func _apply_save_data(save_data) -> void:
@@ -733,6 +747,14 @@ func _apply_save_data(save_data) -> void:
 	# Restore journal data (notes and bestiary)
 	if save_data.journal_data:
 		_apply_journal_data(save_data.journal_data)
+
+	# Restore soulstone economy data
+	if save_data.soulstone_data:
+		_apply_soulstone_data(save_data.soulstone_data)
+
+	# Restore follower system data
+	if save_data.follower_data:
+		_apply_follower_data(save_data.follower_data)
 
 ## Apply player data
 func _apply_player_data(player_data) -> void:
@@ -1168,6 +1190,65 @@ func _apply_journal_data(journal_save_data) -> void:
 	})
 
 
+## Collect soulstone economy data
+func _collect_soulstone_data(soulstone_save_data) -> void:
+	# SoulstoneEconomy data
+	if SoulstoneEconomy:
+		var economy_dict: Dictionary = SoulstoneEconomy.get_save_data()
+		soulstone_save_data.soulstone_registry = economy_dict.get("soulstone_registry", {})
+		soulstone_save_data.quest_targets = economy_dict.get("quest_targets", {})
+		soulstone_save_data.distribution_counts = economy_dict.get("distribution_counts", {})
+
+	# EnchantmentManager soulstone tracking data
+	if EnchantmentManager:
+		var enchant_dict: Dictionary = EnchantmentManager.get_save_data()
+		soulstone_save_data.enchantment_soulstone_energy = enchant_dict.get("soulstone_energy", {})
+		soulstone_save_data.economy_to_inventory_map = enchant_dict.get("economy_to_inventory_map", {})
+
+
+## Apply soulstone economy data
+func _apply_soulstone_data(soulstone_save_data) -> void:
+	# SoulstoneEconomy data
+	if SoulstoneEconomy:
+		SoulstoneEconomy.load_save_data({
+			"soulstone_registry": soulstone_save_data.soulstone_registry,
+			"quest_targets": soulstone_save_data.quest_targets,
+			"distribution_counts": soulstone_save_data.distribution_counts
+		})
+
+	# EnchantmentManager soulstone tracking data
+	if EnchantmentManager:
+		EnchantmentManager.load_save_data({
+			"soulstone_energy": soulstone_save_data.enchantment_soulstone_energy,
+			"economy_to_inventory_map": soulstone_save_data.economy_to_inventory_map
+		})
+
+
+## Collect follower system data
+func _collect_follower_data(follower_save_data) -> void:
+	if not has_node("/root/FollowerManager"):
+		return
+
+	var follower_manager := get_node("/root/FollowerManager")
+	var follower_dict: Dictionary = follower_manager.get_save_data()
+	follower_save_data.active_follower_ids = follower_dict.get("active_follower_ids", [])
+	follower_save_data.follower_states = follower_dict.get("follower_data", {})
+	follower_save_data.available_followers = follower_dict.get("available_followers", [])
+
+
+## Apply follower system data
+func _apply_follower_data(follower_save_data) -> void:
+	if not has_node("/root/FollowerManager"):
+		return
+
+	var follower_manager := get_node("/root/FollowerManager")
+	follower_manager.load_save_data({
+		"active_follower_ids": follower_save_data.active_follower_ids,
+		"follower_data": follower_save_data.follower_states,
+		"available_followers": follower_save_data.available_followers
+	})
+
+
 ## Migrate old save data to current version
 func _migrate_save_data(data: Dictionary, from_version: int) -> Dictionary:
 	var migrated := data.duplicate(true)
@@ -1270,6 +1351,19 @@ func _migrate_save_data(data: Dictionary, from_version: int) -> Dictionary:
 		}
 
 		migrated["version"] = 4
+
+	# Version 4 -> 5: Add SoulstoneEconomy data
+	if from_version < 5:
+		# Initialize with empty defaults - will be populated on first load
+		migrated["soulstones"] = {
+			"soulstone_registry": {},
+			"quest_targets": {},
+			"distribution_counts": {},
+			"enchantment_soulstone_energy": {},
+			"economy_to_inventory_map": {}
+		}
+
+		migrated["version"] = 5
 
 	return migrated
 
@@ -1640,3 +1734,12 @@ func reset_world_state() -> void:
 	# Reset journal manager
 	if JournalManager:
 		JournalManager.reset()
+
+	# Reset soulstone economy
+	if SoulstoneEconomy:
+		SoulstoneEconomy.reset()
+
+	# Reset follower system
+	if has_node("/root/FollowerManager"):
+		var follower_manager := get_node("/root/FollowerManager")
+		follower_manager.reset_for_new_game()

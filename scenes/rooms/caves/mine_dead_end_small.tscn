@@ -1,0 +1,78 @@
+[gd_scene load_steps=5 format=3 uid="uid://mine_dead_end_small"]
+
+[ext_resource type="Script" path="res://scripts/rooms/modular_room.gd" id="1_modular"]
+[ext_resource type="PackedScene" path="res://assets/models/caves/cave_piece_01.glb" id="2_mesh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(14.0, 0.5, 14.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_walls"]
+size = Vector3(16.0, 6.0, 1.0)
+
+[node name="MineDeadEndSmall" type="Node3D"]
+script = ExtResource("1_modular")
+room_id = "mine_dead_end_small"
+room_type = "cave"
+room_name = "Dead End"
+room_width = 16.0
+room_depth = 16.0
+room_height = 6.0
+
+[node name="Terrain" type="Node3D" parent="."]
+
+[node name="CaveMesh" parent="Terrain" instance=ExtResource("2_mesh")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 8, 0, 8)
+
+[node name="FloorCollision" type="StaticBody3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 8)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Terrain/FloorCollision"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="WallCollision" type="StaticBody3D" parent="Terrain"]
+
+[node name="WallNorth" type="CollisionShape3D" parent="Terrain/WallCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 3, 0.5)
+shape = SubResource("BoxShape3D_walls")
+
+[node name="WallEast" type="CollisionShape3D" parent="Terrain/WallCollision"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 15.5, 3, 8)
+shape = SubResource("BoxShape3D_walls")
+
+[node name="WallWest" type="CollisionShape3D" parent="Terrain/WallCollision"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0.5, 3, 8)
+shape = SubResource("BoxShape3D_walls")
+
+[node name="Props" type="Node3D" parent="."]
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="AmbientLight" type="OmniLight3D" parent="Lighting"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4, 8)
+light_color = Color(0.4, 0.35, 0.3, 1)
+light_energy = 0.4
+omni_range = 12.0
+omni_attenuation = 1.5
+
+[node name="EnemySpawns" type="Node3D" parent="."]
+
+[node name="Spawn1" type="Marker3D" parent="EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 8)
+metadata/enemy_data = "res://data/enemies/bat.tres"
+metadata/sprite_path = "res://assets/sprites/enemies/beasts/bat.png"
+metadata/h_frames = 4
+metadata/v_frames = 1
+
+[node name="ChestPositions" type="Node3D" parent="."]
+
+[node name="Chest1" type="Marker3D" parent="ChestPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 4)
+metadata/chest_id = "mine_dead_end_chest"
+metadata/loot_tier = "common"
+
+[node name="DoorPositions" type="Node3D" parent="."]
+
+[node name="Door_South" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 15.5)
+metadata/door_id = "door_south"
+metadata/show_frame = false

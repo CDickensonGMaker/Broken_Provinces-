@@ -1,0 +1,119 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Texture2D" uid="uid://dta0hblwspyt5" path="res://assets/textures/environment/dungeon/stonefloor.png" id="1_floor"]
+[ext_resource type="Texture2D" uid="uid://ca8q0o7n04x0e" path="res://assets/textures/environment/dungeon/stonewall.png" id="2_wall"]
+[ext_resource type="Texture2D" uid="uid://bm3kw5y1lgwkq" path="res://assets/textures/environment/dungeon/stonefloor_2.png" id="3_ceiling"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
+albedo_texture = ExtResource("1_floor")
+uv1_scale = Vector3(4, 4, 1)
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wall"]
+albedo_texture = ExtResource("2_wall")
+uv1_scale = Vector3(4, 1, 4)
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ceiling"]
+albedo_texture = ExtResource("3_ceiling")
+uv1_scale = Vector3(4, 4, 1)
+texture_filter = 0
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor"]
+material = SubResource("StandardMaterial3D_floor")
+size = Vector3(16, 0.2, 16)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(16, 0.2, 16)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ceiling"]
+material = SubResource("StandardMaterial3D_ceiling")
+size = Vector3(16, 0.2, 16)
+
+[node name="HallwayNS" type="Node3D"]
+
+[node name="Geometry" type="Node3D" parent="."]
+
+; Floor - 16x16 standard grid size, centered at (8, -0.1, 8)
+[node name="Floor" type="MeshInstance3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, -0.1, 8)
+mesh = SubResource("BoxMesh_floor")
+
+[node name="FloorBody" type="StaticBody3D" parent="Geometry/Floor"]
+
+[node name="FloorCollision" type="CollisionShape3D" parent="Geometry/Floor/FloorBody"]
+shape = SubResource("BoxShape3D_floor")
+
+; Ceiling - 16x16 standard grid size
+[node name="Ceiling" type="MeshInstance3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4.1, 8)
+mesh = SubResource("BoxMesh_ceiling")
+
+[node name="CeilingBody" type="StaticBody3D" parent="Geometry/Ceiling"]
+
+[node name="CeilingCollision" type="CollisionShape3D" parent="Geometry/Ceiling/CeilingBody"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Walls" type="Node3D" parent="Geometry"]
+
+; West thick wall - creates left side of narrow passage
+; 5.5 units thick (x=0 to x=5.5), full 16 units long (z)
+; Position: x=2.75 (center of 5.5 width), y=2, z=8
+[node name="WallWest" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.75, 2, 8)
+use_collision = true
+size = Vector3(5.5, 4, 16)
+material = SubResource("StandardMaterial3D_wall")
+
+; East thick wall - creates right side of narrow passage
+; 5.5 units thick (x=10.5 to x=16), full 16 units long (z)
+; Position: x=13.25 (center of 5.5 width starting at 10.5), y=2, z=8
+[node name="WallEast" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.25, 2, 8)
+use_collision = true
+size = Vector3(5.5, 4, 16)
+material = SubResource("StandardMaterial3D_wall")
+
+; North wall segments - 5-unit door opening in center (x=5.5 to x=10.5)
+; Left segment: x=0 to x=5.5 (5.5 units), at z=0
+; Position: x=2.75, y=2, z=0.25
+[node name="WallNorthLeft" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.75, 2, 0.25)
+use_collision = true
+size = Vector3(5.5, 4, 0.5)
+material = SubResource("StandardMaterial3D_wall")
+
+; Right segment: x=10.5 to x=16 (5.5 units), at z=0
+; Position: x=13.25, y=2, z=0.25
+[node name="WallNorthRight" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.25, 2, 0.25)
+use_collision = true
+size = Vector3(5.5, 4, 0.5)
+material = SubResource("StandardMaterial3D_wall")
+
+; South wall segments - 5-unit door opening in center (x=5.5 to x=10.5)
+; Left segment: x=0 to x=5.5 (5.5 units), at z=16
+; Position: x=2.75, y=2, z=15.75
+[node name="WallSouthLeft" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.75, 2, 15.75)
+use_collision = true
+size = Vector3(5.5, 4, 0.5)
+material = SubResource("StandardMaterial3D_wall")
+
+; Right segment: x=10.5 to x=16 (5.5 units), at z=16
+; Position: x=13.25, y=2, z=15.75
+[node name="WallSouthRight" type="CSGBox3D" parent="Geometry/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.25, 2, 15.75)
+use_collision = true
+size = Vector3(5.5, 4, 0.5)
+material = SubResource("StandardMaterial3D_wall")
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="SpawnPoint" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.5, 8)
+metadata/spawn_id = "default"
+
+[node name="EnemySpawns" type="Node3D" parent="."]
+
+[node name="ChestPositions" type="Node3D" parent="."]

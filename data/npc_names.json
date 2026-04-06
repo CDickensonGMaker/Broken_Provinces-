@@ -1,0 +1,68 @@
+{
+    "description": "200 unique medieval fantasy NPC names organized by category",
+    "male_names": [
+        "Roderic", "Bertram", "Grimwald", "Osric", "Theron", "Calder", "Bram", "Dunstan",
+        "Hadrian", "Kendrick", "Leofric", "Magnus", "Norbert", "Owyn", "Percival", "Quintus",
+        "Reinhard", "Sigmund", "Tormund", "Ulric", "Vance", "Wulfric", "Xavier", "Yorick",
+        "Zephyr", "Anselm", "Borin", "Corwin", "Drystan", "Edric", "Fabian", "Gareth",
+        "Hakon", "Ivo", "Jasper", "Kellan", "Lothar", "Merric", "Nolan", "Osbert",
+        "Phelan", "Quillan", "Ronan", "Severin", "Talbot", "Uther", "Volker", "Warren",
+        "Yoren", "Aldous", "Brennan", "Cedric", "Declan", "Egan", "Finbar", "Godfrey",
+        "Hamish", "Ingram", "Jareth", "Keegan", "Lachlan", "Maddox", "Niall", "Oswin",
+        "Padraig", "Riordan", "Struan", "Tavish", "Vaughn", "Wynstan", "Eamon", "Baird",
+        "Colm", "Dougal", "Emeric", "Flynn", "Gideon", "Heath", "Ivar", "Jorah"
+    ],
+    "female_names": [
+        "Aelith", "Brenna", "Cordelia", "Drusilla", "Elspeth", "Freya", "Gwendolen", "Helga",
+        "Isadora", "Jocasta", "Katarine", "Lysandra", "Morgana", "Nimue", "Octavia", "Petra",
+        "Rowena", "Seraphina", "Thessaly", "Ursula", "Vivienne", "Winifred", "Ysolde", "Zelda",
+        "Agatha", "Beatrix", "Cassandra", "Dahlia", "Edith", "Fiona", "Greta", "Honora",
+        "Ingrid", "Juliana", "Keira", "Lilith", "Maeve", "Nerys", "Ophelia", "Priscilla",
+        "Rosalind", "Sybil", "Tabitha", "Una", "Venetia", "Willow", "Xanthe", "Yvaine",
+        "Zora", "Anwen", "Bridget", "Ceridwen", "Deirdre", "Eira", "Fenella", "Grania",
+        "Hild", "Iona", "Jessamine", "Kerenza", "Lavinia", "Mirren", "Nuala", "Oonagh",
+        "Phoebe", "Rhiannon", "Sorcha", "Talulla", "Vala", "Wynne", "Ailsa", "Briony",
+        "Clover", "Davina", "Enid", "Fenella", "Ginevra", "Hester", "Isolde", "Juno"
+    ],
+    "surname_prefixes": [
+        "Black", "Iron", "Storm", "Frost", "Stone", "Grey", "Oak", "Ash",
+        "Hawk", "Wolf", "Raven", "Bear", "Thorn", "Crow", "Moss", "Briar",
+        "Swift", "Bright", "Dark", "Cold", "Red", "Silver", "Gold", "Bronze",
+        "Copper", "Steel", "Night", "Dawn", "Dusk", "Winter", "Summer", "Autumn"
+    ],
+    "surname_suffixes": [
+        "wood", "ford", "bridge", "well", "brook", "dale", "vale", "hill",
+        "field", "meadow", "grove", "hollow", "ridge", "cliff", "stone", "gate",
+        "keep", "hold", "tower", "forge", "smith", "wright", "ward", "guard",
+        "helm", "shield", "blade", "sword", "heart", "blood", "bone", "claw"
+    ],
+    "single_surnames": [
+        "Thornwick", "Bramwell", "Stonehelm", "Ashford", "Ravencroft", "Ironwood", "Blackmoor", "Greyfell",
+        "Winterborn", "Nightingale", "Dawnweaver", "Frostheart", "Stormwind", "Oakheart", "Wolfbane", "Crowley",
+        "Briarwood", "Hawksworth", "Bearstone", "Mossgrave", "Swiftbrook", "Brightwater", "Darkhollow", "Coldwell",
+        "Silverdale", "Goldridge", "Bronzewood", "Copperfield", "Steelforge", "Dustwalker", "Shadowmend", "Firebrand",
+        "Moorland", "Fairweather", "Strongbow", "Trueblade", "Goodheart", "Hardhammer", "Lightfoot", "Quicksilver"
+    ],
+    "dwarf_names": [
+        "Thorin", "Balin", "Dwalin", "Fili", "Kili", "Gimli", "Gloin", "Oin",
+        "Nori", "Dori", "Ori", "Bifur", "Bofur", "Bombur", "Durin", "Thrain",
+        "Thror", "Dain", "Nain", "Fundin", "Groin", "Azog", "Bolg", "Gothmog",
+        "Rurik", "Kurgan", "Gromm", "Brok", "Thordak", "Grimbeard", "Ironfoot", "Stoneaxe"
+    ],
+    "elf_names": [
+        "Arannis", "Caeleth", "Elandril", "Faelyn", "Galadrim", "Haldir", "Ilindra", "Jaelithe",
+        "Kelarion", "Luthien", "Maedhros", "Niphredil", "Orophin", "Phaedra", "Quelenna", "Rivandil",
+        "Silmarin", "Tindomiel", "Ulindel", "Vanyar", "Wendelas", "Xiloscient", "Yavanna", "Zephyra",
+        "Aerendil", "Belanor", "Celeborn", "Daenarys", "Elenwe", "Finrod", "Galadriel", "Haleth"
+    ],
+    "title_prefixes": [
+        "Lord", "Lady", "Sir", "Dame", "Baron", "Baroness", "Count", "Countess",
+        "Duke", "Duchess", "Prince", "Princess", "Master", "Mistress", "Captain", "Commander",
+        "Archon", "Elder", "High", "Grand", "Royal", "Noble", "Honored", "Revered"
+    ],
+    "occupational_surnames": [
+        "Smith", "Baker", "Cooper", "Fletcher", "Tanner", "Mason", "Miller", "Weaver",
+        "Chandler", "Brewer", "Butcher", "Carpenter", "Farmer", "Fisher", "Hunter", "Shepherd",
+        "Thatcher", "Wheeler", "Bowyer", "Armorer", "Saddler", "Potter", "Scribe", "Healer"
+    ]
+}

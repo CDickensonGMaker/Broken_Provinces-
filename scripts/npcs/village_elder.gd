@@ -31,7 +31,7 @@ var npc_type: String = "village_elder"
 @export var is_female: bool = false
 var sprite_h_frames: int = 1
 var sprite_v_frames: int = 1
-var sprite_pixel_size: float = 0.0384  # Standard NPC height
+var sprite_pixel_size: float = 0.0256  # Standard NPC height
 
 ## Visual components
 var billboard: BillboardSprite

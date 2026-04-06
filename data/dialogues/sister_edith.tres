@@ -1,0 +1,184 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=32 format=3 uid="uid://sister_edith"]
+
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_node.gd" id="2_node"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_choice.gd" id="3_choice"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_condition.gd" id="4_cond"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_action.gd" id="5_action"]
+
+[sub_resource type="Resource" id="choice_goodbye"]
+script = ExtResource("3_choice")
+text = "Thank you, Sister. I must be going."
+next_node_id = "end"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_back_start"]
+script = ExtResource("3_choice")
+text = "I have more questions..."
+next_node_id = "start"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_gaela"]
+script = ExtResource("3_choice")
+text = "Tell me about Gaela."
+next_node_id = "about_gaela"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_blessing"]
+script = ExtResource("3_choice")
+text = "I seek a blessing."
+next_node_id = "blessing_offer"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_healing"]
+script = ExtResource("3_choice")
+text = "I need healing."
+next_node_id = "healing_offer"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_village"]
+script = ExtResource("3_choice")
+text = "How fares the village?"
+next_node_id = "village_state"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="action_set_blessed"]
+script = ExtResource("5_action")
+type = 7
+param_string = "blessed_by_gaela_millbrook"
+param_int = 0
+param_float = 0.0
+success_node_id = ""
+failure_node_id = ""
+
+[sub_resource type="Resource" id="cond_not_blessed"]
+script = ExtResource("4_cond")
+type = 5
+param_string = "blessed_by_gaela_millbrook"
+param_int = 0
+param_float = 0.0
+invert = true
+
+[sub_resource type="Resource" id="choice_accept_blessing"]
+script = ExtResource("3_choice")
+text = "Yes, I would receive Gaela's blessing."
+next_node_id = "blessing_granted"
+conditions = [SubResource("cond_not_blessed")]
+show_when_unavailable = true
+unavailable_reason = "You have already received Gaela's blessing here"
+actions = [SubResource("action_set_blessed")]
+
+[sub_resource type="Resource" id="choice_decline_blessing"]
+script = ExtResource("3_choice")
+text = "Perhaps another time."
+next_node_id = "blessing_declined"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="node_start"]
+script = ExtResource("2_node")
+id = "start"
+speaker_name = "Sister Edith"
+text = "*a serene woman in soil-stained green robes looks up from tending flowers, her eyes warm* Welcome to the Chapel of Gaela, traveler. I am Sister Edith. The Mother of Seasons watches over all who enter here. How may I serve you?"
+choices = [SubResource("choice_gaela"), SubResource("choice_blessing"), SubResource("choice_healing"), SubResource("choice_village"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "priest_warm"
+
+[sub_resource type="Resource" id="node_about_gaela"]
+script = ExtResource("2_node")
+id = "about_gaela"
+speaker_name = "Sister Edith"
+text = "Gaela is the Mother of Seasons, goddess of growth and harvest. She teaches us that all things have their time - a time to plant, a time to tend, and a time to reap. Here in Millbrook, we depend on her blessings for our crops and our fishing. The farmers pray to her in spring, and give thanks in autumn."
+choices = [SubResource("choice_back_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "priest_teaching"
+
+[sub_resource type="Resource" id="node_blessing_offer"]
+script = ExtResource("2_node")
+id = "blessing_offer"
+speaker_name = "Sister Edith"
+text = "*she produces a sprig of wheat bound with green ribbon* Gaela's blessing brings good fortune in finding sustenance and prosperity in honest labor. Shall I bestow her favor upon you?"
+choices = [SubResource("choice_accept_blessing"), SubResource("choice_decline_blessing")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "priest_offering"
+
+[sub_resource type="Resource" id="node_blessing_granted"]
+script = ExtResource("2_node")
+id = "blessing_granted"
+speaker_name = "Sister Edith"
+text = "*she traces a symbol of wheat on your forehead with consecrated oil* By seed and soil, by sun and rain, I mark you as Gaela's own. May your travels be fruitful and your burdens light. Rise, and carry the Mother's warmth with you."
+choices = [SubResource("choice_back_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "priest_blessing"
+
+[sub_resource type="Resource" id="node_blessing_declined"]
+script = ExtResource("2_node")
+id = "blessing_declined"
+speaker_name = "Sister Edith"
+text = "*she nods gently* The seed waits for the right moment. When you are ready, the blessing will be here. Gaela does not rush her seasons."
+choices = [SubResource("choice_back_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "priest_understanding"
+
+[sub_resource type="Resource" id="node_healing_offer"]
+script = ExtResource("2_node")
+id = "healing_offer"
+speaker_name = "Sister Edith"
+text = "*she examines you with practiced eyes* Gaela grants me the gift of mending. I can tend to your wounds and restore your vigor. Come, sit by the altar, and let the Mother's grace flow through you."
+choices = [SubResource("choice_back_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "priest_caring"
+
+[sub_resource type="Resource" id="node_village_state"]
+script = ExtResource("2_node")
+id = "village_state"
+speaker_name = "Sister Edith"
+text = "*a shadow passes over her serene features* Dark times, I'm afraid. The bandits have frightened everyone, and the fishing has grown dangerous. Some say there's something in the lake... I pray for the village every day. Elder Willa carries a heavy burden, trying to keep everyone safe and fed."
+choices = [SubResource("choice_back_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "priest_concerned"
+
+[sub_resource type="Resource" id="node_end"]
+script = ExtResource("2_node")
+id = "end"
+speaker_name = "Sister Edith"
+text = "May Gaela watch over your path, and may you find abundance in all your endeavors. Return to us when the road grows long."
+choices = []
+is_end_node = true
+auto_continue_to = ""
+portrait_id = "priest_farewell"
+
+[resource]
+script = ExtResource("1_data")
+id = "sister_edith"
+display_name = "Sister Edith Dialogue"
+description = "Dialogue for Sister Edith, priestess of Gaela at the Chapel in Millbrook. Offers healing, blessings, and information about the village's troubles."
+start_node_id = "start"
+nodes = [SubResource("node_start"), SubResource("node_about_gaela"), SubResource("node_blessing_offer"), SubResource("node_blessing_granted"), SubResource("node_blessing_declined"), SubResource("node_healing_offer"), SubResource("node_village_state"), SubResource("node_end")]

@@ -413,75 +413,181 @@ func _create_bounty_board() -> Node3D:
 
 
 func _create_buildings() -> void:
-	var counts: Dictionary = get_building_counts(location_type)
-	var available_shops: Array[String] = get_shop_types(location_type)
+	# Use ProceduralTownGenerator with AABB collision detection
+	var settlement_type := _get_settlement_type()
+	var level_data := ProceduralTownGenerator.generate_town(
+		settlement_type,
+		town_seed,
+		location_id,
+		location_name
+	)
 
-	# Track placed building positions to avoid overlap
-	var placed_positions: Array[Vector3] = []
-	var min_distance := 12.0
-
-	# Place shops first (more important)
-	var shops_to_place: Array[String] = []
-	for shop_type in available_shops:
-		shops_to_place.append(shop_type)
-
-	# Shuffle shops
-	for i in range(shops_to_place.size() - 1, 0, -1):
-		var j := rng.randi() % (i + 1)
-		var temp: String = shops_to_place[i]
-		shops_to_place[i] = shops_to_place[j]
-		shops_to_place[j] = temp
-
-	# Limit to shop count
-	var num_shops: int = mini(counts.shops, shops_to_place.size())
-	for i in range(num_shops):
-		var pos := _find_building_position(placed_positions, min_distance)
-		if pos != Vector3.ZERO:
-			var building := _create_shop_building(shops_to_place[i], pos)
-			if building:
-				buildings.append(building)
-				placed_positions.append(pos)
-
-	# Place houses
-	for i in range(counts.houses):
-		var pos := _find_building_position(placed_positions, min_distance)
-		if pos != Vector3.ZERO:
-			var building := _create_house(pos)
-			if building:
-				buildings.append(building)
-				placed_positions.append(pos)
-
-
-func _find_building_position(existing: Array[Vector3], min_dist: float) -> Vector3:
-	var attempts := 0
-	var max_attempts := 20
-
-	while attempts < max_attempts:
-		# Random position within town bounds, avoiding center plaza
-		var x := rng.randf_range(-half_size + 8, half_size - 8)
-		var z := rng.randf_range(-half_size + 8, half_size - 8)
-
-		# Skip if too close to center (plaza area)
-		if abs(x) < 10 and abs(z) < 10:
-			attempts += 1
+	# Spawn buildings from generated level data
+	for elem: LevelEditorData.PlacedElement in level_data.elements:
+		if elem.element_type != LevelEditorData.ElementType.BUILDING:
 			continue
 
-		var pos := Vector3(x, 0, z)
-		var valid := true
+		var props: Dictionary = elem.properties
+		var is_shop: bool = props.get("is_shop", false)
 
-		for other: Vector3 in existing:
-			if pos.distance_to(other) < min_dist:
-				valid = false
-				break
+		var building: Node3D
+		if is_shop:
+			building = _create_shop_building_from_data(elem.position, props)
+		else:
+			building = _create_house_from_data(elem.position, props)
 
-		if valid:
-			return pos
-
-		attempts += 1
-
-	return Vector3.ZERO
+		if building:
+			building.rotation_degrees.y = elem.rotation.y
+			buildings.append(building)
 
 
+## Convert location_type to settlement type string
+func _get_settlement_type() -> String:
+	match location_type:
+		WorldGrid.LocationType.VILLAGE: return "village"
+		WorldGrid.LocationType.TOWN: return "town"
+		WorldGrid.LocationType.CITY: return "city"
+		WorldGrid.LocationType.CAPITAL: return "capital"
+		_: return "hamlet"
+
+
+## Create house from generated data (uses actual dimensions)
+func _create_house_from_data(pos: Vector3, props: Dictionary) -> Node3D:
+	var house := Node3D.new()
+	house.name = "House_%d" % buildings.size()
+	house.position = pos
+	house.add_to_group("buildings")
+	house.add_to_group("houses")
+
+	var w: float = props.get("width", 6.0)
+	var h: float = props.get("height", 3.5)
+	var d: float = props.get("depth", 5.0)
+
+	# Structure
+	var structure := CSGBox3D.new()
+	structure.name = "Structure"
+	structure.size = Vector3(w, h, d)
+	structure.position = Vector3(0, h / 2, 0)
+	structure.use_collision = true
+
+	var mat := StandardMaterial3D.new()
+	if house_texture:
+		mat.albedo_texture = house_texture
+		mat.uv1_scale = Vector3(0.2, 0.2, 1.0)
+		mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	else:
+		mat.albedo_color = Color(0.55, 0.45, 0.35)
+	structure.material = mat
+	house.add_child(structure)
+
+	# Roof
+	var roof := CSGBox3D.new()
+	roof.name = "Roof"
+	roof.size = Vector3(w + 0.8, 0.4, d + 0.8)
+	roof.position = Vector3(0, h + 0.2, 0)
+
+	var roof_mat := StandardMaterial3D.new()
+	roof_mat.albedo_color = Color(0.3 + rng.randf() * 0.1, 0.22, 0.18)
+	roof.material = roof_mat
+	house.add_child(roof)
+
+	# Lockable door
+	var lock_dc := rng.randi_range(8, 15)
+	var door_area := Area3D.new()
+	door_area.name = "DoorArea"
+	door_area.add_to_group("interactables")
+	door_area.add_to_group("lockable_doors")
+	door_area.set_meta("interaction_type", "locked_door")
+	door_area.set_meta("lock_dc", lock_dc)
+	door_area.set_meta("display_name", "Locked Door (DC %d)" % lock_dc)
+	door_area.set_meta("is_locked", true)
+
+	var door_col := CollisionShape3D.new()
+	var door_box := BoxShape3D.new()
+	door_box.size = Vector3(2, 3, 2)
+	door_col.shape = door_box
+	door_col.position = Vector3(0, 1.5, d / 2 + 1)
+	door_area.add_child(door_col)
+	house.add_child(door_area)
+
+	add_child(house)
+	return house
+
+
+## Create shop building from generated data (uses actual dimensions from generator)
+func _create_shop_building_from_data(pos: Vector3, props: Dictionary) -> Node3D:
+	var shop_type: String = props.get("shop_type", "general")
+	var shop := Node3D.new()
+	shop.name = props.get("building_name", shop_type.capitalize()).replace(" ", "")
+	shop.position = pos
+	shop.add_to_group("buildings")
+
+	# Use dimensions from generated data
+	var building_size := Vector3(
+		props.get("width", 8.0),
+		props.get("height", 4.0),
+		props.get("depth", 6.0)
+	)
+
+	# Main structure
+	var structure := CSGBox3D.new()
+	structure.name = "Structure"
+	structure.size = building_size
+	structure.position = Vector3(0, building_size.y / 2, 0)
+	structure.use_collision = true
+
+	var mat := StandardMaterial3D.new()
+	if house_texture:
+		mat.albedo_texture = house_texture
+		mat.uv1_scale = Vector3(0.25, 0.25, 1.0)
+		mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	else:
+		mat.albedo_color = Color(0.6, 0.5, 0.4)
+	structure.material = mat
+	shop.add_child(structure)
+
+	# Roof
+	var roof := CSGBox3D.new()
+	roof.name = "Roof"
+	roof.size = Vector3(building_size.x + 1, 0.5, building_size.z + 1)
+	roof.position = Vector3(0, building_size.y + 0.25, 0)
+
+	var roof_mat := StandardMaterial3D.new()
+	roof_mat.albedo_color = Color(0.35, 0.25, 0.2)
+	roof.material = roof_mat
+	shop.add_child(roof)
+
+	# Sign/label
+	var sign_label := Label3D.new()
+	sign_label.name = "Sign"
+	sign_label.text = _get_shop_display_name(shop_type)
+	sign_label.position = Vector3(0, building_size.y + 1.0, building_size.z / 2 + 0.1)
+	sign_label.font_size = 48
+	sign_label.modulate = Color(0.9, 0.85, 0.7)
+	shop.add_child(sign_label)
+
+	# Interaction area for shop
+	var area := Area3D.new()
+	area.name = "ShopArea"
+	area.add_to_group("interactables")
+	area.add_to_group("shops")
+	area.set_meta("interaction_type", "shop")
+	area.set_meta("shop_type", shop_type)
+	area.set_meta("display_name", _get_shop_display_name(shop_type))
+
+	var col := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(building_size.x + 4, 4, building_size.z + 4)
+	col.shape = box
+	col.position = Vector3(0, 2, 0)
+	area.add_child(col)
+	shop.add_child(area)
+
+	add_child(shop)
+	return shop
+
+
+## Legacy shop building function (kept for backwards compatibility)
 func _create_shop_building(shop_type: String, pos: Vector3) -> Node3D:
 	var shop := Node3D.new()
 	shop.name = shop_type.capitalize().replace("_", "")

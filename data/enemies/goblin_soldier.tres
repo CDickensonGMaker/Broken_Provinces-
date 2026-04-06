@@ -48,6 +48,7 @@ will = 2
 knowledge = 1
 behavior = 0
 faction = 1
+political_faction = "goblins"
 aggro_range = 12.0
 attack_range = 2.0
 preferred_distance = 2.0

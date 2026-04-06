@@ -17,7 +17,10 @@ const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/towns/town_murmur_mediev
 func _ready() -> void:
 	# Only register with PlayerGPS if we're the main scene (have Player node)
 	# When loaded as a streaming cell, Player is stripped - don't touch GPS
-	var is_main_scene: bool = get_node_or_null("Player") != null
+	var is_main_scene: bool = false
+	var _player_check: Node = get_node_or_null("Player")
+	if _player_check and is_instance_valid(_player_check) and not _player_check.is_queued_for_deletion():
+		is_main_scene = true
 
 	if is_main_scene:
 		if PlayerGPS:
@@ -29,7 +32,7 @@ func _ready() -> void:
 			QuestManager.on_location_reached(ZONE_ID)
 
 		# Day/night only needed when we're the main scene
-		DayNightCycle.force_takeover(self)
+		DayNightCycle.add_to_level(self)
 
 		# Play town ambient sound and village music
 		AudioManager.play_ambient(TOWN_AMBIENT_PATH)

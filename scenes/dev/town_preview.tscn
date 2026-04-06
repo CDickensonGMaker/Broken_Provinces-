@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://dtown_preview_test"]
+
+[ext_resource type="PackedScene" uid="uid://i6wi67s245a" path="res://scenes/levels/town editor towns/thornfield.tscn" id="1_town"]
+[ext_resource type="Script" path="res://scripts/dev/free_cam_preview.gd" id="2_freecam"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="3_player"]
+
+[node name="TownPreview" type="Node3D"]
+
+[node name="FreeCam" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 15, 25)
+fov = 75.0
+current = false
+script = ExtResource("2_freecam")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 10, 20, 10)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="Town" parent="." instance=ExtResource("1_town")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

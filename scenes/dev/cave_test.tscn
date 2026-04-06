@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://cave_test_scene"]
+
+[ext_resource type="Script" path="res://scripts/dev/cave_test.gd" id="1_test"]
+
+[node name="CaveTest" type="Node3D"]
+script = ExtResource("1_test")
+cave_length = 8
+cave_branches = 2
+cave_faction = "cave"
+zone_danger = 3
+auto_spawn_content = true

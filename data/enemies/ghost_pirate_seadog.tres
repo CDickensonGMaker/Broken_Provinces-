@@ -76,6 +76,7 @@ knowledge = 4
 bravery = 7
 behavior = 0
 faction = 2
+political_faction = "pirates"
 aggro_range = 16.0
 attack_range = 2.5
 preferred_distance = 2.5

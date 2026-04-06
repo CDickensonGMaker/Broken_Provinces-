@@ -12,7 +12,10 @@ const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/towns/town_murmur_mediev
 func _ready() -> void:
 	SaveManager.set_current_zone(ZONE_ID, "Rotherhine")
 	# Play town ambient sound (only when main scene)
-	var is_main_scene: bool = get_node_or_null("Player") != null
+	var is_main_scene: bool = false
+	var _player_check: Node = get_node_or_null("Player")
+	if _player_check and is_instance_valid(_player_check) and not _player_check.is_queued_for_deletion():
+		is_main_scene = true
 	if is_main_scene:
 		AudioManager.play_ambient(TOWN_AMBIENT_PATH)
 		AudioManager.play_zone_music("village")

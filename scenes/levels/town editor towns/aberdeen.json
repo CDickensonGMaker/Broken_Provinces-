@@ -1,0 +1,1341 @@
+{
+  "district_index": 0,
+  "district_name": "",
+  "elements": [
+    {
+      "element_type": 0,
+      "id": "118756969_5144",
+      "position": {
+        "x": -24.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "properties": {
+        "building_id": "blacksmith",
+        "building_name": "Blacksmith",
+        "depth": 8,
+        "height": 4,
+        "is_shop": true,
+        "shop_type": "blacksmith",
+        "style": "stone",
+        "tier": 3,
+        "width": 10
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "1407801935_5144",
+      "position": {
+        "x": -24.0,
+        "y": 0.0,
+        "z": 28.0
+      },
+      "properties": {
+        "building_id": "temple",
+        "building_name": "Temple",
+        "depth": 15,
+        "height": 8,
+        "is_shop": true,
+        "shop_type": "temple",
+        "style": "stone",
+        "tier": 3,
+        "width": 12
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "2354221439_5144",
+      "position": {
+        "x": -36.0,
+        "y": 0.0,
+        "z": 8.0
+      },
+      "properties": {
+        "building_id": "inn",
+        "building_name": "Inn/Tavern",
+        "depth": 10,
+        "height": 5,
+        "is_shop": true,
+        "shop_type": "inn",
+        "style": "timber",
+        "tier": 2,
+        "width": 12
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "2061038108_5144",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 36.0
+      },
+      "properties": {
+        "building_id": "general_store",
+        "building_name": "General Store",
+        "depth": 7,
+        "height": 4,
+        "is_shop": true,
+        "shop_type": "general",
+        "style": "timber",
+        "tier": 2,
+        "width": 8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "351203156_5144",
+      "position": {
+        "x": -8.0,
+        "y": 0.0,
+        "z": 24.0
+      },
+      "properties": {
+        "building_id": "warehouse",
+        "building_name": "Warehouse",
+        "depth": 10,
+        "height": 5,
+        "style": "wood",
+        "tier": 3,
+        "width": 12
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "2794910758_5144",
+      "position": {
+        "x": 16.0,
+        "y": 0.0,
+        "z": -8.0
+      },
+      "properties": {
+        "building_id": "guild_hall",
+        "building_name": "Guild Hall",
+        "depth": 12,
+        "height": 5,
+        "style": "stone",
+        "tier": 3,
+        "width": 14
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "2705872725_5144",
+      "position": {
+        "x": 12.0,
+        "y": 0.0,
+        "z": -16.0
+      },
+      "properties": {
+        "building_id": "hovel",
+        "building_name": "Hovel",
+        "depth": 4,
+        "height": 2.5,
+        "style": "wood",
+        "tier": 1,
+        "width": 4
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "3933719955_5144",
+      "position": {
+        "x": -20.0,
+        "y": 0.0,
+        "z": 8.0
+      },
+      "properties": {
+        "building_id": "hovel",
+        "building_name": "Hovel",
+        "depth": 4,
+        "height": 2.5,
+        "style": "wood",
+        "tier": 1,
+        "width": 4
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "1338965599_5144",
+      "position": {
+        "x": 4.0,
+        "y": 0.0,
+        "z": 16.0
+      },
+      "properties": {
+        "building_id": "cottage",
+        "building_name": "Cottage",
+        "depth": 5,
+        "height": 3,
+        "style": "stone",
+        "tier": 1,
+        "width": 5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "2892540754_5144",
+      "position": {
+        "x": -36.0,
+        "y": 0.0,
+        "z": -32.0
+      },
+      "properties": {
+        "building_id": "cottage",
+        "building_name": "Cottage",
+        "depth": 5,
+        "height": 3,
+        "style": "stone",
+        "tier": 1,
+        "width": 5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "1537419061_5144",
+      "position": {
+        "x": -28.0,
+        "y": 0.0,
+        "z": -16.0
+      },
+      "properties": {
+        "building_id": "cottage",
+        "building_name": "Cottage",
+        "depth": 5,
+        "height": 3,
+        "style": "stone",
+        "tier": 1,
+        "width": 5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "1000005940_5144",
+      "position": {
+        "x": -4.0,
+        "y": 0.0,
+        "z": 16.0
+      },
+      "properties": {
+        "building_id": "cottage",
+        "building_name": "Cottage",
+        "depth": 5,
+        "height": 3,
+        "style": "stone",
+        "tier": 1,
+        "width": 5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 3,
+      "id": "3235080525_5144",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 4.0
+      },
+      "properties": {
+        "func_type": "spawn_point",
+        "spawn_id": "default"
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 3,
+      "id": "883098020_5144",
+      "position": {
+        "x": 1.14104413986206,
+        "y": 0.0,
+        "z": 3.3316478729248
+      },
+      "properties": {
+        "func_type": "fast_travel_shrine"
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 3,
+      "id": "3961033469_5144",
+      "position": {
+        "x": 6.0,
+        "y": 0.0,
+        "z": -3.0
+      },
+      "properties": {
+        "func_type": "bounty_board"
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "4214349691_5144",
+      "position": {
+        "x": 28.0,
+        "y": 0.0,
+        "z": 28.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.0,
+        "prop_id": "crate",
+        "prop_name": "Crate",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 315.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "4138223254_5144",
+      "position": {
+        "x": -28.0,
+        "y": 0.0,
+        "z": 6.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 0.5,
+        "prop_id": "bricks",
+        "prop_name": "Bricks",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "376403223_5144",
+      "position": {
+        "x": -42.0,
+        "y": 0.0,
+        "z": 40.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.0,
+        "prop_id": "barrel",
+        "prop_name": "Barrel",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 45.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "3348928802_5144",
+      "position": {
+        "x": -4.0,
+        "y": 0.0,
+        "z": -8.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.0,
+        "prop_id": "crate",
+        "prop_name": "Crate",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 315.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "1013907780_5144",
+      "position": {
+        "x": -2.0,
+        "y": 0.0,
+        "z": -16.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.0,
+        "prop_id": "woodpile",
+        "prop_name": "Wood Pile",
+        "width": 2.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "1036198877_5144",
+      "position": {
+        "x": 26.0,
+        "y": 0.0,
+        "z": 34.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.0,
+        "prop_id": "detail_crate",
+        "prop_name": "Detail Crate",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "644264816_5144",
+      "position": {
+        "x": 2.0,
+        "y": 0.0,
+        "z": 22.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 0.5,
+        "prop_id": "bricks",
+        "prop_name": "Bricks",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "730491762_5144",
+      "position": {
+        "x": 32.0,
+        "y": 0.0,
+        "z": 30.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.0,
+        "prop_id": "woodpile",
+        "prop_name": "Wood Pile",
+        "width": 2.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "2700813740_5144",
+      "position": {
+        "x": 22.0,
+        "y": 0.0,
+        "z": 8.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.5,
+        "prop_id": "hay_bale",
+        "prop_name": "Hay Bale",
+        "width": 1.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "976586483_5144",
+      "position": {
+        "x": -34.0,
+        "y": 0.0,
+        "z": 14.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.0,
+        "prop_id": "crate",
+        "prop_name": "Crate",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 315.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "60293486_5144",
+      "position": {
+        "x": 12.0,
+        "y": 0.0,
+        "z": 18.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.0,
+        "prop_id": "woodpile",
+        "prop_name": "Wood Pile",
+        "width": 2.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 45.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "681235686_5144",
+      "position": {
+        "x": -20.0,
+        "y": 0.0,
+        "z": 16.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 0.5,
+        "prop_id": "bricks",
+        "prop_name": "Bricks",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 135.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "197098112_5144",
+      "position": {
+        "x": -20.0,
+        "y": 0.0,
+        "z": -44.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.0,
+        "prop_id": "woodpile",
+        "prop_name": "Wood Pile",
+        "width": 2.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 45.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "3663429220_5144",
+      "position": {
+        "x": 32.0,
+        "y": 0.0,
+        "z": -42.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.0,
+        "prop_id": "crate",
+        "prop_name": "Crate",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "2018902591_5144",
+      "position": {
+        "x": 10.0,
+        "y": 0.0,
+        "z": -24.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.5,
+        "prop_id": "crate_stack",
+        "prop_name": "Crate Stack",
+        "width": 1.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 45.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "3682991291_5144",
+      "position": {
+        "x": 8.0,
+        "y": 0.0,
+        "z": -2.0
+      },
+      "properties": {
+        "category": "medium",
+        "depth": 1.5,
+        "prop_id": "anvil",
+        "prop_name": "Anvil",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "357165624_5145",
+      "position": {
+        "x": -24.0,
+        "y": 0.0,
+        "z": 36.0
+      },
+      "properties": {
+        "category": "medium",
+        "depth": 0.5,
+        "prop_id": "sign_post",
+        "prop_name": "Sign Post",
+        "width": 0.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "486725695_5145",
+      "position": {
+        "x": -10.0,
+        "y": 0.0,
+        "z": 8.0
+      },
+      "properties": {
+        "category": "medium",
+        "depth": 0.5,
+        "prop_id": "sign_post",
+        "prop_name": "Sign Post",
+        "width": 0.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "787095996_5145",
+      "position": {
+        "x": 8.0,
+        "y": 0.0,
+        "z": 24.0
+      },
+      "properties": {
+        "category": "medium",
+        "depth": 3.0,
+        "prop_id": "hitching_post",
+        "prop_name": "Hitching Post",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "1190681267_5145",
+      "position": {
+        "x": 40.0,
+        "y": 0.0,
+        "z": -18.0
+      },
+      "properties": {
+        "category": "medium",
+        "depth": 3.0,
+        "prop_id": "hitching_post",
+        "prop_name": "Hitching Post",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 135.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "1133926989_5145",
+      "position": {
+        "x": -26.0,
+        "y": 0.0,
+        "z": -6.0
+      },
+      "properties": {
+        "category": "medium",
+        "depth": 1.5,
+        "prop_id": "table",
+        "prop_name": "Table",
+        "width": 2.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 315.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "2566659302_5145",
+      "position": {
+        "x": 36.0,
+        "y": 0.0,
+        "z": -24.0
+      },
+      "properties": {
+        "category": "tree",
+        "depth": 2.0,
+        "prop_id": "tree_pine",
+        "prop_name": "Pine Tree",
+        "width": 2.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 135.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "3790093553_5145",
+      "position": {
+        "x": -40.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "properties": {
+        "category": "tree",
+        "depth": 4.0,
+        "prop_id": "tree_large",
+        "prop_name": "Large Tree",
+        "width": 4.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "2137375430_5145",
+      "position": {
+        "x": 40.0,
+        "y": 0.0,
+        "z": 32.0
+      },
+      "properties": {
+        "category": "tree",
+        "depth": 2.0,
+        "prop_id": "tree_pine",
+        "prop_name": "Pine Tree",
+        "width": 2.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "247183616_5145",
+      "position": {
+        "x": -16.0,
+        "y": 0.0,
+        "z": -24.0
+      },
+      "properties": {
+        "category": "tree",
+        "depth": 3.0,
+        "prop_id": "tree_oak",
+        "prop_name": "Oak Tree",
+        "width": 3.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "1908636038_5145",
+      "position": {
+        "x": 28.0,
+        "y": 0.0,
+        "z": 28.0
+      },
+      "properties": {
+        "category": "tree",
+        "depth": 4.0,
+        "prop_id": "tree_large",
+        "prop_name": "Large Tree",
+        "width": 4.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 45.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "4081579965_5145",
+      "position": {
+        "x": 32.0,
+        "y": 0.0,
+        "z": -44.0
+      },
+      "properties": {
+        "category": "tree",
+        "depth": 2.0,
+        "prop_id": "tree_pine",
+        "prop_name": "Pine Tree",
+        "width": 2.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 45.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "2824151724_5145",
+      "position": {
+        "x": 24.0,
+        "y": 0.0,
+        "z": -24.0
+      },
+      "properties": {
+        "category": "tree",
+        "depth": 3.0,
+        "prop_id": "tree_oak",
+        "prop_name": "Oak Tree",
+        "width": 3.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 135.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "3209895130_5145",
+      "position": {
+        "x": 40.0,
+        "y": 0.0,
+        "z": 32.0
+      },
+      "properties": {
+        "category": "tree",
+        "depth": 2.0,
+        "prop_id": "tree_pine",
+        "prop_name": "Pine Tree",
+        "width": 2.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "2038302211_5145",
+      "position": {
+        "x": 28.0,
+        "y": 0.0,
+        "z": 30.0
+      },
+      "properties": {
+        "category": "vegetation",
+        "depth": 1.5,
+        "prop_id": "bush",
+        "prop_name": "Bush",
+        "width": 1.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "3027636954_5145",
+      "position": {
+        "x": 22.0,
+        "y": 0.0,
+        "z": 12.0
+      },
+      "properties": {
+        "category": "vegetation",
+        "depth": 1.5,
+        "prop_id": "bush",
+        "prop_name": "Bush",
+        "width": 1.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 225.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "1948788247_5145",
+      "position": {
+        "x": -36.0,
+        "y": 0.0,
+        "z": 22.0
+      },
+      "properties": {
+        "category": "vegetation",
+        "depth": 1.5,
+        "prop_id": "bush",
+        "prop_name": "Bush",
+        "width": 1.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "3378097554_5145",
+      "position": {
+        "x": 34.0,
+        "y": 0.0,
+        "z": 22.0
+      },
+      "properties": {
+        "category": "vegetation",
+        "depth": 1.5,
+        "prop_id": "bush",
+        "prop_name": "Bush",
+        "width": 1.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "232716291_5145",
+      "position": {
+        "x": 38.0,
+        "y": 0.0,
+        "z": 20.0
+      },
+      "properties": {
+        "category": "vegetation",
+        "depth": 1.0,
+        "prop_id": "tree_shrub",
+        "prop_name": "Shrub",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "1075240138_5145",
+      "position": {
+        "x": 24.0,
+        "y": 0.0,
+        "z": 28.0
+      },
+      "properties": {
+        "category": "vegetation",
+        "depth": 1.5,
+        "prop_id": "bush",
+        "prop_name": "Bush",
+        "width": 1.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    }
+  ],
+  "grid_size": {
+    "x": 96,
+    "y": 96
+  },
+  "is_district": false,
+  "level_id": "aberdeen",
+  "level_name": "Aberdeen",
+  "level_type": "town",
+  "master_layout_path": "",
+  "metadata": {
+
+  },
+  "settlement_type": "town",
+  "snap_size": 4.0
+}

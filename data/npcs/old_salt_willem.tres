@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="NPCData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/npc_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+npc_id = "old_salt_willem"
+display_name = "Old Willem"
+race = "Human"
+archetype = "civilian"
+location = "Larton"
+zone_id = "larton"
+faction_id = "human_empire"
+secondary_factions = []
+base_disposition = 55
+alignment = 10
+description = "A weathered old fisherman with sun-leathered skin and salt-crusted beard. Old Willem has sailed these waters for fifty years and knows every reef, every current, every hidden cove. He was one of the few who saw the ghost ship and lived to tell of it - though the experience left him half-mad. He mutters about spectral lights in the fog and the screams of drowned sailors. He knows where the ghost pirates make their lair, but speaking of it makes him tremble."
+portrait_path = ""
+sprite_path = "res://assets/sprites/npcs/civilians/guy_civilian1.png"
+sprite_h_frames = 1
+sprite_v_frames = 1
+dialogue_topics = ["local_news", "rumors", "fishing", "sea", "ghost_pirates", "ghost_ship", "pirate_stronghold", "harbor"]
+has_unique_dialogue = false
+dialogue_data_path = ""
+knowledge_profile_path = ""
+shop_type = "none"
+flags = {"knows_pirate_location": true, "is_talk_target": true}
+can_wander = true
+wander_radius = 8.0

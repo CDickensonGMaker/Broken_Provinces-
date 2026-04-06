@@ -1,0 +1,69 @@
+{
+	"id": "lost_woodsman",
+	"title": "The Lost Woodsman",
+	"description": "A logger named Harlen went into the eastern forest three days ago and hasn't returned. Old Yoren believes he knows which trail Harlen took, but is too old to search himself. The forest is dangerous, and Harlen may already be dead - or worse.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "old_yoren",
+	"giver_npc_type": "civilian",
+	"giver_region": "thornfield",
+	"objectives": [
+		{
+			"id": "speak_yoren",
+			"description": "Learn Harlen's likely route from Old Yoren",
+			"type": "talk",
+			"target": "old_yoren",
+			"required_count": 1
+		},
+		{
+			"id": "search_camp",
+			"description": "Search Harlen's abandoned camp in the eastern forest",
+			"type": "interact",
+			"target": "harlen_camp",
+			"required_count": 1
+		},
+		{
+			"id": "follow_trail",
+			"description": "Follow the blood trail deeper into the forest",
+			"type": "reach",
+			"target": "wolf_den_entrance",
+			"required_count": 1
+		},
+		{
+			"id": "find_harlen",
+			"description": "Find Harlen in the wolf den",
+			"type": "interact",
+			"target": "harlen_body",
+			"required_count": 1
+		},
+		{
+			"id": "recover_effects",
+			"description": "Recover Harlen's personal effects",
+			"type": "collect",
+			"target": "harlen_locket",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "old_yoren",
+	"turn_in_zone": "thornfield",
+	"rewards": {
+		"gold": 60,
+		"xp": 250,
+		"items": ["woodsman_axe"],
+		"reputation": {"thornfield": 10}
+	},
+	"choice_consequences": {
+		"harlen_alive": {
+			"flags_to_set": ["harlen_survived"],
+			"reputation_changes": {"thornfield": 10},
+			"description": "If you reach Harlen quickly and have healing supplies, he might survive."
+		},
+		"harlen_dead": {
+			"flags_to_set": ["harlen_died"],
+			"description": "Harlen succumbed to his wounds. At least his family will have closure."
+		}
+	},
+	"prerequisites": [],
+	"next_quest": ""
+}

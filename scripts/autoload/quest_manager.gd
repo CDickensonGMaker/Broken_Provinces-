@@ -5,8 +5,13 @@ signal quest_started(quest_id: String)
 signal quest_updated(quest_id: String, objective_id: String)
 signal quest_completed(quest_id: String)
 signal quest_failed(quest_id: String)
+signal quest_betrayed(quest_id: String)  # Player kept quest items or made selfish choice
 signal objective_completed(quest_id: String, objective_id: String)
 signal tracked_quest_changed(quest_id: String)
+signal choice_consequence_applied(quest_id: String, choice_id: String)  # Choice consequences executed
+signal follower_recruited(follower_id: String, quest_id: String)  # Follower recruited via quest
+signal soulstone_delivered(soulstone_id: String, npc_id: String, quest_id: String)  # Soulstone turned in
+signal puzzle_solved(puzzle_id: String, quest_id: String)  # Puzzle completed
 
 ## Quest data structure
 class Quest:
@@ -14,9 +19,10 @@ class Quest:
 	var title: String
 	var description: String
 	var state: Enums.QuestState = Enums.QuestState.UNAVAILABLE
+	var completion_state: Enums.QuestCompletionState = Enums.QuestCompletionState.NONE  # Detailed outcome
 	var is_main_quest: bool = false  # Main story quests get gold markers, side quests get teal
 	var objectives: Array[Objective] = []
-	var rewards: Dictionary = {}  # {gold, xp, items: [{id, quantity}], faction_reputation: {faction_id: amount}}
+	var rewards: Dictionary = {}  # {gold, xp, items: [{id, quantity}], faction_reputation: {faction_id: amount}, follower: "follower_id", soulstone: "soulstone_id", unlock_area: "flag_name"}
 	var prerequisites: Array[String] = []  # Quest IDs that must be completed
 
 	# Quest source and giver tracking
@@ -58,16 +64,21 @@ class Quest:
 	var dungeon_room_set: String = ""  # Room set to use (empty = default)
 	var dungeon_size: String = "MEDIUM"  # Size preset: SMALL, MEDIUM, LARGE, HUGE
 
+	# Choice consequence system - maps choice_id to consequence data
+	# Format: {"choice_id": {"flags_to_set": ["flag1"], "reputation_changes": {"faction_id": 10}, "unlock_follower": "follower_id", "spawn_enemy": "enemy_id_at_location"}}
+	var choice_consequences: Dictionary = {}
+
 class Objective:
 	var id: String
 	var description: String
-	var type: String  # "kill", "collect", "talk", "reach", "interact"
-	var target: String  # Enemy ID, item ID, NPC ID, location ID
+	var type: String  # "kill", "collect", "talk", "reach", "interact", "deliver_soulstone", "solve_puzzle", "recruit_follower"
+	var target: String  # Enemy ID, item ID, NPC ID, location ID, soulstone ID, puzzle flag, follower ID
 	var target_zone: String = ""  # Zone where target is located (for cross-zone markers)
 	var required_count: int = 1
 	var current_count: int = 0
 	var is_completed: bool = false
 	var is_optional: bool = false
+	var completion_method: String = ""  # How this objective was completed (for multi-path quests)
 
 	## Dungeon spawn configuration (for spawning quest-specific content in dungeons)
 	## Format: {dungeon_id, room_type, spawn_type, entity_id, guaranteed_count}
@@ -325,6 +336,11 @@ func _parse_quest(data: Dictionary) -> Quest:
 	quest.dungeon_seed = data.get("dungeon_seed", 0)
 	quest.dungeon_room_set = data.get("dungeon_room_set", "")
 	quest.dungeon_size = data.get("dungeon_size", "MEDIUM")
+
+	# Choice consequence system
+	var choice_consequences_data: Variant = data.get("choice_consequences", {})
+	if choice_consequences_data is Dictionary:
+		quest.choice_consequences = (choice_consequences_data as Dictionary).duplicate(true)
 
 	return quest
 
@@ -925,6 +941,80 @@ func on_location_reached(location_id: String) -> void:
 func on_interact(object_id: String) -> void:
 	update_progress("interact", object_id, 1)
 
+
+## Track soulstone delivery to NPC
+## soulstone_id: The soulstone item ID being delivered
+## npc_id: The NPC receiving the soulstone
+func on_soulstone_delivered(soulstone_id: String, npc_id: String) -> void:
+	for quest_id: String in quests:
+		var quest: Quest = quests[quest_id]
+		if quest.state != Enums.QuestState.ACTIVE:
+			continue
+
+		for obj in quest.objectives:
+			if obj.is_completed:
+				continue
+			# deliver_soulstone objectives match on soulstone_id (target) and optionally npc_id (target_zone)
+			if obj.type == "deliver_soulstone" and obj.target == soulstone_id:
+				# If target_zone is set, it specifies the required NPC
+				if not obj.target_zone.is_empty() and obj.target_zone != npc_id:
+					continue
+
+				obj.current_count += 1
+				quest_updated.emit(quest_id, obj.id)
+
+				if obj.current_count >= obj.required_count:
+					obj.is_completed = true
+					obj.completion_method = "delivered_to:" + npc_id
+					objective_completed.emit(quest_id, obj.id)
+					soulstone_delivered.emit(soulstone_id, npc_id, quest_id)
+
+		_check_quest_completion(quest_id)
+
+
+## Track puzzle completion (flag-based)
+## puzzle_id: The puzzle identifier (matches flag name when puzzle is solved)
+func on_puzzle_solved(puzzle_id: String) -> void:
+	for quest_id: String in quests:
+		var quest: Quest = quests[quest_id]
+		if quest.state != Enums.QuestState.ACTIVE:
+			continue
+
+		for obj in quest.objectives:
+			if obj.is_completed:
+				continue
+			if obj.type == "solve_puzzle" and obj.target == puzzle_id:
+				obj.current_count = obj.required_count
+				obj.is_completed = true
+				obj.completion_method = "puzzle_solved"
+				quest_updated.emit(quest_id, obj.id)
+				objective_completed.emit(quest_id, obj.id)
+				puzzle_solved.emit(puzzle_id, quest_id)
+
+		_check_quest_completion(quest_id)
+
+
+## Track follower recruitment
+## follower_id: The NPC ID of the follower being recruited
+func on_follower_recruited(follower_id: String) -> void:
+	for quest_id: String in quests:
+		var quest: Quest = quests[quest_id]
+		if quest.state != Enums.QuestState.ACTIVE:
+			continue
+
+		for obj in quest.objectives:
+			if obj.is_completed:
+				continue
+			if obj.type == "recruit_follower" and obj.target == follower_id:
+				obj.current_count = obj.required_count
+				obj.is_completed = true
+				obj.completion_method = "recruited"
+				quest_updated.emit(quest_id, obj.id)
+				objective_completed.emit(quest_id, obj.id)
+				follower_recruited.emit(follower_id, quest_id)
+
+		_check_quest_completion(quest_id)
+
 ## Check if quest objectives are all complete
 ## AUTO_COMPLETE quests will complete automatically, others require turn-in
 func _check_quest_completion(quest_id: String) -> void:
@@ -955,7 +1045,8 @@ func are_objectives_complete(quest_id: String) -> bool:
 	return true
 
 ## Complete a quest and give rewards
-func complete_quest(quest_id: String) -> void:
+## completion_type: Optional completion state (defaults to COMPLETED)
+func complete_quest(quest_id: String, completion_type: Enums.QuestCompletionState = Enums.QuestCompletionState.COMPLETED) -> void:
 	if not quests.has(quest_id):
 		return
 
@@ -964,6 +1055,7 @@ func complete_quest(quest_id: String) -> void:
 		return
 
 	quest.state = Enums.QuestState.COMPLETED
+	quest.completion_state = completion_type
 
 	# Give rewards
 	if quest.rewards.has("gold"):
@@ -983,6 +1075,49 @@ func complete_quest(quest_id: String) -> void:
 			var amount: int = rep_changes[faction_id]
 			if FactionManager:
 				FactionManager.modify_reputation(faction_id as String, amount, "completed quest: %s" % quest.title)
+
+	# NEW: Follower reward - recruit an NPC as follower
+	if quest.rewards.has("follower"):
+		var follower_id: String = quest.rewards["follower"]
+		if not follower_id.is_empty():
+			_grant_follower_reward(follower_id, quest_id)
+
+	# NEW: Soulstone reward - grant a specific soulstone
+	if quest.rewards.has("soulstone"):
+		var soulstone_id: String = quest.rewards["soulstone"]
+		if not soulstone_id.is_empty():
+			InventoryManager.add_item(soulstone_id, 1)
+
+	# NEW: Unlock area reward - set flag to unlock an area
+	if quest.rewards.has("unlock_area"):
+		var unlock_flag: String = quest.rewards["unlock_area"]
+		if not unlock_flag.is_empty():
+			if DialogueManager:
+				DialogueManager.set_flag(unlock_flag)
+			if SaveManager:
+				SaveManager.set_world_flag(unlock_flag, true)
+
+	# NEW: Discover lore reward - unlock a lore entry in the Codex
+	if quest.rewards.has("discover_lore"):
+		var lore_reward: Variant = quest.rewards["discover_lore"]
+		if lore_reward is String and not lore_reward.is_empty():
+			if CodexManager:
+				CodexManager.discover_lore(lore_reward)
+		elif lore_reward is Array:
+			for lore_id: String in lore_reward:
+				if CodexManager and not lore_id.is_empty():
+					CodexManager.discover_lore(lore_id)
+
+	# NEW: Discover bestiary reward - unlock a bestiary entry in the Codex
+	if quest.rewards.has("discover_bestiary"):
+		var bestiary_reward: Variant = quest.rewards["discover_bestiary"]
+		if bestiary_reward is String and not bestiary_reward.is_empty():
+			if CodexManager:
+				CodexManager.discover_bestiary_entry(bestiary_reward)
+		elif bestiary_reward is Array:
+			for creature_id: String in bestiary_reward:
+				if CodexManager and not creature_id.is_empty():
+					CodexManager.discover_bestiary_entry(creature_id)
 
 	quest_completed.emit(quest_id)
 
@@ -1035,7 +1170,13 @@ func fail_quest(quest_id: String, reason: String = "") -> void:
 	if quest.state != Enums.QuestState.ACTIVE:
 		return
 
-	quest.state = Enums.QuestState.FAILED
+	# Determine if this is a betrayal or regular failure
+	if reason == "temptation" or reason == "betrayal":
+		quest.state = Enums.QuestState.BETRAYED
+		quest.completion_state = Enums.QuestCompletionState.BETRAYED
+	else:
+		quest.state = Enums.QuestState.FAILED
+		quest.completion_state = Enums.QuestCompletionState.FAILED
 
 	# Apply negative faction reputation for failing
 	if not quest.faction.is_empty() and FactionManager:
@@ -1054,15 +1195,91 @@ func fail_quest(quest_id: String, reason: String = "") -> void:
 	# Cleanup quest spawns (chests, etc.)
 	_cleanup_quest_spawns(quest_id)
 
-	quest_failed.emit(quest_id)
+	# Emit appropriate signal based on completion state
+	if quest.completion_state == Enums.QuestCompletionState.BETRAYED:
+		quest_betrayed.emit(quest_id)
+	else:
+		quest_failed.emit(quest_id)
 
 	# Show notification
 	var hud := get_tree().get_first_node_in_group("hud")
 	if hud and hud.has_method("show_notification"):
-		if reason == "temptation":
+		if reason == "temptation" or reason == "betrayal":
 			hud.show_notification("Quest Failed: You kept or sold a quest item!")
 		else:
 			hud.show_notification("Quest Failed: %s" % quest.title)
+
+## Grant follower reward (placeholder until FollowerManager is implemented)
+func _grant_follower_reward(follower_id: String, quest_id: String) -> void:
+	# Set flag indicating follower is available
+	if DialogueManager:
+		DialogueManager.set_flag("follower_available:" + follower_id)
+	if SaveManager:
+		SaveManager.set_world_flag("follower_unlocked:" + follower_id, true)
+	follower_recruited.emit(follower_id, quest_id)
+
+
+# =============================================================================
+# CHOICE CONSEQUENCE SYSTEM
+# =============================================================================
+
+## Execute a choice consequence by choice_id for a quest
+## Called from dialogue system when player makes a quest-related choice
+func apply_choice_consequence(quest_id: String, choice_id: String) -> bool:
+	if not quests.has(quest_id):
+		return false
+
+	var quest: Quest = quests[quest_id]
+
+	if not quest.choice_consequences.has(choice_id):
+		return false
+
+	var consequence: Dictionary = quest.choice_consequences[choice_id]
+	_execute_choice_consequence(quest_id, choice_id, consequence)
+	return true
+
+
+## Internal function to execute a choice consequence
+func _execute_choice_consequence(quest_id: String, choice_id: String, consequence: Dictionary) -> void:
+	# Set flags
+	var flags_to_set: Array = consequence.get("flags_to_set", [])
+	for flag: Variant in flags_to_set:
+		if flag is String and DialogueManager:
+			DialogueManager.set_flag(flag as String)
+
+	# Apply reputation changes
+	var rep_changes: Dictionary = consequence.get("reputation_changes", {})
+	for faction_id: Variant in rep_changes:
+		var amount: int = rep_changes[faction_id]
+		if FactionManager:
+			FactionManager.modify_reputation(faction_id as String, amount, "quest choice: %s" % choice_id)
+
+	# Unlock follower
+	var unlock_follower: String = consequence.get("unlock_follower", "")
+	if not unlock_follower.is_empty():
+		_grant_follower_reward(unlock_follower, quest_id)
+
+	# Spawn enemy (format: "enemy_id@location_id" or just "enemy_id" for current location)
+	var spawn_enemy: String = consequence.get("spawn_enemy", "")
+	if not spawn_enemy.is_empty():
+		_spawn_consequence_enemy(spawn_enemy)
+
+	choice_consequence_applied.emit(quest_id, choice_id)
+
+
+## Spawn an enemy as a consequence of a choice
+## Format: "enemy_id" or "enemy_id@location_id"
+func _spawn_consequence_enemy(spawn_data: String) -> void:
+	var parts: PackedStringArray = spawn_data.split("@")
+	var enemy_id: String = parts[0]
+	var location_id: String = parts[1] if parts.size() > 1 else ""
+
+	# Store as world flag for level scripts to check and spawn
+	if SaveManager:
+		SaveManager.set_world_flag("spawn_enemy:" + enemy_id, true)
+		if not location_id.is_empty():
+			SaveManager.set_world_flag("spawn_enemy_location:" + enemy_id, location_id)
+
 
 ## Get active quests
 func get_active_quests() -> Array[Quest]:
@@ -1813,6 +2030,7 @@ func to_dict() -> Dictionary:
 		var quest: Quest = quests[quest_id]
 		var quest_data := {
 			"state": quest.state,
+			"completion_state": quest.completion_state,  # NEW: Detailed completion outcome
 			# Quest source and giver
 			"quest_source": quest.quest_source,
 			"giver_npc_id": quest.giver_npc_id,
@@ -1830,13 +2048,16 @@ func to_dict() -> Dictionary:
 			"dungeon_seed": quest.dungeon_seed,
 			"dungeon_room_set": quest.dungeon_room_set,
 			"dungeon_size": quest.dungeon_size,
+			# Choice consequences (if any were defined)
+			"choice_consequences": quest.choice_consequences.duplicate(true),
 			"objectives": []
 		}
 		for obj in quest.objectives:
 			quest_data.objectives.append({
 				"id": obj.id,
 				"current_count": obj.current_count,
-				"is_completed": obj.is_completed
+				"is_completed": obj.is_completed,
+				"completion_method": obj.completion_method  # NEW: How objective was completed
 			})
 		data.quests[quest_id] = quest_data
 	return data
@@ -1866,8 +2087,10 @@ func from_dict(data: Dictionary) -> void:
 		quest.title = template.title
 		quest.description = template.description
 		quest.state = quests_data[quest_id].get("state", Enums.QuestState.ACTIVE)
+		quest.completion_state = quests_data[quest_id].get("completion_state", Enums.QuestCompletionState.NONE)
 		quest.rewards = template.rewards.duplicate()
 		quest.prerequisites = template.prerequisites.duplicate()
+		quest.choice_consequences = template.choice_consequences.duplicate(true)
 		# Restore quest source and giver info from save or fall back to template
 		quest.quest_source = quests_data[quest_id].get("quest_source", template.quest_source)
 		quest.giver_npc_id = quests_data[quest_id].get("giver_npc_id", template.giver_npc_id)
@@ -1907,6 +2130,7 @@ func from_dict(data: Dictionary) -> void:
 				if saved.id == obj.id:
 					obj.current_count = saved.get("current_count", 0)
 					obj.is_completed = saved.get("is_completed", false)
+					obj.completion_method = saved.get("completion_method", "")
 					break
 
 			quest.objectives.append(obj)

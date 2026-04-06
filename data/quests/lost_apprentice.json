@@ -30,8 +30,15 @@
 			"required_count": 1
 		},
 		{
-			"id": "find_apprentice",
-			"description": "Find the apprentice (alive or dead)",
+			"id": "solve_crystal_puzzle",
+			"description": "Solve the Crystal Hearts puzzle to free the apprentice",
+			"type": "solve_puzzle",
+			"target": "crystal_hearts_puzzle",
+			"required_count": 1
+		},
+		{
+			"id": "decide_marcus_fate",
+			"description": "Decide Marcus's fate",
 			"type": "interact",
 			"target": "apprentice_marcus",
 			"required_count": 1
@@ -44,6 +51,22 @@
 		"gold": 120,
 		"xp": 350,
 		"items": ["minor_spell_scroll"]
+	},
+	"choice_consequences": {
+		"marcus_joined_party": {
+			"flags_to_set": ["marcus_available_follower"],
+			"reputation_changes": {"wizard": 5},
+			"unlock_follower": "apprentice_marcus"
+		},
+		"marcus_sent_home": {
+			"flags_to_set": ["marcus_returned_to_dalhurst"],
+			"reputation_changes": {"wizard": 15}
+		},
+		"marcus_abandoned": {
+			"flags_to_set": ["marcus_hostile_future"],
+			"reputation_changes": {"wizard": -20},
+			"spawn_enemy": "hostile_marcus@willow_dale_exterior"
+		}
 	},
 	"prerequisites": [],
 	"next_quest": ""

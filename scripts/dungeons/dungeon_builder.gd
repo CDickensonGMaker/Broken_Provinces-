@@ -29,7 +29,42 @@ const ROOM_SCENES: Dictionary = {
 	DungeonGridData.RoomType.DEAD_END_N: "res://scenes/dungeons/rooms/dead_end_n.tscn",
 	DungeonGridData.RoomType.DEAD_END_S: "res://scenes/dungeons/rooms/dead_end_s.tscn",
 	DungeonGridData.RoomType.DEAD_END_E: "res://scenes/dungeons/rooms/dead_end_e.tscn",
-	DungeonGridData.RoomType.DEAD_END_W: "res://scenes/dungeons/rooms/dead_end_w.tscn"
+	DungeonGridData.RoomType.DEAD_END_W: "res://scenes/dungeons/rooms/dead_end_w.tscn",
+	DungeonGridData.RoomType.HALLWAY_NS: "res://scenes/dungeons/rooms/hallway_ns.tscn",
+	DungeonGridData.RoomType.HALLWAY_EW: "res://scenes/dungeons/rooms/hallway_ew.tscn",
+	## Cave room scenes - using new mine kit pieces
+	DungeonGridData.RoomType.CAVE_ENTRANCE: "res://scenes/rooms/caves/mine_entrance.tscn",
+	DungeonGridData.RoomType.CAVE_EXIT: "res://scenes/rooms/caves/mine_dead_end_medium.tscn",
+	DungeonGridData.RoomType.CAVE_CORRIDOR_NS: "res://scenes/rooms/caves/mine_corridor_ns_standard.tscn",
+	DungeonGridData.RoomType.CAVE_CORRIDOR_EW: "res://scenes/rooms/caves/mine_corridor_ew_narrow.tscn",
+	DungeonGridData.RoomType.CAVE_CORNER_NE: "res://scenes/rooms/caves/mine_corner_se.tscn",
+	DungeonGridData.RoomType.CAVE_CORNER_NW: "res://scenes/rooms/caves/mine_corner_nw.tscn",
+	DungeonGridData.RoomType.CAVE_CORNER_SE: "res://scenes/rooms/caves/mine_corner_se.tscn",
+	DungeonGridData.RoomType.CAVE_CORNER_SW: "res://scenes/rooms/caves/mine_corner_nw.tscn",
+	DungeonGridData.RoomType.CAVE_T_JUNCTION: "res://scenes/rooms/caves/mine_corner_se.tscn",
+	DungeonGridData.RoomType.CAVE_CROSSROADS: "res://scenes/rooms/caves/mine_chamber_small.tscn",
+	DungeonGridData.RoomType.CAVE_DEAD_END: "res://scenes/rooms/caves/mine_dead_end_small.tscn",
+	DungeonGridData.RoomType.CAVE_CHAMBER: "res://scenes/rooms/caves/mine_chamber_medium.tscn"
+}
+
+
+## Alternative mine piece scenes for variety (randomly selected when building caves)
+const MINE_PIECE_VARIANTS: Dictionary = {
+	DungeonGridData.RoomType.CAVE_CORRIDOR_NS: [
+		"res://scenes/rooms/caves/mine_corridor_ns_standard.tscn",
+		"res://scenes/rooms/caves/mine_corridor_ns_long.tscn",
+		"res://scenes/rooms/caves/mine_ramp_down.tscn",
+		"res://scenes/rooms/caves/mine_ramp_long.tscn"
+	],
+	DungeonGridData.RoomType.CAVE_DEAD_END: [
+		"res://scenes/rooms/caves/mine_dead_end_small.tscn",
+		"res://scenes/rooms/caves/mine_dead_end_medium.tscn"
+	],
+	DungeonGridData.RoomType.CAVE_CHAMBER: [
+		"res://scenes/rooms/caves/mine_chamber_small.tscn",
+		"res://scenes/rooms/caves/mine_chamber_medium.tscn",
+		"res://scenes/rooms/caves/mine_hall_large.tscn"
+	]
 }
 
 
@@ -84,8 +119,14 @@ static func build(
 		if room_type == DungeonGridData.RoomType.EMPTY:
 			continue
 
-		# Get scene path
-		var scene_path: String = ROOM_SCENES.get(room_type, "")
+		# Get scene path (check variants first for variety)
+		var scene_path: String = ""
+		if MINE_PIECE_VARIANTS.has(room_type):
+			var variants: Array = MINE_PIECE_VARIANTS[room_type]
+			scene_path = variants[randi() % variants.size()]
+		else:
+			scene_path = ROOM_SCENES.get(room_type, "")
+
 		if scene_path.is_empty():
 			result.add_error("No scene defined for room type: %s" % DungeonGridData.get_room_type_name(room_type))
 			continue
@@ -192,33 +233,40 @@ static func _add_door_blockers(
 					needs_blocker = false
 
 		if needs_blocker:
-			var blocker: CSGBox3D = _create_door_blocker(door_dir, wall_material)
+			var blocker: CSGBox3D = _create_door_blocker(door_dir, wall_material, room_type)
 			room_instance.add_child(blocker)
 			blocker.owner = owner_node
 
 
 ## Create a CSGBox3D to block a door opening
-static func _create_door_blocker(direction: DungeonGridData.Direction, material: StandardMaterial3D) -> CSGBox3D:
+## room_type is used to determine door width (hallways are narrower)
+static func _create_door_blocker(direction: DungeonGridData.Direction, material: StandardMaterial3D, room_type: DungeonGridData.RoomType = DungeonGridData.RoomType.CORRIDOR_NS) -> CSGBox3D:
 	var blocker := CSGBox3D.new()
 	blocker.use_collision = true
 
-	# Door opening is 4 units wide, wall is 4 units tall
+	# Determine door width based on room type
+	# Hallways have 5 unit wide doors, corridors have 4 unit wide doors
+	var door_width: float = 4.0
+	if room_type == DungeonGridData.RoomType.HALLWAY_NS or room_type == DungeonGridData.RoomType.HALLWAY_EW:
+		door_width = 5.0
+
+	# Door opening centered at 8, wall is 4 units tall
 	match direction:
 		DungeonGridData.Direction.NORTH:
 			blocker.name = "DoorBlockerNorth"
-			blocker.size = Vector3(4, 4, 0.5)
+			blocker.size = Vector3(door_width, 4, 0.5)
 			blocker.position = Vector3(8, 2, 0.25)
 		DungeonGridData.Direction.SOUTH:
 			blocker.name = "DoorBlockerSouth"
-			blocker.size = Vector3(4, 4, 0.5)
+			blocker.size = Vector3(door_width, 4, 0.5)
 			blocker.position = Vector3(8, 2, 15.75)
 		DungeonGridData.Direction.EAST:
 			blocker.name = "DoorBlockerEast"
-			blocker.size = Vector3(0.5, 4, 4)
+			blocker.size = Vector3(0.5, 4, door_width)
 			blocker.position = Vector3(15.75, 2, 8)
 		DungeonGridData.Direction.WEST:
 			blocker.name = "DoorBlockerWest"
-			blocker.size = Vector3(0.5, 4, 4)
+			blocker.size = Vector3(0.5, 4, door_width)
 			blocker.position = Vector3(0.25, 2, 8)
 
 	if material:

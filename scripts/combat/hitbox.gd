@@ -122,9 +122,12 @@ func _on_body_entered(body: Node3D) -> void:
 func _apply_hit(target: Node) -> void:
 	hit_landed.emit(target)
 
+	# Calculate final damage (may be modified by backstab)
+	var final_damage: int = _calculate_backstab_damage(damage, owner_entity, target)
+
 	# Apply damage if target can receive it
 	if target.has_method("take_damage"):
-		target.take_damage(damage, damage_type, owner_entity)
+		target.take_damage(final_damage, damage_type, owner_entity)
 
 	# Apply stagger
 	if stagger_power > 0 and target.has_method("apply_stagger"):
@@ -151,3 +154,44 @@ func set_damage_values(new_damage: int, new_type: Enums.DamageType = Enums.Damag
 	damage_type = new_type
 	set_meta("damage", damage)
 	set_meta("damage_type", damage_type)
+
+## Calculate backstab damage multiplier for stealth attacks
+## Returns modified damage (or base damage if conditions not met)
+func _calculate_backstab_damage(base_damage: int, attacker: Node, target: Node) -> int:
+	# Must have a valid attacker
+	if not attacker or not is_instance_valid(attacker):
+		return base_damage
+
+	# Check if attacker is player and hidden
+	if not attacker.is_in_group("player"):
+		return base_damage
+
+	var is_hidden: bool = false
+	if attacker.has_method("get_is_hidden"):
+		is_hidden = attacker.get_is_hidden()
+
+	if not is_hidden:
+		return base_damage
+
+	# Check if target is unaware (enemy in IDLE state with low awareness)
+	var target_unaware: bool = false
+	if target.has_method("is_unaware"):
+		target_unaware = target.is_unaware()
+
+	if not target_unaware:
+		return base_damage
+
+	# All conditions met - apply backstab multiplier!
+	var stealth_skill: int = 0
+	if GameManager and GameManager.player_data:
+		stealth_skill = GameManager.player_data.get_skill(Enums.Skill.STEALTH)
+
+	var mult: float = StealthConstants.get_stealth_backstab_multiplier(stealth_skill, true)
+	var backstab_damage: int = int(base_damage * mult)
+
+	# Show backstab feedback via HUD
+	var hud := attacker.get_tree().get_first_node_in_group("hud")
+	if hud and hud.has_method("show_notification"):
+		hud.show_notification("BACKSTAB!")
+
+	return backstab_damage

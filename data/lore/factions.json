@@ -76,5 +76,41 @@
     "title": "The Tenger Horde",
     "category": "factions",
     "text": "The Tenger Horde sweeps out of the southern wastes like a storm of blood and fire, a human subgroup whose warrior culture has made them feared throughout the realm. They have razed villages, slaughtered garrisons, and left nothing but ashes and skulls in their wake. To the Tengers, strength is the only virtue and mercy is weakness.\n\nTenger society organizes around warlords who rule through personal combat prowess and the loyalty of their warriors. Challenges for leadership are common and always fatal, ensuring that only the strongest survive to command. They despise magic as the tool of cowards and kill any spellcasters they capture after prolonged torture.\n\nDespite their brutality, the Tengers follow a code of honor incomprehensible to outsiders. They respect courage even in enemies, sometimes sparing those who fight well. They keep oaths sworn before their war gods, and breaking such an oath means death. Navigating Tenger culture requires understanding which rules apply in which circumstances, knowledge that few outsiders possess."
+  },
+  {
+    "id": "keeper_secrets",
+    "title": "The Hidden Truth of the Keepers",
+    "category": "factions",
+    "text": "[SECRET KNOWLEDGE - KEEPER ARCHIVES]\n\nThe witch who now wears the King's face is no ordinary sorceress. She is Lyraleth the Deathless, a being who has lived for centuries by stealing the bodies and identities of rulers. The current King is not her first victim, merely the latest in a chain stretching back to the founding of the Empire itself.\n\nLyraleth's true purpose remains unclear even to the Keepers' most learned scholars. She does not simply crave power - that she already possesses. Instead, she seems to be searching for something, manipulating the Empire's resources toward goals that even her closest servants do not fully understand.\n\nThe original King lives still, imprisoned in the deepest level of the Immortality Dungeon - a place that exists outside normal time, where a prisoner can be kept forever without aging or dying. The Keepers have spent generations trying to locate this prison, for only by freeing the true King can Lyraleth's hold be broken. The prophecies speak of a champion who will succeed where all others have failed, but whether that champion has yet been born remains uncertain."
+  },
+  {
+    "id": "thieves_guild_secrets",
+    "title": "The Guild's Shadow History",
+    "category": "factions",
+    "text": "[GUILD CONFIDENTIAL - FOR TRUSTED MEMBERS ONLY]\n\nThe Thieves Guild was not always a criminal organization. Centuries ago, before the Empire unified the human kingdoms, we were the Silent Watch - a network of spies and informants who served the common people against noble tyranny. When lords abused their power, we were there to redistribute their wealth. When corruption festered, we exposed it.\n\nThe Empire changed everything. Our founders were offered a choice: serve the new order or be destroyed. Some chose death. Others chose adaptation, transforming the Silent Watch into something that could survive under Imperial rule - a criminal organization that could be tolerated because it served certain purposes.\n\nWe still carry the old mission in our hearts. The Guild's code forbids stealing from the poor not merely as business sense, but as sacred duty. Our information networks serve purposes beyond profit. And somewhere in the old records, passed down through generations, are the names and locations of the Imperial nobles who betrayed the common folk - names that will one day receive the justice they deserve."
+  },
+  {
+    "id": "church_secrets",
+    "title": "The Apocrypha of Three",
+    "category": "factions",
+    "text": "[RESTRICTED THEOLOGICAL TEXTS - SENIOR CLERGY ONLY]\n\nThe truth of the Three Gods is both simpler and more terrible than the faithful imagine. Chronos, Gaela, and Morthane are not merely aspects of divine nature - they are the three survivors of an ancient pantheon, the last gods standing after a war in heaven that shattered reality itself.\n\nOnce there were many more gods, each governing their own domains. But the Divine War reduced all of creation to chaos, and only by combining their power could the Three restore order. In doing so, they bound themselves to the mortal world in ways that limit their ability to intervene directly.\n\nThe Church was established not merely to worship the Three, but to serve as their eyes and hands in the mortal realm. High priests learn to commune directly with divine consciousness, receiving visions and guidance that shape Church policy. This connection comes with costs - a shortened lifespan, vulnerability to certain magics, and the terrible knowledge that the gods are not all-powerful, that threats exist even they cannot simply wish away."
+  },
+  {
+    "id": "mages_guild_secrets",
+    "title": "The Arcanum Obscura",
+    "category": "factions",
+    "text": "[SEVENTH CIRCLE KNOWLEDGE - MASTER MAGES ONLY]\n\nMagic is not the gift the common folk believe it to be. It is theft - the stealing of power from the fabric of reality itself. Every spell cast weakens the barriers between our world and the Void, the endless emptiness that existed before creation.\n\nThe Mages Guild was formed in the aftermath of the Sundering, when a cabal of ancient wizards tore a hole in reality so vast that it nearly consumed the world. We sealed that breach, but it cost us everything. The old magic, the power that could reshape continents and move stars, was forbidden and its knowledge locked away.\n\nWe teach only safe magics now - spells whose casting does minimal damage to the barriers. But in our deepest vaults, protected by wards that would kill any unauthorized intruder, we keep the forbidden tomes. Not to use them, but to ensure no one else can. The Guild's true purpose is not to advance magic, but to control it - to ensure the Sundering never happens again."
+  },
+  {
+    "id": "fighters_guild_secrets",
+    "title": "The Blood Oath Traditions",
+    "category": "factions",
+    "text": "[INNER CIRCLE TRADITIONS - OATH-BOUND MEMBERS ONLY]\n\nThe Fighters Guild predates the Empire by centuries, its origins lost in the chaos before the kingdoms unified. What outsiders see as a mercenary organization is actually something far older: a sacred brotherhood bound by oaths of blood and steel.\n\nIn the ancient days, when monsters and demons roamed freely, our founders were the first line of defense. They developed techniques for fighting supernatural threats - knowledge passed down through generations in secret ceremonies that bind new members to the guild's true purpose.\n\nWe maintain a network of hidden armories containing weapons forged to fight specific threats: blades that burn undead flesh, arrows tipped with demon-bane silver, armor warded against magical corruption. When the ordinary guards and soldiers cannot handle a threat, we are the ones who answer. The contracts and training are just the public face - underneath, we remain what we have always been: monster hunters."
+  },
+  {
+    "id": "merchants_guild_secrets",
+    "title": "The Hidden Ledgers",
+    "category": "factions",
+    "text": "[COUNCIL OF TWELVE - SENIOR MERCHANTS ONLY]\n\nThe Merchants Guild controls more than trade routes and market prices. Through centuries of careful investment and strategic marriages, we have woven ourselves into the fabric of power throughout the Empire. Noble houses owe us debts that could ruin them. Royal officials receive 'gifts' that ensure favorable treatment. Even the Church depends on our donations.\n\nThis influence serves a purpose beyond profit. The old merchants' families remember what happens when war disrupts trade: famine, plague, and the collapse of everything we have built. We work constantly to prevent conflicts before they start, using our economic leverage to ensure that peace remains more profitable than war.\n\nBut there are limits to what gold can control. The witch who rules from the throne has proven resistant to our usual methods, her goals incomprehensible and her agents seemingly immune to bribery. Some among the Council believe we must take more direct action, while others counsel patience. The debate continues, even as the Empire slowly changes around us."
   }
 ]

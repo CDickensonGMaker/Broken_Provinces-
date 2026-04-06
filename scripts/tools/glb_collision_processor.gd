@@ -60,11 +60,13 @@ const TRIMESH_SUFFIXES: Array[String] = [
 
 ## Suffixes that indicate mesh should have CONVEX collision (simpler, faster)
 const CONVEX_SUFFIXES: Array[String] = [
-	"_pillar", "_column",
+	"_pillar", "_column", "_post",
 	"_solid", "_block", "_cube",
 	"_crate", "_box", "_barrel",
 	"_table", "_chair", "_bench",
 	"_statue", "_monument",
+	"_brace", "_support",
+	"_rung", "_ladder",
 ]
 
 ## Suffixes that indicate mesh should have NO collision (decorative/passable)
@@ -184,6 +186,17 @@ static func _has_collision_child(mesh_instance: MeshInstance3D) -> bool:
 
 ## Determine what type of collision to generate based on mesh name
 static func _get_collision_type(mesh_name: String) -> String:
+	# Check for Blender's -col suffix (indicates collision mesh)
+	# This is the standard Blender->Godot convention for collision meshes
+	if mesh_name.ends_with("-col"):
+		# Determine type based on the base name (before -col)
+		var base_name: String = mesh_name.substr(0, mesh_name.length() - 4)
+		# Posts, braces, rungs = convex (simple shapes)
+		if "post" in base_name or "brace" in base_name or "rung" in base_name:
+			return "convex"
+		# Platform, rail, floor = trimesh (complex shapes)
+		return "trimesh"
+
 	# First check for explicit no-collision keywords
 	for keyword in NO_COLLISION_KEYWORDS:
 		if keyword in mesh_name:

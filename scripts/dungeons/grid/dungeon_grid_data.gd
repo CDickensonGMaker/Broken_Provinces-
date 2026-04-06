@@ -36,7 +36,25 @@ enum RoomType {
 	DEAD_END_N = 17,     ## Dead end with North door only
 	DEAD_END_S = 18,     ## Dead end with South door only
 	DEAD_END_E = 19,     ## Dead end with East door only
-	DEAD_END_W = 20      ## Dead end with West door only
+	DEAD_END_W = 20,     ## Dead end with West door only
+	ROOM_PUZZLE_CRYSTAL = 21,  ## Crystal puzzle room (collect crystals in sequence)
+	ROOM_PUZZLE_PILLAR = 22,   ## Pillar puzzle room (touch pillars in order)
+	ROOM_TRAP_GAUNTLET = 23,   ## Trap gauntlet room (pressure plates, portals, hazards)
+	HALLWAY_NS = 24,           ## Narrow North-South hallway (5 units wide)
+	HALLWAY_EW = 25,           ## Narrow East-West hallway (5 units wide)
+	## Cave room types - Natural/ruined aesthetic
+	CAVE_ENTRANCE = 26,        ## Cave entrance (daylight, south door only)
+	CAVE_EXIT = 27,            ## Cave exit (treasure/boss room, north door only)
+	CAVE_CORRIDOR_NS = 28,     ## Natural cave N-S passage
+	CAVE_CORRIDOR_EW = 29,     ## Natural cave E-W passage
+	CAVE_CORNER_NE = 30,       ## Cave corner turn: North and East
+	CAVE_CORNER_NW = 31,       ## Cave corner turn: North and West
+	CAVE_CORNER_SE = 32,       ## Cave corner turn: South and East
+	CAVE_CORNER_SW = 33,       ## Cave corner turn: South and West
+	CAVE_T_JUNCTION = 34,      ## Cave three-way (N, E, W doors)
+	CAVE_CROSSROADS = 35,      ## Cave four-way hub
+	CAVE_DEAD_END = 36,        ## Cave dead end (south door only)
+	CAVE_CHAMBER = 37          ## Large cave chamber (32x32, all doors)
 }
 
 
@@ -63,7 +81,25 @@ const ROOM_DOORS: Dictionary = {
 	RoomType.DEAD_END_N: [Direction.NORTH],
 	RoomType.DEAD_END_S: [Direction.SOUTH],
 	RoomType.DEAD_END_E: [Direction.EAST],
-	RoomType.DEAD_END_W: [Direction.WEST]
+	RoomType.DEAD_END_W: [Direction.WEST],
+	RoomType.ROOM_PUZZLE_CRYSTAL: [Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+	RoomType.ROOM_PUZZLE_PILLAR: [Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+	RoomType.ROOM_TRAP_GAUNTLET: [Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+	RoomType.HALLWAY_NS: [Direction.NORTH, Direction.SOUTH],
+	RoomType.HALLWAY_EW: [Direction.EAST, Direction.WEST],
+	## Cave room doors
+	RoomType.CAVE_ENTRANCE: [Direction.SOUTH],
+	RoomType.CAVE_EXIT: [Direction.NORTH],
+	RoomType.CAVE_CORRIDOR_NS: [Direction.NORTH, Direction.SOUTH],
+	RoomType.CAVE_CORRIDOR_EW: [Direction.EAST, Direction.WEST],
+	RoomType.CAVE_CORNER_NE: [Direction.NORTH, Direction.EAST],
+	RoomType.CAVE_CORNER_NW: [Direction.NORTH, Direction.WEST],
+	RoomType.CAVE_CORNER_SE: [Direction.SOUTH, Direction.EAST],
+	RoomType.CAVE_CORNER_SW: [Direction.SOUTH, Direction.WEST],
+	RoomType.CAVE_T_JUNCTION: [Direction.NORTH, Direction.EAST, Direction.WEST],
+	RoomType.CAVE_CROSSROADS: [Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+	RoomType.CAVE_DEAD_END: [Direction.SOUTH],
+	RoomType.CAVE_CHAMBER: [Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST]
 }
 
 
@@ -149,6 +185,23 @@ static func get_room_type_name(room_type: RoomType) -> String:
 		RoomType.DEAD_END_S: return "dead_end_s"
 		RoomType.DEAD_END_E: return "dead_end_e"
 		RoomType.DEAD_END_W: return "dead_end_w"
+		RoomType.ROOM_PUZZLE_CRYSTAL: return "room_puzzle_crystal"
+		RoomType.ROOM_PUZZLE_PILLAR: return "room_puzzle_pillar"
+		RoomType.ROOM_TRAP_GAUNTLET: return "room_trap_gauntlet"
+		RoomType.HALLWAY_NS: return "hallway_ns"
+		RoomType.HALLWAY_EW: return "hallway_ew"
+		RoomType.CAVE_ENTRANCE: return "cave_entrance"
+		RoomType.CAVE_EXIT: return "cave_exit"
+		RoomType.CAVE_CORRIDOR_NS: return "cave_corridor_ns"
+		RoomType.CAVE_CORRIDOR_EW: return "cave_corridor_ew"
+		RoomType.CAVE_CORNER_NE: return "cave_corner_ne"
+		RoomType.CAVE_CORNER_NW: return "cave_corner_nw"
+		RoomType.CAVE_CORNER_SE: return "cave_corner_se"
+		RoomType.CAVE_CORNER_SW: return "cave_corner_sw"
+		RoomType.CAVE_T_JUNCTION: return "cave_t_junction"
+		RoomType.CAVE_CROSSROADS: return "cave_crossroads"
+		RoomType.CAVE_DEAD_END: return "cave_dead_end"
+		RoomType.CAVE_CHAMBER: return "cave_chamber"
 	return "unknown"
 
 
@@ -176,6 +229,23 @@ static func get_room_type_from_name(type_name: String) -> RoomType:
 		"dead_end_s": return RoomType.DEAD_END_S
 		"dead_end_e": return RoomType.DEAD_END_E
 		"dead_end_w": return RoomType.DEAD_END_W
+		"room_puzzle_crystal": return RoomType.ROOM_PUZZLE_CRYSTAL
+		"room_puzzle_pillar": return RoomType.ROOM_PUZZLE_PILLAR
+		"room_trap_gauntlet": return RoomType.ROOM_TRAP_GAUNTLET
+		"hallway_ns": return RoomType.HALLWAY_NS
+		"hallway_ew": return RoomType.HALLWAY_EW
+		"cave_entrance": return RoomType.CAVE_ENTRANCE
+		"cave_exit": return RoomType.CAVE_EXIT
+		"cave_corridor_ns": return RoomType.CAVE_CORRIDOR_NS
+		"cave_corridor_ew": return RoomType.CAVE_CORRIDOR_EW
+		"cave_corner_ne": return RoomType.CAVE_CORNER_NE
+		"cave_corner_nw": return RoomType.CAVE_CORNER_NW
+		"cave_corner_se": return RoomType.CAVE_CORNER_SE
+		"cave_corner_sw": return RoomType.CAVE_CORNER_SW
+		"cave_t_junction": return RoomType.CAVE_T_JUNCTION
+		"cave_crossroads": return RoomType.CAVE_CROSSROADS
+		"cave_dead_end": return RoomType.CAVE_DEAD_END
+		"cave_chamber": return RoomType.CAVE_CHAMBER
 	return RoomType.EMPTY
 
 
@@ -205,6 +275,8 @@ static func find_connector_with_doors(required_doors: Array) -> RoomType:
 	var connector_types: Array[RoomType] = [
 		RoomType.CORRIDOR_NS,
 		RoomType.CORRIDOR_EW,
+		RoomType.HALLWAY_NS,
+		RoomType.HALLWAY_EW,
 		RoomType.TURN_NE,
 		RoomType.TURN_NW,
 		RoomType.TURN_SE,
@@ -258,5 +330,11 @@ static func is_special_room(room_type: RoomType) -> bool:
 		RoomType.ROOM_SMALL,
 		RoomType.ROOM_MEDIUM,
 		RoomType.ROOM_LARGE,
-		RoomType.ROOM_BOSS
+		RoomType.ROOM_BOSS,
+		RoomType.ROOM_PUZZLE_CRYSTAL,
+		RoomType.ROOM_PUZZLE_PILLAR,
+		RoomType.ROOM_TRAP_GAUNTLET,
+		RoomType.CAVE_ENTRANCE,
+		RoomType.CAVE_EXIT,
+		RoomType.CAVE_CHAMBER
 	]

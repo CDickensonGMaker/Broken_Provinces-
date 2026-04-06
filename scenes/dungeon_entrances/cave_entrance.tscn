@@ -1,0 +1,120 @@
+[gd_scene format=3 uid="uid://cave_entrance_001"]
+
+[sub_resource type="StandardMaterial3D" id="dark_rock_mat"]
+albedo_color = Color(0.25, 0.22, 0.2, 1)
+roughness = 1.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="rock_accent_mat"]
+albedo_color = Color(0.3, 0.27, 0.24, 1)
+roughness = 0.95
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="deep_interior_mat"]
+albedo_color = Color(0.05, 0.05, 0.05, 1)
+roughness = 1.0
+shading_mode = 0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="moss_mat"]
+albedo_color = Color(0.15, 0.2, 0.1, 1)
+roughness = 1.0
+texture_filter = 0
+
+[node name="CaveEntrance" type="Node3D"]
+
+[node name="RockFormation" type="Node3D" parent="."]
+
+[node name="LeftRockBase" type="CSGCylinder3D" parent="RockFormation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 1.2, 0)
+radius = 0.9
+height = 2.4
+sides = 6
+material = SubResource("dark_rock_mat")
+
+[node name="LeftRockTop" type="CSGCylinder3D" parent="RockFormation"]
+transform = Transform3D(0.9, 0, 0.44, 0, 1, 0, -0.44, 0, 0.9, -1.6, 2.8, -0.2)
+radius = 0.7
+height = 1.5
+sides = 5
+material = SubResource("dark_rock_mat")
+
+[node name="LeftRockAccent" type="CSGBox3D" parent="RockFormation"]
+transform = Transform3D(0.97, 0, 0.26, 0, 1, 0, -0.26, 0, 0.97, -2.3, 0.8, 0.3)
+size = Vector3(0.6, 1.6, 0.5)
+material = SubResource("rock_accent_mat")
+
+[node name="RightRockBase" type="CSGCylinder3D" parent="RockFormation"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 1.4, 0)
+radius = 1.0
+height = 2.8
+sides = 6
+material = SubResource("dark_rock_mat")
+
+[node name="RightRockTop" type="CSGCylinder3D" parent="RockFormation"]
+transform = Transform3D(0.94, 0, -0.34, 0, 1, 0, 0.34, 0, 0.94, 1.5, 3.2, -0.15)
+radius = 0.6
+height = 1.2
+sides = 5
+material = SubResource("dark_rock_mat")
+
+[node name="RightRockAccent" type="CSGBox3D" parent="RockFormation"]
+transform = Transform3D(0.94, 0, -0.34, 0, 1, 0, 0.34, 0, 0.94, 2.4, 1.0, 0.2)
+size = Vector3(0.5, 2.0, 0.6)
+material = SubResource("rock_accent_mat")
+
+[node name="TopRock" type="CSGCylinder3D" parent="RockFormation"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 3.5, 0.2)
+radius = 1.2
+height = 2.8
+sides = 7
+material = SubResource("dark_rock_mat")
+
+[node name="TopRockAccent" type="CSGBox3D" parent="RockFormation"]
+transform = Transform3D(1, 0, 0, 0, 0.98, 0.17, 0, -0.17, 0.98, 0.5, 3.8, 0)
+size = Vector3(1.0, 0.4, 0.6)
+material = SubResource("rock_accent_mat")
+
+[node name="GroundRockLeft" type="CSGSphere3D" parent="RockFormation"]
+transform = Transform3D(1.2, 0, 0, 0, 0.6, 0, 0, 0, 1, -1.2, 0.25, 0.8)
+radius = 0.4
+radial_segments = 6
+rings = 4
+material = SubResource("rock_accent_mat")
+
+[node name="GroundRockRight" type="CSGSphere3D" parent="RockFormation"]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0, 0, 0, 0.8, 1.4, 0.2, 0.9)
+radius = 0.35
+radial_segments = 6
+rings = 4
+material = SubResource("rock_accent_mat")
+
+[node name="MossPatches" type="Node3D" parent="."]
+
+[node name="MossLeft" type="CSGBox3D" parent="MossPatches"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0, 0.4, 0.5)
+size = Vector3(0.3, 0.5, 0.1)
+material = SubResource("moss_mat")
+
+[node name="MossRight" type="CSGBox3D" parent="MossPatches"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 0.6, 0.4)
+size = Vector3(0.25, 0.4, 0.1)
+material = SubResource("moss_mat")
+
+[node name="DarkInterior" type="Node3D" parent="."]
+
+[node name="InteriorDarkness" type="CSGBox3D" parent="DarkInterior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -0.4)
+size = Vector3(2.8, 3.0, 0.1)
+material = SubResource("deep_interior_mat")
+
+[node name="InteriorDepth" type="CSGBox3D" parent="DarkInterior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -1.0)
+size = Vector3(2.5, 2.8, 1.0)
+material = SubResource("deep_interior_mat")
+
+[node name="InteractionPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.5)

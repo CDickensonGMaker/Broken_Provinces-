@@ -241,6 +241,10 @@ var _cached_player: Node3D = null
 ## PERFORMANCE: Cached distance to player (recalculated at start of each physics frame)
 var _cached_player_distance_sq: float = INF
 
+## Audio cooldown state
+var _last_sound_time: float = 0.0
+const SOUND_COOLDOWN: float = 0.5  # Minimum seconds between sounds per enemy
+
 func _ready() -> void:
 	add_to_group("enemies")
 	CombatManager.register_enemy(self)
@@ -334,6 +338,16 @@ func _hide_mesh_placeholders_if_no_billboard() -> void:
 		for child in mesh_root.get_children():
 			if child is MeshInstance3D:
 				child.visible = false
+
+
+## Check if this enemy can play a sound (per-enemy cooldown to prevent audio stacking)
+func _can_play_sound() -> bool:
+	var current_time: float = Time.get_ticks_msec() / 1000.0
+	if current_time - _last_sound_time >= SOUND_COOLDOWN:
+		_last_sound_time = current_time
+		return true
+	return false
+
 
 func _exit_tree() -> void:
 	# Safety cleanup - ensure we're unregistered even if freed without proper death
@@ -848,6 +862,20 @@ func _update_awareness(delta: float) -> void:
 	# Player is in range - check visibility and LOS
 	var player: Node3D = _awareness_target
 
+	# Check if player is crouching and outside reduced range
+	var is_crouching: bool = false
+	if player.has_method("get_is_crouching"):
+		is_crouching = player.get_is_crouching()
+
+	if is_crouching:
+		var aggro_range := enemy_data.aggro_range if enemy_data else 12.0
+		var effective_range: float = aggro_range * StealthConstants.CROUCHING_DETECTION_RANGE_MULT
+		var dist := global_position.distance_to(player.global_position)
+		if dist > effective_range:
+			# Player is crouching and outside reduced range - decay awareness
+			awareness_level = maxf(0.0, awareness_level - StealthConstants.AWARENESS_DECAY_RATE * delta)
+			return
+
 	# Check line of sight
 	if not CombatManager.has_line_of_sight(self, player):
 		# Can't see player - slowly decay awareness
@@ -881,6 +909,56 @@ func _update_awareness(delta: float) -> void:
 ## Check if enemy is unaware (for backstab)
 func is_unaware() -> bool:
 	return current_alert_state == AlertState.IDLE and awareness_level < StealthConstants.ALERT_THRESHOLD
+
+
+## Setup alert icon label (floating "?" or "!" above enemy head)
+func _setup_alert_icon() -> void:
+	if alert_icon_label:
+		return  # Already created
+
+	alert_icon_label = Label3D.new()
+	alert_icon_label.name = "AlertIcon"
+	alert_icon_label.text = ""
+	alert_icon_label.font_size = 72
+	alert_icon_label.pixel_size = 0.01
+	alert_icon_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	alert_icon_label.no_depth_test = true  # Always visible
+	alert_icon_label.modulate = Color.WHITE
+	alert_icon_label.outline_size = 8
+	alert_icon_label.outline_modulate = Color.BLACK
+
+	# Position above enemy head
+	alert_icon_label.position = Vector3(0, 2.5, 0)
+
+	# Start hidden
+	alert_icon_label.visible = false
+
+	add_child(alert_icon_label)
+
+
+## Set visual feedback for alert state (tint + icon)
+func _set_alert_visual(tint: Color, icon: String) -> void:
+	# Tint the billboard sprite
+	if billboard_sprite and billboard_sprite.sprite:
+		billboard_sprite.sprite.modulate = tint
+
+	# Update alert icon
+	if not alert_icon_label:
+		_setup_alert_icon()
+
+	if alert_icon_label:
+		alert_icon_label.text = icon
+		alert_icon_label.visible = not icon.is_empty()
+
+		# Color the icon based on alert state
+		match icon:
+			"?":
+				alert_icon_label.modulate = Color.YELLOW
+			"!":
+				alert_icon_label.modulate = Color.RED
+			_:
+				alert_icon_label.modulate = Color.WHITE
+
 
 func _update_target() -> void:
 	# Skip all target tracking while disengaging - enemy is returning home
@@ -944,8 +1022,14 @@ func _scan_for_player() -> void:
 
 	# PERFORMANCE: Use cached player reference instead of get_nodes_in_group()
 	if _cached_player and is_instance_valid(_cached_player):
+		# Apply crouch detection range reduction
+		var effective_range: float = aggro_range
+		if _cached_player.has_method("get_is_crouching"):
+			if _cached_player.get_is_crouching():
+				effective_range *= StealthConstants.CROUCHING_DETECTION_RANGE_MULT
+
 		var dist := global_position.distance_to(_cached_player.global_position)
-		if dist <= aggro_range:
+		if dist <= effective_range:
 			current_target = _cached_player
 			last_known_target_position = _cached_player.global_position
 			target_acquired.emit(_cached_player)
@@ -971,8 +1055,14 @@ func _check_for_player_during_movement() -> bool:
 
 	var aggro_range := enemy_data.aggro_range if enemy_data else 12.0
 
+	# Apply crouch detection range reduction
+	var effective_range: float = aggro_range
+	if _cached_player.has_method("get_is_crouching"):
+		if _cached_player.get_is_crouching():
+			effective_range *= StealthConstants.CROUCHING_DETECTION_RANGE_MULT
+
 	var dist := global_position.distance_to(_cached_player.global_position)
-	if dist <= aggro_range:
+	if dist <= effective_range:
 		# Check line of sight before acquiring target
 		var has_los := CombatManager.has_line_of_sight(self, _cached_player)
 		if has_los:
@@ -1505,21 +1595,25 @@ func _change_alert_state(new_alert_state: AlertState) -> void:
 	match new_alert_state:
 		AlertState.ALERTED:
 			alert_timer = alert_duration
+			_set_alert_visual(Color(1.0, 1.0, 0.6), "?")  # Yellow tint + question mark
 		AlertState.SEARCHING:
 			search_timer = search_duration
 			search_points_checked = 0
 			current_search_point = last_known_target_position
 			look_around_timer = look_around_time
+			_set_alert_visual(Color(1.0, 0.8, 0.4), "?")  # Orange tint + question mark
 		AlertState.IDLE:
 			# Return to normal behavior
+			_set_alert_visual(Color.WHITE, "")  # Reset to normal
 			_return_to_normal_behavior()
 		AlertState.COMBAT:
 			# Play aggro sound (use attack sounds for war cry effect)
-			if enemy_data and not enemy_data.attack_sounds.is_empty():
+			if enemy_data and not enemy_data.attack_sounds.is_empty() and _can_play_sound():
 				AudioManager.play_enemy_sound(enemy_data.attack_sounds, global_position, 2.0)
 			# Clear any search/alert timers
 			alert_timer = 0.0
 			search_timer = 0.0
+			_set_alert_visual(Color(1.0, 0.6, 0.6), "!")  # Red tint + exclamation mark
 
 ## Trigger an alert at a specific position (e.g., from hearing a sound)
 func trigger_alert(alert_position: Vector3) -> void:
@@ -1529,6 +1623,30 @@ func trigger_alert(alert_position: Vector3) -> void:
 
 	investigation_position = alert_position
 	_change_alert_state(AlertState.ALERTED)
+
+
+## Respond to a sound at a given position (footsteps, combat, etc.)
+## Used by player noise emission system
+func hear_sound(sound_pos: Vector3, awareness_boost: float = 0.2) -> void:
+	# Ignore if already in combat - we already know where the player is
+	if current_alert_state == AlertState.COMBAT:
+		return
+
+	# Ignore if dead or staggered
+	if current_state == AIState.DEAD or current_state == AIState.STAGGERED:
+		return
+
+	# Ignore during disengage cooldown
+	if disengage_cooldown > 0:
+		return
+
+	# Build awareness from sound
+	awareness_level = minf(1.0, awareness_level + awareness_boost)
+
+	# If awareness exceeds alert threshold, become alerted and investigate
+	if awareness_level >= StealthConstants.ALERT_THRESHOLD and current_alert_state == AlertState.IDLE:
+		investigation_position = sound_pos
+		_change_alert_state(AlertState.ALERTED)
 
 
 ## Alert enemy to a specific target and set totem defense mode
@@ -1874,7 +1992,7 @@ func _perform_attack() -> void:
 	attack_started.emit(current_attack)
 
 	# Play attack sound from enemy data
-	if enemy_data and not enemy_data.attack_sounds.is_empty():
+	if enemy_data and not enemy_data.attack_sounds.is_empty() and _can_play_sound():
 		AudioManager.play_enemy_sound(enemy_data.attack_sounds, global_position, 1.0)
 
 	# Face target
@@ -1906,9 +2024,9 @@ func _perform_basic_attack() -> void:
 		hitbox.set_damage_values(10, Enums.DamageType.PHYSICAL)
 
 	# Play attack sound from enemy data if available, otherwise play generic melee sound
-	if enemy_data and not enemy_data.attack_sounds.is_empty():
+	if enemy_data and not enemy_data.attack_sounds.is_empty() and _can_play_sound():
 		AudioManager.play_enemy_sound(enemy_data.attack_sounds, global_position, 1.0)
-	elif AudioManager:
+	elif AudioManager and _can_play_sound():
 		AudioManager.play_melee_hit_sound_3d(global_position)
 
 	get_tree().create_timer(0.3).timeout.connect(_activate_attack_hitbox)
@@ -2191,7 +2309,7 @@ func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> 
 	current_hp -= amount
 
 	# Play hurt sound from enemy data
-	if enemy_data and not enemy_data.hurt_sounds.is_empty():
+	if enemy_data and not enemy_data.hurt_sounds.is_empty() and _can_play_sound():
 		AudioManager.play_enemy_sound(enemy_data.hurt_sounds, global_position)
 
 	damaged.emit(amount, damage_type, attacker)
@@ -2252,7 +2370,7 @@ func get_enemy_data() -> EnemyData:
 ## Death
 
 func _on_death() -> void:
-	# Play death sound from enemy data
+	# Play death sound from enemy data (death sounds bypass cooldown - always play)
 	if enemy_data and not enemy_data.death_sounds.is_empty():
 		AudioManager.play_enemy_sound(enemy_data.death_sounds, global_position, 2.0)
 
@@ -2286,6 +2404,10 @@ func _on_death() -> void:
 			"icon_path": enemy_data.icon_path
 		}
 		CodexManager.discover_bestiary_entry(enemy_data.id, bestiary_data)
+
+	# Apply faction reputation changes for killing this enemy
+	if enemy_data and FactionManager:
+		_apply_faction_reputation_changes()
 
 	# Mark as killed in SaveManager for persistence (procedural dungeon enemies)
 	if not persistent_id.is_empty():
@@ -2362,6 +2484,41 @@ func _is_humanoid_faction() -> bool:
 		_:
 			return false  # Beasts, undead, demons, abominations are creatures
 
+
+## Apply faction reputation changes when enemy is killed
+func _apply_faction_reputation_changes() -> void:
+	if not enemy_data:
+		return
+
+	# Check for political faction first
+	var political_faction: String = enemy_data.political_faction
+
+	# Killing an enemy with a political faction decreases rep with that faction
+	if not political_faction.is_empty():
+		# Reputation loss for killing faction members
+		# Amount scales with enemy level: base -5, +1 per 5 levels
+		var rep_loss: int = -5 - (enemy_data.level / 5)
+		FactionManager.modify_reputation(political_faction, rep_loss, "Killed %s" % enemy_data.display_name, true)
+
+	# Killing bandits/goblins/monsters improves rep with nearby town
+	var town_faction: String = FactionManager.get_town_faction()
+	if not town_faction.is_empty():
+		# Only grant rep for killing hostile creatures/enemies, not civilians
+		match enemy_data.faction:
+			Enums.Faction.HUMAN_BANDIT:
+				FactionManager.modify_reputation(town_faction, 1, "Killed bandit", true)
+			Enums.Faction.GOBLINOID:
+				FactionManager.modify_reputation(town_faction, 1, "Killed goblin", true)
+			Enums.Faction.UNDEAD:
+				FactionManager.modify_reputation(town_faction, 2, "Killed undead", true)
+			Enums.Faction.DEMON:
+				FactionManager.modify_reputation(town_faction, 3, "Killed demon", true)
+			Enums.Faction.BEAST:
+				# Small rep for killing dangerous beasts
+				if enemy_data.level >= 5:
+					FactionManager.modify_reputation(town_faction, 1, "Killed dangerous beast", true)
+
+
 ## Aggro detection
 
 func _on_aggro_area_body_entered(body: Node3D) -> void:
@@ -2373,6 +2530,21 @@ func _on_aggro_area_body_entered(body: Node3D) -> void:
 	if body.is_in_group("player"):
 		player_in_detection_range = true
 		_awareness_target = body
+
+		# Check if player is crouching - reduced effective detection range
+		var is_crouching: bool = false
+		if body.has_method("get_is_crouching"):
+			is_crouching = body.get_is_crouching()
+
+		# If crouching, check if player is within reduced range
+		if is_crouching:
+			var aggro_range := enemy_data.aggro_range if enemy_data else 12.0
+			var effective_range: float = aggro_range * StealthConstants.CROUCHING_DETECTION_RANGE_MULT
+			var dist := global_position.distance_to(body.global_position)
+			if dist > effective_range:
+				# Player is crouching and outside reduced range - don't detect yet
+				# Awareness system will still track them if they get closer
+				return
 
 		# Get player visibility
 		var player_visibility: float = 1.0
@@ -2523,6 +2695,12 @@ func force_idle() -> void:
 ## Reference to billboard sprite component (if using sprites instead of 3D mesh)
 var billboard_sprite: BillboardSprite = null
 
+## Reference to alert state visual indicator (floating "?" or "!")
+var alert_icon_label: Label3D = null
+
+## Original sprite modulate (for restoring after alert tint)
+var _original_sprite_modulate: Color = Color.WHITE
+
 ## Reference to enemy glow light (for undead/spectral enemies)
 var enemy_glow_light: OmniLight3D = null
 
@@ -2659,7 +2837,7 @@ func _update_rat_directional_sprite() -> void:
 	move_dir = move_dir.normalized()
 
 	# Get camera forward direction (flattened to XZ plane)
-	var cam_forward: Vector3 = -camera.global_transform.basis.z
+	var cam_forward: Vector3 = camera.global_transform.basis.z
 	cam_forward.y = 0
 	cam_forward = cam_forward.normalized()
 

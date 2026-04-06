@@ -29,7 +29,11 @@ enum ConditionType {
 	STAT_CHECK,         ## Check if player stat meets threshold
 	SKILL_CHECK,        ## Check if player skill meets threshold
 	TIME_OF_DAY,        ## Check current time of day
-	REPUTATION,         ## Check faction reputation (future)
+	REPUTATION,         ## Check faction reputation (param_string = faction_id, param_int = min reputation)
+	FACTION_MEMBERSHIP, ## Check if player is a member of a faction (param_string = faction_id)
+	FACTION_RANK,       ## Check if player has a certain rank in a faction (param_string = "faction_id:rank_name")
+	LORE_DISCOVERED,    ## Check if a lore entry has been discovered (param_string = lore_id)
+	BESTIARY_DISCOVERED,## Check if a bestiary entry has been discovered (param_string = creature_id)
 	RANDOM_CHANCE,      ## Random percentage chance
 	PLAYER_RACE,        ## Check player's race (param_string: "human", "elf", "halfling", "dwarf")
 	PLAYER_CAREER       ## Check player's career (param_string: "merchant", "thief", "soldier", etc.)
@@ -45,10 +49,11 @@ enum ActionType {
 	START_QUEST,        ## Start a quest
 	COMPLETE_QUEST,     ## Complete/turn in a quest
 	ADVANCE_QUEST,      ## Advance quest objective
+	COMPLETE_QUEST_OBJECTIVE, ## Complete a specific quest objective (param_string = "quest_id:objective_id")
 	SET_FLAG,           ## Set a global flag
 	CLEAR_FLAG,         ## Clear a global flag
 	SKILL_CHECK,        ## Perform skill check (success/fail branching)
-	MODIFY_REPUTATION,  ## Modify faction reputation (future)
+	MODIFY_REPUTATION,  ## Modify faction reputation (param_string = faction_id, param_int = amount)
 	GIVE_XP,            ## Award experience points
 	HEAL_PLAYER,        ## Restore player HP
 	TELEPORT,           ## Teleport player to location
@@ -58,7 +63,8 @@ enum ActionType {
 	SPAWN_ERRAND,       ## Spawn an errand quest from a rumor
 	START_BOAT_VOYAGE,  ## Start boat travel (param_string = route_id)
 	DISCOVER_LORE,      ## Discover a lore entry (param_string = lore_id)
-	DISCOVER_RECIPE     ## Discover a recipe (param_string = recipe_id)
+	DISCOVER_RECIPE,    ## Discover a recipe (param_string = recipe_id)
+	DISCOVER_BESTIARY   ## Discover a bestiary entry (param_string = creature_id)
 }
 
 

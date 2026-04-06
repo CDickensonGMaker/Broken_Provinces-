@@ -5,6 +5,11 @@ extends Node3D
 const ZONE_ID := "hand_crafted_dungeon"
 const HUD_SCENE_PATH := "res://scenes/ui/hud.tscn"
 
+## Performance constants
+const MAX_DUNGEON_ENEMIES: int = 20
+const ROOM_CHECK_INTERVAL: float = 0.5  # Check player room every 0.5 seconds
+const ROOM_SIZE: float = 16.0  # Room size in units
+
 @export var spawn_id: String = "default"
 ## Dungeon faction determines which enemy types spawn
 @export_enum("undead", "goblin", "bandit", "cultist", "beast") var dungeon_faction: String = "undead"
@@ -16,6 +21,13 @@ const HUD_SCENE_PATH := "res://scenes/ui/hud.tscn"
 var _player_spawned: bool = false
 var _content_spawned: bool = false
 var _hud: CanvasLayer
+
+## Performance optimization: Enemy tracking
+var _active_enemy_count: int = 0
+var _spawn_queue: Array[Dictionary] = []  # Deferred spawns when cap exceeded
+var _room_enemies: Dictionary = {}  # room_name -> Array of enemy references
+var _current_player_room: String = ""
+var _room_check_timer: float = 0.0
 
 
 func _ready() -> void:
@@ -48,6 +60,15 @@ func _ready() -> void:
 	# Spawn enemies and chests in rooms
 	if auto_spawn_content:
 		call_deferred("_setup_all_room_spawns")
+
+
+func _physics_process(delta: float) -> void:
+	# Periodic room check for performance culling
+	_room_check_timer += delta
+	if _room_check_timer >= ROOM_CHECK_INTERVAL:
+		_room_check_timer = 0.0
+		_check_player_room()
+		_try_spawn_from_queue()
 
 
 func _spawn_player() -> void:
@@ -380,6 +401,9 @@ func _setup_all_room_spawns() -> void:
 		zone_danger
 	])
 
+	# Track enemies that existed before this room's spawn (to find new ones)
+	var existing_enemies: Array = get_tree().get_nodes_in_group("dungeon_enemies").duplicate()
+
 	for room in rooms_node.get_children():
 		if not room is Node3D:
 			continue
@@ -399,14 +423,234 @@ func _setup_all_room_spawns() -> void:
 		# Spawn content based on room type
 		DungeonSpawner.spawn_room_content(room, room_type, dungeon_faction, zone_danger)
 
+		# Track new enemies that were spawned for this room
+		var all_enemies: Array = get_tree().get_nodes_in_group("dungeon_enemies")
+		var new_enemies: Array = []
+		for enemy: Node in all_enemies:
+			if not enemy in existing_enemies:
+				new_enemies.append(enemy)
+				existing_enemies.append(enemy)
+
+		# Register enemies for this room
+		_register_room_enemies(room.name, new_enemies)
+
 		var config: Dictionary = DungeonLootConfig.get_room_config(room_type)
-		print("[HandCraftedDungeon]   - %s: type=%d, enemies=%d-%d, chests=%d-%d" % [
+		print("[HandCraftedDungeon]   - %s: type=%d, enemies=%d spawned" % [
 			room.name,
 			room_type,
-			config.get("enemy_min", 0),
-			config.get("enemy_max", 0),
-			config.get("chest_min", 0),
-			config.get("chest_max", 0)
+			new_enemies.size()
 		])
 
-	print("[HandCraftedDungeon] Room spawn setup complete")
+	# Apply enemy cap - disable excess enemies initially
+	_apply_enemy_cap()
+
+	print("[HandCraftedDungeon] Room spawn setup complete. Total tracked: %d enemies across %d rooms" % [
+		_active_enemy_count,
+		_room_enemies.size()
+	])
+
+
+## Register enemies for a room and connect their death signals
+func _register_room_enemies(room_name: String, enemies: Array) -> void:
+	if not _room_enemies.has(room_name):
+		_room_enemies[room_name] = []
+
+	for enemy: Node in enemies:
+		if not is_instance_valid(enemy):
+			continue
+
+		_room_enemies[room_name].append(enemy)
+
+		# Connect death signal if enemy has one
+		if enemy.has_signal("died"):
+			if not enemy.is_connected("died", _on_enemy_died):
+				enemy.died.connect(_on_enemy_died.bind(enemy, room_name))
+		elif enemy.has_signal("enemy_died"):
+			if not enemy.is_connected("enemy_died", _on_enemy_died):
+				enemy.enemy_died.connect(_on_enemy_died.bind(enemy, room_name))
+
+
+## Apply enemy cap by disabling excess enemies
+func _apply_enemy_cap() -> void:
+	_active_enemy_count = 0
+
+	# Enable enemies in start room's neighbors first, then by distance
+	var rooms_node: Node3D = get_node_or_null("Rooms")
+	if not rooms_node:
+		return
+
+	# Find start room position for distance calculation
+	var start_room_pos: Vector3 = Vector3.ZERO
+	for room: Node in rooms_node.get_children():
+		if room is Node3D:
+			var room_type_int: int = room.get_meta("room_type", 0)
+			if room_type_int == DungeonGridData.RoomType.START:
+				start_room_pos = (room as Node3D).global_position
+				break
+
+	# Sort rooms by distance from start
+	var rooms_by_distance: Array = []
+	for room_name: String in _room_enemies.keys():
+		var room: Node3D = rooms_node.get_node_or_null(room_name) as Node3D
+		if room:
+			var dist: float = room.global_position.distance_to(start_room_pos)
+			rooms_by_distance.append({"name": room_name, "distance": dist})
+
+	rooms_by_distance.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return a.distance < b.distance
+	)
+
+	# Enable enemies room by room until cap is reached
+	for room_data: Dictionary in rooms_by_distance:
+		var room_name: String = room_data.name
+		var enemies: Array = _room_enemies.get(room_name, [])
+
+		for enemy: Node in enemies:
+			if not is_instance_valid(enemy):
+				continue
+
+			if _active_enemy_count < MAX_DUNGEON_ENEMIES:
+				_set_enemy_active(enemy, true)
+				_active_enemy_count += 1
+			else:
+				_set_enemy_active(enemy, false)
+
+
+## Check which room the player is in and update culling
+func _check_player_room() -> void:
+	var player: Node3D = get_tree().get_first_node_in_group("player") as Node3D
+	if not player:
+		return
+
+	var rooms_node: Node3D = get_node_or_null("Rooms") as Node3D
+	if not rooms_node:
+		return
+
+	var closest_room: String = ""
+	var closest_dist: float = INF
+
+	for room: Node in rooms_node.get_children():
+		if not room is Node3D:
+			continue
+
+		# Room center is at (ROOM_SIZE/2, 0, ROOM_SIZE/2) relative to room origin
+		var room_center: Vector3 = (room as Node3D).global_position + Vector3(ROOM_SIZE / 2.0, 0, ROOM_SIZE / 2.0)
+		var dist: float = player.global_position.distance_squared_to(room_center)
+
+		if dist < closest_dist:
+			closest_dist = dist
+			closest_room = room.name
+
+	if closest_room != _current_player_room and not closest_room.is_empty():
+		_on_player_room_changed(closest_room)
+
+
+## Called when player moves to a different room - update enemy culling
+func _on_player_room_changed(new_room: String) -> void:
+	var old_room: String = _current_player_room
+	_current_player_room = new_room
+
+	print("[HandCraftedDungeon] Player room changed: %s -> %s" % [old_room, new_room])
+
+	var rooms_node: Node3D = get_node_or_null("Rooms") as Node3D
+	if not rooms_node:
+		return
+
+	# Get new room's position to find adjacent rooms
+	var new_room_node: Node3D = rooms_node.get_node_or_null(new_room) as Node3D
+	if not new_room_node:
+		return
+
+	var new_room_grid_pos: Vector2i = new_room_node.get_meta("grid_pos", Vector2i.ZERO) as Vector2i
+
+	# Find adjacent rooms (within 1 grid cell)
+	var active_rooms: Array[String] = [new_room]
+	for room: Node in rooms_node.get_children():
+		if not room is Node3D:
+			continue
+		var grid_pos: Vector2i = room.get_meta("grid_pos", Vector2i(-999, -999)) as Vector2i
+		var dist: int = absi(grid_pos.x - new_room_grid_pos.x) + absi(grid_pos.y - new_room_grid_pos.y)
+		if dist == 1:  # Adjacent room
+			active_rooms.append(room.name)
+
+	# Update enemy processing based on room proximity
+	_update_enemy_processing(active_rooms)
+
+
+## Enable/disable enemy processing based on room proximity
+func _update_enemy_processing(active_rooms: Array[String]) -> void:
+	var enabled_count: int = 0
+
+	for room_name: String in _room_enemies.keys():
+		var enemies: Array = _room_enemies.get(room_name, [])
+		var room_active: bool = room_name in active_rooms
+
+		for enemy: Node in enemies:
+			if not is_instance_valid(enemy):
+				continue
+
+			if room_active and enabled_count < MAX_DUNGEON_ENEMIES:
+				_set_enemy_active(enemy, true)
+				enabled_count += 1
+			else:
+				_set_enemy_active(enemy, false)
+
+	_active_enemy_count = enabled_count
+	print("[HandCraftedDungeon] Enemy processing updated: %d active (max %d)" % [_active_enemy_count, MAX_DUNGEON_ENEMIES])
+
+
+## Set an enemy's active state (enable/disable processing)
+func _set_enemy_active(enemy: Node, active: bool) -> void:
+	if not is_instance_valid(enemy):
+		return
+
+	if active:
+		enemy.process_mode = Node.PROCESS_MODE_INHERIT
+		enemy.visible = true
+	else:
+		enemy.process_mode = Node.PROCESS_MODE_DISABLED
+		# Keep visible but frozen - less jarring than popping in/out
+		enemy.visible = true
+
+
+## Handle enemy death - decrement count and clean up
+func _on_enemy_died(enemy: Node, room_name: String) -> void:
+	if _active_enemy_count > 0:
+		_active_enemy_count -= 1
+
+	# Remove from room tracking
+	if _room_enemies.has(room_name):
+		var enemies: Array = _room_enemies[room_name]
+		enemies.erase(enemy)
+
+	print("[HandCraftedDungeon] Enemy died in %s. Active count: %d" % [room_name, _active_enemy_count])
+
+
+## Try to spawn enemies from queue if under cap
+func _try_spawn_from_queue() -> void:
+	if _spawn_queue.is_empty():
+		return
+
+	while _active_enemy_count < MAX_DUNGEON_ENEMIES and not _spawn_queue.is_empty():
+		var spawn_data: Dictionary = _spawn_queue.pop_front()
+		# Re-enable a disabled enemy from the queue
+		var enemy: Node = spawn_data.get("enemy")
+		if is_instance_valid(enemy):
+			_set_enemy_active(enemy, true)
+			_active_enemy_count += 1
+
+
+## Get the current active enemy count (for debugging)
+func get_active_enemy_count() -> int:
+	return _active_enemy_count
+
+
+## Get total enemies across all rooms (for debugging)
+func get_total_enemy_count() -> int:
+	var total: int = 0
+	for room_name: String in _room_enemies.keys():
+		var enemies: Array = _room_enemies.get(room_name, [])
+		for enemy: Node in enemies:
+			if is_instance_valid(enemy):
+				total += 1
+	return total

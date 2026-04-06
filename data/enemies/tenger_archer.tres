@@ -73,6 +73,7 @@ knowledge = 3
 bravery = 6
 behavior = 2
 faction = 8
+political_faction = "tengers"
 aggro_range = 40.0
 attack_range = 35.0
 preferred_distance = 22.0

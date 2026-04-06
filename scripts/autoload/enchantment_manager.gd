@@ -4,6 +4,7 @@ extends Node
 signal enchantment_applied(item_id: String, slot: String, enchantment_id: String)
 signal soulstone_filled(soulstone_item_id: String, tier: int)
 signal soul_captured(enemy_level: int, soul_value: int)
+signal economy_soulstone_consumed(soulstone_id: String, tier: int)
 
 ## Enchantment database (loaded from resources)
 var enchantment_database: Dictionary = {}  # id -> EnchantmentData
@@ -38,6 +39,10 @@ const SOULSTONE_TIERS: Dictionary = {
 ## Track soul energy accumulation for each empty soulstone in inventory
 ## Format: {"item_id": current_energy}
 var soulstone_energy: Dictionary = {}
+
+## Track which economy soulstones the player has converted to inventory items
+## Format: {"economy_soulstone_id": "inventory_item_id"}
+var economy_to_inventory_map: Dictionary = {}
 
 func _ready() -> void:
 	_load_enchantment_database()
@@ -314,12 +319,130 @@ func get_soulstone_progress() -> Array[Dictionary]:
 			})
 	return result
 
+# =============================================================================
+# SOULSTONE ECONOMY INTEGRATION
+# =============================================================================
+
+## Check if we can create a new soulstone (respects 100 limit)
+func can_create_soulstone() -> bool:
+	if SoulstoneEconomy:
+		return SoulstoneEconomy.can_create_soulstone()
+	return true  # Fallback if economy not loaded
+
+
+## Claim a soulstone from the economy for the player
+## This should be called when player picks up a soulstone in the world
+func claim_economy_soulstone(economy_soulstone_id: String) -> bool:
+	if not SoulstoneEconomy:
+		push_warning("[EnchantmentManager] SoulstoneEconomy not available")
+		return false
+
+	var soulstone_data: Dictionary = SoulstoneEconomy.get_soulstone_data(economy_soulstone_id)
+	if soulstone_data.is_empty():
+		push_warning("[EnchantmentManager] Unknown economy soulstone: %s" % economy_soulstone_id)
+		return false
+
+	# Claim in economy
+	var claimed: bool = SoulstoneEconomy.claim_soulstone(
+		economy_soulstone_id,
+		SoulstoneEconomy.OwnerType.PLAYER,
+		"player"
+	)
+
+	if not claimed:
+		return false
+
+	# Add corresponding inventory item
+	var tier: int = soulstone_data.get("tier", 1)
+	var empty_item_id: String = EMPTY_SOULSTONE_IDS[tier - 1]
+	InventoryManager.add_item(empty_item_id, 1)
+
+	# Track the mapping
+	economy_to_inventory_map[economy_soulstone_id] = empty_item_id
+
+	return true
+
+
+## Release a soulstone back to the economy (e.g., when dropping or selling)
+func release_economy_soulstone(economy_soulstone_id: String) -> void:
+	if not SoulstoneEconomy:
+		return
+
+	SoulstoneEconomy.release_soulstone(economy_soulstone_id)
+
+	if economy_to_inventory_map.has(economy_soulstone_id):
+		economy_to_inventory_map.erase(economy_soulstone_id)
+
+
+## Get economy soulstone ID from inventory item (if tracked)
+func get_economy_id_for_inventory_item(inventory_item_id: String) -> String:
+	for economy_id: String in economy_to_inventory_map:
+		if economy_to_inventory_map[economy_id] == inventory_item_id:
+			return economy_id
+	return ""
+
+
+## Consume a soulstone for enchanting (also updates economy)
+## Enhanced version that tracks economy consumption
+func consume_economy_soulstone(min_tier: int) -> Dictionary:
+	# Find and consume inventory soulstone
+	for tier in range(min_tier, 6):
+		var filled_id: String = FILLED_SOULSTONE_IDS[tier - 1]
+		if InventoryManager.has_item(filled_id):
+			InventoryManager.remove_item(filled_id, 1)
+
+			# Find corresponding economy soulstone and mark consumed
+			var economy_id: String = _find_economy_soulstone_for_tier(tier)
+			if not economy_id.is_empty() and SoulstoneEconomy:
+				# Release from player ownership in economy
+				SoulstoneEconomy.release_soulstone(economy_id)
+				economy_soulstone_consumed.emit(economy_id, tier)
+
+			return {"consumed": true, "tier": tier, "economy_id": economy_id}
+
+	return {"consumed": false, "tier": 0, "economy_id": ""}
+
+
+## Find an economy soulstone of a specific tier owned by player
+func _find_economy_soulstone_for_tier(tier: int) -> String:
+	if not SoulstoneEconomy:
+		return ""
+
+	var player_soulstones: Array[String] = SoulstoneEconomy.get_player_soulstones()
+	for soulstone_id in player_soulstones:
+		var data: Dictionary = SoulstoneEconomy.get_soulstone_data(soulstone_id)
+		if data.get("tier", 0) == tier:
+			return soulstone_id
+
+	return ""
+
+
+## Get count of player-owned economy soulstones
+func get_player_economy_soulstone_count() -> int:
+	if not SoulstoneEconomy:
+		return 0
+	return SoulstoneEconomy.get_player_soulstones().size()
+
+
+## Get player's quest-targeted soulstones
+func get_player_quest_soulstones() -> Array[String]:
+	if not SoulstoneEconomy:
+		return []
+	return SoulstoneEconomy.get_player_quest_soulstones()
+
+
+# =============================================================================
+# SAVE/LOAD
+# =============================================================================
+
 ## Save enchantment data
 func get_save_data() -> Dictionary:
 	return {
-		"soulstone_energy": soulstone_energy.duplicate()
+		"soulstone_energy": soulstone_energy.duplicate(),
+		"economy_to_inventory_map": economy_to_inventory_map.duplicate()
 	}
 
 ## Load enchantment data
 func load_save_data(data: Dictionary) -> void:
 	soulstone_energy = data.get("soulstone_energy", {}).duplicate()
+	economy_to_inventory_map = data.get("economy_to_inventory_map", {}).duplicate()

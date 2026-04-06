@@ -1,0 +1,8 @@
+{
+  "name": "Stolen Tools",
+  "who": "Grimjaw the blacksmith gives it\nBandits have the tools\nTheir leader Scar took them personally",
+  "what": "Get back the stolen blacksmith tools\nCan kill bandits or intimidate leader\nTools are in a chest in the hideout",
+  "where": "Starts in Thornfield smithy\nGo to Bandit Hideout (north of Elder Moor)\nReturn to Thornfield",
+  "when": "Available after reaching Thornfield\nNo time limit\nBandits raided last week (story context)",
+  "rewards": "50 gold, free repairs, XP"
+}

@@ -21,7 +21,10 @@ var guard_spawn_count := 2  # Under-equipped guards
 
 func _ready() -> void:
 	# Play town ambient sound (only when main scene)
-	var is_main_scene: bool = get_node_or_null("Player") != null
+	var is_main_scene: bool = false
+	var _player_check: Node = get_node_or_null("Player")
+	if _player_check and is_instance_valid(_player_check) and not _player_check.is_queued_for_deletion():
+		is_main_scene = true
 	if is_main_scene:
 		AudioManager.play_ambient(TOWN_AMBIENT_PATH)
 		AudioManager.play_zone_music("village")
@@ -45,7 +48,10 @@ func _setup_spawn_point_metadata() -> void:
 func _setup_day_night_cycle() -> void:
 	# Only setup day/night lighting when this is the main scene (has Player node)
 	# When loaded as a streamed cell, CellStreamer strips lighting to prevent doubling
-	var is_main_scene: bool = get_node_or_null("Player") != null
+	var is_main_scene: bool = false
+	var _player_check: Node = get_node_or_null("Player")
+	if _player_check and is_instance_valid(_player_check) and not _player_check.is_queued_for_deletion():
+		is_main_scene = true
 	if is_main_scene:
 		DayNightCycle.add_to_level(self)
 

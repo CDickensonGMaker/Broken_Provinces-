@@ -90,6 +90,20 @@ func _process(delta: float) -> void:
 	if not sprite:
 		return
 
+	# LOD: Skip updates for distant enemies (reduces CPU load in dungeons)
+	if owner_enemy and is_instance_valid(owner_enemy):
+		# Check if owner_enemy has the cached distance (EnemyBase does)
+		if "_cached_player_distance_sq" in owner_enemy:
+			var dist_sq: float = owner_enemy._cached_player_distance_sq
+			if dist_sq > 2500.0:  # > 50 units - skip entirely
+				return
+			elif dist_sq > 900.0:  # > 30 units - 1/4 rate
+				if Engine.get_process_frames() % 4 != 0:
+					return
+			elif dist_sq > 400.0:  # > 20 units - 1/2 rate
+				if Engine.get_process_frames() % 2 != 0:
+					return
+
 	# Billboard: always face camera
 	_face_camera()
 

@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://cave_entrance_env_001"]
+
+[ext_resource type="PackedScene" uid="uid://cpkg10tcdwbv6" path="res://assets/models/environment/cave_entrance.glb" id="1_model"]
+[ext_resource type="Script" path="res://scripts/world/cave_entrance_portal.gd" id="2_script"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cliff"]
+size = Vector3(8.0, 6.0, 4.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_portal"]
+size = Vector3(2.5, 3.0, 1.0)
+
+[node name="CaveEntranceEnv" type="Node3D"]
+script = ExtResource("2_script")
+cave_system_id = "cave_system_001"
+destination = "cave_interior_main"
+is_portal = true
+link_to_scene = "res://scenes/caves/main_cave.tscn"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="RockCollision" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="CliffCollision" type="CollisionShape3D" parent="RockCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -1)
+shape = SubResource("BoxShape3D_cliff")
+
+[node name="PortalTrigger" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="PortalShape" type="CollisionShape3D" parent="PortalTrigger"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("BoxShape3D_portal")
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+
+[node name="InteractionPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 1)

@@ -25,7 +25,10 @@ func _ready() -> void:
 	_setup_light_effects()
 	# Only setup day/night lighting when this is the main scene (has Player node)
 	# When loaded as a streamed cell, CellStreamer strips lighting to prevent doubling
-	var is_main_scene: bool = get_node_or_null("Player") != null
+	var is_main_scene: bool = false
+	var _player_check: Node = get_node_or_null("Player")
+	if _player_check and is_instance_valid(_player_check) and not _player_check.is_queued_for_deletion():
+		is_main_scene = true
 	if is_main_scene:
 		DayNightCycle.add_to_level(self)
 

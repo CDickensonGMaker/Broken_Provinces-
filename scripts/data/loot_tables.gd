@@ -86,6 +86,15 @@ var scroll_pools: Dictionary = {
 	LootTier.LEGENDARY: ["scroll_cone_of_cold", "scroll_iron_guard", "scroll_chain_lightning"],
 }
 
+## Book pools - bestiary volumes and lore books found in dungeons/loot
+var book_pools: Dictionary = {
+	LootTier.COMMON: ["bestiary_vol_1_vermin", "bestiary_vol_2_predators"],
+	LootTier.UNCOMMON: ["bestiary_vol_3_arachnids", "bestiary_vol_4_goblins", "bestiary_vol_5_bandits", "lore_factions", "lore_gods"],
+	LootTier.RARE: ["bestiary_vol_6_undead", "bestiary_vol_7_cultists", "lore_enemies", "lore_dwarves"],
+	LootTier.EPIC: ["bestiary_vol_8_monsters", "bestiary_vol_9_tengers", "lore_elves", "lore_underworld"],
+	LootTier.LEGENDARY: ["bestiary_vol_10_legendary"],
+}
+
 var tool_pools: Dictionary = {
 	LootTier.COMMON: ["lockpick"],
 }
@@ -205,6 +214,7 @@ func get_pool_by_name(pool_name: String) -> Dictionary:
 		"tool": return tool_pools
 		"food": return food_pools
 		"soulstone": return soulstone_pools
+		"book": return book_pools
 	return {}
 
 
@@ -450,7 +460,7 @@ func generate_enemy_loot(difficulty: int) -> Array[Dictionary]:
 func _generate_single_drop(tier: LootTier) -> Dictionary:
 	# Weighted pool selection
 	# Consumables most common, then materials, then equipment
-	# Soulstones have a small chance at UNCOMMON+ tiers
+	# Books and soulstones have small chances at higher tiers
 	var roll := randf()
 	var pool: Dictionary
 	var pool_name: String
@@ -461,17 +471,21 @@ func _generate_single_drop(tier: LootTier) -> Dictionary:
 	elif roll < 0.60:
 		pool = material_pools
 		pool_name = "material"
-	elif roll < 0.75:
+	elif roll < 0.73:
 		pool = ammo_pools
 		pool_name = "ammo"
-	elif roll < 0.85:
+	elif roll < 0.83:
 		pool = armor_pools
 		pool_name = "armor"
-	elif roll < 0.95:
+	elif roll < 0.92:
 		pool = weapon_pools
 		pool_name = "weapon"
+	elif roll < 0.97:
+		# 5% chance for book drop
+		pool = book_pools
+		pool_name = "book"
 	elif tier >= LootTier.UNCOMMON:
-		# 5% chance for soulstone drop at UNCOMMON+ tier
+		# 3% chance for soulstone drop at UNCOMMON+ tier
 		pool = soulstone_pools
 		pool_name = "soulstone"
 	else:
@@ -618,7 +632,7 @@ func get_tier_color(tier: LootTier) -> Color:
 
 ## Check if an item exists in any pool
 func item_exists_in_pools(item_id: String) -> bool:
-	for pool in [weapon_pools, armor_pools, jewelry_pools, consumable_pools, magic_consumable_pools, material_pools, ammo_pools, scroll_pools, tool_pools]:
+	for pool in [weapon_pools, armor_pools, jewelry_pools, consumable_pools, magic_consumable_pools, material_pools, ammo_pools, scroll_pools, tool_pools, book_pools]:
 		for tier in pool.keys():
 			if item_id in pool[tier]:
 				return true
@@ -627,7 +641,7 @@ func item_exists_in_pools(item_id: String) -> bool:
 
 ## Get the tier of an item (returns -1 if not found)
 func get_item_tier(item_id: String) -> int:
-	for pool in [weapon_pools, armor_pools, jewelry_pools, consumable_pools, magic_consumable_pools, material_pools, ammo_pools, scroll_pools, tool_pools]:
+	for pool in [weapon_pools, armor_pools, jewelry_pools, consumable_pools, magic_consumable_pools, material_pools, ammo_pools, scroll_pools, tool_pools, book_pools]:
 		for tier in pool.keys():
 			if item_id in pool[tier]:
 				return tier

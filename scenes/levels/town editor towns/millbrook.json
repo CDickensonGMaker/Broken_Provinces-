@@ -1,0 +1,811 @@
+{
+  "district_index": 0,
+  "district_name": "",
+  "elements": [
+    {
+      "element_type": 0,
+      "id": "3128060136_5142",
+      "position": {
+        "x": -8.0,
+        "y": 0.0,
+        "z": 24.0
+      },
+      "properties": {
+        "building_id": "general_store",
+        "building_name": "General Store",
+        "depth": 7,
+        "height": 4,
+        "is_shop": true,
+        "shop_type": "general",
+        "style": "timber",
+        "tier": 2,
+        "width": 8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "366155566_5142",
+      "position": {
+        "x": 20.0,
+        "y": 0.0,
+        "z": 4.0
+      },
+      "properties": {
+        "building_id": "inn",
+        "building_name": "Inn/Tavern",
+        "depth": 10,
+        "height": 5,
+        "is_shop": true,
+        "shop_type": "inn",
+        "style": "timber",
+        "tier": 2,
+        "width": 12
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "4033164228_5142",
+      "position": {
+        "x": -12.0,
+        "y": 0.0,
+        "z": -8.0
+      },
+      "properties": {
+        "building_id": "barn",
+        "building_name": "Barn",
+        "depth": 8,
+        "height": 5,
+        "style": "wood",
+        "tier": 2,
+        "width": 10
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "2726423364_5142",
+      "position": {
+        "x": -12.0,
+        "y": 0.0,
+        "z": 16.0
+      },
+      "properties": {
+        "building_id": "shack",
+        "building_name": "Shack",
+        "depth": 3,
+        "height": 2,
+        "style": "wood",
+        "tier": 1,
+        "width": 3
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "2293643623_5142",
+      "position": {
+        "x": -24.0,
+        "y": 0.0,
+        "z": -4.0
+      },
+      "properties": {
+        "building_id": "barn",
+        "building_name": "Barn",
+        "depth": 8,
+        "height": 5,
+        "style": "wood",
+        "tier": 2,
+        "width": 10
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "619316996_5142",
+      "position": {
+        "x": -8.0,
+        "y": 0.0,
+        "z": -20.0
+      },
+      "properties": {
+        "building_id": "house_small",
+        "building_name": "Small House",
+        "depth": 5,
+        "height": 3.5,
+        "style": "timber",
+        "tier": 2,
+        "width": 6
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 0,
+      "id": "2364577436_5142",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": -16.0
+      },
+      "properties": {
+        "building_id": "house_medium",
+        "building_name": "Medium House",
+        "depth": 6,
+        "height": 4,
+        "style": "timber",
+        "tier": 2,
+        "width": 8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 3,
+      "id": "1639149636_5142",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 4.0
+      },
+      "properties": {
+        "func_type": "spawn_point",
+        "spawn_id": "default"
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 3,
+      "id": "1897162373_5142",
+      "position": {
+        "x": -2.95395421981812,
+        "y": 0.0,
+        "z": 3.65041971206665
+      },
+      "properties": {
+        "func_type": "fast_travel_shrine"
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "646659371_5142",
+      "position": {
+        "x": 28.0,
+        "y": 0.0,
+        "z": -16.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.0,
+        "prop_id": "detail_crate",
+        "prop_name": "Detail Crate",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "3922746516_5142",
+      "position": {
+        "x": 6.0,
+        "y": 0.0,
+        "z": 16.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 0.5,
+        "prop_id": "bricks",
+        "prop_name": "Bricks",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 315.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "2061539989_5142",
+      "position": {
+        "x": 8.0,
+        "y": 0.0,
+        "z": 6.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.5,
+        "prop_id": "hay_bale",
+        "prop_name": "Hay Bale",
+        "width": 1.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 45.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "3657599855_5142",
+      "position": {
+        "x": 22.0,
+        "y": 0.0,
+        "z": 26.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 0.5,
+        "prop_id": "bricks",
+        "prop_name": "Bricks",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "4134236869_5142",
+      "position": {
+        "x": 22.0,
+        "y": 0.0,
+        "z": 14.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.0,
+        "prop_id": "crate",
+        "prop_name": "Crate",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 315.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "3192846359_5142",
+      "position": {
+        "x": 26.0,
+        "y": 0.0,
+        "z": 14.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 1.0,
+        "prop_id": "detail_barrel",
+        "prop_name": "Detail Barrel",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "2335667863_5142",
+      "position": {
+        "x": 16.0,
+        "y": 0.0,
+        "z": 16.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 0.5,
+        "prop_id": "bench",
+        "prop_name": "Bench",
+        "width": 2.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "2950118388_5142",
+      "position": {
+        "x": -22.0,
+        "y": 0.0,
+        "z": -12.0
+      },
+      "properties": {
+        "category": "small",
+        "depth": 0.5,
+        "prop_id": "bricks",
+        "prop_name": "Bricks",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 225.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "1726815994_5142",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 10.0
+      },
+      "properties": {
+        "category": "medium",
+        "depth": 3.0,
+        "prop_id": "cart",
+        "prop_name": "Cart",
+        "width": 2.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 225.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "2320109809_5142",
+      "position": {
+        "x": 20.0,
+        "y": 0.0,
+        "z": -10.0
+      },
+      "properties": {
+        "category": "medium",
+        "depth": 3.0,
+        "prop_id": "cart",
+        "prop_name": "Cart",
+        "width": 2.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "761704669_5142",
+      "position": {
+        "x": -24.0,
+        "y": 0.0,
+        "z": 2.0
+      },
+      "properties": {
+        "category": "medium",
+        "depth": 3.0,
+        "prop_id": "hitching_post",
+        "prop_name": "Hitching Post",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "1925031018_5142",
+      "position": {
+        "x": -4.0,
+        "y": 0.0,
+        "z": 2.0
+      },
+      "properties": {
+        "category": "medium",
+        "depth": 3.0,
+        "prop_id": "hitching_post",
+        "prop_name": "Hitching Post",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "2334880807_5142",
+      "position": {
+        "x": 8.0,
+        "y": 0.0,
+        "z": -24.0
+      },
+      "properties": {
+        "category": "tree",
+        "depth": 3.0,
+        "prop_id": "tree_oak",
+        "prop_name": "Oak Tree",
+        "width": 3.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "1458255959_5142",
+      "position": {
+        "x": -4.0,
+        "y": 0.0,
+        "z": 12.0
+      },
+      "properties": {
+        "category": "tree",
+        "depth": 4.0,
+        "prop_id": "tree_large",
+        "prop_name": "Large Tree",
+        "width": 4.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "2214908501_5142",
+      "position": {
+        "x": 28.0,
+        "y": 0.0,
+        "z": -24.0
+      },
+      "properties": {
+        "category": "tree",
+        "depth": 3.0,
+        "prop_id": "tree_oak",
+        "prop_name": "Oak Tree",
+        "width": 3.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 135.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "1316294462_5142",
+      "position": {
+        "x": -24.0,
+        "y": 0.0,
+        "z": -16.0
+      },
+      "properties": {
+        "category": "tree",
+        "depth": 4.0,
+        "prop_id": "tree_large",
+        "prop_name": "Large Tree",
+        "width": 4.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "3418209022_5142",
+      "position": {
+        "x": 24.0,
+        "y": 0.0,
+        "z": -12.0
+      },
+      "properties": {
+        "category": "tree",
+        "depth": 4.0,
+        "prop_id": "tree_large",
+        "prop_name": "Large Tree",
+        "width": 4.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "851159086_5142",
+      "position": {
+        "x": -12.0,
+        "y": 0.0,
+        "z": 6.0
+      },
+      "properties": {
+        "category": "vegetation",
+        "depth": 1.0,
+        "prop_id": "tree_shrub",
+        "prop_name": "Shrub",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 225.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "2111950046_5142",
+      "position": {
+        "x": -8.0,
+        "y": 0.0,
+        "z": -16.0
+      },
+      "properties": {
+        "category": "vegetation",
+        "depth": 1.5,
+        "prop_id": "bush",
+        "prop_name": "Bush",
+        "width": 1.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "4220760549_5142",
+      "position": {
+        "x": 12.0,
+        "y": 0.0,
+        "z": -20.0
+      },
+      "properties": {
+        "category": "vegetation",
+        "depth": 1.0,
+        "prop_id": "tree_shrub",
+        "prop_name": "Shrub",
+        "width": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 180.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "element_type": 2,
+      "id": "2228485935_5142",
+      "position": {
+        "x": -8.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "properties": {
+        "category": "vegetation",
+        "depth": 1.5,
+        "prop_id": "bush",
+        "prop_name": "Bush",
+        "width": 1.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 135.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    }
+  ],
+  "grid_size": {
+    "x": 64,
+    "y": 64
+  },
+  "is_district": false,
+  "level_id": "millbrook",
+  "level_name": "Millbrook",
+  "level_type": "town",
+  "master_layout_path": "",
+  "metadata": {
+
+  },
+  "settlement_type": "village",
+  "snap_size": 4.0
+}

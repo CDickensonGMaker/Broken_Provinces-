@@ -1,0 +1,47 @@
+{
+	"id": "retake_harbor",
+	"title": "Retake the Harbor",
+	"description": "Bandits have taken advantage of Larton's weakened state and occupied the harbor warehouses. Mayor Aldric needs someone to clear them out so the survivors can reclaim their supplies and fortify their position.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "mayor_aldric_larton",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "larton",
+	"objectives": [
+		{
+			"id": "clear_warehouse_1",
+			"description": "Clear bandits from the occupied warehouse",
+			"type": "kill",
+			"target": "human_bandit",
+			"required_count": 4
+		},
+		{
+			"id": "kill_bandit_leader",
+			"description": "Defeat the Bandit Lieutenant",
+			"type": "kill",
+			"target": "bandit_captain",
+			"required_count": 1
+		},
+		{
+			"id": "report_to_harken",
+			"description": "Report to Captain Harken at the survivor hideout",
+			"type": "talk",
+			"target": "captain_harken",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "captain_harken",
+	"turn_in_zone": "larton",
+	"rewards": {
+		"gold": 150,
+		"xp": 500,
+		"items": ["health_potion", "health_potion"],
+		"faction_reputation": {
+			"human_empire": 50
+		}
+	},
+	"prerequisites": [],
+	"next_quest": null,
+	"on_complete_flags": ["larton_harbor_cleared"]
+}

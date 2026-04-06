@@ -1,0 +1,59 @@
+{
+	"id": "eastern_wolves",
+	"title": "The Eastern Wolf Pack",
+	"description": "A large pack of wolves has moved into the eastern forest near Thornfield, threatening loggers and travelers alike. Elric Thornwood needs someone to thin their numbers before they grow bold enough to attack the village itself. Greta Wolfsbane at the Hunter's Lodge can provide tracking advice.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "elric_thornwood",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "thornfield",
+	"objectives": [
+		{
+			"id": "speak_greta",
+			"description": "Speak with Greta Wolfsbane at the Hunter's Lodge",
+			"type": "talk",
+			"target": "greta_wolfsbane",
+			"required_count": 1
+		},
+		{
+			"id": "kill_wolves",
+			"description": "Kill wolves in the eastern forest",
+			"type": "kill",
+			"target": "wolf",
+			"required_count": 8
+		},
+		{
+			"id": "kill_pack_leader",
+			"description": "Kill the dire wolf pack leader",
+			"type": "kill",
+			"target": "dire_wolf",
+			"required_count": 1
+		},
+		{
+			"id": "optional_pelts",
+			"description": "(Optional) Collect wolf pelts for Greta",
+			"type": "collect",
+			"target": "wolf_pelt",
+			"required_count": 5,
+			"is_optional": true
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "elric_thornwood",
+	"turn_in_zone": "thornfield",
+	"rewards": {
+		"gold": 100,
+		"xp": 350,
+		"items": ["hunters_cloak"],
+		"reputation": {"thornfield": 15}
+	},
+	"optional_rewards": {
+		"optional_pelts": {
+			"gold": 50,
+			"xp": 100,
+			"reputation": {"thornfield": 5}
+		}
+	},
+	"prerequisites": [],
+	"next_quest": ""
+}

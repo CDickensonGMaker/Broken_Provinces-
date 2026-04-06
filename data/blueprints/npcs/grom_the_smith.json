@@ -1,0 +1,7 @@
+{
+  "name": "Grom the Smith",
+  "who": "Burly blacksmith with soot-stained arms\nWears leather apron, constantly working anvil\nPatient craftsman teacher",
+  "what": "Teaches crafting/blacksmithing (tutorial)\nRuns the Elder Moor forge\nGives 'The Smith's Apprentice' quest",
+  "where": "Elder Moor - forge/blacksmith area",
+  "quests": "Tutorial: Crafting (The Smith's Apprentice)"
+}

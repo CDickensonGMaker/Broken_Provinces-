@@ -27,6 +27,12 @@ const FOOTSTEP_INTERVAL_WALK: float = 0.45  # Time between footsteps while walki
 const FOOTSTEP_INTERVAL_SPRINT: float = 0.3  # Time between footsteps while sprinting
 const FOOTSTEP_INTERVAL_CROUCH: float = 0.6  # Time between footsteps while crouching
 
+# --- Footstep noise (stealth system) ---
+const SPRINT_NOISE_RADIUS: float = 20.0  # Sprinting is loud
+const WALK_NOISE_RADIUS: float = 8.0     # Walking is moderate
+const CROUCH_NOISE_RADIUS: float = 3.0   # Crouching is quiet
+const NOISE_AWARENESS_BOOST: float = 0.2 # How much awareness each footstep adds
+
 # --- Dodge tuning ---
 var dodge_stamina_cost: float = 20.0
 var base_iframe_duration: float = 0.3  # Seconds of invulnerability
@@ -45,6 +51,10 @@ var crouch_height: float = 1.0  # Crouched collision height
 var crouch_speed_mult: float = 0.5  # Movement speed while crouching
 var current_visibility: float = 1.0  # 0=hidden, 1=visible
 var is_hidden: bool = false  # True when visibility < threshold
+
+# --- Ladder Climbing ---
+var is_climbing: bool = false
+var current_ladder: Node3D = null  # Reference to the Ladder we're on
 
 # --- Combat tuning (light attack) ---
 @export var light_attack_damage: int = 10
@@ -140,12 +150,12 @@ func _physics_process(delta: float) -> void:
 	if GameManager and (GameManager.is_in_menu or GameManager.is_in_dialogue):
 		return
 
-	# --- Crouch toggle ---
-	if Input.is_action_just_pressed("crouch"):
+	# --- Crouch toggle (disabled while climbing) ---
+	if Input.is_action_just_pressed("crouch") and not is_climbing:
 		_toggle_crouch()
 
-	# --- Dodge input ---
-	if Input.is_action_just_pressed("dodge"):
+	# --- Dodge input (disabled while climbing) ---
+	if Input.is_action_just_pressed("dodge") and not is_climbing:
 		_try_dodge()
 
 	# --- Process active dodge ---
@@ -175,6 +185,11 @@ func _physics_process(delta: float) -> void:
 			_regenerate_mana(delta)
 			_update_interaction()
 			return
+
+	# --- Process ladder climbing ---
+	if is_climbing and current_ladder:
+		_process_climbing(delta)
+		return
 
 	# --- Check encumbrance ---
 	var is_overencumbered := InventoryManager.is_overencumbered()
@@ -854,6 +869,39 @@ func _update_footsteps(delta: float, is_moving: bool) -> void:
 	if footstep_timer >= interval:
 		footstep_timer = 0.0
 		AudioManager.play_footstep()
+		# Emit noise for stealth system
+		_emit_footstep_noise()
+
+
+## Emit footstep noise that nearby enemies can hear
+func _emit_footstep_noise() -> void:
+	# Determine noise radius based on movement state
+	var radius: float = CROUCH_NOISE_RADIUS
+	if is_sprinting:
+		radius = SPRINT_NOISE_RADIUS
+	elif not is_crouching:
+		radius = WALK_NOISE_RADIUS
+
+	# Stealth skill reduces noise radius (-5% per level)
+	if GameManager.player_data:
+		var stealth_skill: int = GameManager.player_data.get_skill(Enums.Skill.STEALTH)
+		radius *= (1.0 - stealth_skill * 0.05)
+
+	# Alert enemies within radius
+	_alert_enemies_in_radius(global_position, radius)
+
+
+## Alert all enemies within a given radius of a position
+func _alert_enemies_in_radius(pos: Vector3, radius: float) -> void:
+	var radius_sq: float = radius * radius
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		if not enemy is Node3D:
+			continue
+		var enemy_pos: Vector3 = (enemy as Node3D).global_position
+		var dist_sq: float = pos.distance_squared_to(enemy_pos)
+		if dist_sq <= radius_sq:
+			if enemy.has_method("hear_sound"):
+				enemy.hear_sound(pos, NOISE_AWARENESS_BOOST)
 
 ## Check if the player is on grass terrain (forest, plains, hills, swamp)
 func _is_grass_terrain() -> bool:
@@ -1017,3 +1065,122 @@ func get_is_hidden() -> bool:
 ## Check if player is crouching
 func get_is_crouching() -> bool:
 	return is_crouching
+
+# =============================================================================
+# LADDER CLIMBING SYSTEM
+# =============================================================================
+
+## Called by Ladder when player enters the climb area
+func start_climbing(ladder: Node3D) -> void:
+	if is_climbing or not ladder:
+		return
+
+	is_climbing = true
+	current_ladder = ladder
+	velocity = Vector3.ZERO
+
+	# Snap to ladder XZ position (offset from center so we don't clip into rungs)
+	if ladder.has_method("get_snap_x"):
+		global_position.x = ladder.get_snap_x()
+	if ladder.has_method("get_snap_z"):
+		# Offset Z slightly so player is in FRONT of ladder, not inside it
+		global_position.z = ladder.get_snap_z() + 0.5
+
+	# DEBUG: Print ladder bounds and player position
+	var bottom_y: float = ladder.get_bottom_y() if ladder.has_method("get_bottom_y") else 0.0
+	var top_y: float = ladder.get_top_y() if ladder.has_method("get_top_y") else 10.0
+	print("")
+	print("========== LADDER CLIMB START ==========")
+	print("[Ladder] Bottom Y: %.2f, Top Y: %.2f" % [bottom_y, top_y])
+	print("[Player] Position: %s" % global_position)
+	print("[Ladder] Global Position: %s" % ladder.global_position)
+	print("")
+	print("CONTROLS:")
+	print("  W (move_forward)  -> climb UP   (+Y)")
+	print("  S (move_backward) -> climb DOWN (-Y)")
+	print("=========================================")
+	print("")
+
+## Called by Ladder when player exits the climb area
+func stop_climbing() -> void:
+	if not is_climbing:
+		return
+
+	is_climbing = false
+
+	if current_ladder and current_ladder.has_method("release_climber"):
+		current_ladder.release_climber()
+
+	current_ladder = null
+	velocity = Vector3.ZERO
+	print("[Player] Stopped climbing")
+
+## Process climbing movement - SIMPLE: W = UP, S = DOWN
+## NOTE: We directly modify position, NOT velocity+move_and_slide
+## because move_and_slide collides with ladder rungs and blocks movement
+func _process_climbing(delta: float) -> void:
+	if not is_climbing or not is_instance_valid(current_ladder):
+		stop_climbing()
+		return
+
+	# Cache ladder reference for safety
+	var ladder: Node3D = current_ladder
+
+	# Get raw input values (for debug)
+	var w_pressed: float = Input.get_action_strength("move_forward")
+	var s_pressed: float = Input.get_action_strength("move_backward")
+
+	# Get input: W = UP (+1), S = DOWN (-1)
+	var climb_input: float = w_pressed - s_pressed
+
+	# Get climb speed
+	var speed: float = 3.0
+	if ladder is Ladder:
+		speed = ladder.climb_speed
+
+	# Get ladder bounds
+	var bottom_y: float = ladder.get_bottom_y() if ladder.has_method("get_bottom_y") else 0.0
+	var top_y: float = ladder.get_top_y() if ladder.has_method("get_top_y") else 10.0
+
+	# Calculate new Y position (DIRECT MOVEMENT - no collision check)
+	var new_y: float = global_position.y + (climb_input * speed * delta)
+
+	# Clamp to ladder bounds
+	new_y = clampf(new_y, bottom_y, top_y)
+
+	# Debug output - show raw input
+	if abs(climb_input) > 0.1:
+		var direction: String = "UP" if climb_input > 0 else "DOWN"
+		print("[Climb] W=%.1f S=%.1f -> input=%.2f (%s) | Y: %.2f -> %.2f | bounds[%.1f, %.1f]" % [
+			w_pressed, s_pressed, climb_input, direction, global_position.y, new_y, bottom_y, top_y
+		])
+
+	# Dismount at bottom when pressing S
+	if climb_input < -0.1 and new_y <= bottom_y + 0.1:
+		print("[Player] Dismount at bottom")
+		global_position.y = bottom_y
+		stop_climbing()
+		return
+
+	# Dismount at top when pressing W
+	if climb_input > 0.1 and new_y >= top_y - 0.1:
+		global_position.y = top_y + 0.2  # Step onto platform
+		print("[Player] Dismount at top")
+		stop_climbing()
+		return
+
+	# Apply movement DIRECTLY (bypass collision)
+	global_position.y = new_y
+
+	# Stay snapped to ladder XZ (with offset so we're in front of rungs)
+	if ladder.has_method("get_snap_x"):
+		global_position.x = ladder.get_snap_x()
+	if ladder.has_method("get_snap_z"):
+		global_position.z = ladder.get_snap_z() + 0.5
+
+	# Zero velocity so we don't drift when we exit climbing
+	velocity = Vector3.ZERO
+
+## Check if player is currently climbing
+func get_is_climbing() -> bool:
+	return is_climbing

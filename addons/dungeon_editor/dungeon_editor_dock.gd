@@ -18,6 +18,7 @@ var export_button: Button
 var clear_button: Button
 var load_button: Button
 var save_button: Button
+var generate_cave_button: Button
 var status_label: Label
 var dungeon_name_edit: LineEdit
 var auto_correct_checkbox: CheckBox
@@ -123,6 +124,15 @@ func _setup_ui() -> void:
 	clear_button.pressed.connect(_on_clear_pressed)
 	button_container.add_child(clear_button)
 
+	button_container.add_child(HSeparator.new())
+
+	# Generate cave button
+	generate_cave_button = Button.new()
+	generate_cave_button.text = "Generate Random Cave"
+	generate_cave_button.tooltip_text = "Generate a random procedural cave layout"
+	generate_cave_button.pressed.connect(_on_generate_cave_pressed)
+	button_container.add_child(generate_cave_button)
+
 	# Status label
 	status_label = Label.new()
 	status_label.text = "Ready"
@@ -178,7 +188,22 @@ func _setup_palette() -> void:
 		[DungeonGridData.RoomType.DEAD_END_N, "Dead End N", Color(0.45, 0.4, 0.4)],
 		[DungeonGridData.RoomType.DEAD_END_S, "Dead End S", Color(0.45, 0.4, 0.4)],
 		[DungeonGridData.RoomType.DEAD_END_E, "Dead End E", Color(0.45, 0.4, 0.4)],
-		[DungeonGridData.RoomType.DEAD_END_W, "Dead End W", Color(0.45, 0.4, 0.4)]
+		[DungeonGridData.RoomType.DEAD_END_W, "Dead End W", Color(0.45, 0.4, 0.4)],
+		[DungeonGridData.RoomType.HALLWAY_NS, "Hallway N-S (Narrow)", Color(0.4, 0.4, 0.4)],
+		[DungeonGridData.RoomType.HALLWAY_EW, "Hallway E-W (Narrow)", Color(0.4, 0.4, 0.4)],
+		# Cave room types - organic cave pieces
+		[DungeonGridData.RoomType.CAVE_ENTRANCE, "Cave Entrance", Color(0.35, 0.5, 0.35)],
+		[DungeonGridData.RoomType.CAVE_EXIT, "Cave Exit", Color(0.5, 0.4, 0.3)],
+		[DungeonGridData.RoomType.CAVE_CORRIDOR_NS, "Cave N-S", Color(0.4, 0.35, 0.3)],
+		[DungeonGridData.RoomType.CAVE_CORRIDOR_EW, "Cave E-W", Color(0.4, 0.35, 0.3)],
+		[DungeonGridData.RoomType.CAVE_CORNER_NE, "Cave Turn N-E", Color(0.45, 0.38, 0.32)],
+		[DungeonGridData.RoomType.CAVE_CORNER_NW, "Cave Turn N-W", Color(0.45, 0.38, 0.32)],
+		[DungeonGridData.RoomType.CAVE_CORNER_SE, "Cave Turn S-E", Color(0.45, 0.38, 0.32)],
+		[DungeonGridData.RoomType.CAVE_CORNER_SW, "Cave Turn S-W", Color(0.45, 0.38, 0.32)],
+		[DungeonGridData.RoomType.CAVE_T_JUNCTION, "Cave T-Junction", Color(0.5, 0.42, 0.35)],
+		[DungeonGridData.RoomType.CAVE_CROSSROADS, "Cave Crossroads", Color(0.55, 0.45, 0.38)],
+		[DungeonGridData.RoomType.CAVE_DEAD_END, "Cave Dead End", Color(0.38, 0.32, 0.28)],
+		[DungeonGridData.RoomType.CAVE_CHAMBER, "Cave Chamber (2x2)", Color(0.5, 0.45, 0.4)]
 	]
 
 	for type_info: Array in room_types:
@@ -310,6 +335,26 @@ func _get_room_color(room_type: int) -> Color:
 		DungeonGridData.RoomType.DEAD_END_N, DungeonGridData.RoomType.DEAD_END_S, \
 		DungeonGridData.RoomType.DEAD_END_E, DungeonGridData.RoomType.DEAD_END_W:
 			return Color(0.45, 0.4, 0.4)
+		DungeonGridData.RoomType.HALLWAY_NS, DungeonGridData.RoomType.HALLWAY_EW:
+			return Color(0.4, 0.4, 0.4)
+		# Cave room colors - earthy browns/greens
+		DungeonGridData.RoomType.CAVE_ENTRANCE:
+			return Color(0.35, 0.5, 0.35)
+		DungeonGridData.RoomType.CAVE_EXIT:
+			return Color(0.5, 0.4, 0.3)
+		DungeonGridData.RoomType.CAVE_CORRIDOR_NS, DungeonGridData.RoomType.CAVE_CORRIDOR_EW:
+			return Color(0.4, 0.35, 0.3)
+		DungeonGridData.RoomType.CAVE_CORNER_NE, DungeonGridData.RoomType.CAVE_CORNER_NW, \
+		DungeonGridData.RoomType.CAVE_CORNER_SE, DungeonGridData.RoomType.CAVE_CORNER_SW:
+			return Color(0.45, 0.38, 0.32)
+		DungeonGridData.RoomType.CAVE_T_JUNCTION:
+			return Color(0.5, 0.42, 0.35)
+		DungeonGridData.RoomType.CAVE_CROSSROADS:
+			return Color(0.55, 0.45, 0.38)
+		DungeonGridData.RoomType.CAVE_DEAD_END:
+			return Color(0.38, 0.32, 0.28)
+		DungeonGridData.RoomType.CAVE_CHAMBER:
+			return Color(0.5, 0.45, 0.4)
 	return Color(0.3, 0.3, 0.3)
 
 
@@ -514,6 +559,26 @@ func _on_file_selected(path: String) -> void:
 
 func _on_clear_pressed() -> void:
 	_clear_grid()
+
+
+func _on_generate_cave_pressed() -> void:
+	_clear_grid()
+
+	# Generate random cave using CaveGenerator
+	var cave_grid: Dictionary = CaveGenerator.generate(
+		randi_range(6, 10),  # Main path length
+		randi_range(1, 3),   # Branch count
+		-1                    # Random seed
+	)
+
+	# Apply to editor grid
+	for pos: Vector2i in cave_grid.keys():
+		var room_type: int = cave_grid[pos]
+		if grid_cells.has(pos):
+			grid_data[pos] = room_type
+			grid_cells[pos].color = _get_room_color(room_type)
+
+	status_label.text = "Generated cave with %d rooms" % cave_grid.size()
 
 
 ## Auto-correct adjacent rooms when a room is placed

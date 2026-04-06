@@ -1,0 +1,143 @@
+{
+  "id": "apprentice_marcus",
+  "display_name": "Apprentice Marcus Dialogue",
+  "description": "Dialogue for Marcus after being freed from the Crystal Hearts puzzle",
+  "start_node": "greeting_freed",
+  "nodes": [
+    {
+      "id": "greeting_freed",
+      "speaker": "Marcus",
+      "text": "Thank the gods! I thought I would be trapped in that crystal prison forever! The portal... it was a trap. I was so foolish to think I could handle this place alone.",
+      "choices": [
+        {
+          "text": "Are you hurt?",
+          "next": "not_hurt"
+        },
+        {
+          "text": "What happened here?",
+          "next": "explain_situation"
+        },
+        {
+          "text": "Your master sent me to find you.",
+          "next": "master_sent"
+        }
+      ]
+    },
+    {
+      "id": "not_hurt",
+      "speaker": "Marcus",
+      "text": "Shaken, but unharmed. The crystal preserved me somehow - I could see the world but not move or speak. It was... terrifying. But I'm whole, thanks to you.",
+      "auto_continue": "what_now"
+    },
+    {
+      "id": "explain_situation",
+      "speaker": "Marcus",
+      "text": "I came seeking rare magical components for my studies. But when I found this chamber, curiosity got the better of me. I touched the central portal and... it consumed me. Trapped me in crystal until someone solved the pillar puzzle.",
+      "auto_continue": "what_now"
+    },
+    {
+      "id": "master_sent",
+      "speaker": "Marcus",
+      "text": "Master Aldric? He was worried enough to send someone? I suppose I've been gone far longer than I realized. Time moves strangely in the crystal...",
+      "auto_continue": "what_now"
+    },
+    {
+      "id": "what_now",
+      "speaker": "Marcus",
+      "text": "I owe you my life. I don't know how I can ever repay you. What would you have me do?",
+      "choices": [
+        {
+          "text": "Come with me. I could use an ally who knows magic.",
+          "next": "offer_join"
+        },
+        {
+          "text": "Return to your master in Dalhurst. He's worried.",
+          "next": "send_home"
+        },
+        {
+          "text": "Stay here. I don't care what happens to you.",
+          "next": "abandon"
+        }
+      ]
+    },
+    {
+      "id": "offer_join",
+      "speaker": "Marcus",
+      "text": "Travel with you? After what just happened, I... yes. Yes, I think that's exactly what I need. To learn from someone with real experience, not just dusty tomes. I'll follow you wherever you lead.",
+      "choices": [
+        {
+          "text": "Welcome aboard, Marcus.",
+          "next": "join_confirmed",
+          "actions": [
+            {"type": "set_flag", "param": "marcus_joined_party", "value": 1},
+            {"type": "set_flag", "param": "marcus_freed", "value": 1},
+            {"type": "advance_quest", "param": "lost_apprentice", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "join_confirmed",
+      "speaker": "Marcus",
+      "text": "I won't let you down. I may not be the strongest fighter, but my knowledge of arcane lore and alchemy could prove useful. Lead on!",
+      "is_end": true,
+      "actions": [
+        {"type": "give_xp", "param": "", "value": 100}
+      ]
+    },
+    {
+      "id": "send_home",
+      "speaker": "Marcus",
+      "text": "You're right. Master Aldric has taught me so much - I should return and continue my studies properly. Perhaps one day, when I'm stronger, I can repay this debt.",
+      "choices": [
+        {
+          "text": "Safe travels, Marcus.",
+          "next": "home_confirmed",
+          "actions": [
+            {"type": "set_flag", "param": "marcus_sent_home", "value": 1},
+            {"type": "set_flag", "param": "marcus_freed", "value": 1},
+            {"type": "advance_quest", "param": "lost_apprentice", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "home_confirmed",
+      "speaker": "Marcus",
+      "text": "Thank you again. I'll tell Master Aldric of your heroism. May the Three Gods watch over you!",
+      "is_end": true,
+      "actions": [
+        {"type": "give_xp", "param": "", "value": 100},
+        {"type": "modify_reputation", "param": "wizard", "value": 10}
+      ]
+    },
+    {
+      "id": "abandon",
+      "speaker": "Marcus",
+      "text": "What? But... you just freed me! Why would you... No. I see. You're not a hero. You're just someone who stumbled through a puzzle. Fine. I'll find my own way out.",
+      "choices": [
+        {
+          "text": "Good luck with that.",
+          "next": "abandon_confirmed",
+          "actions": [
+            {"type": "set_flag", "param": "marcus_abandoned", "value": 1},
+            {"type": "set_flag", "param": "marcus_freed", "value": 1}
+          ]
+        },
+        {
+          "text": "Wait... I was testing you. Come with me.",
+          "next": "offer_join"
+        }
+      ]
+    },
+    {
+      "id": "abandon_confirmed",
+      "speaker": "Marcus",
+      "text": "I'll remember this. We'll meet again, stranger. And next time, the circumstances may not be so... favorable for you.",
+      "is_end": true,
+      "actions": [
+        {"type": "set_flag", "param": "marcus_hostile_future", "value": 1}
+      ]
+    }
+  ]
+}

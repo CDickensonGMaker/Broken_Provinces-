@@ -1,0 +1,70 @@
+[gd_scene load_steps=4 format=3 uid="uid://dtown_switcher_scene"]
+
+[ext_resource type="Script" path="res://scripts/dev/town_switcher.gd" id="1_switcher"]
+[ext_resource type="Script" path="res://scripts/dev/free_cam_preview.gd" id="2_freecam"]
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0.4, 0.5, 0.6, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.6, 0.65, 0.7, 1)
+ambient_light_energy = 0.5
+
+[sub_resource type="StandardMaterial3D" id="GroundMat_1"]
+albedo_color = Color(0.35, 0.4, 0.3, 1)
+
+[node name="TownSwitcher" type="Node3D"]
+script = ExtResource("1_switcher")
+
+[node name="FreeCam" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 15, 25)
+fov = 75.0
+current = true
+script = ExtResource("2_freecam")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 10, 30, 10)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
+
+[node name="Ground" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+size = Vector3(200, 0.2, 200)
+material = SubResource("GroundMat_1")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="UI"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 310.0
+offset_bottom = 150.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Panel"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 296.0
+offset_bottom = 136.0
+
+[node name="TitleLabel" type="Label" parent="UI/Panel/VBoxContainer"]
+text = "Town Switcher"
+
+[node name="HSeparator" type="HSeparator" parent="UI/Panel/VBoxContainer"]
+
+[node name="TownLabel" type="Label" parent="UI/Panel/VBoxContainer"]
+text = "Select Town:"
+
+[node name="TownDropdown" type="OptionButton" parent="UI/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="UI/Panel/VBoxContainer"]
+text = "Ready"
+
+[node name="ElementCountLabel" type="Label" parent="UI/Panel/VBoxContainer"]
+text = "Buildings: 0 | NPCs: 0 | Props: 0"
+
+[node name="ControlsLabel" type="Label" parent="UI/Panel/VBoxContainer"]
+text = "WASD: Move | Mouse: Look | Shift: Fast | ESC: Cursor"

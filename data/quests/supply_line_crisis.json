@@ -1,0 +1,69 @@
+{
+	"id": "supply_line_crisis",
+	"title": "Supply Line Crisis",
+	"description": "Aberdeen is slowly starving. The trade routes to Larton have been cut off by goblin activity at Kazer-Dun, and the town's warehouses stand empty. Mayor Bjorn desperately needs someone to either clear the goblin threat or find an alternative supply route through the dangerous swamplands.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "mayor_bjorn_aberdeen",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "aberdeen",
+	"objectives": [
+		{
+			"id": "speak_mayor",
+			"description": "Learn about Aberdeen's supply crisis from Mayor Bjorn",
+			"type": "talk",
+			"target": "mayor_bjorn_aberdeen",
+			"required_count": 1
+		},
+		{
+			"id": "investigate_routes",
+			"description": "Investigate the blocked trade route near Kazer-Dun",
+			"type": "reach",
+			"target": "kazer_dun_approach",
+			"required_count": 1
+		},
+		{
+			"id": "clear_goblins_or_find_route",
+			"description": "Clear the goblin blockade OR find the hidden swamp path to Larton",
+			"type": "choice",
+			"choices": [
+				{
+					"id": "clear_blockade",
+					"description": "Defeat the goblin scouts blocking the road",
+					"type": "kill",
+					"target": "goblin_soldier",
+					"required_count": 8
+				},
+				{
+					"id": "find_swamp_path",
+					"description": "Discover the old smuggler's route through the swamp",
+					"type": "reach",
+					"target": "swamp_passage_larton",
+					"required_count": 1
+				}
+			]
+		},
+		{
+			"id": "contact_larton",
+			"description": "Reach Larton and speak with the Trade Master about resuming supplies",
+			"type": "talk",
+			"target": "trade_master_larton",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "mayor_bjorn_aberdeen",
+	"turn_in_zone": "aberdeen",
+	"rewards": {
+		"gold": 150,
+		"xp": 500,
+		"items": [],
+		"faction_reputation": {
+			"aberdeen": 75,
+			"larton": 25
+		}
+	},
+	"prerequisites": [],
+	"next_quest": null,
+	"notes": "This quest establishes the connection between Aberdeen and Larton, and introduces the Kazer-Dun goblin threat. The choice allows players to either fight through or find a sneaky alternative."
+}

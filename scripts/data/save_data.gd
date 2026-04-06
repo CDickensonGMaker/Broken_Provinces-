@@ -6,7 +6,8 @@ extends Resource
 ## Version 2: Added CellStreamerSaveData, deprecated hex system fields in WorldSaveData
 ## Version 3: Added MoralitySaveData, FactionSaveData, NPC disposition persistence
 ## Version 4: Added StatsSaveData, JournalSaveData (notes, bestiary, codex unlocks)
-const SAVE_VERSION := 4
+## Version 5: Added SoulstoneSaveData (soulstone economy system)
+const SAVE_VERSION := 5
 
 ## Metadata
 @export var version: int = SAVE_VERSION
@@ -71,6 +72,12 @@ var stats_data = null  # StatsSaveData
 ## Journal (notes and bestiary) section
 var journal_data = null  # JournalSaveData
 
+## Soulstone economy section
+var soulstone_data = null  # SoulstoneSaveData
+
+## Follower system section
+var follower_data = null  # FollowerSaveData
+
 ## Audio settings section
 @export_group("Settings")
 @export var audio_settings: Dictionary = {}
@@ -95,6 +102,8 @@ func _init() -> void:
 	codex_data = CodexSaveData.new()
 	stats_data = StatsSaveData.new()
 	journal_data = JournalSaveData.new()
+	soulstone_data = SoulstoneSaveData.new()
+	follower_data = FollowerSaveData.new()
 
 ## Convert to dictionary for JSON serialization
 func to_dict() -> Dictionary:
@@ -122,6 +131,8 @@ func to_dict() -> Dictionary:
 		"codex": codex_data.to_dict() if codex_data else {},
 		"stats": stats_data.to_dict() if stats_data else {},
 		"journal": journal_data.to_dict() if journal_data else {},
+		"soulstones": soulstone_data.to_dict() if soulstone_data else {},
+		"followers": follower_data.to_dict() if follower_data else {},
 		"audio_settings": audio_settings
 	}
 
@@ -170,6 +181,10 @@ func from_dict(data: Dictionary) -> void:
 		stats_data.from_dict(data.get("stats", {}))
 	if journal_data:
 		journal_data.from_dict(data.get("journal", {}))
+	if soulstone_data:
+		soulstone_data.from_dict(data.get("soulstones", {}))
+	if follower_data:
+		follower_data.from_dict(data.get("followers", {}))
 
 	audio_settings = data.get("audio_settings", {})
 
@@ -846,3 +861,61 @@ class JournalSaveData:
 		next_note_id = data.get("next_note_id", 1)
 		bestiary = data.get("bestiary", {})
 		unlocked_codex_entries = data.get("unlocked_codex_entries", [])
+
+
+## Soulstone economy save data structure
+class SoulstoneSaveData:
+	## Full soulstone registry (soulstone_id -> data dict)
+	var soulstone_registry: Dictionary = {}
+
+	## Quest target mappings (quest_id -> soulstone_id)
+	var quest_targets: Dictionary = {}
+
+	## Distribution counts by category
+	var distribution_counts: Dictionary = {}
+
+	## EnchantmentManager soulstone energy tracking
+	var enchantment_soulstone_energy: Dictionary = {}
+
+	## EnchantmentManager economy-to-inventory mapping
+	var economy_to_inventory_map: Dictionary = {}
+
+	func to_dict() -> Dictionary:
+		return {
+			"soulstone_registry": soulstone_registry,
+			"quest_targets": quest_targets,
+			"distribution_counts": distribution_counts,
+			"enchantment_soulstone_energy": enchantment_soulstone_energy,
+			"economy_to_inventory_map": economy_to_inventory_map
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		soulstone_registry = data.get("soulstone_registry", {})
+		quest_targets = data.get("quest_targets", {})
+		distribution_counts = data.get("distribution_counts", {})
+		enchantment_soulstone_energy = data.get("enchantment_soulstone_energy", {})
+		economy_to_inventory_map = data.get("economy_to_inventory_map", {})
+
+
+## Follower system save data structure
+class FollowerSaveData:
+	## Active follower IDs (array of follower_id strings)
+	var active_follower_ids: Array = []
+
+	## Saved follower state (follower_id -> serialized data dict)
+	var follower_states: Dictionary = {}
+
+	## Unlocked follower IDs (followers the player can recruit)
+	var available_followers: Array = []
+
+	func to_dict() -> Dictionary:
+		return {
+			"active_follower_ids": active_follower_ids,
+			"follower_states": follower_states,
+			"available_followers": available_followers
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		active_follower_ids = data.get("active_follower_ids", [])
+		follower_states = data.get("follower_states", {})
+		available_followers = data.get("available_followers", [])

@@ -1,0 +1,85 @@
+[gd_scene load_steps=6 format=3 uid="uid://mine_entrance"]
+
+[ext_resource type="Script" path="res://scripts/rooms/modular_room.gd" id="1_modular"]
+[ext_resource type="PackedScene" path="res://assets/models/caves/cave_entrance_1exit.glb" id="2_mesh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(16.0, 0.5, 16.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_e"]
+size = Vector3(1.0, 6.0, 16.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_w"]
+size = Vector3(1.0, 6.0, 16.0)
+
+[node name="MineEntrance" type="Node3D"]
+script = ExtResource("1_modular")
+room_id = "mine_entrance"
+room_type = "cave"
+room_name = "Mine Entrance"
+room_width = 16.0
+room_depth = 16.0
+room_height = 6.0
+
+[node name="Terrain" type="Node3D" parent="."]
+
+[node name="CaveMesh" parent="Terrain" instance=ExtResource("2_mesh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 8)
+
+[node name="FloorCollision" type="StaticBody3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 8)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Terrain/FloorCollision"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="WallCollision" type="StaticBody3D" parent="Terrain"]
+
+[node name="WallEast" type="CollisionShape3D" parent="Terrain/WallCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 3, 8)
+shape = SubResource("BoxShape3D_wall_e")
+
+[node name="WallWest" type="CollisionShape3D" parent="Terrain/WallCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 3, 8)
+shape = SubResource("BoxShape3D_wall_w")
+
+[node name="WallNorth" type="CollisionShape3D" parent="Terrain/WallCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 3, 0.5)
+shape = SubResource("BoxShape3D_wall_e")
+
+[node name="Props" type="Node3D" parent="."]
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="AmbientLight" type="OmniLight3D" parent="Lighting"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4, 8)
+light_color = Color(0.6, 0.55, 0.45, 1)
+light_energy = 0.8
+omni_range = 18.0
+omni_attenuation = 1.2
+
+[node name="EntranceLight" type="OmniLight3D" parent="Lighting"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4, 2)
+light_color = Color(0.9, 0.85, 0.7, 1)
+light_energy = 1.0
+omni_range = 12.0
+
+[node name="EnemySpawns" type="Node3D" parent="."]
+
+[node name="ChestPositions" type="Node3D" parent="."]
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="DefaultSpawn" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.5, 8)
+metadata/spawn_id = "default"
+
+[node name="FromExteriorSpawn" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.5, 4)
+metadata/spawn_id = "from_exterior"
+
+[node name="DoorPositions" type="Node3D" parent="."]
+
+[node name="Door_South" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 15.5)
+metadata/door_id = "door_south"
+metadata/show_frame = false

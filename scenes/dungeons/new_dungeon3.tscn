@@ -3,9 +3,9 @@
 [ext_resource type="Script" uid="uid://fdd4ags3s30d" path="res://scripts/dungeons/hand_crafted_dungeon.gd" id="1_uhubw"]
 [ext_resource type="PackedScene" uid="uid://bxstart001" path="res://scenes/dungeons/rooms/room_start.tscn" id="2_sgnff"]
 [ext_resource type="Texture2D" uid="uid://b6ii70bh4emrd" path="res://assets/textures/environment/dungeon/stonewall.png" id="3_a48xe"]
-[ext_resource type="PackedScene" uid="uid://corridorns01" path="res://scenes/dungeons/rooms/corridor_ns.tscn" id="4_6tkce"]
+[ext_resource type="PackedScene" path="res://scenes/dungeons/rooms/hallway_ns.tscn" id="4_6tkce"]
 [ext_resource type="PackedScene" uid="uid://cross0000001" path="res://scenes/dungeons/rooms/cross.tscn" id="5_7717m"]
-[ext_resource type="PackedScene" uid="uid://corridorew01" path="res://scenes/dungeons/rooms/corridor_ew.tscn" id="6_qh6ty"]
+[ext_resource type="PackedScene" path="res://scenes/dungeons/rooms/hallway_ew.tscn" id="6_qh6ty"]
 [ext_resource type="PackedScene" uid="uid://tsouth00001" path="res://scenes/dungeons/rooms/t_south.tscn" id="7_p1p5b"]
 [ext_resource type="PackedScene" uid="uid://roomsmall001" path="res://scenes/dungeons/rooms/room_small.tscn" id="8_7u6fb"]
 [ext_resource type="PackedScene" uid="uid://roommed00001" path="res://scenes/dungeons/rooms/room_medium.tscn" id="9_567ao"]
@@ -59,35 +59,35 @@ use_collision = true
 size = Vector3(0.5, 4, 4)
 material = SubResource("StandardMaterial3D_3gup1")
 
-[node name="corridor_ns_-4_6" type="Node3D" parent="Rooms" instance=ExtResource("4_6tkce")]
+[node name="hallway_ns_-4_6" type="Node3D" parent="Rooms" instance=ExtResource("4_6tkce")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 96)
 metadata/grid_pos = Vector2i(-4, 6)
-metadata/room_type = 2
+metadata/room_type = 24
 
-[node name="corridor_ns_-4_5" type="Node3D" parent="Rooms" instance=ExtResource("4_6tkce")]
+[node name="hallway_ns_-4_5" type="Node3D" parent="Rooms" instance=ExtResource("4_6tkce")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 80)
 metadata/grid_pos = Vector2i(-4, 5)
-metadata/room_type = 2
+metadata/room_type = 24
 
 [node name="cross_-4_4" type="Node3D" parent="Rooms" instance=ExtResource("5_7717m")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 64)
 metadata/grid_pos = Vector2i(-4, 4)
 metadata/room_type = 12
 
-[node name="corridor_ew_-3_4" type="Node3D" parent="Rooms" instance=ExtResource("6_qh6ty")]
+[node name="hallway_ew_-3_4" type="Node3D" parent="Rooms" instance=ExtResource("6_qh6ty")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48, 0, 64)
 metadata/grid_pos = Vector2i(-3, 4)
-metadata/room_type = 3
+metadata/room_type = 25
 
 [node name="t_south_-2_4" type="Node3D" parent="Rooms" instance=ExtResource("7_p1p5b")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, 64)
 metadata/grid_pos = Vector2i(-2, 4)
 metadata/room_type = 9
 
-[node name="corridor_ew_-1_4" type="Node3D" parent="Rooms" instance=ExtResource("6_qh6ty")]
+[node name="hallway_ew_-1_4" type="Node3D" parent="Rooms" instance=ExtResource("6_qh6ty")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, 64)
 metadata/grid_pos = Vector2i(-1, 4)
-metadata/room_type = 3
+metadata/room_type = 25
 
 [node name="room_small_-2_5" type="Node3D" parent="Rooms" instance=ExtResource("8_7u6fb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, 80)
@@ -135,10 +135,10 @@ use_collision = true
 size = Vector3(0.5, 4, 4)
 material = SubResource("StandardMaterial3D_o1rtf")
 
-[node name="corridor_ns_-4_3" type="Node3D" parent="Rooms" instance=ExtResource("4_6tkce")]
+[node name="hallway_ns_-4_3" type="Node3D" parent="Rooms" instance=ExtResource("4_6tkce")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 48)
 metadata/grid_pos = Vector2i(-4, 3)
-metadata/room_type = 2
+metadata/room_type = 24
 
 [node name="room_boss_0_4" type="Node3D" parent="Rooms" instance=ExtResource("10_0e8xw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 64)

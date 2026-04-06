@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://fdd4ags3s30d" path="res://scripts/dungeons/hand_crafted_dungeon.gd" id="1_hybtc"]
 [ext_resource type="PackedScene" uid="uid://bxstart001" path="res://scenes/dungeons/rooms/room_start.tscn" id="2_56bko"]
-[ext_resource type="PackedScene" uid="uid://corridorns01" path="res://scenes/dungeons/rooms/corridor_ns.tscn" id="3_1d0fo"]
+[ext_resource type="PackedScene" path="res://scenes/dungeons/rooms/hallway_ns.tscn" id="3_1d0fo"]
 [ext_resource type="PackedScene" uid="uid://roomboss0001" path="res://scenes/dungeons/rooms/room_boss.tscn" id="4_xxjt0"]
 
 [node name="Dungeon" type="Node3D"]
@@ -23,18 +23,18 @@ metadata/room_type = 1
 
 [node name="ChestPositions2" type="Node3D" parent="Rooms/start_1_5"]
 
-[node name="corridor_ns_1_4" parent="Rooms" instance=ExtResource("3_1d0fo")]
+[node name="hallway_ns_1_4" parent="Rooms" instance=ExtResource("3_1d0fo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, 64)
 metadata/grid_pos = Vector2i(1, 4)
-metadata/room_type = 2
+metadata/room_type = 24
 
-[node name="Geometry2" type="Node3D" parent="Rooms/corridor_ns_1_4"]
+[node name="Geometry2" type="Node3D" parent="Rooms/hallway_ns_1_4"]
 
-[node name="SpawnPoints2" type="Node3D" parent="Rooms/corridor_ns_1_4"]
+[node name="SpawnPoints2" type="Node3D" parent="Rooms/hallway_ns_1_4"]
 
-[node name="EnemySpawns2" type="Node3D" parent="Rooms/corridor_ns_1_4"]
+[node name="EnemySpawns2" type="Node3D" parent="Rooms/hallway_ns_1_4"]
 
-[node name="ChestPositions2" type="Node3D" parent="Rooms/corridor_ns_1_4"]
+[node name="ChestPositions2" type="Node3D" parent="Rooms/hallway_ns_1_4"]
 
 [node name="room_boss_1_3" parent="Rooms" instance=ExtResource("4_xxjt0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, 48)

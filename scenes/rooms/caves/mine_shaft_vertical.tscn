@@ -1,0 +1,91 @@
+[gd_scene load_steps=6 format=3 uid="uid://mine_shaft_vertical"]
+
+[ext_resource type="Script" path="res://scripts/rooms/modular_room.gd" id="1_modular"]
+[ext_resource type="PackedScene" path="res://assets/models/caves/cave_piece_08.glb" id="2_mesh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor_upper"]
+size = Vector3(12.0, 0.5, 6.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor_lower"]
+size = Vector3(12.0, 0.5, 6.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall"]
+size = Vector3(1.0, 16.0, 16.0)
+
+[node name="MineShaftVertical" type="Node3D"]
+script = ExtResource("1_modular")
+room_id = "mine_shaft_vertical"
+room_type = "cave"
+room_name = "Mine Shaft"
+room_width = 16.0
+room_depth = 16.0
+room_height = 16.0
+
+[node name="Terrain" type="Node3D" parent="."]
+
+[node name="CaveMesh" parent="Terrain" instance=ExtResource("2_mesh")]
+transform = Transform3D(1.15, 0, 0, 0, 1.15, 0, 0, 0, 1.15, 8, 0, 8)
+
+[node name="FloorCollisionUpper" type="StaticBody3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 8, 4)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Terrain/FloorCollisionUpper"]
+shape = SubResource("BoxShape3D_floor_upper")
+
+[node name="FloorCollisionLower" type="StaticBody3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 12)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Terrain/FloorCollisionLower"]
+shape = SubResource("BoxShape3D_floor_lower")
+
+[node name="WallCollision" type="StaticBody3D" parent="Terrain"]
+
+[node name="WallEast" type="CollisionShape3D" parent="Terrain/WallCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 8, 8)
+shape = SubResource("BoxShape3D_wall")
+
+[node name="WallWest" type="CollisionShape3D" parent="Terrain/WallCollision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 8, 8)
+shape = SubResource("BoxShape3D_wall")
+
+[node name="Props" type="Node3D" parent="."]
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="TopLight" type="OmniLight3D" parent="Lighting"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 12, 8)
+light_color = Color(0.5, 0.45, 0.4, 1)
+light_energy = 0.6
+omni_range = 12.0
+omni_attenuation = 1.2
+
+[node name="BottomLight" type="OmniLight3D" parent="Lighting"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 8)
+light_color = Color(0.3, 0.35, 0.4, 1)
+light_energy = 0.3
+omni_range = 10.0
+omni_attenuation = 1.5
+
+[node name="EnemySpawns" type="Node3D" parent="."]
+
+[node name="Spawn1" type="Marker3D" parent="EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 12)
+metadata/enemy_data = "res://data/enemies/bat.tres"
+metadata/sprite_path = "res://assets/sprites/enemies/beasts/bat.png"
+metadata/h_frames = 4
+metadata/v_frames = 1
+
+[node name="ChestPositions" type="Node3D" parent="."]
+
+[node name="DoorPositions" type="Node3D" parent="."]
+
+[node name="Door_North" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 8, 0.5)
+metadata/door_id = "door_north"
+metadata/show_frame = false
+
+[node name="Door_South" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 15.5)
+metadata/door_id = "door_south"
+metadata/show_frame = false
+metadata/height_offset = -8.0

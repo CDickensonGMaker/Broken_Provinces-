@@ -1,0 +1,176 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=32 format=3 uid="uid://millbrook_elder"]
+
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_node.gd" id="2_node"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_choice.gd" id="3_choice"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_condition.gd" id="4_cond"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_action.gd" id="5_action"]
+
+[sub_resource type="Resource" id="choice_goodbye"]
+script = ExtResource("3_choice")
+text = "I should be going. Farewell."
+next_node_id = "end"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_back_start"]
+script = ExtResource("3_choice")
+text = "I have more questions..."
+next_node_id = "start"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_bandits"]
+script = ExtResource("3_choice")
+text = "Tell me about the bandit problem."
+next_node_id = "bandit_trouble"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_village"]
+script = ExtResource("3_choice")
+text = "Tell me about Millbrook."
+next_node_id = "about_millbrook"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_work"]
+script = ExtResource("3_choice")
+text = "I'm looking for work."
+next_node_id = "work_available"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_lake"]
+script = ExtResource("3_choice")
+text = "What can you tell me about the lake?"
+next_node_id = "about_lake"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="action_start_quest"]
+script = ExtResource("5_action")
+type = 4
+param_string = "millbrook_bandits"
+param_int = 0
+param_float = 0.0
+success_node_id = ""
+failure_node_id = ""
+
+[sub_resource type="Resource" id="choice_accept_quest"]
+script = ExtResource("3_choice")
+text = "I'll deal with these bandits for you."
+next_node_id = "quest_accepted"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = [SubResource("action_start_quest")]
+
+[sub_resource type="Resource" id="choice_decline_quest"]
+script = ExtResource("3_choice")
+text = "I can't help with that right now."
+next_node_id = "quest_declined"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="node_start"]
+script = ExtResource("2_node")
+id = "start"
+speaker_name = "Elder Willa"
+text = "*a stout woman with silver-streaked braids looks up from a ledger, her weathered hands stained with ink* Another traveler. Welcome to Millbrook, stranger. I am Willa, elder of this village. We don't get many visitors these days - the roads have become... dangerous."
+choices = [SubResource("choice_bandits"), SubResource("choice_village"), SubResource("choice_work"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "elder_concerned"
+
+[sub_resource type="Resource" id="node_bandit_trouble"]
+script = ExtResource("2_node")
+id = "bandit_trouble"
+speaker_name = "Elder Willa"
+text = "*her jaw tightens* Brigands. They've set up camp somewhere in the woods and they're strangling us. Every cart that tries to reach the market gets robbed. Our fishermen are afraid to work. Last week they beat old Torben half to death for the fish in his basket. We need someone to put an end to them."
+choices = [SubResource("choice_accept_quest"), SubResource("choice_decline_quest"), SubResource("choice_back_start")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "elder_angry"
+
+[sub_resource type="Resource" id="node_about_millbrook"]
+script = ExtResource("2_node")
+id = "about_millbrook"
+speaker_name = "Elder Willa"
+text = "Millbrook has stood by this lake for three generations. We farm the fields, mill the grain, fish the waters. Simple folk living simple lives. The windmill you see belonged to my grandfather - it's fed half the province in its time. Or it did, before the bandits came."
+choices = [SubResource("choice_lake"), SubResource("choice_back_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "elder_proud"
+
+[sub_resource type="Resource" id="node_about_lake"]
+script = ExtResource("2_node")
+id = "about_lake"
+speaker_name = "Elder Willa"
+text = "Millbrook Lake has been our blessing and sometimes our curse. Good fishing most seasons, but strange things swim in those depths. The old folk tell stories of something ancient living down there. Most dismiss it as fishermen's tales, but lately... the fishermen have been finding their nets torn to ribbons."
+choices = [SubResource("choice_back_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "elder_thoughtful"
+
+[sub_resource type="Resource" id="node_work_available"]
+script = ExtResource("2_node")
+id = "work_available"
+speaker_name = "Elder Willa"
+text = "*she sets down her quill and studies you carefully* You look capable enough. We've problems aplenty here, and our militia is stretched thin just guarding the village. The bandits are our most pressing concern - deal with them and you'll have Millbrook's gratitude. And gold."
+choices = [SubResource("choice_accept_quest"), SubResource("choice_decline_quest"), SubResource("choice_back_start")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "elder_assessing"
+
+[sub_resource type="Resource" id="node_quest_accepted"]
+script = ExtResource("2_node")
+id = "quest_accepted"
+speaker_name = "Elder Willa"
+text = "*relief washes over her face* Blessed Gaela, there's still decent folk in the world. Speak with some of the villagers who've been attacked - they might help you track down the brigands' camp. And when you find it, show no mercy. These men have shown none to us."
+choices = [SubResource("choice_back_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "elder_hopeful"
+
+[sub_resource type="Resource" id="node_quest_declined"]
+script = ExtResource("2_node")
+id = "quest_declined"
+speaker_name = "Elder Willa"
+text = "*her shoulders sag* I understand. It's dangerous work, and you owe us nothing. If you change your mind, you know where to find me. We'll manage somehow... we always have."
+choices = [SubResource("choice_back_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "elder_disappointed"
+
+[sub_resource type="Resource" id="node_end"]
+script = ExtResource("2_node")
+id = "end"
+speaker_name = "Elder Willa"
+text = "Safe travels, stranger. May your road bring you back to Millbrook in better times."
+choices = []
+is_end_node = true
+auto_continue_to = ""
+portrait_id = "elder_farewell"
+
+[resource]
+script = ExtResource("1_data")
+id = "millbrook_elder"
+display_name = "Elder Willa Dialogue"
+description = "Dialogue for Elder Willa, leader of Millbrook village. Quest giver for the bandit extermination quest and source of information about the village's troubles."
+start_node_id = "start"
+nodes = [SubResource("node_start"), SubResource("node_bandit_trouble"), SubResource("node_about_millbrook"), SubResource("node_about_lake"), SubResource("node_work_available"), SubResource("node_quest_accepted"), SubResource("node_quest_declined"), SubResource("node_end")]

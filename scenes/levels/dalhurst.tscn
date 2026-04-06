@@ -497,7 +497,7 @@ material = SubResource("mat_water")
 [node name="Ships" type="Node3D" parent="Harbor"]
 
 [node name="Ship0" type="Node3D" parent="Harbor/Ships"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -85, 0, -32)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -85, 0, -23.212643)
 
 [node name="Hull" type="CSGBox3D" parent="Harbor/Ships/Ship0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -517,7 +517,7 @@ size = Vector3(0.1, 8, 5)
 material = SubResource("mat_sail")
 
 [node name="Ship1" type="Node3D" parent="Harbor/Ships"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -88, 0, -16)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -88, 0, -8.33218)
 
 [node name="Hull" type="CSGBox3D" parent="Harbor/Ships/Ship1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -537,7 +537,7 @@ size = Vector3(0.1, 8, 5)
 material = SubResource("mat_sail")
 
 [node name="Ship2" type="Node3D" parent="Harbor/Ships"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -82, 0, 0)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -82, 0, 8.156427)
 
 [node name="Hull" type="CSGBox3D" parent="Harbor/Ships/Ship2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -587,7 +587,7 @@ size = Vector3(0.1, 8, 5)
 material = SubResource("mat_sail")
 
 [node name="Ship3" type="Node3D" parent="Harbor/Ships"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -86, 0, 16)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -86, 0, 22.771992)
 
 [node name="Hull" type="CSGBox3D" parent="Harbor/Ships/Ship3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -607,7 +607,7 @@ size = Vector3(0.1, 8, 5)
 material = SubResource("mat_sail")
 
 [node name="Ship4" type="Node3D" parent="Harbor/Ships"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -84, 0, 32)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -79.97062, 0, 40.377193)
 
 [node name="Hull" type="CSGBox3D" parent="Harbor/Ships/Ship4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -1353,19 +1353,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.522896, 0.1, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.522896, 0.1, 25)
 
 [node name="from_wilderness_north" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.522896, 0.1, -25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.522896, 0.1, -5.130768)
 
 [node name="from_wilderness_east" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.522896, 0.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.56683, 0.1, 0)
 
 [node name="from_inn" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.022896, 0.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.04457, 0.1, 0)
 
 [node name="from_fast_travel" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.880386, 0.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45.83998, 0.1, 0)
 
 [node name="harbor_spawn" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 0.5, 35)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.065586, 0.5, -0.69384384)
 
 [node name="NPCSpawns" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44.21518, 0, -12.486515)

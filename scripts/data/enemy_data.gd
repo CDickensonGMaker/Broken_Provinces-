@@ -26,6 +26,7 @@ extends Resource
 @export_group("AI Behavior")
 @export var behavior: Enums.AIBehavior = Enums.AIBehavior.MELEE_AGGRESSIVE
 @export var faction: Enums.Faction = Enums.Faction.NEUTRAL  # Determines inter-enemy hostility
+@export var political_faction: String = ""  ## Political faction for reputation changes (e.g., "bandits", "goblins", "town_guard")
 @export var aggro_range: float = 15.0
 @export var attack_range: float = 2.0
 @export var preferred_distance: float = 2.0  # For ranged, keeps this distance

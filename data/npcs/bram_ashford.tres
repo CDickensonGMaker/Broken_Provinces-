@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="NPCData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/npc_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+npc_id = "bram_ashford"
+display_name = "Bram Ashford"
+race = "Human"
+archetype = "merchant"
+location = "Thornfield"
+zone_id = "thornfield"
+faction_id = "human_empire"
+secondary_factions = []
+base_disposition = 60
+alignment = 15
+description = "A rotund, jovial man with a ruddy face and perpetually stained apron. Bram runs the Thornfield Inn with warmth and good humor, always ready with a tale or a tankard. His establishment is the social heart of the village, where loggers and hunters gather after long days in the wilderness."
+portrait_path = ""
+sprite_path = "res://assets/sprites/npcs/civilians/man_civilian.png"
+sprite_h_frames = 4
+sprite_v_frames = 4
+dialogue_topics = ["local_news", "rumors", "rest", "food", "drink", "travelers", "gossip"]
+has_unique_dialogue = true
+dialogue_data_path = "res://data/dialogues/bram_ashford.tres"
+knowledge_profile_path = ""
+shop_type = "general"
+flags = {"is_innkeeper": true, "sells_food": true, "sells_drink": true, "offers_rest": true}
+can_wander = false
+wander_radius = 0.0

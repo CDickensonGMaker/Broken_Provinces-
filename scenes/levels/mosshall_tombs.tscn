@@ -20,6 +20,8 @@ light_color = Color(0.5, 0.7, 0.5, 1)
 light_energy = 0.25
 shadow_enabled = true
 
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+
 [node name="SpawnPoints" type="Node3D" parent="."]
 
 [node name="from_wilderness" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]

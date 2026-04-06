@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="NPCData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/npc_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+npc_id = "sister_edith"
+display_name = "Sister Edith"
+race = "Human"
+archetype = "priest"
+location = "Millbrook"
+zone_id = "millbrook"
+faction_id = "temple_gaela"
+secondary_factions = ["human_empire"]
+base_disposition = 65
+alignment = 40
+description = "A serene woman with kind eyes and sun-weathered skin, Sister Edith tends the small Chapel of Gaela that overlooks Millbrook's fields. She came to this farming community years ago and has since become essential to its spiritual life, blessing seeds at planting, giving thanks at harvest, and providing comfort in times of hardship. Her simple green robes are often stained with soil from working alongside the farmers."
+portrait_path = ""
+sprite_path = "res://assets/sprites/npcs/temple/monk_1.png"
+sprite_h_frames = 1
+sprite_v_frames = 1
+dialogue_topics = ["local_news", "rumors", "gaela", "blessings", "healing", "harvest", "faith"]
+has_unique_dialogue = true
+dialogue_data_path = "res://data/dialogues/sister_edith.tres"
+knowledge_profile_path = ""
+shop_type = "temple"
+flags = {"is_priest": true, "offers_blessings": true, "offers_healing": true}
+can_wander = false
+wander_radius = 0.0

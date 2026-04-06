@@ -1,0 +1,7 @@
+{
+  "name": "Halvard the Supplier",
+  "who": "Practical, efficient businessman\nDeals in tools and equipment\nReliable trade contact",
+  "what": "Provides supplies for Tharin's quest\nTalk target for Supply Run quest\nDeals in worker supplies",
+  "where": "Dalhurst - Market/Harbor area",
+  "quests": "Supply Run (talk target, not giver)"
+}

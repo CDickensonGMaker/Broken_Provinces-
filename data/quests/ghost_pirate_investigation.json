@@ -1,7 +1,7 @@
 {
 	"id": "ghost_pirate_investigation",
 	"title": "The Ghost Pirate Menace",
-	"description": "Mayor Aldric of Larton has asked you to investigate the ghost pirates that have been blockading the port. Their stronghold is said to be on an island in the bay. Old Torben the fisherman knows the exact location.",
+	"description": "Mayor Aldric of Larton has asked you to investigate the ghost pirates that have been blockading the port. Their stronghold is said to be on an island in the bay. Old Willem the fisherman knows where the ghost ship makes its lair.",
 	"is_main_quest": true,
 	"quest_source": "story",
 	"giver_npc_id": "mayor_aldric_larton",
@@ -9,10 +9,10 @@
 	"giver_region": "larton",
 	"objectives": [
 		{
-			"id": "talk_torben",
-			"description": "Speak with Old Torben about the Pirate Stronghold location",
+			"id": "talk_willem",
+			"description": "Speak with Old Willem about the Ghost Ship location",
 			"type": "talk",
-			"target": "fisherman_torben_larton",
+			"target": "old_salt_willem",
 			"required_count": 1
 		},
 		{

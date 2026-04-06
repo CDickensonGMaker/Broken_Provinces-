@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="NPCData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/npc_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+npc_id = "greta_wolfsbane"
+display_name = "Greta Wolfsbane"
+race = "Human"
+archetype = "quest_giver"
+location = "Thornfield"
+zone_id = "thornfield"
+faction_id = "human_empire"
+secondary_factions = []
+base_disposition = 45
+alignment = 10
+description = "A lean, dangerous woman with scars crossing her forearms and a wolf-pelt cloak draped over her shoulders. Her eyes hold the cold calculation of a predator. As master hunter of the Hunter's Lodge, she has killed more wolves than anyone in the province - and earned her name doing it."
+portrait_path = ""
+sprite_path = "res://assets/sprites/npcs/civilians/female_hunter.png"
+sprite_h_frames = 4
+sprite_v_frames = 4
+dialogue_topics = ["local_news", "rumors", "wolves", "hunting", "bounties", "tracking", "wilderness"]
+has_unique_dialogue = true
+dialogue_data_path = "res://data/dialogues/greta_wolfsbane.tres"
+knowledge_profile_path = ""
+shop_type = "none"
+flags = {"is_quest_giver": true, "is_master_hunter": true, "gives_bounties": true}
+can_wander = false
+wander_radius = 0.0

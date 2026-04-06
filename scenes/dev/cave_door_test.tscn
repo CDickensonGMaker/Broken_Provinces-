@@ -1,0 +1,61 @@
+[gd_scene load_steps=6 format=3 uid="uid://wvn71vw4wvt7"]
+
+[ext_resource type="Script" uid="uid://dpm25gf3kc5xx" path="res://scripts/dev/cave_door_test.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://assets/models/environment/cave_entrance.glb" id="2_cave_entrance"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
+albedo_color = Color(0.3, 0.35, 0.25, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ground"]
+material = SubResource("StandardMaterial3D_ground")
+size = Vector3(50, 1, 50)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(50, 1, 50)
+
+[node name="CaveDoorTest" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Terrain" type="Node3D" parent="."]
+
+[node name="Ground" type="MeshInstance3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("BoxMesh_ground")
+
+[node name="GroundCollision" type="StaticBody3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Terrain/GroundCollision"]
+shape = SubResource("BoxShape3D_ground")
+
+[node name="CaveEntranceModel" parent="Terrain" instance=ExtResource("2_cave_entrance")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.024794579, -10)
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="Sun" type="DirectionalLight3D" parent="Lighting"]
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 0, 10, 0)
+light_color = Color(1, 0.95, 0.9, 1)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Lighting"]
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="DefaultSpawn" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 5)
+metadata/spawn_id = "default"
+
+[node name="FromCaveSpawn" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -5)
+metadata/spawn_id = "from_cave"
+
+[node name="DoorPositions" type="Node3D" parent="."]
+
+[node name="CaveEntranceDoor" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -10.028153)
+metadata/target_scene = "res://scenes/dev/cave_instance_test.tscn"
+metadata/spawn_id = "from_exterior"
+metadata/door_label = "Enter Cave"
+metadata/show_frame = false

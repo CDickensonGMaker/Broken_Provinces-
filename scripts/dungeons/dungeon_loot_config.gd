@@ -29,6 +29,20 @@ const DUNGEON_LOOT_CONFIG: Dictionary = {
 		"is_boss": false
 	},
 
+	# Hallways (narrow) - occasional wandering enemy, no chests
+	DungeonGridData.RoomType.HALLWAY_NS: {
+		"enemy_min": 0, "enemy_max": 1,
+		"chest_min": 0, "chest_max": 0,
+		"loot_tier": LootTables.LootTier.JUNK,
+		"is_boss": false
+	},
+	DungeonGridData.RoomType.HALLWAY_EW: {
+		"enemy_min": 0, "enemy_max": 1,
+		"chest_min": 0, "chest_max": 0,
+		"loot_tier": LootTables.LootTier.JUNK,
+		"is_boss": false
+	},
+
 	# Turns - occasional wandering enemy, no chests
 	DungeonGridData.RoomType.TURN_NE: {
 		"enemy_min": 0, "enemy_max": 1,
@@ -146,6 +160,88 @@ const DUNGEON_LOOT_CONFIG: Dictionary = {
 		"loot_tier": LootTables.LootTier.LEGENDARY,
 		"is_boss": true
 	},
+
+	## Cave room configurations
+	# Cave entrance - safe zone, player spawn point
+	DungeonGridData.RoomType.CAVE_ENTRANCE: {
+		"enemy_min": 0, "enemy_max": 0,
+		"chest_min": 0, "chest_max": 0,
+		"loot_tier": LootTables.LootTier.COMMON,
+		"is_boss": false
+	},
+	# Cave exit - treasure room at end of cave
+	DungeonGridData.RoomType.CAVE_EXIT: {
+		"enemy_min": 1, "enemy_max": 2,
+		"chest_min": 1, "chest_max": 2,
+		"loot_tier": LootTables.LootTier.RARE,
+		"is_boss": false
+	},
+	# Cave corridors - occasional wandering creatures
+	DungeonGridData.RoomType.CAVE_CORRIDOR_NS: {
+		"enemy_min": 0, "enemy_max": 1,
+		"chest_min": 0, "chest_max": 0,
+		"loot_tier": LootTables.LootTier.JUNK,
+		"is_boss": false
+	},
+	DungeonGridData.RoomType.CAVE_CORRIDOR_EW: {
+		"enemy_min": 0, "enemy_max": 1,
+		"chest_min": 0, "chest_max": 0,
+		"loot_tier": LootTables.LootTier.JUNK,
+		"is_boss": false
+	},
+	# Cave corners - occasional creatures
+	DungeonGridData.RoomType.CAVE_CORNER_NE: {
+		"enemy_min": 0, "enemy_max": 1,
+		"chest_min": 0, "chest_max": 0,
+		"loot_tier": LootTables.LootTier.JUNK,
+		"is_boss": false
+	},
+	DungeonGridData.RoomType.CAVE_CORNER_NW: {
+		"enemy_min": 0, "enemy_max": 1,
+		"chest_min": 0, "chest_max": 0,
+		"loot_tier": LootTables.LootTier.JUNK,
+		"is_boss": false
+	},
+	DungeonGridData.RoomType.CAVE_CORNER_SE: {
+		"enemy_min": 0, "enemy_max": 1,
+		"chest_min": 0, "chest_max": 0,
+		"loot_tier": LootTables.LootTier.JUNK,
+		"is_boss": false
+	},
+	DungeonGridData.RoomType.CAVE_CORNER_SW: {
+		"enemy_min": 0, "enemy_max": 1,
+		"chest_min": 0, "chest_max": 0,
+		"loot_tier": LootTables.LootTier.JUNK,
+		"is_boss": false
+	},
+	# Cave T-junction - patrol point, small groups
+	DungeonGridData.RoomType.CAVE_T_JUNCTION: {
+		"enemy_min": 1, "enemy_max": 2,
+		"chest_min": 0, "chest_max": 1,
+		"loot_tier": LootTables.LootTier.COMMON,
+		"is_boss": false
+	},
+	# Cave crossroads - major intersection, moderate group
+	DungeonGridData.RoomType.CAVE_CROSSROADS: {
+		"enemy_min": 2, "enemy_max": 3,
+		"chest_min": 0, "chest_max": 1,
+		"loot_tier": LootTables.LootTier.COMMON,
+		"is_boss": false
+	},
+	# Cave dead end - creature nest with guaranteed loot
+	DungeonGridData.RoomType.CAVE_DEAD_END: {
+		"enemy_min": 1, "enemy_max": 2,
+		"chest_min": 1, "chest_max": 1,
+		"loot_tier": LootTables.LootTier.UNCOMMON,
+		"is_boss": false
+	},
+	# Cave chamber - large area, major encounter
+	DungeonGridData.RoomType.CAVE_CHAMBER: {
+		"enemy_min": 3, "enemy_max": 5,
+		"chest_min": 1, "chest_max": 2,
+		"loot_tier": LootTables.LootTier.RARE,
+		"is_boss": false
+	},
 }
 
 
@@ -224,6 +320,11 @@ const DUNGEON_ENEMY_POOLS: Dictionary = {
 		"res://data/enemies/giant_spider.tres",
 		"res://data/enemies/wolf.tres",
 	],
+	"cave": [
+		"res://data/enemies/bat.tres",
+		"res://data/enemies/giant_spider.tres",
+		"res://data/enemies/giant_rat.tres",
+	],
 }
 
 
@@ -234,6 +335,7 @@ const DUNGEON_BOSS_POOL: Dictionary = {
 	"bandit": "res://data/enemies/bandit_boss.tres",
 	"cultist": "res://data/enemies/cult_leader.tres",
 	"beast": "res://data/enemies/troll.tres",
+	"cave": "res://data/enemies/giant_spider.tres",
 }
 
 

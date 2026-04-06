@@ -190,14 +190,14 @@ func _create_merchant_mesh() -> void:
 		var fallback_paths: Array[Dictionary]
 		if is_female:
 			fallback_paths = [
-				{"path": "res://assets/sprites/npcs/civilians/lady_in_red.png", "h": 8, "v": 1, "size": 0.0182},
-				{"path": "res://assets/sprites/npcs/civilians/barmaid_3x3.png", "h": 3, "v": 1, "size": 0.0234},
-				{"path": "res://assets/sprites/npcs/merchants/merchant_civilian.png", "h": 1, "v": 1, "size": 0.0115},
+				{"path": "res://assets/sprites/npcs/civilians/lady_in_red.png", "h": 8, "v": 1, "size": 0.0256},
+				{"path": "res://assets/sprites/npcs/civilians/barmaid_3x3.png", "h": 3, "v": 1, "size": 0.0256},
+				{"path": "res://assets/sprites/npcs/merchants/merchant_civilian.png", "h": 1, "v": 1, "size": 0.0256},
 			]
 		else:
 			fallback_paths = [
-				{"path": "res://assets/sprites/npcs/merchants/merchant_civilian.png", "h": 1, "v": 1, "size": 0.0384},
-				{"path": "res://assets/sprites/npcs/civilians/man_civilian.png", "h": 8, "v": 2, "size": 0.0384},
+				{"path": "res://assets/sprites/npcs/merchants/merchant_civilian.png", "h": 1, "v": 1, "size": 0.0256},
+				{"path": "res://assets/sprites/npcs/civilians/man_civilian.png", "h": 8, "v": 2, "size": 0.0256},
 			]
 
 		for fallback: Dictionary in fallback_paths:

@@ -1,0 +1,176 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=28 format=3 uid="uid://miller_oswin"]
+
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_node.gd" id="2_node"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_choice.gd" id="3_choice"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_condition.gd" id="4_cond"]
+[ext_resource type="Script" path="res://scripts/dialogue/dialogue_action.gd" id="5_action"]
+
+[sub_resource type="Resource" id="choice_goodbye"]
+script = ExtResource("3_choice")
+text = "I'll leave you to your work. Good luck."
+next_node_id = "end"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_back_start"]
+script = ExtResource("3_choice")
+text = "Tell me more..."
+next_node_id = "start"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_mill"]
+script = ExtResource("3_choice")
+text = "What's wrong with the mill?"
+next_node_id = "mill_problem"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_lake"]
+script = ExtResource("3_choice")
+text = "Tell me about the lake."
+next_node_id = "lake_lore"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_help"]
+script = ExtResource("3_choice")
+text = "Is there anything I can do to help?"
+next_node_id = "ask_help"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="choice_fishing"]
+script = ExtResource("3_choice")
+text = "How is the fishing these days?"
+next_node_id = "fishing_trouble"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="action_start_quest"]
+script = ExtResource("5_action")
+type = 4
+param_string = "watermill_curse"
+param_int = 0
+param_float = 0.0
+success_node_id = ""
+failure_node_id = ""
+
+[sub_resource type="Resource" id="choice_accept_quest"]
+script = ExtResource("3_choice")
+text = "I'll look into this curse for you."
+next_node_id = "quest_accepted"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = [SubResource("action_start_quest")]
+
+[sub_resource type="Resource" id="choice_decline_quest"]
+script = ExtResource("3_choice")
+text = "That sounds like your problem, not mine."
+next_node_id = "quest_declined"
+conditions = []
+show_when_unavailable = false
+unavailable_reason = ""
+actions = []
+
+[sub_resource type="Resource" id="node_start"]
+script = ExtResource("2_node")
+id = "start"
+speaker_name = "Miller Oswin"
+text = "*a flour-dusted man looks up from a tangle of gears and ropes, sweat on his brow* Hmm? Oh, another traveler. Forgive me, I'm in a state. The mill, you see... the mill won't turn. Hasn't for days now. Water flows just fine, gears are greased, but the wheel... it just won't move."
+choices = [SubResource("choice_mill"), SubResource("choice_lake"), SubResource("choice_fishing"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "civilian_worried"
+
+[sub_resource type="Resource" id="node_mill_problem"]
+script = ExtResource("2_node")
+id = "mill_problem"
+speaker_name = "Miller Oswin"
+text = "*he wrings his hands* I've checked everything twice over. The channel is clear, the wheel is sound, the gears turn freely when I push them by hand. But when the water hits... nothing. It's like something's holding it back. My grandmother used to tell stories about spirits in the water, angry things that could stop a mill cold. I thought they were just stories..."
+choices = [SubResource("choice_help"), SubResource("choice_back_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "civilian_distressed"
+
+[sub_resource type="Resource" id="node_lake_lore"]
+script = ExtResource("2_node")
+id = "lake_lore"
+speaker_name = "Miller Oswin"
+text = "*he glances toward the water* Millbrook Lake has been here longer than any of us. My father said his father's father found strange stones at the bottom when they first built the mill - carved with symbols nobody could read. They left them where they were. Some things are better not disturbed. Or so we thought."
+choices = [SubResource("choice_mill"), SubResource("choice_back_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "civilian_thoughtful"
+
+[sub_resource type="Resource" id="node_fishing_trouble"]
+script = ExtResource("2_node")
+id = "fishing_trouble"
+speaker_name = "Miller Oswin"
+text = "*he shakes his head* Bad. Very bad. The fish are still there - we can see them - but something's tearing the nets. Big holes, clean cuts like a blade made them. Old Torben swears he saw something moving beneath his boat. Something big. The fishermen won't go out at night anymore."
+choices = [SubResource("choice_mill"), SubResource("choice_back_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "civilian_scared"
+
+[sub_resource type="Resource" id="node_ask_help"]
+script = ExtResource("2_node")
+id = "ask_help"
+speaker_name = "Miller Oswin"
+text = "*hope flickers in his tired eyes* Would you? I... I don't have much coin, but if you could figure out what's stopping the mill, the whole village would be grateful. Maybe check the water channel? Look for anything strange? I'm at my wit's end here."
+choices = [SubResource("choice_accept_quest"), SubResource("choice_decline_quest")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "civilian_hopeful"
+
+[sub_resource type="Resource" id="node_quest_accepted"]
+script = ExtResource("2_node")
+id = "quest_accepted"
+speaker_name = "Miller Oswin"
+text = "*relief floods his face* Thank you, stranger. Thank you! Start at the water channel where it enters the mill works - that's where the wheel should catch. If there's something unnatural going on, that's where you'll find proof of it. Be careful down there... the water runs cold and deep."
+choices = [SubResource("choice_back_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "civilian_grateful"
+
+[sub_resource type="Resource" id="node_quest_declined"]
+script = ExtResource("2_node")
+id = "quest_declined"
+speaker_name = "Miller Oswin"
+text = "*his shoulders slump* I understand. It's not your burden to carry. I'll figure something out. I have to - the village depends on this mill."
+choices = [SubResource("choice_back_start"), SubResource("choice_goodbye")]
+is_end_node = false
+auto_continue_to = ""
+portrait_id = "civilian_dejected"
+
+[sub_resource type="Resource" id="node_end"]
+script = ExtResource("2_node")
+id = "end"
+speaker_name = "Miller Oswin"
+text = "*he turns back to his gears* Safe travels. Mind the roads - the bandits aren't the only danger out there these days."
+choices = []
+is_end_node = true
+auto_continue_to = ""
+portrait_id = "civilian_farewell"
+
+[resource]
+script = ExtResource("1_data")
+id = "miller_oswin"
+display_name = "Miller Oswin Dialogue"
+description = "Dialogue for Miller Oswin, the worried miller of Millbrook whose watermill has mysteriously stopped working. Quest giver for the watermill curse investigation."
+start_node_id = "start"
+nodes = [SubResource("node_start"), SubResource("node_mill_problem"), SubResource("node_lake_lore"), SubResource("node_fishing_trouble"), SubResource("node_ask_help"), SubResource("node_quest_accepted"), SubResource("node_quest_declined"), SubResource("node_end")]

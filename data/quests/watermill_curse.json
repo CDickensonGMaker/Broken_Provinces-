@@ -1,0 +1,50 @@
+{
+	"id": "watermill_curse",
+	"title": "The Silent Mill",
+	"description": "Millbrook's watermill has mysteriously stopped working. Miller Oswin swears the gears are sound and the water flows true, yet the great wheel refuses to turn. The village fears some dark magic is at work, and without the mill, they cannot grind their grain before winter.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "miller_oswin",
+	"giver_npc_type": "civilian",
+	"giver_region": "millbrook",
+	"objectives": [
+		{
+			"id": "examine_mill",
+			"description": "Examine the watermill mechanism",
+			"type": "reach",
+			"target": "millbrook_watermill_interior",
+			"required_count": 1
+		},
+		{
+			"id": "investigate_waterway",
+			"description": "Check the mill's water channel for obstructions",
+			"type": "reach",
+			"target": "mill_water_channel",
+			"required_count": 1
+		},
+		{
+			"id": "discover_cause",
+			"description": "Discover what is blocking the flow",
+			"type": "collect",
+			"target": "river_spirit_totem",
+			"required_count": 1
+		},
+		{
+			"id": "resolve_curse",
+			"description": "Remove or appease the obstruction",
+			"type": "interact",
+			"target": "cursed_totem",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "miller_oswin",
+	"turn_in_zone": "millbrook",
+	"rewards": {
+		"gold": 80,
+		"xp": 250,
+		"items": ["fresh_bread"]
+	},
+	"prerequisites": [],
+	"next_quest": ""
+}

@@ -72,6 +72,7 @@ will = 7
 knowledge = 6
 behavior = 2
 faction = 3
+political_faction = "cult"
 aggro_range = 12.0
 attack_range = 10.0
 preferred_distance = 8.0

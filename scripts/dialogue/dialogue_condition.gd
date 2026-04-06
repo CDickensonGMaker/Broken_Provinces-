@@ -66,3 +66,18 @@ static func random_chance(probability: float) -> DialogueCondition:
 	cond.type = DialogueData.ConditionType.RANDOM_CHANCE
 	cond.param_float = clampf(probability, 0.0, 1.0)
 	return cond
+
+## Create a reputation check condition
+static func reputation(faction_id: String, min_rep: int) -> DialogueCondition:
+	var cond := DialogueCondition.new()
+	cond.type = DialogueData.ConditionType.REPUTATION
+	cond.param_string = faction_id
+	cond.param_int = min_rep
+	return cond
+
+## Create a faction membership condition
+static func faction_membership(faction_id: String) -> DialogueCondition:
+	var cond := DialogueCondition.new()
+	cond.type = DialogueData.ConditionType.FACTION_MEMBERSHIP
+	cond.param_string = faction_id
+	return cond

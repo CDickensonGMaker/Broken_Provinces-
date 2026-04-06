@@ -967,6 +967,138 @@ All buildings must follow these constraints:
 - Each building is a Node3D container with child geometry
 - NPC spawn markers placed inside/near relevant buildings
 
+### Blender MCP Precise Building Construction
+
+When creating buildings via the Blender MCP, follow these rules to avoid common precision errors:
+
+**1. Define All Dimensions Upfront**
+```python
+# Calculate ALL measurements before creating ANY geometry
+BASE_SIZE = 3.0          # Footprint
+POST_THICKNESS = 0.25    # Structural elements
+PLATFORM_HEIGHT = 4.0    # Platform Z position
+PLATFORM_THICKNESS = 0.15
+RAILING_HEIGHT = 1.0
+ROOF_HEIGHT = 1.5
+
+# Derive dependent values
+platform_top_z = PLATFORM_HEIGHT + PLATFORM_THICKNESS/2
+railing_top_z = platform_top_z + RAILING_HEIGHT
+roof_base_z = railing_top_z  # Roof sits ON railing
+```
+
+**2. Stack Geometry Precisely (No Floating Elements)**
+```python
+# Z position formula for stacked elements:
+# element_z = previous_top + current_height/2
+
+# Example: Platform at 4m, thickness 0.15
+platform_z = PLATFORM_HEIGHT  # Center of platform
+platform_top = platform_z + PLATFORM_THICKNESS/2  # Top surface
+
+# Railing posts sit ON platform top
+railing_post_z = platform_top + RAILING_HEIGHT/2  # Center of post
+
+# Roof sits ON railing posts
+roof_base_z = platform_top + RAILING_HEIGHT  # Base of roof
+```
+
+**3. Align Elements to Structure (No Offsets Without Reason)**
+```python
+# Corner posts should be INSIDE the footprint, not floating
+post_inset = POST_THICKNESS / 2
+corner_positions = [
+    (-BASE_SIZE/2 + post_inset, -BASE_SIZE/2 + post_inset),  # Front-left
+    (BASE_SIZE/2 - post_inset, -BASE_SIZE/2 + post_inset),   # Front-right
+    (-BASE_SIZE/2 + post_inset, BASE_SIZE/2 - post_inset),   # Back-left
+    (BASE_SIZE/2 - post_inset, BASE_SIZE/2 - post_inset),    # Back-right
+]
+
+# Ladder attaches TO a post, not floating nearby
+ladder_x = -BASE_SIZE/2 + POST_THICKNESS/2  # Aligned with left post center
+ladder_y = -BASE_SIZE/2 - 0.05  # Just outside front edge (minimal offset)
+```
+
+**4. Avoid Duplicate Supports**
+```python
+# Plan the hierarchy BEFORE coding:
+# - 4 corner posts (ground to full height)
+# - Platform sits on posts (no separate platform supports needed)
+# - Railings on platform (use SAME 4 corners, just add height)
+# - Roof on railings (no separate roof posts if railings extend up)
+
+# BAD: Creating roof posts AND extending railing posts
+# GOOD: Either extend corner posts to roof, OR add separate roof posts
+```
+
+**5. Cross Braces Must Touch Both Ends**
+```python
+# Diagonal brace connecting two posts:
+post_a = Vector3(-BASE_SIZE/2 + post_inset, -BASE_SIZE/2 + post_inset, 0)
+post_b = Vector3(BASE_SIZE/2 - post_inset, BASE_SIZE/2 - post_inset, brace_height)
+
+# Brace center = midpoint of the two connection points
+brace_center = (post_a + post_b) / 2
+brace_length = (post_b - post_a).length()
+brace_angle = atan2(post_b.z - post_a.z, distance_xy)
+```
+
+**6. Use Parent Empty for Organization**
+```python
+# Create parent empty first
+bpy.ops.object.empty_add(type='PLAIN_AXES', location=(0, 0, 0))
+parent = bpy.context.active_object
+parent.name = "BuildingName"
+
+# Parent ALL components to it
+for component in components:
+    component.parent = parent
+```
+
+**7. Apply Textures from Broken Provinces Assets**
+```python
+# Always use project textures, not procedural colors
+wood_path = r"C:\Users\caleb\CatacombsOfGore\assets\textures\environment\walls\wood.png"
+stone_path = r"C:\Users\caleb\CatacombsOfGore\assets\textures\environment\walls\stone.png"
+thatch_path = r"C:\Users\caleb\CatacombsOfGore\assets\textures\environment\walls\thatch.png"
+
+# PS1 style: nearest-neighbor filtering
+tex_node.interpolation = 'Closest'
+```
+
+**8. Clear Scene Before New Buildings**
+```python
+# ALWAYS start with clean scene
+bpy.ops.object.select_all(action='SELECT')
+bpy.ops.object.delete(use_global=False)
+bpy.ops.outliner.orphans_purge(do_recursive=True)
+```
+
+**9. Parenting Child Objects Correctly**
+```python
+# WRONG: Create at world position, then parent
+# Child will appear offset because it keeps world position as local
+bpy.ops.mesh.primitive_torus_add(location=(parent_world_x, parent_world_y, band_z))
+ring = bpy.context.active_object
+ring.parent = barrel  # Ring now appears offset!
+
+# CORRECT: Create at origin -> Parent -> Set LOCAL position
+bpy.ops.mesh.primitive_torus_add(location=(0, 0, 0))  # Create at origin
+ring = bpy.context.active_object
+ring.parent = barrel  # Parent first
+ring.location = (0, 0, local_z)  # NOW set local position relative to parent center
+```
+
+**Common Errors to Avoid:**
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Floating roof | Used arbitrary Z value | Calculate from structure below |
+| Double supports | Added posts at same location | Plan hierarchy first |
+| Offset ladder | Added arbitrary X/Y offset | Align to existing post position |
+| Detached braces | Brace ends don't touch posts | Calculate brace from post positions |
+| Inconsistent scale | Mixed unit assumptions | Define all dimensions in one block |
+| Floating child objects | Created at world pos before parenting | Create at origin → Parent → Set local pos |
+
 ### Agent: enemy-creator
 **Purpose:** Automates enemy creation from sprite images - creates .tres files, zoo entries, and encounter wiring.
 **When to use:** After adding new enemy sprite images, when creating new enemy types.
@@ -1422,7 +1554,7 @@ Similar to the dungeon generator, create a system that procedurally generates to
 | 4 | Take over operation (kill/intimidate leader) | Become bandit boss, ongoing mechanics |
 | 5 | Pre-completion (already killed bandits) | Auto-complete when quest offered |
 
-**Current State (~20% of Vision):**
+**Current State (~40% of Vision):**
 
 What EXISTS:
 - Linear quests (kill X, collect Y, talk to Z)
@@ -1433,41 +1565,90 @@ What EXISTS:
 - Persuasion system (ADMIRE/INTIMIDATE/BRIBE/TAUNT)
 - Humanoid dialogue for combat NPCs (FIGHT/BRIBE/NEGOTIATE/INTIMIDATE)
 - Faction reputation (-100 to +100, cascading)
+- **NEW: Quest completion states** (completed, failed, betrayed)
+- **NEW: Objective completion tracking** (`completion_method` field tracks HOW)
+- **NEW: Choice consequence system** (quest choices trigger flags, rep, followers, spawns)
+- **NEW: Extended objective types** (deliver_soulstone, solve_puzzle, recruit_follower)
+- **NEW: Extended reward types** (follower, soulstone, unlock_area)
+- **NEW: Daily faction penalties** (accumulating rep loss with clear_penalty support)
 
 What's MISSING:
-- Multiple completion paths (quests are single-path only)
 - OR objectives (can't do "kill OR intimidate")
-- Dialogue → quest completion (skill checks don't complete objectives)
 - Pre-completion detection (no world state checks)
-- Method-based rewards (same reward regardless of approach)
-- Reputation from quests (JSON field exists but not parsed)
-- Branching quest paths (JSON structure exists, code doesn't execute)
+- Branching quest paths (JSON structure exists, needs more wiring)
+
+**New Quest Features (Implemented):**
+
+**Objective Types:**
+| Type | Target | Description |
+|------|--------|-------------|
+| `deliver_soulstone` | soulstone_id | Turn in a soulstone to an NPC |
+| `solve_puzzle` | puzzle_flag_id | Complete a puzzle room (flag-based) |
+| `recruit_follower` | follower_id | Have a specific NPC join as follower |
+
+**Quest Completion States:**
+```gdscript
+enum QuestCompletionState {
+    NONE,      # Not completed yet
+    COMPLETED, # Normal completion
+    FAILED,    # Player failed objectives
+    BETRAYED   # Player kept quest items or made selfish choice
+}
+```
+
+**Choice Consequences (JSON format):**
+```json
+{
+  "choice_consequences": {
+    "choice_id": {
+      "flags_to_set": ["flag1", "flag2"],
+      "reputation_changes": {"faction_id": 10},
+      "unlock_follower": "follower_id",
+      "spawn_enemy": "enemy_id@location_id"
+    }
+  }
+}
+```
+
+**Extended Rewards:**
+```json
+{
+  "rewards": {
+    "gold": 100,
+    "xp": 50,
+    "follower": "follower_id",
+    "soulstone": "soulstone_id",
+    "unlock_area": "area_unlock_flag"
+  }
+}
+```
+
+**Daily Faction Penalties:**
+```gdscript
+# Add ongoing rep penalty (e.g., unpaid debt)
+FactionManager.add_daily_penalty("merchant_guild", "unpaid_debt", -5, "Unpaid debt to merchants")
+
+# Clear when resolved
+FactionManager.clear_daily_penalty("merchant_guild", "unpaid_debt")
+
+# Get current penalties
+var penalties: Dictionary = FactionManager.get_faction_penalties("merchant_guild")
+```
 
 **Gap Analysis:**
 
 Quest System (`quest_manager.gd`):
-- Only parses basic fields, not `branching_quests` or `turn_in_options`
-- `_check_quest_completion()` just checks "are ALL objectives done?"
-- No tracking of HOW objectives were completed
-- No world state pre-checks
+- Now tracks `completion_method` for each objective
+- Now parses `choice_consequences` from JSON
+- Now handles BETRAYED state separately from FAILED
+- Still needs OR objectives and pre-completion checks
 
 Dialogue ↔ Quest Integration:
 - Dialogue can START quests via action
-- Dialogue CANNOT complete quest objectives
-- No `DialogueAction` type for "mark objective complete via method X"
-- Skill checks branch dialogue, but don't affect quest state
+- Choice consequences can be applied via `QuestManager.apply_choice_consequence()`
+- Still needs `COMPLETE_QUEST_OBJECTIVE` DialogueAction type
 
-World State Tracking:
-- No system to track: "bandits at location X are dead"
-- No pre-completion checks when quest is offered
-- No auto-complete for already-met conditions
-
-**Implementation Roadmap:**
-
-**Phase 1: Foundation**
-1. Extend Objective class - Add `completion_method` field to track HOW
-2. Parse branching fields - Read `branching_quests`, `turn_in_options` from JSON
-3. Add `complete_objective_via_method()` - New function for method-aware completion
+**Remaining Implementation Roadmap:**
 
 **Phase 2: Dialogue Integration**
 1. New DialogueAction type - `COMPLETE_QUEST_OBJECTIVE`
@@ -1479,12 +1660,7 @@ World State Tracking:
 2. Pre-completion checks - When quest offered, check if already done
 3. Auto-complete system - Skip objectives that world state shows are met
 
-**Phase 4: Consequences**
-1. Parse reputation_changes - Already in some JSON, need to execute
-2. Method-based rewards - Different rewards per completion path
-3. NPC state changes - Bandit leader behavior changes if you're their boss
-
-**Phase 5: Advanced**
+**Phase 4: Advanced**
 1. Ongoing quest effects - Extortion payments as bandit leader
 2. Dynamic NPC behavior - NPCs react to your choices
 3. Faction consequences - Being bandit leader affects guard relations
@@ -1799,6 +1975,249 @@ static func find_item(items: Array[Dictionary]) -> Dictionary:
 - Faction reputation system
 - Lootable corpses with tier-based loot
 - Hand-crafted + procedural dungeon generation
+
+---
+
+---
+
+## PUZZLE SYSTEM
+
+The puzzle system provides interactive elements for dungeon challenges and quest integration.
+
+### Core Files
+| File | Purpose |
+|------|---------|
+| `scripts/puzzles/puzzle_element.gd` | Base class for interactive puzzle elements |
+| `scripts/puzzles/puzzle_pillar.gd` | Activatable crystal pillar element |
+| `scripts/puzzles/puzzle_room_controller.gd` | Manages puzzle state and sequences |
+| `scripts/puzzles/crystal_hearts_controller.gd` | Crystal Hearts specific controller |
+| `scripts/puzzles/crystal_portal.gd` | Trapped portal visual |
+
+### PuzzleElement Base Class
+```gdscript
+class_name PuzzleElement
+extends StaticBody3D
+
+signal activated(element: PuzzleElement)
+signal deactivated(element: PuzzleElement)
+
+@export var element_id: String = ""
+@export var element_name: String = "Puzzle Element"
+@export var target_element_ids: Array[String] = []  # Chain activation
+@export var one_shot: bool = false  # Can only be activated once
+```
+
+### PuzzleRoomController
+Manages puzzle state, validates sequences, and triggers completion:
+- Tracks registered puzzle elements
+- Validates pillar touch sequences
+- Sets completion flags via FlagManager
+- Notifies QuestManager on puzzle completion
+
+**Signals:**
+- `puzzle_completed`
+- `puzzle_failed`
+- `puzzle_reset`
+
+### Crystal Hearts Puzzle (Willow Dale)
+Located in Willow Dale dungeon, part of the "Lost Apprentice" quest:
+- 5 crystal pillars in pentagon formation
+- Correct sequence: **1 → 3 → 5 → 2 → 4** (star pattern)
+- Wrong sequence triggers reset with error visual
+- Completion frees Marcus (trapped apprentice)
+- Sets flag `crystal_hearts_solved`
+
+---
+
+## SOULSTONE ECONOMY
+
+A limited economy system with exactly 100 soulstones in the world.
+
+### Core Files
+| File | Purpose |
+|------|---------|
+| `scripts/autoload/soulstone_economy.gd` | Global soulstone tracker autoload |
+
+### Distribution (100 Total)
+| Source | Count | Notes |
+|--------|-------|-------|
+| Quest Rewards | 25 | Main/side quest completions |
+| Dungeon Loot | 30 | Boss chests, rare finds |
+| NPC Possession | 20 | Nobles, merchants, wizards |
+| Shop Purchases | 15 | Expensive (500-2000g) |
+| World Spawns | 10 | Hidden in shrines/altars |
+
+### Soulstone Tiers
+```gdscript
+enum SoulstoneTier {
+    PETTY = 1,
+    LESSER = 2,
+    COMMON = 3,
+    GREATER = 4,
+    GRAND = 5
+}
+```
+
+### Quest Integration
+New objective type `deliver_soulstone` requires player to give a soulstone to an NPC:
+- If player keeps a quest-targeted soulstone, daily faction penalties apply
+- Use `FactionManager.add_daily_penalty()` for ongoing reputation loss
+- Penalties cleared when debt is resolved
+
+### API
+```gdscript
+# Check if new soulstone can be created
+SoulstoneEconomy.can_create_soulstone() -> bool
+
+# Register and track soulstones
+SoulstoneEconomy.register_soulstone(id, tier, owner_type, owner_id)
+SoulstoneEconomy.claim_soulstone(id, owner_type, owner_id)
+SoulstoneEconomy.release_soulstone(id)
+
+# Quest targeting
+SoulstoneEconomy.set_quest_target(soulstone_id, quest_id)
+SoulstoneEconomy.is_quest_target(soulstone_id) -> bool
+```
+
+---
+
+## FOLLOWER SYSTEM
+
+The follower system allows NPCs to join the player as companions, following them across zone transitions and assisting in combat.
+
+### Core Files
+| File | Purpose |
+|------|---------|
+| `scripts/npcs/follower_npc.gd` | Base follower class extending CivilianNPC |
+| `scripts/autoload/follower_manager.gd` | Global follower tracking autoload |
+| `data/followers/` | Follower data definitions (JSON/tres) |
+
+### FollowerNPC Class
+```gdscript
+class_name FollowerNPC
+extends CivilianNPC
+
+enum FollowerState {
+    FOLLOWING,      # Following player at distance
+    COMBAT,         # Engaged with enemies
+    WAITING,        # Stay command
+    RETURNING,      # Coming back after leash break
+    UNCONSCIOUS,    # Essential followers go down, not die
+}
+```
+
+**Key Properties:**
+| Property | Type | Description |
+|----------|------|-------------|
+| `follower_id` | String | Unique identifier |
+| `follower_name` | String | Display name |
+| `follow_distance` | float | Distance to maintain behind player (default: 3.0) |
+| `combat_range` | float | Range to detect and engage enemies (default: 10.0) |
+| `leash_range` | float | Teleport if too far from player (default: 20.0) |
+| `combat_style` | String | "melee", "ranged", "magic" |
+
+**Key Methods:**
+| Method | Description |
+|--------|-------------|
+| `start_following(player: Node3D)` | Begin following a player |
+| `command_wait()` | Stop following, stay in place |
+| `command_follow()` | Resume following |
+| `engage_enemy(enemy: Node)` | Enter combat with target |
+| `recover_from_unconscious()` | Recover from knockout |
+
+**Signals:**
+- `state_changed(old_state, new_state)`
+- `entered_combat(enemy)`
+- `became_unconscious`
+- `recovered`
+
+### FollowerManager (Autoload)
+```gdscript
+const MAX_FOLLOWERS: int = 1  # Currently limited to 1 follower
+
+# Active follower tracking
+var active_followers: Dictionary = {}  # follower_id -> FollowerNPC
+var available_followers: Array[String] = []  # Unlocked follower IDs
+```
+
+**Key Methods:**
+| Method | Description |
+|--------|-------------|
+| `add_follower(follower: FollowerNPC) -> bool` | Add follower to party |
+| `dismiss_follower(follower_id: String)` | Dismiss follower |
+| `get_follower(follower_id: String) -> FollowerNPC` | Get active follower |
+| `issue_command_all(command: String)` | Command all followers ("wait"/"follow") |
+| `unlock_follower(follower_id: String)` | Unlock for recruitment |
+| `prepare_for_zone_transition()` | Save follower state |
+| `respawn_followers_after_transition(player, spawn_pos)` | Respawn after zone change |
+
+**Signals:**
+- `follower_added(follower_id)`
+- `follower_dismissed(follower_id)`
+- `follower_unconscious(follower_id)`
+- `all_followers_commanded(command)`
+
+### Zone Transition Handling
+Followers automatically persist across zone transitions:
+1. `prepare_for_zone_transition()` saves all follower state to `follower_data` dict
+2. `active_followers` references are cleared (they become invalid after scene change)
+3. `respawn_followers_after_transition()` recreates followers near player
+
+### Save/Load Integration
+FollowerSaveData structure:
+```gdscript
+class FollowerSaveData:
+    var active_follower_ids: Array = []    # Currently active followers
+    var follower_states: Dictionary = {}    # Serialized follower state
+    var available_followers: Array = []     # Unlocked followers
+```
+
+### Quest Integration
+The `QuestManager.follower_recruited` signal is automatically connected:
+```gdscript
+# In quest JSON rewards:
+{
+    "rewards": {
+        "follower": "follower_id"  # Unlocks this follower
+    }
+}
+```
+
+When a quest with `follower` reward completes, `FollowerManager.unlock_follower()` is called automatically.
+
+### Creating a New Follower
+
+1. **Create follower data** in `data/followers/`:
+```json
+{
+    "id": "martha_barmaid",
+    "display_name": "Martha",
+    "sprite_path": "res://assets/sprites/npcs/barmaid.png",
+    "h_frames": 5,
+    "v_frames": 1,
+    "pixel_size": 0.0256,
+    "max_health": 50,
+    "damage": 10,
+    "armor": 5,
+    "combat_style": "melee",
+    "is_essential": true
+}
+```
+
+2. **Spawn the follower** in a quest or dialogue:
+```gdscript
+var follower := FollowerNPC.spawn_follower(
+    parent,
+    position,
+    "martha_barmaid",
+    "Martha",
+    "res://assets/sprites/npcs/barmaid.png",
+    5, 1, 0.0256
+)
+FollowerManager.add_follower(follower)
+```
+
+3. **Unlock via quest reward** in quest JSON to allow recruitment.
 
 ---
 

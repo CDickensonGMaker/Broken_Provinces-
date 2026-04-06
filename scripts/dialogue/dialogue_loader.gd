@@ -148,7 +148,13 @@ static func _parse_condition_type(type_str: String) -> DialogueData.ConditionTyp
 		"skill_check": return DialogueData.ConditionType.SKILL_CHECK
 		"time_of_day": return DialogueData.ConditionType.TIME_OF_DAY
 		"reputation": return DialogueData.ConditionType.REPUTATION
+		"faction_membership": return DialogueData.ConditionType.FACTION_MEMBERSHIP
+		"faction_rank": return DialogueData.ConditionType.FACTION_RANK
+		"lore_discovered": return DialogueData.ConditionType.LORE_DISCOVERED
+		"bestiary_discovered": return DialogueData.ConditionType.BESTIARY_DISCOVERED
 		"random": return DialogueData.ConditionType.RANDOM_CHANCE
+		"player_race": return DialogueData.ConditionType.PLAYER_RACE
+		"player_career": return DialogueData.ConditionType.PLAYER_CAREER
 		_: return DialogueData.ConditionType.NONE
 
 
@@ -163,6 +169,7 @@ static func _parse_action_type(type_str: String) -> DialogueData.ActionType:
 		"start_quest": return DialogueData.ActionType.START_QUEST
 		"complete_quest": return DialogueData.ActionType.COMPLETE_QUEST
 		"advance_quest": return DialogueData.ActionType.ADVANCE_QUEST
+		"complete_quest_objective": return DialogueData.ActionType.COMPLETE_QUEST_OBJECTIVE
 		"set_flag": return DialogueData.ActionType.SET_FLAG
 		"clear_flag": return DialogueData.ActionType.CLEAR_FLAG
 		"skill_check": return DialogueData.ActionType.SKILL_CHECK
@@ -174,6 +181,9 @@ static func _parse_action_type(type_str: String) -> DialogueData.ActionType:
 		"play_sound": return DialogueData.ActionType.PLAY_SOUND
 		"set_npc_state": return DialogueData.ActionType.SET_NPC_STATE
 		"start_boat_voyage": return DialogueData.ActionType.START_BOAT_VOYAGE
+		"discover_lore": return DialogueData.ActionType.DISCOVER_LORE
+		"discover_recipe": return DialogueData.ActionType.DISCOVER_RECIPE
+		"discover_bestiary": return DialogueData.ActionType.DISCOVER_BESTIARY
 		_: return DialogueData.ActionType.NONE
 
 

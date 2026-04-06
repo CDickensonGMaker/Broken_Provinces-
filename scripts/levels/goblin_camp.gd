@@ -19,7 +19,10 @@ var terrain_model: Node3D
 
 
 func _ready() -> void:
-	var is_main_scene: bool = get_node_or_null("Player") != null
+	var is_main_scene: bool = false
+	var _player_check: Node = get_node_or_null("Player")
+	if _player_check and is_instance_valid(_player_check) and not _player_check.is_queued_for_deletion():
+		is_main_scene = true
 
 	if is_main_scene:
 		if SceneManager:

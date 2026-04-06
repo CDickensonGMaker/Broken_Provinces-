@@ -19,7 +19,10 @@ const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/cities/port_city_1.wav"
 func _ready() -> void:
 	# Only register with PlayerGPS if we're the main scene (have Player node)
 	# When loaded as a streaming cell, Player is stripped - don't touch GPS
-	var is_main_scene: bool = get_node_or_null("Player") != null
+	var is_main_scene: bool = false
+	var _player_check: Node = get_node_or_null("Player")
+	if _player_check and is_instance_valid(_player_check) and not _player_check.is_queued_for_deletion():
+		is_main_scene = true
 
 	if is_main_scene:
 		if PlayerGPS:

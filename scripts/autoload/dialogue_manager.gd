@@ -349,8 +349,48 @@ func _evaluate_condition_internal(condition: DialogueCondition) -> bool:
 			return _check_time_of_day(condition.param_string)
 
 		DialogueData.ConditionType.REPUTATION:
-			# Future: check faction reputation
-			return true
+			# Check faction reputation - param_string is faction_id, param_int is minimum reputation
+			var faction_id: String = condition.param_string
+			var min_rep: int = condition.param_int
+			if faction_id.is_empty():
+				return true
+			return FactionManager.get_reputation(faction_id) >= min_rep
+
+		DialogueData.ConditionType.FACTION_MEMBERSHIP:
+			# Check if player is a member of a faction - param_string is faction_id
+			var faction_id: String = condition.param_string
+			if faction_id.is_empty():
+				return false
+			return FactionManager.is_member(faction_id)
+
+		DialogueData.ConditionType.FACTION_RANK:
+			# Check if player has a certain rank in a faction - param_string is "faction_id:rank_name"
+			var parts := condition.param_string.split(":")
+			if parts.size() < 2:
+				return false
+			var faction_id: String = parts[0]
+			var rank_name: String = parts[1]
+			if faction_id.is_empty() or rank_name.is_empty():
+				return false
+			return FactionManager.has_rank(faction_id, rank_name)
+
+		DialogueData.ConditionType.LORE_DISCOVERED:
+			# Check if a lore entry has been discovered - param_string is lore_id
+			var lore_id: String = condition.param_string
+			if lore_id.is_empty():
+				return false
+			if CodexManager:
+				return CodexManager.is_lore_discovered(lore_id)
+			return false
+
+		DialogueData.ConditionType.BESTIARY_DISCOVERED:
+			# Check if a bestiary entry has been discovered - param_string is creature_id
+			var creature_id: String = condition.param_string
+			if creature_id.is_empty():
+				return false
+			if CodexManager:
+				return CodexManager.is_bestiary_discovered(creature_id)
+			return false
 
 		DialogueData.ConditionType.RANDOM_CHANCE:
 			return randf() <= condition.param_float
@@ -465,6 +505,30 @@ func _get_condition_failure_reason(condition: DialogueCondition) -> String:
 		DialogueData.ConditionType.QUEST_STATE:
 			return "Quest requirements not met"
 
+		DialogueData.ConditionType.REPUTATION:
+			var faction: FactionData = FactionManager.get_faction(condition.param_string)
+			var faction_name: String = faction.display_name if faction else condition.param_string
+			return "Requires higher reputation with %s" % faction_name
+
+		DialogueData.ConditionType.FACTION_MEMBERSHIP:
+			var faction: FactionData = FactionManager.get_faction(condition.param_string)
+			var faction_name: String = faction.display_name if faction else condition.param_string
+			return "Must be a member of %s" % faction_name
+
+		DialogueData.ConditionType.FACTION_RANK:
+			var parts := condition.param_string.split(":")
+			var faction_id: String = parts[0] if parts.size() > 0 else ""
+			var rank_name: String = parts[1] if parts.size() > 1 else ""
+			var faction: FactionData = FactionManager.get_faction(faction_id)
+			var faction_name: String = faction.display_name if faction else faction_id
+			return "Requires %s rank in %s" % [rank_name.capitalize(), faction_name]
+
+		DialogueData.ConditionType.LORE_DISCOVERED:
+			return "Requires knowledge of %s" % condition.param_string
+
+		DialogueData.ConditionType.BESTIARY_DISCOVERED:
+			return "Must have encountered %s" % condition.param_string
+
 		_:
 			return "Requirements not met"
 
@@ -504,6 +568,14 @@ func execute_action(action: DialogueAction) -> String:
 			if parts.size() >= 2:
 				QuestManager.update_progress(parts[1], parts[0], action.param_int)
 
+		DialogueData.ActionType.COMPLETE_QUEST_OBJECTIVE:
+			# Complete a specific quest objective - param_string is "quest_id:objective_id"
+			var parts := action.param_string.split(":")
+			if parts.size() >= 2:
+				var quest_id: String = parts[0]
+				var objective_id: String = parts[1]
+				_complete_quest_objective(quest_id, objective_id)
+
 		DialogueData.ActionType.SET_FLAG:
 			set_flag(action.param_string)
 
@@ -514,8 +586,11 @@ func execute_action(action: DialogueAction) -> String:
 			return _execute_skill_check(action)
 
 		DialogueData.ActionType.MODIFY_REPUTATION:
-			# Future: modify faction reputation
-			pass
+			# Modify faction reputation - param_string is faction_id, param_int is amount
+			var faction_id: String = action.param_string
+			var amount: int = action.param_int
+			if not faction_id.is_empty() and FactionManager:
+				FactionManager.modify_reputation(faction_id, amount, "dialogue")
 
 		DialogueData.ActionType.GIVE_XP:
 			if GameManager.player_data:
@@ -564,6 +639,11 @@ func execute_action(action: DialogueAction) -> String:
 			# Discover a recipe in the Codex
 			if CodexManager:
 				CodexManager.discover_recipe(action.param_string)
+
+		DialogueData.ActionType.DISCOVER_BESTIARY:
+			# Discover a bestiary entry in the Codex
+			if CodexManager:
+				CodexManager.discover_bestiary_entry(action.param_string)
 
 	return ""
 
@@ -697,6 +777,43 @@ func _get_skill_name(skill_enum: int) -> String:
 		Enums.Skill.SMITHING: return "Smithing"
 		Enums.Skill.LOCKPICKING: return "Lockpicking"
 	return "Unknown"
+
+
+# =============================================================================
+# QUEST OBJECTIVE COMPLETION (for dialogue-driven completion)
+# =============================================================================
+
+## Complete a specific quest objective directly
+## Used when dialogue choices complete objectives (e.g., intimidating a boss to leave)
+func _complete_quest_objective(quest_id: String, objective_id: String) -> void:
+	if not QuestManager:
+		push_warning("[DialogueManager] QuestManager not available")
+		return
+
+	var quest: QuestManager.Quest = QuestManager.get_quest(quest_id)
+	if not quest:
+		push_warning("[DialogueManager] Quest not found: %s" % quest_id)
+		return
+
+	if quest.state != Enums.QuestState.ACTIVE:
+		push_warning("[DialogueManager] Quest not active: %s" % quest_id)
+		return
+
+	# Find and complete the objective
+	for obj in quest.objectives:
+		if obj.id == objective_id:
+			if not obj.is_completed:
+				obj.current_count = obj.required_count
+				obj.is_completed = true
+				obj.completion_method = "dialogue"
+				QuestManager.quest_updated.emit(quest_id, obj.id)
+				QuestManager.objective_completed.emit(quest_id, obj.id)
+
+				# Check if quest can auto-complete
+				QuestManager._check_quest_completion(quest_id)
+			return
+
+	push_warning("[DialogueManager] Objective not found: %s in quest %s" % [objective_id, quest_id])
 
 
 # =============================================================================

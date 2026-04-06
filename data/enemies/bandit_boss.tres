@@ -103,6 +103,7 @@ knowledge = 4
 bravery = 12
 behavior = 0
 faction = 6
+political_faction = "bandits"
 aggro_range = 18.0
 attack_range = 3.2
 preferred_distance = 2.5
