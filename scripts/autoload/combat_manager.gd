@@ -310,6 +310,10 @@ func apply_spell_damage(
 			caster_knowledge = caster_data.get_effective_stat(Enums.Stat.KNOWLEDGE)
 			caster_arcana = caster_data.get_skill(Enums.Skill.ARCANA_LORE)
 
+	# Handle custom spells with multiple effects
+	if spell is CustomSpellData:
+		return _apply_custom_spell_damage(caster, target, spell as CustomSpellData, caster_knowledge, caster_arcana, charged_multiplier)
+
 	# Roll spell effect
 	var base_effect: int = spell.roll_effect(caster_knowledge, caster_arcana)
 	var total_damage: int = int(base_effect * charged_multiplier)
@@ -370,6 +374,93 @@ func apply_spell_damage(
 		_handle_kill_rewards(caster, target)
 
 	return actual_damage
+
+
+## Apply custom spell damage with multiple effects
+func _apply_custom_spell_damage(
+	caster: Node,
+	target: Node,
+	spell: CustomSpellData,
+	caster_knowledge: int,
+	caster_arcana: int,
+	charged_multiplier: float
+) -> int:
+	# Roll all custom effects
+	var effects: Dictionary = spell.roll_custom_effect(caster_knowledge, caster_arcana)
+	var total_damage_dealt: int = 0
+
+	# Apply healing to self
+	if effects.heal > 0 and caster.has_method("heal"):
+		var heal_amount: int = int(effects.heal * charged_multiplier)
+		caster.heal(heal_amount)
+		_spawn_damage_number(caster, heal_amount, Enums.DamageType.HOLY, true)
+
+	# Apply stamina restore to self
+	if effects.restore_stamina > 0:
+		if caster.is_in_group("player") and GameManager.player_data:
+			GameManager.player_data.restore_stamina(effects.restore_stamina)
+
+	# Apply mana restore to self
+	if effects.restore_mana > 0:
+		if caster.is_in_group("player") and GameManager.player_data:
+			GameManager.player_data.restore_mana(effects.restore_mana)
+
+	# Apply damage by type
+	var damage_dict: Dictionary = effects.damage
+	for dmg_type in damage_dict:
+		var base_damage: int = int(damage_dict[dmg_type] * charged_multiplier)
+		if base_damage <= 0:
+			continue
+
+		# Apply damage type modifier
+		var modified_damage: int = _apply_damage_type_modifier(base_damage, dmg_type, target)
+
+		# Magic resistance
+		var magic_resist: float = 0.0
+		if target.has_method("get_character_data"):
+			var target_data: CharacterData = target.get_character_data()
+			if target_data:
+				magic_resist = target_data.get_magic_resistance()
+		modified_damage = int(modified_damage * (1.0 - magic_resist))
+
+		# Apply ARMORED condition reduction
+		if _has_condition(target, Enums.Condition.ARMORED):
+			modified_damage = int(modified_damage * 0.75)
+
+		modified_damage = max(1, modified_damage)
+
+		# Apply damage
+		var actual_damage: int = target.take_damage(modified_damage, dmg_type, caster)
+		total_damage_dealt += actual_damage
+		damage_dealt.emit(caster, target, actual_damage, dmg_type)
+		_spawn_damage_number(target, actual_damage, dmg_type)
+
+	# Apply conditions to target
+	for cond_info in effects.conditions_apply:
+		apply_condition(target, cond_info.condition, cond_info.duration)
+
+	# Apply stat buffs to caster (for self-targeted buffs)
+	for buff in effects.stat_buffs:
+		if caster.has_method("apply_stat_buff"):
+			caster.apply_stat_buff(buff.stat, buff.value, buff.duration)
+
+	# Apply stat debuffs to target
+	for debuff in effects.stat_debuffs:
+		if target.has_method("apply_stat_debuff"):
+			target.apply_stat_debuff(debuff.stat, debuff.value, debuff.duration)
+
+	# Apply absorb (damage dealt heals caster)
+	if effects.absorb > 0 and caster.has_method("heal"):
+		var absorb_heal: int = mini(effects.absorb, total_damage_dealt)
+		caster.heal(absorb_heal)
+
+	# Check for kill
+	if target.has_method("is_dead") and target.is_dead():
+		entity_killed.emit(target, caster)
+		_handle_kill_rewards(caster, target)
+
+	return total_damage_dealt
+
 
 ## Apply DOT damage tick
 func apply_dot_damage(target: Node, damage: int, damage_type: Enums.DamageType, source: Node = null) -> void:

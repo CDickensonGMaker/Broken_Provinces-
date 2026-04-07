@@ -337,6 +337,52 @@ func _spawn_npcs() -> void:
 	elder_profile.speech_style = "formal"
 	elder_vorn.npc_profile = elder_profile
 
+	# === THORNFIELD TRADER (at market area) ===
+	var trader_pos: Marker3D = npc_spawn_points.get_node_or_null("Merchant_GeneralStore")
+	var trader_position: Vector3 = trader_pos.global_position + Vector3(3, 0, 0) if trader_pos else Vector3(5, 0, -5)
+	var thornfield_trader := QuestGiver.spawn_quest_giver(
+		npcs,
+		trader_position,
+		"Thornfield Trader",
+		"thornfield_trader",
+		null, 8, 2,
+		[],  # No quests - information source
+		true  # is_talk_target
+	)
+	thornfield_trader.region_id = ZONE_ID
+	thornfield_trader.faction_id = "human_empire"
+	thornfield_trader.no_quest_dialogue = "Trade's been slow since the troubles started. Folk are scared to travel the roads. If you're looking to sell lumber or pelts, I'm buying."
+	var trader_profile := NPCKnowledgeProfile.new()
+	trader_profile.archetype = NPCKnowledgeProfile.Archetype.MERCHANT
+	trader_profile.personality_traits = ["shrewd", "practical", "cautious"]
+	trader_profile.knowledge_tags = ["thornfield", "trade", "lumber", "local_area", "roads"]
+	trader_profile.base_disposition = 50
+	trader_profile.speech_style = "casual"
+	thornfield_trader.npc_profile = trader_profile
+
+	# === THORNFIELD KEEPER CONTACT (in tavern back room - Keepers faction) ===
+	var lodge_pos_marker: Marker3D = npc_spawn_points.get_node_or_null("Merchant_HuntersLodge")
+	var keeper_position: Vector3 = lodge_pos_marker.global_position + Vector3(-2, 0, 3) if lodge_pos_marker else Vector3(-8, 0, 8)
+	var keeper_contact := QuestGiver.spawn_quest_giver(
+		npcs,
+		keeper_position,
+		"Hooded Stranger",
+		"thornfield_keeper_contact",
+		null, 8, 2,
+		[],  # Quest IDs to be added later
+		false
+	)
+	keeper_contact.region_id = ZONE_ID
+	keeper_contact.faction_id = "keepers"
+	keeper_contact.no_quest_dialogue = "You have the look of someone who asks too many questions. Be careful in these parts... eyes and ears are everywhere. If you seek the Keepers, prove your worth first."
+	var keeper_profile := NPCKnowledgeProfile.new()
+	keeper_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	keeper_profile.personality_traits = ["mysterious", "cautious", "observant", "secretive"]
+	keeper_profile.knowledge_tags = ["thornfield", "keepers", "secrets", "local_area"]
+	keeper_profile.base_disposition = 30  # Suspicious
+	keeper_profile.speech_style = "formal"
+	keeper_contact.npc_profile = keeper_profile
+
 	# Woodcutter 1 (green vest guy - fits woodcutter theme)
 	var woodcutter1_pos: Marker3D = npc_spawn_points.get_node_or_null("Civilian_Woodcutter1")
 	if woodcutter1_pos:

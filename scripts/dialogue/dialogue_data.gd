@@ -36,7 +36,9 @@ enum ConditionType {
 	BESTIARY_DISCOVERED,## Check if a bestiary entry has been discovered (param_string = creature_id)
 	RANDOM_CHANCE,      ## Random percentage chance
 	PLAYER_RACE,        ## Check player's race (param_string: "human", "elf", "halfling", "dwarf")
-	PLAYER_CAREER       ## Check player's career (param_string: "merchant", "thief", "soldier", etc.)
+	PLAYER_CAREER,      ## Check player's career (param_string: "merchant", "thief", "soldier", etc.)
+	MORALITY,           ## Check morality tier (param_string: "good_only", "evil_only", "neutral_only", "paragon", "vile", etc.)
+	GUILD_RANK          ## Check guild rank (param_string = guild_id, param_int = minimum rank level, e.g., 0=initiate, 3=veteran)
 }
 
 ## Action types that can trigger when a choice is selected
@@ -64,7 +66,8 @@ enum ActionType {
 	START_BOAT_VOYAGE,  ## Start boat travel (param_string = route_id)
 	DISCOVER_LORE,      ## Discover a lore entry (param_string = lore_id)
 	DISCOVER_RECIPE,    ## Discover a recipe (param_string = recipe_id)
-	DISCOVER_BESTIARY   ## Discover a bestiary entry (param_string = creature_id)
+	DISCOVER_BESTIARY,  ## Discover a bestiary entry (param_string = creature_id)
+	START_DUEL          ## Start a duel with an NPC (param_string = duel_id, param_float = yield_threshold)
 }
 
 

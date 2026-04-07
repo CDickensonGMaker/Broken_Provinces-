@@ -1,0 +1,102 @@
+{
+  "id": "thieves_10_government_job",
+  "title": "State Secrets",
+  "description": "The Guildmaster herself needs a favor. A magistrate in Dalhurst possesses documents detailing a secret royal decree that could destroy the Guild. Infiltrate the magistrate's offices, steal the documents, and escape. This is the most heavily guarded target you've faced.",
+  "giver_npc_id": "guildmaster_nightshade",
+  "giver_region": "dalhurst",
+  "faction": "thieves_guild",
+  "rank_required": 3,
+  "objectives": [
+    {
+      "id": "obj_gather_intel",
+      "type": "talk",
+      "target": "inside_contact",
+      "description": "Meet with inside contact to learn guard schedules"
+    },
+    {
+      "id": "obj_infiltrate_offices",
+      "type": "explore",
+      "target": "magistrate_offices",
+      "description": "Infiltrate the magistrate's offices"
+    },
+    {
+      "id": "obj_bypass_vault",
+      "type": "lockpick",
+      "target": "magistrate_vault",
+      "dc": 18,
+      "description": "Bypass the vault's complex lock"
+    },
+    {
+      "id": "obj_steal_documents",
+      "type": "collect",
+      "target": "royal_decree_documents",
+      "required_count": 1,
+      "description": "Steal the royal decree documents"
+    },
+    {
+      "id": "obj_escape",
+      "type": "explore",
+      "target": "guild_hideout",
+      "description": "Escape with documents to Guild hideout"
+    }
+  ],
+  "rewards": {
+    "gold": 500,
+    "xp": 1000,
+    "items": ["shadowstep_boots"],
+    "faction_reputation": {
+      "thieves_guild": 40
+    }
+  },
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "guildmaster_nightshade",
+  "turn_in_zone": "dalhurst",
+  "next_quest": "thieves_11_impossible_vault",
+  "flags_set": ["thieves_state_secrets_stolen", "thieves_met_guildmaster"],
+  "challenge": {
+    "type": "high_security_heist",
+    "description": "Multiple guards, magical wards, complex locks, time pressure",
+    "phases": [
+      {
+        "name": "infiltration",
+        "challenges": ["guard_patrols", "locked_doors", "alarm_wards"],
+        "skill_checks": [
+          {"type": "stealth", "dc": 15},
+          {"type": "lockpicking", "dc": 16}
+        ]
+      },
+      {
+        "name": "vault_breach",
+        "challenges": ["complex_lock", "magical_ward", "pressure_plate"],
+        "skill_checks": [
+          {"type": "lockpicking", "dc": 18},
+          {"type": "arcana", "dc": 14},
+          {"type": "perception", "dc": 13}
+        ]
+      },
+      {
+        "name": "escape",
+        "challenges": ["alerted_guards", "time_limit"],
+        "description": "Once documents taken, 3-minute timer before full lockdown"
+      }
+    ],
+    "detection_consequences": "Immediate combat, reinforcements, potential arrest"
+  },
+  "moral_choice": {
+    "description": "Reading the documents reveals the decree would actually legalize Guild operations. You can steal them for the Guild or leave them to help legitimize thieves.",
+    "good_option": "Leave documents - legitimize Guild operations",
+    "evil_option": "Steal documents - maintain Guild's shadow status",
+    "consequences": {
+      "leave_documents": {
+        "faction_rep": {"thieves_guild": -20},
+        "quest_failure": true,
+        "future_impact": "Guild becomes semi-legal but loses underworld power"
+      },
+      "steal_documents": {
+        "faction_rep": {"thieves_guild": 40},
+        "future_impact": "Guild maintains criminal power, royal opposition continues"
+      }
+    }
+  },
+  "notes": "Meets Guildmaster Nightshade. High-difficulty heist. Complex multi-phase challenge. Rewards Shadowstep Boots (mobility item). Magistrate offices in Dalhurst government district."
+}

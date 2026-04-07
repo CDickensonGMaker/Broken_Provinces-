@@ -1,0 +1,82 @@
+{
+	"id": "chronos_07_paradox",
+	"title": "The Paradox Stone",
+	"description": "A dangerous temporal artifact has surfaced near Crossroads, causing time loops and distortions. Travelers report experiencing the same moments repeatedly, unable to move forward. The Priest of Chronos fears the artifact could unravel the fabric of time itself if left unchecked. You must find the Paradox Stone and choose: destroy it, or harness its power for Chronos.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_chronos_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"faction": "church_of_chronos",
+	"objectives": [
+		{
+			"id": "investigate_crossroads",
+			"description": "Investigate the temporal distortions near Crossroads",
+			"type": "reach",
+			"target": "crossroads",
+			"required_count": 1
+		},
+		{
+			"id": "locate_paradox_stone",
+			"description": "Locate the Paradox Stone",
+			"type": "collect",
+			"target": "paradox_stone",
+			"required_count": 1
+		},
+		{
+			"id": "solve_time_loop_puzzle",
+			"description": "Solve the time loop puzzle to stabilize the area",
+			"type": "solve_puzzle",
+			"target": "crossroads_time_loop",
+			"required_count": 1
+		},
+		{
+			"id": "make_choice",
+			"description": "Choose the fate of the Paradox Stone",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_chronos_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 300,
+		"xp": 900,
+		"items": [],
+		"faction_reputation": {
+			"church_of_chronos": 35
+		}
+	},
+	"prerequisites": ["chronos_06_temporal_echo"],
+	"flags_required": ["chronos_devotee"],
+	"next_quest": "chronos_08_prophet_training",
+	"choice_consequences": {
+		"destroy_stone": {
+			"flags_to_set": ["paradox_stone_destroyed"],
+			"reputation_changes": {
+				"church_of_chronos": 20
+			},
+			"items_given": ["chronos_blessing_major"]
+		},
+		"harness_stone": {
+			"flags_to_set": ["paradox_stone_harnessed"],
+			"reputation_changes": {
+				"church_of_chronos": 10
+			},
+			"items_given": ["paradox_talisman"]
+		}
+	},
+	"spawn_on_accept": [
+		{
+			"type": "chest",
+			"location": "crossroads",
+			"coords": [-475, 0, -195],
+			"contains": ["paradox_stone"],
+			"loot_tier": "rare"
+		}
+	],
+	"quest_items": ["paradox_stone"],
+	"notes": "DESIGN INTENT: Major moral choice quest. Destroying the stone is the 'safe' orthodox choice favored by the church (+20 rep, major blessing). Harnessing it is the 'risky' power-seeking choice (+10 rep, powerful talisman with unique effects). The puzzle involves interacting with time-distorted objects in a specific sequence at Crossroads. This quest explores the tension between respecting time's natural flow vs. manipulating it. The Paradox Talisman grants powerful but unstable time manipulation abilities. The time loop puzzle could involve stepping stones that reset positions or NPCs stuck in loops."
+}

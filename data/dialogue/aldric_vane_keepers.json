@@ -1,0 +1,410 @@
+{
+  "id": "aldric_vane_keepers",
+  "display_name": "Aldric Vane - Keeper Contact",
+  "description": "Dialogue for Aldric Vane, a member of the Keepers who offers the Keepers initiation quest",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Aldric Vane",
+      "text": "You've been asking questions. Making connections. Tharin trusts you, and that means something. I am Aldric Vane, and I represent... interests that operate outside normal channels. We need someone capable, someone who can handle themselves. Interested?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What kind of interests?",
+          "next": "keepers_intro",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "keepers_initiation",
+              "value": 0,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I've dealt with the cultists at Willow Dale.",
+          "next": "quest_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "keepers_initiation",
+              "value": 1
+            },
+            {
+              "type": "flag_set",
+              "param": "willow_dale_cultists_defeated",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Who are you really?",
+          "next": "identity_question",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I don't work for strangers.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "keepers_intro",
+      "speaker": "Aldric Vane",
+      "text": "The Keepers. We are an ancient order sworn to protect the realm from threats that kingdoms cannot openly acknowledge. Cults worshipping dark powers. Artifacts that should remain buried. Entities from beyond. We watch from the shadows so others can sleep peacefully. And right now, we have a problem.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What kind of problem?",
+          "next": "willow_dale_problem",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Why haven't I heard of the Keepers before?",
+          "next": "secret_order",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Sounds like a conspiracy.",
+          "next": "conspiracy_response",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "identity_question",
+      "speaker": "Aldric Vane",
+      "text": "I am a Keeper - part of an order that has existed for centuries. We protect the realm from threats that most people don't even know exist. Cults, dark magic, forbidden knowledge. We operate in secrecy because the truth would cause panic. But secrecy requires agents, and we need capable people like you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me more about these threats.",
+          "next": "willow_dale_problem",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Why should I trust you?",
+          "next": "trust_question",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'm not interested in secret organizations.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "trust_question",
+      "speaker": "Aldric Vane",
+      "text": "You shouldn't trust me - not yet. Trust is earned. But consider this: Tharin sent you to deliver a letter to me, didn't he? He trusts the Keepers because we've protected Elder Moor from threats he never knew existed. We're asking you to do the same. Prove yourself, and you'll see we're on the right side.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Fair enough. What do you need?",
+          "next": "willow_dale_problem",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I still don't trust you.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "secret_order",
+      "speaker": "Aldric Vane",
+      "text": "Because we're good at what we do. The Keepers have operated in shadows for centuries. Kings know of us. Some nobles suspect. But the common folk? They go about their lives never knowing how close they came to darkness. That's how we prefer it. Panic serves no one.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's the current threat?",
+          "next": "willow_dale_problem",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Sounds paranoid.",
+          "next": "paranoid_response",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "paranoid_response",
+      "speaker": "Aldric Vane",
+      "text": "Call it what you will. When cultists summon entities that devour entire villages, we call it vigilance. When forbidden rituals threaten to tear reality apart, we call it necessary. You'll understand when you see it firsthand. Will you help us, or not?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me what needs to be done.",
+          "next": "willow_dale_problem",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "This is too much for me.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "conspiracy_response",
+      "speaker": "Aldric Vane",
+      "text": "Not a conspiracy - a necessity. The world faces threats that most cannot comprehend. We stand between civilization and the void. You can believe me or not, but the darkness doesn't care about skepticism. It will come regardless. Will you help stop it?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Alright, I'm listening.",
+          "next": "willow_dale_problem",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I don't believe in darkness from the void.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "willow_dale_problem",
+      "speaker": "Aldric Vane",
+      "text": "Willow Dale. An abandoned watchtower northwest of Dalhurst, once a Keeper outpost. It was lost decades ago when something... broke through. We sealed it, but the seals are failing. Cultists have moved in, performing forbidden rituals to summon entities from beyond. If they succeed, the consequences would be catastrophic.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What do you need me to do?",
+          "next": "quest_objectives",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What kind of entities?",
+          "next": "entity_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Why don't the Keepers handle this themselves?",
+          "next": "why_not_keepers",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_objectives",
+      "speaker": "Aldric Vane",
+      "text": "Travel to Willow Dale. Investigate the ruins and find the source of the dark energy - likely an altar or ritual site. Disrupt the ritual by killing the cultists leading it. Bring back evidence of what they were attempting. I need to know how far the corruption has spread. Will you do this?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll go to Willow Dale.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "keepers_initiation",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What's the pay?",
+          "next": "reward_question",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "This sounds suicidal.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "entity_explanation",
+      "speaker": "Aldric Vane",
+      "text": "Things from the void - the space between realities. Some call them demons, others call them abominations. They hunger for our world, and cults provide the doorway. If a summoning succeeds, the entity consumes everything nearby before we can stop it. Villages disappear. Entire regions become dead zones. We cannot allow that to happen.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll stop the cultists.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "keepers_initiation",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What exactly do I need to do?",
+          "next": "quest_objectives",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Too dangerous for me.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "why_not_keepers",
+      "speaker": "Aldric Vane",
+      "text": "We have agents elsewhere dealing with other threats. The Keepers are few, and the darkness is many. We need local operatives who can act quickly. That's where you come in. Prove yourself at Willow Dale, and you'll be welcomed into the order. Are you willing?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Yes, I'll handle it.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "keepers_initiation",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What's the payment?",
+          "next": "reward_question",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Find another operative.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "reward_question",
+      "speaker": "Aldric Vane",
+      "text": "150 gold immediately. More importantly, you'll receive a Keeper's badge - proof of your affiliation. That badge opens doors, grants access to resources, and earns respect from those who know what it means. Plus, the Keepers take care of their own. Interested now?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Deal. I'll go to Willow Dale.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "keepers_initiation",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Still too risky.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_quest",
+      "speaker": "Aldric Vane",
+      "text": "Good. Willow Dale is northwest of Dalhurst, in the hills. The ruins are easy to spot - dark energy hangs over them like a shroud. Kill the cultists, disrupt their ritual, and bring back proof. And be careful - what they're summoning doesn't discriminate between cultist and hero.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_turnin",
+      "speaker": "Aldric Vane",
+      "text": "You're back. What did you find at Willow Dale?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The cultists are dead. Their ritual is disrupted.",
+          "next": "turnin_success",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "turnin_success",
+      "speaker": "Aldric Vane",
+      "text": "Show me the evidence. Ah... ritual components, summoning glyphs. This is worse than I thought. They were attempting to open a full breach. If you hadn't stopped them, half of Dalhurst would be a crater by now. You've proven yourself. Welcome to the Keepers.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Accept the badge.",
+          "next": "quest_complete",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "keepers_initiation",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_complete",
+      "speaker": "Aldric Vane",
+      "text": "Here's your payment - 150 gold and the Keeper's badge. Carry it with pride. You stand now among those who guard reality itself. There will be more work - darker threats, greater dangers. But also greater rewards. Welcome to the shadows, Keeper.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "refuse",
+      "speaker": "Aldric Vane",
+      "text": "I understand. This work isn't for everyone. If you change your mind, you know where to find me. Just remember - the darkness doesn't wait for us to be ready.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

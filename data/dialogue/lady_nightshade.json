@@ -1,0 +1,827 @@
+{
+  "id": "lady_nightshade",
+  "display_name": "Lady Nightshade - Thieves Guild Guildmaster",
+  "description": "Dialogue for Lady Nightshade, the Guildmaster of the Thieves Guild in Dalhurst. Offers quests 10-13 and manages the guild's inner circle.",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Lady Nightshade",
+      "text": "So, you're the one they've been talking about. Raven and Vex speak highly of your... talents. I'm Lady Nightshade. I run this guild. What brings you to my attention?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm ready for more challenging work.",
+          "next": "challenge_work",
+          "conditions": [
+            {"type": "quest_complete", "param": "thieves_09_informant", "value": 0},
+            {"type": "quest_complete", "param": "thieves_10_government_job", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "The documents are secure.",
+          "next": "quest_10_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "thieves_10_government_job", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "I cracked the impossible vault.",
+          "next": "quest_11_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "thieves_11_impossible_vault", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "I've uncovered the traitor.",
+          "next": "quest_12_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "thieves_12_guild_traitor", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "The heist is complete.",
+          "next": "quest_13_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "thieves_13_right_hand", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "I want to know more about the guild's leadership.",
+          "next": "leadership_info",
+          "conditions": [
+            {"type": "flag", "param": "thieves_guild_member", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "What can you tell me about Red Mara?",
+          "next": "red_mara_info",
+          "conditions": [
+            {"type": "flag", "param": "thieves_guild_member", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Just paying my respects, Guildmaster.",
+          "next": "farewell_respect",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "challenge_work",
+      "speaker": "Lady Nightshade",
+      "text": "You've proven your worth to the lieutenants. Now you work directly for me. I have a job that requires absolute discretion. A magistrate in Dalhurst possesses documents that could destroy this guild. I need them.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me more about these documents.",
+          "next": "quest_10_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll get them for you.",
+          "next": "quest_10_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_10_government_job", "value": 0}]
+        },
+        {
+          "text": "Government offices? That's dangerous.",
+          "next": "quest_10_danger",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_10_details",
+      "speaker": "Lady Nightshade",
+      "text": "A secret royal decree that would allow the crown to seize all guild assets and arrest our members without trial. The magistrate keeps it locked in his office vault. Guards, wards, the works. But you've handled difficult jobs before. Can you handle this?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll get those documents.",
+          "next": "quest_10_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_10_government_job", "value": 0}]
+        },
+        {
+          "text": "What resources can I use?",
+          "next": "quest_10_resources",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need more time to prepare.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_10_danger",
+      "speaker": "Lady Nightshade",
+      "text": "Of course it's dangerous. If it were easy, I'd send a footpad. I'm sending you because you're capable of the impossible. The guild's survival depends on this. Are you with us or not?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm with you. I'll do it.",
+          "next": "quest_10_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_10_government_job", "value": 0}]
+        },
+        {
+          "text": "I need to think about this.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_10_resources",
+      "speaker": "Lady Nightshade",
+      "text": "I have an inside contact who knows the guard schedules. Meet with them first. As for the vault itself - you'll need lockpicking skills and the ability to bypass magical wards. The guild will provide what tools we can, but the rest is up to you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "That's enough. I'll handle it.",
+          "next": "quest_10_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_10_government_job", "value": 0}]
+        },
+        {
+          "text": "I need to prepare first.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_10_accept",
+      "speaker": "Lady Nightshade",
+      "text": "The magistrate's offices are in the Dalhurst government district. My contact will meet you near the fountain at midnight. Get the documents, get out, and bring them directly to me. 500 gold when it's done. Don't fail me.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_10_turnin",
+      "speaker": "Lady Nightshade",
+      "text": "You have the documents? Let me see... Yes. This is exactly what I feared. With this gone, the crown has no legal authority to move against us. You've saved the guild. Here's your 500 gold and these Shadowstep Boots - they'll serve you well.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's next?",
+          "next": "quest_11_offer",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_10_government_job", "value": 0},
+            {"type": "set_flag", "param": "thieves_met_guildmaster", "value": 0}
+          ]
+        },
+        {
+          "text": "Glad to help the guild.",
+          "next": "farewell_grateful",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_10_government_job", "value": 0},
+            {"type": "set_flag", "param": "thieves_met_guildmaster", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_11_offer",
+      "speaker": "Lady Nightshade",
+      "text": "You've proven yourself capable of the impossible. So let me give you something truly impossible. Legend speaks of an ancient vault beneath Elder Moor - no thief has ever cracked it. Generations have tried and failed. I believe you can succeed.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me about this vault.",
+          "next": "quest_11_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll crack it.",
+          "next": "quest_11_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_11_impossible_vault", "value": 0}]
+        },
+        {
+          "text": "If everyone has failed, why try?",
+          "next": "quest_11_motivation",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_11_details",
+      "speaker": "Lady Nightshade",
+      "text": "Built by a paranoid merchant prince centuries ago. Puzzles, traps, and mechanisms that have stumped every thief who's attempted it. The treasure inside is legendary - gold, artifacts, the merchant's entire fortune. 600 gold from me, plus whatever you find.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll crack the impossible vault.",
+          "next": "quest_11_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_11_impossible_vault", "value": 0}]
+        },
+        {
+          "text": "What kind of traps?",
+          "next": "quest_11_traps",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need to prepare.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_11_motivation",
+      "speaker": "Lady Nightshade",
+      "text": "Because you're not everyone. You've stolen from magistrates, framed merchants, and collected debts from the desperate. You have skills the others lacked. And if you succeed? You'll be a legend. The thief who cracked the impossible vault.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "You're right. I'll do it.",
+          "next": "quest_11_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_11_impossible_vault", "value": 0}]
+        },
+        {
+          "text": "Let me think about it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_11_traps",
+      "speaker": "Lady Nightshade",
+      "text": "Poison gas, pressure plates, pit traps - the usual. But the real challenge is the puzzles. Riddles at the entrance, and a master mechanism at the vault itself. The merchant prince was paranoid and brilliant. You'll need both brawn and brain.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Brawn and brain - I have both. I'll go.",
+          "next": "quest_11_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_11_impossible_vault", "value": 0}]
+        },
+        {
+          "text": "I need more preparation.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_11_accept",
+      "speaker": "Lady Nightshade",
+      "text": "The vault entrance is hidden in the Elder Moor ruins. Find it, solve the entry puzzle, navigate the traps, and crack the final mechanism. Once you're in, you'll have limited time before the vault reseals. Move fast, think faster. Good luck.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_11_turnin",
+      "speaker": "Lady Nightshade",
+      "text": "You... you actually did it? The impossible vault? Let me see... These artifacts are priceless. The Master Thieves' Tools alone are worth more than everything in our treasury. You've done what no one else could. Here's your 600 gold. You've earned a place in legend.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's next for a legendary thief?",
+          "next": "quest_12_offer",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_11_impossible_vault", "value": 0},
+            {"type": "set_flag", "param": "thieves_legendary_status", "value": 0}
+          ]
+        },
+        {
+          "text": "The legend speaks for itself.",
+          "next": "farewell_legend",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_11_impossible_vault", "value": 0},
+            {"type": "set_flag", "param": "thieves_legendary_status", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_12_offer",
+      "speaker": "Lady Nightshade",
+      "text": "I need your help with something personal. Someone in my inner circle is betraying us - selling information to our enemies. I suspect one of three: Vex, Raven, or Magnus. I need you to investigate and find the traitor.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll find the traitor.",
+          "next": "quest_12_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_12_guild_traitor", "value": 0}]
+        },
+        {
+          "text": "Tell me about the suspects.",
+          "next": "quest_12_suspects",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Internal politics isn't my specialty.",
+          "next": "quest_12_reluctant",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_12_suspects",
+      "speaker": "Lady Nightshade",
+      "text": "Shadowmaster Vex handles our most sensitive operations. Raven recruits new members and knows all our contacts. Magnus the Fence moves our goods and knows our finances. Any of them could be the leak. Investigate carefully - and don't tip them off.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll uncover the truth.",
+          "next": "quest_12_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_12_guild_traitor", "value": 0}]
+        },
+        {
+          "text": "What evidence do you have so far?",
+          "next": "quest_12_evidence",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "This sounds dangerous.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_12_evidence",
+      "speaker": "Lady Nightshade",
+      "text": "Jobs have been going wrong. Guards showing up at the perfect time. Safe houses compromised. Someone is feeding information to our enemies. The pattern suggests someone with high-level access. That narrows it to those three. Find out who.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll investigate all three.",
+          "next": "quest_12_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_12_guild_traitor", "value": 0}]
+        },
+        {
+          "text": "I need time to think about this.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_12_reluctant",
+      "speaker": "Lady Nightshade",
+      "text": "Then make it your specialty. The guild's survival depends on rooting out this traitor. You've proven you can handle anything. 500 gold and my personal thanks when the traitor is exposed.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Alright. I'll do it.",
+          "next": "quest_12_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_12_guild_traitor", "value": 0}]
+        },
+        {
+          "text": "Not right now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_12_accept",
+      "speaker": "Lady Nightshade",
+      "text": "Investigate all three suspects. Search their quarters, follow them, question them if you can do it subtly. When you've found concrete evidence, confront the traitor. What you do with them is your choice - but they cannot continue betraying us.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_12_turnin",
+      "speaker": "Lady Nightshade",
+      "text": "You've identified the traitor? Who was it?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "It was Magnus. He's been embezzling and informing.",
+          "next": "quest_12_complete_magnus",
+          "conditions": [{"type": "flag", "param": "thieves_traitor_defeated", "value": 0}],
+          "actions": []
+        },
+        {
+          "text": "I thought it was Vex, but I was wrong.",
+          "next": "quest_12_complete_wrong",
+          "conditions": [{"type": "flag", "param": "wrongly_accused_vex", "value": 0}],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_12_complete_magnus",
+      "speaker": "Lady Nightshade",
+      "text": "Magnus... I trusted him with our finances for years. You found proof? Then justice is served. Here's your 500 gold and my personal dagger - the Nightshade Blade. Only my most trusted carry this. You've proven yourself worthy of the inner circle.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm honored. What's next?",
+          "next": "quest_13_offer",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_12_guild_traitor", "value": 0},
+            {"type": "set_flag", "param": "thieves_inner_circle_secure", "value": 0}
+          ]
+        },
+        {
+          "text": "The guild is safe now.",
+          "next": "farewell_inner_circle",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_12_guild_traitor", "value": 0},
+            {"type": "set_flag", "param": "thieves_inner_circle_secure", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_12_complete_wrong",
+      "speaker": "Lady Nightshade",
+      "text": "You accused the wrong person? Vex is one of my most loyal lieutenants. This is... disappointing. But you learned from the mistake? The guild will recover. Here's reduced payment. Be more careful next time.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll be more thorough in the future.",
+          "next": "farewell_disappointed",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "thieves_12_guild_traitor", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_13_offer",
+      "speaker": "Lady Nightshade",
+      "text": "You've done everything I've asked and more. It's time for the final test. The most ambitious heist in guild history. A treasure convoy traveling from Kazer-Dun through Elder Moor. Plan it, execute it, and you'll become my right hand.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me about this convoy.",
+          "next": "quest_13_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'm ready. Let's plan the heist.",
+          "next": "quest_13_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_13_right_hand", "value": 0}]
+        },
+        {
+          "text": "The Guildmaster's right hand?",
+          "next": "quest_13_position",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_13_details",
+      "speaker": "Lady Nightshade",
+      "text": "A caravan carrying priceless artifacts from the dwarven vaults. Heavy guard, magical protections, multiple wagons. You'll need to scout the route, choose your ambush point, recruit specialists, and execute flawlessly. The payoff? Legendary.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll plan the perfect heist.",
+          "next": "quest_13_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_13_right_hand", "value": 0}]
+        },
+        {
+          "text": "What specialists are available?",
+          "next": "quest_13_specialists",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need more time to prepare.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_13_position",
+      "speaker": "Lady Nightshade",
+      "text": "My right hand runs operations when I'm unavailable. Access to the guild vault, command authority over other members, a share of all guild profits. You'd be second only to me in the entire organization. Interested?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "More than interested. Let's do this.",
+          "next": "quest_13_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_13_right_hand", "value": 0}]
+        },
+        {
+          "text": "Tell me more about the heist.",
+          "next": "quest_13_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's a lot of responsibility.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_13_specialists",
+      "speaker": "Lady Nightshade",
+      "text": "Quinn the locksmith for safes, Brick for muscle, Whisper for scouting, Silverton for social manipulation. Hire who you need - you have a budget of 500 gold for the operation. Choose wisely; each specialist changes how the heist unfolds.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand. I'll plan carefully.",
+          "next": "quest_13_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_13_right_hand", "value": 0}]
+        },
+        {
+          "text": "Let me think about the team composition.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_13_accept",
+      "speaker": "Lady Nightshade",
+      "text": "Scout the convoy route from Kazer-Dun entrance through Elder Moor. Choose your ambush site - each location has advantages and risks. Recruit your team, acquire supplies, and execute the heist. Deliver the artifacts to the guild vault. Success means everything.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_13_turnin",
+      "speaker": "Lady Nightshade",
+      "text": "The heist is complete? Tell me everything.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Perfect execution. All artifacts secured.",
+          "next": "quest_13_complete_perfect",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "We got most of it, with some complications.",
+          "next": "quest_13_complete_partial",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_13_complete_perfect",
+      "speaker": "Lady Nightshade",
+      "text": "Flawless. The artifacts are worth a fortune, and not a single member captured. You've exceeded every expectation. Here's 1000 gold, the complete Shadow Equipment Set, and my signet ring - the mark of the Guildmaster's Hand. You've earned it.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm honored to serve at your side.",
+          "next": "questline_complete",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_13_right_hand", "value": 0},
+            {"type": "set_flag", "param": "thieves_rank_guildmaster_hand", "value": 0},
+            {"type": "set_flag", "param": "thieves_questline_complete", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_13_complete_partial",
+      "speaker": "Lady Nightshade",
+      "text": "Complications happen in our line of work. What matters is you completed the job and brought back the goods. Here's your payment, the Shadow Equipment, and my signet. Welcome to the inner circle, Guildmaster's Hand.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I won't let you down.",
+          "next": "questline_complete",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_13_right_hand", "value": 0},
+            {"type": "set_flag", "param": "thieves_rank_guildmaster_hand", "value": 0},
+            {"type": "set_flag", "param": "thieves_questline_complete", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "questline_complete",
+      "speaker": "Lady Nightshade",
+      "text": "As my right hand, you have access to the guild vault, command authority, and a share of all operations. The repeatable contracts are yours to oversee. The guild prospers with you at my side. Now... let's discuss what comes next.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "leadership_info",
+      "speaker": "Lady Nightshade",
+      "text": "The guild operates in tiers. Pickpockets and footpads answer to burglars. Burglars answer to shadowmasters. Shadowmasters answer to me. Climb the ranks, prove your worth, and perhaps one day you'll stand where I stand.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "How do I advance?",
+          "next": "advancement_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Interesting structure.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "advancement_info",
+      "speaker": "Lady Nightshade",
+      "text": "Complete jobs successfully. Build your reputation. When your superiors vouch for you, you advance. Raven handles initiates. Vex handles the experienced. When you've proven yourself to them, you'll work directly for me.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "red_mara_info",
+      "speaker": "Lady Nightshade",
+      "text": "Red Mara. A thorn in my side for years. She was one of us once - talented, ambitious. Then she decided the guild's rules didn't apply to her. Now she operates independently, poaching our contacts and undercutting our jobs.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What happened between you?",
+          "next": "mara_history",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Is she a threat?",
+          "next": "mara_threat",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Interesting.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "mara_history",
+      "speaker": "Lady Nightshade",
+      "text": "She claims the guild betrayed her trust. Perhaps there's some truth to that - the previous guildmaster made... questionable decisions. But that doesn't excuse her ongoing defiance. She's made herself an enemy.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Could the guild and Mara reconcile?",
+          "next": "mara_reconcile",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I understand.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "mara_threat",
+      "speaker": "Lady Nightshade",
+      "text": "She knows too much about our operations. Every day she operates freely is a security risk. But she's also skilled enough that sending assassins has proven... counterproductive. The situation requires finesse.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "mara_reconcile",
+      "speaker": "Lady Nightshade",
+      "text": "Reconcile? Perhaps. If she could accept the guild's authority and I could address her legitimate grievances... But pride runs deep on both sides. It would take an extraordinary mediator to bridge that gap.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_respect",
+      "speaker": "Lady Nightshade",
+      "text": "Respect is appreciated. Return when you have business to conduct.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_grateful",
+      "speaker": "Lady Nightshade",
+      "text": "The guild remembers those who serve it well. Return when you're ready for more.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_legend",
+      "speaker": "Lady Nightshade",
+      "text": "Indeed it does. Your legend grows with every impossible task you complete.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_inner_circle",
+      "speaker": "Lady Nightshade",
+      "text": "Thanks to you. Welcome to the inner circle.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_disappointed",
+      "speaker": "Lady Nightshade",
+      "text": "See that you do. Mistakes cost lives in our business.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Lady Nightshade",
+      "text": "The shadows keep our secrets. Return when you're ready.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

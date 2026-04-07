@@ -1,0 +1,65 @@
+{
+	"id": "morthane_05_devotion_choice",
+	"title": "Embracing the Cycle",
+	"description": "The Priest of Morthane sees great potential in you. You have shown understanding of death's natural place in the world and dedication to opposing undeath's corruption. He offers you the chance to become a true Devotee of Morthane - one who walks the line between life and death.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_morthane_elder_moor",
+	"giver_npc_type": "priest",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "meditate_on_death",
+			"description": "Meditate at the Shrine of Endings in Elder Moor",
+			"type": "interact",
+			"target": "shrine_of_endings",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		},
+		{
+			"id": "face_mortality",
+			"description": "Complete the Trial of Mortality (survive near-death experience)",
+			"type": "interact",
+			"target": "mortality_trial_altar",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		},
+		{
+			"id": "accept_devotion",
+			"description": "Accept the devotion to Morthane or decline",
+			"type": "talk",
+			"target": "priest_morthane_elder_moor",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_morthane_elder_moor",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 200,
+		"xp": 600,
+		"items": [
+			{"id": "morthane_amulet", "quantity": 1}
+		],
+		"faction_reputation": {
+			"church_of_morthane": 40,
+			"church_of_three": 15
+		}
+	},
+	"choice_consequences": {
+		"accept_devotion": {
+			"flags_to_set": ["morthane_devotee"],
+			"reputation_changes": {
+				"church_of_morthane": 30
+			}
+		},
+		"decline_devotion": {
+			"flags_to_set": ["morthane_devotion_declined"],
+			"reputation_changes": {}
+		}
+	},
+	"prerequisites": ["morthane_04_necromancer_trail"],
+	"next_quest": "",
+	"faction": "church_of_morthane"
+}

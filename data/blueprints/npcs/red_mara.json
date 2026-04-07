@@ -1,0 +1,34 @@
+{
+  "name": "Red Mara",
+  "who": "Independent thief operating outside guild control\nCunning, resourceful, fiercely independent\nNamed for her distinctive auburn hair\nPotential rival or ally depending on player choices\nComplex moral code - steals from those who can afford it",
+  "what": "Freelance thief and information broker\nRival to the Thieves Guild establishment\nPotential companion if recruited\nOffers alternative thief questline paths\nKnows secrets about the guild's leadership",
+  "where": "Various - moves between locations based on quest progression\nInitially: Dalhurst Docks (shady tavern)\nLater: Player choice determines location",
+  "quests": "Thieves Guild Rivalry quests, Potential recruitment as follower, Information for main questline",
+  "sprite": {
+    "type": "rogue",
+    "path": "res://assets/sprites/npcs/thief_female_red.png",
+    "h_frames": 5,
+    "v_frames": 1,
+    "pixel_size": 0.0384,
+    "notes": "Auburn hair, dark leather armor, confident smirk"
+  },
+  "dialogue": {
+    "archetype": "cunning_rogue",
+    "topics": ["thieves_guild", "heists", "secrets", "independence"],
+    "disposition_base": 30,
+    "notes": "Sarcastic, guarded, warms up if player proves trustworthy"
+  },
+  "combat": {
+    "can_fight": true,
+    "level": 30,
+    "is_essential": false,
+    "notes": "Dual daggers, poison, evasion-focused fighting style"
+  },
+  "follower": {
+    "can_recruit": true,
+    "recruitment_conditions": ["Complete rival thief questline OR help her against guild"],
+    "skills": ["lockpicking", "stealth", "poison_crafting"],
+    "combat_style": "rogue_assassin",
+    "notes": "Excellent scout and infiltrator, sarcastic commentary"
+  }
+}

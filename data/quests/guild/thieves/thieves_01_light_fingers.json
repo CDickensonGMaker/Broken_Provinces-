@@ -1,0 +1,38 @@
+{
+  "id": "thieves_01_light_fingers",
+  "title": "Light Fingers",
+  "description": "Raven, a contact for the Thieves Guild, wants to see if you have what it takes. Steal the merchant Horace's ledger from his shop in Dalhurst without getting caught.",
+  "giver_npc_id": "raven_thief_contact",
+  "giver_region": "dalhurst",
+  "faction": "thieves_guild",
+  "rank_required": 0,
+  "objectives": [
+    {
+      "id": "obj_steal_ledger",
+      "type": "collect",
+      "target": "merchant_ledger",
+      "required_count": 1,
+      "description": "Steal Horace's ledger from his shop"
+    },
+    {
+      "id": "obj_return_ledger",
+      "type": "talk",
+      "target": "raven_thief_contact",
+      "description": "Return the ledger to Raven"
+    }
+  ],
+  "rewards": {
+    "gold": 75,
+    "xp": 250,
+    "items": [],
+    "faction_reputation": {
+      "thieves_guild": 10
+    }
+  },
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "raven_thief_contact",
+  "turn_in_zone": "dalhurst",
+  "next_quest": "thieves_02_plant_evidence",
+  "flags_set": ["thieves_guild_initiated", "thieves_rank_pickpocket"],
+  "notes": "First quest in Thieves Guild chain. Tests basic theft skills. Merchant shop should be in Dalhurst market district."
+}

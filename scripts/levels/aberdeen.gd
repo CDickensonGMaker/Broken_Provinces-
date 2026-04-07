@@ -132,6 +132,28 @@ func _spawn_dynamic_npcs() -> void:
 
 
 func _spawn_civilians(container: Node3D) -> void:
+	# === ABERDEEN MAYOR (at town hall area) ===
+	var mayor := QuestGiver.spawn_quest_giver(
+		container,
+		Vector3(-20, 0, -6),  # Near town hall building
+		"Mayor Bjorn",
+		"aberdeen_mayor",
+		preload("res://assets/sprites/npcs/civilians/man_noble1.png"),
+		1, 1,
+		[],  # Quest IDs to be added later
+		false
+	)
+	mayor.region_id = ZONE_ID
+	mayor.faction_id = "human_empire"
+	mayor.no_quest_dialogue = "Aberdeen is dying slowly. The road to Kazan-Dun is blocked by goblins, Larton is under siege by ghosts... we're cut off from all sides. If you can help us, I beg you, speak with me."
+	var mayor_profile := NPCKnowledgeProfile.new()
+	mayor_profile.archetype = NPCKnowledgeProfile.Archetype.SCHOLAR
+	mayor_profile.personality_traits = ["desperate", "diplomatic", "determined", "exhausted"]
+	mayor_profile.knowledge_tags = ["aberdeen", "politics", "kazan_dun", "larton", "goblins", "supply_crisis"]
+	mayor_profile.base_disposition = 60
+	mayor_profile.speech_style = "formal"
+	mayor.npc_profile = mayor_profile
+
 	# Civilian spawn positions - near hearth, around town center, near shops
 	# Fewer civilians than normal - town is struggling
 

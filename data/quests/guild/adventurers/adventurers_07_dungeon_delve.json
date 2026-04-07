@@ -1,0 +1,66 @@
+{
+	"id": "adventurers_07_dungeon_delve",
+	"title": "Into the Deep",
+	"description": "An unexplored section of Willow Dale was recently uncovered by a cave-in. The Guild wants it mapped and cleared of threats. Any artifacts or treasure you find are yours to keep - standard dungeon delving contract. Watch for traps.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "enter_deep_section",
+			"description": "Enter the newly discovered section of Willow Dale",
+			"type": "reach",
+			"target": "willow_dale_deep",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "map_chambers",
+			"description": "Explore all chambers in the deep section",
+			"type": "reach",
+			"target": "willow_dale_deep_end",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "defeat_guardians",
+			"description": "Defeat the undead guardians",
+			"type": "kill",
+			"target": "skeleton_warrior",
+			"required_count": 8,
+			"is_optional": false
+		},
+		{
+			"id": "recover_artifact",
+			"description": "Recover the ancient artifact from the vault",
+			"type": "collect",
+			"target": "ancient_amulet",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "solve_vault_puzzle",
+			"description": "Solve the vault puzzle to access the artifact",
+			"type": "solve_puzzle",
+			"target": "willow_dale_vault_puzzle",
+			"required_count": 1,
+			"is_optional": true
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 300,
+		"xp": 750,
+		"items": ["enchanted_explorer_boots"],
+		"faction_reputation": {
+			"adventurers_guild": 75
+		}
+	},
+	"prerequisites": ["adventurers_06_monster_hunt"],
+	"next_quest": "adventurers_08_ogre_problem",
+	"notes": "Rank: Veteran. Dungeon exploration with traps and puzzles. Willow Dale deep section. Optional puzzle for bonus rewards. Boots give trap detection bonus."
+}

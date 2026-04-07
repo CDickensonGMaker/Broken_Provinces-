@@ -1,0 +1,89 @@
+{
+	"id": "keepers_test",
+	"title": "Eyes in the Shadows",
+	"description": "Aldric Vane has a task that will test your skills as a Keeper. Strange disappearances have been reported across multiple towns - Dalhurst, Thornfield, and Millbrook. The pattern suggests a coordinated effort, perhaps a cult or criminal organization. Your mission: investigate each town, find the connection, and report back. But remember - Keepers work unseen. Draw no attention to yourself.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "aldric_vane",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "briefing",
+			"description": "Receive your briefing from Aldric Vane",
+			"type": "talk",
+			"target": "aldric_vane",
+			"required_count": 1
+		},
+		{
+			"id": "investigate_dalhurst",
+			"description": "Investigate the disappearances in Dalhurst",
+			"type": "interact",
+			"target": "dalhurst_investigation_site",
+			"required_count": 1
+		},
+		{
+			"id": "question_dalhurst_witness",
+			"description": "Question witnesses in Dalhurst",
+			"type": "talk",
+			"target": "dalhurst_witness",
+			"required_count": 1
+		},
+		{
+			"id": "travel_thornfield",
+			"description": "Travel to Thornfield to continue the investigation",
+			"type": "reach",
+			"target": "thornfield",
+			"required_count": 1
+		},
+		{
+			"id": "investigate_thornfield",
+			"description": "Investigate the Thornfield disappearance",
+			"type": "interact",
+			"target": "thornfield_investigation_site",
+			"required_count": 1
+		},
+		{
+			"id": "travel_millbrook",
+			"description": "Travel to Millbrook for the final piece",
+			"type": "reach",
+			"target": "millbrook",
+			"required_count": 1
+		},
+		{
+			"id": "investigate_millbrook",
+			"description": "Investigate the Millbrook disappearance",
+			"type": "interact",
+			"target": "millbrook_investigation_site",
+			"required_count": 1
+		},
+		{
+			"id": "piece_together",
+			"description": "Piece together the clues to find the connection",
+			"type": "interact",
+			"target": "investigation_notes",
+			"required_count": 1
+		},
+		{
+			"id": "report_aldric",
+			"description": "Report your findings to Aldric Vane",
+			"type": "talk",
+			"target": "aldric_vane",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "aldric_vane",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 250,
+		"xp": 600,
+		"items": ["keepers_cloak"],
+		"faction_reputation": {
+			"the_keepers": 75
+		}
+	},
+	"prerequisites": ["keepers_initiation"],
+	"next_quest": "",
+	"notes": "Multi-town investigation quest for Keepers faction. Establishes a cult presence in the region that can lead to future quests."
+}

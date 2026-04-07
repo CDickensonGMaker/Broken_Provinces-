@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="SeaEncounter" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/travel/sea_encounter.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "ghost_ship"
+display_name = "Ghost Ship Encounter"
+description = "An ethereal vessel emerges from the fog, its crew long dead but still sailing. The spectral pirates hunger for living souls."
+encounter_type = 1
+is_combat = true
+can_flee = true
+flee_difficulty = 6
+enemy_spawns = Array[String](["ghost_pirate_seadog", "ghost_pirate_captain"])
+enemy_counts = Array[Vector2i]([Vector2i(3, 5), Vector2i(0, 1)])
+is_wave_encounter = true
+wave_count = 3
+gold_reward = Vector2i(60, 150)
+guaranteed_loot = Array[String]([])
+loot_tier = 3
+loot_rolls = 2
+xp_reward = 175
+difficulty_rating = 6
+min_player_level = 8
+max_player_level = 0
+intro_dialogue_id = ""
+peaceful_dialogue_id = ""
+can_resolve_peacefully = false
+peaceful_skill = 0
+peaceful_skill_dc = 0
+music_track = "res://assets/audio/music/combat_undead.ogg"

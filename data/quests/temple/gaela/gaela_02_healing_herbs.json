@@ -1,0 +1,58 @@
+{
+	"id": "gaela_02_healing_herbs",
+	"title": "The Healer's Garden",
+	"description": "Priestess Elara wishes to teach you about Gaela's healing aspect. Gather medicinal herbs from the wilderness and bring them to the temple healer.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "priest",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "gather_moonleaf",
+			"description": "Gather Moonleaf from Elder Moor forests",
+			"type": "collect",
+			"target": "moonleaf",
+			"required_count": 5,
+			"is_optional": false
+		},
+		{
+			"id": "gather_silvervine",
+			"description": "Gather Silvervine from Crossroads area",
+			"type": "collect",
+			"target": "silvervine",
+			"required_count": 3,
+			"is_optional": false
+		},
+		{
+			"id": "gather_sunroot",
+			"description": "Gather Sunroot from Thornfield region",
+			"type": "collect",
+			"target": "sunroot",
+			"required_count": 3,
+			"is_optional": false
+		},
+		{
+			"id": "return_to_priestess",
+			"description": "Deliver the herbs to Priestess Elara",
+			"type": "talk",
+			"target": "priest_gaela_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_gaela_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 75,
+		"xp": 300,
+		"items": ["healing_poultice_recipe", "minor_healing_herb", "minor_healing_herb", "minor_healing_herb"],
+		"faction_reputation": {
+			"church_of_gaela": 15,
+			"church_of_three": 10
+		}
+	},
+	"prerequisites": ["gaela_01_first_offering"],
+	"next_quest": "gaela_03_protect_harvest"
+}

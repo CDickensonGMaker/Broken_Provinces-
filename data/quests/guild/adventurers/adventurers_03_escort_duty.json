@@ -1,0 +1,59 @@
+{
+	"id": "adventurers_03_escort_duty",
+	"title": "Safe Passage",
+	"description": "A merchant named Halvard needs safe passage from Dalhurst to Thornfield. Bandits have been hitting the trade routes, and he's willing to pay for protection. Escort him safely and you'll be promoted to full Guild Member.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "meet_merchant",
+			"description": "Meet Halvard at the Dalhurst gate",
+			"type": "talk",
+			"target": "halvard_the_supplier",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "escort_merchant",
+			"description": "Escort Halvard to Thornfield (keep him alive)",
+			"type": "escort",
+			"target": "halvard_the_supplier",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "defend_from_bandits",
+			"description": "Defeat the bandit ambush",
+			"type": "kill",
+			"target": "human_bandit",
+			"required_count": 4,
+			"is_optional": false
+		},
+		{
+			"id": "arrive_thornfield",
+			"description": "Safely deliver Halvard to Thornfield",
+			"type": "reach",
+			"target": "thornfield",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 125,
+		"xp": 400,
+		"items": ["adventurer_badge_member"],
+		"faction_reputation": {
+			"adventurers_guild": 75,
+			"merchant_guild": 25
+		}
+	},
+	"prerequisites": ["adventurers_02_pest_control"],
+	"next_quest": "adventurers_04_bandit_contract",
+	"notes": "Rank: Initiate → Member (promotion). Escort quest with scripted ambush on Crossroads. Halvard must survive. Completion promotes player to Member rank."
+}

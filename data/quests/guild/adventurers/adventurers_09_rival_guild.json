@@ -1,0 +1,72 @@
+{
+	"id": "adventurers_09_rival_guild",
+	"title": "Professional Rivalry",
+	"description": "A rival adventuring company, the Iron Blades, has been operating in Guild territory and undercutting contracts. Vorn wants you to handle it - diplomatically if possible, but he won't shed tears if they leave town with broken bones. Your choice how to resolve this, but the outcome will affect your reputation.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "meet_rivals",
+			"description": "Confront the Iron Blades in Thornfield",
+			"type": "talk",
+			"target": "iron_blades_leader",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "resolve_conflict",
+			"description": "Resolve the guild rivalry",
+			"type": "interact",
+			"target": "iron_blades_resolution",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "report_resolution",
+			"description": "Report the outcome to Vorn",
+			"type": "talk",
+			"target": "guildmaster_vorn_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 400,
+		"xp": 900,
+		"items": ["adventurer_badge_elite"],
+		"faction_reputation": {
+			"adventurers_guild": 100
+		}
+	},
+	"choice_consequences": {
+		"challenge_to_duel": {
+			"flags_to_set": ["rival_guild_duel_victory"],
+			"reputation_changes": {"adventurers_guild": 30}
+		},
+		"negotiate_territory": {
+			"flags_to_set": ["rival_guild_negotiated"],
+			"reputation_changes": {"adventurers_guild": 40}
+		},
+		"bribe_to_leave": {
+			"flags_to_set": ["rival_guild_bribed"],
+			"reputation_changes": {"adventurers_guild": 10}
+		},
+		"violent_confrontation": {
+			"flags_to_set": ["rival_guild_destroyed"],
+			"reputation_changes": {"adventurers_guild": 20, "town_guard": -15}
+		},
+		"alliance_formed": {
+			"flags_to_set": ["rival_guild_alliance"],
+			"reputation_changes": {"adventurers_guild": 50}
+		}
+	},
+	"prerequisites": ["adventurers_08_ogre_problem"],
+	"next_quest": "adventurers_10_dragon_rumor",
+	"notes": "Rank: Veteran → Elite (promotion). Major choice quest with 5 resolution paths. Duel, negotiate, bribe, destroy, or ally. Best outcome is alliance (requires Charisma 60+). Promotes to Elite rank."
+}

@@ -1,0 +1,1500 @@
+{
+  "id": "red_mara",
+  "display_name": "Red Mara - Rival Thief",
+  "description": "Dialogue for Red Mara, an independent thief who can become a rival or ally",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Red Mara",
+      "text": "Well, well. Someone's been asking around about me. Most people who do that end up floating in the harbor. But you... you've got a look about you. What do you want?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I heard you're the best thief in Dalhurst.",
+          "next": "flattery_response",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Thieves Guild mentioned your name.",
+          "next": "guild_mention",
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "thieves_guild_member",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I need information you might have.",
+          "next": "information_request",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'm looking for someone to help with a job.",
+          "next": "job_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Never mind. Wrong person.",
+          "next": "wrong_person",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "greeting_known",
+      "speaker": "Red Mara",
+      "text": "You again. Starting to think you actually like my company. What is it this time?",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "param": "met_red_mara",
+          "value": 0
+        }
+      ],
+      "choices": [
+        {
+          "text": "I've been thinking about your offer.",
+          "next": "recruitment_offer",
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "mara_offered_partnership",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I have information you might want.",
+          "next": "player_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How's business?",
+          "next": "business_check",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Just passing through.",
+          "next": "farewell_friendly",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "greeting_hostile",
+      "speaker": "Red Mara",
+      "text": "You've got nerve showing your face here after what you did. We're done talking. Turn around and walk away before I decide to make this personal.",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "param": "betrayed_red_mara",
+          "value": 0
+        }
+      ],
+      "choices": [
+        {
+          "text": "I came to apologize.",
+          "next": "apology_attempt",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "You brought it on yourself.",
+          "next": "escalate_hostile",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Leave]",
+          "next": "leave_hostile",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "flattery_response",
+      "speaker": "Red Mara",
+      "text": "Ha! The best? I'm good, but I'm smart enough to know there's always someone better. What I am is independent. No guild master taking a cut, no rules about who I can and can't rob. That's worth more than any title.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The guild doesn't appreciate that, I imagine.",
+          "next": "guild_tension",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Independence has its price.",
+          "next": "independence_price",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I could use someone with your skills.",
+          "next": "job_offer",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "guild_mention",
+      "speaker": "Red Mara",
+      "text": "Did they now? Let me guess - called me a 'problem,' told you I'm 'bad for business,' maybe hinted that dealing with me would be worth your while? The guild's been trying to bring me to heel for years. Never works.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "They want me to eliminate you.",
+          "next": "elimination_reveal",
+          "conditions": [
+            {
+              "type": "quest_active",
+              "param": "thieves_guild_rival",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "They just warned me to stay away.",
+          "next": "warning_response",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Why do they hate you so much?",
+          "next": "guild_history",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "elimination_reveal",
+      "speaker": "Red Mara",
+      "text": "Ah. So you're their assassin. Brave of you to admit it to my face. Or stupid. Question is - are you actually going to try, or did you come here hoping for a better offer?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I wanted to hear your side first.",
+          "next": "her_side",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What better offer could you possibly make?",
+          "next": "counter_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I don't work for the guild. I make my own choices.",
+          "next": "independent_response",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I was hoping you'd make this easy.",
+          "next": "fight_threat",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "her_side",
+      "speaker": "Red Mara",
+      "text": "My side is simple. I was guild, once. Did their dirty work, followed their rules. Then I found out the guild master was selling information to the city guard - turning in small-time thieves to keep heat off the big operations. Including people I trusted. So I left. Loudly.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Do you have proof of this?",
+          "next": "proof_question",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's a serious accusation.",
+          "next": "accusation_response",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Why should I believe you?",
+          "next": "trust_question",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "proof_question",
+      "speaker": "Red Mara",
+      "text": "Proof? I've got ledgers showing payments from the guard captain to guild accounts. Names of thieves who got arrested right after the guild knew their schedules. But good luck getting anyone to care - the guild has friends in high places.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Show me this evidence.",
+          "next": "evidence_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "This changes things.",
+          "next": "changes_things",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Sounds like guild politics. Not my problem.",
+          "next": "not_involved",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "evidence_offer",
+      "speaker": "Red Mara",
+      "text": "I've got copies hidden somewhere safe. If you're serious about this - if you want to bring down the guild's current leadership - I can show you. But that means you're choosing a side. The guild won't forgive you for helping me.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I want to see the truth for myself.",
+          "next": "accept_evidence_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "thieves_guild_informant",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "siding_with_mara",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I need to think about this.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "This is too complicated. Forget I asked.",
+          "next": "back_away",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_evidence_quest",
+      "speaker": "Red Mara",
+      "text": "Meet me at the abandoned warehouse on the west docks at midnight. Come alone. If this is a trap, I'll know before you do, and you won't live long enough to regret it. But if you're genuine... we might be able to help each other.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "counter_offer",
+      "speaker": "Red Mara",
+      "text": "I know things the guild doesn't want known. Secrets that could bring down their leadership. Help me expose them, and you'll have access to the biggest score in Dalhurst - the guild's own treasury. Split it fifty-fifty. Better than whatever they're paying you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm listening. Tell me more.",
+          "next": "heist_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Why would I trust you?",
+          "next": "trust_question",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The guild treasury? That's suicide.",
+          "next": "suicide_response",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "heist_details",
+      "speaker": "Red Mara",
+      "text": "The guild's vault is beneath their headquarters. Magical wards, poison traps, the works. But I know the layout, and I know the guard rotations. With two of us, we can get in, grab everything, and disappear before they know what happened. Interested?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "This sounds too good to be true.",
+          "next": "too_good",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "When do we start?",
+          "next": "heist_start",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "thieves_guild_heist",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "mara_heist_partner",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I need time to consider.",
+          "next": "consider_heist",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "too_good",
+      "speaker": "Red Mara",
+      "text": "Suspicious. Good - that means you're not stupid. Look, I won't pretend this isn't risky. The guild will hunt us both if we fail. But the payoff? Enough gold to disappear anywhere. Start fresh. No more looking over our shoulders.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Alright. I'm in.",
+          "next": "heist_start",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "thieves_guild_heist",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "mara_heist_partner",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Let me think about it.",
+          "next": "consider_heist",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "heist_start",
+      "speaker": "Red Mara",
+      "text": "Finally, someone with ambition. Meet me tonight at the Rusty Anchor tavern. Back room. We'll go over the plan in detail. And don't tell anyone about this - one word gets back to the guild, and we're both dead.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "consider_heist",
+      "speaker": "Red Mara",
+      "text": "Fair enough. Offer stays open - for now. But don't take too long. Opportunities like this don't wait forever.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "independent_response",
+      "speaker": "Red Mara",
+      "text": "Independent, huh? That I can respect. The guild thinks everyone's either a tool or a threat. Nice to meet someone who doesn't fit their categories. So what do you want, independent operator?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Information about something you might know.",
+          "next": "information_request",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "met_red_mara",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "A partnership, maybe.",
+          "next": "partnership_interest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "met_red_mara",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Just curious about the famous Red Mara.",
+          "next": "curiosity_response",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "met_red_mara",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fight_threat",
+      "speaker": "Red Mara",
+      "text": "Easy? Nothing about me is easy. You want to try your luck? Go ahead. But I should warn you - the last three people the guild sent are buried in shallow graves outside the city. Your move.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "[Attack]",
+          "next": "combat_start",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "mara_hostile",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Wait. Maybe we can work something out.",
+          "next": "reconsider",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Walk away]",
+          "next": "walk_away",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "combat_start",
+      "speaker": "Red Mara",
+      "text": "Your funeral.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "reconsider",
+      "speaker": "Red Mara",
+      "text": "Smart choice. Violence is so... final. Now, shall we try this conversation again like civilized criminals?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me why the guild wants you dead.",
+          "next": "her_side",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What would it take for you to leave Dalhurst?",
+          "next": "leave_offer",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "leave_offer",
+      "speaker": "Red Mara",
+      "text": "Leave? This is my city. I know every shadow, every corrupt guard, every noble with dirty secrets. The guild doesn't get to push me out. If anyone's leaving, it's them.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "walk_away",
+      "speaker": "Red Mara",
+      "text": "Wise. Tell the guild they'll need to send someone better next time.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "information_request",
+      "speaker": "Red Mara",
+      "text": "Information's my trade. What do you need to know, and more importantly, what are you willing to pay for it?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm looking for someone.",
+          "next": "looking_for_someone",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need to know about a location.",
+          "next": "location_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What do you know about the nobles of Dalhurst?",
+          "next": "noble_secrets",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Maybe another time.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "looking_for_someone",
+      "speaker": "Red Mara",
+      "text": "Missing person? Runaway? Target? Details matter. I don't work blind.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "A missing merchant who owes debts.",
+          "next": "merchant_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Someone who wronged me.",
+          "next": "revenge_target",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Never mind. I'll find them myself.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "merchant_info",
+      "speaker": "Red Mara",
+      "text": "Merchants who disappear usually do it on purpose. If they're smart, they've already left the city. But for 50 gold, I can ask around, see if anyone's seen them. No guarantees.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "[Pay 50 gold] Do it.",
+          "next": "accept_merchant_job",
+          "conditions": [
+            {
+              "type": "has_gold",
+              "param": "",
+              "value": 50
+            }
+          ],
+          "actions": [
+            {
+              "type": "take_gold",
+              "param": "",
+              "value": 50
+            }
+          ]
+        },
+        {
+          "text": "Too expensive.",
+          "next": "too_expensive",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_merchant_job",
+      "speaker": "Red Mara",
+      "text": "Gold talks. Give me a few days. Meet me back here and I'll have what you need - or your money back. Mostly.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "revenge_target",
+      "speaker": "Red Mara",
+      "text": "Revenge, is it? I don't judge. Give me a name and a description. If they're in Dalhurst, I'll find them. What you do with the information is your business.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "[Provide details]",
+          "next": "revenge_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "On second thought, I should handle this myself.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "revenge_details",
+      "speaker": "Red Mara",
+      "text": "I'll see what I can dig up. Come back in a few days - I should have a location by then. And a word of advice? Make sure they deserve whatever you're planning. Guilt has a way of catching up.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "noble_secrets",
+      "speaker": "Red Mara",
+      "text": "The nobles? Oh, I know plenty. Which family interests you? The Valdrics and their gambling debts? The Thornwoods and their illegitimate heirs? Or something... juicier?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me about the Valdrics.",
+          "next": "valdric_secrets",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What about the Thornwoods?",
+          "next": "thornwood_secrets",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What's the juiciest secret you have?",
+          "next": "juicy_secret",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "valdric_secrets",
+      "speaker": "Red Mara",
+      "text": "Lord Valdric owes half the gambling dens in the dock district. His wife doesn't know, but his creditors are getting impatient. Word is he's looking for... alternative income sources. The kind that involves looking the other way while certain ships unload.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "thornwood_secrets",
+      "speaker": "Red Mara",
+      "text": "The Thornwoods have three legitimate heirs and about five that aren't. Old Lord Thornwood was... generous with his affections. Some of those bastards are in positions to cause problems if they ever learn who their father was.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "juicy_secret",
+      "speaker": "Red Mara",
+      "text": "The juiciest? That costs extra. But I'll give you a taste - the city's chief magistrate? The one who sentences thieves to the gallows? He's on the Thieves Guild payroll. Has been for years. Interesting, no?",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "job_offer",
+      "speaker": "Red Mara",
+      "text": "A job? Depends on what kind. I don't do murders, I don't do kidnappings, and I don't do anything involving children. Within those limits, I'm flexible.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I need something stolen.",
+          "next": "theft_job",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need someone watched.",
+          "next": "surveillance_job",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Actually, I was thinking of a partnership.",
+          "next": "partnership_interest",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "theft_job",
+      "speaker": "Red Mara",
+      "text": "Theft is my specialty. What's the target, where is it, and how well guarded? The price depends on the difficulty.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "A document from a merchant's office.",
+          "next": "easy_theft",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "A jewel from a noble's estate.",
+          "next": "medium_theft",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Something from the city garrison.",
+          "next": "hard_theft",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "easy_theft",
+      "speaker": "Red Mara",
+      "text": "A merchant's office? Easy work. 100 gold, and you'll have your document within the week. Half up front.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "medium_theft",
+      "speaker": "Red Mara",
+      "text": "Noble estates have guards, wards, and paranoid occupants. 300 gold minimum, more depending on which family. And I'll need detailed information about the target first.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "hard_theft",
+      "speaker": "Red Mara",
+      "text": "The garrison? You're either brave or crazy. That's 1000 gold, non-negotiable, and I'll need a month to plan it. And if I get caught, you never heard my name. Deal?",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "partnership_interest",
+      "speaker": "Red Mara",
+      "text": "Partnership? That's a big word. I've worked alone for years - fewer chances of betrayal that way. But I've seen you operate. You're competent. What kind of partnership did you have in mind?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I could use a skilled thief watching my back.",
+          "next": "follower_pitch",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "We could pool resources. Take on bigger jobs.",
+          "next": "business_partnership",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I want you to help me take down the Thieves Guild.",
+          "next": "anti_guild",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "follower_pitch",
+      "speaker": "Red Mara",
+      "text": "Travel with you? Be your... what, sidekick? That's not really my style. But... you've been interesting so far. Tell you what - prove I can trust you. Help me with something personal, and maybe I'll reconsider.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What do you need?",
+          "next": "recruitment_quest",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What's in it for me?",
+          "next": "recruitment_benefits",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Forget it. Too complicated.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_quest",
+      "speaker": "Red Mara",
+      "text": "There's a fence who burned me on a deal. Took my cut and disappeared. I know where he's hiding, but he's got protection. Help me get what I'm owed, and we'll talk about this partnership.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll help you. Where is he?",
+          "next": "accept_recruitment_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "mara_recruitment",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "mara_offered_partnership",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What exactly do you want me to do?",
+          "next": "quest_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Deal with your own problems.",
+          "next": "refuse_quest",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_details",
+      "speaker": "Red Mara",
+      "text": "Confront him. Get my money - 200 gold. You can keep half for your trouble. If he won't pay willingly... convince him. I don't care how. Just don't kill him - dead men can't spread the word that crossing Red Mara has consequences.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Alright. I'll handle it.",
+          "next": "accept_recruitment_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "mara_recruitment",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "mara_offered_partnership",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "This sounds like your problem, not mine.",
+          "next": "refuse_quest",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_recruitment_quest",
+      "speaker": "Red Mara",
+      "text": "His name's Gavin the Weasel - fitting, really. He's holed up in a warehouse on Fisher's Row. Got two guards, but they're not much. Get my money, and we'll see about that partnership.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "recruitment_benefits",
+      "speaker": "Red Mara",
+      "text": "You get a skilled thief, infiltrator, and information broker at your side. I know locks, traps, poisons, and secrets. I've survived in this city for years against everyone who wanted me dead. That useful enough for you?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Alright, what do you need me to do?",
+          "next": "recruitment_quest",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll think about it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "refuse_quest",
+      "speaker": "Red Mara",
+      "text": "Suit yourself. The offer stands if you change your mind. But don't expect me to wait forever.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "anti_guild",
+      "speaker": "Red Mara",
+      "text": "Now you're speaking my language. The current guild leadership is corrupt, even by thief standards. They sell out their own people. If you're serious about taking them down... I'm very interested.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm serious. What's the plan?",
+          "next": "anti_guild_plan",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What would happen after they're gone?",
+          "next": "after_guild",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "anti_guild_plan",
+      "speaker": "Red Mara",
+      "text": "We expose their corruption. Show the rank and file that their leaders have been selling them out. Then, when everything falls apart, we... acquire their assets. Fair compensation for doing the city a favor. You in?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Let's do it.",
+          "next": "heist_start",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "thieves_guild_mastermind",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "anti_guild_alliance",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I need to think about the implications.",
+          "next": "think_implications",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "after_guild",
+      "speaker": "Red Mara",
+      "text": "Without their corrupt leadership, maybe the guild becomes what it should be - thieves looking out for each other, not selling each other out. Or maybe it collapses entirely. Either way, better than what it is now.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "think_implications",
+      "speaker": "Red Mara",
+      "text": "Take your time. But remember - the longer you wait, the more people the guild burns. Come find me when you're ready to make a difference.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "guild_tension",
+      "speaker": "Red Mara",
+      "text": "The guild hates me because I prove you don't need them. Every job I pull without their blessing is a slap in their face. They've tried bribes, threats, even assassination. Still here.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "How do you stay ahead of them?",
+          "next": "staying_ahead",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Sounds exhausting.",
+          "next": "exhausting_response",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "staying_ahead",
+      "speaker": "Red Mara",
+      "text": "Never sleep in the same place twice. Know who you can trust - which is almost no one. Always have three escape routes. And make sure you know more secrets than anyone hunting you. Information is better armor than steel.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "exhausting_response",
+      "speaker": "Red Mara",
+      "text": "It is. But freedom always has a cost. I'd rather be tired and free than comfortable and owned.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "independence_price",
+      "speaker": "Red Mara",
+      "text": "Everything has a price. Mine is constant vigilance. No home, no lasting relationships, always looking over my shoulder. But at least I answer to no one. That's worth something.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "guild_history",
+      "speaker": "Red Mara",
+      "text": "I used to be one of them. Did jobs, paid my dues, followed the rules. Then I found out their rules only protect those at the top. The rest of us are expendable. So I left, and I've been a thorn in their side ever since.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "warning_response",
+      "speaker": "Red Mara",
+      "text": "And yet here you are. Warnings don't seem to work on you either. I think I like that. So what do you actually want?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Information.",
+          "next": "information_request",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "To understand who you really are.",
+          "next": "curiosity_response",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "curiosity_response",
+      "speaker": "Red Mara",
+      "text": "Curious about me? How flattering. I'm a survivor. I take what I need from those who have too much. And I don't pretend to be anything other than what I am. That enough for you?",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wrong_person",
+      "speaker": "Red Mara",
+      "text": "Sure you did. If you decide you found the right person after all, you know where to look.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "too_expensive",
+      "speaker": "Red Mara",
+      "text": "Quality costs. Come back when you have the coin.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Red Mara",
+      "text": "Watch your pockets on the way out. Not everyone in this part of town is as principled as me.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_friendly",
+      "speaker": "Red Mara",
+      "text": "Don't be a stranger. It's nice having someone to talk to who isn't trying to kill me.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "recruitment_offer",
+      "speaker": "Red Mara",
+      "text": "Changed your mind about working together? Good. I was starting to think you'd never come around. What's it going to be?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll help with your fence problem.",
+          "next": "accept_recruitment_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "mara_recruitment",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Still thinking. What else do you have?",
+          "next": "other_options",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "other_options",
+      "speaker": "Red Mara",
+      "text": "Still playing hard to get? Fine. Help me with the fence, or help me take down the guild. Either one proves you're worth trusting. Your choice.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "player_info",
+      "speaker": "Red Mara",
+      "text": "Information for me? This is a nice change. What have you got?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The guild is planning something big.",
+          "next": "guild_plans",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I found something that might interest you.",
+          "next": "found_something",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Actually, it can wait.",
+          "next": "farewell_friendly",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "guild_plans",
+      "speaker": "Red Mara",
+      "text": "The guild's always planning something. But if you've got specifics, I'm listening. Details could be worth something to both of us.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "found_something",
+      "speaker": "Red Mara",
+      "text": "Interesting finds are my favorite kind. Show me what you've got.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "business_check",
+      "speaker": "Red Mara",
+      "text": "Business is... interesting. The guild's been more aggressive lately. Makes me think they're planning something. But I've handled worse. How about you? Still breathing, so you must be doing something right.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "apology_attempt",
+      "speaker": "Red Mara",
+      "text": "An apology? After you sold me out? Words are cheap. Actions matter. You want forgiveness? Earn it. Until then, stay out of my sight.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "escalate_hostile",
+      "speaker": "Red Mara",
+      "text": "Wrong answer.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "leave_hostile",
+      "speaker": "Red Mara",
+      "text": "Smart move. Don't come back.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accusation_response",
+      "speaker": "Red Mara",
+      "text": "Serious accusations require serious evidence. Which I have. The question is whether you want to see it, or whether you'd rather stay comfortable in your ignorance.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Show me.",
+          "next": "evidence_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I don't want to get involved in guild politics.",
+          "next": "not_involved",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "trust_question",
+      "speaker": "Red Mara",
+      "text": "You shouldn't. Trust is earned, not given. But I'm not asking you to trust me - I'm asking you to look at the evidence and make your own judgment. That's fair, isn't it?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Alright. Show me what you have.",
+          "next": "evidence_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I've heard enough.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "changes_things",
+      "speaker": "Red Mara",
+      "text": "It should. The guild you thought you knew doesn't exist. The one that does is rotten from the top down. Question is - now that you know, what are you going to do about it?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Help you bring them down.",
+          "next": "anti_guild",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need time to process this.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "not_involved",
+      "speaker": "Red Mara",
+      "text": "Fair enough. Just remember - staying neutral is also a choice. And choices have consequences.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "think_about_it",
+      "speaker": "Red Mara",
+      "text": "Take your time. But don't take too long. Things are moving, with or without you.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "back_away",
+      "speaker": "Red Mara",
+      "text": "Your choice. Door's always open if you change your mind.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "suicide_response",
+      "speaker": "Red Mara",
+      "text": "Suicide if you're sloppy. Legendary if you're skilled. Which one are you?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Skilled enough. Tell me more.",
+          "next": "heist_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Maybe not that skilled.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "business_partnership",
+      "speaker": "Red Mara",
+      "text": "Pool resources? I've managed fine on my own. But two sets of eyes, two sets of skills... could be useful. What kind of jobs are you thinking?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Big heists. Targets we couldn't hit alone.",
+          "next": "big_heist_interest",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Information trading. Mutual benefit.",
+          "next": "info_trading",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "big_heist_interest",
+      "speaker": "Red Mara",
+      "text": "Now you're thinking like a professional. Got any targets in mind, or are we starting from scratch?",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "info_trading",
+      "speaker": "Red Mara",
+      "text": "Information's my bread and butter. If you've got secrets worth trading, I'm listening. We can work out the details.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "location_info",
+      "speaker": "Red Mara",
+      "text": "Locations are easier than people. What are you looking for?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "A safe place to lay low.",
+          "next": "safe_house_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Where the city guard doesn't patrol.",
+          "next": "guard_blind_spots",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Never mind.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "safe_house_info",
+      "speaker": "Red Mara",
+      "text": "Safe houses cost. 100 gold gets you an address where no one asks questions for a week. More time, more gold. Interested?",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "guard_blind_spots",
+      "speaker": "Red Mara",
+      "text": "Planning something? I know every alley the guards ignore, every timing gap in their patrols. 50 gold and I'll draw you a map.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "surveillance_job",
+      "speaker": "Red Mara",
+      "text": "Surveillance is easy money. Who needs watching, and for how long?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "A merchant I suspect is cheating me.",
+          "next": "merchant_surveillance",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "A rival who might be plotting against me.",
+          "next": "rival_surveillance",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "merchant_surveillance",
+      "speaker": "Red Mara",
+      "text": "Merchants are creatures of habit. Easy to track. 75 gold for a week of observation, full report of their activities.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "rival_surveillance",
+      "speaker": "Red Mara",
+      "text": "Rivals are trickier. They're already paranoid. 150 gold, and I'll need a description and last known location.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

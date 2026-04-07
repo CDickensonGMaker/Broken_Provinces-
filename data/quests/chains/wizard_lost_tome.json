@@ -1,0 +1,83 @@
+{
+	"id": "wizard_lost_tome",
+	"title": "The Lost Grimoire",
+	"description": "Master Helvant confides that his own master's spellbook - a grimoire of great power - was lost decades ago in the ruins of Willow Dale. The tome contains advanced techniques that could accelerate your training. However, Willow Dale is dangerous, filled with undead and magical traps. Helvant warns that some pages may be missing, stolen by scavengers over the years.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "master_helvant_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "wizards_guild",
+	"objectives": [
+		{
+			"id": "enter_willow_dale",
+			"description": "Travel to the Willow Dale ruins",
+			"type": "reach",
+			"target": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "find_tome_location",
+			"description": "Search the ruins for the ancient library chamber",
+			"type": "reach",
+			"target": "willow_dale_library",
+			"required_count": 1,
+			"notes": "Deep in Willow Dale dungeon, past magical traps"
+		},
+		{
+			"id": "defeat_tome_guardian",
+			"description": "Defeat the magical guardian protecting the grimoire",
+			"type": "kill",
+			"target": "arcane_guardian_willow_dale",
+			"required_count": 1,
+			"notes": "Summoned elemental or construct guarding the tome"
+		},
+		{
+			"id": "recover_grimoire",
+			"description": "Recover the ancient grimoire",
+			"type": "collect",
+			"target": "helvants_master_grimoire",
+			"required_count": 1,
+			"notes": "Quest item - cannot be sold or dropped"
+		},
+		{
+			"id": "return_grimoire_helvant",
+			"description": "Return the grimoire to Master Helvant",
+			"type": "talk",
+			"target": "master_helvant_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "master_helvant_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 100,
+		"xp": 500,
+		"items": ["spell_scroll_lightning_bolt"],
+		"faction_reputation": {
+			"wizards_guild": 25
+		}
+	},
+	"on_complete_flags": ["helvant_grimoire_recovered", "grimoire_pages_missing"],
+	"prerequisites": ["wizard_field_test"],
+	"next_quest": "wizard_stolen_pages",
+	"spawn_on_accept": [
+		{
+			"type": "enemy",
+			"location": "willow_dale_library",
+			"enemy_id": "arcane_guardian",
+			"notes": "Magical construct guarding the grimoire chamber"
+		},
+		{
+			"type": "chest",
+			"location": "willow_dale_library",
+			"coords": [0, 0, 0],
+			"contains": ["helvants_master_grimoire"],
+			"loot_tier": "rare",
+			"notes": "Only spawns after guardian is defeated"
+		}
+	],
+	"quest_items": ["helvants_master_grimoire"],
+	"notes": "Fourth quest - dungeon delve with boss fight. Grimoire is recovered but Helvant discovers pages are missing, leading to next quest. Rewards Lightning Bolt spell."
+}

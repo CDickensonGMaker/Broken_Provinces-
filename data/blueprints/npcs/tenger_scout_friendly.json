@@ -1,0 +1,8 @@
+{
+  "name": "Scout Kira",
+  "who": "Young Tenger scout with keen eyes\nCurious about outsiders unlike most of her people\nAgile and quick-witted",
+  "what": "Patrols the edges of Tenger territory\nFirst contact for outsiders approaching camp\nCan guide trusted visitors through Tenger lands",
+  "where": "Tenger Camp - Camp Edge",
+  "sprite": "tenger_scout_npc",
+  "quests": "Safe Passage, Tenger Escort"
+}

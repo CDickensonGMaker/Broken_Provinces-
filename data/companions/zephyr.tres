@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="CompanionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/companion_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "zephyr"
+display_name = "Zephyr"
+character_class = "Elemental"
+description = "An air elemental bound as a familiar by the Arcane Circle. A being of pure wind and lightning, loyal to those who prove themselves to the Circle. Zephyr moves like the wind itself, striking with electric fury before vanishing into thin air."
+max_health = 90
+base_damage = 20
+armor = 8
+speed_multiplier = 1.40
+attack_cooldown = 1.0
+combat_range = 14.0
+attack_range = 10.0
+ai_behavior = 0
+combat_style = 1
+is_essential = true
+knockout_duration = 0.0
+preferred_weapons = Array[String](["none", "elemental_magic"])
+abilities = Array[String](["wind_gust", "lightning_arc", "invisibility"])
+ability_use_chance = 0.40
+ranged_projectile_path = "res://scenes/projectiles/lightning_bolt.tscn"
+sprite_path = "res://assets/sprites/npcs/civilians/wizard_wild.png"
+sprite_h_frames = 1
+sprite_v_frames = 1
+sprite_pixel_size = 0.0320
+tint_color = Color(0.8, 0.9, 1.0, 0.9)
+unlock_type = 1
+unlock_param = "arcane_circle_champion"
+unlock_threshold = 0
+dialogue_path = "res://data/dialogue/companions/zephyr.json"
+knowledge_profile_path = ""
+combat_bark_lines = Array[String](["*crackling wind sounds*", "The storm comes for you!", "Wind and lightning obey me!", "*howling gust*", "You cannot touch the wind!", "Feel the tempest's fury!"])
+knockout_lines = Array[String](["*fading breeze*", "The wind... stills...", "*dissipating crackle*"])
+recovery_lines = Array[String](["*rushing wind*", "The storm returns!", "*electric crackle*"])

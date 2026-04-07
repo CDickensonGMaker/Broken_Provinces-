@@ -1,0 +1,44 @@
+{
+	"id": "chronos_repeatable_visions",
+	"title": "Seeking Visions",
+	"description": "The Priest of Chronos invites you to meditate at the temple and seek visions from the Timekeeper. These glimpses into past, present, or future are gifts to the faithful - fragments of knowledge that Chronos deems worthy of sharing. Return when you seek wisdom, and the hourglass may reveal its secrets.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_chronos_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"faction": "church_of_chronos",
+	"repeatable": true,
+	"cooldown_days": 7,
+	"objectives": [
+		{
+			"id": "meditate_at_temple",
+			"description": "Meditate at the Temple of Three Gods",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "receive_vision",
+			"description": "Receive a vision from Chronos",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_chronos_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 25,
+		"xp": 100,
+		"items": ["minor_time_blessing"],
+		"faction_reputation": {
+			"church_of_chronos": 5
+		}
+	},
+	"prerequisites": ["chronos_05_devotion_choice"],
+	"flags_required": ["chronos_devotee"],
+	"next_quest": "",
+	"notes": "DESIGN INTENT: Repeatable weekly quest for devotees. Low rewards but provides ongoing engagement with the Chronos storyline. Each meditation triggers a random vision - these can be used to deliver lore, hint at future content, or provide atmospheric flavor. The visions could include: prophecies about world events, glimpses of NPC backstories, hints about hidden treasures, or warnings about dangers. The 7-day cooldown prevents farming while allowing regular interaction. This keeps the Chronos questline alive even after completion of the main chain. The minor time blessing is a small consumable buff (increased movement speed or dodge chance for 10 minutes)."
+}

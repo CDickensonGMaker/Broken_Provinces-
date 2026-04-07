@@ -1,0 +1,34 @@
+{
+  "name": "Grimjaw",
+  "who": "Half-orc berserker of the Iron Company\nFound purpose and family in the Company\nSavage fighter with a simple but loyal heart\nPotential companion upon completing company questline\nCapt. Steele sees potential in him despite his wild nature",
+  "what": "Company's shock trooper and heavy assault specialist\nFront-line devastation expert\nOffers training in berserker techniques\nPotential companion if chosen over Kira",
+  "where": "Dalhurst - Iron Company Barracks\nAvailable as companion after questline completion",
+  "quests": "Iron Company Captain's Hand reward choice",
+  "sprite": {
+    "type": "berserker",
+    "path": "res://assets/sprites/npcs/combat/male_gladiator1.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0384,
+    "notes": "Large half-orc with green-tinged skin, massive two-handed axe"
+  },
+  "dialogue": {
+    "archetype": "simple_brute",
+    "topics": ["fighting", "company_loyalty", "orc_heritage", "battle_glory"],
+    "disposition_base": 35,
+    "notes": "Speaks in broken common, surprisingly philosophical about battle"
+  },
+  "combat": {
+    "can_fight": true,
+    "level": 40,
+    "is_essential": true,
+    "notes": "Glass cannon - highest HP and damage, lower defense when raging"
+  },
+  "follower": {
+    "can_recruit": true,
+    "recruitment_conditions": ["Complete Iron Company questline", "Choose Grimjaw over Kira"],
+    "skills": ["rage", "cleave", "intimidate"],
+    "combat_style": "berserker_offense",
+    "notes": "Devastating damage dealer, AoE cleave, fear effects"
+  }
+}

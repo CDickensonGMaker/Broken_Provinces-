@@ -1,0 +1,27 @@
+{
+  "name": "Katrina Steelwind",
+  "who": "The Guild Champion of the Adventurer's Guild\nLegendary warrior who earned her title through countless victories\nCompetitive but honorable, respects skilled fighters\nKnown for her signature dual-blade fighting style\nAthletic build, battle scars worn with pride",
+  "what": "Reigning champion of the Adventurer's Guild\nChallenges elite adventurers to ceremonial duels\nOffers special quests for high-ranking guild members\nTrains promising fighters in advanced combat techniques\nRepresents the guild in matters of martial honor",
+  "where": "Dalhurst - Adventurer's Guild Hall (Training Yard / Champion's Corner)",
+  "quests": "The Champion's Challenge (adventurers_13_champion), Elite Contracts (various), Training Opportunities",
+  "sprite": {
+    "type": "warrior",
+    "path": "res://assets/sprites/npcs/guild_champion_female.png",
+    "h_frames": 5,
+    "v_frames": 1,
+    "pixel_size": 0.0384,
+    "notes": "Dual swords, light armor, confident stance"
+  },
+  "dialogue": {
+    "archetype": "warrior_champion",
+    "topics": ["combat", "honor", "guild_challenges", "training"],
+    "disposition_base": 50,
+    "notes": "Confident but not arrogant, speaks as a peer to worthy fighters"
+  },
+  "combat": {
+    "can_fight": true,
+    "level": 40,
+    "is_essential": true,
+    "notes": "Elite dual-wielder, fights in ceremonial champion duel (quest 13)"
+  }
+}

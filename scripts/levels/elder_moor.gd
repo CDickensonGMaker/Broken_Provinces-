@@ -685,3 +685,25 @@ func _spawn_guards() -> void:
 	)
 	guard.npc_id = "guard_elder_moor_1"
 	guard.npc_name = "Elder Moor Watchman"
+
+	# === FOREMAN GARVEK - Logging Camp Manager (at logging camp area) ===
+	var garvek := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(5, 0, 50),  # Near sawmill area (south)
+		"Foreman Garvek",
+		"foreman_garvek",
+		null,  # Default sprite
+		8, 2,
+		[],  # Quest IDs to be added later
+		false
+	)
+	garvek.region_id = ZONE_ID
+	garvek.faction_id = "human_empire"
+	garvek.no_quest_dialogue = "Keep the axes sharp and the logs moving! This camp won't run itself. If you're looking for work, we can always use another strong back."
+	var garvek_profile := NPCKnowledgeProfile.new()
+	garvek_profile.archetype = NPCKnowledgeProfile.Archetype.MERCHANT
+	garvek_profile.personality_traits = ["hardworking", "gruff", "practical", "demanding"]
+	garvek_profile.knowledge_tags = ["elder_moor", "logging", "lumber", "workers", "local_area"]
+	garvek_profile.base_disposition = 45
+	garvek_profile.speech_style = "casual"
+	garvek.npc_profile = garvek_profile

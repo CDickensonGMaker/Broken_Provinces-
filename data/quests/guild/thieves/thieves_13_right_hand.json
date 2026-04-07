@@ -1,0 +1,182 @@
+{
+  "id": "thieves_13_right_hand",
+  "title": "The Guildmaster's Trust",
+  "description": "You've proven yourself time and again. Guildmaster Nightshade has one final test - the most ambitious heist in Guild history. A treasure convoy carrying priceless artifacts travels from Kazer-Dun Entrance through Elder Moor. Plan the heist, assemble your team, and execute it perfectly. Success means becoming Nightshade's right hand.",
+  "giver_npc_id": "guildmaster_nightshade",
+  "giver_region": "dalhurst",
+  "faction": "thieves_guild",
+  "rank_required": 3,
+  "objectives": [
+    {
+      "id": "obj_scout_convoy",
+      "type": "explore",
+      "target": "kazer_dun_entrance_road",
+      "description": "Scout the convoy route from Kazer-Dun Entrance"
+    },
+    {
+      "id": "obj_choose_ambush_site",
+      "type": "choice",
+      "description": "Choose ambush location (affects difficulty and rewards)"
+    },
+    {
+      "id": "obj_recruit_team",
+      "type": "talk",
+      "target": "guild_members",
+      "description": "Recruit team members (specialists improve success chance)"
+    },
+    {
+      "id": "obj_acquire_resources",
+      "type": "collect",
+      "target": "heist_supplies",
+      "required_count": 1,
+      "description": "Acquire necessary supplies (rope, smoke bombs, etc.)"
+    },
+    {
+      "id": "obj_execute_heist",
+      "type": "heist_event",
+      "description": "Execute the convoy heist"
+    },
+    {
+      "id": "obj_escape_with_loot",
+      "type": "explore",
+      "target": "guild_vault",
+      "description": "Deliver artifacts to Guild vault"
+    }
+  ],
+  "rewards": {
+    "gold": 1000,
+    "xp": 2000,
+    "items": ["shadow_equipment_set", "guildmasters_signet"],
+    "faction_reputation": {
+      "thieves_guild": 100
+    },
+    "title": "Guildmaster's Hand"
+  },
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "guildmaster_nightshade",
+  "turn_in_zone": "dalhurst",
+  "next_quest": "thieves_repeatable_jobs",
+  "flags_set": ["thieves_rank_guildmaster_hand", "thieves_questline_complete", "thieves_legendary_thief"],
+  "planning_phase": {
+    "ambush_locations": [
+      {
+        "name": "elder_moor_crossroads",
+        "terrain": "open",
+        "difficulty": "medium",
+        "description": "Classic ambush point, moderate cover",
+        "success_modifier": 0
+      },
+      {
+        "name": "forest_narrows",
+        "terrain": "dense_forest",
+        "difficulty": "easy",
+        "description": "Heavy cover, easy to hide, convoy slows down",
+        "success_modifier": 10,
+        "reward_modifier": {"gold_bonus": -100}
+      },
+      {
+        "name": "bridge_crossing",
+        "terrain": "chokepoint",
+        "difficulty": "hard",
+        "description": "Risky but convoy is trapped if you control bridge",
+        "success_modifier": -10,
+        "reward_modifier": {"gold_bonus": 200, "xp_bonus": 300}
+      }
+    ],
+    "team_recruitment": {
+      "available_specialists": [
+        {
+          "name": "locksmith_quinn",
+          "specialty": "locks_and_safes",
+          "bonus": "Faster access to secured cargo, +15% loot",
+          "cost": 100
+        },
+        {
+          "name": "enforcer_brick",
+          "specialty": "combat_muscle",
+          "bonus": "Better at fighting guards, reduces casualties",
+          "cost": 150
+        },
+        {
+          "name": "scout_whisper",
+          "specialty": "stealth_recon",
+          "bonus": "Advance warning, +10% success rate",
+          "cost": 125
+        },
+        {
+          "name": "face_silverton",
+          "specialty": "social_deception",
+          "bonus": "Can talk way past some guards, reduces combat",
+          "cost": 100
+        }
+      ],
+      "max_team_size": 4,
+      "budget": 500
+    }
+  },
+  "heist_execution": {
+    "phases": [
+      {
+        "name": "approach",
+        "description": "Close in on convoy without being spotted",
+        "skill_check": {"type": "stealth", "dc": 14},
+        "team_bonus": "scout_whisper_gives_advantage"
+      },
+      {
+        "name": "initial_strike",
+        "description": "Disable guards and stop convoy",
+        "options": ["combat", "smoke_bombs_and_chaos", "deception"],
+        "combat_difficulty": "depends_on_team_composition"
+      },
+      {
+        "name": "crack_strongboxes",
+        "description": "Open the secured artifact containers",
+        "skill_check": {"type": "lockpicking", "dc": 16},
+        "team_bonus": "locksmith_quinn_auto_success",
+        "time_pressure": "Guards from nearby may arrive"
+      },
+      {
+        "name": "escape",
+        "description": "Escape with loot before reinforcements arrive",
+        "challenge": "mounted_pursuit",
+        "success_factors": ["loot_amount_affects_speed", "team_casualties", "chosen_ambush_site"]
+      }
+    ],
+    "failure_states": [
+      {
+        "type": "spotted_early",
+        "consequence": "Convoy is prepared, +2 guards, harder combat"
+      },
+      {
+        "type": "failed_lockpicking",
+        "consequence": "Can't access best loot, reduced rewards"
+      },
+      {
+        "type": "caught_during_escape",
+        "consequence": "Must drop some loot, potential team casualties"
+      }
+    ]
+  },
+  "convoy_loot": {
+    "guaranteed": ["ancient_artifact_set", "valuable_gems"],
+    "optional": ["masterwork_weapons", "enchanted_jewelry", "rare_texts"],
+    "total_value": "1500-2500 gold depending on success"
+  },
+  "final_rewards": {
+    "shadow_equipment_set": {
+      "pieces": ["shadow_hood", "shadow_armor", "shadow_gloves", "shadow_boots"],
+      "bonuses": "Major stealth bonuses, lockpicking bonus, night vision"
+    },
+    "guildmasters_signet": {
+      "effect": "Identifies you as Guildmaster's Hand - all thieves recognize authority",
+      "mechanical": "Access to Guild resources, can recruit thieves for jobs"
+    },
+    "rank_benefits": {
+      "guild_vault_access": true,
+      "command_authority": true,
+      "share_of_all_guild_jobs": "10% of all Guild income",
+      "personal_safehouse": "Luxurious safehouse in Dalhurst"
+    }
+  },
+  "notes": "Final Thieves Guild quest. Complex multi-phase heist with planning. Team recruitment mechanic. Multiple approaches and outcomes. Convoy travels from Kazer-Dun Entrance through Elder Moor. Ultimate rewards: Shadow Equipment Set and Guildmaster's Hand rank."
+}

@@ -1,0 +1,79 @@
+{
+  "id": "thieves_05_blackmail",
+  "title": "Leverage",
+  "description": "Lord Ashford of Thornfield has been causing problems for Guild operations. Break into his manor and find evidence of his illegal activities. The Guild wants leverage - but what you do with it is up to you.",
+  "giver_npc_id": "shadowmaster_vex",
+  "giver_region": "dalhurst",
+  "faction": "thieves_guild",
+  "rank_required": 1,
+  "objectives": [
+    {
+      "id": "obj_case_manor",
+      "type": "explore",
+      "target": "ashford_manor_exterior",
+      "description": "Scout Ashford Manor in Thornfield"
+    },
+    {
+      "id": "obj_break_in",
+      "type": "explore",
+      "target": "ashford_manor_study",
+      "description": "Break into the manor and reach the study"
+    },
+    {
+      "id": "obj_find_evidence",
+      "type": "collect",
+      "target": "incriminating_letters",
+      "required_count": 1,
+      "description": "Find the incriminating letters"
+    },
+    {
+      "id": "obj_report_back",
+      "type": "talk",
+      "target": "shadowmaster_vex",
+      "description": "Return to Vex with the evidence"
+    }
+  ],
+  "rewards": {
+    "gold": 200,
+    "xp": 500,
+    "items": [],
+    "faction_reputation": {
+      "thieves_guild": 20
+    }
+  },
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "shadowmaster_vex",
+  "turn_in_zone": "dalhurst",
+  "next_quest": "thieves_06_warehouse_job",
+  "flags_set": ["thieves_ashford_blackmail"],
+  "challenge": {
+    "type": "stealth_break_in",
+    "description": "Manor has guards and locked doors. Being caught alerts the entire household.",
+    "detection_consequences": "Quest failure, reputation loss, possible bounty"
+  },
+  "moral_choice": {
+    "description": "The letters reveal Ashford is trafficking slaves. You can use them for blackmail or expose him publicly.",
+    "good_option": "Expose Ashford publicly and end the trafficking",
+    "neutral_option": "Give letters to Guild for blackmail leverage",
+    "evil_option": "Blackmail Ashford personally for extra gold",
+    "consequences": {
+      "expose_publicly": {
+        "faction_rep": {"thieves_guild": -10},
+        "xp_bonus": 200,
+        "flag_set": "thieves_exposed_ashford",
+        "moral_alignment": "good"
+      },
+      "guild_blackmail": {
+        "faction_rep": {"thieves_guild": 20},
+        "flag_set": "thieves_guild_has_ashford"
+      },
+      "personal_blackmail": {
+        "gold_bonus": 300,
+        "faction_rep": {"thieves_guild": -15},
+        "flag_set": "thieves_betrayed_guild",
+        "moral_alignment": "evil"
+      }
+    }
+  },
+  "notes": "Major moral decision. Introduces Shadowmaster Vex. Stealth challenge. Ashford Manor in Thornfield."
+}

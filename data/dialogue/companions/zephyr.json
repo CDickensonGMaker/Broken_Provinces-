@@ -1,0 +1,623 @@
+{
+  "id": "zephyr_companion",
+  "display_name": "Zephyr - Air Elemental",
+  "description": "Companion dialogue for Zephyr, Arcane Circle bound air elemental familiar",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Zephyr",
+      "text": "*The air before you swirls and takes vague humanoid form* ...You carry the Archmage's mark. She speaks of you in the currents. What does the mortal-who-walks-between-guilds desire?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The Circle said you might accompany me.",
+          "next": "recruitment_intro",
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "arcane_circle_questline_complete",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "What exactly are you?",
+          "next": "nature_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I should go.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "greeting_companion",
+      "speaker": "Zephyr",
+      "text": "*swirling presence intensifies* The-one-who-leads. I sense your approach on the wind. Speak your needs to the storm.",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "param": "zephyr_recruited",
+          "value": 0
+        }
+      ],
+      "choices": [
+        {
+          "text": "How are you finding our journey?",
+          "next": "companion_status",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about your existence.",
+          "next": "personal_history",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What do you perceive of the mortal factions?",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Let's discuss how we fight together.",
+          "next": "tactics_discussion",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Hold position here.",
+          "next": "wait_command",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "wait",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Let's continue our journey.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "nature_explanation",
+      "speaker": "Zephyr",
+      "text": "I am wind given thought. Lightning given will. The Archmage bound me to this plane through ancient rites - not as slave, but as... partner. I serve the Circle because they asked rather than commanded. This is... rare among summoners.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "How long have you been bound?",
+          "next": "binding_duration",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Do you resent being bound?",
+          "next": "binding_feelings",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Circle treats you well.",
+          "next": "circle_treatment",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "binding_duration",
+      "speaker": "Zephyr",
+      "text": "Sixty-three summers by mortal counting. A breath, to me. I existed for millennia before - storms over ancient seas, hurricanes that toppled forgotten kingdoms. Time moves... differently when you are everywhere and nowhere.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "binding_feelings",
+      "speaker": "Zephyr",
+      "text": "Resentment requires... attachment. I do not resent because I do not cling. The binding is temporary. All mortal things are. When the Archmage passes, so does the binding. I will return to formlessness. Neither happy nor sad. Simply... continuing.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "circle_treatment",
+      "speaker": "Zephyr",
+      "text": "They understand. Most summoners bind elementals as tools, to be used and discarded. The Archmage speaks to me as... colleague. Asks my counsel on matters of wind and weather. It is pleasant, in ways my kind rarely experience.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "recruitment_intro",
+      "speaker": "Zephyr",
+      "text": "The Archmage offers my service. I am... curious about you. Mortals who earn the Circle's favor are interesting currents in the great flow. I would experience your journey firsthand, if you accept me.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What abilities do you possess?",
+          "next": "abilities_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I would be honored by your company.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What about the apprentice, Lyris?",
+          "next": "mention_lyris",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "abilities_explanation",
+      "speaker": "Zephyr",
+      "text": "Wind Gust - I push enemies away, disrupt formations. Lightning Arc - chains of storm-fury that leap between foes. And I can become... invisible. One with the air itself. No mortal eye perceives me until I strike.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Impressive. I accept your offer.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How do you compare to Lyris?",
+          "next": "compare_to_lyris",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need time to consider.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "compare_to_lyris",
+      "speaker": "Zephyr",
+      "text": "The young one. Eager. Talented. She thinks in straight lines - spell to target, problem to solution. I am... oblique. The wind does not approach directly. Lyris offers versatility and mortal understanding. I offer power and... perspective.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I desire your perspective. Join me.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Let me think on this.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "mention_lyris",
+      "speaker": "Zephyr",
+      "text": "The apprentice-who-burns. She has potential. The Circle can spare only one of us for your purpose. She offers mortal magic - fire, ice, arcane force. I offer something older. Neither is wrong. Choose what serves your current.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I choose the older power. Join me.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need time to decide.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_accept_offer",
+      "speaker": "Zephyr",
+      "text": "*The air shimmers with contained energy* Accepted. I will ride your currents, share your storms. The winds tell me interesting times approach. I am... pleased to witness them with you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Welcome, Zephyr.",
+          "next": "recruitment_accept",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "zephyr_recruited",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "chose_zephyr",
+              "value": 0
+            },
+            {
+              "type": "recruit_follower",
+              "param": "zephyr",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recruitment_accept",
+      "speaker": "Zephyr",
+      "text": "*swirls around you once before settling into a following position* The binding extends. You may call upon the storm when needed. Lead where you will - the wind follows.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "think_about_it",
+      "speaker": "Zephyr",
+      "text": "Time is... abundant, from my perspective. Consider as long as you wish. The wind will be here when the mortal mind settles on its course.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "companion_status",
+      "speaker": "Zephyr",
+      "text": "*thoughtful pause* Your world is very... solid. Dense. I find it fascinating how mortals navigate through so much matter. You adapt constantly. We elementals are... more singular. This journey teaches me about adaptation.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "You're learning from observing us?",
+          "next": "learning_observation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Do you miss the elemental plane?",
+          "next": "miss_home",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "learning_observation",
+      "speaker": "Zephyr",
+      "text": "Always. Your kind lives such brief spans, yet accomplishes so much. You do not wait for favorable winds - you create your own. This urgency is... instructive. Perhaps when I return to formlessness, I will carry this understanding.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "miss_home",
+      "speaker": "Zephyr",
+      "text": "The elemental plane is not 'home' as you understand it. It is simply... existence. Pure air, endless sky, storms that rage for eons. Beautiful, but unchanging. Here, everything changes. It is unsettling and wonderful simultaneously.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "personal_history",
+      "speaker": "Zephyr",
+      "text": "I was born - if birth describes it - when the first winds circled your world. I am one of many, yet also unique. Every storm I have been carries memories. The hurricane that drowned the old kingdom. The gentle breeze through lovers' hair. All of it is me.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "You remember all of that?",
+          "next": "memory_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How did the Circle summon you specifically?",
+          "next": "summoning_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's a very long existence.",
+          "next": "long_existence",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "memory_explanation",
+      "speaker": "Zephyr",
+      "text": "Not as you remember - with words and images. I carry impressions. The weight of water in hurricane clouds. The joy of a child's first kite. Emotion without narrative. Meaning without language. It is difficult to translate.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "summoning_explanation",
+      "speaker": "Zephyr",
+      "text": "Archmage Elara sought wisdom about ancient weather patterns. Her ritual called for knowledge of the First Storms. I responded because the question interested me. Most summoners demand obedience. She asked for conversation. That earned my attention.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "long_existence",
+      "speaker": "Zephyr",
+      "text": "Length is mortal measurement. To me, there is only now-that-contains-all-nows. Your 'history' is my present, still happening. Time is another form of density your kind navigates that I do not fully grasp.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "faction_opinions",
+      "speaker": "Zephyr",
+      "text": "Mortal organizations fascinate me. You create structures to accomplish what wind does naturally - move, combine, separate, reform. Ask what you wish to know.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The Adventurer's Guild?",
+          "next": "opinion_adventurers",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Thieves Guild?",
+          "next": "opinion_thieves",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Iron Company?",
+          "next": "opinion_iron_company",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's enough for now.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_adventurers",
+      "speaker": "Zephyr",
+      "text": "Seekers of change. They enter dark places to bring light, or claim treasure to change their status. The impulse is... wind-like. I understand them better than most mortals. Always moving, never settling.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Interesting comparison.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_thieves",
+      "speaker": "Zephyr",
+      "text": "They move through shadows as I move through air - unseen, felt only in passing. There is kinship there, though their purposes are earthly. Gold, power, survival. The wind takes nothing, owns nothing. Different philosophies.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "An unusual perspective.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_iron_company",
+      "speaker": "Zephyr",
+      "text": "Order imposed through discipline. Like channeling wind through narrow passages - increases force, reduces freedom. Effective for mortal purposes. I do not understand their need for hierarchy, but I acknowledge its results.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "You see patterns we miss.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_discussion",
+      "speaker": "Zephyr",
+      "text": "In conflict, I am disruption. Wind Gust breaks formations. Lightning Arc punishes clustering. When you need me unseen, I become invisible - striking from nowhere, returning to nothing. Use me as you would use storm.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Can you be harmed?",
+          "next": "tactics_harm",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How should I signal you?",
+          "next": "tactics_signals",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Understood. Let's continue.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_harm",
+      "speaker": "Zephyr",
+      "text": "This form can be dispersed. Magic especially - it burns the patterns that give me shape. Physical weapons pass through but... enough violence disrupts coherence. If I am 'killed,' I return to the elemental plane to reform. Not death. Inconvenience.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "tactics_signals",
+      "speaker": "Zephyr",
+      "text": "I feel your breath, your heartbeat, your intention. Speak clearly in your mind what you desire. The wind carries thoughts as easily as words. I will know.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_command",
+      "speaker": "Zephyr",
+      "text": "*disperses slightly* I will... observe this location. The wind sees all. Return when your current brings you back.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_too_long",
+      "speaker": "Zephyr",
+      "text": "*coalesces from surrounding air* Time passes differently for me, but even I notice your absence has been... extensive. The wind grows restless without direction. Shall we resume?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Yes, follow me.",
+          "next": "follow_resume",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "follow",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "A moment longer.",
+          "next": "wait_reluctant",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "follow_resume",
+      "speaker": "Zephyr",
+      "text": "*flows into motion* The stillness ends. I am relieved. Stagnant air is... uncomfortable.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_reluctant",
+      "speaker": "Zephyr",
+      "text": "*sighing wind sound* As you wish. But know that wind was not meant to stay still. It is against my nature. I endure because the binding asks it, not because it is comfortable.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Zephyr",
+      "text": "*disperses slightly* Until the winds bring us together again. May your currents carry you true.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_companion",
+      "speaker": "Zephyr",
+      "text": "*swirls in acknowledgment* The wind follows. Lead.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ],
+  "barks": {
+    "combat_start": [
+      "*crackling wind sounds*",
+      "The storm comes for you!",
+      "Wind and lightning obey me!",
+      "You cannot touch the wind!"
+    ],
+    "combat_kill": [
+      "Scattered to the winds.",
+      "*howling gust*",
+      "Feel the tempest's fury!"
+    ],
+    "combat_low_health": [
+      "Form... dispersing...",
+      "*weakening gusts*",
+      "Need... moment..."
+    ],
+    "player_low_health": [
+      "*protective swirling*",
+      "Wind shields you!",
+      "Behind me!"
+    ],
+    "ambient_dungeon": [
+      "*gentle breeze sounds*",
+      "The air here is stale. Ancient.",
+      "This place has known violence for centuries."
+    ],
+    "ambient_town": [
+      "*curious swirling*",
+      "This realm is so... solid.",
+      "The winds carry many secrets here."
+    ],
+    "ambient_wilderness": [
+      "I sense the weather changing.",
+      "The Circle's binding is gentle. I serve willingly.",
+      "Open sky... pleasant."
+    ],
+    "order_acknowledged": [
+      "*affirmative gust*",
+      "As the current wills.",
+      "The wind moves.",
+      "*swirling acknowledgment*"
+    ],
+    "order_attack": [
+      "*building static*",
+      "Storm incoming.",
+      "*crackling electricity*"
+    ],
+    "idle_long": [
+      "*restless stirring*",
+      "Wind does not stand still well...",
+      "Movement serves better than stasis."
+    ]
+  }
+}

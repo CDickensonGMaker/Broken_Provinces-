@@ -1,0 +1,115 @@
+{
+	"id": "wizard_stolen_pages",
+	"title": "Ink and Blood",
+	"description": "Master Helvant has examined the grimoire and confirmed his fears - several key pages containing advanced spells are missing. Using divination magic, he's traced them to Thornfield, where a rival mage or dark cult may be attempting to use the stolen knowledge. You must track down the thief and recover the missing pages before they're used for ill purposes.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "master_helvant_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "wizards_guild",
+	"objectives": [
+		{
+			"id": "investigate_thornfield",
+			"description": "Travel to Thornfield and investigate the magical disturbance",
+			"type": "reach",
+			"target": "thornfield",
+			"required_count": 1
+		},
+		{
+			"id": "question_thornfield_locals",
+			"description": "Question villagers about suspicious magical activity",
+			"type": "talk",
+			"target": "thornfield_innkeeper",
+			"required_count": 1,
+			"notes": "Innkeeper provides info about strange robed figures"
+		},
+		{
+			"id": "find_cultist_hideout",
+			"description": "Locate the cultist hideout east of Thornfield",
+			"type": "reach",
+			"target": "thornfield_cultist_cave",
+			"required_count": 1,
+			"notes": "Small cave dungeon east of Thornfield"
+		},
+		{
+			"id": "confront_rival_mage",
+			"description": "Confront the rival mage and recover the stolen pages",
+			"type": "interact",
+			"target": "rival_mage_thornfield",
+			"required_count": 1,
+			"notes": "Can fight, negotiate (skill check), or bribe - multiple solutions"
+		},
+		{
+			"id": "defeat_cultists_optional",
+			"description": "[Optional] Defeat the dark cultists",
+			"type": "kill",
+			"target": "dark_cultist",
+			"required_count": 4,
+			"is_optional": true,
+			"notes": "Only required if player chooses combat resolution"
+		},
+		{
+			"id": "recover_stolen_pages",
+			"description": "Recover the missing grimoire pages",
+			"type": "collect",
+			"target": "grimoire_pages_stolen",
+			"required_count": 1,
+			"notes": "Obtained through dialogue choice or by defeating the rival mage"
+		},
+		{
+			"id": "return_pages_helvant",
+			"description": "Return the recovered pages to Master Helvant",
+			"type": "talk",
+			"target": "master_helvant_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "master_helvant_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 150,
+		"xp": 600,
+		"items": ["spell_scroll_arcane_shield"],
+		"faction_reputation": {
+			"wizards_guild": 30
+		}
+	},
+	"choice_consequences": {
+		"defeated_rival_mage": {
+			"flags_to_set": ["rival_mage_defeated"],
+			"reputation_changes": {"wizards_guild": 10}
+		},
+		"negotiated_with_rival": {
+			"flags_to_set": ["rival_mage_allied"],
+			"reputation_changes": {"wizards_guild": 5},
+			"notes": "Rival may appear as ally in future content"
+		},
+		"bribed_rival_mage": {
+			"flags_to_set": ["rival_mage_bribed"],
+			"reputation_changes": {"wizards_guild": -5},
+			"notes": "Helvant disapproves of paying criminals"
+		}
+	},
+	"on_complete_flags": ["helvant_grimoire_complete", "ready_for_final_trial"],
+	"prerequisites": ["wizard_lost_tome"],
+	"next_quest": "wizard_final_trial",
+	"spawn_on_accept": [
+		{
+			"type": "npc",
+			"location": "thornfield_cultist_cave",
+			"npc_id": "rival_mage_valdric",
+			"notes": "Boss NPC with dialogue options - can be fought, negotiated with, or bribed"
+		},
+		{
+			"type": "enemy",
+			"location": "thornfield_cultist_cave",
+			"enemy_id": "dark_cultist",
+			"count": 4,
+			"notes": "Cultist minions - attack if player chooses combat"
+		}
+	],
+	"quest_items": ["grimoire_pages_stolen"],
+	"notes": "Fifth quest - investigation and confrontation with multiple resolution paths. Choice-driven quest with consequences. Rewards Arcane Shield spell."
+}

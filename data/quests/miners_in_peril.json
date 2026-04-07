@@ -1,0 +1,77 @@
+{
+	"id": "miners_in_peril",
+	"title": "Frozen Tunnels",
+	"description": "The mines near Duncaster have suffered a cave-in, trapping a group of miners in the lower tunnels. To make matters worse, the collapse has breached an underground ice cavern, and the temperature is dropping fast. The mine foreman needs someone to navigate the unstable tunnels, rescue the trapped miners, and get them out before they freeze to death.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "mine_foreman_duncaster",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "duncaster",
+	"objectives": [
+		{
+			"id": "get_briefing",
+			"description": "Get a briefing from the mine foreman",
+			"type": "talk",
+			"target": "mine_foreman_duncaster",
+			"required_count": 1
+		},
+		{
+			"id": "enter_mines",
+			"description": "Enter the collapsed mine tunnels",
+			"type": "reach",
+			"target": "duncaster_mines",
+			"required_count": 1
+		},
+		{
+			"id": "clear_rubble",
+			"description": "Clear the blocked passage to the lower tunnels",
+			"type": "interact",
+			"target": "mine_rubble",
+			"required_count": 1
+		},
+		{
+			"id": "fight_ice_creatures",
+			"description": "Defeat the ice creatures awakened by the breach",
+			"type": "kill",
+			"target": "ice_elemental",
+			"required_count": 4
+		},
+		{
+			"id": "rescue_miners",
+			"description": "Find and rescue the trapped miners (0/5)",
+			"type": "interact",
+			"target": "trapped_miner",
+			"required_count": 5
+		},
+		{
+			"id": "escape_tunnels",
+			"description": "Lead the miners to safety before the tunnels collapse",
+			"type": "reach",
+			"target": "mine_exit",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "mine_foreman_duncaster",
+	"turn_in_zone": "duncaster",
+	"rewards": {
+		"gold": 225,
+		"xp": 500,
+		"items": ["miner_pickaxe_refined"],
+		"faction_reputation": {
+			"dwarves": 35
+		}
+	},
+	"choice_consequences": {
+		"all_miners_saved": {
+			"flags_to_set": ["duncaster_hero"],
+			"reputation_changes": {"dwarves": 20}
+		},
+		"some_miners_lost": {
+			"flags_to_set": ["duncaster_tragedy"],
+			"reputation_changes": {"dwarves": -10}
+		}
+	},
+	"prerequisites": [],
+	"next_quest": ""
+}

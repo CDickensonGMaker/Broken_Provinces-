@@ -1,0 +1,151 @@
+{
+  "id": "thieves_repeatable_jobs",
+  "title": "Guild Contracts",
+  "description": "As a high-ranking Guild member, you have access to ongoing contracts. Choose from available jobs - theft, smuggling, intimidation, or reconnaissance. Each job pays well and keeps your skills sharp.",
+  "giver_npc_id": "guild_contract_board",
+  "giver_region": "dalhurst",
+  "faction": "thieves_guild",
+  "rank_required": 1,
+  "repeatable": true,
+  "cooldown_hours": 24,
+  "job_types": [
+    {
+      "id": "simple_theft",
+      "title": "Simple Theft",
+      "description": "Steal a specific item from a random location",
+      "difficulty": "easy",
+      "objectives": [
+        {"type": "collect", "target": "contract_item", "required_count": 1, "description": "Steal the contracted item"}
+      ],
+      "rewards": {
+        "gold": 100,
+        "xp": 150,
+        "faction_reputation": {"thieves_guild": 5}
+      },
+      "targets": ["merchant_shop_dalhurst", "noble_home_thornfield", "warehouse_crossroads"],
+      "items": ["jewelry", "rare_wine", "ledger", "family_heirloom", "valuable_art"]
+    },
+    {
+      "id": "smuggling_run",
+      "title": "Smuggling Run",
+      "description": "Transport contraband between cities without detection",
+      "difficulty": "medium",
+      "objectives": [
+        {"type": "collect", "target": "contraband_package", "required_count": 1, "description": "Pick up contraband"},
+        {"type": "explore", "target": "delivery_location", "description": "Deliver without being caught by guards"}
+      ],
+      "rewards": {
+        "gold": 175,
+        "xp": 250,
+        "faction_reputation": {"thieves_guild": 8}
+      },
+      "routes": [
+        {"from": "dalhurst", "to": "thornfield"},
+        {"from": "thornfield", "to": "crossroads"},
+        {"from": "millbrook", "to": "dalhurst"}
+      ],
+      "contraband_types": ["stolen_goods", "illegal_herbs", "counterfeit_coins", "smuggled_weapons"],
+      "detection_risk": "medium"
+    },
+    {
+      "id": "debt_collection",
+      "title": "Debt Collection",
+      "description": "Collect a debt owed to the Guild from a reluctant debtor",
+      "difficulty": "medium",
+      "objectives": [
+        {"type": "talk", "target": "debtor", "description": "Locate the debtor"},
+        {"type": "collect", "target": "debt_payment", "required_count": 1, "description": "Collect payment (persuade, intimidate, or take)"}
+      ],
+      "rewards": {
+        "gold": 150,
+        "xp": 200,
+        "faction_reputation": {"thieves_guild": 10}
+      },
+      "debtors": ["struggling_merchant", "gambler", "failed_smuggler", "corrupt_official"],
+      "locations": ["dalhurst_tavern", "crossroads_inn", "thornfield_market", "millbrook_village"],
+      "debt_amounts": [150, 200, 250],
+      "skill_options": ["persuasion_dc_12", "intimidation_dc_10", "theft"]
+    },
+    {
+      "id": "reconnaissance",
+      "title": "Reconnaissance",
+      "description": "Scout a location and report security details for future jobs",
+      "difficulty": "easy",
+      "objectives": [
+        {"type": "explore", "target": "recon_target", "description": "Scout the target location"},
+        {"type": "collect", "target": "security_report", "required_count": 1, "description": "Document security measures"},
+        {"type": "talk", "target": "guild_contact", "description": "Report findings"}
+      ],
+      "rewards": {
+        "gold": 125,
+        "xp": 175,
+        "faction_reputation": {"thieves_guild": 7}
+      },
+      "targets": ["merchant_warehouse", "noble_estate", "guard_barracks", "bank_vault"],
+      "locations": ["dalhurst", "thornfield", "crossroads"],
+      "stealth_required": true
+    },
+    {
+      "id": "intimidation_job",
+      "title": "Send a Message",
+      "description": "Intimidate someone causing problems for Guild operations",
+      "difficulty": "medium",
+      "objectives": [
+        {"type": "talk", "target": "problem_npc", "description": "Deliver Guild's message"},
+        {"type": "skill_check", "skill": "intimidation", "dc": 14, "description": "Make them understand consequences"}
+      ],
+      "rewards": {
+        "gold": 160,
+        "xp": 220,
+        "faction_reputation": {"thieves_guild": 9}
+      },
+      "targets": ["nosy_guard", "rival_gang_member", "informant", "uncooperative_fence"],
+      "locations": ["dalhurst", "thornfield", "crossroads", "willowdale"],
+      "violence_optional": true,
+      "consequences": {
+        "peaceful_resolution": {"xp_bonus": 50},
+        "violent_resolution": {"faction_rep_bonus": 3, "heat_increase": true}
+      }
+    },
+    {
+      "id": "burglary",
+      "title": "Professional Burglary",
+      "description": "Break into a secured building and steal everything valuable",
+      "difficulty": "hard",
+      "requirements": {"rank": 2},
+      "objectives": [
+        {"type": "explore", "target": "burglary_target", "description": "Case the building"},
+        {"type": "lockpick", "target": "building_entry", "dc": 15, "description": "Pick locks to enter"},
+        {"type": "collect", "target": "valuables", "required_count": 3, "description": "Steal valuable items"},
+        {"type": "escape", "target": "safe_distance", "description": "Escape without detection"}
+      ],
+      "rewards": {
+        "gold": 250,
+        "xp": 350,
+        "faction_reputation": {"thieves_guild": 15}
+      },
+      "targets": ["wealthy_merchant_home", "minor_noble_manor", "jeweler_shop", "moneylender_office"],
+      "locations": ["dalhurst", "thornfield"],
+      "security_levels": ["moderate", "high"],
+      "detection_risk": "high",
+      "failure_consequences": "Guards alerted, potential combat or escape"
+    }
+  ],
+  "rank_bonuses": {
+    "footpad": {"gold_multiplier": 1.1},
+    "burglar": {"gold_multiplier": 1.25, "xp_multiplier": 1.15},
+    "shadowmaster": {"gold_multiplier": 1.5, "xp_multiplier": 1.25, "bonus_jobs_available": true},
+    "guildmasters_hand": {"gold_multiplier": 2.0, "xp_multiplier": 1.5, "special_contracts_available": true}
+  },
+  "generation_rules": {
+    "selection": "Random job type based on player rank",
+    "target_randomization": "Random location and target from available lists",
+    "reward_scaling": "Base rewards * rank multiplier",
+    "difficulty_scaling": "Higher ranks get harder variants with better rewards"
+  },
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "guild_contract_board",
+  "turn_in_zone": "dalhurst",
+  "flags_set": ["thieves_contract_completed"],
+  "notes": "Repeatable quest system. Six job types with varying difficulty. Random generation from target/location pools. Scales with player rank. 24-hour cooldown. Contract board in Guild hideout, Dalhurst."
+}

@@ -1,0 +1,55 @@
+{
+	"id": "mercenary_08_rival_company",
+	"title": "Blood and Honor",
+	"description": "The Black Wolves, a rival mercenary company, has been undercutting Iron Company contracts and stealing clients. Captain Steele wants you to confront their leader at the Crossroads and settle this dispute. You can challenge them to honorable combat, outmaneuver them for contracts, or negotiate a merger. Your choice will affect the company's reputation.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "captain_roderick_steele",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "iron_company",
+	"objectives": [
+		{
+			"id": "travel_to_crossroads",
+			"description": "Meet the Black Wolves at the Crossroads",
+			"type": "reach",
+			"target": "crossroads",
+			"required_count": 1
+		},
+		{
+			"id": "confront_wolves",
+			"description": "Confront the Black Wolves leadership",
+			"type": "talk",
+			"target": "black_wolf_captain",
+			"required_count": 1
+		},
+		{
+			"id": "resolve_conflict",
+			"description": "Resolve the rivalry (combat, negotiation, or contract competition)",
+			"type": "kill",
+			"target": "black_wolf_mercenary",
+			"required_count": 8,
+			"is_optional": true
+		},
+		{
+			"id": "return_to_captain",
+			"description": "Report the outcome to Captain Steele",
+			"type": "talk",
+			"target": "captain_roderick_steele",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "captain_roderick_steele",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 400,
+		"xp": 900,
+		"items": ["black_wolf_trophy"],
+		"faction_reputation": {
+			"iron_company": 50
+		}
+	},
+	"prerequisites": ["mercenary_07_command_trial"],
+	"next_quest": "mercenary_09_betrayal"
+}

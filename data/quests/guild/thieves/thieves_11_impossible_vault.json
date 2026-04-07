@@ -1,0 +1,102 @@
+{
+  "id": "thieves_11_impossible_vault",
+  "title": "The Impossible Vault",
+  "description": "Legend speaks of an ancient vault beneath Elder Moor, built by a paranoid merchant prince centuries ago. No thief has ever cracked it. The Guildmaster believes you can. The vault contains treasures beyond imagination - and a puzzle that has stumped generations.",
+  "giver_npc_id": "guildmaster_nightshade",
+  "giver_region": "dalhurst",
+  "faction": "thieves_guild",
+  "rank_required": 3,
+  "objectives": [
+    {
+      "id": "obj_find_vault_entrance",
+      "type": "explore",
+      "target": "elder_moor_ruins",
+      "description": "Locate the hidden vault entrance in Elder Moor"
+    },
+    {
+      "id": "obj_solve_entry_puzzle",
+      "type": "puzzle",
+      "description": "Solve the ancient puzzle lock at the entrance"
+    },
+    {
+      "id": "obj_navigate_traps",
+      "type": "explore",
+      "target": "vault_trap_corridor",
+      "description": "Navigate the trapped corridor"
+    },
+    {
+      "id": "obj_solve_vault_puzzle",
+      "type": "puzzle",
+      "description": "Solve the master vault puzzle (combination of logic, riddles, and mechanism)"
+    },
+    {
+      "id": "obj_claim_treasure",
+      "type": "collect",
+      "target": "vault_treasures",
+      "required_count": 1,
+      "description": "Claim the vault's treasures"
+    },
+    {
+      "id": "obj_escape_vault",
+      "type": "explore",
+      "target": "vault_exit",
+      "description": "Escape before the vault reseals"
+    }
+  ],
+  "rewards": {
+    "gold": 600,
+    "xp": 1200,
+    "items": ["master_thieves_tools", "ancient_coin_collection"],
+    "faction_reputation": {
+      "thieves_guild": 50
+    }
+  },
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "guildmaster_nightshade",
+  "turn_in_zone": "dalhurst",
+  "next_quest": "thieves_12_guild_traitor",
+  "flags_set": ["thieves_cracked_impossible_vault", "thieves_legendary_status"],
+  "puzzle_challenges": [
+    {
+      "name": "entry_riddle",
+      "type": "riddle",
+      "description": "Answer three riddles correctly to unlock entrance",
+      "failure_consequence": "Poison gas trap triggers"
+    },
+    {
+      "name": "trap_corridor",
+      "type": "perception_and_disable",
+      "skill_checks": [
+        {"type": "perception", "dc": 16, "description": "Spot pressure plates"},
+        {"type": "sleight_of_hand", "dc": 15, "description": "Disable dart traps"},
+        {"type": "acrobatics", "dc": 14, "description": "Avoid pit trap"}
+      ]
+    },
+    {
+      "name": "master_vault_mechanism",
+      "type": "logic_puzzle",
+      "description": "Align five rotating cylinders with symbols matching constellation patterns",
+      "hints_available": ["star_chart_clue", "merchant_journal_fragment"],
+      "failure_consequence": "Vault resets, must restart puzzle"
+    }
+  ],
+  "time_pressure": {
+    "description": "Once vault opens, ancient mechanism begins countdown - 10 minutes to loot and escape",
+    "failure": "Vault seals permanently with you inside, must find alternate escape"
+  },
+  "optional_objectives": [
+    {
+      "id": "obj_full_loot",
+      "description": "Take all treasures (slower) vs. grab essentials and run (faster)",
+      "reward_bonus": {"gold": 300, "xp": 100},
+      "risk": "Less time to escape"
+    },
+    {
+      "id": "obj_merchant_journal",
+      "description": "Find the merchant prince's journal detailing vault construction",
+      "reward_bonus": {"xp": 200},
+      "benefit": "Provides hint for final puzzle"
+    }
+  ],
+  "notes": "Legendary difficulty. Puzzle-focused quest. Time pressure mechanic. Vault in Elder Moor ancient ruins. Rewards Master Thieves Tools (best lockpicking/trap tools)."
+}

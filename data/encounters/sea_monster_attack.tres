@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="SeaEncounter" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/travel/sea_encounter.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "sea_monster_attack"
+display_name = "Sea Monster Attack"
+description = "Massive tentacles burst from the depths! A kraken has found your ship and means to drag it to the bottom."
+encounter_type = 2
+is_combat = true
+can_flee = false
+flee_difficulty = 10
+enemy_spawns = Array[String](["sea_tentacle", "kraken_tentacle"])
+enemy_counts = Array[Vector2i]([Vector2i(2, 4), Vector2i(0, 1)])
+is_wave_encounter = true
+wave_count = 3
+gold_reward = Vector2i(0, 0)
+guaranteed_loot = Array[String](["kraken_ink", "sea_pearl"])
+loot_tier = 4
+loot_rolls = 2
+xp_reward = 250
+difficulty_rating = 8
+min_player_level = 10
+max_player_level = 0
+intro_dialogue_id = ""
+peaceful_dialogue_id = ""
+can_resolve_peacefully = false
+peaceful_skill = 0
+peaceful_skill_dc = 0
+music_track = "res://assets/audio/music/combat_boss.ogg"

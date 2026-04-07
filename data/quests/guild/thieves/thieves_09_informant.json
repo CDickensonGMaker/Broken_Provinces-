@@ -1,0 +1,119 @@
+{
+  "id": "thieves_09_informant",
+  "title": "Loose Lips",
+  "description": "Someone is selling Guild secrets. Vex has narrowed it down to three suspects in Millbrook. Investigate, identify the traitor, and decide their fate. Execute them, turn them into a double agent, or let them go.",
+  "giver_npc_id": "shadowmaster_vex",
+  "giver_region": "dalhurst",
+  "faction": "thieves_guild",
+  "rank_required": 2,
+  "objectives": [
+    {
+      "id": "obj_travel_millbrook",
+      "type": "explore",
+      "target": "millbrook_village",
+      "description": "Travel to Millbrook"
+    },
+    {
+      "id": "obj_investigate_suspects",
+      "type": "investigate",
+      "description": "Investigate three suspects: Felix the Fence, Mara the Smuggler, and Tobin the Pickpocket"
+    },
+    {
+      "id": "obj_find_evidence",
+      "type": "collect",
+      "target": "informant_evidence",
+      "required_count": 1,
+      "description": "Find concrete evidence identifying the traitor"
+    },
+    {
+      "id": "obj_confront_traitor",
+      "type": "talk",
+      "target": "guild_traitor",
+      "description": "Confront the traitor"
+    },
+    {
+      "id": "obj_decide_fate",
+      "type": "choice",
+      "description": "Decide the traitor's fate"
+    }
+  ],
+  "rewards": {
+    "gold": 400,
+    "xp": 850,
+    "items": ["master_lockpick_set"],
+    "faction_reputation": {
+      "thieves_guild": 30
+    }
+  },
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "shadowmaster_vex",
+  "turn_in_zone": "dalhurst",
+  "next_quest": "thieves_10_government_job",
+  "flags_set": ["thieves_rank_shadowmaster", "thieves_informant_handled"],
+  "investigation_clues": [
+    {
+      "suspect": "felix_fence",
+      "clue_location": "felix_home",
+      "clue_type": "letters",
+      "description": "Letters from a mysterious buyer, but they could be legitimate business"
+    },
+    {
+      "suspect": "mara_smuggler",
+      "clue_location": "mara_warehouse",
+      "clue_type": "meeting_schedule",
+      "description": "Schedule of meetings with unknown party"
+    },
+    {
+      "suspect": "tobin_pickpocket",
+      "clue_location": "tobin_room_tavern",
+      "clue_type": "guild_documents",
+      "description": "Stolen Guild documents hidden in his room - the smoking gun"
+    }
+  ],
+  "choice_paths": [
+    {
+      "id": "execute_traitor",
+      "description": "Kill the traitor as an example",
+      "consequences": {
+        "flag_set": "thieves_executed_tobin",
+        "faction_rep": {"thieves_guild": 35},
+        "moral_alignment": "evil",
+        "future_impact": "Guild members fear crossing you"
+      }
+    },
+    {
+      "id": "turn_double_agent",
+      "description": "Force the traitor to feed false information to enemies",
+      "requirements": {"skill": "intimidation", "dc": 15},
+      "consequences": {
+        "flag_set": "thieves_turned_tobin",
+        "faction_rep": {"thieves_guild": 30},
+        "reward_bonus": {"xp": 200},
+        "future_impact": "Gain intelligence on Guild enemies"
+      }
+    },
+    {
+      "id": "exile_traitor",
+      "description": "Exile them from the region instead of killing",
+      "consequences": {
+        "flag_set": "thieves_exiled_tobin",
+        "faction_rep": {"thieves_guild": 20},
+        "moral_alignment": "neutral",
+        "future_impact": "Shows mercy but loses trust of some members"
+      }
+    },
+    {
+      "id": "let_them_go",
+      "description": "Let them go with a warning (only if you found redeeming circumstances)",
+      "requirements": {"found_extortion_evidence": true},
+      "consequences": {
+        "flag_set": "thieves_pardoned_tobin",
+        "faction_rep": {"thieves_guild": 10},
+        "moral_alignment": "good",
+        "reward_bonus": {"xp": 150},
+        "future_impact": "Tobin becomes loyal ally"
+      }
+    }
+  ],
+  "notes": "Promotion to Shadowmaster. Investigation-heavy quest. Traitor is Tobin but clues point at all three. Rewards Master Lockpick Set. Millbrook location."
+}

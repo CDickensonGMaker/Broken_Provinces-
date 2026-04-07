@@ -1,0 +1,61 @@
+{
+	"id": "gaela_repeatable_tending",
+	"title": "Tending the Garden",
+	"description": "Priestess Elara invites Devotees of Gaela to help maintain the temple gardens. A peaceful task that brings one closer to the Harvest Mother's teachings.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "priest",
+	"giver_region": "dalhurst",
+	"is_repeatable": true,
+	"cooldown_days": 7,
+	"objectives": [
+		{
+			"id": "gather_compost",
+			"description": "Gather organic materials for compost",
+			"type": "collect",
+			"target": "rotting_vegetation",
+			"required_count": 10,
+			"is_optional": false
+		},
+		{
+			"id": "water_plants",
+			"description": "Water the temple garden plants (interact with 5 planters)",
+			"type": "explore",
+			"target": "dalhurst",
+			"required_count": 5,
+			"is_optional": false
+		},
+		{
+			"id": "remove_weeds",
+			"description": "Remove weeds from the sacred herb beds",
+			"type": "collect",
+			"target": "weeds",
+			"required_count": 15,
+			"is_optional": false
+		},
+		{
+			"id": "report_completion",
+			"description": "Report to Priestess Elara",
+			"type": "talk",
+			"target": "priest_gaela_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_gaela_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 25,
+		"xp": 100,
+		"items": ["minor_healing_herb", "wildflower"],
+		"faction_reputation": {
+			"church_of_gaela": 5,
+			"church_of_three": 2
+		}
+	},
+	"prerequisites": ["gaela_05_devotion_choice"],
+	"required_flags": ["gaela_devotee"],
+	"next_quest": ""
+}

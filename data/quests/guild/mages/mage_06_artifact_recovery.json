@@ -1,0 +1,65 @@
+{
+	"id": "mage_06_artifact_recovery",
+	"title": "Lost Knowledge",
+	"description": "Ancient texts speak of a powerful artifact hidden in the ruins of Willow Dale - the Amulet of Arcane Sight. The Arcane Circle has searched for this artifact for decades. As an Apprentice nearing promotion, you've been chosen to attempt its recovery. Navigate the magical traps, face the arcane guardians, and claim this lost treasure for the guild.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "archmage_elara_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "arcane_circle",
+	"objectives": [
+		{
+			"id": "travel_willow_dale",
+			"description": "Travel to Willow Dale ruins",
+			"type": "reach",
+			"target": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "navigate_traps",
+			"description": "Navigate the magical trap gauntlet",
+			"type": "reach",
+			"target": "willow_dale_inner_sanctum",
+			"required_count": 1,
+			"notes": "Use Detect Magic to reveal trap triggers"
+		},
+		{
+			"id": "defeat_guardians",
+			"description": "Defeat the arcane guardians",
+			"type": "kill",
+			"target": "arcane_guardian",
+			"required_count": 3,
+			"notes": "Magical constructs protecting the artifact"
+		},
+		{
+			"id": "retrieve_amulet",
+			"description": "Retrieve the Amulet of Arcane Sight",
+			"type": "collect",
+			"target": "amulet_arcane_sight",
+			"required_count": 1
+		},
+		{
+			"id": "return_artifact",
+			"description": "Return the artifact to Archmage Elara",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "archmage_elara_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 250,
+		"xp": 600,
+		"items": ["journeyman_robes"],
+		"faction_reputation": {
+			"arcane_circle": 35
+		}
+	},
+	"on_complete_flags": ["arcane_circle_journeyman", "amulet_recovered"],
+	"prerequisites": ["rogue_mage_dealt_with"],
+	"next_quest": "mage_07_thesis_project",
+	"notes": "Final Apprentice quest. Promotion to Journeyman rank. Dungeon exploration with traps and combat. Rewards journeyman robes."
+}

@@ -50,6 +50,39 @@ func _process(_delta: float) -> void:
 		shader_material.set_shader_parameter("time", Time.get_ticks_msec() / 1000.0)
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	# F10 cycles visual presets
+	if event is InputEventKey and event.pressed and event.keycode == KEY_F10:
+		cycle_preset()
+		_show_preset_notification()
+
+	# F11 toggles post-processing on/off
+	if event is InputEventKey and event.pressed and event.keycode == KEY_F11:
+		toggle()
+		_show_toggle_notification()
+
+
+## Show notification when preset changes
+func _show_preset_notification() -> void:
+	var preset_names: Array[String] = ["Grim Dark", "Retro PS1", "Bright"]
+	var preset_name: String = preset_names[current_preset]
+	var hud := Engine.get_main_loop().get_first_node_in_group("hud") if Engine.get_main_loop() else null
+	if hud and hud.has_method("show_notification"):
+		hud.show_notification("Visual: %s" % preset_name)
+	else:
+		print("[PostProcess] Visual preset: %s" % preset_name)
+
+
+## Show notification when toggled
+func _show_toggle_notification() -> void:
+	var state: String = "ON" if enabled else "OFF"
+	var hud := Engine.get_main_loop().get_first_node_in_group("hud") if Engine.get_main_loop() else null
+	if hud and hud.has_method("show_notification"):
+		hud.show_notification("Post-Processing: %s" % state)
+	else:
+		print("[PostProcess] Post-processing: %s" % state)
+
+
 ## Apply a preset configuration
 func apply_preset(preset: Preset) -> void:
 	current_preset = preset

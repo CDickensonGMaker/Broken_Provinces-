@@ -1,0 +1,34 @@
+{
+  "name": "Sylva Swiftfoot",
+  "who": "Elven ranger who joined the Adventurer's Guild\nThree centuries of hunting experience\nExpert marksman and tracker\nPotential companion upon completing guild questline\nPrefers nature but respects human settlements",
+  "what": "Guild scout and archery instructor\nMaster tracker and wilderness guide\nOffers training in ranged combat\nPotential companion if chosen over Theron",
+  "where": "Dalhurst - Adventurer's Guild Hall\nAvailable as companion after questline completion",
+  "quests": "Adventurer's Guild Champion reward choice",
+  "sprite": {
+    "type": "ranger",
+    "path": "res://assets/sprites/npcs/civilians/female_hunter.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0280,
+    "notes": "Slender elf female with bow, leather armor, keen eyes"
+  },
+  "dialogue": {
+    "archetype": "wise_elf",
+    "topics": ["nature", "tracking", "elven_history", "guild_missions"],
+    "disposition_base": 45,
+    "notes": "Calm, observant, speaks with ancient wisdom"
+  },
+  "combat": {
+    "can_fight": true,
+    "level": 35,
+    "is_essential": true,
+    "notes": "Ranged DPS build - high accuracy, moderate damage, utility abilities"
+  },
+  "follower": {
+    "can_recruit": true,
+    "recruitment_conditions": ["Complete Adventurer's Guild questline", "Choose Sylva over Theron"],
+    "skills": ["aimed_shot", "trap", "mark_prey"],
+    "combat_style": "ranger_support",
+    "notes": "Excellent at range, provides debuffs and crowd control"
+  }
+}

@@ -1,0 +1,66 @@
+{
+	"id": "mage_08_magical_disaster",
+	"title": "Containment",
+	"description": "Disaster strikes! A novice mage's experiment has gone catastrophically wrong in the Athenaeum basement, creating a spreading magical anomaly that threatens to destabilize reality itself. You must contain the anomaly before it spreads beyond the Athenaeum and wreaks havoc across Dalhurst. Time is of the essence!",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "mage_aldric_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "arcane_circle",
+	"objectives": [
+		{
+			"id": "assess_situation",
+			"description": "Assess the magical anomaly in the basement",
+			"type": "reach",
+			"target": "athenaeum_basement",
+			"required_count": 1
+		},
+		{
+			"id": "stabilize_ley_node",
+			"description": "Stabilize the corrupted ley node",
+			"type": "interact",
+			"target": "corrupted_ley_node",
+			"required_count": 1,
+			"notes": "Requires channeling magic to dispel corruption"
+		},
+		{
+			"id": "defeat_anomalies",
+			"description": "Defeat the magical anomalies spawned by the corruption",
+			"type": "kill",
+			"target": "magic_anomaly",
+			"required_count": 8,
+			"notes": "Hostile magical entities attacking the Athenaeum"
+		},
+		{
+			"id": "seal_breach",
+			"description": "Seal the dimensional breach",
+			"type": "interact",
+			"target": "dimensional_breach",
+			"required_count": 1,
+			"notes": "Use containment ritual to close the tear"
+		},
+		{
+			"id": "report_containment",
+			"description": "Report successful containment to Archmage Elara",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "archmage_elara_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 350,
+		"xp": 800,
+		"items": ["staff_of_containment"],
+		"faction_reputation": {
+			"arcane_circle": 40
+		}
+	},
+	"on_complete_flags": ["disaster_contained", "athenaeum_saved"],
+	"prerequisites": ["thesis_complete"],
+	"next_quest": "mage_09_rival_circle",
+	"notes": "Second Journeyman quest. Timed/urgent quest. Combat against magical enemies. Rewards powerful staff."
+}

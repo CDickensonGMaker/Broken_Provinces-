@@ -1,0 +1,73 @@
+{
+  "id": "thieves_06_warehouse_job",
+  "title": "The Dalhurst Job",
+  "description": "A merchant warehouse in Dalhurst is full of valuable imported goods. Vex wants you to plan and execute a heist. Choose your approach: quick smash-and-grab, careful infiltration, or social deception.",
+  "giver_npc_id": "shadowmaster_vex",
+  "giver_region": "dalhurst",
+  "faction": "thieves_guild",
+  "rank_required": 1,
+  "objectives": [
+    {
+      "id": "obj_scout_warehouse",
+      "type": "explore",
+      "target": "merchant_warehouse",
+      "description": "Scout the warehouse and identify security"
+    },
+    {
+      "id": "obj_choose_approach",
+      "type": "talk",
+      "target": "shadowmaster_vex",
+      "description": "Report findings and choose your approach"
+    },
+    {
+      "id": "obj_execute_heist",
+      "type": "collect",
+      "target": "valuable_goods",
+      "required_count": 5,
+      "description": "Steal at least 5 crates of valuable goods"
+    },
+    {
+      "id": "obj_escape",
+      "type": "explore",
+      "target": "guild_safehouse",
+      "description": "Deliver goods to the Guild safehouse"
+    }
+  ],
+  "rewards": {
+    "gold": 250,
+    "xp": 600,
+    "items": ["thieves_guild_armor"],
+    "faction_reputation": {
+      "thieves_guild": 25
+    }
+  },
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "shadowmaster_vex",
+  "turn_in_zone": "dalhurst",
+  "next_quest": "thieves_07_noble_heist",
+  "flags_set": ["thieves_rank_burglar", "thieves_warehouse_heist_complete"],
+  "approach_options": [
+    {
+      "name": "stealth_infiltration",
+      "description": "Pick locks, avoid guards, take your time",
+      "requirements": {"skill": "lockpicking", "dc": 14},
+      "rewards_modifier": {"xp_bonus": 100},
+      "risks": "Takes longer, but minimal detection risk"
+    },
+    {
+      "name": "smash_and_grab",
+      "description": "Break in, grab what you can, run",
+      "requirements": {"combat_ready": true},
+      "rewards_modifier": {"gold_penalty": 50},
+      "risks": "Fast but loud, guards will pursue"
+    },
+    {
+      "name": "social_deception",
+      "description": "Pose as inspectors, walk out with goods",
+      "requirements": {"skill": "persuasion", "dc": 15},
+      "rewards_modifier": {"xp_bonus": 150, "gold_bonus": 50},
+      "risks": "If discovered, burns future social approaches"
+    }
+  ],
+  "notes": "Promotion to Burglar. Multiple approach options. Rewards Guild armor. Warehouse in Dalhurst docks."
+}

@@ -1,121 +1,149 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/data/enemy_attack_data.gd" id="2"]
 
 [sub_resource type="Resource" id="1"]
 script = ExtResource("2")
-id = "tail_sting"
-display_name = "Tail Sting"
-damage = Array[int]([2, 8, 2])
-damage_type = 4
-windup_time = 0.4
-active_time = 0.2
-recovery_time = 0.3
-cooldown = 1.5
-range_distance = 3.0
+id = "dive_strike"
+display_name = "Dive Strike"
+damage = Array[int]([15, 25, 8])
+damage_type = 0
+windup_time = 1.2
+active_time = 0.3
+recovery_time = 0.8
+cooldown = 6.0
+range_distance = 12.0
 is_ranged = false
-is_aoe = false
-aoe_radius = 0.0
+is_aoe = true
+aoe_radius = 3.0
 projectile_speed = 0.0
-inflicts_condition = 3
-condition_chance = 0.5
-condition_duration = 10.0
-stagger_power = 0.8
-knockback_force = 2.0
-weight = 1.0
-min_range = 0.0
-max_range = 3.0
+inflicts_condition = 1
+condition_chance = 0.6
+condition_duration = 2.5
+stagger_power = 2.0
+knockback_force = 6.0
+weight = 0.4
+min_range = 5.0
+max_range = 12.0
 requires_los = true
-animation_name = "sting"
+animation_name = "dive"
 sound_effect = ""
 
 [sub_resource type="Resource" id="2"]
 script = ExtResource("2")
-id = "dive_attack"
-display_name = "Dive Attack"
-damage = Array[int]([3, 8, 4])
+id = "wing_buffet"
+display_name = "Wing Buffet"
+damage = Array[int]([8, 12, 4])
 damage_type = 0
-windup_time = 1.0
-active_time = 0.3
-recovery_time = 0.8
-cooldown = 5.0
-range_distance = 10.0
+windup_time = 0.5
+active_time = 0.4
+recovery_time = 0.5
+cooldown = 3.0
+range_distance = 4.0
 is_ranged = false
 is_aoe = true
-aoe_radius = 2.0
+aoe_radius = 4.0
 projectile_speed = 0.0
-inflicts_condition = 5
-condition_chance = 0.6
-condition_duration = 2.0
+inflicts_condition = 1
+condition_chance = 0.5
+condition_duration = 1.5
 stagger_power = 1.5
-knockback_force = 5.0
+knockback_force = 8.0
+weight = 0.8
+min_range = 0.0
+max_range = 4.0
+requires_los = true
+animation_name = "wing"
+sound_effect = ""
+
+[sub_resource type="Resource" id="3"]
+script = ExtResource("2")
+id = "acid_breath"
+display_name = "Acid Breath"
+damage = Array[int]([10, 18, 6])
+damage_type = 4
+windup_time = 0.8
+active_time = 0.5
+recovery_time = 0.6
+cooldown = 8.0
+range_distance = 10.0
+is_ranged = true
+is_aoe = true
+aoe_radius = 3.5
+projectile_speed = 15.0
+inflicts_condition = 3
+condition_chance = 0.7
+condition_duration = 8.0
+stagger_power = 0.5
+knockback_force = 2.0
 weight = 0.5
-min_range = 4.0
+min_range = 3.0
 max_range = 10.0
 requires_los = true
-animation_name = "dive"
+animation_name = "breath"
 sound_effect = ""
 
 [resource]
 script = ExtResource("1")
 id = "wyvern"
 display_name = "Wyvern"
-description = "A flying reptilian predator with a venomous tail. Not a true dragon, but dangerous nonetheless."
-level = 25
-min_level = 20
+description = "A massive flying reptilian predator. Though not a true dragon, the wyvern is every bit as deadly with its razor talons, powerful wings, and corrosive acid breath. Adventurers who underestimate this beast rarely live to regret it."
+level = 30
+min_level = 25
 max_level = 45
-max_hp = 80
-armor_value = 14
-movement_speed = 5.0
+max_hp = 350
+armor_value = 20
+movement_speed = 6.0
 turn_speed = 5.0
-grit = 8
-agility = 8
-will = 4
-knowledge = 2
+grit = 12
+agility = 10
+will = 6
+knowledge = 3
 behavior = 1
-faction = 2
-aggro_range = 20.0
-attack_range = 3.0
-preferred_distance = 6.0
-flee_hp_threshold = 0.15
-is_boss = false
-attacks = Array[ExtResource("2")]([SubResource("1"), SubResource("2")])
+faction = 4
+aggro_range = 25.0
+attack_range = 4.0
+preferred_distance = 8.0
+flee_hp_threshold = 0.0
+is_boss = true
+attacks = Array[ExtResource("2")]([SubResource("1"), SubResource("2"), SubResource("3")])
 can_block = false
 block_chance = 0.0
-stagger_resistance = 0.4
+stagger_resistance = 0.6
 fire_resistance = 0.3
 frost_resistance = 0.0
-lightning_resistance = 0.0
-poison_resistance = 0.8
+lightning_resistance = -0.25
+poison_resistance = 0.9
 necrotic_resistance = 0.0
-physical_resistance = 0.1
+physical_resistance = 0.15
 fire_weakness = 0.0
 frost_weakness = 0.25
-lightning_weakness = 0.25
+lightning_weakness = 0.4
 holy_weakness = 0.0
 causes_horror = true
-horror_difficulty = 12
-loot_table_av = 5
-gold_drop = Array[int]([60, 120])
-guaranteed_drops = Array[String]([])
+horror_difficulty = 16
+loot_table_av = 8
+gold_drop = Array[int]([150, 300])
+guaranteed_drops = Array[String](["wyvern_heart"])
 drop_table = {
-"wyvern_scale": 0.5,
-"wyvern_venom": 0.4,
-"wyvern_wing": 0.25,
-"beast_heart": 0.2
+"wyvern_scale": 0.8,
+"wyvern_venom": 0.6,
+"wyvern_wing": 0.4,
+"beast_heart": 0.3,
+"rare_gem": 0.15
 }
-xp_reward = 250
+xp_reward = 700
 scene_path = ""
 icon_path = "res://assets/sprites/enemies/beasts/wyvern.png"
-scale = 1.5
+scale = 1.8
 sprite_path = "res://assets/sprites/enemies/beasts/wyvern.png"
 attack_sprite_path = "res://assets/sprites/enemies/beasts/wyvern_attack.png"
 sprite_hframes = 6
 sprite_vframes = 1
 attack_hframes = 5
 attack_vframes = 1
-sprite_pixel_size = 0.04
+sprite_pixel_size = 0.05
 idle_sounds = Array[String](["res://assets/audio/sfx/monsters/mid_growl.wav"])
 attack_sounds = Array[String](["res://assets/audio/sfx/monsters/mid_growl.wav"])
 hurt_sounds = Array[String](["res://assets/audio/sfx/monsters/mid_growl.wav"])

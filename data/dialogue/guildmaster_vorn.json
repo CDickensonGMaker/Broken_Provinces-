@@ -1,0 +1,1636 @@
+{
+  "id": "guildmaster_vorn",
+  "display_name": "Guildmaster Vorn - Adventurer's Guild",
+  "description": "Dialogue for Guildmaster Vorn who runs the Adventurer's Guild in Dalhurst and offers the full guild questline (quests 01-13)",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Guildmaster Vorn",
+      "text": "Welcome to the Adventurer's Guild of Dalhurst. We handle contracts that require skilled fighters, scouts, and problem-solvers. Looking for work, or just browsing?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I want to join the guild.",
+          "next": "join_request",
+          "conditions": [
+            {"type": "quest_complete", "param": "adventurers_01_proving_ground", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "The wolves are dead.",
+          "next": "quest_01_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "adventurers_01_proving_ground", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "The rat infestation is cleared.",
+          "next": "quest_02_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "adventurers_02_pest_control", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Halvard reached Thornfield safely.",
+          "next": "quest_03_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "adventurers_03_escort_duty", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "The bandit camp is destroyed.",
+          "next": "quest_04_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "adventurers_04_bandit_contract", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "I found your missing team...",
+          "next": "quest_05_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "adventurers_05_missing_team", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "The Beast of Millbrook is dead.",
+          "next": "quest_06_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "adventurers_06_monster_hunt", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Willow Dale's deep section is cleared.",
+          "next": "quest_07_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "adventurers_07_dungeon_delve", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "The ogre won't trouble the roads anymore.",
+          "next": "quest_08_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "adventurers_08_ogre_problem", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "I dealt with the Iron Blades.",
+          "next": "quest_09_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "adventurers_09_rival_guild", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "The wyvern is slain.",
+          "next": "quest_10_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "adventurers_10_dragon_rumor", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "I've uncovered the corruption.",
+          "next": "quest_11_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "adventurers_11_guild_politics", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "The impossible contract is complete.",
+          "next": "quest_12_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "adventurers_12_legendary_contract", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "I've defeated Katrina.",
+          "next": "quest_13_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "adventurers_13_champion", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Do you have any contracts available?",
+          "next": "available_work",
+          "conditions": [
+            {"type": "quest_complete", "param": "adventurers_01_proving_ground", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Tell me about the guild.",
+          "next": "guild_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Just passing through.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "join_request",
+      "speaker": "Guildmaster Vorn",
+      "text": "We don't take just anyone. The guild has a reputation to maintain, and that means only accepting proven warriors. I'll give you a chance to prove yourself: clear out a wolf pack that's been terrorizing travelers on the road to Thornfield. Kill them all - eight wolves total. Do that, and we'll talk membership.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll handle the wolves.",
+          "next": "quest_01_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_01_proving_ground", "value": 0}]
+        },
+        {
+          "text": "Tell me more about this wolf problem.",
+          "next": "wolf_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Hunting wolves? That's beneath me.",
+          "next": "refuse_initiation",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "wolf_details",
+      "speaker": "Guildmaster Vorn",
+      "text": "A pack has denned up east of Dalhurst, near the Thornfield road. They've killed two merchants this month alone. Eight wolves causing trouble. Kill them all and bring proof. That'll show me you can handle real danger.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm in. I'll clear them out.",
+          "next": "quest_01_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_01_proving_ground", "value": 0}]
+        },
+        {
+          "text": "What's the pay?",
+          "next": "initiation_reward",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Sounds too dangerous.",
+          "next": "refuse_initiation",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "initiation_reward",
+      "speaker": "Guildmaster Vorn",
+      "text": "100 gold, a guild token, and membership. Plus, access to all guild contracts going forward. The guild takes a small cut of each contract, but in exchange you get steady work and backup if jobs go sideways. Fair deal. Interested?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Deal. I'll kill the wolves.",
+          "next": "quest_01_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_01_proving_ground", "value": 0}]
+        },
+        {
+          "text": "Not worth it.",
+          "next": "refuse_initiation",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_01_accept",
+      "speaker": "Guildmaster Vorn",
+      "text": "Good. The wolves are east of here, near the Thornfield road. Kill all eight. When it's done, come back and we'll make your membership official. And don't die out there. Dead adventurers don't pay guild dues.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_01_turnin",
+      "speaker": "Guildmaster Vorn",
+      "text": "You cleared the wolf pack? All eight of them? Let me see... Yes, this is the proof I needed. Well done. You've earned your place. Here's your payment - 100 gold and your guild token. Welcome to the Adventurer's Guild.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's next?",
+          "next": "quest_02_offer",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "adventurers_01_proving_ground", "value": 0},
+            {"type": "set_flag", "param": "adventurers_guild_member", "value": 0},
+            {"type": "set_flag", "param": "adventurers_rank_initiate", "value": 0}
+          ]
+        },
+        {
+          "text": "Thanks. I'll check in later.",
+          "next": "farewell_new_member",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "adventurers_01_proving_ground", "value": 0},
+            {"type": "set_flag", "param": "adventurers_guild_member", "value": 0},
+            {"type": "set_flag", "param": "adventurers_rank_initiate", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_02_offer",
+      "speaker": "Guildmaster Vorn",
+      "text": "Since you're eager, I've got something for a new Initiate. The Dalhurst warehouse district has been overrun with giant rats. Merchants are losing stock and patience. Get in there, kill twelve rats, and report back. Simple pest control, but the pay is honest.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll clear the warehouse.",
+          "next": "quest_02_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_02_pest_control", "value": 0}]
+        },
+        {
+          "text": "Rats? I expected something more challenging.",
+          "next": "quest_02_explain",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Maybe later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_02_explain",
+      "speaker": "Guildmaster Vorn",
+      "text": "These aren't ordinary rats. Giant vermin, some as big as dogs. The merchants are terrified. Every Initiate starts with contracts like this - proving they can handle enclosed spaces, multiple enemies, simple tactics. Master the basics before you tackle dragons.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Fine. I'll handle the rats.",
+          "next": "quest_02_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_02_pest_control", "value": 0}]
+        },
+        {
+          "text": "I'll think about it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_02_accept",
+      "speaker": "Guildmaster Vorn",
+      "text": "The warehouse is in the dock district. Twelve rats minimum need killing. Watch for their nest - that's where the bigger ones hide. 75 gold when it's done.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_02_turnin",
+      "speaker": "Guildmaster Vorn",
+      "text": "The warehouse is clear? The merchants are already singing your praises. Good work, Initiate. Here's your 75 gold. You're building a solid reputation. Ready for something more substantial?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What do you have?",
+          "next": "quest_03_offer",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_02_pest_control", "value": 0}]
+        },
+        {
+          "text": "I need a break first.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_02_pest_control", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_03_offer",
+      "speaker": "Guildmaster Vorn",
+      "text": "A merchant named Halvard needs safe passage from Dalhurst to Thornfield. Bandits have been hitting the trade routes. He's paying good gold for a competent escort. Get him there alive, and you'll earn a promotion to full Guild Member.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll protect Halvard.",
+          "next": "quest_03_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_03_escort_duty", "value": 0}]
+        },
+        {
+          "text": "How dangerous is the route?",
+          "next": "quest_03_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not interested in escort duty.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_03_details",
+      "speaker": "Guildmaster Vorn",
+      "text": "Reports say bandits have hit three caravans this week. Expect an ambush somewhere on the road. Four, maybe five attackers. Halvard's carrying valuable goods, so they'll be motivated. Keep him alive, deal with the bandits, and 125 gold is yours.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I can handle bandits. I'll take the contract.",
+          "next": "quest_03_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_03_escort_duty", "value": 0}]
+        },
+        {
+          "text": "I'll think about it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_03_accept",
+      "speaker": "Guildmaster Vorn",
+      "text": "Halvard is waiting at the Dalhurst east gate with his cart. Meet him there and escort him to Thornfield. Stay alert - the bandits like to hit at the crossroads. 125 gold and your Member badge when you return successful.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_03_turnin",
+      "speaker": "Guildmaster Vorn",
+      "text": "Halvard sent word ahead - he's singing your praises. Four bandits dead and not a scratch on his goods. Excellent work. Here's your 125 gold and more importantly - your badge as a full Guild Member. You've earned it.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What contracts are available for Members?",
+          "next": "quest_04_offer",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "adventurers_03_escort_duty", "value": 0},
+            {"type": "set_flag", "param": "adventurers_rank_member", "value": 0}
+          ]
+        },
+        {
+          "text": "Good to have the promotion.",
+          "next": "farewell_member",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "adventurers_03_escort_duty", "value": 0},
+            {"type": "set_flag", "param": "adventurers_rank_member", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_04_offer",
+      "speaker": "Guildmaster Vorn",
+      "text": "As a Member, you're ready for serious contracts. A bandit camp near Crossroads has been raiding merchant caravans. The Guild's been hired to eliminate them - permanently. Eight bandits and their captain. 200 gold. Interested?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll wipe them out.",
+          "next": "quest_04_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_04_bandit_contract", "value": 0}]
+        },
+        {
+          "text": "Tell me about the captain.",
+          "next": "quest_04_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Maybe something less violent?",
+          "next": "no_other_contracts",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_04_details",
+      "speaker": "Guildmaster Vorn",
+      "text": "The captain's a nasty piece of work - former soldier turned outlaw. He's trained his men well. You can try a frontal assault or scout first and hit them at night. Either way, he needs to die. His men will scatter once he's dead.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Consider it done.",
+          "next": "quest_04_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_04_bandit_contract", "value": 0}]
+        },
+        {
+          "text": "I need to prepare first.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_04_accept",
+      "speaker": "Guildmaster Vorn",
+      "text": "The camp is south of Crossroads, in the forest. Kill the captain, scatter his band. Don't come back until it's done.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_04_turnin",
+      "speaker": "Guildmaster Vorn",
+      "text": "The bandit captain is dead? Good. The merchants can breathe easier now. Here's your 200 gold. You're proving to be reliable, Member. I have... a more somber task that needs handling.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What is it?",
+          "next": "quest_05_offer",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_04_bandit_contract", "value": 0}]
+        },
+        {
+          "text": "I'll take a break first.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_04_bandit_contract", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_05_offer",
+      "speaker": "Guildmaster Vorn",
+      "text": "A Guild team went into Willow Dale two days ago and hasn't returned. Three good adventurers. I fear the worst, but I need to know what happened. Find them - or recover their tokens for their families. The Guild takes care of its own, even in death. 175 gold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll find them.",
+          "next": "quest_05_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_05_missing_team", "value": 0}]
+        },
+        {
+          "text": "What were they hunting in Willow Dale?",
+          "next": "quest_05_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Recovery missions aren't my specialty.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_05_details",
+      "speaker": "Guildmaster Vorn",
+      "text": "Spider extermination. Giant spiders nested in the ruins. Should have been routine for them. Something went wrong. Find out what, recover their guild tokens, and if possible... avenge them.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll bring them home.",
+          "next": "quest_05_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_05_missing_team", "value": 0}]
+        },
+        {
+          "text": "Let me prepare.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_05_accept",
+      "speaker": "Guildmaster Vorn",
+      "text": "Willow Dale is northeast of here. Look for them in the spider-infested sections. Recover their three guild tokens - that's what the families need. And if you find whatever killed them... make it pay.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_05_turnin",
+      "speaker": "Guildmaster Vorn",
+      "text": "You found them? And the tokens? Thank you. This... means a lot. To me, to their families. The spiders that did this - did you...?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I killed every spider I found.",
+          "next": "quest_05_complete_revenge",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_05_missing_team", "value": 0}]
+        },
+        {
+          "text": "I recovered the tokens. That's what mattered.",
+          "next": "quest_05_complete_basic",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_05_missing_team", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_05_complete_revenge",
+      "speaker": "Guildmaster Vorn",
+      "text": "Good. Those bastards deserved it. Here's your 175 gold, and... thank you. The Guild remembers who takes care of our fallen. You're ready for Veteran work - something that'll test your real mettle.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What kind of work?",
+          "next": "quest_06_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need time.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_05_complete_basic",
+      "speaker": "Guildmaster Vorn",
+      "text": "You're right. Bringing them home was what mattered. Here's your 175 gold. The Guild is in your debt. When you're ready for Veteran contracts, come see me.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me about Veteran work.",
+          "next": "quest_06_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll rest first.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_06_offer",
+      "speaker": "Guildmaster Vorn",
+      "text": "Something large and dangerous has been stalking the woods near Millbrook. Livestock mutilated, travelers disappearing. The locals call it 'The Beast.' Track it down, kill it, and bring proof. Succeed, and you'll earn the Veteran rank. 250 gold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll hunt this beast.",
+          "next": "quest_06_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_06_monster_hunt", "value": 0}]
+        },
+        {
+          "text": "What kind of creature is it?",
+          "next": "quest_06_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not ready for monster hunting.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_06_details",
+      "speaker": "Guildmaster Vorn",
+      "text": "We don't know for certain. Could be a dire wolf, could be something worse. Talk to the Millbrook elder - she's seen the tracks. Whatever it is, it's smart enough to avoid hunters so far. You'll need to track it to its lair.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "A worthy challenge. I accept.",
+          "next": "quest_06_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_06_monster_hunt", "value": 0}]
+        },
+        {
+          "text": "I'll think about it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_06_accept",
+      "speaker": "Guildmaster Vorn",
+      "text": "Millbrook is northwest of Dalhurst. Talk to the village elder, find the tracks, hunt the beast. Bring back its pelt as proof. Good hunting, adventurer.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_06_turnin",
+      "speaker": "Guildmaster Vorn",
+      "text": "A dire wolf alpha? By the gods, that explains the carnage. You tracked it to its lair and killed it? The Millbrook folk will sleep soundly tonight. Here's your 250 gold, the dire wolf cloak as a trophy, and your Veteran badge. You've earned every bit of it.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What challenges await a Veteran?",
+          "next": "quest_07_offer",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "adventurers_06_monster_hunt", "value": 0},
+            {"type": "set_flag", "param": "adventurers_rank_veteran", "value": 0}
+          ]
+        },
+        {
+          "text": "I'll enjoy this cloak.",
+          "next": "farewell_veteran",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "adventurers_06_monster_hunt", "value": 0},
+            {"type": "set_flag", "param": "adventurers_rank_veteran", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_07_offer",
+      "speaker": "Guildmaster Vorn",
+      "text": "An unexplored section of Willow Dale was recently uncovered by a cave-in. The Guild wants it mapped and cleared of threats. Any artifacts or treasure you find are yours to keep - standard dungeon delving contract. 300 gold for the mapping. Interested?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll explore the new section.",
+          "next": "quest_07_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_07_dungeon_delve", "value": 0}]
+        },
+        {
+          "text": "What dangers are expected?",
+          "next": "quest_07_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_07_details",
+      "speaker": "Guildmaster Vorn",
+      "text": "Willow Dale's upper levels had spiders and bandits. This deep section? Unknown. Expect undead - the ruins are ancient. There are rumors of trapped vaults and puzzles. The mages who built this place were paranoid.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Undead and traps. I can handle it.",
+          "next": "quest_07_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_07_dungeon_delve", "value": 0}]
+        },
+        {
+          "text": "Let me prepare first.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_07_accept",
+      "speaker": "Guildmaster Vorn",
+      "text": "The new entrance opened in the eastern section of Willow Dale. Map everything, clear the threats, and recover any artifacts. Watch for traps - the ancient builders were clever and cruel.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_07_turnin",
+      "speaker": "Guildmaster Vorn",
+      "text": "You cleared the deep section? And found artifacts? Let me see... An ancient amulet. The mages would pay handsomely for this, but it's yours by contract. Here's your 300 gold and these enchanted explorer boots - they'll help you spot traps.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's next for a Veteran?",
+          "next": "quest_08_offer",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_07_dungeon_delve", "value": 0}]
+        },
+        {
+          "text": "I'll put these boots to good use.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_07_dungeon_delve", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_08_offer",
+      "speaker": "Guildmaster Vorn",
+      "text": "An ogre has taken up residence near Crossroads, blocking the trade route and demanding tolls. The merchants want it gone. Deal with it - by steel or by silver tongue. 350 gold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll handle the ogre.",
+          "next": "quest_08_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_08_ogre_problem", "value": 0}]
+        },
+        {
+          "text": "Negotiate with an ogre?",
+          "next": "quest_08_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Maybe later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_08_details",
+      "speaker": "Guildmaster Vorn",
+      "text": "Ogres are smarter than most give them credit for. This one's been demanding payment, not just killing. Some clever adventurers have talked their way out of fights before. Or you can just kill it. Either way, the road needs to be clear.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Interesting. I'll see what works.",
+          "next": "quest_08_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_08_ogre_problem", "value": 0}]
+        },
+        {
+          "text": "Let me think about the approach.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_08_accept",
+      "speaker": "Guildmaster Vorn",
+      "text": "The ogre's camp is near Crossroads, blocking the main road. Kill it, bribe it, convince it to leave - I don't care how. Just clear the road. Report back when it's done.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_08_turnin",
+      "speaker": "Guildmaster Vorn",
+      "text": "The ogre's dealt with? Excellent. The merchants are already moving caravans again. Here's your 350 gold. Now, I have a delicate matter that needs a veteran's touch - guild politics.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Guild politics?",
+          "next": "quest_09_offer",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_08_ogre_problem", "value": 0}]
+        },
+        {
+          "text": "I'll hear about it later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_08_ogre_problem", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_09_offer",
+      "speaker": "Guildmaster Vorn",
+      "text": "A rival adventuring company, the Iron Blades, has been operating in Guild territory and undercutting our contracts. I want you to handle it - diplomatically if possible. Resolve this, and you'll earn Elite rank. 400 gold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll deal with the Iron Blades.",
+          "next": "quest_09_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_09_rival_guild", "value": 0}]
+        },
+        {
+          "text": "What are my options?",
+          "next": "quest_09_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Inter-guild conflict isn't my specialty.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_09_details",
+      "speaker": "Guildmaster Vorn",
+      "text": "You could challenge their leader to a duel - settle it the old way. You could negotiate territory division. You could drive them out by force. Or... you could propose an alliance. That last one would be ideal, but it requires exceptional charisma.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll find the best solution.",
+          "next": "quest_09_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_09_rival_guild", "value": 0}]
+        },
+        {
+          "text": "Let me consider my approach.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_09_accept",
+      "speaker": "Guildmaster Vorn",
+      "text": "The Iron Blades operate out of Thornfield. Find their leader and resolve this conflict. An alliance would strengthen us both, but any resolution that protects Guild interests is acceptable. Good luck.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_09_turnin",
+      "speaker": "Guildmaster Vorn",
+      "text": "You've resolved the Iron Blades situation? Tell me how.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "We formed an alliance.",
+          "next": "quest_09_complete_alliance",
+          "conditions": [{"type": "flag", "param": "rival_guild_alliance", "value": 0}],
+          "actions": []
+        },
+        {
+          "text": "We negotiated territory boundaries.",
+          "next": "quest_09_complete_negotiate",
+          "conditions": [{"type": "flag", "param": "rival_guild_negotiated", "value": 0}],
+          "actions": []
+        },
+        {
+          "text": "I defeated their leader in a duel.",
+          "next": "quest_09_complete_duel",
+          "conditions": [{"type": "flag", "param": "rival_guild_duel_victory", "value": 0}],
+          "actions": []
+        },
+        {
+          "text": "I drove them out by force.",
+          "next": "quest_09_complete_force",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_09_complete_alliance",
+      "speaker": "Guildmaster Vorn",
+      "text": "An alliance? That's... beyond what I hoped for. Two guilds working together. You've accomplished something remarkable. Here's your 400 gold and your Elite badge. The Guild will remember this.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What challenges await an Elite?",
+          "next": "quest_10_offer",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "adventurers_09_rival_guild", "value": 0},
+            {"type": "set_flag", "param": "adventurers_rank_elite", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_09_complete_negotiate",
+      "speaker": "Guildmaster Vorn",
+      "text": "Negotiated boundaries? Pragmatic. Both guilds survive, territory is clear. Here's your 400 gold and your Elite badge. Well done.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's next?",
+          "next": "quest_10_offer",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "adventurers_09_rival_guild", "value": 0},
+            {"type": "set_flag", "param": "adventurers_rank_elite", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_09_complete_duel",
+      "speaker": "Guildmaster Vorn",
+      "text": "You defeated their leader in single combat? The traditional way. Respectful. Here's your 400 gold and your Elite badge.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What challenges await an Elite?",
+          "next": "quest_10_offer",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "adventurers_09_rival_guild", "value": 0},
+            {"type": "set_flag", "param": "adventurers_rank_elite", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_09_complete_force",
+      "speaker": "Guildmaster Vorn",
+      "text": "Drove them out by force? Effective, if brutal. The threat is eliminated. Here's your 400 gold and your Elite badge. The Guild appreciates results.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's next for an Elite?",
+          "next": "quest_10_offer",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "adventurers_09_rival_guild", "value": 0},
+            {"type": "set_flag", "param": "adventurers_rank_elite", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_10_offer",
+      "speaker": "Guildmaster Vorn",
+      "text": "Travelers report seeing a dragon circling the mountains near Kazer-Dun. If true, this is catastrophic. I need you to investigate - carefully. If it's really a dragon, don't engage. But if it's a wyvern or drake... that's a trophy worth claiming. 500 gold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll investigate the dragon sighting.",
+          "next": "quest_10_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_10_dragon_rumor", "value": 0}]
+        },
+        {
+          "text": "A dragon? Seriously?",
+          "next": "quest_10_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Dragons are above my pay grade.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_10_details",
+      "speaker": "Guildmaster Vorn",
+      "text": "True dragons are rare and devastating. More likely it's a wyvern - dangerous but killable. Track it, identify it. If it's a wyvern, kill it and bring scales as proof. If it's an actual dragon... get out and report back so we can evacuate the region.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll find out what's up there.",
+          "next": "quest_10_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_10_dragon_rumor", "value": 0}]
+        },
+        {
+          "text": "Let me prepare for this.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_10_accept",
+      "speaker": "Guildmaster Vorn",
+      "text": "Travel to Kazer-Dun entrance and investigate. Track the creature to its lair. Identify it. If it's a wyvern, kill it and bring five scales. If it's a dragon... don't die. Good luck, Elite.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_10_turnin",
+      "speaker": "Guildmaster Vorn",
+      "text": "Wyvern scales? You found it and killed it? A wyvern, not a dragon - thank the gods. That's still an incredible feat. Here's your 500 gold and this dragonscale shield - crafted from the beast you slew. You've proven yourself beyond doubt.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What else needs doing?",
+          "next": "quest_11_offer",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_10_dragon_rumor", "value": 0}]
+        },
+        {
+          "text": "This shield is magnificent.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_10_dragon_rumor", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_11_offer",
+      "speaker": "Guildmaster Vorn",
+      "text": "I need to speak with you privately. There's corruption in the Guild - contracts being skimmed, bribes taken, adventurers going missing under suspicious circumstances. Someone high up is dirty. I need someone I can trust to investigate quietly. 450 gold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll find the traitor.",
+          "next": "quest_11_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_11_guild_politics", "value": 0}]
+        },
+        {
+          "text": "Who do you suspect?",
+          "next": "quest_11_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Internal affairs isn't my forte.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_11_details",
+      "speaker": "Guildmaster Vorn",
+      "text": "I have suspicions but no proof. It's someone with access to the records and contract assignments. Check the ledgers, question other members discreetly, and find out who's been meeting with outside parties. Be careful - whoever it is has power.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll uncover the truth.",
+          "next": "quest_11_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_11_guild_politics", "value": 0}]
+        },
+        {
+          "text": "I need to think about this.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_11_accept",
+      "speaker": "Guildmaster Vorn",
+      "text": "Check the guild records for irregularities. Talk to members about the missing adventurers. If you find the traitor, confront them - but be ready for anything. The Guild's integrity depends on this.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_11_turnin",
+      "speaker": "Guildmaster Vorn",
+      "text": "You found the traitor? Who was it, and what did you do?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I exposed them. They're in custody now.",
+          "next": "quest_11_complete_expose",
+          "conditions": [{"type": "flag", "param": "guild_corruption_exposed", "value": 0}],
+          "actions": []
+        },
+        {
+          "text": "They offered me gold to stay quiet...",
+          "next": "quest_11_complete_bribe",
+          "conditions": [{"type": "flag", "param": "guild_corruption_covered_up", "value": 0}],
+          "actions": []
+        },
+        {
+          "text": "They resisted. I had no choice.",
+          "next": "quest_11_complete_kill",
+          "conditions": [{"type": "flag", "param": "guild_traitor_eliminated", "value": 0}],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_11_complete_expose",
+      "speaker": "Guildmaster Vorn",
+      "text": "Justice served properly. The Guild's reputation is restored, and members can trust us again. Here's your 450 gold, and more importantly - you've earned the rank of Guild Officer. Your name will be remembered.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's left for an officer to accomplish?",
+          "next": "quest_12_offer",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_11_guild_politics", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_11_complete_bribe",
+      "speaker": "Guildmaster Vorn",
+      "text": "...I see. I'm disappointed, but I understand the temptation. The corruption remains hidden for now. Here's your official payment. We'll speak no more of this.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Is there other work?",
+          "next": "quest_12_offer",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_11_guild_politics", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_11_complete_kill",
+      "speaker": "Guildmaster Vorn",
+      "text": "Dead traitors tell no tales, but they also can't name their contacts. Still, the threat is eliminated. Here's your 450 gold. The Guild is grateful.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What else needs doing?",
+          "next": "quest_12_offer",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_11_guild_politics", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_12_offer",
+      "speaker": "Guildmaster Vorn",
+      "text": "There's a contract that's been on the board for years. Everyone who's tried it has failed or died. The deepest level of Willow Dale, sealed by the ancients, contains unimaginable treasure. Clear it, and you'll be the first adventurer in Guild history to succeed. 750 gold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll conquer the impossible contract.",
+          "next": "quest_12_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_12_legendary_contract", "value": 0}]
+        },
+        {
+          "text": "Why has everyone failed?",
+          "next": "quest_12_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "If everyone fails, why should I try?",
+          "next": "quest_12_reluctant",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_12_details",
+      "speaker": "Guildmaster Vorn",
+      "text": "The sealed door requires three ancient key fragments hidden throughout Willow Dale. Past the door is an ancient guardian - something powerful enough that the original builders feared it. But beyond that guardian? The Blade of Legends.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The Blade of Legends? I'm in.",
+          "next": "quest_12_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_12_legendary_contract", "value": 0}]
+        },
+        {
+          "text": "I need to prepare extensively.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_12_reluctant",
+      "speaker": "Guildmaster Vorn",
+      "text": "Because you're not everyone. You've proven yourself against wyverns, traitors, and ogres. You cleared spider nests and hunted dire wolves. If anyone can do this, it's you. But I won't force you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "You're right. I'll do it.",
+          "next": "quest_12_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "adventurers_12_legendary_contract", "value": 0}]
+        },
+        {
+          "text": "Let me think about it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_12_accept",
+      "speaker": "Guildmaster Vorn",
+      "text": "Find the three key fragments in Willow Dale's upper levels. Use them to unseal the deepest door. Defeat whatever guards the vault. Claim the Blade of Legends. If you succeed... you'll be ready for the final test.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_12_turnin",
+      "speaker": "Guildmaster Vorn",
+      "text": "By the gods... You did it. The Blade of Legends. The Ancient Guardian defeated. You've accomplished what no one else could. Here's your 750 gold and this Legendary Adventurer's Cloak. But there's one more thing.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What else could there be?",
+          "next": "quest_13_offer",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_12_legendary_contract", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_13_offer",
+      "speaker": "Guildmaster Vorn",
+      "text": "You've earned the right to challenge for the title of Guild Champion. Katrina Steelwind has held it for eight years. Defeat her in the arena, and the title - and everything that comes with it - is yours. This is the final test. Are you ready?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm ready to face Katrina.",
+          "next": "quest_13_redirect",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about Katrina.",
+          "next": "quest_13_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need more time to prepare.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_13_details",
+      "speaker": "Guildmaster Vorn",
+      "text": "Katrina Steelwind is the finest warrior in the Guild. She's faced down chimeras, outwitted armies, and never lost a championship duel. The fight isn't to the death, but it's no gentle sparring match. She fights hard. You'll need to as well.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Where do I find her?",
+          "next": "quest_13_redirect",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll prepare first.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_13_redirect",
+      "speaker": "Guildmaster Vorn",
+      "text": "Katrina spends most of her time in the training yard. Speak with her directly to issue the formal challenge. When you've defeated her, return to me for the ceremony.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_13_turnin",
+      "speaker": "Guildmaster Vorn",
+      "text": "You defeated Katrina Steelwind? In single combat? I... I'm honored to have watched your rise through the ranks. From hunting wolves to becoming Champion. Here's 1000 gold, the Champion's Circlet, and Katrina's own battleaxe - she insisted you have it.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What are my duties as Champion?",
+          "next": "champion_duties",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "adventurers_13_champion", "value": 0},
+            {"type": "set_flag", "param": "adventurers_rank_champion", "value": 0},
+            {"type": "set_flag", "param": "adventurers_questline_complete", "value": 0}
+          ]
+        },
+        {
+          "text": "I'm honored, Guildmaster.",
+          "next": "champion_farewell",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "adventurers_13_champion", "value": 0},
+            {"type": "set_flag", "param": "adventurers_rank_champion", "value": 0},
+            {"type": "set_flag", "param": "adventurers_questline_complete", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "champion_duties",
+      "speaker": "Guildmaster Vorn",
+      "text": "As Champion, you represent the Guild's martial excellence. You'll handle disputes of honor, train promising recruits, and take first pick of elite contracts. The bounty board is always available for you. The Guild salutes you, Champion.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "champion_farewell",
+      "speaker": "Guildmaster Vorn",
+      "text": "The honor is mine, Champion. The Guild is stronger with you leading its warriors. Return whenever you want elite contracts or bounty work.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "available_work",
+      "speaker": "Guildmaster Vorn",
+      "text": "Check the contract board over there. We've got jobs ranging from monster hunting to escort duty. As your reputation grows, better contracts become available.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Do you have any personal recommendations?",
+          "next": "check_next_quest",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll check the board.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "check_next_quest",
+      "speaker": "Guildmaster Vorn",
+      "text": "Let me see what contracts match your current standing...",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "[Continue]",
+          "next": "quest_02_offer",
+          "conditions": [
+            {"type": "quest_complete", "param": "adventurers_01_proving_ground", "value": 0},
+            {"type": "quest_complete", "param": "adventurers_02_pest_control", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "[Continue]",
+          "next": "quest_03_offer",
+          "conditions": [
+            {"type": "quest_complete", "param": "adventurers_02_pest_control", "value": 0},
+            {"type": "quest_complete", "param": "adventurers_03_escort_duty", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "[Continue]",
+          "next": "quest_04_offer",
+          "conditions": [
+            {"type": "quest_complete", "param": "adventurers_03_escort_duty", "value": 0},
+            {"type": "quest_complete", "param": "adventurers_04_bandit_contract", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "[Continue]",
+          "next": "quest_05_offer",
+          "conditions": [
+            {"type": "quest_complete", "param": "adventurers_04_bandit_contract", "value": 0},
+            {"type": "quest_complete", "param": "adventurers_05_missing_team", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "[Continue]",
+          "next": "quest_06_offer",
+          "conditions": [
+            {"type": "quest_complete", "param": "adventurers_05_missing_team", "value": 0},
+            {"type": "quest_complete", "param": "adventurers_06_monster_hunt", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "[Continue]",
+          "next": "quest_07_offer",
+          "conditions": [
+            {"type": "quest_complete", "param": "adventurers_06_monster_hunt", "value": 0},
+            {"type": "quest_complete", "param": "adventurers_07_dungeon_delve", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "[Continue]",
+          "next": "quest_08_offer",
+          "conditions": [
+            {"type": "quest_complete", "param": "adventurers_07_dungeon_delve", "value": 0},
+            {"type": "quest_complete", "param": "adventurers_08_ogre_problem", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "[Continue]",
+          "next": "quest_09_offer",
+          "conditions": [
+            {"type": "quest_complete", "param": "adventurers_08_ogre_problem", "value": 0},
+            {"type": "quest_complete", "param": "adventurers_09_rival_guild", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "[Continue]",
+          "next": "quest_10_offer",
+          "conditions": [
+            {"type": "quest_complete", "param": "adventurers_09_rival_guild", "value": 0},
+            {"type": "quest_complete", "param": "adventurers_10_dragon_rumor", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "[Continue]",
+          "next": "quest_11_offer",
+          "conditions": [
+            {"type": "quest_complete", "param": "adventurers_10_dragon_rumor", "value": 0},
+            {"type": "quest_complete", "param": "adventurers_11_guild_politics", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "[Continue]",
+          "next": "quest_12_offer",
+          "conditions": [
+            {"type": "quest_complete", "param": "adventurers_11_guild_politics", "value": 0},
+            {"type": "quest_complete", "param": "adventurers_12_legendary_contract", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "[Continue]",
+          "next": "quest_13_offer",
+          "conditions": [
+            {"type": "quest_complete", "param": "adventurers_12_legendary_contract", "value": 0},
+            {"type": "quest_complete", "param": "adventurers_13_champion", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "[Continue]",
+          "next": "bounty_board_available",
+          "conditions": [
+            {"type": "quest_complete", "param": "adventurers_13_champion", "value": 0}
+          ],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "bounty_board_available",
+      "speaker": "Guildmaster Vorn",
+      "text": "As Champion, you have access to unlimited bounty contracts. Check the board anytime for monster hunts, bandit clearing, and escort missions. The work never stops for someone of your caliber.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "guild_info",
+      "speaker": "Guildmaster Vorn",
+      "text": "The Adventurer's Guild operates in every major city. We connect skilled fighters with paying clients. Merchants need caravan guards. Towns need monster hunters. Nobles need discrete problem-solvers. We handle it all. Join us, and you'll never lack for work.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "How do I join?",
+          "next": "join_request",
+          "conditions": [{"type": "quest_complete", "param": "adventurers_01_proving_ground", "value": 0, "invert": true}],
+          "actions": []
+        },
+        {
+          "text": "Interesting.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "no_other_contracts",
+      "speaker": "Guildmaster Vorn",
+      "text": "This is adventuring work, not temple charity. Violence comes with the territory. Complete your current contracts and more options will open up.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "refuse_initiation",
+      "speaker": "Guildmaster Vorn",
+      "text": "Then the guild isn't for you. Come back if you change your mind.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_new_member",
+      "speaker": "Guildmaster Vorn",
+      "text": "Welcome aboard, Initiate. Return when you're ready for work.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_member",
+      "speaker": "Guildmaster Vorn",
+      "text": "Congratulations on Member rank. Contracts await when you're ready.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_veteran",
+      "speaker": "Guildmaster Vorn",
+      "text": "Well earned, Veteran. The dangerous work awaits.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Guildmaster Vorn",
+      "text": "Good hunting. And remember - the guild always gets its cut.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

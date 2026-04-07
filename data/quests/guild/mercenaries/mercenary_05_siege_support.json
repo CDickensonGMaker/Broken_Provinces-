@@ -1,0 +1,61 @@
+{
+	"id": "mercenary_05_siege_support",
+	"title": "Breach the Walls",
+	"description": "A fortified bandit position in the hills near Willow Dale has become a staging ground for raids. The Iron Company has been contracted to assault and take the stronghold. This is tactical warfare - siege equipment, coordinated assault, and overwhelming force. Break their defenses and scatter their forces.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "captain_roderick_steele",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "iron_company",
+	"objectives": [
+		{
+			"id": "travel_to_stronghold",
+			"description": "Reach the bandit stronghold near Willow Dale",
+			"type": "reach",
+			"target": "bandit_stronghold_willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "destroy_defenses",
+			"description": "Destroy the stronghold's outer defenses",
+			"type": "kill",
+			"target": "bandit_defender",
+			"required_count": 10
+		},
+		{
+			"id": "clear_inner_keep",
+			"description": "Clear the inner keep of bandit forces",
+			"type": "kill",
+			"target": "bandit_elite",
+			"required_count": 5
+		},
+		{
+			"id": "defeat_commander",
+			"description": "Defeat the bandit commander",
+			"type": "kill",
+			"target": "bandit_commander",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_captain",
+			"description": "Report the stronghold's fall to Captain Steele",
+			"type": "talk",
+			"target": "captain_roderick_steele",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "captain_roderick_steele",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 250,
+		"xp": 600,
+		"items": ["siege_veteran_medal"],
+		"faction_reputation": {
+			"iron_company": 40
+		}
+	},
+	"prerequisites": ["mercenary_04_caravan_guard"],
+	"next_quest": "mercenary_06_hostage_rescue"
+}

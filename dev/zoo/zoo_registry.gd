@@ -1031,6 +1031,264 @@ static var NPCS: Array[Dictionary] = [
 		"idle_fps": 2.0, "walk_fps": 2.0,
 		"notes": "Priest - mystical"
 	},
+
+	# -------------------------------------------------------------------------
+	# ELVEN NPCs
+	# -------------------------------------------------------------------------
+	{
+		"id": "elf_male_civilian",
+		"name": "Elf Male Civilian",
+		"category": "npc",
+		"subcategory": "elf",
+		"sprite_path": "res://assets/sprites/npcs/elves/elf_male_civilian.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Basic elven townsperson"
+	},
+	{
+		"id": "elf_female_civilian",
+		"name": "Elf Female Civilian",
+		"category": "npc",
+		"subcategory": "elf",
+		"sprite_path": "res://assets/sprites/npcs/elves/elf_female_civilian.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Elven woman - for diplomat Silvana and other female elf NPCs"
+	},
+	{
+		"id": "elf_guard",
+		"name": "Elf Guard",
+		"category": "npc",
+		"subcategory": "elf",
+		"sprite_path": "res://assets/sprites/npcs/elves/elf_guard.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Elven warrior/sentinel"
+	},
+	{
+		"id": "elf_mage",
+		"name": "Elf Mage",
+		"category": "npc",
+		"subcategory": "elf",
+		"sprite_path": "res://assets/sprites/npcs/elves/elf_mage.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Elven wizard/enchanter"
+	},
+
+	# -------------------------------------------------------------------------
+	# PIRATE/SAILOR NPCs
+	# -------------------------------------------------------------------------
+	{
+		"id": "sailor_deckhand",
+		"name": "Sailor Deckhand",
+		"category": "npc",
+		"subcategory": "sailor",
+		"sprite_path": "res://assets/sprites/npcs/sailors/sailor_deckhand.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Generic sailor for docks and ships"
+	},
+	{
+		"id": "sailor_captain",
+		"name": "Ship Captain",
+		"category": "npc",
+		"subcategory": "sailor",
+		"sprite_path": "res://assets/sprites/npcs/sailors/sailor_captain.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Ship captain NPC for harbor areas"
+	},
+	{
+		"id": "pirate_reformed",
+		"name": "Reformed Pirate",
+		"category": "npc",
+		"subcategory": "sailor",
+		"sprite_path": "res://assets/sprites/npcs/sailors/pirate_reformed.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Ex-pirate informant for harbor quests"
+	},
+
+	# -------------------------------------------------------------------------
+	# TENGER NPCs
+	# -------------------------------------------------------------------------
+	{
+		"id": "tenger_elder",
+		"name": "Tenger Elder",
+		"category": "npc",
+		"subcategory": "tenger",
+		"sprite_path": "res://assets/sprites/npcs/tengers/tenger_elder.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Wise Tenger leader for diplomacy quests"
+	},
+	{
+		"id": "tenger_trader",
+		"name": "Tenger Trader",
+		"category": "npc",
+		"subcategory": "tenger",
+		"sprite_path": "res://assets/sprites/npcs/tengers/tenger_trader.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Nomadic Tenger merchant"
+	},
+	{
+		"id": "tenger_scout_npc",
+		"name": "Tenger Scout",
+		"category": "npc",
+		"subcategory": "tenger",
+		"sprite_path": "res://assets/sprites/npcs/tengers/tenger_scout_npc.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Neutral Tenger scout (non-hostile NPC version)"
+	},
+
+	# -------------------------------------------------------------------------
+	# WORKERS/LABORERS
+	# -------------------------------------------------------------------------
+	{
+		"id": "miner_npc",
+		"name": "Miner",
+		"category": "npc",
+		"subcategory": "worker",
+		"sprite_path": "res://assets/sprites/npcs/workers/miner_npc.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Mining worker for Duncaster and dwarf mining areas"
+	},
+	{
+		"id": "fisherman_npc",
+		"name": "Fisherman",
+		"category": "npc",
+		"subcategory": "worker",
+		"sprite_path": "res://assets/sprites/npcs/workers/fisherman_npc.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Fisherman for Millbrook, Larton lakeside areas"
+	},
+	{
+		"id": "lumberjack_npc",
+		"name": "Lumberjack",
+		"category": "npc",
+		"subcategory": "worker",
+		"sprite_path": "res://assets/sprites/npcs/workers/lumberjack_npc.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Lumberjack for Elder Moor logging camp"
+	},
+	{
+		"id": "dockworker_npc",
+		"name": "Dockworker",
+		"category": "npc",
+		"subcategory": "worker",
+		"sprite_path": "res://assets/sprites/npcs/workers/dockworker_npc.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Heavy laborer at ports and docks"
+	},
+
+	# -------------------------------------------------------------------------
+	# GUILD LEADERS
+	# -------------------------------------------------------------------------
+	{
+		"id": "thieves_guild_master",
+		"name": "Thieves Guild Master",
+		"category": "npc",
+		"subcategory": "guild",
+		"sprite_path": "res://assets/sprites/npcs/guild/thieves_guild_master.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Shadowy figure - leader of the Thieves Guild"
+	},
+	{
+		"id": "keepers_leader",
+		"name": "Keepers Leader",
+		"category": "npc",
+		"subcategory": "guild",
+		"sprite_path": "res://assets/sprites/npcs/guild/keepers_leader.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Hooded conspirator - leader of the Keepers secret society"
+	},
+
+	# -------------------------------------------------------------------------
+	# ADDITIONAL NPCs
+	# -------------------------------------------------------------------------
+	{
+		"id": "harbor_master",
+		"name": "Harbor Master",
+		"category": "npc",
+		"subcategory": "authority",
+		"sprite_path": "res://assets/sprites/npcs/authority/harbor_master.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Port authority figure for harbor management"
+	},
+	{
+		"id": "caravan_guard",
+		"name": "Caravan Guard",
+		"category": "npc",
+		"subcategory": "combat",
+		"sprite_path": "res://assets/sprites/npcs/combat/caravan_guard.png",
+		"h_frames": 1, "v_frames": 1,
+		"pixel_size": PIXEL_SIZE_HUMANOID,
+		"offset_y": 0.0,
+		"idle_frames": 1, "walk_frames": 1,
+		"idle_fps": 2.0, "walk_fps": 2.0,
+		"notes": "Escort NPC for delivery and caravan quests"
+	},
 ]
 
 ## ============================================================================

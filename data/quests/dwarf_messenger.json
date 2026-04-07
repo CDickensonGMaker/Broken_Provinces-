@@ -1,0 +1,69 @@
+{
+	"id": "dwarf_messenger",
+	"title": "Iron Words",
+	"description": "A dwarf named Borin Stonehammer has arrived in Elder Moor bearing urgent news from Kazer-Dun. The message must reach the Dwarf King, but Borin was wounded on the journey and cannot continue. He needs someone trustworthy to carry the sealed letter through the dangerous mountain passes to the gates of Kazer-Dun. The fate of dwarf-human relations may depend on it.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "borin_stonehammer",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "accept_letter",
+			"description": "Accept the sealed letter from Borin Stonehammer",
+			"type": "talk",
+			"target": "borin_stonehammer",
+			"required_count": 1
+		},
+		{
+			"id": "travel_south",
+			"description": "Travel south toward Kazer-Dun",
+			"type": "reach",
+			"target": "kazer_dun_approach",
+			"required_count": 1
+		},
+		{
+			"id": "navigate_pass",
+			"description": "Navigate the mountain pass safely",
+			"type": "reach",
+			"target": "mountain_pass_checkpoint",
+			"required_count": 1
+		},
+		{
+			"id": "deal_with_goblins",
+			"description": "Deal with the goblin patrol blocking the path",
+			"type": "kill",
+			"target": "goblin_soldier",
+			"required_count": 4
+		},
+		{
+			"id": "reach_gates",
+			"description": "Reach the gates of Kazer-Dun",
+			"type": "reach",
+			"target": "kazer_dun_entrance",
+			"required_count": 1
+		},
+		{
+			"id": "deliver_message",
+			"description": "Deliver the letter to the Dwarf Gate Warden",
+			"type": "talk",
+			"target": "dwarf_gate_warden",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "dwarf_gate_warden",
+	"turn_in_zone": "kazer_dun_entrance",
+	"rewards": {
+		"gold": 175,
+		"xp": 400,
+		"items": ["dwarven_seal_of_passage"],
+		"faction_reputation": {
+			"dwarves": 50
+		}
+	},
+	"on_accept_items": ["sealed_dwarf_letter"],
+	"prerequisites": [],
+	"next_quest": "",
+	"notes": "This quest introduces players to Kazer-Dun and builds dwarf reputation. The seal of passage may be useful for future dwarf-related content."
+}

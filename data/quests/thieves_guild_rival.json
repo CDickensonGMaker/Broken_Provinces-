@@ -1,0 +1,74 @@
+{
+	"id": "thieves_guild_rival",
+	"title": "Turf War",
+	"description": "A rival crew from Thornfield has moved into Dalhurst territory, running protection rackets on merchants the Guild already controls. They're bold, well-armed, and led by a woman named 'Red Mara' who has no respect for established boundaries. The fence wants you to handle it. You could hit their operation directly - burn their stash house, kill their enforcers. Or negotiate a territorial agreement if you're persuasive. There's even a third option: if you can defeat Red Mara in single combat and she yields, her crew might join the Guild instead. Power, diplomacy, or violence - pick your weapon.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "thieves_guild_fence",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "locate_rival_operation",
+			"description": "Find the rival crew's base of operations in Dalhurst",
+			"type": "reach",
+			"target": "rival_safehouse",
+			"required_count": 1
+		},
+		{
+			"id": "confront_red_mara",
+			"description": "Confront Red Mara about the territorial dispute",
+			"type": "talk",
+			"target": "red_mara",
+			"required_count": 1
+		},
+		{
+			"id": "resolve_turf_war",
+			"description": "Resolve the turf war by any means necessary",
+			"type": "kill",
+			"target": "rival_enforcer",
+			"required_count": 5,
+			"is_optional": true
+		},
+		{
+			"id": "report_resolution",
+			"description": "Report the outcome to the Guild fence",
+			"type": "talk",
+			"target": "thieves_guild_fence",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "thieves_guild_fence",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 400,
+		"xp": 500,
+		"items": [],
+		"faction_reputation": {
+			"thieves_guild": 60
+		}
+	},
+	"choice_consequences": {
+		"destroyed_rival_crew": {
+			"flags_to_set": ["rival_crew_destroyed"],
+			"reputation_changes": {"thieves_guild": 25, "town_guard": -15}
+		},
+		"negotiated_territory": {
+			"flags_to_set": ["rival_crew_territory_split"],
+			"reputation_changes": {"thieves_guild": 15}
+		},
+		"absorbed_rival_crew": {
+			"flags_to_set": ["rival_crew_joined_guild"],
+			"reputation_changes": {"thieves_guild": 50},
+			"unlock_follower": "red_mara"
+		},
+		"failed_negotiation": {
+			"flags_to_set": ["turf_war_ongoing"],
+			"reputation_changes": {"thieves_guild": -30}
+		}
+	},
+	"prerequisites": ["thieves_guild_informant"],
+	"next_quest": "thieves_guild_mastermind",
+	"notes": "Multi-solution conflict quest. Violence route: kill enforcers + Red Mara, destroy stash house (combat-heavy). Negotiation route: DC 18 Persuasion check to split territory peacefully. Duel route: Challenge Red Mara to 1v1 combat (non-lethal), defeat her to absorb her crew into the Guild AND recruit her as a follower. Best outcome is duel victory - gains manpower for Guild and unlocks Red Mara companion. Failed negotiation leaves situation unresolved and triggers ongoing random encounters with rival crew."
+}

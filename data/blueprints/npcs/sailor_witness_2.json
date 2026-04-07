@@ -1,0 +1,8 @@
+{
+  "name": "Dock Worker Marris",
+  "who": "Middle-aged sailor with tired eyes\nWorks night shifts at the docks\nQuiet but notices everything",
+  "what": "Witness to dock incident\nSaw things others missed during night hours\nReluctant to speak without persuasion",
+  "where": "Dalhurst - Docks (warehouse entrance)",
+  "sprite": "sailor_deckhand",
+  "quests": "Dock Investigation (witness)"
+}

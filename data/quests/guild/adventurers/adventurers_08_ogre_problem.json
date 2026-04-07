@@ -1,0 +1,64 @@
+{
+	"id": "adventurers_08_ogre_problem",
+	"title": "Giant Troubles",
+	"description": "An ogre has taken up residence near Crossroads, blocking the trade route and demanding tolls from travelers. The merchants want it gone. The Guild needs you to deal with it - by steel or by silver tongue. Clever adventurers might find a way to negotiate, but most just kill the beast.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "locate_ogre",
+			"description": "Find the ogre near Crossroads",
+			"type": "reach",
+			"target": "crossroads_ogre_camp",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "deal_with_ogre",
+			"description": "Defeat the ogre OR convince it to leave",
+			"type": "kill",
+			"target": "ogre",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "report_outcome",
+			"description": "Report to Guildmaster Vorn",
+			"type": "talk",
+			"target": "guildmaster_vorn_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 350,
+		"xp": 850,
+		"faction_reputation": {
+			"adventurers_guild": 80,
+			"merchant_guild": 30
+		}
+	},
+	"choice_consequences": {
+		"killed_ogre": {
+			"flags_to_set": ["ogre_problem_combat"],
+			"reputation_changes": {"adventurers_guild": 20}
+		},
+		"negotiated_with_ogre": {
+			"flags_to_set": ["ogre_problem_diplomacy"],
+			"reputation_changes": {"adventurers_guild": 40}
+		},
+		"bribed_ogre": {
+			"flags_to_set": ["ogre_problem_bribed"],
+			"reputation_changes": {"adventurers_guild": 15}
+		}
+	},
+	"prerequisites": ["adventurers_07_dungeon_delve"],
+	"next_quest": "adventurers_09_rival_guild",
+	"notes": "Rank: Veteran. Major combat or diplomacy challenge. Ogre can be fought, intimidated, or bribed. Negotiation requires Speech 50+ and gold. Best outcome is non-violent resolution."
+}

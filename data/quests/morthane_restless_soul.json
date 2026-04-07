@@ -1,0 +1,67 @@
+{
+	"id": "morthane_restless_soul",
+	"title": "Unfinished Business",
+	"description": "A ghost haunts the streets of Dalhurst at night, unable to pass through Morthane's gate to the afterlife. The Priest of Morthane can sense the spirit's anguish - it has unfinished business in the mortal world. He asks you to help the spirit resolve whatever chains it to this realm, so it may finally find peace in the cycle of rebirth.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_morthane_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "locate_ghost",
+			"description": "Locate the restless spirit in Dalhurst at night",
+			"type": "interact",
+			"target": "restless_ghost",
+			"required_count": 1
+		},
+		{
+			"id": "learn_story",
+			"description": "Learn the ghost's story and unfinished business",
+			"type": "talk",
+			"target": "restless_ghost",
+			"required_count": 1
+		},
+		{
+			"id": "find_keepsake",
+			"description": "Find the ghost's lost keepsake",
+			"type": "collect",
+			"target": "wedding_ring",
+			"required_count": 1
+		},
+		{
+			"id": "deliver_message",
+			"description": "Deliver the ghost's final message to their loved one",
+			"type": "talk",
+			"target": "widow_dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "witness_passing",
+			"description": "Witness the spirit's passage to the afterlife",
+			"type": "interact",
+			"target": "spirit_transition",
+			"required_count": 1
+		},
+		{
+			"id": "report_to_priest",
+			"description": "Report to Priest of Morthane",
+			"type": "talk",
+			"target": "priest_morthane_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_morthane_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 100,
+		"xp": 550,
+		"items": ["spirit_ward_charm"],
+		"faction_reputation": {
+			"church_of_three": 45
+		}
+	},
+	"prerequisites": ["morthane_necromancer"],
+	"next_quest": "morthane_cycle_broken"
+}

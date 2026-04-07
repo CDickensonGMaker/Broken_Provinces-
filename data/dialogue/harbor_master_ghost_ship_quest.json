@@ -1,0 +1,375 @@
+{
+  "id": "harbor_master_ghost_ship_quest",
+  "display_name": "Harbor Master - Ghost Ship Quest",
+  "description": "Supplemental dialogue for Harbor Master regarding the ghost ship investigation quest",
+  "start_node": "quest_greeting",
+  "nodes": [
+    {
+      "id": "quest_greeting",
+      "speaker": "Harbor Master",
+      "text": "You look like someone who can handle trouble. I've got a problem that needs someone with steel in their spine.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What kind of problem?",
+          "next": "ghost_ship_intro",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "ghost_ship_rumors",
+              "value": 0,
+              "invert": true
+            },
+            {
+              "type": "quest_state",
+              "param": "ghost_ship_rumors",
+              "value": 1,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I investigated the coastline. Found wreckage.",
+          "next": "investigation_report",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "ghost_ship_rumors",
+              "value": 1
+            },
+            {
+              "type": "flag_set",
+              "param": "ghost_ship_wreckage_found",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "The ghost ship investigation is complete.",
+          "next": "quest_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "ghost_ship_rumors",
+              "value": 1
+            },
+            {
+              "type": "has_item",
+              "param": "mysterious_cargo",
+              "value": 1
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Not right now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "ghost_ship_intro",
+      "speaker": "Harbor Master",
+      "text": "The fishermen are spooked. They keep seeing a ghost ship - appears at dawn in the mist, drifts silently through the bay, then vanishes. No crew, no sails moving. Just... there. I need to know if it's smugglers playing tricks, pirates, or something worse.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Have you sent anyone to investigate?",
+          "next": "previous_attempts",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll look into it.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "ghost_ship_rumors",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Sounds like superstition to me.",
+          "next": "refuse_quest",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "previous_attempts",
+      "speaker": "Harbor Master",
+      "text": "Sent two men already. First came back with nothing - said he waited all morning and saw only fog. Second one hasn't come back at all. That was three days ago. Whatever's out there, it's real enough to be dangerous.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What do you need me to do?",
+          "next": "quest_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll investigate.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "ghost_ship_rumors",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Too risky for me.",
+          "next": "refuse_quest",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_details",
+      "speaker": "Harbor Master",
+      "text": "Talk to Old Garrett - he's the fisherman who's seen it most. He can tell you where to look. Then search the western coastline for any signs of wreckage, cargo, anything unusual. I need to know what we're dealing with before more people go missing.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll get to the bottom of this.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "ghost_ship_rumors",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What's the pay?",
+          "next": "reward_question",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Find someone else.",
+          "next": "refuse_quest",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "reward_question",
+      "speaker": "Harbor Master",
+      "text": "125 gold and this spyglass - belonged to a ship captain who went down with his vessel. Good for scouting at sea. Plus, if you can solve this mystery, you'll have my gratitude and the respect of every sailor in Dalhurst. Deal?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Deal. I'll investigate.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "ghost_ship_rumors",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Not worth the risk.",
+          "next": "refuse_quest",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_quest",
+      "speaker": "Harbor Master",
+      "text": "Good. Find Old Garrett on the docks - he's usually mending nets near the fishing boats. He'll tell you where the sightings have been. And be careful. Whatever's out there, it's already claimed at least one man.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "investigation_report",
+      "speaker": "Harbor Master",
+      "text": "Wreckage? What did you find?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Ship debris, but it looked... strange. Old, rotted, like it's been underwater for years.",
+          "next": "wreckage_concern",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "wreckage_concern",
+      "speaker": "Harbor Master",
+      "text": "That's not good. Not good at all. Did you find any cargo? Anything that might tell us what ship it was or where it came from?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Still looking. I'll let you know.",
+          "next": "continue_investigation",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "continue_investigation",
+      "speaker": "Harbor Master",
+      "text": "Aye, do that. The sooner we know what we're dealing with, the better.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_turnin",
+      "speaker": "Harbor Master",
+      "text": "You're back. What did you find out there?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Show him the mysterious cargo.",
+          "next": "reveal_findings",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "reveal_findings",
+      "speaker": "Harbor Master",
+      "text": "By the Three... this cargo, it's from the Pale Maiden. That ship went down twenty years ago in a storm. Every soul aboard lost. If this wreckage is washing up now, something down there is stirring up the dead. This is worse than I thought.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What do we do about it?",
+          "next": "next_steps",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "next_steps",
+      "speaker": "Harbor Master",
+      "text": "We need help - real help. There's an old lighthouse on the western point. It's been abandoned for years, but if these ghost ship sightings are real, that's where we'll find answers. But I can't ask you to go there. That's a job for someone with experience dealing with the unnatural.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll check out the lighthouse.",
+          "next": "lighthouse_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "You're right, this is beyond me.",
+          "next": "complete_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "ghost_ship_rumors",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lighthouse_offer",
+      "speaker": "Harbor Master",
+      "text": "You've got guts, I'll give you that. If you're serious about this, I'll mark the lighthouse location on your map. But know this - people who go there don't always come back. The place is cursed, they say.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm not afraid of curses.",
+          "next": "complete_quest_lighthouse",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "ghost_ship_rumors",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "lighthouse_location_revealed",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "On second thought, I'll just take my reward.",
+          "next": "complete_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "ghost_ship_rumors",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "complete_quest",
+      "speaker": "Harbor Master",
+      "text": "You've done enough. Here's your payment - 125 gold and the spyglass. You've earned it. At least now we know what we're dealing with... even if the truth is more terrifying than the rumors.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "complete_quest_lighthouse",
+      "speaker": "Harbor Master",
+      "text": "You're braver than most. Here's your payment - 125 gold and the spyglass. The lighthouse is marked on your map. Whatever you find there... be ready for anything. And may the Three watch over you.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "refuse_quest",
+      "speaker": "Harbor Master",
+      "text": "Can't say I blame you. Ghost stories tend to end badly for those who chase them. If you change your mind, you know where to find me.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Harbor Master",
+      "text": "Aye. Come back when you're ready to talk business.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

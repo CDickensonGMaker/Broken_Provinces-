@@ -1,0 +1,46 @@
+{
+	"id": "chronos_time_fragment",
+	"title": "Echoes of the Past",
+	"description": "The Priest of Chronos senses a temporal disturbance emanating from the ruins of Willow Dale. Ancient artifacts touched by time magic are calling out, showing visions of events long forgotten. He asks you to recover these time-fragments before their power fades completely.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_chronos_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "travel_willow_dale",
+			"description": "Travel to Willow Dale ruins",
+			"type": "reach",
+			"target": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "collect_time_fragments",
+			"description": "Collect time-touched artifacts from the ruins",
+			"type": "collect",
+			"target": "time_fragment",
+			"required_count": 3
+		},
+		{
+			"id": "return_to_priest",
+			"description": "Return the fragments to Priest of Chronos",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_chronos_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 125,
+		"xp": 450,
+		"items": ["blessing_of_foresight"],
+		"faction_reputation": {
+			"church_of_three": 40
+		}
+	},
+	"prerequisites": ["temple_prophecy_chronos"],
+	"next_quest": "chronos_false_prophet"
+}

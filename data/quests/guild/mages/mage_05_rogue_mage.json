@@ -1,0 +1,65 @@
+{
+	"id": "mage_05_rogue_mage",
+	"title": "Unsanctioned Magic",
+	"description": "Reports have reached the Arcane Circle of a rogue mage practicing forbidden magic near Millbrook. The guild cannot tolerate unsanctioned practitioners, especially those dabbling in dangerous arts. Track down this rogue mage and bring them to justice - or help them see the error of their ways.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "archmage_elara_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "arcane_circle",
+	"objectives": [
+		{
+			"id": "investigate_millbrook",
+			"description": "Investigate magical disturbances near Millbrook",
+			"type": "reach",
+			"target": "millbrook",
+			"required_count": 1
+		},
+		{
+			"id": "question_witnesses",
+			"description": "Question townspeople about the rogue mage",
+			"type": "talk",
+			"target": "millbrook_innkeeper",
+			"required_count": 1,
+			"notes": "Innkeeper has seen strange lights in the woods"
+		},
+		{
+			"id": "find_rogue_hideout",
+			"description": "Locate the rogue mage's hideout in the forest",
+			"type": "reach",
+			"target": "rogue_mage_camp",
+			"required_count": 1
+		},
+		{
+			"id": "confront_rogue",
+			"description": "Confront the rogue mage (Combat or Persuasion)",
+			"type": "kill_or_persuade",
+			"target": "rogue_mage_thaddeus",
+			"required_count": 1,
+			"notes": "Can fight or persuade them to stop (skill check DC 15)"
+		},
+		{
+			"id": "report_outcome",
+			"description": "Report the outcome to Archmage Elara",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "archmage_elara_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 200,
+		"xp": 500,
+		"items": ["spell_scroll_ice_spike"],
+		"faction_reputation": {
+			"arcane_circle": 25
+		}
+	},
+	"on_complete_flags": ["rogue_mage_dealt_with"],
+	"prerequisites": ["first_enchantment_complete"],
+	"next_quest": "mage_06_artifact_recovery",
+	"notes": "Second Apprentice quest. Moral choice: kill or persuade. Different flags based on player choice. Rewards ice spell."
+}

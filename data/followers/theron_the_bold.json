@@ -1,0 +1,71 @@
+{
+    "id": "theron_the_bold",
+    "display_name": "Theron the Bold",
+    "description": "A seasoned human warrior from the Adventurer's Guild. Known for his aggressive fighting style and unwavering courage in battle.",
+    "sprite_path": "res://assets/sprites/npcs/combat/male_gladiator1.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0320,
+    "max_health": 120,
+    "damage": 18,
+    "armor": 25,
+    "combat_style": "melee",
+    "is_essential": true,
+    "follow_distance": 2.5,
+    "combat_range": 6.0,
+    "leash_range": 20.0,
+    "personality_traits": ["brave", "aggressive", "loyal", "honorable"],
+    "abilities": [
+        {
+            "id": "shield_bash",
+            "name": "Shield Bash",
+            "description": "Slams enemy with shield, stunning them briefly",
+            "cooldown": 12.0,
+            "damage_mult": 0.5,
+            "effect": "stun",
+            "effect_duration": 2.0
+        },
+        {
+            "id": "battle_cry",
+            "name": "Battle Cry",
+            "description": "Rallying shout that increases damage for nearby allies",
+            "cooldown": 30.0,
+            "effect": "buff_damage",
+            "effect_duration": 10.0,
+            "buff_amount": 0.25
+        },
+        {
+            "id": "taunt",
+            "name": "Taunt",
+            "description": "Forces nearby enemies to attack Theron",
+            "cooldown": 20.0,
+            "effect": "taunt",
+            "effect_duration": 5.0,
+            "range": 8.0
+        }
+    ],
+    "combat_lines": [
+        "For the Guild!",
+        "Stand behind me!",
+        "You face Theron the Bold!",
+        "Come test your steel against mine!",
+        "I've slain worse than you!",
+        "Hold the line!"
+    ],
+    "idle_lines": [
+        "A warrior must always be ready.",
+        "I could use a good ale after this.",
+        "The Guild has taught me much about honor.",
+        "Keep your guard up. Danger lurks everywhere.",
+        "My sword arm grows restless.",
+        "These adventures remind me of my youth."
+    ],
+    "recruitment_quest": "adventurers_guild_champion",
+    "recruitment_conditions": ["adventurers_guild_questline_complete", "chose_theron"],
+    "recruitment_location": "dalhurst",
+    "home_location": "dalhurst",
+    "faction_id": "adventurers_guild",
+    "guild": "adventurers_guild",
+    "companion_type": "warrior",
+    "weapon_type": "sword_and_shield"
+}

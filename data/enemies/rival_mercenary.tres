@@ -1,0 +1,123 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/enemy_attack_data.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+id = "merc_slash"
+display_name = "Slash"
+damage = Array[int]([6, 12, 4])
+damage_type = 0
+windup_time = 0.35
+active_time = 0.2
+recovery_time = 0.3
+cooldown = 1.2
+range_distance = 2.8
+is_ranged = false
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 0.0
+inflicts_condition = 0
+condition_chance = 0.0
+condition_duration = 0.0
+stagger_power = 0.8
+knockback_force = 2.0
+weight = 1.0
+min_range = 0.0
+max_range = 2.8
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+id = "merc_shield_bash"
+display_name = "Shield Bash"
+damage = Array[int]([4, 8, 2])
+damage_type = 0
+windup_time = 0.25
+active_time = 0.2
+recovery_time = 0.35
+cooldown = 3.0
+range_distance = 2.2
+is_ranged = false
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 0.0
+inflicts_condition = 7
+condition_chance = 0.5
+condition_duration = 1.5
+stagger_power = 2.0
+knockback_force = 4.0
+weight = 0.5
+min_range = 0.0
+max_range = 2.2
+requires_los = true
+animation_name = "bash"
+sound_effect = ""
+
+[resource]
+script = ExtResource("1")
+id = "rival_mercenary"
+display_name = "Black Wolf Mercenary"
+description = "A professional soldier of the Black Wolf Company, rivals to the Iron Company. These mercenaries are well-trained and well-equipped, fighting for gold rather than ideals. They view the Iron Company as competitors to be eliminated."
+level = 15
+min_level = 12
+max_level = 25
+max_hp = 100
+armor_value = 18
+movement_speed = 4.0
+turn_speed = 5.0
+grit = 8
+agility = 6
+will = 5
+knowledge = 3
+behavior = 0
+faction = 6
+political_faction = "black_wolf"
+aggro_range = 14.0
+attack_range = 2.8
+preferred_distance = 2.0
+flee_hp_threshold = 0.15
+is_boss = false
+attacks = Array[ExtResource("2")]([SubResource("1"), SubResource("2")])
+can_block = true
+block_chance = 0.35
+stagger_resistance = 0.35
+fire_resistance = 0.0
+frost_resistance = 0.0
+lightning_resistance = 0.0
+poison_resistance = 0.1
+necrotic_resistance = 0.0
+physical_resistance = 0.15
+fire_weakness = 0.0
+frost_weakness = 0.0
+lightning_weakness = 0.0
+holy_weakness = 0.0
+causes_horror = false
+horror_difficulty = 0
+loot_table_av = 4
+gold_drop = Array[int]([25, 60])
+guaranteed_drops = Array[String]([])
+drop_table = {
+"health_potion": 0.3,
+"iron_ingot": 0.25,
+"repair_kit": 0.2,
+"mercenary_orders": 0.15
+}
+xp_reward = 110
+scene_path = ""
+icon_path = "res://assets/sprites/enemies/humanoid/human_bandit_alt.png"
+scale = 1.0
+sprite_path = "res://assets/sprites/enemies/humanoid/human_bandit_alt.png"
+attack_sprite_path = ""
+sprite_hframes = 4
+sprite_vframes = 1
+attack_hframes = 4
+attack_vframes = 1
+sprite_pixel_size = 0.03
+idle_sounds = Array[String](["res://assets/audio/sfx/monsters/low_growl.wav"])
+attack_sounds = Array[String](["res://assets/audio/sfx/weapons/sword_clank_1.wav", "res://assets/audio/sfx/weapons/sword_clank_2.wav"])
+hurt_sounds = Array[String](["res://assets/audio/sfx/monsters/mid_growl.wav"])
+death_sounds = Array[String](["res://assets/audio/sfx/monsters/low_growl.wav"])

@@ -1,0 +1,73 @@
+{
+	"id": "gaela_04_sacred_grove",
+	"title": "The Sacred Grove",
+	"description": "An ancient grove near Elder Moor, sacred to Gaela, is threatened by loggers from Dalhurst who need timber for expansion. Priestess Elara asks you to negotiate a solution that balances nature and economy.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "priest",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "visit_grove",
+			"description": "Visit the Sacred Grove near Elder Moor",
+			"type": "explore",
+			"target": "elder_moor",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "speak_to_loggers",
+			"description": "Speak to the Logging Foreman in Elder Moor",
+			"type": "talk",
+			"target": "logging_foreman_elder_moor",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "make_choice",
+			"description": "Choose how to resolve the conflict",
+			"type": "talk",
+			"target": "priest_gaela_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_gaela_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"choice_consequences": {
+		"protect_grove_fully": {
+			"flags_to_set": ["sacred_grove_protected"],
+			"reputation_changes": {
+				"church_of_gaela": 30,
+				"dalhurst_merchants": -10
+			}
+		},
+		"allow_limited_logging": {
+			"flags_to_set": ["sacred_grove_compromise"],
+			"reputation_changes": {
+				"church_of_gaela": 20,
+				"dalhurst_merchants": 10
+			}
+		},
+		"find_alternative": {
+			"flags_to_set": ["sacred_grove_alternative"],
+			"reputation_changes": {
+				"church_of_gaela": 25,
+				"dalhurst_merchants": 15
+			}
+		}
+	},
+	"rewards": {
+		"gold": 150,
+		"xp": 500,
+		"items": ["natures_bond_ring"],
+		"faction_reputation": {
+			"church_of_gaela": 25,
+			"church_of_three": 20
+		}
+	},
+	"prerequisites": ["gaela_03_protect_harvest"],
+	"next_quest": "gaela_05_devotion_choice"
+}

@@ -1,0 +1,74 @@
+{
+	"id": "mage_11_planar_breach",
+	"title": "Beyond the Veil",
+	"description": "A dimensional breach has opened near Crossroads, and entities from another plane are seeping through. The barrier between worlds is weakening. You must close the breach before otherworldly horrors flood into our realm. This will require channeling immense magical power and facing extraplanar threats unlike anything you've encountered.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "archmage_elara_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "arcane_circle",
+	"objectives": [
+		{
+			"id": "assess_breach",
+			"description": "Assess the dimensional breach near Crossroads",
+			"type": "reach",
+			"target": "dimensional_breach_crossroads",
+			"required_count": 1
+		},
+		{
+			"id": "gather_sealing_components",
+			"description": "Gather components for the sealing ritual",
+			"type": "collect",
+			"target": "planar_binding_reagent",
+			"required_count": 5,
+			"notes": "Dropped by planar entities emerging from the breach"
+		},
+		{
+			"id": "defeat_planar_entities",
+			"description": "Defeat the extraplanar invaders",
+			"type": "kill",
+			"target": "planar_horror",
+			"required_count": 10,
+			"notes": "Otherworldly creatures immune to normal damage"
+		},
+		{
+			"id": "empower_ley_anchors",
+			"description": "Empower the four ley line anchors around the breach",
+			"type": "interact",
+			"target": "ley_anchor",
+			"required_count": 4,
+			"notes": "Channel magic into each anchor stone"
+		},
+		{
+			"id": "seal_breach",
+			"description": "Perform the sealing ritual to close the breach",
+			"type": "interact",
+			"target": "dimensional_breach_center",
+			"required_count": 1,
+			"notes": "Long channeling ritual, must survive waves of enemies"
+		},
+		{
+			"id": "report_success",
+			"description": "Report the breach closure to Archmage Elara",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "archmage_elara_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 600,
+		"xp": 1300,
+		"items": ["archmage_staff"],
+		"faction_reputation": {
+			"arcane_circle": 50
+		}
+	},
+	"on_complete_flags": ["planar_breach_sealed", "saved_the_realm"],
+	"prerequisites": ["forbidden_knowledge_acquired"],
+	"next_quest": "mage_12_archmage_trial",
+	"notes": "Second Adept quest. Major combat encounter with unique enemies. Defense/survival mechanics. Rewards legendary staff."
+}

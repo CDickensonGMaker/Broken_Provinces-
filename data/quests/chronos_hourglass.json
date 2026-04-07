@@ -1,0 +1,60 @@
+{
+	"id": "chronos_hourglass",
+	"title": "The Shattered Hourglass",
+	"description": "A sacred hourglass blessed by Chronos himself has been stolen from a roadside shrine near Crossroads. The Priest of Chronos believes bandits took it, not knowing its significance. The artifact must be recovered before its temporal energies dissipate - or worse, fall into the wrong hands. He suspects the thieves fled to the Bandit Hideout to the east.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_chronos_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "investigate_shrine",
+			"description": "Investigate the desecrated shrine near Crossroads",
+			"type": "reach",
+			"target": "crossroads",
+			"required_count": 1
+		},
+		{
+			"id": "track_bandits",
+			"description": "Track the bandits to their hideout",
+			"type": "reach",
+			"target": "bandit_hideout",
+			"required_count": 1
+		},
+		{
+			"id": "recover_hourglass",
+			"description": "Recover the sacred hourglass",
+			"type": "collect",
+			"target": "sacred_hourglass",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_bandit_leader",
+			"description": "Defeat the bandit leader who ordered the theft",
+			"type": "kill",
+			"target": "bandit_leader",
+			"required_count": 1
+		},
+		{
+			"id": "return_hourglass",
+			"description": "Return the hourglass to Priest of Chronos",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_chronos_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 200,
+		"xp": 600,
+		"items": ["chronos_favor_amulet"],
+		"faction_reputation": {
+			"church_of_three": 50
+		}
+	},
+	"prerequisites": ["chronos_false_prophet"],
+	"next_quest": ""
+}

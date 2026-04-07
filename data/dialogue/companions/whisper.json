@@ -1,0 +1,726 @@
+{
+  "id": "whisper_companion",
+  "display_name": "Whisper - Infiltrator",
+  "description": "Companion dialogue for Whisper, Thieves Guild halfling infiltrator",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Whisper",
+      "text": "...",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "You must be Whisper. The Guild told me about you.",
+          "next": "guild_introduction",
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "thieves_guild_questline_complete",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Hello? Can you hear me?",
+          "next": "confirm_hearing",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll... come back later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "greeting_companion",
+      "speaker": "Whisper",
+      "text": "*looks up expectantly*",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "param": "whisper_recruited",
+          "value": 0
+        }
+      ],
+      "choices": [
+        {
+          "text": "How are you holding up?",
+          "next": "companion_status",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about yourself.",
+          "next": "personal_history",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What do you think of the other factions?",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Let's discuss tactics.",
+          "next": "tactics_discussion",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Wait here quietly.",
+          "next": "wait_command",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "wait",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Let's move.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "confirm_hearing",
+      "speaker": "Whisper",
+      "text": "*nods slowly* I hear everything. Most people just... talk too loud to notice.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Why do you speak so softly?",
+          "next": "why_quiet",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Guild mentioned you might work with me.",
+          "next": "guild_introduction",
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "thieves_guild_questline_complete",
+              "value": 0
+            }
+          ],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "why_quiet",
+      "speaker": "Whisper",
+      "text": "Noise kills. In my work, sound is enemy. The quieter you are, longer you live. Big folk never understand. They stomp, shout, clatter. Easy targets.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Your work being infiltration?",
+          "next": "infiltration_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I could learn from that approach.",
+          "next": "learn_approach",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "infiltration_explanation",
+      "speaker": "Whisper",
+      "text": "*quiet laughter* Infiltration. Assassination. Information gathering. I go where others can't. See what others miss. Small size, big advantage.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Would you be interested in working together?",
+          "next": "recruitment_pitch",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Interesting. I'll think about it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "learn_approach",
+      "speaker": "Whisper",
+      "text": "*tilts head* You? Learn quiet? Big folk can try. Most fail. But... you seem different. Less stompy.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I try to be observant.",
+          "next": "observant_response",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Maybe you could teach me.",
+          "next": "teach_offer",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "observant_response",
+      "speaker": "Whisper",
+      "text": "*small smile* Observant is good. Observant survives. You watch before act. Smart. Most charge in. Die quick.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "teach_offer",
+      "speaker": "Whisper",
+      "text": "Travel with me. Watch how I move. Learn what I see. Words teach little. Experience teaches all.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'd like that. Join me.",
+          "next": "recruitment_pitch",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "guild_introduction",
+      "speaker": "Whisper",
+      "text": "*nods* Guild says you proved worthy. Completed the trials. They send one of us to help you. If you want... I can be the one.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What skills do you bring?",
+          "next": "abilities_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'd be honored to have you.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What about Red Mara?",
+          "next": "mention_mara",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "abilities_explanation",
+      "speaker": "Whisper",
+      "text": "I vanish. Completely. Guards look right through me. My blades carry poison - enemies weaken, slow, die. I create distractions - make noise where noise shouldn't be. Confuse. Divide. Conquer.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Perfect. I want you with me.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How do you compare to Mara?",
+          "next": "compare_to_mara",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need time to decide.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "compare_to_mara",
+      "speaker": "Whisper",
+      "text": "Mara is... loud. Skilled, yes. But she fights her own battles too much. Personal vendettas. Drama. I have no ego. Just efficiency. Mission first. Always.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I prefer efficiency. Join me.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Let me consider both options.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "mention_mara",
+      "speaker": "Whisper",
+      "text": "*slight frown* Red Mara. Good thief. Bad partner. Too... noisy. Too independent. Guild trusts me more. But you choose. Guild only sends one.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I choose you. Your silence suits my needs.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need to think carefully.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_pitch",
+      "speaker": "Whisper",
+      "text": "Work together? *considers* You passed Guild tests. That means something. And you... listen. Don't dismiss small ones. I could travel with you.",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "param": "thieves_guild_questline_complete",
+          "value": 0
+        }
+      ],
+      "choices": [
+        {
+          "text": "Then join me. Partners.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Let me think about it.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_accept_offer",
+      "speaker": "Whisper",
+      "text": "*small smile* Good. You won't regret it. I go where you can't. See what you miss. Your enemies will never see me coming. Never hear me leave.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Welcome to the team.",
+          "next": "recruitment_accept",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "whisper_recruited",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "chose_whisper",
+              "value": 0
+            },
+            {
+              "type": "recruit_follower",
+              "param": "whisper",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recruitment_accept",
+      "speaker": "Whisper",
+      "text": "*nods and seems to fade slightly into nearby shadows* Ready when you are. Lead... I follow. Quietly.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "think_about_it",
+      "speaker": "Whisper",
+      "text": "*shrugs* Patience is survival. Take time. Whisper waits. Whisper always waits.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "companion_status",
+      "speaker": "Whisper",
+      "text": "*quiet contentment* Good. Traveling with you is... interesting. You make good choices. Usually. Still too loud sometimes. But learning.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm trying to improve.",
+          "next": "trying_response",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Any concerns I should know about?",
+          "next": "concerns",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "trying_response",
+      "speaker": "Whisper",
+      "text": "*approving nod* Trying is enough. Most don't even try. They think size means strength. Noise means power. Wrong. Silence is power. You begin to understand.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "concerns",
+      "speaker": "Whisper",
+      "text": "Big enemies ahead. I've seen signs. Tracks, scents, whispers in dark places. Something stirs. Be ready. When it comes... let Whisper handle the shadows. You handle the light.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "personal_history",
+      "speaker": "Whisper",
+      "text": "Born in burrow village. Far south. Peaceful place. Raiders came when I was small. Smaller. Village burned. I survived by being quiet. Hid where they couldn't look. Watched them leave. Then... walked north. Found Guild.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "That must have been terrifying.",
+          "next": "terror_response",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How did the Guild find you?",
+          "next": "guild_finding",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Do you ever want revenge on those raiders?",
+          "next": "revenge_question",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "terror_response",
+      "speaker": "Whisper",
+      "text": "Fear keeps you alive. I learned that night. Since then... fear is tool. Use it. Control it. Never let it control you. The raiders were loud. I was quiet. Quiet survived.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "guild_finding",
+      "speaker": "Whisper",
+      "text": "Didn't find me. I found them. Watched their hideout for weeks. Learned routines. Stole food from their stores. They never saw. Eventually... I let them see. They were impressed. Offered training. I accepted.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "revenge_question",
+      "speaker": "Whisper",
+      "text": "*long pause* ...Found them. Years later. One by one. Quiet. No witnesses. No survivors. Revenge is pointless noise... but sometimes noise is necessary.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "faction_opinions",
+      "speaker": "Whisper",
+      "text": "*settles comfortably* Opinions? Whisper watches all. Judges silently. What you want to know?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The Adventurer's Guild?",
+          "next": "opinion_adventurers",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Iron Company?",
+          "next": "opinion_iron_company",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Arcane Circle?",
+          "next": "opinion_arcane",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's enough for now.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_adventurers",
+      "speaker": "Whisper",
+      "text": "Glory seekers. Loud. Obvious. But... useful. They draw attention. Make noise. While they fight at front door... Whisper enters through window. Symbiotic relationship.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Practical view.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_iron_company",
+      "speaker": "Whisper",
+      "text": "Dangerous. Professional. They catch thieves who get sloppy. Whisper never gets sloppy. Respect them. Avoid them. If you must fight Iron Company... don't. Run.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Duly noted.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_arcane",
+      "speaker": "Whisper",
+      "text": "*nervous look* Magic sees through shadows. Divination spells find hidden things. Wizards make Whisper... uncomfortable. Cannot hide from eyes that see everywhere.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Understandable concern.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_discussion",
+      "speaker": "Whisper",
+      "text": "Whisper scouts ahead. Always. You wait for signal - hand signs or thrown pebble. When fighting starts, enemies focus on you. Don't look for me. I'll be there. Poison slows them. Then... *makes throat-cutting gesture*",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What if we're ambushed?",
+          "next": "tactics_ambush",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How do I signal you?",
+          "next": "tactics_signals",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Understood. Let's proceed.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_ambush",
+      "speaker": "Whisper",
+      "text": "Whisper doesn't get ambushed. If you get ambushed... means Whisper already dead. Then you run. Mourn later. Survive now.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "tactics_signals",
+      "speaker": "Whisper",
+      "text": "One pebble: clear path. Two pebbles: danger ahead. Three pebbles: abort, retreat. Hand across throat: silence required. Fist raised: hold position. Simple. Quiet. Effective.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_command",
+      "speaker": "Whisper",
+      "text": "*nods and seems to melt into shadows* Here. Waiting. Watching. Take time you need.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_too_long",
+      "speaker": "Whisper",
+      "text": "*appears suddenly* Waited long time. Heard many things. We should move. Dangers stir when we stand still.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What did you hear?",
+          "next": "heard_what",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "You're right. Let's go.",
+          "next": "follow_resume",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "follow",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "heard_what",
+      "speaker": "Whisper",
+      "text": "Whispers in walls. Footsteps that stop when I listen. Something watches. Maybe nothing. Maybe everything. Best to move before it decides we're interesting.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Agreed. Follow me.",
+          "next": "follow_resume",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "follow",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "follow_resume",
+      "speaker": "Whisper",
+      "text": "*nods silently and fades slightly* Behind you. Always.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Whisper",
+      "text": "...Quiet travels. Maybe meet again. Maybe not see me when we do.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_companion",
+      "speaker": "Whisper",
+      "text": "*slight bow* Lead. Whisper follows. Quietly.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ],
+  "barks": {
+    "combat_start": [
+      "...",
+      "They never hear me.",
+      "Small target, big problems.",
+      "Now you see me..."
+    ],
+    "combat_kill": [
+      "*quiet laughter*",
+      "...now you don't.",
+      "The poison does its work."
+    ],
+    "combat_low_health": [
+      "Vanishing...",
+      "*sharp breath*",
+      "Need... shadows..."
+    ],
+    "player_low_health": [
+      "Get behind!",
+      "I distract. You run.",
+      "*throws smoke bomb*"
+    ],
+    "ambient_dungeon": [
+      "*looks around nervously*",
+      "The shadows are comfortable here.",
+      "Many hiding spots. Good."
+    ],
+    "ambient_town": [
+      "...",
+      "Big folk make so much noise.",
+      "I could rob this place blind. If I wanted."
+    ],
+    "ambient_wilderness": [
+      "You can trust me. Mostly.",
+      "Open ground. Uncomfortable.",
+      "Prefer cities. More shadows."
+    ],
+    "order_acknowledged": [
+      "*nods*",
+      "...",
+      "Done.",
+      "*gestures understanding*"
+    ],
+    "order_attack": [
+      "*vanishes*",
+      "Poison ready.",
+      "From behind."
+    ],
+    "idle_long": [
+      "*appears suddenly* Still waiting?",
+      "...",
+      "Shadows grow restless. So does Whisper."
+    ]
+  }
+}

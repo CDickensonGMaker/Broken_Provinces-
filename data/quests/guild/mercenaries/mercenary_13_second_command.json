@@ -1,0 +1,47 @@
+{
+	"id": "mercenary_13_second_command",
+	"title": "The Iron Will",
+	"description": "You've proven yourself in countless battles, led soldiers through hell, and upheld the Iron Company's honor. Captain Roderick Steele now offers you the ultimate test: an honorable duel to prove you're worthy of becoming his second-in-command. Win, and you become the Iron Lieutenant - the Captain's right hand and heir to leadership.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "captain_roderick_steele",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "iron_company",
+	"objectives": [
+		{
+			"id": "prepare_duel",
+			"description": "Prepare for the ceremonial duel at the Iron Hall",
+			"type": "reach",
+			"target": "iron_hall_arena",
+			"required_count": 1
+		},
+		{
+			"id": "honorable_combat",
+			"description": "Duel Captain Steele to prove your worth",
+			"type": "kill",
+			"target": "captain_roderick_steele_duel",
+			"required_count": 1
+		},
+		{
+			"id": "accept_promotion",
+			"description": "Accept the rank of Iron Lieutenant",
+			"type": "talk",
+			"target": "captain_roderick_steele",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "captain_roderick_steele",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 1000,
+		"xp": 2000,
+		"items": ["iron_lieutenant_armor", "iron_lieutenant_sword", "company_commander_cloak"],
+		"faction_reputation": {
+			"iron_company": 100
+		}
+	},
+	"prerequisites": ["mercenary_12_legendary_battle"],
+	"next_quest": ""
+}

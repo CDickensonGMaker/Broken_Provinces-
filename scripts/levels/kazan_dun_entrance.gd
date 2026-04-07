@@ -78,6 +78,28 @@ func _spawn_dwarf_npcs() -> void:
 	CivilianNPC.spawn_dwarf_random(npcs_node, Vector3(15, 0, 10), ZONE_ID)
 	CivilianNPC.spawn_dwarf_random(npcs_node, Vector3(-25, 0, -15), ZONE_ID)
 
+	# === DWARF GATE WARDEN (at main gate entrance) ===
+	var warden_pos := Vector3(0, 0.5, 30)  # At the main entrance gate
+	var gate_warden := QuestGiver.spawn_quest_giver(
+		self,
+		warden_pos,
+		"Gate Warden Borik",
+		"dwarf_gate_warden",
+		null, 8, 2,
+		[],  # Quest IDs to be added later
+		false
+	)
+	gate_warden.region_id = ZONE_ID
+	gate_warden.faction_id = "dwarves"
+	gate_warden.no_quest_dialogue = "Welcome to Kazan-Dun, outsider. The gates of our hold have stood for a thousand years, and they'll stand a thousand more. Conduct yourself with honor here, and you'll find no finer allies than the dwarves. Cause trouble... and the mountain itself will swallow you."
+	var warden_profile := NPCKnowledgeProfile.new()
+	warden_profile.archetype = NPCKnowledgeProfile.Archetype.GUARD
+	warden_profile.personality_traits = ["stern", "honorable", "traditional", "watchful"]
+	warden_profile.knowledge_tags = ["dwarves", "kazan_dun", "gate_security", "visitors", "dwarf_law"]
+	warden_profile.base_disposition = 35  # Cautious with outsiders
+	warden_profile.speech_style = "formal"
+	gate_warden.npc_profile = warden_profile
+
 
 ## Setup cell streaming if we're the main scene (has Player/HUD)
 ## When loaded as a streaming cell, this will be skipped (Player/HUD stripped by CellStreamer)

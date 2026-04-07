@@ -50,5 +50,5 @@
 		}
 	},
 	"prerequisites": ["guild_initiation"],
-	"next_quest": ""
+	"next_quest": "guild_contract_spiders"
 }

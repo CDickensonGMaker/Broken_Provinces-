@@ -94,6 +94,28 @@ func _spawn_npcs() -> void:
 	if civilian3_marker:
 		CivilianNPC.spawn_man(self, civilian3_marker.global_position, ZONE_ID)
 
+	# === WHALERS MERCHANT (at canyon market area) ===
+	var whalers_merchant_pos := Vector3(10, MIDDLE_LEVEL, -5)  # Market area on middle level
+	var whalers_merchant := QuestGiver.spawn_quest_giver(
+		self,
+		whalers_merchant_pos,
+		"Rope Trader Voss",
+		"whalers_merchant",
+		null, 8, 2,
+		[],  # Quest IDs to be added later
+		false
+	)
+	whalers_merchant.region_id = ZONE_ID
+	whalers_merchant.faction_id = "human_empire"
+	whalers_merchant.no_quest_dialogue = "Rope, harnesses, climbing gear - everything you need to survive the Abyss! One wrong step here and you'll be testing gravity. My wares might just save your life."
+	var whalers_merchant_profile := NPCKnowledgeProfile.new()
+	whalers_merchant_profile.archetype = NPCKnowledgeProfile.Archetype.MERCHANT
+	whalers_merchant_profile.personality_traits = ["pragmatic", "talkative", "cautious", "knowledgeable"]
+	whalers_merchant_profile.knowledge_tags = ["whalers_abyss", "climbing", "trade", "mountain_routes", "aberdeen", "pola_perron"]
+	whalers_merchant_profile.base_disposition = 55
+	whalers_merchant_profile.speech_style = "casual"
+	whalers_merchant.npc_profile = whalers_merchant_profile
+
 
 ## Spawn merchants from marker positions
 func _spawn_merchants() -> void:

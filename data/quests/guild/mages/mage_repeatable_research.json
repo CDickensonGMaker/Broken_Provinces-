@@ -1,0 +1,51 @@
+{
+	"id": "mage_repeatable_research",
+	"title": "Guild Assignments",
+	"description": "As a Magister of the Arcane Circle, you have ongoing responsibilities to the guild. Accept research assignments, gather rare reagents, recover lost artifacts, or investigate magical phenomena. These tasks help advance the guild's knowledge and power while rewarding you for your continued service.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "archmage_elara_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "arcane_circle",
+	"is_repeatable": true,
+	"objectives": [
+		{
+			"id": "accept_assignment",
+			"description": "Accept a research assignment from the guild",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1,
+			"notes": "Random assignment generated based on current world state"
+		},
+		{
+			"id": "complete_task",
+			"description": "Complete the assigned research task",
+			"type": "variable",
+			"target": "assignment_variable",
+			"required_count": 1,
+			"notes": "Could be: collect reagents, kill magical creatures, explore ruins, deliver items"
+		},
+		{
+			"id": "report_completion",
+			"description": "Report task completion to Archmage Elara",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "archmage_elara_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 200,
+		"xp": 500,
+		"items": [],
+		"faction_reputation": {
+			"arcane_circle": 10
+		}
+	},
+	"on_complete_flags": [],
+	"prerequisites": ["arcane_circle_magister"],
+	"notes": "Repeatable quest. Procedurally generated objectives. Lower rewards than main chain. Provides ongoing engagement with guild."
+}

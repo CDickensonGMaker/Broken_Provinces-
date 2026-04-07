@@ -1,0 +1,67 @@
+{
+	"id": "gaela_07_spirit_of_land",
+	"title": "Voice of the Green",
+	"description": "Priestess Elara has sensed a land spirit in distress near the Crossroads. As a Devotee, you can commune with nature spirits and offer aid. Free the trapped spirit and earn its blessing.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "priest",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "find_spirit",
+			"description": "Find the trapped land spirit near Crossroads",
+			"type": "explore",
+			"target": "crossroads",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "kill_spirit_captors",
+			"description": "Defeat the dark cultists holding the spirit captive",
+			"type": "kill",
+			"target": "dark_cultist",
+			"required_count": 4,
+			"is_optional": false
+		},
+		{
+			"id": "gather_spirit_offerings",
+			"description": "Gather natural offerings to restore the spirit (Moonleaf, Silvervine, Wildflowers)",
+			"type": "collect",
+			"target": "moonleaf",
+			"required_count": 3,
+			"is_optional": false
+		},
+		{
+			"id": "commune_with_spirit",
+			"description": "Place the offerings and commune with the freed spirit",
+			"type": "explore",
+			"target": "crossroads",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "report_to_priestess",
+			"description": "Report your success to Priestess Elara",
+			"type": "talk",
+			"target": "priest_gaela_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_gaela_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 300,
+		"xp": 900,
+		"items": ["natures_whisper_charm"],
+		"faction_reputation": {
+			"church_of_gaela": 45,
+			"church_of_three": 35
+		}
+	},
+	"prerequisites": ["gaela_06_blight_source"],
+	"required_flags": ["gaela_devotee"],
+	"next_quest": "gaela_08_seed_of_life"
+}

@@ -1,0 +1,271 @@
+{
+  "id": "tharin_ironbeard_wolves",
+  "display_name": "Tharin Ironbeard - Wolf Problem Quest",
+  "description": "Dialogue for Tharin Ironbeard offering the wolf hunting quest",
+  "start_node": "wolf_problem",
+  "nodes": [
+    {
+      "id": "wolf_problem",
+      "speaker": "Tharin Ironbeard",
+      "text": "Good timing. I've got work for you if you're willing. The wolf population has exploded this year - they're attacking our logging teams and making the roads dangerous. I need someone to thin out their numbers.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "How many wolves are we talking about?",
+          "next": "wolf_numbers",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll take care of it.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "tharins_wolf_problem",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Why me?",
+          "next": "why_me",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'm not interested in hunting wolves.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "wolf_numbers",
+      "speaker": "Tharin Ironbeard",
+      "text": "Kill at least five of them. That should send a message to the rest of the pack to stay clear of our territory. The wolves have been getting bolder - they're not just scavenging anymore, they're actively hunting near the camp.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll hunt them.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "tharins_wolf_problem",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Where do I find them?",
+          "next": "wolf_location",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Too dangerous for me.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "why_me",
+      "speaker": "Tharin Ironbeard",
+      "text": "Because you've proven yourself reliable with the supply run. I need someone I can trust to handle themselves in a fight. Wolves are dangerous - they hunt in packs, and they're smarter than you'd think. This isn't a job for some green recruit.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Alright, I'll do it.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "tharins_wolf_problem",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What's the payment?",
+          "next": "payment_question",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Find someone else.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "wolf_location",
+      "speaker": "Tharin Ironbeard",
+      "text": "They roam the forests around Elder Moor. You'll find them east and north of the camp, especially near the game trails. Be careful - if you wound one and it flees, the rest of the pack will know you're hunting them. They'll come for you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm ready for them.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "tharins_wolf_problem",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Any tips for fighting wolves?",
+          "next": "combat_tips",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Sounds too risky.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "combat_tips",
+      "speaker": "Tharin Ironbeard",
+      "text": "Keep your back to a tree or rock so they can't surround you. Wolves are fast and they'll try to flank. Block when they lunge, then strike while they're recovering. And don't chase wounded wolves - let them flee. You're thinning the pack, not trying to wipe them out completely.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Good advice. I'll get it done.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "tharins_wolf_problem",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "On second thought, this is too dangerous.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "payment_question",
+      "speaker": "Tharin Ironbeard",
+      "text": "50 gold and two healing potions. Plus, you'll have proven you can handle yourself in combat. That opens doors for more dangerous - and more lucrative - work. Interested?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Deal. I'll hunt the wolves.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "tharins_wolf_problem",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Not worth the risk.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_quest",
+      "speaker": "Tharin Ironbeard",
+      "text": "Good. Kill five wolves and come back here. And watch yourself - they're more dangerous than they look. If you get overwhelmed, retreat. No sense dying over a few pelts.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_progress",
+      "speaker": "Tharin Ironbeard",
+      "text": "How's the wolf hunting going?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Still working on it.",
+          "next": "still_hunting",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "tharins_wolf_problem",
+              "value": 1
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I've killed the wolves.",
+          "next": "quest_complete",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "tharins_wolf_problem",
+              "value": 1
+            }
+          ],
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "tharins_wolf_problem",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "still_hunting",
+      "speaker": "Tharin Ironbeard",
+      "text": "Keep at it. Every wolf you kill makes the roads safer for everyone.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_complete",
+      "speaker": "Tharin Ironbeard",
+      "text": "Well done. The logging teams have already reported fewer sightings. Here's your payment - 50 gold and two healing potions. You've proven you can handle yourself in a real fight. I'll have more work for you soon.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "refuse",
+      "speaker": "Tharin Ironbeard",
+      "text": "Suit yourself. If you change your mind, let me know. The wolves aren't going anywhere.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

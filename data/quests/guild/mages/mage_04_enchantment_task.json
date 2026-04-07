@@ -1,0 +1,65 @@
+{
+	"id": "mage_04_enchantment_task",
+	"title": "First Enchantment",
+	"description": "As an Apprentice, you're ready to learn the art of enchantment. Senior Mage Aldric needs assistance with a complex enchanting ritual. Gather the necessary components and follow his precise instructions to create your first enchanted item - a ring of minor protection.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "mage_aldric_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "arcane_circle",
+	"objectives": [
+		{
+			"id": "speak_with_aldric",
+			"description": "Speak with Senior Mage Aldric about the enchantment",
+			"type": "talk",
+			"target": "mage_aldric_dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "gather_silver_ingot",
+			"description": "Acquire a silver ingot from a blacksmith",
+			"type": "collect",
+			"target": "silver_ingot",
+			"required_count": 1,
+			"notes": "Can be purchased from blacksmith in Dalhurst or Thornfield"
+		},
+		{
+			"id": "gather_enchanting_dust",
+			"description": "Collect enchanting dust",
+			"type": "collect",
+			"target": "enchanting_dust",
+			"required_count": 3,
+			"notes": "Available from magic shops or dropped by magical creatures"
+		},
+		{
+			"id": "perform_enchantment",
+			"description": "Assist Aldric with the enchanting ritual",
+			"type": "interact",
+			"target": "enchanting_altar",
+			"required_count": 1
+		},
+		{
+			"id": "report_success",
+			"description": "Report the successful enchantment to Archmage Elara",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "archmage_elara_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 150,
+		"xp": 400,
+		"items": ["ring_of_protection"],
+		"faction_reputation": {
+			"arcane_circle": 20
+		}
+	},
+	"on_complete_flags": ["first_enchantment_complete", "knows_enchanting"],
+	"prerequisites": ["arcane_circle_apprentice"],
+	"next_quest": "mage_05_rogue_mage",
+	"notes": "First Apprentice quest. Introduces enchanting mechanic. Rewards enchanted ring (+2 armor)."
+}

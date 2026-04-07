@@ -1,0 +1,47 @@
+{
+	"id": "mercenary_02_drill",
+	"title": "Sword and Shield",
+	"description": "As a new recruit, you need to learn the Iron Company's methods. Veteran soldiers will put you through grueling training exercises. Master formation fighting and complete the obstacle course to prove you can survive the rigors of mercenary work.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "captain_roderick_steele",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "iron_company",
+	"objectives": [
+		{
+			"id": "combat_training",
+			"description": "Complete formation combat drills with veterans",
+			"type": "kill",
+			"target": "veteran_soldier",
+			"required_count": 5
+		},
+		{
+			"id": "obstacle_course",
+			"description": "Complete the Iron Company obstacle course",
+			"type": "reach",
+			"target": "iron_hall_training_grounds",
+			"required_count": 1
+		},
+		{
+			"id": "report_completion",
+			"description": "Report to Captain Steele",
+			"type": "talk",
+			"target": "captain_roderick_steele",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "captain_roderick_steele",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 75,
+		"xp": 250,
+		"items": ["iron_company_sword", "iron_company_shield"],
+		"faction_reputation": {
+			"iron_company": 25
+		}
+	},
+	"prerequisites": ["mercenary_01_enlistment"],
+	"next_quest": "mercenary_03_first_blood"
+}

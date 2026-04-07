@@ -1,0 +1,648 @@
+{
+  "id": "shadowmaster_vex",
+  "display_name": "Shadowmaster Vex - Thieves Guild Lieutenant",
+  "description": "Dialogue for Shadowmaster Vex, who handles mid-level Thieves Guild quests (06-09) and oversees major operations.",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Shadowmaster Vex",
+      "text": "Raven sent word about you. Said you've got real potential - not just quick fingers, but brains to match. I'm Vex. I handle the jobs that require planning, not just grabbing and running. Ready to prove you're more than a pickpocket?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm ready for bigger jobs.",
+          "next": "bigger_jobs",
+          "conditions": [
+            {"type": "quest_complete", "param": "thieves_05_blackmail", "value": 0},
+            {"type": "quest_complete", "param": "thieves_06_warehouse_job", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "The warehouse is clean.",
+          "next": "quest_06_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "thieves_06_warehouse_job", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "I have the Emberlyn Sapphire.",
+          "next": "quest_07_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "thieves_07_noble_heist", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "The Crimson Blades are handled.",
+          "next": "quest_08_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "thieves_08_rival_gang", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "I found the guild informant.",
+          "next": "quest_09_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "thieves_09_informant", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "What kind of work do you oversee?",
+          "next": "work_overview",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Just checking in.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "bigger_jobs",
+      "speaker": "Shadowmaster Vex",
+      "text": "Good. I've got something perfect for your talents. A merchant warehouse in Dalhurst, full of valuable imported goods. I want you to plan and execute a heist. Your choice: quick smash-and-grab, careful infiltration, or social deception.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me about the warehouse.",
+          "next": "quest_06_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll handle it.",
+          "next": "quest_06_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_06_warehouse_job", "value": 0}]
+        },
+        {
+          "text": "Not interested in warehouse work.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_06_details",
+      "speaker": "Shadowmaster Vex",
+      "text": "Graymoor Trading Company. They've got silk, spices, and jewelry waiting for market day. Security's decent but not impossible - night guards, locked doors, basic alarm. I want you to scout first, then come back with a plan. 250 gold when you deliver.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll scout it and get the goods.",
+          "next": "quest_06_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_06_warehouse_job", "value": 0}]
+        },
+        {
+          "text": "What approaches work best?",
+          "next": "quest_06_approaches",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need to think about it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_06_approaches",
+      "speaker": "Shadowmaster Vex",
+      "text": "Three ways to do this: Stealth infiltration - pick the locks, avoid the guards, take your time. Smash-and-grab - fast but loud. Social deception - pose as inspectors, walk out with the goods. Each has trade-offs. The best thieves adapt their approach to circumstances.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll figure out what works. Give me the job.",
+          "next": "quest_06_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_06_warehouse_job", "value": 0}]
+        },
+        {
+          "text": "Let me think about it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_06_accept",
+      "speaker": "Shadowmaster Vex",
+      "text": "The warehouse is in the dock district. Scout the security, choose your approach, get in, grab at least five crates of valuables, and bring them to our safehouse. Complete this successfully, and you'll earn the rank of Burglar. Go.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_06_turnin",
+      "speaker": "Shadowmaster Vex",
+      "text": "The goods are at the safehouse? Let me verify... Excellent quality merchandise. You chose well and executed cleanly. Here's your 250 gold and guild armor. Welcome to the Burglar rank. You're ready for more complex work.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's next?",
+          "next": "quest_07_offer",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_06_warehouse_job", "value": 0},
+            {"type": "set_flag", "param": "thieves_rank_burglar", "value": 0}
+          ]
+        },
+        {
+          "text": "Good to be a Burglar.",
+          "next": "farewell_burglar",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_06_warehouse_job", "value": 0},
+            {"type": "set_flag", "param": "thieves_rank_burglar", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_07_offer",
+      "speaker": "Shadowmaster Vex",
+      "text": "Here's something special. Lady Emberlyn is hosting a masquerade ball in Thornfield. A priceless family heirloom - the Emberlyn Sapphire - will be on display. I want it. Infiltrate the party, steal the sapphire, and escape without being identified.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "A high society heist? I'm in.",
+          "next": "quest_07_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_07_noble_heist", "value": 0}]
+        },
+        {
+          "text": "How do I get into the party?",
+          "next": "quest_07_entry",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Stealing from nobles is risky.",
+          "next": "quest_07_risk",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_07_entry",
+      "speaker": "Shadowmaster Vex",
+      "text": "You'll need an invitation. Steal one, forge one, or buy one from the black market - your choice. Once inside, blend with the nobles, locate the sapphire's display, and make your move when the moment's right. 350 gold and a Shadow Cloak for success.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll get in and get the sapphire.",
+          "next": "quest_07_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_07_noble_heist", "value": 0}]
+        },
+        {
+          "text": "Let me prepare first.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_07_risk",
+      "speaker": "Shadowmaster Vex",
+      "text": "Risk is part of the job. But high risk means high reward. The sapphire alone is worth thousands. More importantly, pulling off a heist at a noble ball proves you can handle anything. This is how legends are made.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "You're right. I'll do it.",
+          "next": "quest_07_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_07_noble_heist", "value": 0}]
+        },
+        {
+          "text": "I need to think about it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_07_accept",
+      "speaker": "Shadowmaster Vex",
+      "text": "The ball is in two days at the Emberlyn Estate in Thornfield. Get an invitation however you can. Once inside, blend in, find the sapphire, take it, and leave before anyone notices. The Shadow Cloak will be worth the effort. Good luck.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_07_turnin",
+      "speaker": "Shadowmaster Vex",
+      "text": "You have the sapphire? Let me see... Magnificent. And you got out without being identified? This is the work of a true professional. Here's your 350 gold and the Shadow Cloak. You've earned both. The guild is impressed.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's next?",
+          "next": "quest_08_offer",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "thieves_07_noble_heist", "value": 0}]
+        },
+        {
+          "text": "This cloak is impressive.",
+          "next": "farewell_cloak",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "thieves_07_noble_heist", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_08_offer",
+      "speaker": "Shadowmaster Vex",
+      "text": "We have a problem. The Crimson Blades - a rival gang - are muscling in on Guild territory around Crossroads. I want them dealt with. Sabotage their operations, steal their goods, or negotiate a truce. Your choice shapes the Guild's reputation.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll handle the Crimson Blades.",
+          "next": "quest_08_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_08_rival_gang", "value": 0}]
+        },
+        {
+          "text": "What are my options?",
+          "next": "quest_08_options",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Gang wars aren't my thing.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_08_options",
+      "speaker": "Shadowmaster Vex",
+      "text": "Aggressive approach - eliminate their leadership. Cunning approach - sabotage their stash and steal their profits. Diplomatic approach - negotiate territory boundaries with their leader, Scarface. Each has consequences for the guild's future.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll assess the situation and decide.",
+          "next": "quest_08_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_08_rival_gang", "value": 0}]
+        },
+        {
+          "text": "Which approach do you prefer?",
+          "next": "quest_08_preference",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need to think about this.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_08_preference",
+      "speaker": "Shadowmaster Vex",
+      "text": "Personally? I prefer cunning. Weakening them without open warfare. But the Guildmaster respects results, whatever the method. Just don't embarrass the guild. 300 gold when the Crimson Blades are no longer a threat to our territory.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Understood. I'll handle it.",
+          "next": "quest_08_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_08_rival_gang", "value": 0}]
+        },
+        {
+          "text": "Let me prepare.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_08_accept",
+      "speaker": "Shadowmaster Vex",
+      "text": "The Crimson Blades hideout is near Crossroads. Find it, assess their strength, and decide your approach. Then execute. Report back when our territory is secure.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_08_turnin",
+      "speaker": "Shadowmaster Vex",
+      "text": "The Crimson Blades situation is resolved? How did you handle it?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I eliminated their leadership.",
+          "next": "quest_08_complete_aggressive",
+          "conditions": [{"type": "flag", "param": "thieves_aggressive_reputation", "value": 0}],
+          "actions": []
+        },
+        {
+          "text": "I sabotaged and robbed them.",
+          "next": "quest_08_complete_cunning",
+          "conditions": [{"type": "flag", "param": "thieves_cunning_reputation", "value": 0}],
+          "actions": []
+        },
+        {
+          "text": "I negotiated a territory truce.",
+          "next": "quest_08_complete_diplomatic",
+          "conditions": [{"type": "flag", "param": "thieves_diplomatic_reputation", "value": 0}],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_08_complete_aggressive",
+      "speaker": "Shadowmaster Vex",
+      "text": "Brutal but effective. Scarface is dead, and the Crimson Blades are scattered. Other gangs will think twice before challenging us. Here's your 300 gold. The guild's reputation for violence grows.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's next?",
+          "next": "quest_09_offer",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "thieves_08_rival_gang", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_08_complete_cunning",
+      "speaker": "Shadowmaster Vex",
+      "text": "Exactly how I would have done it. The Crimson Blades are weakened, their resources stolen, and we didn't start a war. Smart work. Here's your 300 gold - plus extra from what you stole from them.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's next?",
+          "next": "quest_09_offer",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "thieves_08_rival_gang", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_08_complete_diplomatic",
+      "speaker": "Shadowmaster Vex",
+      "text": "A negotiated truce? Impressive. You convinced Scarface to accept territorial boundaries? That takes real skill. Peaceful coexistence is valuable - we might even work together in the future. Here's your 300 gold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's next?",
+          "next": "quest_09_offer",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "thieves_08_rival_gang", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_09_offer",
+      "speaker": "Shadowmaster Vex",
+      "text": "Someone is selling Guild secrets. Jobs have been going wrong. Guards showing up at the perfect time. I've narrowed it down to three suspects in Millbrook: Felix the Fence, Mara the Smuggler, and Tobin the Pickpocket. Find the traitor.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll investigate all three.",
+          "next": "quest_09_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_09_informant", "value": 0}]
+        },
+        {
+          "text": "Tell me about the suspects.",
+          "next": "quest_09_suspects",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Internal affairs isn't my specialty.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_09_suspects",
+      "speaker": "Shadowmaster Vex",
+      "text": "Felix moves our stolen goods - knows our inventory. Mara handles smuggling routes - knows our schedules. Tobin recruits street kids - knows our contacts. Any of them could be the leak. Search their quarters, follow them, find proof.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll find the traitor.",
+          "next": "quest_09_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_09_informant", "value": 0}]
+        },
+        {
+          "text": "I need to think about this.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_09_accept",
+      "speaker": "Shadowmaster Vex",
+      "text": "All three are in Millbrook. Investigate discreetly - we don't want the traitor to know they're suspected. When you've found concrete evidence, confront them. What happens after that is your choice. 400 gold and the Shadowmaster rank when it's done.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_09_turnin",
+      "speaker": "Shadowmaster Vex",
+      "text": "You found the informant? Who was it, and what did you do with them?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tobin was the traitor. He's been dealt with.",
+          "next": "quest_09_complete_tobin",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I turned him into a double agent.",
+          "next": "quest_09_complete_double",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I let him go - he was being extorted.",
+          "next": "quest_09_complete_mercy",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_09_complete_tobin",
+      "speaker": "Shadowmaster Vex",
+      "text": "Tobin. I suspected as much - always seemed desperate for coin. Good work finding the proof and handling it. Here's your 400 gold, Master Lockpick Set, and welcome to the rank of Shadowmaster. Lady Nightshade will want to meet you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "When can I meet the Guildmaster?",
+          "next": "meet_nightshade",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_09_informant", "value": 0},
+            {"type": "set_flag", "param": "thieves_rank_shadowmaster", "value": 0}
+          ]
+        },
+        {
+          "text": "Shadowmaster rank. Impressive.",
+          "next": "farewell_shadowmaster",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_09_informant", "value": 0},
+            {"type": "set_flag", "param": "thieves_rank_shadowmaster", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_09_complete_double",
+      "speaker": "Shadowmaster Vex",
+      "text": "A double agent? That's clever thinking. Now we control the information our enemies receive. Here's your 400 gold and bonus for intelligence work. Welcome to the rank of Shadowmaster.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's next for a Shadowmaster?",
+          "next": "meet_nightshade",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_09_informant", "value": 0},
+            {"type": "set_flag", "param": "thieves_rank_shadowmaster", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_09_complete_mercy",
+      "speaker": "Shadowmaster Vex",
+      "text": "Mercy for a traitor? That's... unusual. You found he was being extorted? That does change things. The guild values loyalty, and if his betrayal wasn't willing... Here's your 400 gold. Welcome to Shadowmaster rank - use that judgment wisely.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Judgment is what makes a good Shadowmaster.",
+          "next": "meet_nightshade",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_09_informant", "value": 0},
+            {"type": "set_flag", "param": "thieves_rank_shadowmaster", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "meet_nightshade",
+      "speaker": "Shadowmaster Vex",
+      "text": "Lady Nightshade, our Guildmaster, handles the most sensitive operations. As a Shadowmaster, you're ready to work directly for her. You'll find her in the guild headquarters inner chambers. Tell her Vex vouches for you.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "work_overview",
+      "speaker": "Shadowmaster Vex",
+      "text": "I handle jobs that require more than sticky fingers. Warehouse heists, noble estates, rival gangs, internal security. The work that separates amateur pickpockets from professional thieves. Interested?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Very interested.",
+          "next": "check_availability",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Just curious.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "check_availability",
+      "speaker": "Shadowmaster Vex",
+      "text": "Come back when you've proven yourself to Raven. Complete her assignments first, then we'll talk about real work.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_burglar",
+      "speaker": "Shadowmaster Vex",
+      "text": "Wear the rank well. More opportunities await.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_cloak",
+      "speaker": "Shadowmaster Vex",
+      "text": "It suits you. The shadows are your ally now.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_shadowmaster",
+      "speaker": "Shadowmaster Vex",
+      "text": "You've earned it. The inner circle awaits.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Shadowmaster Vex",
+      "text": "The shadows remember. Return when you're ready.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+	"id": "chronos_05_devotion_choice",
+	"title": "The Timekeeper's Question",
+	"description": "The Priest of Chronos has watched your journey with interest. He now asks the question that will define your path: Will you dedicate yourself fully to the service of Chronos, God of Time? To become a Devotee is to see the world through the lens of fate, inevitability, and the endless turning of the hourglass. Choose carefully - time flows in only one direction.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_chronos_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"faction": "church_of_chronos",
+	"objectives": [
+		{
+			"id": "meditation_ritual",
+			"description": "Complete the meditation ritual at the Temple altar",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "make_devotion_choice",
+			"description": "Accept or decline the path of Devotion to Chronos",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_chronos_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 200,
+		"xp": 600,
+		"items": ["chronos_amulet"],
+		"faction_reputation": {
+			"church_of_chronos": 50,
+			"church_of_three": 15
+		}
+	},
+	"prerequisites": ["chronos_04_false_prophet"],
+	"next_quest": "chronos_06_temporal_echo",
+	"choice_consequences": {
+		"accept_devotion": {
+			"flags_to_set": ["chronos_devotee"],
+			"reputation_changes": {
+				"church_of_chronos": 50
+			}
+		},
+		"decline_devotion": {
+			"flags_to_set": ["chronos_path_declined"],
+			"reputation_changes": {}
+		}
+	},
+	"notes": "DESIGN INTENT: THE CRITICAL SOFT-LOCK QUEST. This is where the player commits to the Chronos path or declines. Accepting sets the 'chronos_devotee' flag which unlocks quests 6-10+. Declining ends the quest chain but doesn't lock out temple worship or other god quests. The dialogue should make it clear this is a significant choice. The Chronos Amulet is a unique equipment piece with +Intuition and minor time-related effects. Massive reputation gain (50) for accepting devotion. Other temple priests will acknowledge the player as 'Acolyte of Time' if they accept."
+}

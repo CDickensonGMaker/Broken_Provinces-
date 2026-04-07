@@ -1,0 +1,8 @@
+{
+  "name": "Merchant Faelyn",
+  "who": "Graceful elven trader with an appraising eye\nPatient with outsiders unfamiliar with elven goods\nKnowledgeable about rare materials and enchantments",
+  "what": "Sells elven crafts and rare materials\nDeals in goods unavailable elsewhere\nCan identify magical items",
+  "where": "Silvanost - Market Tree",
+  "sprite": "elf_male_civilian",
+  "quests": "Elven Goods, Rare Materials"
+}

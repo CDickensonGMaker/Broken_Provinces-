@@ -1,0 +1,492 @@
+[gd_scene load_steps=18 format=3 uid="uid://dalhurst_cemetery_001"]
+
+[ext_resource type="Script" path="res://scripts/levels/dalhurst_cemetery.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
+
+[sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
+sky_top_color = Color(0.15, 0.12, 0.18, 1)
+sky_horizon_color = Color(0.25, 0.22, 0.28, 1)
+ground_bottom_color = Color(0.1, 0.08, 0.12, 1)
+ground_horizon_color = Color(0.2, 0.18, 0.22, 1)
+
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_mat")
+
+[sub_resource type="Environment" id="Environment_cemetery"]
+background_mode = 2
+sky = SubResource("sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.2, 0.18, 0.25, 1)
+ambient_light_energy = 0.4
+fog_enabled = true
+fog_light_color = Color(0.15, 0.12, 0.18, 1)
+fog_density = 0.02
+fog_sky_affect = 0.3
+
+[sub_resource type="StandardMaterial3D" id="mat_grass"]
+albedo_color = Color(0.18, 0.22, 0.15, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="mat_grave_dirt"]
+albedo_color = Color(0.25, 0.2, 0.18, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="mat_tombstone"]
+albedo_color = Color(0.45, 0.43, 0.48, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_tombstone_old"]
+albedo_color = Color(0.35, 0.33, 0.38, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="mat_mausoleum"]
+albedo_color = Color(0.38, 0.36, 0.42, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="mat_iron_fence"]
+albedo_color = Color(0.15, 0.15, 0.18, 1)
+metallic = 0.7
+roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="mat_path"]
+albedo_color = Color(0.3, 0.28, 0.25, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="mat_crypt_stone"]
+albedo_color = Color(0.32, 0.3, 0.35, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_dead_tree"]
+albedo_color = Color(0.2, 0.18, 0.15, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="mat_consecrated"]
+albedo_color = Color(0.55, 0.53, 0.58, 1)
+emission_enabled = true
+emission = Color(0.3, 0.3, 0.4, 1)
+emission_energy_multiplier = 0.3
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="mat_moss"]
+albedo_color = Color(0.15, 0.2, 0.12, 1)
+roughness = 1.0
+
+[node name="DalhurstCemetery" type="Node3D"]
+script = ExtResource("1")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_cemetery")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.433, 0.25, 0, 0.5, 0.866, -0.5, -0.75, 0.433, 0, 30, 0)
+light_color = Color(0.6, 0.55, 0.7, 1)
+light_energy = 0.4
+shadow_enabled = true
+shadow_bias = 0.02
+
+[node name="Player" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 40)
+
+[node name="HUD" parent="." instance=ExtResource("3")]
+
+;; ============== TERRAIN ==============
+[node name="Terrain" type="Node3D" parent="."]
+
+[node name="Ground" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(80, 1, 100)
+material = SubResource("mat_grass")
+
+[node name="MainPath" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+size = Vector3(4, 0.04, 80)
+material = SubResource("mat_path")
+
+[node name="CrossPath" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, -15)
+size = Vector3(60, 0.04, 4)
+material = SubResource("mat_path")
+
+;; ============== ENTRANCE GATE ==============
+[node name="EntranceGate" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 45)
+
+[node name="LeftPillar" type="CSGBox3D" parent="EntranceGate"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2, 0)
+use_collision = true
+size = Vector3(1.5, 4, 1.5)
+material = SubResource("mat_mausoleum")
+
+[node name="RightPillar" type="CSGBox3D" parent="EntranceGate"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2, 0)
+use_collision = true
+size = Vector3(1.5, 4, 1.5)
+material = SubResource("mat_mausoleum")
+
+[node name="Arch" type="CSGBox3D" parent="EntranceGate"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
+use_collision = true
+size = Vector3(10, 1, 1)
+material = SubResource("mat_mausoleum")
+
+;; ============== PERIMETER FENCE ==============
+[node name="Fence" type="Node3D" parent="."]
+
+[node name="NorthFence" type="CSGBox3D" parent="Fence"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -50)
+use_collision = true
+size = Vector3(80, 2, 0.2)
+material = SubResource("mat_iron_fence")
+
+[node name="SouthFenceLeft" type="CSGBox3D" parent="Fence"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 1, 50)
+use_collision = true
+size = Vector3(30, 2, 0.2)
+material = SubResource("mat_iron_fence")
+
+[node name="SouthFenceRight" type="CSGBox3D" parent="Fence"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 1, 50)
+use_collision = true
+size = Vector3(30, 2, 0.2)
+material = SubResource("mat_iron_fence")
+
+[node name="EastFence" type="CSGBox3D" parent="Fence"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 1, 0)
+use_collision = true
+size = Vector3(0.2, 2, 100)
+material = SubResource("mat_iron_fence")
+
+[node name="WestFence" type="CSGBox3D" parent="Fence"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 1, 0)
+use_collision = true
+size = Vector3(0.2, 2, 100)
+material = SubResource("mat_iron_fence")
+
+;; ============== MAUSOLEUM (Central Structure) ==============
+[node name="Mausoleum" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -30)
+
+[node name="Base" type="CSGBox3D" parent="Mausoleum"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+use_collision = true
+size = Vector3(12, 0.5, 10)
+material = SubResource("mat_mausoleum")
+
+[node name="Floor" type="CSGBox3D" parent="Mausoleum"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+use_collision = true
+size = Vector3(10, 0.2, 8)
+material = SubResource("mat_crypt_stone")
+
+[node name="BackWall" type="CSGBox3D" parent="Mausoleum"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -4)
+use_collision = true
+size = Vector3(10, 5, 0.8)
+material = SubResource("mat_mausoleum")
+
+[node name="LeftWall" type="CSGBox3D" parent="Mausoleum"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, 3, 0)
+use_collision = true
+size = Vector3(0.8, 5, 8)
+material = SubResource("mat_mausoleum")
+
+[node name="RightWall" type="CSGBox3D" parent="Mausoleum"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.6, 3, 0)
+use_collision = true
+size = Vector3(0.8, 5, 8)
+material = SubResource("mat_mausoleum")
+
+[node name="FrontPillarLeft" type="CSGBox3D" parent="Mausoleum"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 3, 4)
+use_collision = true
+size = Vector3(1, 5, 0.8)
+material = SubResource("mat_mausoleum")
+
+[node name="FrontPillarRight" type="CSGBox3D" parent="Mausoleum"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 3, 4)
+use_collision = true
+size = Vector3(1, 5, 0.8)
+material = SubResource("mat_mausoleum")
+
+[node name="Roof" type="CSGBox3D" parent="Mausoleum"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+use_collision = true
+size = Vector3(12, 1, 10)
+material = SubResource("mat_mausoleum")
+
+[node name="Sarcophagus" type="CSGBox3D" parent="Mausoleum"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, -1)
+use_collision = true
+size = Vector3(3, 1.2, 5)
+material = SubResource("mat_crypt_stone")
+
+[node name="MausoleumLight" type="OmniLight3D" parent="Mausoleum"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 2)
+light_color = Color(0.5, 0.5, 0.7, 1)
+light_energy = 1.0
+omni_range = 10.0
+
+;; ============== TOMBSTONES - West Section ==============
+[node name="TombstonesWest" type="Node3D" parent="."]
+
+[node name="Grave_W0" type="CSGBox3D" parent="TombstonesWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.6, 10)
+use_collision = true
+size = Vector3(0.3, 1.2, 0.8)
+material = SubResource("mat_tombstone")
+
+[node name="Grave_W1" type="CSGBox3D" parent="TombstonesWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0.5, 10)
+use_collision = true
+size = Vector3(0.3, 1.0, 0.7)
+material = SubResource("mat_tombstone_old")
+
+[node name="Grave_W2" type="CSGBox3D" parent="TombstonesWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0.65, 10)
+use_collision = true
+size = Vector3(0.3, 1.3, 0.8)
+material = SubResource("mat_tombstone")
+
+[node name="Grave_W3" type="CSGBox3D" parent="TombstonesWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.55, 0)
+use_collision = true
+size = Vector3(0.3, 1.1, 0.75)
+material = SubResource("mat_tombstone_old")
+
+[node name="Grave_W4" type="CSGBox3D" parent="TombstonesWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0.6, 0)
+use_collision = true
+size = Vector3(0.3, 1.2, 0.8)
+material = SubResource("mat_tombstone")
+
+[node name="Grave_W5" type="CSGBox3D" parent="TombstonesWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0.45, 0)
+use_collision = true
+size = Vector3(0.3, 0.9, 0.65)
+material = SubResource("mat_tombstone_old")
+
+[node name="Grave_W6" type="CSGBox3D" parent="TombstonesWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.5, 20)
+use_collision = true
+size = Vector3(0.3, 1.0, 0.7)
+material = SubResource("mat_tombstone")
+
+[node name="Grave_W7" type="CSGBox3D" parent="TombstonesWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0.6, 20)
+use_collision = true
+size = Vector3(0.3, 1.2, 0.8)
+material = SubResource("mat_tombstone_old")
+
+[node name="Grave_W8" type="CSGBox3D" parent="TombstonesWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0.55, 20)
+use_collision = true
+size = Vector3(0.3, 1.1, 0.75)
+material = SubResource("mat_tombstone")
+
+;; ============== TOMBSTONES - East Section ==============
+[node name="TombstonesEast" type="Node3D" parent="."]
+
+[node name="Grave_E0" type="CSGBox3D" parent="TombstonesEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0.6, 10)
+use_collision = true
+size = Vector3(0.3, 1.2, 0.8)
+material = SubResource("mat_tombstone")
+
+[node name="Grave_E1" type="CSGBox3D" parent="TombstonesEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0.5, 10)
+use_collision = true
+size = Vector3(0.3, 1.0, 0.7)
+material = SubResource("mat_tombstone_old")
+
+[node name="Grave_E2" type="CSGBox3D" parent="TombstonesEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0.65, 10)
+use_collision = true
+size = Vector3(0.3, 1.3, 0.8)
+material = SubResource("mat_tombstone")
+
+[node name="Grave_E3" type="CSGBox3D" parent="TombstonesEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0.55, 0)
+use_collision = true
+size = Vector3(0.3, 1.1, 0.75)
+material = SubResource("mat_tombstone_old")
+
+[node name="Grave_E4" type="CSGBox3D" parent="TombstonesEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0.6, 0)
+use_collision = true
+size = Vector3(0.3, 1.2, 0.8)
+material = SubResource("mat_tombstone")
+
+[node name="Grave_E5" type="CSGBox3D" parent="TombstonesEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0.45, 0)
+use_collision = true
+size = Vector3(0.3, 0.9, 0.65)
+material = SubResource("mat_tombstone_old")
+
+[node name="Grave_E6" type="CSGBox3D" parent="TombstonesEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0.5, 20)
+use_collision = true
+size = Vector3(0.3, 1.0, 0.7)
+material = SubResource("mat_tombstone")
+
+[node name="Grave_E7" type="CSGBox3D" parent="TombstonesEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0.6, 20)
+use_collision = true
+size = Vector3(0.3, 1.2, 0.8)
+material = SubResource("mat_tombstone_old")
+
+[node name="Grave_E8" type="CSGBox3D" parent="TombstonesEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0.55, 20)
+use_collision = true
+size = Vector3(0.3, 1.1, 0.75)
+material = SubResource("mat_tombstone")
+
+;; ============== CRYPTS (Underground Entrances) ==============
+[node name="Crypts" type="Node3D" parent="."]
+
+[node name="Crypt1" type="Node3D" parent="Crypts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, -20)
+
+[node name="Frame" type="CSGBox3D" parent="Crypts/Crypt1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+use_collision = true
+size = Vector3(4, 1.5, 3)
+material = SubResource("mat_crypt_stone")
+
+[node name="Steps" type="CSGBox3D" parent="Crypts/Crypt1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 2)
+use_collision = true
+size = Vector3(3, 0.5, 2)
+material = SubResource("mat_crypt_stone")
+
+[node name="Crypt2" type="Node3D" parent="Crypts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, -20)
+
+[node name="Frame" type="CSGBox3D" parent="Crypts/Crypt2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+use_collision = true
+size = Vector3(4, 1.5, 3)
+material = SubResource("mat_crypt_stone")
+
+[node name="Steps" type="CSGBox3D" parent="Crypts/Crypt2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 2)
+use_collision = true
+size = Vector3(3, 0.5, 2)
+material = SubResource("mat_crypt_stone")
+
+;; ============== CONSECRATED GROUND (Morthane shrine area) ==============
+[node name="ConsecratedGround" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -42)
+
+[node name="SacredFloor" type="CSGBox3D" parent="ConsecratedGround"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+use_collision = true
+size = Vector3(12, 0.1, 10)
+material = SubResource("mat_consecrated")
+
+[node name="Altar" type="CSGBox3D" parent="ConsecratedGround"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -2)
+use_collision = true
+size = Vector3(3, 1.2, 2)
+material = SubResource("mat_mausoleum")
+
+[node name="ShrineLight" type="OmniLight3D" parent="ConsecratedGround"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+light_color = Color(0.6, 0.6, 0.8, 1)
+light_energy = 1.5
+omni_range = 10.0
+
+;; ============== DEAD TREES ==============
+[node name="DeadTrees" type="Node3D" parent="."]
+
+[node name="Tree1" type="CSGCylinder3D" parent="DeadTrees"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 2, 15)
+use_collision = true
+radius = 0.5
+height = 4.0
+material = SubResource("mat_dead_tree")
+
+[node name="Tree2" type="CSGCylinder3D" parent="DeadTrees"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 2.5, 5)
+use_collision = true
+radius = 0.6
+height = 5.0
+material = SubResource("mat_dead_tree")
+
+[node name="Tree3" type="CSGCylinder3D" parent="DeadTrees"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 1.8, -10)
+use_collision = true
+radius = 0.45
+height = 3.6
+material = SubResource("mat_dead_tree")
+
+[node name="Tree4" type="CSGCylinder3D" parent="DeadTrees"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 2.2, -35)
+use_collision = true
+radius = 0.55
+height = 4.4
+material = SubResource("mat_dead_tree")
+
+;; ============== AMBIENT LIGHTING ==============
+[node name="AmbientLights" type="Node3D" parent="."]
+
+[node name="MoonLight" type="OmniLight3D" parent="AmbientLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
+light_color = Color(0.5, 0.5, 0.7, 1)
+light_energy = 0.8
+omni_range = 60.0
+
+;; ============== NAVIGATION ==============
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+
+;; ============== SPAWN POINTS ==============
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="DefaultSpawn" type="Node3D" parent="SpawnPoints" groups=["default_spawn", "spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 38)
+
+[node name="from_dalhurst" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 38)
+
+[node name="from_crypt" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -25)
+
+;; ============== ENEMY SPAWN POINTS ==============
+[node name="EnemySpawnPoints" type="Node3D" parent="."]
+
+[node name="UndeadSpawn_0" type="Marker3D" parent="EnemySpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, 5)
+
+[node name="UndeadSpawn_1" type="Marker3D" parent="EnemySpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 5)
+
+[node name="UndeadSpawn_2" type="Marker3D" parent="EnemySpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0, -10)
+
+[node name="UndeadSpawn_3" type="Marker3D" parent="EnemySpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0, -10)
+
+[node name="UndeadSpawn_4" type="Marker3D" parent="EnemySpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28, 0, -18)
+
+[node name="UndeadSpawn_5" type="Marker3D" parent="EnemySpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0, -18)
+
+[node name="UndeadSpawn_6" type="Marker3D" parent="EnemySpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -38)
+
+;; ============== DOOR POSITIONS ==============
+[node name="DoorPositions" type="Node3D" parent="."]
+
+[node name="ExitToDalhurst" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 48)
+
+;; ============== INTERACTABLES ==============
+[node name="Interactables" type="Node3D" parent="."]
+
+[node name="MorthaneShrine" type="Marker3D" parent="Interactables"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -42)
+
+[node name="MausoleumEntrance" type="Marker3D" parent="Interactables"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -25)

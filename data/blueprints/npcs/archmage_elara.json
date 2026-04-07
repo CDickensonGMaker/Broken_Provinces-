@@ -1,0 +1,27 @@
+{
+	"name": "Archmage Elara Moonweave",
+	"who": "Powerful sorceress and leader of the Arcane Circle\nElegant, wise, and centuries old\nMentor figure with high standards\nRespects those who prove themselves worthy\nConcerned about the balance between knowledge and responsibility",
+	"what": "Guildmaster of the Arcane Circle\nGives all Mage Guild quests\nTests magical aptitude of applicants\nTeaches forbidden magic to trusted Adepts\nDefends the realm from magical threats",
+	"where": "Dalhurst - The Athenaeum (magical tower/library)\nOften found in the restricted vault or research laboratory\nOversees the Arcane Circle council chambers",
+	"quests": "The Entrance Exam (mage_01), Cataloging the Arcane (mage_02), Essence Collection (mage_03), First Enchantment (mage_04), Unsanctioned Magic (mage_05), Lost Knowledge (mage_06), Original Research (mage_07), Containment (mage_08), The Shadow Circle (mage_09), The Locked Section (mage_10), Beyond the Veil (mage_11), The Final Theorem (mage_12), The Inner Circle (mage_13), Guild Assignments (repeatable)",
+	"sprite": {
+		"type": "wizard",
+		"path": "res://assets/sprites/npcs/wizard_female.png",
+		"h_frames": 5,
+		"v_frames": 1,
+		"pixel_size": 0.0384,
+		"notes": "Elegant robes, staff, arcane appearance"
+	},
+	"dialogue": {
+		"archetype": "mage_leader",
+		"topics": ["magic", "arcane_circle", "forbidden_knowledge", "magical_threats"],
+		"disposition_base": 50,
+		"notes": "Formal speech, uses arcane terminology, offers wisdom and guidance"
+	},
+	"combat": {
+		"can_fight": true,
+		"level": 50,
+		"is_essential": true,
+		"notes": "Extremely powerful mage, only fights in ceremonial duel (quest 13)"
+	}
+}

@@ -1,0 +1,78 @@
+{
+	"id": "whalers_debt",
+	"title": "The Canyon Ledger",
+	"description": "Whalers Abyss is a town built on debts and broken promises. The local moneylender, a shrewd woman named Miriam Goldtongue, has a problem: several debtors have fled into the canyon rather than pay what they owe. She needs someone to track them down and collect - but the canyon is treacherous, and desperate people do desperate things.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "miriam_goldtongue",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "whalers_abyss",
+	"objectives": [
+		{
+			"id": "review_ledger",
+			"description": "Review the debt ledger with Miriam",
+			"type": "talk",
+			"target": "miriam_goldtongue",
+			"required_count": 1
+		},
+		{
+			"id": "find_debtor_1",
+			"description": "Find Garrett the gambler in the canyon camps",
+			"type": "talk",
+			"target": "debtor_garrett",
+			"required_count": 1
+		},
+		{
+			"id": "collect_debt_1",
+			"description": "Collect Garrett's debt (75 gold)",
+			"type": "collect",
+			"target": "garrett_debt",
+			"required_count": 1
+		},
+		{
+			"id": "find_debtor_2",
+			"description": "Track down Selene the merchant in the lower canyon",
+			"type": "reach",
+			"target": "lower_canyon_camp",
+			"required_count": 1
+		},
+		{
+			"id": "negotiate_selene",
+			"description": "Negotiate with Selene about her debt",
+			"type": "talk",
+			"target": "debtor_selene",
+			"required_count": 1
+		},
+		{
+			"id": "return_collections",
+			"description": "Return to Miriam with the collected debts",
+			"type": "talk",
+			"target": "miriam_goldtongue",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "miriam_goldtongue",
+	"turn_in_zone": "whalers_abyss",
+	"rewards": {
+		"gold": 100,
+		"xp": 275,
+		"items": []
+	},
+	"choice_consequences": {
+		"full_collection": {
+			"flags_to_set": ["whalers_debt_full"],
+			"reputation_changes": {}
+		},
+		"let_selene_go": {
+			"flags_to_set": ["selene_debt_forgiven"],
+			"reputation_changes": {}
+		},
+		"took_bribe": {
+			"flags_to_set": ["whalers_debt_corrupt"],
+			"reputation_changes": {}
+		}
+	},
+	"prerequisites": [],
+	"next_quest": ""
+}

@@ -1,0 +1,101 @@
+{
+	"id": "chronos_10_eternal_vigil",
+	"title": "The Eternal Vigil",
+	"description": "The Priest of Chronos has one final trial for you - the ultimate test of a Champion. Deep beneath the Kazer-Dun Entrance lies an ancient Chronos shrine, abandoned for centuries. There, a sacred hourglass turns endlessly, measuring the heartbeat of time itself. But dark forces seek to shatter it, to break time's flow and plunge the world into chaos. You must descend into the depths, face the Timeless One - an abomination that exists outside of fate - and prove yourself worthy of the title Champion of Chronos.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_chronos_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"faction": "church_of_chronos",
+	"objectives": [
+		{
+			"id": "enter_kazer_dun_entrance",
+			"description": "Enter the Kazer-Dun Entrance and find the ancient shrine",
+			"type": "reach",
+			"target": "kazer_dun_entrance",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_shrine_guardians",
+			"description": "Defeat the corrupted shrine guardians (6 enemies)",
+			"type": "kill",
+			"target": "corrupted_temporal_guardian",
+			"required_count": 6
+		},
+		{
+			"id": "locate_eternal_hourglass",
+			"description": "Locate the Eternal Hourglass deep in the shrine",
+			"type": "reach",
+			"target": "kazer_dun_entrance",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_timeless_one",
+			"description": "Defeat the Timeless One (epic boss encounter)",
+			"type": "kill",
+			"target": "the_timeless_one",
+			"required_count": 1
+		},
+		{
+			"id": "protect_hourglass",
+			"description": "Protect the Eternal Hourglass and restore the shrine",
+			"type": "solve_puzzle",
+			"target": "eternal_hourglass_restoration",
+			"required_count": 1
+		},
+		{
+			"id": "receive_champion_title",
+			"description": "Return to the Priest and receive the title of Champion",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_chronos_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 750,
+		"xp": 2000,
+		"items": ["eternal_hourglass_fragment", "champions_mantle"],
+		"faction_reputation": {
+			"church_of_chronos": 100,
+			"church_of_three": 50
+		}
+	},
+	"prerequisites": ["chronos_09_timeline_threat"],
+	"flags_required": ["chronos_devotee"],
+	"next_quest": "",
+	"spawn_on_accept": [
+		{
+			"type": "enemy",
+			"location": "kazer_dun_entrance",
+			"coords": [-485, 0, 895],
+			"enemy_type": "corrupted_temporal_guardian",
+			"count": 2
+		},
+		{
+			"type": "enemy",
+			"location": "kazer_dun_entrance",
+			"coords": [-495, 0, 905],
+			"enemy_type": "corrupted_temporal_guardian",
+			"count": 2
+		},
+		{
+			"type": "enemy",
+			"location": "kazer_dun_entrance",
+			"coords": [-475, 0, 905],
+			"enemy_type": "corrupted_temporal_guardian",
+			"count": 2
+		},
+		{
+			"type": "enemy",
+			"location": "kazer_dun_entrance",
+			"coords": [-485, 0, 910],
+			"enemy_type": "the_timeless_one",
+			"count": 1
+		}
+	],
+	"notes": "DESIGN INTENT: FINAL CLIMACTIC QUEST. This is the ultimate Chronos quest chain payoff. The Timeless One is an extremely powerful boss - a being that exists outside of time, immune to temporal effects, with devastating attacks. Defeating it requires skill and preparation. The Eternal Hourglass Fragment is a legendary equipment set piece (part of the Champion of Chronos set). The Champion's Mantle is a unique cloak/cape with powerful time-based abilities. Completing this quest grants MASSIVE reputation (100 with church_of_chronos, 50 with church_of_three) and the official title 'Champion of Chronos'. NPCs will address the player differently. This quest should feel EPIC - the culmination of 10 quests of dedication. The restoration puzzle involves using temporal energy to repair the hourglass's flow."
+}

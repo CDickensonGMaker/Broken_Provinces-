@@ -2,7 +2,7 @@
 extends Node
 
 const SaveDataClass = preload("res://scripts/data/save_data.gd")
-# TODO: DungeonState system being reworked for Dingo Room Generator
+# DungeonState system uses SimpleDungeons addon - state tracked via dungeon_states Dictionary
 # const DungeonStateScript := preload("res://scripts/dungeons/dungeon_state.gd")
 
 signal save_completed(slot: int)
@@ -456,6 +456,22 @@ func _collect_save_data():
 	if save_data.follower_data:
 		_collect_follower_data(save_data.follower_data)
 
+	# Guild rank system data
+	if save_data.guild_rank_data:
+		_collect_guild_rank_data(save_data.guild_rank_data)
+
+	# Duel manager data
+	if save_data.duel_data:
+		_collect_duel_data(save_data.duel_data)
+
+	# Escort manager data
+	if save_data.escort_data:
+		_collect_escort_data(save_data.escort_data)
+
+	# Companion manager data
+	if save_data.companion_data:
+		_collect_companion_data(save_data.companion_data)
+
 	return save_data
 
 ## Collect player data
@@ -755,6 +771,22 @@ func _apply_save_data(save_data) -> void:
 	# Restore follower system data
 	if save_data.follower_data:
 		_apply_follower_data(save_data.follower_data)
+
+	# Restore guild rank system data
+	if save_data.guild_rank_data:
+		_apply_guild_rank_data(save_data.guild_rank_data)
+
+	# Restore duel manager data
+	if save_data.duel_data:
+		_apply_duel_data(save_data.duel_data)
+
+	# Restore escort manager data
+	if save_data.escort_data:
+		_apply_escort_data(save_data.escort_data)
+
+	# Restore companion manager data
+	if save_data.companion_data:
+		_apply_companion_data(save_data.companion_data)
 
 ## Apply player data
 func _apply_player_data(player_data) -> void:
@@ -1249,6 +1281,102 @@ func _apply_follower_data(follower_save_data) -> void:
 	})
 
 
+## Collect guild rank system data
+func _collect_guild_rank_data(guild_rank_save_data) -> void:
+	if not has_node("/root/GuildRankManager"):
+		return
+
+	var guild_manager := get_node("/root/GuildRankManager")
+	var guild_dict: Dictionary = guild_manager.to_dict()
+	guild_rank_save_data.quest_counts = guild_dict.get("quest_counts", {})
+	guild_rank_save_data.rank_levels = guild_dict.get("rank_levels", {})
+
+
+## Apply guild rank system data
+func _apply_guild_rank_data(guild_rank_save_data) -> void:
+	if not has_node("/root/GuildRankManager"):
+		return
+
+	var guild_manager := get_node("/root/GuildRankManager")
+	guild_manager.from_dict({
+		"quest_counts": guild_rank_save_data.quest_counts,
+		"rank_levels": guild_rank_save_data.rank_levels
+	})
+
+
+## Collect duel manager data
+func _collect_duel_data(duel_save_data) -> void:
+	if not has_node("/root/DuelManager"):
+		return
+
+	var duel_manager := get_node("/root/DuelManager")
+	var duel_dict: Dictionary = duel_manager.get_save_data()
+	duel_save_data.last_duel_id = duel_dict.get("last_duel_id", "")
+	duel_save_data.last_duel_result = duel_dict.get("last_duel_result", "none")
+
+
+## Apply duel manager data
+func _apply_duel_data(duel_save_data) -> void:
+	if not has_node("/root/DuelManager"):
+		return
+
+	var duel_manager := get_node("/root/DuelManager")
+	duel_manager.load_save_data({
+		"last_duel_id": duel_save_data.last_duel_id,
+		"last_duel_result": duel_save_data.last_duel_result
+	})
+
+
+## Collect escort manager data
+func _collect_escort_data(escort_save_data) -> void:
+	if not has_node("/root/EscortManager"):
+		return
+
+	var escort_manager := get_node("/root/EscortManager")
+	var escort_dict: Dictionary = escort_manager.to_dict()
+	escort_save_data.escort_states = escort_dict.get("escort_states", {})
+	escort_save_data.primary_escort_id = escort_dict.get("primary_escort_id", "")
+
+
+## Apply escort manager data
+func _apply_escort_data(escort_save_data) -> void:
+	if not has_node("/root/EscortManager"):
+		return
+
+	var escort_manager := get_node("/root/EscortManager")
+	escort_manager.from_dict({
+		"escort_states": escort_save_data.escort_states,
+		"primary_escort_id": escort_save_data.primary_escort_id
+	})
+
+
+## Collect companion manager data
+func _collect_companion_data(companion_save_data) -> void:
+	if not has_node("/root/CompanionManager"):
+		return
+
+	var companion_manager := get_node("/root/CompanionManager")
+	var companion_dict: Dictionary = companion_manager.to_dict()
+	companion_save_data.unlocked_companions = companion_dict.get("unlocked_companions", [])
+	companion_save_data.active_companion_ids = companion_dict.get("active_companion_ids", [])
+	companion_save_data.companion_states = companion_dict.get("companion_states", {})
+	companion_save_data.position_mode = companion_dict.get("position_mode", 0)
+
+
+## Apply companion manager data
+func _apply_companion_data(companion_save_data) -> void:
+	if not has_node("/root/CompanionManager"):
+		return
+
+	var companion_manager := get_node("/root/CompanionManager")
+	companion_manager.from_dict({
+		"unlocked_companions": companion_save_data.unlocked_companions,
+		"active_companion_ids": companion_save_data.active_companion_ids,
+		"companion_states": companion_save_data.companion_states,
+		"position_mode": companion_save_data.position_mode
+	})
+
+
 ## Migrate old save data to current version
 func _migrate_save_data(data: Dictionary, from_version: int) -> Dictionary:
 	var migrated := data.duplicate(true)
@@ -1618,7 +1746,7 @@ func has_visited_dungeon(dungeon_id: String) -> bool:
 
 
 ## Get dungeon state (creates new state if doesn't exist)
-## TODO: Dungeon state system being reworked for Dingo Room Generator
+## Uses SimpleDungeons addon for procedural generation
 func get_dungeon_state(dungeon_id: String, _is_main: bool = false) -> Dictionary:
 	if dungeon_states.has(dungeon_id):
 		return dungeon_states[dungeon_id]
@@ -1634,7 +1762,7 @@ func get_dungeon_state(dungeon_id: String, _is_main: bool = false) -> Dictionary
 
 
 ## Save dungeon state
-## TODO: Dungeon state system being reworked for Dingo Room Generator
+## Uses SimpleDungeons addon for procedural generation
 func save_dungeon_state(state: Dictionary) -> void:
 	var dungeon_id: String = state.get("dungeon_id", "")
 	if dungeon_id.is_empty():
@@ -1645,13 +1773,13 @@ func save_dungeon_state(state: Dictionary) -> void:
 
 
 ## Get main dungeon state (permanent clear tracking)
-## TODO: Dungeon state system being reworked for Dingo Room Generator
+## Uses SimpleDungeons addon for procedural generation
 func get_main_dungeon_state(dungeon_id: String) -> Dictionary:
 	return get_dungeon_state(dungeon_id, true)
 
 
 ## Get minor dungeon state (respawning)
-## TODO: Dungeon state system being reworked for Dingo Room Generator
+## Uses SimpleDungeons addon for procedural generation
 func get_minor_dungeon_state(dungeon_id: String) -> Dictionary:
 	return get_dungeon_state(dungeon_id, false)
 

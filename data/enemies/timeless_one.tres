@@ -1,0 +1,149 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/enemy_attack_data.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+id = "time_stop_strike"
+display_name = "Time Stop Strike"
+damage = Array[int]([12, 20, 8])
+damage_type = 7
+windup_time = 1.0
+active_time = 0.1
+recovery_time = 0.5
+cooldown = 4.0
+range_distance = 4.0
+is_ranged = false
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 0.0
+inflicts_condition = 7
+condition_chance = 0.8
+condition_duration = 2.0
+stagger_power = 2.0
+knockback_force = 3.0
+weight = 1.0
+min_range = 0.0
+max_range = 4.0
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+id = "chronos_blast"
+display_name = "Chronos Blast"
+damage = Array[int]([15, 25, 10])
+damage_type = 7
+windup_time = 1.5
+active_time = 0.3
+recovery_time = 0.8
+cooldown = 10.0
+range_distance = 12.0
+is_ranged = true
+is_aoe = true
+aoe_radius = 5.0
+projectile_speed = 20.0
+inflicts_condition = 11
+condition_chance = 0.9
+condition_duration = 4.0
+stagger_power = 1.5
+knockback_force = 4.0
+weight = 0.4
+min_range = 4.0
+max_range = 12.0
+requires_los = true
+animation_name = "cast"
+sound_effect = ""
+
+[sub_resource type="Resource" id="3"]
+script = ExtResource("2")
+id = "age_drain"
+display_name = "Age Drain"
+damage = Array[int]([8, 15, 5])
+damage_type = 5
+windup_time = 2.0
+active_time = 0.5
+recovery_time = 1.0
+cooldown = 15.0
+range_distance = 8.0
+is_ranged = true
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 25.0
+inflicts_condition = 6
+condition_chance = 1.0
+condition_duration = 10.0
+stagger_power = 0.5
+knockback_force = 0.0
+weight = 0.3
+min_range = 0.0
+max_range = 8.0
+requires_los = true
+animation_name = "drain"
+sound_effect = ""
+
+[resource]
+script = ExtResource("1")
+id = "timeless_one"
+display_name = "The Timeless One"
+description = "An ancient entity from beyond the veil of time itself. The Timeless One exists in all moments simultaneously, able to rewind wounds and freeze opponents in temporal stasis. It guards the inner sanctum of Chronos's temple, testing those who would seek the god of time's blessing."
+level = 40
+min_level = 35
+max_level = 50
+max_hp = 500
+armor_value = 18
+movement_speed = 4.0
+turn_speed = 8.0
+grit = 8
+agility = 12
+will = 16
+knowledge = 14
+behavior = 3
+faction = 0
+aggro_range = 20.0
+attack_range = 4.0
+preferred_distance = 8.0
+flee_hp_threshold = 0.0
+is_boss = true
+attacks = Array[ExtResource("2")]([SubResource("1"), SubResource("2"), SubResource("3")])
+can_block = false
+block_chance = 0.0
+stagger_resistance = 0.8
+fire_resistance = 0.3
+frost_resistance = 0.5
+lightning_resistance = 0.3
+poison_resistance = 1.0
+necrotic_resistance = 0.5
+physical_resistance = 0.2
+fire_weakness = 0.0
+frost_weakness = 0.0
+lightning_weakness = 0.0
+holy_weakness = 0.5
+causes_horror = true
+horror_difficulty = 20
+loot_table_av = 10
+gold_drop = Array[int]([300, 500])
+guaranteed_drops = Array[String](["temporal_essence"])
+drop_table = {
+"chrono_shard": 0.8,
+"timeless_dust": 0.6,
+"arcane_tome": 0.4,
+"rare_gem": 0.25
+}
+xp_reward = 1000
+scene_path = ""
+icon_path = ""
+scale = 1.4
+sprite_path = ""
+attack_sprite_path = ""
+sprite_hframes = 4
+sprite_vframes = 1
+attack_hframes = 4
+attack_vframes = 1
+sprite_pixel_size = 0.04
+idle_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_1.wav"])
+attack_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_1.wav"])
+hurt_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_2.wav"])
+death_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_1.wav"])

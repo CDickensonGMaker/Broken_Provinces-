@@ -1,0 +1,58 @@
+{
+	"id": "mage_02_library_duty",
+	"title": "Cataloging the Arcane",
+	"description": "As a new Novice of the Arcane Circle, you've been assigned library duty at the Athenaeum. Help organize the magical texts and learn about the different schools of magic. While cataloging, you discover a dangerous tome misfiled in the common section - it must be moved to the restricted vault immediately.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "archmage_elara_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "arcane_circle",
+	"objectives": [
+		{
+			"id": "organize_texts",
+			"description": "Organize magical texts in the Athenaeum library",
+			"type": "interact",
+			"target": "library_bookshelf_01",
+			"required_count": 5,
+			"notes": "Interact with 5 different bookshelves to organize them"
+		},
+		{
+			"id": "find_dangerous_tome",
+			"description": "Discover the misfiled dangerous tome",
+			"type": "collect",
+			"target": "forbidden_tome_necromancy",
+			"required_count": 1,
+			"notes": "Found while organizing books"
+		},
+		{
+			"id": "secure_tome",
+			"description": "Place the forbidden tome in the restricted vault",
+			"type": "interact",
+			"target": "restricted_vault",
+			"required_count": 1
+		},
+		{
+			"id": "report_to_elara",
+			"description": "Report your findings to Archmage Elara",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "archmage_elara_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 75,
+		"xp": 250,
+		"items": ["spell_scroll_flame_bolt"],
+		"faction_reputation": {
+			"arcane_circle": 15
+		}
+	},
+	"on_complete_flags": ["library_duty_complete", "knows_about_restricted_vault"],
+	"prerequisites": ["arcane_circle_novice"],
+	"next_quest": "mage_03_reagent_gathering",
+	"notes": "Second quest. Teaches about magical schools and introduces forbidden magic concept. Rewards fire spell."
+}

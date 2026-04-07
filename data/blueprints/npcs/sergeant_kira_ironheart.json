@@ -1,0 +1,34 @@
+{
+  "name": "Sergeant Kira Ironheart",
+  "who": "Veteran sergeant of the Iron Company\nRose through ranks through discipline and skill\nMaster of polearm combat and defensive tactics\nPotential companion upon completing company questline\nDevoted to the Company's code of honor",
+  "what": "Company drill instructor and squad leader\nStrategic combat advisor\nOffers training in defensive techniques\nPotential companion if chosen over Grimjaw",
+  "where": "Dalhurst - Iron Company Barracks\nAvailable as companion after questline completion",
+  "quests": "Iron Company Captain's Hand reward choice",
+  "sprite": {
+    "type": "soldier",
+    "path": "res://assets/sprites/npcs/combat/female_gladiator1.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0300,
+    "notes": "Athletic woman in plate armor, halberd at ready"
+  },
+  "dialogue": {
+    "archetype": "disciplined_soldier",
+    "topics": ["military_tactics", "company_history", "honor", "discipline"],
+    "disposition_base": 40,
+    "notes": "Formal, professional, values chain of command"
+  },
+  "combat": {
+    "can_fight": true,
+    "level": 38,
+    "is_essential": true,
+    "notes": "Defensive warrior - high armor, reach attacks, team buffs"
+  },
+  "follower": {
+    "can_recruit": true,
+    "recruitment_conditions": ["Complete Iron Company questline", "Choose Kira over Grimjaw"],
+    "skills": ["sweeping_strike", "defensive_stance", "rally"],
+    "combat_style": "soldier_defensive",
+    "notes": "Excellent at holding positions, protecting allies, AoE attacks"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "The Stranger",
+  "who": "Hooded figure with piercing gaze beneath cowl\nSpeaks in measured tones\nMember of The Keepers operating in Thornfield",
+  "what": "Keeper contact in Thornfield tavern back room\nProvides information on Keeper activities in the region\nGives Keeper missions to trusted operatives",
+  "where": "Thornfield - Tavern (back room)",
+  "sprite": "wizard_civilian",
+  "quests": "Keeper's Trust (Thornfield), Regional Intelligence"
+}

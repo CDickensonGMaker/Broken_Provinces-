@@ -1,0 +1,41 @@
+{
+	"id": "mercenary_repeatable_contracts",
+	"title": "Company Contracts",
+	"description": "As an Iron Company officer, you can take on repeatable mercenary contracts. These jobs range from escort missions to clearing dangerous areas. Contracts scale with your reputation and offer consistent pay for professional soldiers. The work never ends for a mercenary.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "captain_roderick_steele",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "iron_company",
+	"objectives": [
+		{
+			"id": "contract_target",
+			"description": "Complete the assigned contract objective",
+			"type": "kill",
+			"target": "contract_enemy",
+			"required_count": 10
+		},
+		{
+			"id": "return_for_payment",
+			"description": "Return to Captain Steele for payment",
+			"type": "talk",
+			"target": "captain_roderick_steele",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "captain_roderick_steele",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 150,
+		"xp": 300,
+		"items": [],
+		"faction_reputation": {
+			"iron_company": 10
+		}
+	},
+	"prerequisites": ["mercenary_01_enlistment"],
+	"next_quest": "",
+	"is_repeatable": true
+}

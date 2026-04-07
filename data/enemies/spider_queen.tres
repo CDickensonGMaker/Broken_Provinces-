@@ -1,0 +1,150 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/enemy_attack_data.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+id = "venomous_bite"
+display_name = "Venomous Bite"
+damage = Array[int]([10, 16, 6])
+damage_type = 4
+windup_time = 0.4
+active_time = 0.2
+recovery_time = 0.3
+cooldown = 1.5
+range_distance = 3.0
+is_ranged = false
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 0.0
+inflicts_condition = 3
+condition_chance = 0.7
+condition_duration = 12.0
+stagger_power = 0.8
+knockback_force = 2.0
+weight = 1.0
+min_range = 0.0
+max_range = 3.0
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+id = "web_spray"
+display_name = "Web Spray"
+damage = Array[int]([4, 8, 0])
+damage_type = 0
+windup_time = 0.5
+active_time = 0.3
+recovery_time = 0.4
+cooldown = 5.0
+range_distance = 10.0
+is_ranged = true
+is_aoe = true
+aoe_radius = 4.0
+projectile_speed = 15.0
+inflicts_condition = 11
+condition_chance = 0.9
+condition_duration = 5.0
+stagger_power = 0.3
+knockback_force = 0.0
+weight = 0.6
+min_range = 3.0
+max_range = 10.0
+requires_los = true
+animation_name = "web"
+sound_effect = ""
+
+[sub_resource type="Resource" id="3"]
+script = ExtResource("2")
+id = "egg_sac"
+display_name = "Egg Sac"
+damage = Array[int]([0, 0, 0])
+damage_type = 0
+windup_time = 2.0
+active_time = 0.5
+recovery_time = 1.0
+cooldown = 25.0
+range_distance = 6.0
+is_ranged = true
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 0.0
+inflicts_condition = 0
+condition_chance = 0.0
+condition_duration = 0.0
+stagger_power = 0.0
+knockback_force = 0.0
+weight = 0.25
+min_range = 0.0
+max_range = 6.0
+requires_los = false
+animation_name = "summon"
+sound_effect = ""
+
+[resource]
+script = ExtResource("1")
+id = "spider_queen"
+display_name = "Spider Queen"
+description = "The bloated matriarch of a massive spider colony. Her body swollen with countless eggs, the Spider Queen commands legions of her offspring and can spray webs thick enough to trap even the strongest warrior. Her venom is legendarily potent, and her nest is littered with the desiccated husks of past victims."
+level = 28
+min_level = 23
+max_level = 40
+max_hp = 320
+armor_value = 16
+movement_speed = 3.5
+turn_speed = 4.0
+grit = 8
+agility = 6
+will = 4
+knowledge = 2
+behavior = 2
+faction = 4
+aggro_range = 15.0
+attack_range = 3.0
+preferred_distance = 6.0
+flee_hp_threshold = 0.0
+is_boss = true
+attacks = Array[ExtResource("2")]([SubResource("1"), SubResource("2"), SubResource("3")])
+can_block = false
+block_chance = 0.0
+stagger_resistance = 0.5
+fire_resistance = -0.5
+frost_resistance = 0.2
+lightning_resistance = 0.0
+poison_resistance = 1.0
+necrotic_resistance = 0.0
+physical_resistance = 0.1
+fire_weakness = 0.6
+frost_weakness = 0.0
+lightning_weakness = 0.0
+holy_weakness = 0.0
+causes_horror = true
+horror_difficulty = 18
+loot_table_av = 7
+gold_drop = Array[int]([80, 180])
+guaranteed_drops = Array[String](["spider_queen_fang"])
+drop_table = {
+"spider_silk": 1.0,
+"spider_venom": 0.8,
+"spider_egg": 0.6,
+"spider_fang": 0.5,
+"rare_gem": 0.15
+}
+xp_reward = 650
+scene_path = ""
+icon_path = "res://assets/sprites/enemies/beasts/spider.png"
+scale = 2.0
+sprite_path = "res://assets/sprites/enemies/beasts/spider.png"
+attack_sprite_path = ""
+sprite_hframes = 1
+sprite_vframes = 1
+attack_hframes = 1
+attack_vframes = 1
+sprite_pixel_size = 0.05
+idle_sounds = Array[String](["res://assets/audio/sfx/monsters/goblin_screech.wav"])
+attack_sounds = Array[String](["res://assets/audio/sfx/monsters/goblin_screech.wav"])
+hurt_sounds = Array[String](["res://assets/audio/sfx/monsters/goblin_screech.wav"])
+death_sounds = Array[String](["res://assets/audio/sfx/monsters/goblin_screech.wav"])

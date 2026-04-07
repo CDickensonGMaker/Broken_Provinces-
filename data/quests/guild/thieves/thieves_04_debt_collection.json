@@ -1,0 +1,71 @@
+{
+  "id": "thieves_04_debt_collection",
+  "title": "The Sailor's Debt",
+  "description": "A sailor named Garrett owes the Guild a substantial sum. He's been hiding at the Crossroads tavern. Collect the debt - by persuasion, intimidation, or taking it from his possessions.",
+  "giver_npc_id": "raven_thief_contact",
+  "giver_region": "dalhurst",
+  "faction": "thieves_guild",
+  "rank_required": 1,
+  "objectives": [
+    {
+      "id": "obj_find_garrett",
+      "type": "talk",
+      "target": "garrett_sailor",
+      "description": "Find Garrett at the Crossroads tavern"
+    },
+    {
+      "id": "obj_collect_debt",
+      "type": "collect",
+      "target": "debt_payment",
+      "required_count": 1,
+      "description": "Collect the 200 gold debt (persuade, intimidate, or steal)"
+    },
+    {
+      "id": "obj_return_payment",
+      "type": "talk",
+      "target": "raven_thief_contact",
+      "description": "Return the payment to Raven"
+    }
+  ],
+  "rewards": {
+    "gold": 150,
+    "xp": 400,
+    "items": [],
+    "faction_reputation": {
+      "thieves_guild": 15
+    }
+  },
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "raven_thief_contact",
+  "turn_in_zone": "dalhurst",
+  "next_quest": "thieves_05_blackmail",
+  "flags_set": ["thieves_debt_collected"],
+  "skill_checks": [
+    {
+      "type": "persuasion",
+      "dc": 12,
+      "success": "Garrett agrees to pay voluntarily",
+      "failure": "Must use intimidation or theft"
+    },
+    {
+      "type": "intimidation",
+      "dc": 10,
+      "success": "Garrett pays out of fear",
+      "failure": "Must steal from him"
+    }
+  ],
+  "moral_choice": {
+    "description": "Garrett claims he needed the money for his sick daughter. You can forgive the debt or collect it.",
+    "good_option": "Forgive the debt and pay it yourself",
+    "evil_option": "Collect the debt regardless of circumstances",
+    "consequences": {
+      "forgive_debt": {
+        "gold_cost": 200,
+        "faction_rep": {"thieves_guild": -5},
+        "xp_bonus": 100,
+        "flag_set": "thieves_compassionate"
+      }
+    }
+  },
+  "notes": "Multiple approaches. Moral dilemma. Garrett at Crossroads tavern."
+}

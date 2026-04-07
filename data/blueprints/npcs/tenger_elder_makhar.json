@@ -1,0 +1,8 @@
+{
+  "name": "Elder Makhar",
+  "who": "Weathered Tenger elder with ritual tattoos\nWise leader who has seen many winters\nProtective of his people but open to worthy outsiders",
+  "what": "Leads the main Tenger encampment\nCan grant permission to deal with Tenger tribes\nKnows ancient Tenger traditions and hunting grounds",
+  "where": "Tenger Camp - Central Tent",
+  "sprite": "tenger_elder",
+  "quests": "Tenger Trust, Tribal Matters"
+}

@@ -691,6 +691,28 @@ func _spawn_npcs() -> void:
 		"The southern route through Rotherhine is the only way now."
 	])
 
+	# === DUNCASTER FOREMAN (at mine entrance area) ===
+	var foreman_pos := Vector3(-15, 0, -10)  # Near the mine/mountain area
+	var duncaster_foreman := QuestGiver.spawn_quest_giver(
+		self,
+		foreman_pos,
+		"Foreman Kettrick",
+		"duncaster_foreman",
+		null, 8, 2,
+		[],  # Quest IDs to be added later
+		false
+	)
+	duncaster_foreman.region_id = ZONE_ID
+	duncaster_foreman.faction_id = "human_empire"
+	duncaster_foreman.no_quest_dialogue = "The rockslide buried more than just the road - half our mining tunnels collapsed too. We've got men still digging out the old shafts. If you're looking for work, we could use strong backs. If you're looking for passage north... you're out of luck."
+	var foreman_profile := NPCKnowledgeProfile.new()
+	foreman_profile.archetype = NPCKnowledgeProfile.Archetype.MERCHANT
+	foreman_profile.personality_traits = ["hardworking", "frustrated", "practical", "determined"]
+	foreman_profile.knowledge_tags = ["duncaster", "mining", "rockslide", "mountain_pass", "workers"]
+	foreman_profile.base_disposition = 45
+	foreman_profile.speech_style = "casual"
+	duncaster_foreman.npc_profile = foreman_profile
+
 
 func _spawn_ambient_npc(pos: Vector3, npc_name: String, dialog_lines: Array) -> void:
 	var npc := StaticBody3D.new()

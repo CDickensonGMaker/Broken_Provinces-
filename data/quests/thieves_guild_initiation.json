@@ -1,0 +1,64 @@
+{
+	"id": "thieves_guild_initiation",
+	"title": "Light Fingers",
+	"description": "The Thieves Guild of Dalhurst operates in the shadows, but they're always looking for new talent. A hooded figure in the market district has noticed your... flexible morals. If you want to join, you'll need to prove you have what it takes. Steal a ledger from a local merchant without getting caught. Simple enough - for someone with light fingers.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "thieves_guild_recruiter",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "meet_recruiter",
+			"description": "Meet the Guild recruiter in the Dalhurst back alleys at night",
+			"type": "talk",
+			"target": "thieves_guild_recruiter",
+			"required_count": 1
+		},
+		{
+			"id": "case_shop",
+			"description": "Scout the merchant's shop during the day",
+			"type": "reach",
+			"target": "hartwin_general_goods",
+			"required_count": 1
+		},
+		{
+			"id": "steal_ledger",
+			"description": "Steal the merchant's ledger without being detected",
+			"type": "collect",
+			"target": "merchant_ledger",
+			"required_count": 1
+		},
+		{
+			"id": "return_ledger",
+			"description": "Deliver the ledger to the Guild contact",
+			"type": "talk",
+			"target": "thieves_guild_fence",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "thieves_guild_fence",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 75,
+		"xp": 250,
+		"items": ["thieves_guild_token"],
+		"faction_reputation": {
+			"thieves_guild": 50
+		}
+	},
+	"choice_consequences": {
+		"clean_theft": {
+			"flags_to_set": ["thieves_guild_clean_record"],
+			"reputation_changes": {"thieves_guild": 15}
+		},
+		"got_caught": {
+			"flags_to_set": ["thieves_guild_sloppy"],
+			"reputation_changes": {"thieves_guild": -10, "town_guard": -25}
+		}
+	},
+	"prerequisites": [],
+	"next_quest": "sailors_debt",
+	"unlocks_quests": ["sailors_debt"]
+}

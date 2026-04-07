@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="CompanionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/companion_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "red_mara"
+display_name = "Red Mara"
+character_class = "Rogue"
+description = "A cunning independent thief with auburn hair. Former guild member turned rival, she's a master of stealth and backstabbing. Red Mara fights dirty and fast, preferring to end battles before enemies know she's there. Her daggers are as sharp as her wit."
+max_health = 65
+base_damage = 28
+armor = 8
+speed_multiplier = 1.20
+attack_cooldown = 0.9
+combat_range = 8.0
+attack_range = 2.0
+ai_behavior = 1
+combat_style = 0
+is_essential = true
+knockout_duration = 0.0
+preferred_weapons = Array[String](["dagger", "shortsword", "throwing_knife"])
+abilities = Array[String](["backstab", "smoke_bomb", "pickpocket"])
+ability_use_chance = 0.35
+ranged_projectile_path = ""
+sprite_path = "res://assets/sprites/npcs/combat/thief.png"
+sprite_h_frames = 1
+sprite_v_frames = 1
+sprite_pixel_size = 0.0256
+tint_color = Color(1.0, 1.0, 1.0, 1.0)
+unlock_type = 1
+unlock_param = "mara_recruitment"
+unlock_threshold = 0
+dialogue_path = "res://data/dialogue/companions/red_mara.json"
+knowledge_profile_path = ""
+combat_bark_lines = Array[String](["You never saw me coming.", "This is what betrayal feels like.", "Quick and quiet.", "The shadows are my friends.", "Your purse is lighter now.", "Nothing personal. Just business."])
+knockout_lines = Array[String](["Didn't... see that...", "Damn...", "Should've... run..."])
+recovery_lines = Array[String](["That won't happen again.", "Back from the shadows.", "You can't keep me down."])

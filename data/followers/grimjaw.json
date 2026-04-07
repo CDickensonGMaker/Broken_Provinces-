@@ -1,0 +1,74 @@
+{
+    "id": "grimjaw",
+    "display_name": "Grimjaw",
+    "description": "A half-orc berserker who found purpose in the Iron Company. His savage fighting style makes him devastatingly effective.",
+    "sprite_path": "res://assets/sprites/npcs/combat/male_gladiator1.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0384,
+    "max_health": 150,
+    "damage": 30,
+    "armor": 12,
+    "combat_style": "melee",
+    "is_essential": true,
+    "follow_distance": 2.0,
+    "combat_range": 5.0,
+    "leash_range": 18.0,
+    "personality_traits": ["fierce", "loyal", "simple", "honorable"],
+    "abilities": [
+        {
+            "id": "rage",
+            "name": "Rage",
+            "description": "Enters a berserker rage, greatly increasing damage but taking more damage",
+            "cooldown": 30.0,
+            "effect": "buff_damage",
+            "effect_duration": 15.0,
+            "damage_bonus": 0.5,
+            "armor_penalty": 10
+        },
+        {
+            "id": "cleave",
+            "name": "Cleave",
+            "description": "A powerful strike that cleaves through multiple enemies",
+            "cooldown": 8.0,
+            "damage_mult": 1.5,
+            "effect": "aoe",
+            "aoe_arc": 120,
+            "max_targets": 3
+        },
+        {
+            "id": "intimidate",
+            "name": "Intimidate",
+            "description": "A fearsome roar that causes enemies to flee briefly",
+            "cooldown": 25.0,
+            "effect": "fear",
+            "effect_duration": 4.0,
+            "range": 6.0
+        }
+    ],
+    "combat_lines": [
+        "GRIMJAW SMASH!",
+        "Blood for the Company!",
+        "RrrrAAAAGH!",
+        "You make Grimjaw angry!",
+        "Die! Die! DIE!",
+        "Grimjaw strongest!"
+    ],
+    "idle_lines": [
+        "Grimjaw ready for fight.",
+        "Company gave Grimjaw purpose. Grimjaw grateful.",
+        "Orc blood burns hot. Need battle.",
+        "Small ones run from Grimjaw. Smart.",
+        "Captain Steele good leader. Grimjaw follow.",
+        "Grimjaw's axe thirsty."
+    ],
+    "recruitment_quest": "iron_company_champion",
+    "recruitment_conditions": ["iron_company_questline_complete", "chose_grimjaw"],
+    "recruitment_location": "dalhurst",
+    "home_location": "dalhurst",
+    "faction_id": "iron_company",
+    "guild": "iron_company",
+    "companion_type": "berserker",
+    "weapon_type": "two_handed_axe",
+    "race": "half_orc"
+}

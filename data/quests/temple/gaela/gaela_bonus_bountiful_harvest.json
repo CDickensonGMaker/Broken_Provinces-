@@ -1,0 +1,69 @@
+{
+	"id": "gaela_bonus_bountiful_harvest",
+	"title": "Bountiful Harvest",
+	"description": "The autumn harvest festival approaches. Priestess Elara asks you to help gather the finest produce from across the valley to honor Gaela and ensure the winter stores are full.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "priest",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "gather_wheat",
+			"description": "Gather Fresh Wheat from Millbrook farms",
+			"type": "collect",
+			"target": "fresh_wheat",
+			"required_count": 10,
+			"is_optional": false
+		},
+		{
+			"id": "gather_apples",
+			"description": "Gather Autumn Apples from Elder Moor orchards",
+			"type": "collect",
+			"target": "autumn_apple",
+			"required_count": 8,
+			"is_optional": false
+		},
+		{
+			"id": "gather_pumpkins",
+			"description": "Gather Great Pumpkins from Thornfield fields",
+			"type": "collect",
+			"target": "great_pumpkin",
+			"required_count": 5,
+			"is_optional": false
+		},
+		{
+			"id": "gather_honey",
+			"description": "Gather Wild Honey from Crossroads area (defeat Giant Bees)",
+			"type": "collect",
+			"target": "wild_honey",
+			"required_count": 3,
+			"is_optional": false
+		},
+		{
+			"id": "deliver_harvest",
+			"description": "Deliver the harvest bounty to Priestess Elara",
+			"type": "talk",
+			"target": "priest_gaela_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_gaela_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 400,
+		"xp": 1200,
+		"items": ["harvest_festival_crown", "gaelas_bounty_potion", "gaelas_bounty_potion"],
+		"faction_reputation": {
+			"church_of_gaela": 50,
+			"church_of_three": 35,
+			"millbrook_farmers": 25,
+			"thornfield_citizens": 25
+		}
+	},
+	"prerequisites": ["gaela_05_devotion_choice"],
+	"required_flags": ["gaela_devotee"],
+	"next_quest": ""
+}

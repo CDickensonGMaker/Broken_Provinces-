@@ -1,0 +1,423 @@
+{
+  "id": "arcane_circle_research_board",
+  "display_name": "Research Board - Arcane Circle",
+  "description": "Dialogue for the Arcane Circle (Mage Guild) research board that handles repeatable magical research requests. Available to Journeyman rank and above.",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Research Board",
+      "text": "[The crystalline board glows with arcane symbols. Various research requests float as shimmering text, organizing themselves by difficulty and reward.]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "View available research requests.",
+          "next": "research_list",
+          "conditions": [
+            {"type": "flag", "param": "mage_rank_journeyman", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Submit completed research.",
+          "next": "research_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "mage_repeatable_research", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "How does this board work?",
+          "next": "board_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'm not a Journeyman yet.",
+          "next": "rank_required",
+          "conditions": [
+            {"type": "flag", "param": "mage_rank_journeyman", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Leave the board.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "research_list",
+      "speaker": "Research Board",
+      "text": "[Current Research Requests:]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "[Reagent Gathering] Collect rare herbs from Elder Moor - 125 gold",
+          "next": "reagent_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Specimen Recovery] Retrieve magical creature parts for study - 175 gold",
+          "next": "specimen_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Artifact Examination] Investigate magical disturbance site - 200 gold",
+          "next": "artifact_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Rune Transcription] Copy ancient runes from Willow Dale - 150 gold",
+          "next": "rune_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Enchantment Testing] Field test experimental enchantment - 225 gold",
+          "next": "enchant_details",
+          "conditions": [
+            {"type": "flag", "param": "mage_rank_adept", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "[Planar Survey] Investigate ley line anomaly - 300 gold",
+          "next": "planar_details",
+          "conditions": [
+            {"type": "flag", "param": "mage_rank_adept", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Check back later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "reagent_details",
+      "speaker": "Research Board",
+      "text": "[Reagent Gathering Request]\n\nLocation: Elder Moor\nTarget: Moonpetal flowers, Shadowroot, Glowcap mushrooms\nQuantity: 5 of each type\nDifficulty: Easy\nReward: 125 gold, 200 XP, +5 Circle reputation\n\nNote: Moonpetals only bloom at night\n\n[Accept this request?]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Accept the reagent gathering request.",
+          "next": "accept_reagent",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "mage_repeatable_research", "value": 0},
+            {"type": "set_flag", "param": "current_research_reagent", "value": 0}
+          ]
+        },
+        {
+          "text": "View other requests.",
+          "next": "research_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Leave.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "specimen_details",
+      "speaker": "Research Board",
+      "text": "[Specimen Recovery Request]\n\nTarget: Giant spider venom glands, wolf hearts, bear claws\nLocation: Various wilderness areas\nQuantity: 3 specimens of any type\nDifficulty: Medium\nReward: 175 gold, 275 XP, +8 Circle reputation\n\nNote: Fresh specimens preferred - within 24 hours of kill\n\n[Accept this request?]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Accept the specimen recovery request.",
+          "next": "accept_specimen",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "mage_repeatable_research", "value": 0},
+            {"type": "set_flag", "param": "current_research_specimen", "value": 0}
+          ]
+        },
+        {
+          "text": "View other requests.",
+          "next": "research_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Leave.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "artifact_details",
+      "speaker": "Research Board",
+      "text": "[Artifact Investigation Request]\n\nLocation: Reported magical disturbance near Crossroads\nObjective: Survey site, document findings, retrieve any artifacts\nDifficulty: Medium\nReward: 200 gold, 325 XP, +10 Circle reputation\n\nWarning: Residual magical effects may be hazardous\n\n[Accept this request?]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Accept the artifact investigation request.",
+          "next": "accept_artifact",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "mage_repeatable_research", "value": 0},
+            {"type": "set_flag", "param": "current_research_artifact", "value": 0}
+          ]
+        },
+        {
+          "text": "View other requests.",
+          "next": "research_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Leave.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "rune_details",
+      "speaker": "Research Board",
+      "text": "[Rune Transcription Request]\n\nLocation: Willow Dale ruins\nObjective: Find and accurately transcribe ancient runes\nQuantity: At least 10 distinct rune sequences\nDifficulty: Easy\nReward: 150 gold, 250 XP, +7 Circle reputation\n\nNote: Accuracy is critical - incomplete transcriptions rejected\n\n[Accept this request?]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Accept the rune transcription request.",
+          "next": "accept_rune",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "mage_repeatable_research", "value": 0},
+            {"type": "set_flag", "param": "current_research_rune", "value": 0}
+          ]
+        },
+        {
+          "text": "View other requests.",
+          "next": "research_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Leave.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "enchant_details",
+      "speaker": "Research Board",
+      "text": "[Enchantment Field Test Request]\n\nTask: Test experimental enchanted weapon against various enemies\nTargets: Kill 5 enemies using only the test weapon\nDifficulty: Medium-Hard\nReward: 225 gold, 375 XP, +12 Circle reputation\nRequires: Adept rank\n\nBonus: Detailed combat notes earn extra reputation\n\n[Accept this request?]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Accept the enchantment testing request.",
+          "next": "accept_enchant",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "mage_repeatable_research", "value": 0},
+            {"type": "set_flag", "param": "current_research_enchant", "value": 0}
+          ]
+        },
+        {
+          "text": "View other requests.",
+          "next": "research_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Leave.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "planar_details",
+      "speaker": "Research Board",
+      "text": "[Ley Line Survey Request]\n\nLocation: Anomaly detected between Elder Moor and Kazer-Dun\nObjective: Investigate, measure magical flux, document phenomena\nDifficulty: Hard\nReward: 300 gold, 500 XP, +15 Circle reputation\nRequires: Adept rank\n\nWarning: Planar instability possible - prepare accordingly\n\n[Accept this request?]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Accept the ley line survey request.",
+          "next": "accept_planar",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "mage_repeatable_research", "value": 0},
+            {"type": "set_flag", "param": "current_research_planar", "value": 0}
+          ]
+        },
+        {
+          "text": "View other requests.",
+          "next": "research_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Leave.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_reagent",
+      "speaker": "Research Board",
+      "text": "[Request Accepted]\n\nReagent collection kit provided. Travel to Elder Moor, collect the specified plants. Return samples to this board for analysis. Remember: Moonpetals only bloom at night.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_specimen",
+      "speaker": "Research Board",
+      "text": "[Request Accepted]\n\nSpecimen preservation jar provided. Hunt the specified creatures, harvest required parts. Fresh specimens (under 24 hours) provide better research data. Submit to this board.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_artifact",
+      "speaker": "Research Board",
+      "text": "[Request Accepted]\n\nSurvey equipment provided. Travel to the disturbance site near Crossroads. Document all magical phenomena, retrieve any artifacts. Exercise caution around residual energies.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_rune",
+      "speaker": "Research Board",
+      "text": "[Request Accepted]\n\nTranscription materials provided. Enter Willow Dale, locate ancient rune inscriptions. Copy at least 10 distinct sequences accurately. Incomplete or inaccurate work will be rejected.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_enchant",
+      "speaker": "Research Board",
+      "text": "[Request Accepted]\n\nExperimental weapon provided. Test against exactly 5 enemies in actual combat. Note effectiveness, unusual behaviors, and any malfunctions. Return weapon and observations.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_planar",
+      "speaker": "Research Board",
+      "text": "[Request Accepted]\n\nLey line detection equipment provided. Travel to the anomaly zone. Document all planar phenomena, measure magical flux levels. Warning: unstable magic may cause unexpected effects.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "research_turnin",
+      "speaker": "Research Board",
+      "text": "[Submit Research Materials]\n\n[A crystalline receptacle glows, ready to receive and analyze your findings.]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Submit completed research.",
+          "next": "research_complete",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "mage_repeatable_research", "value": 0}]
+        },
+        {
+          "text": "Not ready yet.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "research_complete",
+      "speaker": "Research Board",
+      "text": "[Research Verified - Payment Dispensed]\n\nYour contributions advance the Circle's understanding. Gold and reputation have been credited to your account. The pursuit of knowledge continues.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Accept another request.",
+          "next": "research_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's enough research for now.",
+          "next": "farewell_complete",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "board_explanation",
+      "speaker": "Research Board",
+      "text": "[The Arcane Circle research board provides ongoing work for qualified mages. Requests range from simple reagent gathering to complex planar surveys. Complete requests, submit findings, receive compensation. Higher ranks unlock more challenging and rewarding research.]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "View available requests.",
+          "next": "research_list",
+          "conditions": [{"type": "flag", "param": "mage_rank_journeyman", "value": 0}],
+          "actions": []
+        },
+        {
+          "text": "I understand.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "rank_required",
+      "speaker": "Research Board",
+      "text": "[Access Restricted - Journeyman Rank Required]\n\nResearch requests are available only to Journeyman mages and above. Complete the Circle's main examinations to advance in rank.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_complete",
+      "speaker": "Research Board",
+      "text": "[Your dedication to magical research is noted. Return when you wish to contribute further to the Circle's knowledge.]",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Research Board",
+      "text": "[The board dims as you step away. Knowledge awaits those who seek it.]",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

@@ -1,0 +1,397 @@
+[gd_scene load_steps=18 format=3 uid="uid://crossroads_ruins_001"]
+
+[ext_resource type="Script" path="res://scripts/levels/crossroads_ruins.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
+
+[sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
+sky_top_color = Color(0.1, 0.08, 0.15, 1)
+sky_horizon_color = Color(0.2, 0.15, 0.25, 1)
+ground_bottom_color = Color(0.08, 0.06, 0.1, 1)
+ground_horizon_color = Color(0.15, 0.12, 0.2, 1)
+
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_mat")
+
+[sub_resource type="Environment" id="Environment_ruins"]
+background_mode = 2
+sky = SubResource("sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.18, 0.15, 0.25, 1)
+ambient_light_energy = 0.4
+fog_enabled = true
+fog_light_color = Color(0.12, 0.1, 0.18, 1)
+fog_density = 0.015
+fog_sky_affect = 0.3
+
+[sub_resource type="StandardMaterial3D" id="mat_ground"]
+albedo_color = Color(0.2, 0.18, 0.15, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="mat_road_stone"]
+albedo_color = Color(0.35, 0.33, 0.3, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_ruin_stone"]
+albedo_color = Color(0.38, 0.35, 0.4, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_broken_stone"]
+albedo_color = Color(0.32, 0.3, 0.35, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="mat_moss_stone"]
+albedo_color = Color(0.28, 0.32, 0.28, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="mat_magic_glow"]
+albedo_color = Color(0.4, 0.3, 0.7, 1)
+emission_enabled = true
+emission = Color(0.5, 0.4, 0.8, 1)
+emission_energy_multiplier = 2.0
+roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="mat_dark_magic"]
+albedo_color = Color(0.2, 0.1, 0.3, 1)
+emission_enabled = true
+emission = Color(0.3, 0.15, 0.5, 1)
+emission_energy_multiplier = 1.5
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="mat_pillar"]
+albedo_color = Color(0.42, 0.4, 0.45, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="mat_dead_grass"]
+albedo_color = Color(0.25, 0.22, 0.18, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="mat_arena_floor"]
+albedo_color = Color(0.3, 0.28, 0.32, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_obelisk"]
+albedo_color = Color(0.15, 0.12, 0.2, 1)
+emission_enabled = true
+emission = Color(0.2, 0.15, 0.4, 1)
+emission_energy_multiplier = 0.8
+roughness = 0.7
+
+[node name="CrossroadsRuins" type="Node3D"]
+script = ExtResource("1")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ruins")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.433, 0.25, 0, 0.5, 0.866, -0.5, -0.75, 0.433, 0, 40, 0)
+light_color = Color(0.6, 0.55, 0.75, 1)
+light_energy = 0.5
+shadow_enabled = true
+shadow_bias = 0.02
+
+[node name="Player" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 50)
+
+[node name="HUD" parent="." instance=ExtResource("3")]
+
+;; ============== TERRAIN ==============
+[node name="Terrain" type="Node3D" parent="."]
+
+[node name="Ground" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(100, 1, 120)
+material = SubResource("mat_ground")
+
+;; Ancient roads forming crossroads
+[node name="NorthSouthRoad" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+size = Vector3(8, 0.04, 100)
+material = SubResource("mat_road_stone")
+
+[node name="EastWestRoad" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+size = Vector3(80, 0.04, 8)
+material = SubResource("mat_road_stone")
+
+;; ============== BOSS ARENA (Center) ==============
+[node name="BossArena" type="Node3D" parent="."]
+
+;; Circular arena floor
+[node name="ArenaFloor" type="CSGCylinder3D" parent="BossArena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+use_collision = true
+radius = 25.0
+height = 0.1
+sides = 32
+material = SubResource("mat_arena_floor")
+
+;; Inner ritual circle
+[node name="RitualCircle" type="CSGCylinder3D" parent="BossArena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+radius = 12.0
+height = 0.04
+sides = 32
+material = SubResource("mat_magic_glow")
+
+;; Dark core circle
+[node name="DarkCore" type="CSGCylinder3D" parent="BossArena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+radius = 5.0
+height = 0.04
+sides = 32
+material = SubResource("mat_dark_magic")
+
+;; Obelisks around arena
+[node name="Obelisk1" type="CSGBox3D" parent="BossArena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 20)
+use_collision = true
+size = Vector3(2, 6, 2)
+material = SubResource("mat_obelisk")
+
+[node name="Obelisk2" type="CSGBox3D" parent="BossArena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.32, 3, 10)
+use_collision = true
+size = Vector3(2, 6, 2)
+material = SubResource("mat_obelisk")
+
+[node name="Obelisk3" type="CSGBox3D" parent="BossArena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.32, 3, -10)
+use_collision = true
+size = Vector3(2, 6, 2)
+material = SubResource("mat_obelisk")
+
+[node name="Obelisk4" type="CSGBox3D" parent="BossArena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -20)
+use_collision = true
+size = Vector3(2, 6, 2)
+material = SubResource("mat_obelisk")
+
+[node name="Obelisk5" type="CSGBox3D" parent="BossArena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.32, 3, -10)
+use_collision = true
+size = Vector3(2, 6, 2)
+material = SubResource("mat_obelisk")
+
+[node name="Obelisk6" type="CSGBox3D" parent="BossArena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.32, 3, 10)
+use_collision = true
+size = Vector3(2, 6, 2)
+material = SubResource("mat_obelisk")
+
+;; Arena lighting
+[node name="ArenaGlow" type="OmniLight3D" parent="BossArena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+light_color = Color(0.5, 0.4, 0.8, 1)
+light_energy = 3.0
+omni_range = 30.0
+
+[node name="ObeliskLight1" type="OmniLight3D" parent="BossArena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 20)
+light_color = Color(0.4, 0.3, 0.7, 1)
+light_energy = 1.5
+omni_range = 8.0
+
+[node name="ObeliskLight2" type="OmniLight3D" parent="BossArena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.32, 5, 10)
+light_color = Color(0.4, 0.3, 0.7, 1)
+light_energy = 1.5
+omni_range = 8.0
+
+[node name="ObeliskLight3" type="OmniLight3D" parent="BossArena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -20)
+light_color = Color(0.4, 0.3, 0.7, 1)
+light_energy = 1.5
+omni_range = 8.0
+
+;; ============== COLLAPSED STRUCTURES (Northwest) ==============
+[node name="CollapsedStructureNW" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 0, 35)
+
+[node name="RuinedWall1" type="CSGBox3D" parent="CollapsedStructureNW"]
+transform = Transform3D(0.95, 0, 0.31, 0, 1, 0, -0.31, 0, 0.95, 0, 2, 0)
+use_collision = true
+size = Vector3(8, 4, 1)
+material = SubResource("mat_ruin_stone")
+
+[node name="RuinedWall2" type="CSGBox3D" parent="CollapsedStructureNW"]
+transform = Transform3D(1, 0, 0, 0, 0.95, 0.31, 0, -0.31, 0.95, 4, 1.5, -3)
+use_collision = true
+size = Vector3(6, 3, 0.8)
+material = SubResource("mat_broken_stone")
+
+[node name="Rubble1" type="CSGBox3D" parent="CollapsedStructureNW"]
+transform = Transform3D(0.85, 0, 0.52, 0, 1, 0, -0.52, 0, 0.85, 2, 0.4, 3)
+use_collision = true
+size = Vector3(3, 0.8, 2)
+material = SubResource("mat_moss_stone")
+
+[node name="Rubble2" type="CSGBox3D" parent="CollapsedStructureNW"]
+transform = Transform3D(0.77, 0, -0.64, 0, 1, 0, 0.64, 0, 0.77, -3, 0.3, 2)
+use_collision = true
+size = Vector3(2.5, 0.6, 1.8)
+material = SubResource("mat_broken_stone")
+
+;; ============== COLLAPSED STRUCTURES (Northeast) ==============
+[node name="CollapsedStructureNE" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 0, 35)
+
+[node name="StandingPillar" type="CSGCylinder3D" parent="CollapsedStructureNE"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
+use_collision = true
+radius = 1.2
+height = 7.0
+material = SubResource("mat_pillar")
+
+[node name="FallenPillar" type="CSGCylinder3D" parent="CollapsedStructureNE"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 5, 0.6, 3)
+use_collision = true
+radius = 1.0
+height = 5.0
+material = SubResource("mat_moss_stone")
+
+[node name="BrokenArch" type="CSGBox3D" parent="CollapsedStructureNE"]
+transform = Transform3D(0.87, 0.5, 0, -0.5, 0.87, 0, 0, 0, 1, -4, 2, -2)
+use_collision = true
+size = Vector3(5, 1.5, 2)
+material = SubResource("mat_ruin_stone")
+
+;; ============== COLLAPSED STRUCTURES (Southwest) ==============
+[node name="CollapsedStructureSW" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 0, -35)
+
+[node name="RuinedFoundation" type="CSGBox3D" parent="CollapsedStructureSW"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+use_collision = true
+size = Vector3(10, 0.5, 8)
+material = SubResource("mat_ruin_stone")
+
+[node name="CornerWall" type="CSGBox3D" parent="CollapsedStructureSW"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.5, -3)
+use_collision = true
+size = Vector3(0.8, 3, 4)
+material = SubResource("mat_moss_stone")
+
+[node name="CornerWall2" type="CSGBox3D" parent="CollapsedStructureSW"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1.5, -3.5)
+use_collision = true
+size = Vector3(4, 3, 0.8)
+material = SubResource("mat_moss_stone")
+
+;; ============== COLLAPSED STRUCTURES (Southeast) ==============
+[node name="CollapsedStructureSE" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 0, -35)
+
+[node name="TowerBase" type="CSGCylinder3D" parent="CollapsedStructureSE"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+use_collision = true
+radius = 4.0
+height = 4.0
+sides = 8
+material = SubResource("mat_ruin_stone")
+
+[node name="CollapsedUpper" type="CSGBox3D" parent="CollapsedStructureSE"]
+transform = Transform3D(0.92, 0, 0.38, 0, 0.8, 0.6, -0.38, -0.6, 0.74, 5, 1, 3)
+use_collision = true
+size = Vector3(6, 2, 5)
+material = SubResource("mat_broken_stone")
+
+;; ============== AMBIENT MAGIC EFFECTS ==============
+[node name="AmbientMagic" type="Node3D" parent="."]
+
+[node name="FloatingLight1" type="OmniLight3D" parent="AmbientMagic"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 4, 15)
+light_color = Color(0.5, 0.4, 0.9, 1)
+light_energy = 1.2
+omni_range = 6.0
+
+[node name="FloatingLight2" type="OmniLight3D" parent="AmbientMagic"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 3, -18)
+light_color = Color(0.4, 0.5, 0.8, 1)
+light_energy = 1.0
+omni_range = 5.0
+
+[node name="FloatingLight3" type="OmniLight3D" parent="AmbientMagic"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 5, -25)
+light_color = Color(0.6, 0.3, 0.7, 1)
+light_energy = 1.3
+omni_range = 7.0
+
+[node name="FloatingLight4" type="OmniLight3D" parent="AmbientMagic"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 4, 22)
+light_color = Color(0.3, 0.5, 0.8, 1)
+light_energy = 1.1
+omni_range = 6.0
+
+;; ============== NAVIGATION ==============
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+
+;; ============== SPAWN POINTS ==============
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="DefaultSpawn" type="Node3D" parent="SpawnPoints" groups=["default_spawn", "spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 45)
+
+[node name="from_wilderness" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 45)
+
+[node name="from_north" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -45)
+
+[node name="from_east" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 0.1, 0)
+
+[node name="from_west" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38, 0.1, 0)
+
+;; ============== ENEMY SPAWN POINTS ==============
+[node name="EnemySpawnPoints" type="Node3D" parent="."]
+
+[node name="CultistSpawn_0" type="Marker3D" parent="EnemySpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 25)
+
+[node name="CultistSpawn_1" type="Marker3D" parent="EnemySpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, 25)
+
+[node name="CultistSpawn_2" type="Marker3D" parent="EnemySpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, 0)
+
+[node name="CultistSpawn_3" type="Marker3D" parent="EnemySpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0, 0)
+
+[node name="CultistSpawn_4" type="Marker3D" parent="EnemySpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, -25)
+
+[node name="CultistSpawn_5" type="Marker3D" parent="EnemySpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, -25)
+
+[node name="BossSpawn" type="Marker3D" parent="EnemySpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+;; ============== DOOR POSITIONS ==============
+[node name="DoorPositions" type="Node3D" parent="."]
+
+[node name="SouthExit" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 55)
+
+;; ============== INTERACTABLES ==============
+[node name="Interactables" type="Node3D" parent="."]
+
+[node name="BossArenaCenter" type="Marker3D" parent="Interactables"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="AncientAltar" type="Marker3D" parent="Interactables"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+
+;; ============== CHEST POSITIONS ==============
+[node name="ChestPositions" type="Node3D" parent="."]
+
+[node name="Chest_Ruins_NW" type="Marker3D" parent="ChestPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, 32)
+
+[node name="Chest_Ruins_SE" type="Marker3D" parent="ChestPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 0, -32)
+
+[node name="Chest_Boss" type="Marker3D" parent="ChestPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8)

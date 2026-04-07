@@ -1,0 +1,35 @@
+{
+	"id": "morthane_repeatable_cleansing",
+	"title": "Cleansing Duty",
+	"description": "As a servant of Morthane, you are called to maintain the natural order. Clear undead spawns that corrupt the cycle. This duty is ongoing - the battle against undeath never truly ends.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_morthane_elder_moor",
+	"giver_npc_type": "priest",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "cleanse_undead_spawn",
+			"description": "Destroy undead creatures corrupting the cycle",
+			"type": "kill",
+			"target": "skeleton_warrior",
+			"required_count": 10
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_morthane_elder_moor",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 100,
+		"xp": 300,
+		"items": [],
+		"faction_reputation": {
+			"church_of_morthane": 10,
+			"church_of_three": 5
+		}
+	},
+	"prerequisites": ["morthane_05_devotion_choice"],
+	"cooldown_days": 7,
+	"next_quest": "",
+	"faction": "church_of_morthane"
+}

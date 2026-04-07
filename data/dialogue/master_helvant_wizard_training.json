@@ -1,0 +1,578 @@
+{
+	"id": "master_helvant_wizard_training",
+	"display_name": "Master Helvant - Wizard Training",
+	"description": "Complete dialogue tree for Master Helvant's wizard apprentice questline covering all 6 quests",
+	"start_node": "greeting_initial",
+	"nodes": [
+		{
+			"id": "greeting_initial",
+			"speaker": "Master Helvant",
+			"text": "Ah, another curious soul drawn to the arcane arts. I am Master Helvant, and I have studied the mysteries of magic for over four decades. What brings you to my tower?",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "I want to learn magic.",
+					"next": "want_to_learn",
+					"conditions": [
+						{"type": "flag_not_set", "param": "helvant_accepted_apprentice", "value": 0}
+					],
+					"actions": []
+				},
+				{
+					"text": "I've completed your trials.",
+					"next": "aptitude_complete",
+					"conditions": [
+						{"type": "quest_complete", "param": "wizard_aptitude_test", "value": 0}
+					],
+					"actions": []
+				},
+				{
+					"text": "I've gathered the elemental essences.",
+					"next": "lesson_one_complete",
+					"conditions": [
+						{"type": "quest_complete", "param": "wizard_first_lesson", "value": 0}
+					],
+					"actions": []
+				},
+				{
+					"text": "I've helped the villagers as you asked.",
+					"next": "field_test_complete",
+					"conditions": [
+						{"type": "quest_complete", "param": "wizard_field_test", "value": 0}
+					],
+					"actions": []
+				},
+				{
+					"text": "I've recovered your master's grimoire.",
+					"next": "grimoire_recovered",
+					"conditions": [
+						{"type": "quest_complete", "param": "wizard_lost_tome", "value": 0},
+						{"type": "has_item", "param": "helvants_master_grimoire", "value": 1}
+					],
+					"actions": []
+				},
+				{
+					"text": "I've recovered the stolen pages.",
+					"next": "pages_recovered",
+					"conditions": [
+						{"type": "quest_complete", "param": "wizard_stolen_pages", "value": 0},
+						{"type": "has_item", "param": "grimoire_pages_stolen", "value": 1}
+					],
+					"actions": []
+				},
+				{
+					"text": "Just browsing. Farewell.",
+					"next": "farewell",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "want_to_learn",
+			"speaker": "Master Helvant",
+			"text": "Magic is not a toy, nor is it a weapon for the weak-willed. It demands discipline, intelligence, and an innate connection to the Weave. Many claim they wish to learn, but few possess the necessary spark.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "I'm willing to prove myself.",
+					"next": "offer_trials",
+					"conditions": [],
+					"actions": []
+				},
+				{
+					"text": "Perhaps you're right. I'll seek another path.",
+					"next": "farewell",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "offer_trials",
+			"speaker": "Master Helvant",
+			"text": "Very well. I will test your aptitude through three simple tasks. First, you must find a moonpetal flower from the shrine at the Crossroads - a test of your awareness. Second, you must collect silver dust from a defeated undead creature - a test of your will to face supernatural threats. Complete these, and we shall see if you have potential.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "I accept the challenge.",
+					"next": "accept_aptitude",
+					"conditions": [],
+					"actions": [
+						{"type": "start_quest", "param": "wizard_aptitude_test", "value": 0}
+					]
+				},
+				{
+					"text": "Let me prepare first.",
+					"next": "farewell",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "accept_aptitude",
+			"speaker": "Master Helvant",
+			"text": "Good. The moonpetal grows near ancient shrines where magic lingers. The silver dust can be harvested from undead - their corrupted essence crystallizes into the substance. Return when you have both.",
+			"is_end": true,
+			"auto_continue": "",
+			"choices": []
+		},
+		{
+			"id": "aptitude_complete",
+			"speaker": "Master Helvant",
+			"text": "You have the reagents. More importantly, you had the wit to find them and the courage to face the undead. I sense the spark within you - faint, but present. I will accept you as my apprentice.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "What happens now?",
+					"next": "first_lesson_intro",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "first_lesson_intro",
+			"speaker": "Master Helvant",
+			"text": "All magic stems from the four primal elements: Fire, Water, Earth, and Air. To master magic, you must first understand these foundations. I want you to gather pure samples of each element's essence and attune yourself to them. Only then will you grasp the fundamental truth of the arcane.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "Where do I find these essences?",
+					"next": "explain_essences",
+					"conditions": [],
+					"actions": []
+				},
+				{
+					"text": "I'll begin immediately.",
+					"next": "accept_lesson_one",
+					"conditions": [],
+					"actions": [
+						{"type": "start_quest", "param": "wizard_first_lesson", "value": 0}
+					]
+				}
+			]
+		},
+		{
+			"id": "explain_essences",
+			"speaker": "Master Helvant",
+			"text": "Fire essence burns at the heart of the blacksmith's forge here in Dalhurst. Water essence flows purest at Millbrook's lake. Earth essence sleeps within the ancient standing stones at the Crossroads. Air essence dances on the hilltop overlooking Elder Moor. Visit each site and let the elements speak to you.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "I understand. I'll gather them.",
+					"next": "accept_lesson_one",
+					"conditions": [],
+					"actions": [
+						{"type": "start_quest", "param": "wizard_first_lesson", "value": 0}
+					]
+				}
+			]
+		},
+		{
+			"id": "accept_lesson_one",
+			"speaker": "Master Helvant",
+			"text": "Remember - you are not merely collecting materials. You are forging a connection to the elemental forces that underpin all existence. Open your mind and let the magic flow through you.",
+			"is_end": true,
+			"auto_continue": "",
+			"choices": []
+		},
+		{
+			"id": "lesson_one_complete",
+			"speaker": "Master Helvant",
+			"text": "I can see it in your eyes - you felt the elements, didn't you? Fire's rage, water's serenity, earth's endurance, air's freedom. This understanding will serve as the bedrock of your magical education.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "What's next in my training?",
+					"next": "field_test_intro",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "field_test_intro",
+			"speaker": "Master Helvant",
+			"text": "Theory without practice is useless. Magic exists to serve - to protect, to heal, to solve problems beyond mundane means. I've arranged for you to help several villagers using your newfound abilities. Prove that you can apply magic to real challenges, not just dusty academic exercises.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "What do the villagers need?",
+					"next": "explain_field_test",
+					"conditions": [],
+					"actions": []
+				},
+				{
+					"text": "I'm ready for the challenge.",
+					"next": "accept_field_test",
+					"conditions": [],
+					"actions": [
+						{"type": "start_quest", "param": "wizard_field_test", "value": 0}
+					]
+				}
+			]
+		},
+		{
+			"id": "explain_field_test",
+			"speaker": "Master Helvant",
+			"text": "The harbor master needs the beacon lit to guide ships safely. Thornfield's well has been tainted and requires purification. A fallen tree blocks the road to the Crossroads - move it with telekinesis. And there are bandits threatening travelers that need... handling. Four tasks, four applications of magic.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "I'll complete them all.",
+					"next": "accept_field_test",
+					"conditions": [],
+					"actions": [
+						{"type": "start_quest", "param": "wizard_field_test", "value": 0}
+					]
+				}
+			]
+		},
+		{
+			"id": "accept_field_test",
+			"speaker": "Master Helvant",
+			"text": "Excellent. The people will remember what you do for them. Magic should inspire hope, not fear. Go forth and show them what a wizard can accomplish.",
+			"is_end": true,
+			"auto_continue": "",
+			"choices": []
+		},
+		{
+			"id": "field_test_complete",
+			"speaker": "Master Helvant",
+			"text": "Word has already reached me of your deeds. The beacon burns bright, the well water runs clear, the road is open, and the bandits are scattered. You've proven yourself capable in the field. I'm proud of your progress.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "Thank you, Master. What comes next?",
+					"next": "grimoire_quest_intro",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "grimoire_quest_intro",
+			"speaker": "Master Helvant",
+			"text": "Now we reach the heart of your training. There is a grimoire - my own master's spellbook - lost long ago in the ruins of Willow Dale. It contains advanced techniques that could accelerate your learning beyond anything I could teach through mere words.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "You want me to retrieve it?",
+					"next": "explain_grimoire_quest",
+					"conditions": [],
+					"actions": []
+				},
+				{
+					"text": "Willow Dale is dangerous. I'm ready.",
+					"next": "accept_grimoire_quest",
+					"conditions": [],
+					"actions": [
+						{"type": "start_quest", "param": "wizard_lost_tome", "value": 0}
+					]
+				}
+			]
+		},
+		{
+			"id": "explain_grimoire_quest",
+			"speaker": "Master Helvant",
+			"text": "Willow Dale is treacherous - filled with undead and magical traps laid by long-dead wizards. The grimoire is hidden deep within, likely in the old library chamber. A magical guardian was summoned to protect it. I warn you: some pages may be missing, stolen by scavengers over the decades. But what remains will be invaluable.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "I'll recover the grimoire.",
+					"next": "accept_grimoire_quest",
+					"conditions": [],
+					"actions": [
+						{"type": "start_quest", "param": "wizard_lost_tome", "value": 0}
+					]
+				},
+				{
+					"text": "I need to prepare first.",
+					"next": "farewell",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "accept_grimoire_quest",
+			"speaker": "Master Helvant",
+			"text": "Be cautious. The guardian will not hesitate to destroy intruders. Use everything you've learned - elemental magic, combat strategy, and cunning. The grimoire must be preserved at all costs.",
+			"is_end": true,
+			"auto_continue": "",
+			"choices": []
+		},
+		{
+			"id": "grimoire_recovered",
+			"speaker": "Master Helvant",
+			"text": "By the Three! You've done it! Let me see... yes, this is it. Master Aldric's hand, his sigil on the cover. After all these years... Wait. Something's wrong.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "What is it?",
+					"next": "grimoire_pages_missing",
+					"conditions": [],
+					"actions": [
+						{"type": "take_item", "param": "helvants_master_grimoire", "value": 1}
+					]
+				}
+			]
+		},
+		{
+			"id": "grimoire_pages_missing",
+			"speaker": "Master Helvant",
+			"text": "Pages are missing. Not random pages - specific spells have been carefully removed. This wasn't the work of mindless scavengers. Someone knew exactly what they wanted. I can trace the magical residue with a divination ritual. Give me a moment...",
+			"is_end": false,
+			"auto_continue": "grimoire_divination_result",
+			"choices": []
+		},
+		{
+			"id": "grimoire_divination_result",
+			"speaker": "Master Helvant",
+			"text": "Thornfield. The stolen pages are in Thornfield, or near it. A rival mage or dark cult, attempting to use knowledge they haven't earned. This is dangerous - those spells require years of training to control. In the wrong hands, they could cause devastation. You must recover them.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "I'll track down the thief.",
+					"next": "accept_pages_quest",
+					"conditions": [],
+					"actions": [
+						{"type": "start_quest", "param": "wizard_stolen_pages", "value": 0}
+					]
+				},
+				{
+					"text": "This sounds beyond my skill.",
+					"next": "convince_recover_pages",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "convince_recover_pages",
+			"speaker": "Master Helvant",
+			"text": "You defeated the guardian of Willow Dale. You've mastered the elements. You are MORE than capable. I would go myself, but I am old, and my legs no longer carry me as they once did. You are my best hope. Will you do this?",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "Alright. I'll recover the pages.",
+					"next": "accept_pages_quest",
+					"conditions": [],
+					"actions": [
+						{"type": "start_quest", "param": "wizard_stolen_pages", "value": 0}
+					]
+				}
+			]
+		},
+		{
+			"id": "accept_pages_quest",
+			"speaker": "Master Helvant",
+			"text": "Question the locals in Thornfield. Someone must have seen something. Be cautious - whoever took these pages is not to be underestimated. You may be able to negotiate or bribe them if you wish to avoid bloodshed, but retrieve those pages by any means necessary.",
+			"is_end": true,
+			"auto_continue": "",
+			"choices": []
+		},
+		{
+			"id": "pages_recovered",
+			"speaker": "Master Helvant",
+			"text": "You have them! The pages are intact, though slightly scorched. You faced the thief, I presume? Tell me - how did you handle it?",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "I defeated them in combat.",
+					"next": "pages_defeated_path",
+					"conditions": [
+						{"type": "flag_set", "param": "rival_mage_defeated", "value": 0}
+					],
+					"actions": [
+						{"type": "take_item", "param": "grimoire_pages_stolen", "value": 1}
+					]
+				},
+				{
+					"text": "I negotiated for the pages.",
+					"next": "pages_negotiated_path",
+					"conditions": [
+						{"type": "flag_set", "param": "rival_mage_allied", "value": 0}
+					],
+					"actions": [
+						{"type": "take_item", "param": "grimoire_pages_stolen", "value": 1}
+					]
+				},
+				{
+					"text": "I paid them off.",
+					"next": "pages_bribed_path",
+					"conditions": [
+						{"type": "flag_set", "param": "rival_mage_bribed", "value": 0}
+					],
+					"actions": [
+						{"type": "take_item", "param": "grimoire_pages_stolen", "value": 1}
+					]
+				}
+			]
+		},
+		{
+			"id": "pages_defeated_path",
+			"speaker": "Master Helvant",
+			"text": "A necessary action. Those who steal forbidden knowledge invite their own destruction. The grimoire is whole once more, and the world is safer for it. You've done well.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "What now?",
+					"next": "final_trial_intro",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "pages_negotiated_path",
+			"speaker": "Master Helvant",
+			"text": "Wisdom over violence. A true wizard knows when words serve better than spells. Perhaps this rival will think twice before stealing again. You've handled this with admirable restraint.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "What now?",
+					"next": "final_trial_intro",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "pages_bribed_path",
+			"speaker": "Master Helvant",
+			"text": "You paid gold to criminals? I... suppose the ends justify the means, and the pages are returned. I would have preferred another solution, but what's done is done. Let us speak no more of it.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "What now?",
+					"next": "final_trial_intro",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "final_trial_intro",
+			"speaker": "Master Helvant",
+			"text": "Your apprenticeship is complete. You've proven yourself capable, resourceful, and powerful. But to truly graduate - to become an Adept of the Arcane - you must face one final trial. A test of everything you've learned.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "I'm ready for the trial.",
+					"next": "explain_final_trial",
+					"conditions": [],
+					"actions": []
+				},
+				{
+					"text": "What does this trial involve?",
+					"next": "explain_final_trial",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "explain_final_trial",
+			"speaker": "Master Helvant",
+			"text": "Beneath my tower lies a chamber I've prepared. Within, you will face summoned elemental guardians, solve arcane puzzles, and finally... duel me. A non-lethal contest, of course. I want to see the full measure of your power. Succeed, and you will be recognized as an Adept - a true practitioner worthy of advanced magical knowledge.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "I accept the challenge.",
+					"next": "accept_final_trial",
+					"conditions": [],
+					"actions": [
+						{"type": "start_quest", "param": "wizard_final_trial", "value": 0}
+					]
+				},
+				{
+					"text": "Let me prepare first.",
+					"next": "farewell",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "accept_final_trial",
+			"speaker": "Master Helvant",
+			"text": "The chamber awaits. Enter when you're ready. Remember - this is not a test of raw power alone, but of control, strategy, and understanding. Show me the wizard you've become.",
+			"is_end": true,
+			"auto_continue": "",
+			"choices": []
+		},
+		{
+			"id": "trial_complete_return",
+			"speaker": "Master Helvant",
+			"text": "You've... bested me. I haven't been pushed that hard in years. Well done. VERY well done. You are no longer my apprentice. You stand before me as an equal - an Adept of the Arcane Arts.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "Thank you, Master Helvant.",
+					"next": "graduation_speech",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "graduation_speech",
+			"speaker": "Master Helvant",
+			"text": "Take these - robes befitting an adept, a staff attuned to your power, and a scroll containing one of the most devastating spells in my repertoire. You've earned them. Go forth and use your magic wisely. The world needs more wizards who understand that power must serve, not dominate.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "I will honor your teachings.",
+					"next": "final_farewell",
+					"conditions": [],
+					"actions": [
+						{"type": "give_xp", "param": "", "value": 1000},
+						{"type": "set_flag", "param": "wizard_questline_complete", "value": 0}
+					]
+				}
+			]
+		},
+		{
+			"id": "final_farewell",
+			"speaker": "Master Helvant",
+			"text": "My door is always open to you, Adept. I will continue to offer advanced spells for purchase - techniques beyond common circulation. And perhaps, one day, you will take an apprentice of your own. Until then, may the Weave guide you.",
+			"is_end": true,
+			"auto_continue": "",
+			"choices": []
+		},
+		{
+			"id": "farewell",
+			"speaker": "Master Helvant",
+			"text": "May the arcane illuminate your path.",
+			"is_end": true,
+			"auto_continue": "",
+			"choices": []
+		}
+	]
+}

@@ -1,0 +1,151 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/enemy_attack_data.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+id = "death_coil"
+display_name = "Death Coil"
+damage = Array[int]([12, 18, 6])
+damage_type = 5
+windup_time = 0.6
+active_time = 0.2
+recovery_time = 0.4
+cooldown = 2.5
+range_distance = 12.0
+is_ranged = true
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 20.0
+inflicts_condition = 6
+condition_chance = 0.5
+condition_duration = 6.0
+stagger_power = 0.8
+knockback_force = 2.0
+weight = 1.0
+min_range = 3.0
+max_range = 12.0
+requires_los = true
+animation_name = "cast"
+sound_effect = ""
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+id = "soul_rend"
+display_name = "Soul Rend"
+damage = Array[int]([18, 30, 10])
+damage_type = 5
+windup_time = 1.2
+active_time = 0.4
+recovery_time = 0.8
+cooldown = 8.0
+range_distance = 5.0
+is_ranged = false
+is_aoe = true
+aoe_radius = 4.0
+projectile_speed = 0.0
+inflicts_condition = 5
+condition_chance = 0.7
+condition_duration = 4.0
+stagger_power = 1.5
+knockback_force = 5.0
+weight = 0.5
+min_range = 0.0
+max_range = 5.0
+requires_los = true
+animation_name = "rend"
+sound_effect = ""
+
+[sub_resource type="Resource" id="3"]
+script = ExtResource("2")
+id = "raise_dead"
+display_name = "Raise Dead"
+damage = Array[int]([0, 0, 0])
+damage_type = 5
+windup_time = 2.5
+active_time = 0.5
+recovery_time = 1.0
+cooldown = 20.0
+range_distance = 10.0
+is_ranged = true
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 0.0
+inflicts_condition = 0
+condition_chance = 0.0
+condition_duration = 0.0
+stagger_power = 0.0
+knockback_force = 0.0
+weight = 0.3
+min_range = 0.0
+max_range = 10.0
+requires_los = false
+animation_name = "summon"
+sound_effect = ""
+
+[resource]
+script = ExtResource("1")
+id = "undead_lord_malthor"
+display_name = "Undead Lord Malthor"
+description = "Once a high priest of Morthane who sought to cheat death itself, Malthor became the very abomination he now serves. His mastery of necromancy allows him to rend souls from the living and raise the fallen to fight for him. He guards the deepest chamber of Morthane's temple, forever bound to the god of death and rebirth."
+level = 38
+min_level = 33
+max_level = 48
+max_hp = 480
+armor_value = 22
+movement_speed = 3.5
+turn_speed = 5.0
+grit = 6
+agility = 5
+will = 16
+knowledge = 14
+behavior = 2
+faction = 2
+political_faction = "cult"
+aggro_range = 18.0
+attack_range = 5.0
+preferred_distance = 8.0
+flee_hp_threshold = 0.0
+is_boss = true
+attacks = Array[ExtResource("2")]([SubResource("1"), SubResource("2"), SubResource("3")])
+can_block = false
+block_chance = 0.0
+stagger_resistance = 0.6
+fire_resistance = -0.5
+frost_resistance = 0.5
+lightning_resistance = 0.0
+poison_resistance = 1.0
+necrotic_resistance = 0.9
+physical_resistance = 0.3
+fire_weakness = 0.5
+frost_weakness = 0.0
+lightning_weakness = 0.0
+holy_weakness = 0.75
+causes_horror = true
+horror_difficulty = 22
+loot_table_av = 10
+gold_drop = Array[int]([250, 450])
+guaranteed_drops = Array[String](["malthors_phylactery"])
+drop_table = {
+"necromancer_robes": 0.8,
+"soul_gem": 0.6,
+"dark_tome": 0.5,
+"bone_staff": 0.4,
+"rare_gem": 0.2
+}
+xp_reward = 950
+scene_path = ""
+icon_path = ""
+scale = 1.3
+sprite_path = ""
+attack_sprite_path = ""
+sprite_hframes = 4
+sprite_vframes = 1
+attack_hframes = 4
+attack_vframes = 1
+sprite_pixel_size = 0.04
+idle_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_1.wav"])
+attack_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_1.wav", "res://assets/audio/sfx/monsters/undead_2.wav"])
+hurt_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_2.wav"])
+death_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_1.wav"])

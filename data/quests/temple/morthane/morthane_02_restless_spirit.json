@@ -1,0 +1,78 @@
+{
+	"id": "morthane_02_restless_spirit",
+	"title": "Unfinished Business",
+	"description": "A restless spirit haunts Dalhurst, unable to move on. The Priest of Morthane senses the ghost has unfinished earthly concerns that bind it to this world. Help the spirit find peace so it may complete the cycle.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_morthane_elder_moor",
+	"giver_npc_type": "priest",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "travel_dalhurst",
+			"description": "Travel to Dalhurst to investigate the haunting",
+			"type": "reach",
+			"target": "dalhurst",
+			"target_zone": "dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "speak_innkeeper",
+			"description": "Speak to the innkeeper about the ghost",
+			"type": "talk",
+			"target": "innkeeper_dalhurst",
+			"target_zone": "dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "find_locket",
+			"description": "Find the ghost's locket in the old house",
+			"type": "collect",
+			"target": "ghost_locket",
+			"target_zone": "dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "deliver_locket_grave",
+			"description": "Place the locket at the ghost's grave in Dalhurst cemetery",
+			"type": "interact",
+			"target": "ghost_grave_marker",
+			"target_zone": "dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "return_priest",
+			"description": "Return to the Priest of Morthane",
+			"type": "talk",
+			"target": "priest_morthane_elder_moor",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_morthane_elder_moor",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 75,
+		"xp": 300,
+		"items": [
+			{"id": "ghost_touched_trinket", "quantity": 1}
+		],
+		"faction_reputation": {
+			"church_of_morthane": 15,
+			"church_of_three": 8
+		}
+	},
+	"spawn_on_accept": [
+		{
+			"type": "chest",
+			"location": "dalhurst",
+			"coords": [25, 1, 30],
+			"contains": ["ghost_locket"],
+			"loot_tier": "common"
+		}
+	],
+	"prerequisites": ["morthane_01_last_rites"],
+	"next_quest": "morthane_03_cemetery_duty",
+	"faction": "church_of_morthane"
+}

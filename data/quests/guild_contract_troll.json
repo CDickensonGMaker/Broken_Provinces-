@@ -1,0 +1,74 @@
+{
+	"id": "guild_contract_troll",
+	"title": "Bridge Toll",
+	"description": "A troll has taken up residence under the bridge at Crossroads, demanding outrageous tolls from travelers and devouring those who refuse. Merchants are losing coin, and the Guild's reputation suffers while the beast remains. You have options: slay the troll in combat, or - if you're clever - negotiate. Trolls are stupid, but they understand strength and gold. Choose your approach wisely.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "travel_crossroads",
+			"description": "Travel to the bridge at Crossroads",
+			"type": "reach",
+			"target": "crossroads_bridge",
+			"required_count": 1
+		},
+		{
+			"id": "confront_troll",
+			"description": "Confront the troll blocking the bridge",
+			"type": "talk",
+			"target": "bridge_troll",
+			"required_count": 1
+		},
+		{
+			"id": "resolve_troll_problem",
+			"description": "Deal with the troll (kill it OR successfully negotiate)",
+			"type": "kill",
+			"target": "bridge_troll",
+			"required_count": 1,
+			"is_optional": true
+		},
+		{
+			"id": "report_to_vorn",
+			"description": "Report the outcome to Guildmaster Vorn",
+			"type": "talk",
+			"target": "guildmaster_vorn_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 300,
+		"xp": 1000,
+		"items": [],
+		"faction_reputation": {
+			"adventurers_guild": 50,
+			"merchant_guild": 25
+		}
+	},
+	"choice_consequences": {
+		"killed_troll": {
+			"flags_to_set": ["troll_killed_combat"],
+			"reputation_changes": {"adventurers_guild": 15}
+		},
+		"intimidated_troll": {
+			"flags_to_set": ["troll_intimidated_away"],
+			"reputation_changes": {"adventurers_guild": 20}
+		},
+		"bribed_troll": {
+			"flags_to_set": ["troll_bribed_to_leave"],
+			"reputation_changes": {"adventurers_guild": 10, "merchant_guild": -5}
+		},
+		"negotiated_fair_toll": {
+			"flags_to_set": ["troll_fair_toll_agreement"],
+			"reputation_changes": {"adventurers_guild": 25, "merchant_guild": 15}
+		}
+	},
+	"prerequisites": ["guild_contract_spiders"],
+	"next_quest": "guild_elite_trial",
+	"notes": "Multi-solution quest. Combat is straightforward. Negotiation requires Speech/Intimidate skill checks. Can bribe troll to leave (costs 100 gold), intimidate it away (DC 14), or negotiate a fair toll system (DC 16 Persuasion). Different outcomes affect reputation differently. Best outcome is negotiated fair toll - shows wisdom over brute force."
+}

@@ -1,0 +1,8 @@
+{
+  "name": "Sailor Borven",
+  "who": "Weather-beaten sailor with salt-streaked hair\nVeteran of many sea voyages\nObservant and cautious around strangers",
+  "what": "Works the Dalhurst docks loading and unloading cargo\nWitness to suspicious dock activities\nKnows about ghost ship sightings",
+  "where": "Dalhurst - Docks",
+  "sprite": "sailor_deckhand",
+  "quests": "The Ghost Ship, Dock Investigation"
+}

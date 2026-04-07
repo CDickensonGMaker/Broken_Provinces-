@@ -1,0 +1,71 @@
+{
+    "id": "sylva_swiftfoot",
+    "display_name": "Sylva Swiftfoot",
+    "description": "An elven ranger who joined the Adventurer's Guild to hone her skills. Expert marksman and tracker with keen senses.",
+    "sprite_path": "res://assets/sprites/npcs/civilians/female_hunter.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0280,
+    "max_health": 70,
+    "damage": 22,
+    "armor": 12,
+    "combat_style": "ranged",
+    "is_essential": true,
+    "follow_distance": 5.0,
+    "combat_range": 15.0,
+    "leash_range": 25.0,
+    "personality_traits": ["calm", "perceptive", "nature-loving", "patient"],
+    "abilities": [
+        {
+            "id": "aimed_shot",
+            "name": "Aimed Shot",
+            "description": "A carefully aimed arrow that deals critical damage",
+            "cooldown": 8.0,
+            "damage_mult": 2.5,
+            "effect": "none"
+        },
+        {
+            "id": "trap",
+            "name": "Trap",
+            "description": "Places a hidden trap that immobilizes enemies",
+            "cooldown": 25.0,
+            "effect": "immobilize",
+            "effect_duration": 4.0,
+            "damage_mult": 0.5
+        },
+        {
+            "id": "mark_prey",
+            "name": "Mark Prey",
+            "description": "Marks an enemy, causing all attacks against them to deal bonus damage",
+            "cooldown": 20.0,
+            "effect": "mark",
+            "effect_duration": 12.0,
+            "damage_bonus": 0.30
+        }
+    ],
+    "combat_lines": [
+        "My arrows fly true.",
+        "You cannot hide from elven eyes.",
+        "The hunt begins.",
+        "Nature shows no mercy to predators.",
+        "One shot, one kill.",
+        "Stay still... this will be quick."
+    ],
+    "idle_lines": [
+        "The wind carries whispers of danger.",
+        "These human cities are so... loud.",
+        "I miss the forests of my homeland.",
+        "My bow has served me for three centuries.",
+        "Even stone walls cannot block the call of nature.",
+        "The Guild accepts all who prove themselves. Even elves."
+    ],
+    "recruitment_quest": "adventurers_guild_champion",
+    "recruitment_conditions": ["adventurers_guild_questline_complete", "chose_sylva"],
+    "recruitment_location": "dalhurst",
+    "home_location": "dalhurst",
+    "faction_id": "adventurers_guild",
+    "guild": "adventurers_guild",
+    "companion_type": "ranger",
+    "weapon_type": "bow",
+    "race": "elf"
+}

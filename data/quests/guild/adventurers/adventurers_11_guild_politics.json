@@ -1,0 +1,80 @@
+{
+	"id": "adventurers_11_guild_politics",
+	"title": "Internal Affairs",
+	"description": "Vorn pulls you aside with a grim look. There's corruption in the Guild - contracts being skimmed, bribes taken, adventurers going missing under suspicious circumstances. Someone high up is dirty. He needs someone he can trust to investigate quietly and clean house. This is dangerous - whoever's behind this has power and connections.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "gather_evidence",
+			"description": "Investigate guild records for irregularities",
+			"type": "collect",
+			"target": "guild_ledger_evidence",
+			"required_count": 3,
+			"is_optional": false
+		},
+		{
+			"id": "question_witnesses",
+			"description": "Question guild members about missing adventurers",
+			"type": "talk",
+			"target": "guild_witness",
+			"required_count": 4,
+			"is_optional": false
+		},
+		{
+			"id": "follow_suspect",
+			"description": "Tail the corrupt officer to their contact",
+			"type": "reach",
+			"target": "secret_meeting_site",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "confront_traitor",
+			"description": "Confront the corrupt guild officer",
+			"type": "talk",
+			"target": "guild_traitor",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "resolve_corruption",
+			"description": "Bring the traitor to justice or accept their bribe",
+			"type": "interact",
+			"target": "corruption_resolution",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 450,
+		"xp": 1000,
+		"items": ["guild_officer_seal"],
+		"faction_reputation": {
+			"adventurers_guild": 100
+		}
+	},
+	"choice_consequences": {
+		"expose_traitor": {
+			"flags_to_set": ["guild_corruption_exposed"],
+			"reputation_changes": {"adventurers_guild": 50}
+		},
+		"accept_bribe": {
+			"flags_to_set": ["guild_corruption_covered_up"],
+			"reputation_changes": {"adventurers_guild": -25, "thieves_guild": 20}
+		},
+		"kill_traitor": {
+			"flags_to_set": ["guild_traitor_eliminated"],
+			"reputation_changes": {"adventurers_guild": 30}
+		}
+	},
+	"prerequisites": ["adventurers_10_dragon_rumor"],
+	"next_quest": "adventurers_12_legendary_contract",
+	"notes": "Rank: Elite. Investigation quest with moral choices. Traitor is high-ranking guild member. Accepting bribe gives 1000 gold but damages guild rep. Exposing traitor gives Officer rank in guild."
+}

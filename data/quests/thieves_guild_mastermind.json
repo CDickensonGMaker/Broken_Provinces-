@@ -1,0 +1,104 @@
+{
+	"id": "thieves_guild_mastermind",
+	"title": "The Big Score",
+	"description": "The Guild's mastermind of operations has the job of a lifetime for you. Lord Ashford of Thornfield is hosting a gala at his estate - nobles from across the region, pockets heavy with gold and jewelry. But the real prize is Ashford's vault: a collection of artifacts worth more than the rest of his fortune combined. This is the big score. You'll need to infiltrate the party, bypass the vault's defenses, and escape with the goods before dawn. High risk. High reward. The kind of job that makes legends... or gets you hanged. Are you ready?",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guild_mastermind",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "meet_mastermind",
+			"description": "Meet with the Guild's mastermind for the briefing",
+			"type": "talk",
+			"target": "guild_mastermind",
+			"required_count": 1
+		},
+		{
+			"id": "acquire_invitation",
+			"description": "Acquire an invitation to Lord Ashford's gala",
+			"type": "collect",
+			"target": "ashford_gala_invitation",
+			"required_count": 1
+		},
+		{
+			"id": "travel_thornfield_estate",
+			"description": "Travel to Ashford Estate outside Thornfield",
+			"type": "reach",
+			"target": "ashford_estate",
+			"required_count": 1
+		},
+		{
+			"id": "infiltrate_gala",
+			"description": "Enter the gala and blend in with the guests",
+			"type": "interact",
+			"target": "gala_entrance",
+			"required_count": 1
+		},
+		{
+			"id": "bypass_vault_security",
+			"description": "Bypass the vault's security measures",
+			"type": "interact",
+			"target": "vault_door",
+			"required_count": 1
+		},
+		{
+			"id": "steal_ashford_artifacts",
+			"description": "Steal Lord Ashford's artifact collection",
+			"type": "collect",
+			"target": "ashford_artifacts",
+			"required_count": 3
+		},
+		{
+			"id": "steal_ashford_gold",
+			"description": "Empty the vault's gold reserves",
+			"type": "collect",
+			"target": "vault_gold",
+			"required_count": 1
+		},
+		{
+			"id": "escape_estate",
+			"description": "Escape the estate before guards discover the theft",
+			"type": "reach",
+			"target": "estate_escape_point",
+			"required_count": 1
+		},
+		{
+			"id": "deliver_to_mastermind",
+			"description": "Deliver the haul to the mastermind",
+			"type": "talk",
+			"target": "guild_mastermind",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guild_mastermind",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 1000,
+		"xp": 1200,
+		"items": ["master_thief_cloak"],
+		"faction_reputation": {
+			"thieves_guild": 100,
+			"nobility": -50
+		}
+	},
+	"choice_consequences": {
+		"clean_heist": {
+			"flags_to_set": ["big_score_perfect"],
+			"reputation_changes": {"thieves_guild": 50}
+		},
+		"detected_during_heist": {
+			"flags_to_set": ["big_score_messy"],
+			"reputation_changes": {"thieves_guild": 20, "town_guard": -40, "nobility": -75}
+		},
+		"kept_artifacts": {
+			"flags_to_set": ["big_score_betrayed_guild"],
+			"reputation_changes": {"thieves_guild": -100}
+		}
+	},
+	"prerequisites": ["thieves_guild_rival"],
+	"next_quest": "",
+	"notes": "Major finale heist for Thieves Guild chain. Multi-stage quest requiring planning and execution. Invitation can be stolen from traveling noble, forged (DC 16 Forgery check), or obtained by disguising as servant. Gala section requires social stealth (blend in, avoid suspicion). Vault has multiple security layers: locked door (DC 18 lockpick), trapped corridor, guard patrols, magical alarm. Artifacts include rare items worth 300-500g each. Clean heist (no detection) is hardest but gives massive reputation boost. Getting caught triggers major bounty and noble faction hostility. BETRAYAL OPTION: Keep artifacts instead of turning them in - breaks with Thieves Guild but keeps valuable loot. Master Thief Cloak reward grants +2 Stealth and invisibility in shadows."
+}

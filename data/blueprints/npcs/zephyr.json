@@ -1,0 +1,39 @@
+{
+  "name": "Zephyr",
+  "who": "Air elemental familiar of the Arcane Circle\nAncient being of wind and lightning\nBound willingly to serve those worthy\nPotential companion upon completing circle questline\nCurious about the material world",
+  "what": "Circle's bound elemental and guardian\nMaster of wind and storm magic\nCan scout areas others cannot reach\nPotential companion if chosen over Lyris",
+  "where": "Dalhurst - Arcane Circle Tower\nAvailable as companion after questline completion",
+  "quests": "Arcane Circle Magus Trial reward choice",
+  "sprite": {
+    "type": "elemental",
+    "path": "res://assets/sprites/npcs/civilians/wizard_wild.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0320,
+    "notes": "Swirling form of wind and lightning, vaguely humanoid shape"
+  },
+  "dialogue": {
+    "archetype": "ancient_elemental",
+    "topics": ["elemental_planes", "weather", "magic", "mortal_curiosity"],
+    "disposition_base": 50,
+    "notes": "Speaks in whispers, ancient perspective, curious about material realm"
+  },
+  "combat": {
+    "can_fight": true,
+    "level": 35,
+    "is_essential": true,
+    "notes": "Flying unit - can't be knocked down, wind and lightning attacks"
+  },
+  "follower": {
+    "can_recruit": true,
+    "recruitment_conditions": ["Complete Arcane Circle questline", "Choose Zephyr over Lyris"],
+    "skills": ["wind_gust", "lightning_arc", "invisibility"],
+    "combat_style": "elemental_storm",
+    "notes": "Unique mobility, knockback, chain lightning, stealth capability"
+  },
+  "special": {
+    "can_fly": true,
+    "immune_knockdown": true,
+    "elemental_type": "air"
+  }
+}

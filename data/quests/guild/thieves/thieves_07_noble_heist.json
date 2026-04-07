@@ -1,0 +1,79 @@
+{
+  "id": "thieves_07_noble_heist",
+  "title": "High Society",
+  "description": "Lady Emberlyn is hosting a masquerade ball in Thornfield. A priceless family heirloom - the Emberlyn Sapphire - will be on display. Infiltrate the party, steal the sapphire, and escape without being identified.",
+  "giver_npc_id": "shadowmaster_vex",
+  "giver_region": "dalhurst",
+  "faction": "thieves_guild",
+  "rank_required": 2,
+  "objectives": [
+    {
+      "id": "obj_acquire_invitation",
+      "type": "collect",
+      "target": "masquerade_invitation",
+      "required_count": 1,
+      "description": "Acquire an invitation to the masquerade (steal, forge, or purchase)"
+    },
+    {
+      "id": "obj_attend_party",
+      "type": "explore",
+      "target": "emberlyn_estate_ballroom",
+      "description": "Attend the masquerade ball"
+    },
+    {
+      "id": "obj_locate_sapphire",
+      "type": "explore",
+      "target": "emberlyn_estate_display",
+      "description": "Locate the Emberlyn Sapphire on display"
+    },
+    {
+      "id": "obj_steal_sapphire",
+      "type": "collect",
+      "target": "emberlyn_sapphire",
+      "required_count": 1,
+      "description": "Steal the sapphire without raising alarm"
+    },
+    {
+      "id": "obj_escape_undetected",
+      "type": "explore",
+      "target": "thornfield_gate",
+      "description": "Leave Thornfield without being identified"
+    }
+  ],
+  "rewards": {
+    "gold": 350,
+    "xp": 750,
+    "items": ["shadow_cloak"],
+    "faction_reputation": {
+      "thieves_guild": 30
+    }
+  },
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "shadowmaster_vex",
+  "turn_in_zone": "dalhurst",
+  "next_quest": "thieves_08_rival_gang",
+  "flags_set": ["thieves_noble_heist_complete", "thieves_emberlyn_enemy"],
+  "challenge": {
+    "type": "social_stealth",
+    "description": "Must blend in with nobles, avoid suspicion, time the theft perfectly",
+    "skill_checks": [
+      {"type": "etiquette", "dc": 13, "phase": "blending_in"},
+      {"type": "sleight_of_hand", "dc": 16, "phase": "stealing_sapphire"},
+      {"type": "deception", "dc": 14, "phase": "if_questioned"}
+    ],
+    "detection_consequences": "Identified as thief, bounty placed, quest failure"
+  },
+  "optional_objectives": [
+    {
+      "id": "obj_replace_sapphire",
+      "description": "Replace sapphire with fake before it's noticed (buys more time)",
+      "reward_bonus": {"xp": 100}
+    },
+    {
+      "id": "obj_steal_additional",
+      "description": "Steal from other guests while at party",
+      "reward_bonus": {"gold": 150, "xp": 50}
+    }
+  ],
+  "notes": "High-stakes social stealth mission. Multiple skill checks. Emberlyn Estate in Thornfield. Rewards Shadow Cloak (stealth bonus item)."
+}

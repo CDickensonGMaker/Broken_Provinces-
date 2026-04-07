@@ -12,6 +12,7 @@ signal flag_changed(flag_name: String, value: bool)
 var current_dialogue: DialogueData = null
 var current_node: DialogueNode = null
 var current_speaker_name: String = ""
+var current_npc: Node = null  ## The NPC being spoken to (for duel, shop actions)
 
 ## Context variables for placeholder substitution in flag names
 ## Example: {"merchant_id": "blacksmith_01"} allows flags like "{merchant_id}:befriend"
@@ -68,7 +69,8 @@ func _ready() -> void:
 ## Returns true if dialogue started successfully
 ## context: Optional dictionary of variables for placeholder substitution in flag names
 ##          Example: {"merchant_id": "blacksmith_01"} substitutes {merchant_id} in flags
-func start_dialogue(dialogue_data: DialogueData, speaker_name: String = "", context: Dictionary = {}) -> bool:
+## npc: Optional reference to the NPC node (used for duel, shop actions)
+func start_dialogue(dialogue_data: DialogueData, speaker_name: String = "", context: Dictionary = {}, npc: Node = null) -> bool:
 	if is_dialogue_active:
 		push_warning("DialogueManager: Dialogue already active, cannot start new dialogue")
 		return false
@@ -94,6 +96,7 @@ func start_dialogue(dialogue_data: DialogueData, speaker_name: String = "", cont
 	current_dialogue = dialogue_data
 	current_speaker_name = speaker_name if not speaker_name.is_empty() else dialogue_data.display_name
 	context_variables = context.duplicate()
+	current_npc = npc
 	is_dialogue_active = true
 
 	# Pause game for dialogue
@@ -118,6 +121,7 @@ func end_dialogue() -> void:
 	current_dialogue = null
 	current_node = null
 	current_speaker_name = ""
+	current_npc = null
 	context_variables.clear()
 	is_dialogue_active = false
 	_pending_skill_check_result = false
@@ -427,6 +431,24 @@ func _evaluate_condition_internal(condition: DialogueCondition) -> bool:
 				"beggar": return player_career == Enums.Career.BEGGAR
 			return false
 
+		DialogueData.ConditionType.MORALITY:
+			# Check morality tier - param_string is action type like "good_only", "evil_only", etc.
+			var action_type: String = condition.param_string.to_lower().strip_edges()
+			if MoralityManager:
+				return MoralityManager.allows_action(action_type)
+			return true
+
+		DialogueData.ConditionType.GUILD_RANK:
+			# Check guild rank - param_string is guild_id, param_int is minimum rank level
+			var guild_id: String = condition.param_string.strip_edges()
+			var min_rank: int = condition.param_int
+			if guild_id.is_empty():
+				return false
+			if GuildRankManager:
+				var current_rank: int = GuildRankManager.get_guild_rank_level(guild_id)
+				return current_rank >= min_rank
+			return false
+
 	return true
 
 ## Check quest state condition
@@ -528,6 +550,33 @@ func _get_condition_failure_reason(condition: DialogueCondition) -> String:
 
 		DialogueData.ConditionType.BESTIARY_DISCOVERED:
 			return "Must have encountered %s" % condition.param_string
+
+		DialogueData.ConditionType.MORALITY:
+			var action_type: String = condition.param_string.to_lower()
+			match action_type:
+				"good_only": return "Must be of good moral standing"
+				"evil_only": return "Must have a dark reputation"
+				"neutral_only": return "Must be morally neutral"
+				"paragon": return "Must be a Paragon of virtue"
+				"vile": return "Must be utterly Vile"
+				"not_evil": return "Cannot be of wicked alignment"
+				"not_good": return "Cannot be of righteous alignment"
+			return "Morality requirements not met"
+
+		DialogueData.ConditionType.GUILD_RANK:
+			var guild_id: String = condition.param_string
+			var min_rank: int = condition.param_int
+			var rank_name: String = "rank %d" % min_rank
+			var guild_name: String = guild_id
+			# Try to get rank and guild display names from GuildRankManager
+			if GuildRankManager:
+				if GuildRankManager.has_method("get_rank_name_by_level"):
+					var name_result: String = GuildRankManager.get_rank_name_by_level(guild_id, min_rank)
+					if not name_result.is_empty():
+						rank_name = name_result
+				if GuildRankManager.has_method("get_guild_display_name"):
+					guild_name = GuildRankManager.get_guild_display_name(guild_id)
+			return "Requires %s or higher in %s" % [rank_name, guild_name]
 
 		_:
 			return "Requirements not met"
@@ -645,7 +694,25 @@ func execute_action(action: DialogueAction) -> String:
 			if CodexManager:
 				CodexManager.discover_bestiary_entry(action.param_string)
 
+		DialogueData.ActionType.START_DUEL:
+			# Start a duel with the current NPC
+			if DuelManager and is_instance_valid(current_npc):
+				var duel_id: String = action.param_string
+				var yield_threshold: float = action.param_float if action.param_float > 0 else 0.2
+				# Close dialogue before starting duel
+				call_deferred("_start_duel_after_dialogue", current_npc, duel_id, yield_threshold)
+			else:
+				push_warning("[DialogueManager] Cannot start duel - no valid NPC reference")
+
 	return ""
+
+
+## Helper to start duel after dialogue closes
+func _start_duel_after_dialogue(npc: Node, duel_id: String, yield_threshold: float) -> void:
+	# Wait a frame for dialogue to fully close
+	await get_tree().process_frame
+	if DuelManager and is_instance_valid(npc):
+		DuelManager.start_duel(npc, duel_id, yield_threshold)
 
 
 # =============================================================================
@@ -674,15 +741,31 @@ func _execute_skill_check(action: DialogueAction) -> String:
 	var stat_name := _get_stat_name(governing_stat)
 	var skill_name := _get_skill_name(skill_enum)
 
+	# Apply morality-based skill modifiers
+	var morality_bonus: int = 0
+	if MoralityManager:
+		var npc_alignment: String = _get_current_npc_alignment()
+		match skill_enum:
+			Enums.Skill.PERSUASION:
+				morality_bonus = MoralityManager.get_persuasion_modifier(npc_alignment)
+			Enums.Skill.INTIMIDATION:
+				morality_bonus = MoralityManager.get_intimidation_modifier()
+
+	# Build bonus list for display
+	var bonus_list: Array = []
+	if morality_bonus != 0:
+		var bonus_name: String = "Morality" if morality_bonus > 0 else "Reputation"
+		bonus_list.append({ "name": bonus_name, "value": morality_bonus })
+
 	# Make the roll via DiceManager
 	var roll_data := DiceManager.make_check(
 		skill_name.to_upper() + " CHECK",
 		stat_value,
 		stat_name,
-		skill_value,
+		skill_value + morality_bonus,  # Apply morality bonus to skill
 		skill_name,
 		int(dc),
-		[],
+		bonus_list,
 		true  # Active roll (prominent display)
 	)
 
@@ -779,6 +862,46 @@ func _get_skill_name(skill_enum: int) -> String:
 	return "Unknown"
 
 
+## Get the current NPC's moral alignment for morality modifiers
+## Returns "good", "evil", "neutral", or empty string
+func _get_current_npc_alignment() -> String:
+	if not is_instance_valid(current_npc):
+		return ""
+
+	# Try to get alignment directly
+	if "alignment" in current_npc:
+		var align: Variant = current_npc.alignment
+		if align is String:
+			return align
+		elif align is int:
+			if align > 30:
+				return "good"
+			elif align < -30:
+				return "evil"
+			else:
+				return "neutral"
+
+	# Try to get from faction
+	var faction_id: String = ""
+	if "faction" in current_npc:
+		faction_id = current_npc.faction
+	elif "faction_id" in current_npc:
+		faction_id = current_npc.faction_id
+
+	if not faction_id.is_empty() and FactionManager:
+		var faction: FactionData = FactionManager.get_faction(faction_id)
+		if faction:
+			if faction.alignment > 30:
+				return "good"
+			elif faction.alignment < -30:
+				return "evil"
+			else:
+				return "neutral"
+
+	# Default to neutral
+	return "neutral"
+
+
 # =============================================================================
 # QUEST OBJECTIVE COMPLETION (for dialogue-driven completion)
 # =============================================================================
@@ -817,7 +940,7 @@ func _complete_quest_objective(quest_id: String, objective_id: String) -> void:
 
 
 # =============================================================================
-# DIALOGUE FLAGS
+# DIALOGUE FLAGS (Delegates to FlagManager for centralized flag storage)
 # =============================================================================
 
 ## Substitute context variables in a string
@@ -832,48 +955,96 @@ func _substitute_context_variables(text: String) -> String:
 	return result
 
 ## Set a dialogue flag (supports context variable substitution)
+## Delegates to FlagManager for centralized storage
 func set_flag(flag_name: String, value: Variant = true) -> void:
-	var resolved_name := _substitute_context_variables(flag_name)
-	dialogue_flags[resolved_name] = value
-	flag_changed.emit(resolved_name, true)
+	# Sync context variables with FlagManager
+	_sync_context_to_flag_manager()
+
+	if FlagManager:
+		FlagManager.set_flag(flag_name, value)
+	else:
+		# Fallback to local storage if FlagManager not ready
+		var resolved_name := _substitute_context_variables(flag_name)
+		dialogue_flags[resolved_name] = value
+
+	flag_changed.emit(_substitute_context_variables(flag_name), value == true)
 
 ## Clear a dialogue flag (supports context variable substitution)
+## Delegates to FlagManager for centralized storage
 func clear_flag(flag_name: String) -> void:
-	var resolved_name := _substitute_context_variables(flag_name)
-	if dialogue_flags.has(resolved_name):
-		dialogue_flags.erase(resolved_name)
-		flag_changed.emit(resolved_name, false)
+	# Sync context variables with FlagManager
+	_sync_context_to_flag_manager()
+
+	if FlagManager:
+		FlagManager.clear_flag(flag_name)
+	else:
+		# Fallback to local storage
+		var resolved_name := _substitute_context_variables(flag_name)
+		if dialogue_flags.has(resolved_name):
+			dialogue_flags.erase(resolved_name)
+
+	flag_changed.emit(_substitute_context_variables(flag_name), false)
 
 ## Check if a flag is set (supports context variable substitution)
+## Delegates to FlagManager for centralized storage
 func has_flag(flag_name: String) -> bool:
-	var resolved_name := _substitute_context_variables(flag_name)
-	return dialogue_flags.has(resolved_name)
+	# Sync context variables with FlagManager
+	_sync_context_to_flag_manager()
+
+	if FlagManager:
+		return FlagManager.has_flag(flag_name)
+	else:
+		# Fallback to local storage
+		var resolved_name := _substitute_context_variables(flag_name)
+		return dialogue_flags.has(resolved_name)
 
 ## Get a flag value (supports context variable substitution)
+## Delegates to FlagManager for centralized storage
 func get_flag(flag_name: String, default: Variant = null) -> Variant:
-	var resolved_name := _substitute_context_variables(flag_name)
-	return dialogue_flags.get(resolved_name, default)
+	# Sync context variables with FlagManager
+	_sync_context_to_flag_manager()
+
+	if FlagManager:
+		return FlagManager.get_flag(flag_name, default)
+	else:
+		# Fallback to local storage
+		var resolved_name := _substitute_context_variables(flag_name)
+		return dialogue_flags.get(resolved_name, default)
+
+## Sync context variables to FlagManager
+func _sync_context_to_flag_manager() -> void:
+	if FlagManager and not context_variables.is_empty():
+		for key: String in context_variables:
+			FlagManager.set_context_variable(key, context_variables[key])
 
 ## Check and clear a pending shop flag (returns shop ID or empty string)
 func pop_pending_shop() -> String:
-	var shop_id := ""
-	for key in dialogue_flags.keys():
-		if key.begins_with("_pending_shop:"):
-			shop_id = key.substr(len("_pending_shop:"))
-			dialogue_flags.erase(key)
-			break
-	return shop_id
+	if FlagManager:
+		return FlagManager.pop_pending_shop()
+	else:
+		# Fallback to local storage
+		var shop_id := ""
+		for key in dialogue_flags.keys():
+			if key.begins_with("_pending_shop:"):
+				shop_id = key.substr(len("_pending_shop:"))
+				dialogue_flags.erase(key)
+				break
+		return shop_id
 
 
 ## Check and clear a pending boat voyage flag (returns route ID or empty string)
 func pop_pending_boat_voyage() -> String:
-	var route_id := ""
-	for key in dialogue_flags.keys():
-		if key.begins_with("_pending_boat_voyage:"):
-			route_id = key.substr(len("_pending_boat_voyage:"))
-			dialogue_flags.erase(key)
-			break
-	return route_id
+	if FlagManager:
+		return FlagManager.pop_pending_boat_voyage()
+	else:
+		# Fallback to local storage
+		var route_id := ""
+		for key in dialogue_flags.keys():
+			if key.begins_with("_pending_boat_voyage:"):
+				route_id = key.substr(len("_pending_boat_voyage:"))
+				dialogue_flags.erase(key)
+				break
+		return route_id
 
 
 ## Check and start any pending boat voyage after dialogue ends
@@ -897,14 +1068,25 @@ func _check_pending_boat_voyage() -> void:
 # =============================================================================
 
 ## Serialize dialogue flags for saving
+## Note: FlagManager handles its own save/load, but we keep dialogue_flags
+## in sync for backward compatibility with existing saves
 func to_dict() -> Dictionary:
+	# Get flags from FlagManager if available
+	if FlagManager:
+		return {
+			"dialogue_flags": FlagManager.flags.duplicate()
+		}
 	return {
 		"dialogue_flags": dialogue_flags.duplicate()
 	}
 
 ## Deserialize dialogue flags from save
+## Note: This also syncs to FlagManager for centralized access
 func from_dict(data: Dictionary) -> void:
 	dialogue_flags = data.get("dialogue_flags", {}).duplicate()
+	# Sync to FlagManager
+	if FlagManager:
+		FlagManager.flags = dialogue_flags.duplicate()
 
 ## Reset state for new game
 func reset_for_new_game() -> void:

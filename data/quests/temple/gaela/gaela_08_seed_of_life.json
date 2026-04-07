@@ -1,0 +1,68 @@
+{
+	"id": "gaela_08_seed_of_life",
+	"title": "The Eternal Seed",
+	"description": "A plague has struck Thornfield, and many villagers lie gravely ill. Priestess Elara speaks of a legendary Seed of Life, protected by an ancient guardian near the Bandit Hideout. Only a true Devotee can claim it.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "priest",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "find_seed_location",
+			"description": "Search for the Seed of Life's resting place near Bandit Hideout",
+			"type": "explore",
+			"target": "bandit_hideout",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "defeat_guardian",
+			"description": "Defeat the Ancient Nature Guardian protecting the Seed",
+			"type": "kill",
+			"target": "ancient_treant",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "retrieve_seed",
+			"description": "Retrieve the Seed of Life",
+			"type": "collect",
+			"target": "seed_of_life",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "deliver_to_thornfield",
+			"description": "Deliver the Seed to the sick villagers in Thornfield",
+			"type": "talk",
+			"target": "thornfield_healer",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "report_to_priestess",
+			"description": "Report the miracle to Priestess Elara",
+			"type": "talk",
+			"target": "priest_gaela_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_gaela_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 350,
+		"xp": 1000,
+		"items": ["seed_of_renewal", "major_healing_herb", "major_healing_herb", "major_healing_herb"],
+		"faction_reputation": {
+			"church_of_gaela": 50,
+			"church_of_three": 40,
+			"thornfield_citizens": 50
+		}
+	},
+	"prerequisites": ["gaela_07_spirit_of_land"],
+	"required_flags": ["gaela_devotee"],
+	"next_quest": "gaela_09_famine_threat"
+}

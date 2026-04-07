@@ -1,0 +1,97 @@
+{
+	"id": "morthane_04_necromancer_trail",
+	"title": "The Defiler's Path",
+	"description": "The Priest of Morthane has discovered evidence of a necromancer raising the dead near Willow Dale. The cycle has been violated. You must track them down and discover their true motivations - not all who touch death magic are purely evil, but undeath is an abomination regardless.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_morthane_elder_moor",
+	"giver_npc_type": "priest",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "investigate_willow_dale",
+			"description": "Investigate the ruins of Willow Dale",
+			"type": "reach",
+			"target": "willow_dale",
+			"target_zone": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "find_necromancer_notes",
+			"description": "Find the necromancer's research notes",
+			"type": "collect",
+			"target": "necromancer_journal",
+			"target_zone": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "destroy_undead_servants",
+			"description": "Destroy the necromancer's undead servants",
+			"type": "kill",
+			"target": "skeleton_warrior",
+			"target_zone": "willow_dale",
+			"required_count": 8
+		},
+		{
+			"id": "confront_necromancer",
+			"description": "Confront the necromancer in their sanctum",
+			"type": "talk",
+			"target": "necromancer_aeris",
+			"target_zone": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "return_priest",
+			"description": "Return to the Priest of Morthane with your decision",
+			"type": "talk",
+			"target": "priest_morthane_elder_moor",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_morthane_elder_moor",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 150,
+		"xp": 500,
+		"items": [
+			{"id": "death_warden_cloak", "quantity": 1}
+		],
+		"faction_reputation": {
+			"church_of_morthane": 25,
+			"church_of_three": 12
+		}
+	},
+	"choice_consequences": {
+		"kill_necromancer": {
+			"flags_to_set": ["necromancer_aeris_killed"],
+			"reputation_changes": {
+				"church_of_morthane": 10
+			}
+		},
+		"redeem_necromancer": {
+			"flags_to_set": ["necromancer_aeris_redeemed"],
+			"reputation_changes": {
+				"church_of_morthane": 5,
+				"mages_guild": 10
+			}
+		},
+		"spare_necromancer": {
+			"flags_to_set": ["necromancer_aeris_freed"],
+			"spawn_enemy": "necromancer_aeris@willow_dale"
+		}
+	},
+	"spawn_on_accept": [
+		{
+			"type": "chest",
+			"location": "willow_dale",
+			"coords": [10, 1, -15],
+			"contains": ["necromancer_journal"],
+			"loot_tier": "uncommon"
+		}
+	],
+	"prerequisites": ["morthane_03_cemetery_duty"],
+	"next_quest": "morthane_05_devotion_choice",
+	"faction": "church_of_morthane"
+}

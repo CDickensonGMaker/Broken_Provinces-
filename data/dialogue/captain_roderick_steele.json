@@ -1,0 +1,737 @@
+{
+  "id": "captain_roderick_steele",
+  "display_name": "Captain Roderick Steele - Iron Company",
+  "description": "Dialogue for Captain Roderick Steele, leader of the Iron Company mercenary guild in Dalhurst",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Captain Steele",
+      "text": "State your business. The Iron Company doesn't have time for idle chatter.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I want to join the Iron Company.",
+          "next": "recruitment_pitch",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "mercenary_01_enlistment",
+              "value": 0,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I've completed the enlistment contract.",
+          "next": "enlistment_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "mercenary_01_enlistment",
+              "value": 1
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I'm here for a contract.",
+          "next": "contract_board",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "mercenary_01_enlistment",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Tell me about the Iron Company.",
+          "next": "company_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What's your story, Captain?",
+          "next": "personal_history",
+          "conditions": [
+            {
+              "type": "faction_reputation",
+              "param": "iron_company",
+              "value": 20
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I'll be going.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "greeting_friendly",
+      "speaker": "Captain Steele",
+      "text": "Soldier. Good to see you back at the Hall. The Company always has work for those willing to bleed for it.",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "faction_reputation",
+          "param": "iron_company",
+          "value": 40
+        }
+      ],
+      "choices": [
+        {
+          "text": "What contracts are available?",
+          "next": "contract_board",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How stands the Company?",
+          "next": "company_status",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Just checking in, Captain.",
+          "next": "farewell_friendly",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_pitch",
+      "speaker": "Captain Steele",
+      "text": "The Iron Company isn't some tavern gang looking for warm bodies. We're professionals. Soldiers. Every man and woman here has proven themselves in blood. You want in? You'll have to do the same.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What do I need to do?",
+          "next": "enlistment_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What makes the Iron Company different from other mercenaries?",
+          "next": "company_standards",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I've killed plenty. That's not enough?",
+          "next": "killing_not_enough",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Maybe I'm not ready.",
+          "next": "not_ready",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "company_standards",
+      "speaker": "Captain Steele",
+      "text": "Other sellswords fight for coin and run when the odds turn. The Iron Company fights to win. We train together. We hold formation. We don't abandon contracts, and we don't abandon each other. That's why nobles pay triple our rate - because we deliver.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I can respect that. What's the test?",
+          "next": "enlistment_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Sounds like a lot of rules.",
+          "next": "rules_response",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "rules_response",
+      "speaker": "Captain Steele",
+      "text": "Rules keep soldiers alive. Discipline wins battles. If you can't handle structure, find a bandit gang to join. They don't have standards either.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Fair enough. What's the enlistment test?",
+          "next": "enlistment_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll think about it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "killing_not_enough",
+      "speaker": "Captain Steele",
+      "text": "Any thug can kill. What matters is how you kill, when you kill, and whether you can follow orders while doing it. A soldier who can't take commands is a liability. Prove you can fight smart, not just fight.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "How do I prove that?",
+          "next": "enlistment_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I work alone.",
+          "next": "work_alone",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "work_alone",
+      "speaker": "Captain Steele",
+      "text": "Then you're not Company material. We fight as a unit. That's non-negotiable. Come back when you understand what that means.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "enlistment_offer",
+      "speaker": "Captain Steele",
+      "text": "We've got a goblin raiding party that's been hitting supply lines east of Dalhurst. Standard vermin, but organized. Take them out - all of them, including their warchief. Bring back the warchief's battle standard as proof. Do that alone and without dying, and you'll have earned your place.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Consider it done.",
+          "next": "accept_enlistment",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "mercenary_01_enlistment",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "How many goblins are we talking?",
+          "next": "goblin_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What's the pay?",
+          "next": "enlistment_pay",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not interested.",
+          "next": "not_ready",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "goblin_details",
+      "speaker": "Captain Steele",
+      "text": "Reports say a dozen, maybe fifteen. Warchief leads them - bigger than the rest, wears human bones as trophies. They've killed three merchant guards this week. Standard goblin tactics: ambush, swarm, retreat if things go bad. Don't let them retreat.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll wipe them out.",
+          "next": "accept_enlistment",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "mercenary_01_enlistment",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What's in it for me?",
+          "next": "enlistment_pay",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "enlistment_pay",
+      "speaker": "Captain Steele",
+      "text": "150 gold and Company membership. After that, you get access to real contracts - ones that pay ten times that. Plus barracks access, equipment at cost, and brothers who'll watch your back. That's worth more than gold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm in. Where's this goblin camp?",
+          "next": "accept_enlistment",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "mercenary_01_enlistment",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I need to think about it.",
+          "next": "not_ready",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_enlistment",
+      "speaker": "Captain Steele",
+      "text": "The goblins are camped in the hills east of Dalhurst, near the old watchtower ruins. Kill them all, take the warchief's standard, and return here. Don't come back until it's done. And soldier - don't embarrass me.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "enlistment_turnin",
+      "speaker": "Captain Steele",
+      "text": "You're back. The goblins?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Dead. All of them. Here's the warchief's standard.",
+          "next": "enlistment_complete",
+          "conditions": [
+            {
+              "type": "has_item",
+              "param": "goblin_battle_standard",
+              "value": 1
+            }
+          ],
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "mercenary_01_enlistment",
+              "value": 0
+            },
+            {
+              "type": "take_item",
+              "param": "goblin_battle_standard",
+              "value": 1
+            },
+            {
+              "type": "modify_reputation",
+              "param": "iron_company",
+              "value": 15
+            },
+            {
+              "type": "set_flag",
+              "param": "iron_company_member",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Still working on it.",
+          "next": "still_working",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "enlistment_complete",
+      "speaker": "Captain Steele",
+      "text": "Clean work. The merchants will breathe easier, and that's one less goblin warchief breeding more problems. Here's your pay - 150 gold. And this... this is your Company insignia. Wear it with honor. You're Iron Company now, soldier. Don't make me regret it.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I won't let you down, Captain.",
+          "next": "welcome_to_company",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What contracts are available now?",
+          "next": "first_contracts",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "welcome_to_company",
+      "speaker": "Captain Steele",
+      "text": "See that you don't. The barracks are open to you now. Rest up, train with the others, and check the contract board when you're ready for work. We'll make a proper soldier of you yet.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "first_contracts",
+      "speaker": "Captain Steele",
+      "text": "Eager. Good. We've got caravan escorts, guard details, and a few tactical operations that need capable hands. Check the contract board in the hall. Start with the lower-tier work and prove yourself. Rank and pay come with experience.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "still_working",
+      "speaker": "Captain Steele",
+      "text": "Then why are you here wasting my time? Get back out there and finish the job. The Company doesn't pay for partial results.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "contract_board",
+      "speaker": "Captain Steele",
+      "text": "The contract board has everything we're currently hiring for. Escort missions, monster hunts, tactical operations. Pick what suits your skills. Payment on completion, no exceptions.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Any high-priority contracts?",
+          "next": "priority_contracts",
+          "conditions": [
+            {
+              "type": "faction_reputation",
+              "param": "iron_company",
+              "value": 40
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I'll check the board.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "priority_contracts",
+      "speaker": "Captain Steele",
+      "text": "You've proven yourself reliable. There's a noble house that needs discrete protection during some... politically sensitive negotiations. High pay, higher risk. Talk to Lieutenant Garret at the officer's quarters if you're interested.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll speak with him.",
+          "next": "farewell_friendly",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll stick to the board for now.",
+          "next": "farewell_friendly",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "company_info",
+      "speaker": "Captain Steele",
+      "text": "The Iron Company has operated for sixty years. Founded by Captain Aldric Iron - my predecessor - after the Tenger Wars. We're the best professional fighting force money can buy. Not thugs, not murderers. Soldiers. We take contracts, we complete them, we get paid. Simple as that.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What kind of contracts?",
+          "next": "contract_types",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How do I join?",
+          "next": "recruitment_pitch",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "mercenary_01_enlistment",
+              "value": 0,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Interesting.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "contract_types",
+      "speaker": "Captain Steele",
+      "text": "Caravan protection. Monster extermination. Siege support. Tactical strikes. Anything that requires trained fighters who won't cut and run. We don't do assassinations, and we don't break contracts. That's why clients trust us.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "No assassinations? What if the target deserves it?",
+          "next": "no_assassinations",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What happens if you break a contract?",
+          "next": "contract_honor",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Good to know.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "no_assassinations",
+      "speaker": "Captain Steele",
+      "text": "We're soldiers, not murderers. There's a difference. Killing a man in battle is war. Killing him in his bed is cowardice. The Company has standards. If you want that kind of work, find the Thieves Guild. They'll accommodate your... flexibility.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I respect that.",
+          "next": "respect_standards",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Seems limiting.",
+          "next": "limiting_response",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "respect_standards",
+      "speaker": "Captain Steele",
+      "text": "Good. Standards matter. They're what separate us from the rabble. Was there anything else?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "How do I join?",
+          "next": "recruitment_pitch",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "mercenary_01_enlistment",
+              "value": 0,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "That's all for now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "limiting_response",
+      "speaker": "Captain Steele",
+      "text": "Then the Company isn't for you. We don't need members who'll do anything for coin. Find work elsewhere.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "contract_honor",
+      "speaker": "Captain Steele",
+      "text": "In sixty years, the Iron Company has never broken a contract. Not once. That reputation is worth more than gold. A member who abandons a contract is expelled. Permanently. We don't give second chances for cowardice.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Harsh, but fair.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "personal_history",
+      "speaker": "Captain Steele",
+      "text": "Thirty-two years in the Company. Started as a recruit, same as everyone else. Fought in the Border Wars, the Goblin Purge, the Thornfield Rebellion. Lost count of the battles, lost count of the friends. But I'm still here, and so is the Company. That's what matters.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "How did you become Captain?",
+          "next": "became_captain",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What was your hardest battle?",
+          "next": "hardest_battle",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Thank you for sharing.",
+          "next": "farewell_friendly",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "became_captain",
+      "speaker": "Captain Steele",
+      "text": "Captain Aldric Iron chose me himself, fifteen years back. Said I understood what the Company meant - not just the fighting, but the brotherhood. The discipline. He died three months later. Arrow to the throat at the Siege of Blackmont. I've led the Company ever since.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "You honor his memory.",
+          "next": "honor_memory",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's a heavy burden.",
+          "next": "heavy_burden",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "honor_memory",
+      "speaker": "Captain Steele",
+      "text": "Every day. Now, was there something else you needed, soldier?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "No, Captain. Thank you.",
+          "next": "farewell_friendly",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "heavy_burden",
+      "speaker": "Captain Steele",
+      "text": "Command always is. But someone has to carry it. I'd rather it be me than someone who'd run the Company into the ground. Now, enough sentiment. Back to work.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "hardest_battle",
+      "speaker": "Captain Steele",
+      "text": "The Thornfield Rebellion. Twelve years ago. We were hired to break a siege, found ourselves outnumbered five to one. Lost forty good soldiers in three days of fighting. But we held, and we won. That's what the Company does - we hold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Impressive.",
+          "next": "farewell_friendly",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "company_status",
+      "speaker": "Captain Steele",
+      "text": "The Company stands strong. Two hundred active soldiers, contracts coming in steady. Could always use more capable fighters though. The realm's getting more dangerous - more monsters, more conflict. Good for business, bad for everyone else.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's the biggest threat right now?",
+          "next": "current_threat",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Good to hear.",
+          "next": "farewell_friendly",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "current_threat",
+      "speaker": "Captain Steele",
+      "text": "The Tengers are pushing south again. Goblins are bolder than they've been in years. And there are rumors of something worse stirring in the east - creatures that shouldn't exist. Dark times ahead. The Company will be busy.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll be ready.",
+          "next": "farewell_friendly",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "not_ready",
+      "speaker": "Captain Steele",
+      "text": "Then don't waste my time. Come back when you're serious.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Captain Steele",
+      "text": "Dismissed.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_friendly",
+      "speaker": "Captain Steele",
+      "text": "Stay sharp, soldier. The Company needs you ready.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

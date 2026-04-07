@@ -1,0 +1,86 @@
+{
+	"id": "morthane_07_lich_rumor",
+	"title": "Whispers of Immortality",
+	"description": "Dark rumors reach the temple - someone in Willow Dale is attempting to become a lich, achieving undeath through forbidden rituals. This is the ultimate perversion of Morthane's cycle. You must find them and stop the transformation before it's too late.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_morthane_elder_moor",
+	"giver_npc_type": "priest",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "investigate_willow_dale_ruins",
+			"description": "Search Willow Dale ruins for signs of the ritual",
+			"type": "reach",
+			"target": "willow_dale",
+			"target_zone": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "find_phylactery_notes",
+			"description": "Find the lich aspirant's phylactery research",
+			"type": "collect",
+			"target": "phylactery_research",
+			"target_zone": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "destroy_undead_guardians",
+			"description": "Destroy the undead guardians protecting the ritual site",
+			"type": "kill",
+			"target": "skeleton_shade",
+			"target_zone": "willow_dale",
+			"required_count": 6
+		},
+		{
+			"id": "stop_transformation",
+			"description": "Stop the lich transformation ritual",
+			"type": "interact",
+			"target": "lich_transformation_altar",
+			"target_zone": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_aspirant",
+			"description": "Defeat the lich aspirant before transformation completes",
+			"type": "kill",
+			"target": "lich_aspirant_valdris",
+			"target_zone": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "return_priest",
+			"description": "Return to the Priest of Morthane",
+			"type": "talk",
+			"target": "priest_morthane_elder_moor",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_morthane_elder_moor",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 300,
+		"xp": 900,
+		"items": [
+			{"id": "anti_undead_longsword", "quantity": 1}
+		],
+		"faction_reputation": {
+			"church_of_morthane": 40,
+			"church_of_three": 20
+		}
+	},
+	"spawn_on_accept": [
+		{
+			"type": "chest",
+			"location": "willow_dale",
+			"coords": [-8, 2, 20],
+			"contains": ["phylactery_research"],
+			"loot_tier": "rare"
+		}
+	],
+	"prerequisites": ["morthane_06_death_speaker"],
+	"next_quest": "morthane_08_rebirth_ritual",
+	"faction": "church_of_morthane"
+}

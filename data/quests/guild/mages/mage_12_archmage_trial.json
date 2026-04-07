@@ -1,0 +1,75 @@
+{
+	"id": "mage_12_archmage_trial",
+	"title": "The Final Theorem",
+	"description": "The ultimate test for Adepts seeking to join the Inner Circle: solve the Theorem of Infinite Recursion, a magical problem that has stumped the guild's greatest minds for centuries. You must prove mastery of multiple schools of magic, solve complex arcane puzzles, and demonstrate your worthiness to stand among the Magisters.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "archmage_elara_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "arcane_circle",
+	"objectives": [
+		{
+			"id": "begin_trial",
+			"description": "Begin the Archmage Trial",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "elemental_mastery",
+			"description": "Demonstrate mastery of Elemental magic",
+			"type": "interact",
+			"target": "elemental_trial_altar",
+			"required_count": 1,
+			"notes": "Cast fire, ice, and lightning spells in sequence"
+		},
+		{
+			"id": "illusion_mastery",
+			"description": "Demonstrate mastery of Illusion magic",
+			"type": "interact",
+			"target": "illusion_trial_altar",
+			"required_count": 1,
+			"notes": "Navigate a maze of illusions"
+		},
+		{
+			"id": "arcane_mastery",
+			"description": "Demonstrate mastery of pure Arcane magic",
+			"type": "interact",
+			"target": "arcane_trial_altar",
+			"required_count": 1,
+			"notes": "Dispel powerful magical barriers"
+		},
+		{
+			"id": "solve_theorem",
+			"description": "Solve the Theorem of Infinite Recursion",
+			"type": "interact",
+			"target": "theorem_altar",
+			"required_count": 1,
+			"notes": "Complex magical puzzle requiring all schools"
+		},
+		{
+			"id": "final_demonstration",
+			"description": "Perform an impressive magical feat before the council",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1,
+			"notes": "Showcase your most powerful magic"
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "archmage_elara_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 750,
+		"xp": 1500,
+		"items": [],
+		"faction_reputation": {
+			"arcane_circle": 60
+		}
+	},
+	"on_complete_flags": ["archmage_trial_passed", "ready_for_magistrate"],
+	"prerequisites": ["planar_breach_sealed"],
+	"next_quest": "mage_13_council_seat",
+	"notes": "Final Adept quest. Multi-stage trial testing all magic schools. Completion qualifies for Magister rank."
+}

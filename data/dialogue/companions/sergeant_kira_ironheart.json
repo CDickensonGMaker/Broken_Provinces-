@@ -1,0 +1,615 @@
+{
+  "id": "sergeant_kira_ironheart_companion",
+  "display_name": "Sergeant Kira Ironheart - Iron Company Soldier",
+  "description": "Companion dialogue for Sergeant Kira Ironheart, Iron Company disciplined soldier",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Sergeant Ironheart",
+      "text": "Attention! You must be the one Captain Steele mentioned. I am Sergeant Kira Ironheart of the Iron Company. State your business.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The Company said I could recruit one of their soldiers.",
+          "next": "recruitment_intro",
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "iron_company_questline_complete",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I wanted to learn about the Iron Company's methods.",
+          "next": "company_methods",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Just looking around. Carry on.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "greeting_companion",
+      "speaker": "Sergeant Ironheart",
+      "text": "Reporting for duty. What are your orders?",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "param": "kira_recruited",
+          "value": 0
+        }
+      ],
+      "choices": [
+        {
+          "text": "How are you holding up?",
+          "next": "companion_status",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about your past.",
+          "next": "personal_history",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What's your assessment of the other factions?",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Let's review our battle tactics.",
+          "next": "tactics_discussion",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Hold this position. I'll return.",
+          "next": "wait_command",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "wait",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Move out.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_intro",
+      "speaker": "Sergeant Ironheart",
+      "text": "Correct. You've proven yourself worthy of Company support. Captain Steele has authorized my assignment to your command. My halberd and training are at your disposal - until the contract ends or the Company recalls me.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What skills do you bring?",
+          "next": "abilities_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I accept. Welcome to my team.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What about Grimjaw? Is he available too?",
+          "next": "mention_grimjaw",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "abilities_explanation",
+      "speaker": "Sergeant Ironheart",
+      "text": "Fifteen years of combat experience. Mastery of polearm weapons - my Sweeping Strike can engage multiple hostiles. Defensive Stance for holding positions under fire. And Rally - I can restore morale and heal nearby allies when the situation turns grim.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Exactly what I need. You're hired.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How do you compare to Grimjaw?",
+          "next": "compare_to_grimjaw",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need to consider my options.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "compare_to_grimjaw",
+      "speaker": "Sergeant Ironheart",
+      "text": "Grimjaw is a berserker - raw power, aggressive tactics. Effective but unpredictable. I am control and discipline. My role is to protect, to hold the line, to ensure my allies survive. Different tools for different objectives. Choose what your mission requires.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I need discipline and defense. I choose you.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Let me evaluate both options.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "mention_grimjaw",
+      "speaker": "Sergeant Ironheart",
+      "text": "The half-orc? Capable, in his own way. The Company can only spare one soldier for your assignment. Grimjaw brings overwhelming offense at the cost of defense. I offer balanced capabilities with emphasis on protection. The choice is yours.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Protection is what I need. I choose you.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need time to decide.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_accept_offer",
+      "speaker": "Sergeant Ironheart",
+      "text": "Understood. From this moment, your objectives are my objectives. I will follow your commands as I would follow Captain Steele's - with absolute dedication. Do not waste this commitment.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I won't. Welcome aboard.",
+          "next": "recruitment_accept",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "kira_recruited",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "chose_kira",
+              "value": 0
+            },
+            {
+              "type": "recruit_follower",
+              "param": "sergeant_kira_ironheart",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recruitment_accept",
+      "speaker": "Sergeant Ironheart",
+      "text": "The contract is sealed. Point me at your enemies, and they will fall. The Iron Company does not retreat, does not surrender, and does not fail. Lead on.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "company_methods",
+      "speaker": "Sergeant Ironheart",
+      "text": "The Iron Company's success comes from three principles: discipline, training, and unwavering commitment to contract. We do not break our word. Ever. That reputation is worth more than any gold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What if a contract conflicts with your morals?",
+          "next": "moral_conflict",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How does one join the Company?",
+          "next": "joining_company",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Thank you for the explanation.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "moral_conflict",
+      "speaker": "Sergeant Ironheart",
+      "text": "We choose our contracts carefully. The Company doesn't accept jobs that violate our code - no massacres of innocents, no betraying clients, no breaking laws of war. Within those limits, we execute our duty without question. Doubt is for philosophers, not soldiers.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "joining_company",
+      "speaker": "Sergeant Ironheart",
+      "text": "Prove yourself in combat. Demonstrate discipline. Complete the trials. Then, if the officers approve, you take the oath. The Company becomes your family. In return, you receive the finest training and the honor of wearing our iron.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "think_about_it",
+      "speaker": "Sergeant Ironheart",
+      "text": "Take the time you require. A hasty decision leads to poor outcomes. When you've made your choice, I will be here. The Company has trained me for patience as well as war.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "companion_status",
+      "speaker": "Sergeant Ironheart",
+      "text": "Combat ready. Morale high. Equipment maintained. Your leadership has been... competent. The Company would approve of how you conduct operations. I have no complaints to report.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "High praise from a soldier.",
+          "next": "praise_response",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Any injuries I should know about?",
+          "next": "injury_check",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "praise_response",
+      "speaker": "Sergeant Ironheart",
+      "text": "I state facts, not flattery. You make tactical decisions quickly, accept advice when offered, and do not waste lives on foolish charges. These are qualities the Company values. Captain Steele chose well in approving this assignment.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "injury_check",
+      "speaker": "Sergeant Ironheart",
+      "text": "Minor wounds that do not affect combat performance. A soldier who cannot function through pain has no place in the Iron Company. I will inform you if my condition ever compromises the mission. Until then, consider me fully operational.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "personal_history",
+      "speaker": "Sergeant Ironheart",
+      "text": "I was born to a blacksmith family in the northern provinces. When raiders destroyed our village, I was fourteen. A Company patrol found me in the ruins, refusing to abandon my father's forge. They offered me a choice: victim or soldier. I chose soldier.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What happened to your family?",
+          "next": "family_fate",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How did you rise to Sergeant?",
+          "next": "rank_history",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Do you ever regret that choice?",
+          "next": "regret_question",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "family_fate",
+      "speaker": "Sergeant Ironheart",
+      "text": "Father died defending the forge. Mother and sisters escaped and eventually settled in Larton. I send them my pay when I can. They don't fully understand my life, but they know the Company took an angry child and gave her purpose. That's enough.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "rank_history",
+      "speaker": "Sergeant Ironheart",
+      "text": "Merit, not politics. The Company promotes based on performance and leadership ability. After ten years in the ranks, I was given command of a squad. Five years later, I became Sergeant. Every promotion was earned in blood and proven in battle.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "regret_question",
+      "speaker": "Sergeant Ironheart",
+      "text": "Never. The Company gave me discipline when I had only rage. Skills when I had only pain. Family when I had only loss. Without them, I would have died young and accomplished nothing. My only regret is not finding them sooner.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "faction_opinions",
+      "speaker": "Sergeant Ironheart",
+      "text": "Strategic assessment of regional powers? Very well. I've studied them all as potential clients and potential opposition.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The Adventurer's Guild?",
+          "next": "opinion_adventurers",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Thieves Guild?",
+          "next": "opinion_thieves",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Arcane Circle?",
+          "next": "opinion_arcane",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's sufficient.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_adventurers",
+      "speaker": "Sergeant Ironheart",
+      "text": "Capable individuals who lack unit cohesion. Each adventurer fights for personal glory rather than tactical objectives. Effective against singular threats, but they would crumble against disciplined opposition. We respect their skills while noting their limitations.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Clinical assessment.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_thieves",
+      "speaker": "Sergeant Ironheart",
+      "text": "Criminals operating under the pretense of organization. Their methods are dishonorable but effective for certain operations. The Company has worked alongside them when contracts required it. We do not trust them, but we acknowledge their utility.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Practical view.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_arcane",
+      "speaker": "Sergeant Ironheart",
+      "text": "Force multipliers of the highest order. A single competent wizard can change a battle's outcome. The Company maintains strict protocols for magical threats. We respect the Circle's power and hope never to oppose them directly.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Sound strategy.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_discussion",
+      "speaker": "Sergeant Ironheart",
+      "text": "Standard engagement protocol: I advance to contact and establish defensive position. My halberd provides reach advantage - enemies must close distance to engage. If overwhelmed, I activate Defensive Stance. Rally when allies take significant damage. Your orders?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What if we need to attack aggressively?",
+          "next": "tactics_aggressive",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How should I position relative to you?",
+          "next": "tactics_positioning",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Good protocol. Execute as planned.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_aggressive",
+      "speaker": "Sergeant Ironheart",
+      "text": "Sweeping Strike for crowd control, then advance to next target cluster. I can maintain offensive momentum while protecting flanks. However, aggressive tactics increase risk. Recommend only when enemy is disorganized or significantly outmatched.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "tactics_positioning",
+      "speaker": "Sergeant Ironheart",
+      "text": "Maintain two meters behind my position for optimal coverage. If you prefer ranged engagement, increase distance to six meters - I will intercept anything that reaches you. Never stand directly beside me during Sweeping Strike - friendly fire is still fire.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_command",
+      "speaker": "Sergeant Ironheart",
+      "text": "Position established. I will maintain watch until you return or enemies appear. In the latter case, I will engage and hold. Do not be long - a static position becomes a liability over time.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_too_long",
+      "speaker": "Sergeant Ironheart",
+      "text": "You have been absent for an extended period. My position has not been compromised, but prolonged static deployment reduces effectiveness. Request permission to relocate or resume patrol.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Apologies. Resume following me.",
+          "next": "follow_resume",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "follow",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Hold position a while longer.",
+          "next": "wait_reluctant",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "follow_resume",
+      "speaker": "Sergeant Ironheart",
+      "text": "Acknowledged. Resuming mobile operations. Stay within visual range for optimal coordination.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_reluctant",
+      "speaker": "Sergeant Ironheart",
+      "text": "Understood. But be advised: a soldier who stands still too long becomes a target, not a defender. The Company teaches us to stay mobile. I follow your orders, but I advise against this approach.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Sergeant Ironheart",
+      "text": "Dismissed. Remember the Iron Company if you ever require professional services. We honor all contracts.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_companion",
+      "speaker": "Sergeant Ironheart",
+      "text": "Moving out. I have your back. Steel and resolve.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ],
+  "barks": {
+    "combat_start": [
+      "Hold formation!",
+      "The Iron Company does not retreat!",
+      "Disciplined strikes win battles!",
+      "You face the Company's finest!"
+    ],
+    "combat_kill": [
+      "Target neutralized.",
+      "Next!",
+      "For the Company!"
+    ],
+    "combat_low_health": [
+      "Activating defensive stance!",
+      "Rally to me!",
+      "Holding the line!"
+    ],
+    "player_low_health": [
+      "Fall back! I'll cover!",
+      "Rally incoming!",
+      "Get behind my shield!"
+    ],
+    "ambient_dungeon": [
+      "Discipline is the foundation of victory.",
+      "Keep your weapons maintained and ready.",
+      "Watch the corners. Ambush points."
+    ],
+    "ambient_town": [
+      "The Company's reputation is everything.",
+      "A soldier's duty never ends.",
+      "Even in peace, maintain readiness."
+    ],
+    "ambient_wilderness": [
+      "Captain Steele would approve of this mission.",
+      "In formation, we are invincible.",
+      "Stay alert. Open ground means exposure."
+    ],
+    "order_acknowledged": [
+      "Acknowledged!",
+      "Sir!",
+      "Executing!",
+      "Understood!"
+    ],
+    "order_attack": [
+      "Engaging!",
+      "Attack formation!",
+      "For the Company!"
+    ],
+    "idle_long": [
+      "Requesting permission to resume patrol.",
+      "Standing idle reduces combat readiness.",
+      "The Company trains us to stay mobile."
+    ]
+  }
+}

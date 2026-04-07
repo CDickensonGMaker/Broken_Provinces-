@@ -1,0 +1,47 @@
+{
+	"id": "mercenary_01_enlistment",
+	"title": "Sign the Contract",
+	"description": "Captain Roderick Steele of the Iron Company is reviewing applications for new recruits. The mercenary life is brutal and demands discipline. Prove your combat prowess in a trial against company soldiers, and if you survive with honor, you'll earn a place among the Iron Company's ranks.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "captain_roderick_steele",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "iron_company",
+	"objectives": [
+		{
+			"id": "speak_to_captain",
+			"description": "Speak to Captain Steele at the Iron Hall in Dalhurst",
+			"type": "talk",
+			"target": "captain_roderick_steele",
+			"required_count": 1
+		},
+		{
+			"id": "combat_trial",
+			"description": "Defeat the training soldiers in combat trial",
+			"type": "kill",
+			"target": "training_soldier",
+			"required_count": 3
+		},
+		{
+			"id": "return_to_captain",
+			"description": "Report to Captain Steele with your results",
+			"type": "talk",
+			"target": "captain_roderick_steele",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "captain_roderick_steele",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 100,
+		"xp": 300,
+		"items": ["iron_company_token"],
+		"faction_reputation": {
+			"iron_company": 50
+		}
+	},
+	"prerequisites": [],
+	"next_quest": "mercenary_02_drill"
+}

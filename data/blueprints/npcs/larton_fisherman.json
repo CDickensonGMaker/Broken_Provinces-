@@ -1,0 +1,8 @@
+{
+  "name": "Fisherman Creel",
+  "who": "Scarred fisherman who survived a pirate attack\nWary of strangers but grateful to those who help\nKnows the coastal waters intimately",
+  "what": "Works the Larton docks and fishing grounds\nCan identify pirate ship markings\nProvides information on sea routes",
+  "where": "Larton - Docks",
+  "sprite": "fisherman_npc",
+  "quests": "Pirate Hunting, Sea Route Intelligence"
+}

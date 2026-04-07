@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="CompanionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/companion_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "grimjaw"
+display_name = "Grimjaw"
+character_class = "Berserker"
+description = "A half-orc berserker who found purpose in the Iron Company. His savage fighting style makes him devastatingly effective in combat. Grimjaw speaks simply but fights with primal fury, his massive axe cleaving through enemies like wheat before a scythe."
+max_health = 180
+base_damage = 30
+armor = 12
+speed_multiplier = 1.05
+attack_cooldown = 1.8
+combat_range = 8.0
+attack_range = 3.0
+ai_behavior = 1
+combat_style = 0
+is_essential = true
+knockout_duration = 0.0
+preferred_weapons = Array[String](["two_handed_axe", "greataxe", "warhammer"])
+abilities = Array[String](["rage", "cleave", "intimidate"])
+ability_use_chance = 0.30
+ranged_projectile_path = ""
+sprite_path = "res://assets/sprites/npcs/combat/male_gladiator1.png"
+sprite_h_frames = 1
+sprite_v_frames = 1
+sprite_pixel_size = 0.0384
+tint_color = Color(0.85, 0.95, 0.85, 1.0)
+unlock_type = 1
+unlock_param = "iron_company_champion"
+unlock_threshold = 0
+dialogue_path = "res://data/dialogue/companions/grimjaw.json"
+knowledge_profile_path = ""
+combat_bark_lines = Array[String](["GRIMJAW SMASH!", "Blood for the Company!", "RrrrAAAAGH!", "You make Grimjaw angry!", "Die! Die! DIE!", "Grimjaw strongest!"])
+knockout_lines = Array[String](["Grimjaw... not... done...", "ORC BLOOD... STRONG...", "No..."])
+recovery_lines = Array[String](["GRIMJAW BACK!", "More fight in Grimjaw!", "You hit hard. Grimjaw hit harder!"])

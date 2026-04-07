@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "arcane_circle"
+display_name = "Arcane Circle"
+description = "The premier organization of mages, scholars, and practitioners of the arcane arts. The Circle maintains the great Athenaeum library, regulates magical practice, and trains new generations of spellcasters. They pursue magical knowledge while protecting the realm from dangerous magical phenomena and rogue practitioners."
+parent_faction = ""
+allies = ["human_empire", "elves_pro_human"]
+enemies = ["cultists", "undead"]
+neutrals = ["adventurers_guild", "thieves_guild", "dwarves"]
+alignment = 30
+ranks = [{"name": "Hedge Mage", "min_reputation": -100, "benefits": []}, {"name": "Unregistered", "min_reputation": -50, "benefits": []}, {"name": "Unknown", "min_reputation": -10, "benefits": []}, {"name": "Novice", "min_reputation": 0, "benefits": ["library_access"]}, {"name": "Apprentice", "min_reputation": 20, "benefits": ["library_access", "spell_tutoring"]}, {"name": "Journeyman", "min_reputation": 40, "benefits": ["library_access", "spell_tutoring", "enchanting_access"]}, {"name": "Magus", "min_reputation": 60, "benefits": ["library_access", "spell_tutoring", "enchanting_access", "restricted_tomes"]}, {"name": "Archmage", "min_reputation": 85, "benefits": ["library_access", "spell_tutoring", "enchanting_access", "restricted_tomes", "circle_leadership"]}]
+default_reputation = -10
+joinable = true
+join_threshold = 10
+is_hidden = false
+faction_color = Color(0.6, 0.4, 0.8, 1.0)

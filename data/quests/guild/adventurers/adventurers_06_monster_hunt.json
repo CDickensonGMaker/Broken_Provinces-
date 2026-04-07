@@ -1,0 +1,66 @@
+{
+	"id": "adventurers_06_monster_hunt",
+	"title": "The Beast of Millbrook",
+	"description": "Something large and dangerous has been stalking the woods near Millbrook. Livestock mutilated, travelers disappearing. The locals are terrified. Track down the beast and end its reign of terror. This is a Veteran-level contract - succeed and you'll earn the promotion.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "investigate_millbrook",
+			"description": "Speak to locals in Millbrook about the beast",
+			"type": "talk",
+			"target": "millbrook_elder",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "find_tracks",
+			"description": "Track the beast to its lair",
+			"type": "reach",
+			"target": "millbrook_beast_lair",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "hunt_beast",
+			"description": "Slay the dire wolf alpha",
+			"type": "kill",
+			"target": "dire_wolf",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "clear_den",
+			"description": "Clear out the wolf pack",
+			"type": "kill",
+			"target": "wolf",
+			"required_count": 6,
+			"is_optional": true
+		},
+		{
+			"id": "collect_trophy",
+			"description": "Take a trophy from the beast",
+			"type": "collect",
+			"target": "dire_wolf_pelt",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 250,
+		"xp": 600,
+		"items": ["adventurer_badge_veteran", "dire_wolf_cloak"],
+		"faction_reputation": {
+			"adventurers_guild": 100
+		}
+	},
+	"prerequisites": ["adventurers_05_missing_team"],
+	"next_quest": "adventurers_07_dungeon_delve",
+	"notes": "Rank: Member → Veteran (promotion). Monster hunt with tracking mechanics. Dire wolf spawns in den near Millbrook. Promotion to Veteran rank on completion."
+}

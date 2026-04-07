@@ -1,0 +1,53 @@
+{
+	"id": "gaela_seed_of_life",
+	"title": "Seed of Renewal",
+	"description": "A mysterious sickness has struck several villagers in Dalhurst, resisting all conventional healing. The Priestess of Gaela believes only the legendary Seed of Renewal can save them - a rare artifact blessed by the goddess herself. The seed grows in a dangerous location deep within Willow Dale ruins, guarded by ancient protectors who do not take kindly to intruders.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "travel_willow_dale",
+			"description": "Travel deep into Willow Dale ruins",
+			"type": "reach",
+			"target": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_guardians",
+			"description": "Defeat the ancient guardians protecting the seed",
+			"type": "kill",
+			"target": "stone_guardian",
+			"required_count": 3
+		},
+		{
+			"id": "collect_seed",
+			"description": "Collect the Seed of Renewal",
+			"type": "collect",
+			"target": "seed_of_renewal",
+			"required_count": 1
+		},
+		{
+			"id": "return_seed",
+			"description": "Bring the seed to Priestess of Gaela",
+			"type": "talk",
+			"target": "priest_gaela_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_gaela_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 200,
+		"xp": 600,
+		"items": ["gaelas_embrace_potion", "gaelas_embrace_potion"],
+		"faction_reputation": {
+			"church_of_three": 50
+		}
+	},
+	"prerequisites": ["gaela_sacred_grove"],
+	"next_quest": ""
+}

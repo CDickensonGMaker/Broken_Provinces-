@@ -1,0 +1,359 @@
+{
+  "id": "arena_master_gormund",
+  "display_name": "Gormund the Pitmaster - Arena Master",
+  "description": "Dialogue for Gormund the Pitmaster who runs the Bloodsand Arena",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Gormund the Pitmaster",
+      "text": "Welcome to the Bloodsand Arena. You here to fight, or just to watch others bleed?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Varn the Scarred sent me.",
+          "next": "varn_reference",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "meet_the_arena_master",
+              "value": 1
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I want to fight.",
+          "next": "want_to_fight",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about the arena.",
+          "next": "arena_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Just looking around.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "varn_reference",
+      "speaker": "Gormund the Pitmaster",
+      "text": "Varn! Ha! That old bastard still talks about this place? He was one of the best I've ever seen - undefeated champion for two years. Then he got careless against an ogre. Lucky to walk away with just a scar. So, you want to follow in his footsteps?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I want to fight in the arena.",
+          "next": "first_fight_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What happened to the ogre?",
+          "next": "ogre_story",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Maybe I'm not ready yet.",
+          "next": "not_ready",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "ogre_story",
+      "speaker": "Gormund the Pitmaster",
+      "text": "Varn killed it. Barely. Took a grazing axe blow to the face that would have killed anyone else, then drove his sword through the ogre's throat. The crowd went wild. Best fight I've ever hosted. But Varn knew he got lucky - retired the next day. Smart man.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm ready to fight.",
+          "next": "first_fight_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's a hell of a story.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "want_to_fight",
+      "speaker": "Gormund the Pitmaster",
+      "text": "Good! We always need fresh blood. Well, fresh fighters anyway - we've got plenty of blood already. You'll start in the lower tier. Survive a few matches and you'll work your way up to the real money fights.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What are the rules?",
+          "next": "arena_rules",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Sign me up for my first fight.",
+          "next": "first_fight_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What's the pay?",
+          "next": "payment_info",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "arena_rules",
+      "speaker": "Gormund the Pitmaster",
+      "text": "Simple. Fight until your opponent yields, dies, or you do. No fleeing the sand - you step off the arena floor and you forfeit. No magic unless it's a mage duel. Weapons and armor are allowed. And most importantly - the crowd loves a show. Give them blood and glory and they'll love you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm ready. Sign me up.",
+          "next": "first_fight_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What if I yield?",
+          "next": "yield_question",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Sounds brutal.",
+          "next": "brutal_response",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "yield_question",
+      "speaker": "Gormund the Pitmaster",
+      "text": "You can yield anytime. You'll lose the match and any prize money, but you'll live. Of course, if you yield too often, the crowd will turn on you. Nobody pays to watch cowards. But it's better than dying on the sand.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Fair enough. Let's fight.",
+          "next": "first_fight_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need to think about this.",
+          "next": "not_ready",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "brutal_response",
+      "speaker": "Gormund the Pitmaster",
+      "text": "It's supposed to be. This isn't some sparring match. People come here to see real combat, real stakes. If you're looking for safe, go join the guard. If you want glory and gold, step into the arena.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll fight.",
+          "next": "first_fight_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "This isn't for me.",
+          "next": "refuse_arena",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "payment_info",
+      "speaker": "Gormund the Pitmaster",
+      "text": "Lower tier fights pay 50 gold. Mid tier pays 100-200. Champions can earn 500 gold or more per fight. Plus, the crowd throws coins if they like you. And if you win a tournament? That's when the real money flows. Interested?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Definitely. Sign me up.",
+          "next": "first_fight_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Let me think about it.",
+          "next": "not_ready",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "first_fight_offer",
+      "speaker": "Gormund the Pitmaster",
+      "text": "Alright. Your first fight will be against another newcomer - keeps things fair. Win or lose, you'll earn 25 gold just for stepping onto the sand. Win, and you get another 25 as prize money. Sound good?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm ready to fight now.",
+          "next": "start_first_fight",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "meet_the_arena_master",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "arena_registered",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Let me prepare first.",
+          "next": "prepare_first",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "prepare_first",
+      "speaker": "Gormund the Pitmaster",
+      "text": "Smart. Check your gear, get some potions, maybe say a prayer to whatever gods you follow. When you're ready, come back and we'll set up your fight.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "start_first_fight",
+      "speaker": "Gormund the Pitmaster",
+      "text": "Excellent! Step into the arena when you're ready. Your opponent is already waiting. Remember - fight smart, fight hard, and give the crowd a show. Good luck, warrior.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "arena_info",
+      "speaker": "Gormund the Pitmaster",
+      "text": "The Bloodsand Arena has been here for decades. Warriors from all over come to prove themselves. We host single duels, team battles, and special events like monster hunts. The crowd bets on fights, and the winners become legends. Want to join them?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Yes, I want to fight.",
+          "next": "first_fight_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me more about special events.",
+          "next": "special_events",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Just curious.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "special_events",
+      "speaker": "Gormund the Pitmaster",
+      "text": "We hold tournaments every few months - elimination style, last warrior standing wins a grand prize. We also do monster hunts where we release captured beasts and fighters have to survive. Those are the most popular with the crowd. Dangerous as hell, but the pay is incredible.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "How do I enter a tournament?",
+          "next": "tournament_entry",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Sounds exciting. I'm in.",
+          "next": "first_fight_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Interesting.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tournament_entry",
+      "speaker": "Gormund the Pitmaster",
+      "text": "You need to prove yourself first. Win a few regular matches, build a reputation. Then I'll let you into a tournament. Can't have unknowns dying in the first round - bad for business. Start with the basics and work your way up.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Fair enough. Sign me up for my first fight.",
+          "next": "first_fight_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll come back when I'm ready.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "not_ready",
+      "speaker": "Gormund the Pitmaster",
+      "text": "Take your time. The arena will be here when you're ready. Just don't wait too long - opportunities like this don't last forever.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "refuse_arena",
+      "speaker": "Gormund the Pitmaster",
+      "text": "No shame in knowing your limits. Better to walk away now than get carried out on a shield later. If you change your mind, you know where to find me.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Gormund the Pitmaster",
+      "text": "Enjoy the show. And if you ever want to step onto the sand yourself, I'll be here.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

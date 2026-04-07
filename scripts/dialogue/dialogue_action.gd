@@ -136,3 +136,14 @@ static func discover_recipe(recipe_id: String) -> DialogueAction:
 	action.type = DialogueData.ActionType.DISCOVER_RECIPE
 	action.param_string = recipe_id
 	return action
+
+
+## Create a "start duel" action - for initiating non-lethal combat with NPC
+## duel_id: Unique identifier for the duel (used for quest tracking)
+## yield_threshold: HP percentage at which opponent yields (default 0.2 = 20%)
+static func start_duel(duel_id: String, yield_threshold: float = 0.2) -> DialogueAction:
+	var action := DialogueAction.new()
+	action.type = DialogueData.ActionType.START_DUEL
+	action.param_string = duel_id
+	action.param_float = yield_threshold
+	return action

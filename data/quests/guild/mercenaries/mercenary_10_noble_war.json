@@ -1,0 +1,69 @@
+{
+	"id": "mercenary_10_noble_war",
+	"title": "Proxy War",
+	"description": "Two rival noble houses are hiring mercenaries instead of declaring open war. Captain Steele has accepted a contract from one side, but the conflict is morally gray. You'll command Iron Company forces in a series of skirmishes near Millbrook. Choose your tactics carefully - this proxy war could spiral into something larger.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "captain_roderick_steele",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "iron_company",
+	"objectives": [
+		{
+			"id": "meet_noble_client",
+			"description": "Meet the contracting noble in Millbrook",
+			"type": "talk",
+			"target": "noble_client",
+			"required_count": 1
+		},
+		{
+			"id": "first_skirmish",
+			"description": "Win the first battle near Millbrook",
+			"type": "kill",
+			"target": "rival_mercenary",
+			"required_count": 10
+		},
+		{
+			"id": "second_skirmish",
+			"description": "Defeat the enemy's reinforcements",
+			"type": "kill",
+			"target": "rival_heavy_infantry",
+			"required_count": 6
+		},
+		{
+			"id": "final_battle",
+			"description": "Lead the decisive battle at the Crossroads",
+			"type": "kill",
+			"target": "rival_commander",
+			"required_count": 1
+		},
+		{
+			"id": "negotiate_terms",
+			"description": "Negotiate surrender or annihilation",
+			"type": "talk",
+			"target": "enemy_commander",
+			"required_count": 1,
+			"is_optional": true
+		},
+		{
+			"id": "return_to_captain",
+			"description": "Report the war's outcome to Captain Steele",
+			"type": "talk",
+			"target": "captain_roderick_steele",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "captain_roderick_steele",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 600,
+		"xp": 1200,
+		"items": ["war_veteran_medal"],
+		"faction_reputation": {
+			"iron_company": 70
+		}
+	},
+	"prerequisites": ["mercenary_09_betrayal"],
+	"next_quest": "mercenary_11_monster_battalion"
+}

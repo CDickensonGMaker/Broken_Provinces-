@@ -1,0 +1,34 @@
+{
+  "name": "Theron the Bold",
+  "who": "Veteran warrior of the Adventurer's Guild\nKnown for aggressive fighting style and bravery\nUses sword and shield in combat\nPotential companion upon completing guild questline\nHonors the warrior's code and guild traditions",
+  "what": "Guild champion and mentor to new adventurers\nMaster of defensive combat techniques\nOffers training in melee combat\nPotential companion if chosen over Sylva",
+  "where": "Dalhurst - Adventurer's Guild Hall\nAvailable as companion after questline completion",
+  "quests": "Adventurer's Guild Champion reward choice",
+  "sprite": {
+    "type": "warrior",
+    "path": "res://assets/sprites/npcs/combat/male_gladiator1.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0320,
+    "notes": "Muscular human male in chainmail, sword and shield"
+  },
+  "dialogue": {
+    "archetype": "honorable_warrior",
+    "topics": ["combat", "honor", "guild_history", "adventures"],
+    "disposition_base": 50,
+    "notes": "Direct, confident, values courage and loyalty"
+  },
+  "combat": {
+    "can_fight": true,
+    "level": 35,
+    "is_essential": true,
+    "notes": "Tank build - high HP, good armor, shield abilities"
+  },
+  "follower": {
+    "can_recruit": true,
+    "recruitment_conditions": ["Complete Adventurer's Guild questline", "Choose Theron over Sylva"],
+    "skills": ["shield_bash", "battle_cry", "taunt"],
+    "combat_style": "warrior_tank",
+    "notes": "Aggressive melee fighter with crowd control abilities"
+  }
+}

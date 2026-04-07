@@ -1,0 +1,66 @@
+{
+	"id": "mage_07_thesis_project",
+	"title": "Original Research",
+	"description": "As a Journeyman, you must conduct original magical research and present your findings to the Arcane Circle council. Choose your specialization - Elemental Magic, Illusion, Necromancy, or Enchantment - and demonstrate mastery by creating a unique magical effect or discovering new applications of existing spells.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "archmage_elara_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "arcane_circle",
+	"objectives": [
+		{
+			"id": "choose_specialization",
+			"description": "Choose your magical specialization",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1,
+			"notes": "Dialogue choice: Elemental, Illusion, Necromancy, or Enchantment"
+		},
+		{
+			"id": "gather_research_materials",
+			"description": "Gather specialized research materials",
+			"type": "collect",
+			"target": "research_materials_variable",
+			"required_count": 10,
+			"notes": "Materials depend on chosen specialization"
+		},
+		{
+			"id": "conduct_experiments",
+			"description": "Conduct magical experiments in the research lab",
+			"type": "interact",
+			"target": "research_laboratory",
+			"required_count": 5
+		},
+		{
+			"id": "document_findings",
+			"description": "Document your findings in a research journal",
+			"type": "collect",
+			"target": "completed_thesis",
+			"required_count": 1,
+			"notes": "Created after completing experiments"
+		},
+		{
+			"id": "present_to_council",
+			"description": "Present your thesis to the Arcane Circle council",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "archmage_elara_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 300,
+		"xp": 750,
+		"items": ["specialization_bonus_variable"],
+		"faction_reputation": {
+			"arcane_circle": 30
+		}
+	},
+	"on_complete_flags": ["thesis_complete", "magic_specialization_chosen"],
+	"prerequisites": ["arcane_circle_journeyman"],
+	"next_quest": "mage_08_magical_disaster",
+	"notes": "First Journeyman quest. Player chooses specialization path. Rewards depend on choice: Elemental=spell, Illusion=spell, Necromancy=spell, Enchanting=recipe."
+}

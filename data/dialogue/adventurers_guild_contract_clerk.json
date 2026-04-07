@@ -1,0 +1,368 @@
+{
+  "id": "adventurers_guild_contract_clerk",
+  "display_name": "Contract Clerk - Adventurer's Guild",
+  "description": "Dialogue for the Adventurer's Guild contract clerk who handles repeatable bounty contracts. Available to Champion-rank members.",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Contract Clerk",
+      "text": "Welcome to the Guild contract board. We have standing bounties for monster extermination, bandit clearing, and escort contracts. What can I help you with?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Show me available bounties.",
+          "next": "bounty_list",
+          "conditions": [
+            {"type": "flag", "param": "adventurers_rank_champion", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "I've completed a bounty.",
+          "next": "bounty_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "adventurers_repeatable_bounty", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "What kind of contracts do you offer?",
+          "next": "contract_types",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'm not a Champion yet.",
+          "next": "rank_required",
+          "conditions": [
+            {"type": "flag", "param": "adventurers_rank_champion", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Just browsing.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "bounty_list",
+      "speaker": "Contract Clerk",
+      "text": "Current active bounties on the board:",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "[Monster Hunt] Clear the wolf pack near Millbrook - 150 gold",
+          "next": "monster_bounty_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Bandit Clearing] Eliminate bandits on the Thornfield road - 200 gold",
+          "next": "bandit_bounty_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Dungeon Clear] Purge undead from Willow Dale entrance - 175 gold",
+          "next": "dungeon_bounty_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Escort] Protect merchant caravan to Crossroads - 125 gold",
+          "next": "escort_bounty_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Beast Hunt] Track and kill the dire bear in Elder Moor - 300 gold",
+          "next": "beast_bounty_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll check back later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "monster_bounty_details",
+      "speaker": "Contract Clerk",
+      "text": "Wolves have denned near Millbrook again. Farmers are losing livestock. Kill at least six wolves and report back. Standard bounty - 150 gold and 300 XP. Guild reputation bonus for clean completion.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll take this contract.",
+          "next": "accept_monster_bounty",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "adventurers_repeatable_bounty", "value": 0},
+            {"type": "set_flag", "param": "current_bounty_monster", "value": 0}
+          ]
+        },
+        {
+          "text": "Show me other options.",
+          "next": "bounty_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not interested right now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "bandit_bounty_details",
+      "speaker": "Contract Clerk",
+      "text": "Bandits have set up camp on the Thornfield road. They've been hitting merchant caravans for weeks. Kill at least five bandits and their leader. 200 gold reward, 400 XP. The merchants are offering a bonus for recovered goods.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll clear them out.",
+          "next": "accept_bandit_bounty",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "adventurers_repeatable_bounty", "value": 0},
+            {"type": "set_flag", "param": "current_bounty_bandit", "value": 0}
+          ]
+        },
+        {
+          "text": "Show me other options.",
+          "next": "bounty_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not interested right now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "dungeon_bounty_details",
+      "speaker": "Contract Clerk",
+      "text": "Undead have been emerging from Willow Dale's upper levels. The entrance needs clearing before any expedition teams can go in safely. Kill at least eight skeletons or zombies. 175 gold, 350 XP.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll purge the undead.",
+          "next": "accept_dungeon_bounty",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "adventurers_repeatable_bounty", "value": 0},
+            {"type": "set_flag", "param": "current_bounty_dungeon", "value": 0}
+          ]
+        },
+        {
+          "text": "Show me other options.",
+          "next": "bounty_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not interested right now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "escort_bounty_details",
+      "speaker": "Contract Clerk",
+      "text": "A merchant caravan needs escort from Dalhurst to Crossroads. Basic protection duty - keep the merchants alive, deter attackers. 125 gold, 250 XP. Quick money for a Champion.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll escort the caravan.",
+          "next": "accept_escort_bounty",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "adventurers_repeatable_bounty", "value": 0},
+            {"type": "set_flag", "param": "current_bounty_escort", "value": 0}
+          ]
+        },
+        {
+          "text": "Show me other options.",
+          "next": "bounty_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not interested right now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "beast_bounty_details",
+      "speaker": "Contract Clerk",
+      "text": "A dire bear has been spotted in Elder Moor. Dangerous creature - it's already killed two hunters. Track it, kill it, bring proof. 300 gold, 600 XP. This one requires serious preparation.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll hunt the dire bear.",
+          "next": "accept_beast_bounty",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "adventurers_repeatable_bounty", "value": 0},
+            {"type": "set_flag", "param": "current_bounty_beast", "value": 0}
+          ]
+        },
+        {
+          "text": "Show me other options.",
+          "next": "bounty_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not interested right now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_monster_bounty",
+      "speaker": "Contract Clerk",
+      "text": "Contract accepted. The wolf pack was last seen east of Millbrook. Six confirmed kills required. Return here with proof - pelts work fine. Good hunting, Champion.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_bandit_bounty",
+      "speaker": "Contract Clerk",
+      "text": "Contract accepted. The bandits camp somewhere along the Thornfield road. Five kills minimum plus the leader. Bring tokens or weapons as proof. May fortune favor your blade.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_dungeon_bounty",
+      "speaker": "Contract Clerk",
+      "text": "Contract accepted. Willow Dale entrance is northeast of Dalhurst. Eight undead minimum. Any remains you can carry serve as proof. Watch for traps in the ruins.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_escort_bounty",
+      "speaker": "Contract Clerk",
+      "text": "Contract accepted. The caravan departs from the east gate at dawn. Meet the lead merchant there. Keep them alive until Crossroads. Payment on successful delivery.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_beast_bounty",
+      "speaker": "Contract Clerk",
+      "text": "Contract accepted. The dire bear's territory is deep in Elder Moor, northwest section. It's a formidable beast - prepare accordingly. Bring the pelt or claws as proof.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "bounty_turnin",
+      "speaker": "Contract Clerk",
+      "text": "Bounty complete? Let me verify your proof... Yes, this confirms the contract terms. Excellent work, Champion. Here's your payment and the Guild's thanks. The board refreshes weekly if you want more work.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll take another contract.",
+          "next": "bounty_list",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_repeatable_bounty", "value": 0}]
+        },
+        {
+          "text": "That's enough for now.",
+          "next": "farewell_complete",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "adventurers_repeatable_bounty", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "contract_types",
+      "speaker": "Contract Clerk",
+      "text": "The Guild posts five types of repeatable contracts: Monster hunts for dangerous wildlife, bandit clearing for road security, dungeon purges for exploration teams, escort jobs for merchants, and beast hunts for the most dangerous predators. Champions have full access.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Show me what's available.",
+          "next": "bounty_list",
+          "conditions": [{"type": "flag", "param": "adventurers_rank_champion", "value": 0}],
+          "actions": []
+        },
+        {
+          "text": "How do I become a Champion?",
+          "next": "champion_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I understand.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "rank_required",
+      "speaker": "Contract Clerk",
+      "text": "The bounty board is reserved for Guild Champions. Complete the full questline through Guildmaster Vorn, defeat Katrina Steelwind, and earn your Champion rank. Then you'll have unlimited access to bounty contracts.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "champion_info",
+      "speaker": "Contract Clerk",
+      "text": "Champion rank requires completing all Guild quests through Guildmaster Vorn - proving grounds, contracts, and finally defeating Katrina Steelwind in the arena. It's a long journey, but the rewards are worth it.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_complete",
+      "speaker": "Contract Clerk",
+      "text": "Your reputation grows with every contract. Return anytime for more work.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Contract Clerk",
+      "text": "The board's always here when you need work. Good hunting.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

@@ -1,0 +1,295 @@
+================================================================================
+                    CHRONOS QUEST CHAIN FLOWCHART
+================================================================================
+
+                         TIER 1: INITIATE (Lvl 5-10)
+                         Open to All Players
+                         ═══════════════════
+
+                    ┌──────────────────────────┐
+                    │  1. The First Vision     │
+                    │  Crossroads fetch quest  │
+                    │  50g, 200 XP             │
+                    └───────────┬──────────────┘
+                                │
+                                ▼
+                    ┌──────────────────────────┐
+                    │  2. Sands of Service     │
+                    │  3-location collection   │
+                    │  75g, 300 XP             │
+                    └───────────┬──────────────┘
+                                │
+                                ▼
+                    ┌──────────────────────────┐
+                    │  3. Time-Sensitive       │
+                    │  Urgent delivery quest   │
+                    │  100g, 400 XP            │
+                    └───────────┬──────────────┘
+                                │
+                                ▼
+                        TIER 1 COMPLETE
+                         225g, 900 XP
+
+────────────────────────────────────────────────────────────────────────────
+
+                         TIER 2: ACOLYTE (Lvl 10-15)
+                         Testing & Commitment
+                         ════════════════════
+
+                    ┌──────────────────────────┐
+                    │  4. The False Seer       │
+                    │  Investigation + Choice  │
+                    │  150g, 500 XP            │
+                    └───────────┬──────────────┘
+                                │
+                    ┌───────────┴───────────┐
+                    │   CHOICE: Expose or   │
+                    │   Accept the seer?    │
+                    └───────────┬───────────┘
+                                │
+                                ▼
+                    ┌──────────────────────────────────┐
+                    │  5. The Timekeeper's Question ⭐ │
+                    │  CRITICAL SOFT-LOCK QUEST        │
+                    │  200g, 600 XP                    │
+                    └───────────┬──────────────────────┘
+                                │
+                    ┌───────────┴────────────┐
+                    │   CHOICE: Accept or    │
+                    │   Decline Devotion?    │
+                    └───┬──────────────┬─────┘
+                        │              │
+              [ACCEPT]  │              │  [DECLINE]
+                        │              │
+                        ▼              ▼
+         ┌──────────────────┐   ┌─────────────┐
+         │ chronos_devotee  │   │ Quest Chain │
+         │ FLAG SET         │   │    ENDS     │
+         │                  │   │             │
+         │ Unlocks Quests   │   │ Can still   │
+         │ 6-10+            │   │ worship at  │
+         │                  │   │ temple      │
+         │ Title: "Acolyte  │   └─────────────┘
+         │ of Time"         │
+         └────────┬─────────┘
+                  │
+                  │        TIER 2 COMPLETE
+                  │         350g, 1100 XP
+                  │
+                  ▼
+
+────────────────────────────────────────────────────────────────────────────
+
+                    TIER 3: DEVOTEE EXCLUSIVE (Lvl 15-25)
+                    Requires chronos_devotee flag
+                    ══════════════════════════════
+
+                    ┌──────────────────────────┐
+                    │  6. Echoes of What Was   │
+                    │  Combat + Puzzle + Lore  │
+                    │  250g, 750 XP            │
+                    │  Willow Dale visions     │
+                    └───────────┬──────────────┘
+                                │
+                                ▼
+                    ┌──────────────────────────┐
+                    │  7. The Paradox Stone    │
+                    │  Puzzle + Major Choice   │
+                    │  300g, 900 XP            │
+                    └───────────┬──────────────┘
+                                │
+                    ┌───────────┴───────────┐
+                    │   CHOICE: Destroy or  │
+                    │   Harness the stone?  │
+                    └───┬──────────────┬────┘
+                        │              │
+            [DESTROY]   │              │  [HARNESS]
+                        │              │
+                        ▼              ▼
+              ┌──────────────┐   ┌──────────────┐
+              │ Orthodox Path│   │  Power Path  │
+              │ +20 chronos  │   │ +10 chronos  │
+              │ Major Blessing│  │ Paradox      │
+              │              │   │ Talisman     │
+              └──────┬───────┘   └──────┬───────┘
+                     │                  │
+                     └────────┬─────────┘
+                              │
+                              ▼
+                    ┌──────────────────────────┐
+                    │  8. Glimpses of Tomorrow │
+                    │  Training montage quest  │
+                    │  350g, 1000 XP           │
+                    │  Prophet's Circlet       │
+                    └───────────┬──────────────┘
+                                │
+                                ▼
+                        TIER 3 COMPLETE
+                         900g, 2650 XP
+                       Near-Mastery Achieved
+
+────────────────────────────────────────────────────────────────────────────
+
+                    TIER 4: CHAMPION (Lvl 25-35+)
+                    Epic Endgame Content
+                    ════════════════════
+
+                    ┌──────────────────────────┐
+                    │  9. When Time Bleeds     │
+                    │  Multi-stage Epic Quest  │
+                    │  500g, 1500 XP           │
+                    └───────────┬──────────────┘
+                                │
+                        ┌───────┴────────┐
+                        │  5 Aberrations │
+                        │  + Boss Fight  │
+                        │  + Puzzle      │
+                        └───────┬────────┘
+                                │
+                                ▼
+                    ┌──────────────────────────────────┐
+                    │  10. The Eternal Vigil ⭐        │
+                    │  FINAL CLIMACTIC QUEST           │
+                    │  750g, 2000 XP                   │
+                    └───────────┬──────────────────────┘
+                                │
+                        ┌───────┴────────┐
+                        │  6 Guardians   │
+                        │  + Epic Boss   │
+                        │  + Restoration │
+                        └───────┬────────┘
+                                │
+                                ▼
+                    ┌──────────────────────────┐
+                    │    CHAMPION OF CHRONOS   │
+                    │                          │
+                    │  Title Granted           │
+                    │  +100 church_of_chronos  │
+                    │  +50 church_of_three     │
+                    │                          │
+                    │  Legendary Rewards:      │
+                    │  - Eternal Hourglass     │
+                    │    Fragment (set piece)  │
+                    │  - Champion's Mantle     │
+                    │                          │
+                    │  NPCs address you as     │
+                    │  "Champion"              │
+                    └───────────┬──────────────┘
+                                │
+                                ▼
+                        TIER 4 COMPLETE
+                         1250g, 3500 XP
+                     MAIN CHAIN COMPLETE!
+
+────────────────────────────────────────────────────────────────────────────
+
+                         BONUS: REPEATABLE
+                         Ongoing Devotion
+                         ════════════════
+
+                    ┌──────────────────────────┐
+                    │  11. Seeking Visions     │
+                    │  Weekly meditation       │
+                    │  25g, 100 XP             │
+                    │  7-day cooldown          │
+                    └───────────┬──────────────┘
+                                │
+                                ▼
+                          ┌──────────┐
+                          │ Repeats  │
+                          │ Forever  │
+                          └──────────┘
+
+================================================================================
+
+                           REPUTATION TOTALS
+
+                    All Quests (Orthodox Path)
+                    ──────────────────────────
+                    church_of_chronos:  +315
+                    church_of_three:    +135
+
+                    With Repeatable (per week)
+                    ──────────────────────────
+                    church_of_chronos:  +5
+
+================================================================================
+
+                          KEY DECISION POINTS
+
+    ┌────────────────────────────────────────────────────────────────┐
+    │                                                                │
+    │  Quest 4: The False Seer                                       │
+    │  ────────────────────────                                      │
+    │  Expose → +10 church_of_chronos                                │
+    │  Accept → +5 chronos, +10 common_folk                          │
+    │                                                                │
+    │  Quest 5: The Timekeeper's Question ⭐ CRITICAL                │
+    │  ───────────────────────────────────                           │
+    │  Accept → chronos_devotee flag, unlocks quests 6-10+           │
+    │  Decline → chronos_path_declined flag, chain ENDS              │
+    │                                                                │
+    │  Quest 7: The Paradox Stone                                    │
+    │  ───────────────────────────                                   │
+    │  Destroy → +20 chronos, major blessing (orthodox)              │
+    │  Harness → +10 chronos, paradox talisman (power-seeker)        │
+    │                                                                │
+    └────────────────────────────────────────────────────────────────┘
+
+================================================================================
+
+                        ENEMY PROGRESSION
+
+    Tier 1 (1-3):     No new enemies
+    Tier 2 (4-5):     No new enemies
+    Tier 3 (6-8):     Temporal Guardians (3x in Quest 6)
+    Tier 4 (9):       Time Aberrations (5x) + Rift Guardian (boss)
+    Tier 4 (10):      Corrupted Guardians (6x) + The Timeless One (epic boss)
+
+    Total New Enemy Types: 5
+    Total Enemy Encounters: 15+ enemies across 3 quests
+
+================================================================================
+
+                         UNIQUE REWARDS
+
+    Quest  2:  Ceremonial Hourglass (trinket)
+    Quest  4:  Truth Seeker's Pendant (equipment)
+    Quest  5:  Chronos Amulet (unique equipment) ⭐
+    Quest  6:  Time-Touched Blade (unique weapon)
+    Quest  7:  Chronos Blessing OR Paradox Talisman
+    Quest  8:  Prophet's Circlet (unique headpiece)
+    Quest  9:  Timekeeper's Aegis (legendary armor/shield)
+    Quest 10:  Eternal Hourglass Fragment + Champion's Mantle ⭐⭐
+
+    ⭐ = Major reward    ⭐⭐ = Legendary reward
+
+================================================================================
+
+                         LOCATION USAGE
+
+    Dalhurst:          Quests 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 (all)
+    Crossroads:        Quests 1, 7, 8
+    Elder Moor:        Quests 2, 8
+    Thornfield:        Quests 2, 3, 8
+    Millbrook:         Quest 4
+    Willow Dale:       Quests 2, 6
+    Bandit Hideout:    Quest 9
+    Kazer-Dun Entrance: Quest 10
+
+    Most Used: Dalhurst (quest hub)
+    Least Used: Bandit Hideout, Kazer-Dun (endgame only)
+
+================================================================================
+
+                      IMPLEMENTATION CHECKLIST
+
+    Quest JSON Files:           [✓] 11/11 complete
+    NPC Creation:               [ ] 2 new NPCs needed
+    Enemy Creation:             [ ] 5 new enemy types needed
+    Item Creation:              [ ] 15+ items needed
+    Dialogue Writing:           [ ] Multiple dialogue trees needed
+    World Integration:          [ ] Spawn markers, puzzles, shrines
+    Testing:                    [ ] Full chain playthrough
+
+================================================================================

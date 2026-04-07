@@ -1,0 +1,83 @@
+{
+	"id": "keepers_artifact",
+	"title": "The Forbidden Relic",
+	"description": "The cult documents revealed their goal: an ancient artifact called the Soulbound Phylactery, buried in the depths of Willow Dale ruins. The relic is said to bind souls to its master's will - a tool of necromancy so vile it was sealed away centuries ago. The Shadowed Hand plans to retrieve it within days. You must reach it first. But once you have it, the choice is yours: destroy it as the Keepers would demand, or... keep its power for yourself. Such relics are rare. And power, once held, is hard to relinquish.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "aldric_vane",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "race_to_willow_dale",
+			"description": "Race to Willow Dale ruins before the cult arrives",
+			"type": "reach",
+			"target": "willow_dale_artifact_chamber",
+			"required_count": 1
+		},
+		{
+			"id": "navigate_death_traps",
+			"description": "Navigate the trapped corridors to the artifact chamber",
+			"type": "reach",
+			"target": "phylactery_vault",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_vault_guardian",
+			"description": "Defeat the undead guardian protecting the phylactery",
+			"type": "kill",
+			"target": "phylactery_guardian",
+			"required_count": 1
+		},
+		{
+			"id": "retrieve_phylactery",
+			"description": "Retrieve the Soulbound Phylactery",
+			"type": "collect",
+			"target": "soulbound_phylactery",
+			"required_count": 1
+		},
+		{
+			"id": "decide_phylactery_fate",
+			"description": "Decide the fate of the phylactery (destroy or keep)",
+			"type": "interact",
+			"target": "phylactery_altar",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_aldric",
+			"description": "Return to Aldric Vane with the outcome",
+			"type": "talk",
+			"target": "aldric_vane",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "aldric_vane",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 400,
+		"xp": 900,
+		"items": [],
+		"faction_reputation": {
+			"the_keepers": 50
+		}
+	},
+	"choice_consequences": {
+		"destroyed_phylactery": {
+			"flags_to_set": ["phylactery_destroyed"],
+			"reputation_changes": {"the_keepers": 50}
+		},
+		"kept_phylactery": {
+			"flags_to_set": ["phylactery_kept"],
+			"reputation_changes": {"the_keepers": -75},
+			"spawn_enemy": "keeper_assassin@dalhurst"
+		},
+		"gave_to_cult": {
+			"flags_to_set": ["phylactery_given_to_cult"],
+			"reputation_changes": {"the_keepers": -150, "shadowed_hand_cult": 100}
+		}
+	},
+	"prerequisites": ["keepers_cult_trail"],
+	"next_quest": "keepers_infiltration",
+	"notes": "Major moral choice quest with permanent consequences. Phylactery is powerful necromancy artifact - if kept, grants ability to raise undead allies but corrupts the wielder over time. RIGHTEOUS CHOICE: Destroy it (Keepers approve, cult's plan fails). SELFISH CHOICE: Keep it (Keepers send assassin after you, lose faction standing, gain dark power). EVIL CHOICE: Give to cult (breaks with Keepers entirely, can join cult faction in future). Willow Dale section has deadly traps (spike pits, poison darts, collapsing floors) and undead guardian boss (level 20). If phylactery destroyed, cult lacks power source for next quest. If kept/given, they have alternative plans."
+}

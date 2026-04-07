@@ -18,6 +18,7 @@ func _ready() -> void:
 	_setup_navigation()
 	_spawn_zone_exits()
 	_spawn_tenger_enemies()
+	_spawn_tenger_npcs()  # Special NPCs (elder, friendly scout)
 	_spawn_loot()
 	_setup_light_flickering()
 
@@ -235,6 +236,53 @@ func _spawn_loot() -> void:
 		)
 		if shaman_chest:
 			shaman_chest.setup_with_loot(LootTables.LootTier.RARE)
+
+
+## Spawn special Tenger NPCs (elder captive, friendly scout)
+func _spawn_tenger_npcs() -> void:
+	# === TENGER ELDER MAKHAR (at central tent - captive/neutral elder) ===
+	var elder_pos := Vector3(0, 0, 5)  # Near central fire area
+	var tenger_elder := QuestGiver.spawn_quest_giver(
+		self,
+		elder_pos,
+		"Elder Makhar",
+		"tenger_elder_makhar",
+		null, 8, 2,
+		[],  # Quest IDs to be added later
+		false
+	)
+	tenger_elder.region_id = ZONE_ID
+	tenger_elder.faction_id = "tenger"
+	tenger_elder.no_quest_dialogue = "You fight well, outsider. The young warriors see only blood and glory, but I have seen empires rise and fall. Perhaps there is wisdom in speaking before the sword falls."
+	var elder_profile := NPCKnowledgeProfile.new()
+	elder_profile.archetype = NPCKnowledgeProfile.Archetype.SCHOLAR
+	elder_profile.personality_traits = ["wise", "pragmatic", "weary", "diplomatic"]
+	elder_profile.knowledge_tags = ["tenger", "horde", "warfare", "steppes", "old_ways"]
+	elder_profile.base_disposition = 25  # Cautious but willing to talk
+	elder_profile.speech_style = "formal"
+	tenger_elder.npc_profile = elder_profile
+
+	# === TENGER SCOUT FRIENDLY (at camp edge - defector/informant) ===
+	var scout_pos := Vector3(-25, 0, -20)  # Edge of camp, away from main forces
+	var friendly_scout := QuestGiver.spawn_quest_giver(
+		self,
+		scout_pos,
+		"Restless Scout",
+		"tenger_scout_friendly",
+		null, 8, 2,
+		[],  # Quest IDs to be added later
+		true  # is_talk_target
+	)
+	friendly_scout.region_id = ZONE_ID
+	friendly_scout.faction_id = "tenger"
+	friendly_scout.no_quest_dialogue = "Shh! Keep your voice down. I do not share the warlord's bloodlust. There are those among us who remember when the Tenger traded with your people, not raided them. If you seek to end this conflict... we should talk."
+	var scout_profile := NPCKnowledgeProfile.new()
+	scout_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	scout_profile.personality_traits = ["nervous", "hopeful", "secretive", "conflicted"]
+	scout_profile.knowledge_tags = ["tenger", "camp_layout", "warlord", "defector", "peace"]
+	scout_profile.base_disposition = 40  # More willing to help
+	scout_profile.speech_style = "casual"
+	friendly_scout.npc_profile = scout_profile
 
 
 ## Setup flickering for lights

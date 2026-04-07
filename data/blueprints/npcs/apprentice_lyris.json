@@ -1,0 +1,34 @@
+{
+  "name": "Apprentice Lyris",
+  "who": "Talented young mage of the Arcane Circle\nTop of her class in elemental magic\nEager to prove herself beyond the library\nPotential companion upon completing circle questline\nMentored directly by Archmage Elara",
+  "what": "Circle's promising apprentice and field researcher\nElemental magic specialist\nOffers training in arcane fundamentals\nPotential companion if chosen over Zephyr",
+  "where": "Dalhurst - Arcane Circle Tower\nAvailable as companion after questline completion",
+  "quests": "Arcane Circle Magus Trial reward choice",
+  "sprite": {
+    "type": "mage",
+    "path": "res://assets/sprites/npcs/civilians/wizard_mage.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0256,
+    "notes": "Young woman in mage robes, glowing staff, determined expression"
+  },
+  "dialogue": {
+    "archetype": "eager_scholar",
+    "topics": ["magic_theory", "elements", "circle_politics", "research"],
+    "disposition_base": 55,
+    "notes": "Enthusiastic, academic, sometimes overconfident in her abilities"
+  },
+  "combat": {
+    "can_fight": true,
+    "level": 30,
+    "is_essential": true,
+    "notes": "Ranged mage - low HP, high magic damage, support spells"
+  },
+  "follower": {
+    "can_recruit": true,
+    "recruitment_conditions": ["Complete Arcane Circle questline", "Choose Lyris over Zephyr"],
+    "skills": ["fireball", "frost_shield", "arcane_missile"],
+    "combat_style": "mage_elemental",
+    "notes": "Versatile caster with damage and protection spells"
+  }
+}

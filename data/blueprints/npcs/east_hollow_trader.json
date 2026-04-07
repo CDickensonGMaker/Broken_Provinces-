@@ -1,0 +1,8 @@
+{
+  "name": "Trader Rashid",
+  "who": "Tenger trader who settled in East Hollow\nBridge between Tenger camps and human settlements\nFair dealer with exotic goods",
+  "what": "Trades Tenger goods in East Hollow market\nCan introduce players to Tenger contacts\nKnows routes between settlements and camps",
+  "where": "East Hollow - Market",
+  "sprite": "tenger_trader",
+  "quests": "Tenger Relations, Trade Route Escort"
+}

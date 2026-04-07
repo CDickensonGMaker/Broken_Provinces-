@@ -1,0 +1,74 @@
+{
+	"id": "mage_09_rival_circle",
+	"title": "The Shadow Circle",
+	"description": "Intelligence has uncovered a rival magical organization operating in secret - the Shadow Circle. They're researching forbidden magic and acquiring dangerous artifacts. Investigate their activities near the Bandit Hideout, discover what they're planning, and stop them before they unleash something catastrophic.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "archmage_elara_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "arcane_circle",
+	"objectives": [
+		{
+			"id": "gather_intelligence",
+			"description": "Gather intelligence on Shadow Circle activities",
+			"type": "talk",
+			"target": "informant_crossroads",
+			"required_count": 1,
+			"notes": "Meet informant at Crossroads shrine"
+		},
+		{
+			"id": "infiltrate_hideout",
+			"description": "Infiltrate the Shadow Circle's base near Bandit Hideout",
+			"type": "reach",
+			"target": "shadow_circle_base",
+			"required_count": 1
+		},
+		{
+			"id": "steal_research_notes",
+			"description": "Steal their research notes",
+			"type": "collect",
+			"target": "shadow_circle_research",
+			"required_count": 1,
+			"notes": "Found in the leader's chambers"
+		},
+		{
+			"id": "disrupt_ritual",
+			"description": "Disrupt their summoning ritual",
+			"type": "interact",
+			"target": "summoning_circle",
+			"required_count": 1,
+			"notes": "Break the ritual circle before completion"
+		},
+		{
+			"id": "defeat_shadow_mages",
+			"description": "Defeat the Shadow Circle mages",
+			"type": "kill",
+			"target": "shadow_circle_mage",
+			"required_count": 5,
+			"notes": "Hostile enemy mages"
+		},
+		{
+			"id": "report_findings",
+			"description": "Report your findings to Archmage Elara",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "archmage_elara_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 400,
+		"xp": 900,
+		"items": ["adept_robes"],
+		"faction_reputation": {
+			"arcane_circle": 45
+		}
+	},
+	"on_complete_flags": ["arcane_circle_adept", "shadow_circle_disrupted"],
+	"prerequisites": ["disaster_contained"],
+	"next_quest": "mage_10_forbidden_tome",
+	"notes": "Final Journeyman quest. Promotion to Adept rank. Stealth and combat. Introduces Shadow Circle as recurring antagonists. Rewards adept robes."
+}

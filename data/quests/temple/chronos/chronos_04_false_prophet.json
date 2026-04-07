@@ -1,0 +1,64 @@
+{
+	"id": "chronos_04_false_prophet",
+	"title": "The False Seer",
+	"description": "A charlatan in Millbrook claims to have prophetic visions granted by Chronos himself. The Priest asks you to investigate - either expose the fraud, or discover if there is any truth to the claims. Not all who claim to see the future are blessed by the Timekeeper.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_chronos_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"faction": "church_of_chronos",
+	"objectives": [
+		{
+			"id": "travel_to_millbrook",
+			"description": "Travel to Millbrook and find the self-proclaimed seer",
+			"type": "reach",
+			"target": "millbrook",
+			"required_count": 1
+		},
+		{
+			"id": "investigate_seer",
+			"description": "Speak with the seer and investigate their claims",
+			"type": "talk",
+			"target": "false_prophet_millbrook",
+			"required_count": 1
+		},
+		{
+			"id": "report_findings",
+			"description": "Return to the Priest of Chronos with your findings",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_chronos_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 150,
+		"xp": 500,
+		"items": ["truth_seekers_pendant"],
+		"faction_reputation": {
+			"church_of_chronos": 25,
+			"church_of_three": 10
+		}
+	},
+	"prerequisites": ["chronos_03_late_delivery"],
+	"next_quest": "chronos_05_devotion_choice",
+	"choice_consequences": {
+		"expose_fraud": {
+			"flags_to_set": ["millbrook_seer_exposed"],
+			"reputation_changes": {
+				"church_of_chronos": 10
+			}
+		},
+		"accept_truth": {
+			"flags_to_set": ["millbrook_seer_genuine"],
+			"reputation_changes": {
+				"church_of_chronos": 5,
+				"common_folk": 10
+			}
+		}
+	},
+	"notes": "DESIGN INTENT: First quest with meaningful player choice. The seer could be exposed as a fraud (gaining church favor) OR acknowledged as having some genuine gift (gaining common folk favor). The choice affects dialogue with the Priest and future interactions. This quest tests the player's judgment and introduces moral complexity. The false_prophet_millbrook NPC must be spawned in Millbrook with dialogue trees for both outcomes."
+}

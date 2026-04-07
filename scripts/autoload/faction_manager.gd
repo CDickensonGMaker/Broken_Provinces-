@@ -621,3 +621,130 @@ func get_reputation_price_modifier(faction_id: String) -> float:
 			return -0.4  # 40% discount
 		_:
 			return 0.0
+
+
+# =============================================================================
+# SUB-FACTION SUPPORT
+# =============================================================================
+
+## Church sub-faction IDs
+const CHURCH_CHRONOS := "church_of_chronos"
+const CHURCH_GAELA := "church_of_gaela"
+const CHURCH_MORTHANE := "church_of_morthane"
+
+## All church sub-factions
+const CHURCH_SUB_FACTIONS: Array[String] = [
+	CHURCH_CHRONOS,
+	CHURCH_GAELA,
+	CHURCH_MORTHANE
+]
+
+## Map deity name to church sub-faction ID
+const DEITY_TO_FACTION: Dictionary = {
+	"chronos": CHURCH_CHRONOS,
+	"gaela": CHURCH_GAELA,
+	"morthane": CHURCH_MORTHANE
+}
+
+
+## Get all sub-factions of a parent faction
+func get_sub_factions(parent_faction_id: String) -> Array[String]:
+	var sub_factions: Array[String] = []
+	for faction_id: String in factions:
+		var faction: FactionData = factions[faction_id]
+		if faction.parent_faction == parent_faction_id:
+			sub_factions.append(faction_id)
+	return sub_factions
+
+
+## Check if a faction is a sub-faction of another
+func is_sub_faction_of(faction_id: String, parent_id: String) -> bool:
+	var faction: FactionData = factions.get(faction_id)
+	if not faction:
+		return false
+	return faction.parent_faction == parent_id
+
+
+## Get the parent faction ID for a sub-faction
+func get_parent_faction(faction_id: String) -> String:
+	var faction: FactionData = factions.get(faction_id)
+	if not faction:
+		return ""
+	return faction.parent_faction
+
+
+## Get the church sub-faction for a deity
+## deity: "chronos", "gaela", or "morthane"
+func get_church_for_deity(deity: String) -> String:
+	return DEITY_TO_FACTION.get(deity.to_lower(), "")
+
+
+## Get the deity name for a church sub-faction
+func get_deity_for_church(faction_id: String) -> String:
+	for deity: String in DEITY_TO_FACTION:
+		if DEITY_TO_FACTION[deity] == faction_id:
+			return deity
+	return ""
+
+
+## Check if a faction is a church sub-faction
+func is_church_sub_faction(faction_id: String) -> bool:
+	return faction_id in CHURCH_SUB_FACTIONS
+
+
+## Get player's reputation with a specific church (by deity name)
+## deity: "chronos", "gaela", or "morthane"
+func get_church_reputation(deity: String) -> int:
+	var faction_id: String = get_church_for_deity(deity)
+	if faction_id.is_empty():
+		return 0
+	return get_reputation(faction_id)
+
+
+## Modify reputation with a specific church (by deity name)
+## deity: "chronos", "gaela", or "morthane"
+func modify_church_reputation(deity: String, amount: int, reason: String = "") -> void:
+	var faction_id: String = get_church_for_deity(deity)
+	if faction_id.is_empty():
+		push_warning("[FactionManager] Unknown deity: %s" % deity)
+		return
+	modify_reputation(faction_id, amount, reason)
+
+
+## Get the highest reputation church sub-faction for the player
+## Returns the faction_id of the church with highest reputation, or "" if none
+func get_favored_church() -> String:
+	var best_faction: String = ""
+	var best_rep: int = -101
+
+	for faction_id: String in CHURCH_SUB_FACTIONS:
+		var rep: int = get_reputation(faction_id)
+		if rep > best_rep:
+			best_rep = rep
+			best_faction = faction_id
+
+	return best_faction
+
+
+## Get the deity name for the player's favored church
+func get_favored_deity() -> String:
+	var church: String = get_favored_church()
+	if church.is_empty():
+		return ""
+	return get_deity_for_church(church)
+
+
+## Check if player is friendly or better with a specific church
+func is_friendly_with_church(deity: String) -> bool:
+	var faction_id: String = get_church_for_deity(deity)
+	if faction_id.is_empty():
+		return false
+	return is_friendly_with(faction_id)
+
+
+## Check if player is honored or better with a specific church
+func is_honored_by_church(deity: String) -> bool:
+	var faction_id: String = get_church_for_deity(deity)
+	if faction_id.is_empty():
+		return false
+	return is_honored_by(faction_id)

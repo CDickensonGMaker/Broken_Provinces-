@@ -1,0 +1,8 @@
+{
+  "name": "Merchant Callum",
+  "who": "Shrewd trader with calculating eyes\nDresses in practical traveling clothes\nAlways looking for a good deal",
+  "what": "Runs market stall in Thornfield\nDeals in general goods and regional specialties\nHas connections to trade caravans",
+  "where": "Thornfield - Market Square",
+  "sprite": "merchant_civilian",
+  "quests": "Trade Route Troubles, Market Delivery"
+}

@@ -1,0 +1,851 @@
+{
+  "id": "katrina_steelwind",
+  "display_name": "Katrina Steelwind - Guild Champion",
+  "description": "Dialogue for Katrina Steelwind, the Champion of the Adventurer's Guild in Dalhurst",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Katrina Steelwind",
+      "text": "Another face in the hall. I'm Katrina Steelwind - Guild Champion, for those who don't know. What brings you to my corner of the training yard?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Guild Champion? I'd like to challenge you.",
+          "next": "challenge_request_early",
+          "conditions": [
+            {
+              "type": "faction_reputation",
+              "param": "adventurers_guild",
+              "value": 75,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I've earned the right to challenge you for the title.",
+          "next": "formal_challenge",
+          "conditions": [
+            {
+              "type": "faction_reputation",
+              "param": "adventurers_guild",
+              "value": 75
+            },
+            {
+              "type": "quest_complete",
+              "param": "adventurers_13_champion",
+              "value": 0,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I hear you have work for elite adventurers.",
+          "next": "elite_work",
+          "conditions": [
+            {
+              "type": "faction_reputation",
+              "param": "adventurers_guild",
+              "value": 50
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Could you teach me some combat techniques?",
+          "next": "training_request",
+          "conditions": [
+            {
+              "type": "faction_reputation",
+              "param": "adventurers_guild",
+              "value": 25
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "What does the Guild Champion actually do?",
+          "next": "champion_role",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How did you become champion?",
+          "next": "champion_story",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Just passing through.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "greeting_respected",
+      "speaker": "Katrina Steelwind",
+      "text": "Well, if it isn't one of our rising stars. Your reputation precedes you. Looking for a challenge, or just here to swap war stories?",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "faction_reputation",
+          "param": "adventurers_guild",
+          "value": 50
+        }
+      ],
+      "choices": [
+        {
+          "text": "I'm ready to challenge you for the title.",
+          "next": "formal_challenge",
+          "conditions": [
+            {
+              "type": "faction_reputation",
+              "param": "adventurers_guild",
+              "value": 75
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Any special contracts need handling?",
+          "next": "elite_work",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I could use some advanced training.",
+          "next": "training_request",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "War stories sound good.",
+          "next": "war_stories",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "challenge_request_early",
+      "speaker": "Katrina Steelwind",
+      "text": "Ha! I admire the confidence, but the champion's challenge isn't for greenhorns. You need to earn it. Build your reputation with the guild first - prove you can handle the contracts that make veterans sweat. Then we'll talk.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What do I need to accomplish?",
+          "next": "requirements_explain",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I've already proven myself plenty.",
+          "next": "not_impressed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Fair enough. I'll be back.",
+          "next": "farewell_motivated",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "requirements_explain",
+      "speaker": "Katrina Steelwind",
+      "text": "Complete enough contracts that the guild considers you a veteran. Handle some elite-tier work - the stuff that makes other adventurers think twice. When the guildmaster says you're ready, then you've earned the right to face me in the ring.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll get there.",
+          "next": "encouragement",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Seems like a lot of hoops.",
+          "next": "no_shortcuts",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "not_impressed",
+      "speaker": "Katrina Steelwind",
+      "text": "To whom? The tavern wenches? The guild has standards. I've faced down ogres, demons, and worse. I'm not going to waste my time on someone the guild hasn't vetted. Earn your stripes, then talk to me.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "no_shortcuts",
+      "speaker": "Katrina Steelwind",
+      "text": "The title means something because you can't just walk in and claim it. Every champion before me earned their place through blood and reputation. So will the next one. That's how traditions survive.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "encouragement",
+      "speaker": "Katrina Steelwind",
+      "text": "That's the spirit. Build your legend, and maybe one day you'll have a shot at mine. Good hunting out there.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "formal_challenge",
+      "speaker": "Katrina Steelwind",
+      "text": "So, the guildmaster thinks you're ready? Let me get a look at you... Yes. You've got the eyes of someone who's seen real combat. Fought things that didn't want to die. The champion's challenge is yours if you want it.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I challenge you for the title of Guild Champion.",
+          "next": "accept_challenge",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_13_champion",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What are the rules of the duel?",
+          "next": "duel_rules",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What happens if I win?",
+          "next": "victory_rewards",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need more time to prepare.",
+          "next": "prepare_later",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "duel_rules",
+      "speaker": "Katrina Steelwind",
+      "text": "Traditional rules. One-on-one combat in the guild arena. Any weapons, any armor, but no magic items that do the fighting for you. Fight until one of us yields or can't continue. No killing - we're proving skill, not committing murder. The guild watches, judges, and remembers.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I accept these terms. Let's do this.",
+          "next": "accept_challenge",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_13_champion",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "No magical assistance at all?",
+          "next": "magic_clarification",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need to think about this.",
+          "next": "prepare_later",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "magic_clarification",
+      "speaker": "Katrina Steelwind",
+      "text": "Your own magic is fine - spells you cast yourself are part of your skill set. But no summoned creatures doing your fighting, no rings that create invincibility shields. The duel tests you, not your equipment collection.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Understood. I accept the challenge.",
+          "next": "accept_challenge",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_13_champion",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I'll return when I'm ready.",
+          "next": "prepare_later",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "victory_rewards",
+      "speaker": "Katrina Steelwind",
+      "text": "Win, and you become the new Guild Champion. Title, respect, and the responsibilities that come with it. You'll represent the guild in matters of honor, train the next generation, and get first pick of the elite contracts. Plus, bragging rights for life.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm ready. Let's fight.",
+          "next": "accept_challenge",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_13_champion",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "And if I lose?",
+          "next": "defeat_consequences",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "defeat_consequences",
+      "speaker": "Katrina Steelwind",
+      "text": "Lose, and you walk away having tested yourself against the best. No shame in that - plenty of good fighters have fallen to me. You can challenge again after you've completed more work for the guild. Persistence is respected.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Then I have nothing to fear. Let's do this.",
+          "next": "accept_challenge",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_13_champion",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I'll prepare more first.",
+          "next": "prepare_later",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_challenge",
+      "speaker": "Katrina Steelwind",
+      "text": "Now we're talking! Meet me in the guild arena when you're ready. I'll be waiting. Don't take too long - anticipation makes me restless, and a restless champion fights harder. May the best warrior win.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "prepare_later",
+      "speaker": "Katrina Steelwind",
+      "text": "Smart. Rushing into a fight you're not ready for is how adventurers end their careers early. Take your time, sharpen your blade, and come back when you're confident. The title isn't going anywhere.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "elite_work",
+      "speaker": "Katrina Steelwind",
+      "text": "The standard contract board doesn't have what you're looking for? Good. Means you're ready for the real challenges. I keep track of jobs that need... special handling. Things too dangerous for regular guild members.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What kind of special handling?",
+          "next": "elite_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Show me what you've got.",
+          "next": "current_elite_contracts",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Maybe another time.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "elite_details",
+      "speaker": "Katrina Steelwind",
+      "text": "Dragons, giants, demon incursions. Contracts that would kill average adventurers but might just be manageable for someone with experience. High risk, high reward. The kind of work that builds legends - or ends them.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm interested. What's available?",
+          "next": "current_elite_contracts",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll stick to the regular board for now.",
+          "next": "regular_work",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "current_elite_contracts",
+      "speaker": "Katrina Steelwind",
+      "text": "Right now? There's a troll nest in the northern mountains that needs clearing. A merchant caravan through Tenger territory that needs elite protection. And rumors of something worse awakening in the old crypts. Take your pick.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me more about the troll nest.",
+          "next": "troll_contract",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Tenger escort sounds dangerous.",
+          "next": "tenger_contract",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What's in the old crypts?",
+          "next": "crypt_contract",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll think it over.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "troll_contract",
+      "speaker": "Katrina Steelwind",
+      "text": "A family of trolls - mother, father, three adolescents. They've been raiding mining camps. Trolls regenerate, so you'll need fire or acid to put them down permanently. 500 gold on completion. Dangerous, but straightforward.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll take the troll contract.",
+          "next": "accept_troll",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "guild_contract_troll",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What about the other contracts?",
+          "next": "current_elite_contracts",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tenger_contract",
+      "speaker": "Katrina Steelwind",
+      "text": "Merchant wants to cross through territory the horse tribes consider theirs. Tengers don't take kindly to trespassers. You'd need to either negotiate safe passage or fight your way through. 750 gold, plus whatever the merchant offers as bonus.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll handle the escort.",
+          "next": "accept_tenger",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "guild_contract_elite",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What else is available?",
+          "next": "current_elite_contracts",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "crypt_contract",
+      "speaker": "Katrina Steelwind",
+      "text": "Villagers near the old burial grounds report walking corpses. Not unusual by itself, but these are organized. Something's controlling them. Could be a necromancer, could be something worse. 600 gold to investigate and eliminate the threat.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll investigate the crypts.",
+          "next": "accept_crypt",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "guild_elite_trial",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Tell me about the other contracts again.",
+          "next": "current_elite_contracts",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_troll",
+      "speaker": "Katrina Steelwind",
+      "text": "Good choice. The nest is in the Ironpeak foothills, north of the mining camps. Bring fire. Lots of fire. And watch for ambushes - trolls are smarter than they look. Good hunting.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_tenger",
+      "speaker": "Katrina Steelwind",
+      "text": "The merchant's name is Halvard. He's waiting at the Dalhurst east gate with his caravan. Meet him there when you're ready to depart. And remember - Tengers respect strength, but they respect cunning more. Fighting isn't always the answer.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_crypt",
+      "speaker": "Katrina Steelwind",
+      "text": "The burial grounds are east of East Hollow. Talk to the village elder for details on what they've seen. Whatever's raising the dead, end it. The guild doesn't need an undead army on our doorstep.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "regular_work",
+      "speaker": "Katrina Steelwind",
+      "text": "Nothing wrong with that. Build your skills at your own pace. The elite contracts will still be here when you're ready for them.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "training_request",
+      "speaker": "Katrina Steelwind",
+      "text": "Training, huh? I don't take students often - too busy with guild business. But if you've proven yourself capable, I can share some techniques that might give you an edge.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I want to improve my dual-wielding.",
+          "next": "dual_wield_training",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Teach me about fighting multiple opponents.",
+          "next": "group_combat_training",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How do I beat someone stronger than me?",
+          "next": "underdog_training",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Maybe another time.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "dual_wield_training",
+      "speaker": "Katrina Steelwind",
+      "text": "Dual-wielding isn't about swinging twice as much. It's about flow - one blade defends while the other attacks, then they switch. Think of it as a conversation between your weapons. Practice until the transitions feel natural.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Any specific drills?",
+          "next": "dual_drills",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Thanks for the advice.",
+          "next": "farewell_training",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "dual_drills",
+      "speaker": "Katrina Steelwind",
+      "text": "Start with the Eight-Point Circle. Attack high right, defend low left, attack mid center, defend high left - cycle through all eight positions until your hands move without thinking. Do it for an hour every day. In a month, you'll feel the difference.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "group_combat_training",
+      "speaker": "Katrina Steelwind",
+      "text": "Multiple opponents means you can't focus on any single one. Keep moving - never let them flank you. Use the terrain. Force them into each other's way. And remember: injure one badly enough that they become a distraction to the others.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What if I'm cornered?",
+          "next": "cornered_advice",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Solid advice. Thanks.",
+          "next": "farewell_training",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "cornered_advice",
+      "speaker": "Katrina Steelwind",
+      "text": "If you're cornered, you've already made a mistake. But if it happens - pick the weakest link and punch through. A desperate charge beats a slow death by attrition. Better to take wounds escaping than die with your back to a wall.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "underdog_training",
+      "speaker": "Katrina Steelwind",
+      "text": "Strength matters less than you'd think. A bigger opponent is slower, overconfident. Let them tire themselves with heavy swings. Stay mobile, make them work. When they overcommit - and they will - that's when you strike. Patience wins more fights than power.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What about against monsters?",
+          "next": "monster_advice",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll remember that.",
+          "next": "farewell_training",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "monster_advice",
+      "speaker": "Katrina Steelwind",
+      "text": "Monsters are different. Some don't tire. Some don't feel pain. Against them, you need to know their weakness before the fight starts. Research. Preparation. The best monster hunters win before drawing their blades.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "champion_role",
+      "speaker": "Katrina Steelwind",
+      "text": "The Guild Champion represents the guild's martial excellence. I handle disputes of honor, train promising recruits, and take on contracts that would be suicide for anyone else. When someone challenges the guild's reputation, I'm the one who answers.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "How often do you fight duels?",
+          "next": "duel_frequency",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What's the hardest monster you've killed?",
+          "next": "hardest_monster",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Interesting.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "duel_frequency",
+      "speaker": "Katrina Steelwind",
+      "text": "Challengers come every few months. Most aren't serious threats - more ego than skill. But occasionally, someone worthy steps into the ring. Those are the fights that matter. The ones that test whether I still deserve the title.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Has anyone come close to beating you?",
+          "next": "close_fights",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Good to know.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "close_fights",
+      "speaker": "Katrina Steelwind",
+      "text": "A few. There was a Tenger warrior two years back who nearly took my head off. And a knight from the Imperial Guard who lasted longer than anyone before him. I won, but I earned every bit of those victories. Good fighters deserve respect, win or lose.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "hardest_monster",
+      "speaker": "Katrina Steelwind",
+      "text": "A chimera in the southern mountains. Three heads, each with its own killing method. Took me two days of tracking, three hours of fighting, and more wounds than I could count. But I brought it down. The guild still displays its heads.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "champion_story",
+      "speaker": "Katrina Steelwind",
+      "text": "Started as a farm girl who could swing a sword better than the boys. Joined the guild at sixteen, took every dangerous contract I could find. Killed things that should have killed me. Eventually, the old champion retired and passed the title to me. That was eight years ago.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Will you ever pass the title on?",
+          "next": "passing_title",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Impressive journey.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "passing_title",
+      "speaker": "Katrina Steelwind",
+      "text": "When someone earns it. I won't hand it over just because I'm getting older. The champion needs to be the best - genuinely, undeniably the best. If someone defeats me fairly, they deserve what they take. That's how it should work.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "war_stories",
+      "speaker": "Katrina Steelwind",
+      "text": "Ha! Got plenty of those. Want to hear about the time I fought a troll bare-handed? Or when I infiltrated a goblin warren disguised as a very large goblin? The guild life is never boring.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me about the troll.",
+          "next": "troll_story",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "A goblin disguise? This I have to hear.",
+          "next": "goblin_story",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Another time, perhaps.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "troll_story",
+      "speaker": "Katrina Steelwind",
+      "text": "Lost my weapons in a river crossing, troll ambushed me on the other side. No sword, no fire. Just me, a troll, and a very sharp rock. Took four hours to beat it down, then I had to find something to burn the body with. Still have the scars.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "goblin_story",
+      "speaker": "Katrina Steelwind",
+      "text": "Contract to rescue a kidnapped noble's son. Goblins had him in a cave system, hundreds of them. Fighting through would've gotten him killed. So I found a dead goblin, took its clothes, hunched over, and waddled right in. Grabbed the kid and ran before they figured it out.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Katrina Steelwind",
+      "text": "Good luck out there. And remember - the guild's watching. Make us proud.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_motivated",
+      "speaker": "Katrina Steelwind",
+      "text": "That's the attitude. Build your legend, and we'll meet in the ring someday.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_training",
+      "speaker": "Katrina Steelwind",
+      "text": "Practice hard. Skill doesn't come from talent - it comes from repetition. Now get out there and put it to use.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+	"id": "wizard_final_trial",
+	"title": "The Adept's Challenge",
+	"description": "Master Helvant declares that your training as an apprentice is complete. To graduate to the rank of Adept, you must pass one final trial - a test of all you've learned. Helvant has prepared a magical challenge that will push you to your limits. Success means recognition as a true practitioner of the arcane arts and access to advanced magical knowledge.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "master_helvant_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "wizards_guild",
+	"objectives": [
+		{
+			"id": "enter_trial_chamber",
+			"description": "Enter the arcane trial chamber beneath Helvant's tower",
+			"type": "reach",
+			"target": "helvant_trial_chamber",
+			"required_count": 1,
+			"notes": "Instanced challenge room beneath his tower in Dalhurst"
+		},
+		{
+			"id": "defeat_summoned_elementals",
+			"description": "Defeat the summoned elemental guardians using magic",
+			"type": "kill",
+			"target": "trial_elemental",
+			"required_count": 3,
+			"notes": "Fire, Ice, and Lightning elementals - must use magic to damage"
+		},
+		{
+			"id": "solve_arcane_puzzle",
+			"description": "Solve the arcane sigil puzzle",
+			"type": "solve_puzzle",
+			"target": "helvant_trial_sigils",
+			"required_count": 1,
+			"notes": "Rune sequence puzzle testing magical knowledge"
+		},
+		{
+			"id": "duel_helvant",
+			"description": "Face Master Helvant in a non-lethal arcane duel",
+			"type": "interact",
+			"target": "master_helvant_trial",
+			"required_count": 1,
+			"notes": "Scripted duel - Helvant yields at 25% health, not a true kill objective"
+		},
+		{
+			"id": "speak_helvant_completion",
+			"description": "Speak with Master Helvant to complete your graduation",
+			"type": "talk",
+			"target": "master_helvant_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "master_helvant_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 200,
+		"xp": 1000,
+		"items": ["spell_scroll_meteor_storm", "adept_wizard_robes", "staff_of_the_adept"],
+		"faction_reputation": {
+			"wizards_guild": 50
+		}
+	},
+	"on_complete_flags": ["helvant_adept_graduated", "wizard_questline_complete", "unlock_advanced_spells"],
+	"prerequisites": ["wizard_stolen_pages"],
+	"next_quest": "",
+	"spawn_on_accept": [
+		{
+			"type": "enemy",
+			"location": "helvant_trial_chamber",
+			"enemy_id": "trial_fire_elemental",
+			"notes": "Fire elemental - vulnerable to ice magic"
+		},
+		{
+			"type": "enemy",
+			"location": "helvant_trial_chamber",
+			"enemy_id": "trial_ice_elemental",
+			"notes": "Ice elemental - vulnerable to fire magic"
+		},
+		{
+			"type": "enemy",
+			"location": "helvant_trial_chamber",
+			"enemy_id": "trial_lightning_elemental",
+			"notes": "Lightning elemental - vulnerable to earth/physical"
+		},
+		{
+			"type": "npc",
+			"location": "helvant_trial_chamber",
+			"npc_id": "master_helvant_trial",
+			"notes": "Helvant's trial projection - yields when reduced to 25% health"
+		}
+	],
+	"notes": "Final quest in wizard apprentice chain. Multi-stage challenge culminating in arcane duel with Helvant. Rewards powerful signature spell (Meteor Storm), upgraded robes (+15 arcana, +50 max mana), and Staff of the Adept (two-handed weapon, +10 arcana, +25% spell damage). Unlocks advanced spell purchases from Helvant."
+}

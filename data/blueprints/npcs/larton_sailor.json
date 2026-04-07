@@ -1,0 +1,8 @@
+{
+  "name": "Captain Halvorn",
+  "who": "Retired ship captain with commanding presence\nWalks with a slight limp from old injury\nRespected voice on maritime matters",
+  "what": "Former merchant captain now advising Larton harbor\nKnows about ghost ship legends\nCan arrange passage for worthy travelers",
+  "where": "Larton - Harbor",
+  "sprite": "sailor_captain",
+  "quests": "The Ghost Ship, Maritime Passage"
+}

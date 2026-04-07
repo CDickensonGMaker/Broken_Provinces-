@@ -1,0 +1,8 @@
+{
+  "name": "Dock Worker Henders",
+  "who": "Young sailor with nervous disposition\nNew to the docks, eager to prove himself\nJumpy and easily startled",
+  "what": "Witness to dock incident\nCan corroborate or contradict other testimonies\nProvides perspective from loading area",
+  "where": "Dalhurst - Docks (loading area)",
+  "sprite": "sailor_deckhand",
+  "quests": "Dock Investigation (witness)"
+}

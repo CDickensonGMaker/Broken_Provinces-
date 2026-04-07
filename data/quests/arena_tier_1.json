@@ -1,0 +1,58 @@
+{
+	"id": "arena_tier_1",
+	"title": "First Blood",
+	"description": "You've proven yourself to Gormund the Pitmaster, and now it's time to enter the arena proper. Your first challenge: survive the Bloodsand Gauntlet. Three rounds of combat against increasingly dangerous opponents. Victory brings gold and glory. Defeat brings... well, let's not think about that.",
+	"is_main_quest": false,
+	"quest_source": "arena",
+	"giver_npc_id": "arena_master_bloodsand",
+	"giver_npc_type": "arena_master",
+	"giver_region": "bloodsand_arena",
+	"objectives": [
+		{
+			"id": "register_tournament",
+			"description": "Register for the Bloodsand Gauntlet with Gormund",
+			"type": "talk",
+			"target": "arena_master_bloodsand",
+			"required_count": 1
+		},
+		{
+			"id": "round_1",
+			"description": "Survive Round 1: The Pit Fighters (0/3 opponents)",
+			"type": "kill",
+			"target": "arena_pit_fighter",
+			"required_count": 3
+		},
+		{
+			"id": "round_2",
+			"description": "Survive Round 2: The Beast Handlers (0/2 beasts)",
+			"type": "kill",
+			"target": "arena_beast",
+			"required_count": 2
+		},
+		{
+			"id": "round_3",
+			"description": "Survive Round 3: The Champion's Challenge",
+			"type": "kill",
+			"target": "arena_champion_tier1",
+			"required_count": 1
+		},
+		{
+			"id": "claim_victory",
+			"description": "Claim your victory from Gormund",
+			"type": "talk",
+			"target": "arena_master_bloodsand",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "arena_master_bloodsand",
+	"turn_in_zone": "bloodsand_arena",
+	"rewards": {
+		"gold": 200,
+		"xp": 400,
+		"items": ["arena_victor_belt"]
+	},
+	"prerequisites": ["arena_novice_tournament"],
+	"next_quest": "",
+	"notes": "First tier arena combat quest. Unlocks after completing the novice tournament."
+}

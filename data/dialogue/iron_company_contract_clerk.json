@@ -1,0 +1,408 @@
+{
+  "id": "iron_company_contract_clerk",
+  "display_name": "Contract Clerk - Iron Company",
+  "description": "Dialogue for the Iron Company (Mercenary Guild) contract clerk who handles repeatable military contracts. Available to Sergeant rank and above.",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Contract Officer",
+      "text": "The Iron Company always has work for proven soldiers. We handle military contracts - escort duty, siege support, monster battalions. Looking for action?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Show me available contracts.",
+          "next": "contract_list",
+          "conditions": [
+            {"type": "flag", "param": "mercenary_rank_sergeant", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "I've completed a contract.",
+          "next": "contract_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "mercenary_repeatable_contracts", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "What kind of work does the Company do?",
+          "next": "company_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'm not a Sergeant yet.",
+          "next": "rank_required",
+          "conditions": [
+            {"type": "flag", "param": "mercenary_rank_sergeant", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Just checking in.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "contract_list",
+      "speaker": "Contract Officer",
+      "text": "Current military contracts available:",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "[Caravan Guard] Protect merchant caravan on Thornfield route - 175 gold",
+          "next": "caravan_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Bandit Suppression] Clear bandit camp threatening trade routes - 225 gold",
+          "next": "bandit_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Monster Clear] Eliminate dangerous creatures from farmlands - 200 gold",
+          "next": "monster_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Siege Support] Assist local garrison with fortification defense - 300 gold",
+          "next": "siege_details",
+          "conditions": [
+            {"type": "flag", "param": "mercenary_rank_lieutenant", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "[VIP Escort] Bodyguard duty for noble traveling through danger - 250 gold",
+          "next": "vip_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Training Exercise] Drill new recruits at Company grounds - 125 gold",
+          "next": "training_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Nothing right now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "caravan_details",
+      "speaker": "Contract Officer",
+      "text": "Standard escort duty. Merchant caravan traveling from Dalhurst to Thornfield needs protection. Expected threats: bandits, wildlife. Duration: half a day. Pay: 175 gold plus Company reputation. Interested?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll take the escort contract.",
+          "next": "accept_caravan",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "mercenary_repeatable_contracts", "value": 0},
+            {"type": "set_flag", "param": "current_merc_caravan", "value": 0}
+          ]
+        },
+        {
+          "text": "Show me other options.",
+          "next": "contract_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not right now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "bandit_details",
+      "speaker": "Contract Officer",
+      "text": "A bandit camp has been disrupting trade on the Crossroads route. Local merchants have pooled resources to hire the Company. Clear the camp - minimum six kills including their leader. Pay: 225 gold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll clear them out.",
+          "next": "accept_bandit",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "mercenary_repeatable_contracts", "value": 0},
+            {"type": "set_flag", "param": "current_merc_bandit", "value": 0}
+          ]
+        },
+        {
+          "text": "Show me other options.",
+          "next": "contract_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not right now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "monster_details",
+      "speaker": "Contract Officer",
+      "text": "Dangerous creatures have been attacking farms near Millbrook. Wolves, possibly dire wolves. The farmers have hired us to eliminate the threat. Kill at least six, track the alpha if possible. Pay: 200 gold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll hunt them down.",
+          "next": "accept_monster",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "mercenary_repeatable_contracts", "value": 0},
+            {"type": "set_flag", "param": "current_merc_monster", "value": 0}
+          ]
+        },
+        {
+          "text": "Show me other options.",
+          "next": "contract_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not right now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "siege_details",
+      "speaker": "Contract Officer",
+      "text": "The garrison at Crossroads is expecting a possible attack from organized bandits. They've requested Company support for their defenses. Duration: one full day. Combat expected. Pay: 300 gold. Lieutenant rank required.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll support the garrison.",
+          "next": "accept_siege",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "mercenary_repeatable_contracts", "value": 0},
+            {"type": "set_flag", "param": "current_merc_siege", "value": 0}
+          ]
+        },
+        {
+          "text": "Show me other options.",
+          "next": "contract_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not right now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "vip_details",
+      "speaker": "Contract Officer",
+      "text": "A minor noble needs to travel through dangerous territory. Personal protection duty - keep them alive from Thornfield to Millbrook. Expect ambushes. Pay: 250 gold. Failure means significant reputation damage.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll be their bodyguard.",
+          "next": "accept_vip",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "mercenary_repeatable_contracts", "value": 0},
+            {"type": "set_flag", "param": "current_merc_vip", "value": 0}
+          ]
+        },
+        {
+          "text": "Show me other options.",
+          "next": "contract_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not right now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "training_details",
+      "speaker": "Contract Officer",
+      "text": "New recruits need drilling. The Company needs experienced soldiers to run training exercises. Low danger, steady pay. Good for recovering between harder contracts. Pay: 125 gold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll train the recruits.",
+          "next": "accept_training",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "mercenary_repeatable_contracts", "value": 0},
+            {"type": "set_flag", "param": "current_merc_training", "value": 0}
+          ]
+        },
+        {
+          "text": "Show me other options.",
+          "next": "contract_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not right now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_caravan",
+      "speaker": "Contract Officer",
+      "text": "Contract accepted. The caravan departs from Dalhurst east gate at dawn. Report to the lead merchant. Keep them alive until Thornfield. Payment on successful delivery. Dismissed.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_bandit",
+      "speaker": "Contract Officer",
+      "text": "Contract accepted. The bandit camp is south of Crossroads. Eliminate their leadership and scatter their forces. Bring proof of kills. Payment on verification. Move out.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_monster",
+      "speaker": "Contract Officer",
+      "text": "Contract accepted. The farms are east of Millbrook. Hunt down the creatures, bring proof. If you find an alpha, priority kill. Payment on delivery of evidence. Hunt well.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_siege",
+      "speaker": "Contract Officer",
+      "text": "Contract accepted. Report to the Crossroads garrison commander immediately. Follow their orders, defend the walls, repel attackers. Payment when the threat is neutralized. Steel and honor.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_vip",
+      "speaker": "Contract Officer",
+      "text": "Contract accepted. The noble is at the Thornfield inn. Escort them to Millbrook safely. Any threats are your responsibility. VIP survival is paramount. Payment on delivery. Don't fail.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_training",
+      "speaker": "Contract Officer",
+      "text": "Contract accepted. Report to the Company training grounds. Run the recruits through sword drills, formation practice, and endurance training. Full day's work. Payment at day's end. Make them soldiers.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "contract_turnin",
+      "speaker": "Contract Officer",
+      "text": "Contract complete? Present your evidence for verification.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Here's proof of completion.",
+          "next": "turnin_verified",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "mercenary_repeatable_contracts", "value": 0}]
+        },
+        {
+          "text": "Not finished yet.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "turnin_verified",
+      "speaker": "Contract Officer",
+      "text": "Verified and logged. Here's your payment and Company reputation bonus. The Iron Company appreciates reliable soldiers. More contracts available whenever you're ready.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll take another contract.",
+          "next": "contract_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's enough for now.",
+          "next": "farewell_complete",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "company_info",
+      "speaker": "Contract Officer",
+      "text": "The Iron Company is the premier mercenary organization in the region. We handle military contracts - escort duty, monster suppression, siege support, VIP protection. Professional soldiers only. Earn rank through service, unlock better contracts.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "rank_required",
+      "speaker": "Contract Officer",
+      "text": "Repeatable contracts require Sergeant rank or higher. Complete the main questline through Commander Harlan to advance. Prove you can follow orders before you get independent contracts.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_complete",
+      "speaker": "Contract Officer",
+      "text": "Your service is noted. Return when you're ready for more action.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Contract Officer",
+      "text": "Steel and honor, soldier. The Company awaits your return.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

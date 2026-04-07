@@ -1,0 +1,72 @@
+{
+	"id": "morthane_03_cemetery_duty",
+	"title": "Vigil of the Dead",
+	"description": "Grave robbers and minor undead have been spotted near the cemetery outside Thornfield. The Priest of Morthane asks you to stand vigil and protect the sanctity of the burial grounds. The dead must rest undisturbed.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_morthane_elder_moor",
+	"giver_npc_type": "priest",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "travel_thornfield",
+			"description": "Travel to Thornfield cemetery",
+			"type": "reach",
+			"target": "thornfield",
+			"target_zone": "thornfield",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_grave_robbers",
+			"description": "Defeat the grave robbers",
+			"type": "kill",
+			"target": "human_bandit",
+			"target_zone": "thornfield",
+			"required_count": 4
+		},
+		{
+			"id": "destroy_risen_dead",
+			"description": "Destroy the risen dead disturbed by the robbers",
+			"type": "kill",
+			"target": "skeleton_warrior",
+			"target_zone": "thornfield",
+			"required_count": 6
+		},
+		{
+			"id": "purify_desecrated_graves",
+			"description": "Purify the desecrated graves with holy water",
+			"type": "interact",
+			"target": "desecrated_grave_marker",
+			"target_zone": "thornfield",
+			"required_count": 3
+		},
+		{
+			"id": "return_priest",
+			"description": "Return to the Priest of Morthane",
+			"type": "talk",
+			"target": "priest_morthane_elder_moor",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_morthane_elder_moor",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 100,
+		"xp": 400,
+		"items": [
+			{"id": "grave_warden_blessing", "quantity": 1}
+		],
+		"faction_reputation": {
+			"church_of_morthane": 20,
+			"church_of_three": 10
+		}
+	},
+	"starter_items": [
+		{"id": "holy_water", "quantity": 3}
+	],
+	"prerequisites": ["morthane_02_restless_spirit"],
+	"next_quest": "morthane_04_necromancer_trail",
+	"faction": "church_of_morthane"
+}

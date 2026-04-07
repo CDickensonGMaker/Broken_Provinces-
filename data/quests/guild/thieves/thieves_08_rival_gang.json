@@ -1,0 +1,86 @@
+{
+  "id": "thieves_08_rival_gang",
+  "title": "Turf War",
+  "description": "The Crimson Blades, a rival gang, are muscling in on Guild territory around Crossroads. Vex wants them dealt with - sabotage their operations, steal their goods, or negotiate a truce. Your choice shapes the Guild's reputation.",
+  "giver_npc_id": "shadowmaster_vex",
+  "giver_region": "dalhurst",
+  "faction": "thieves_guild",
+  "rank_required": 2,
+  "objectives": [
+    {
+      "id": "obj_locate_rivals",
+      "type": "explore",
+      "target": "crimson_blades_hideout",
+      "description": "Locate the Crimson Blades' hideout near Crossroads"
+    },
+    {
+      "id": "obj_deal_with_rivals",
+      "type": "choice",
+      "description": "Choose how to handle the rival gang"
+    },
+    {
+      "id": "obj_report_outcome",
+      "type": "talk",
+      "target": "shadowmaster_vex",
+      "description": "Report the outcome to Vex"
+    }
+  ],
+  "rewards": {
+    "gold": 300,
+    "xp": 700,
+    "items": [],
+    "faction_reputation": {
+      "thieves_guild": 25
+    }
+  },
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "shadowmaster_vex",
+  "turn_in_zone": "dalhurst",
+  "next_quest": "thieves_09_informant",
+  "flags_set": ["thieves_rival_gang_handled"],
+  "choice_paths": [
+    {
+      "id": "aggressive_elimination",
+      "description": "Kill or drive out the Crimson Blades",
+      "objectives": [
+        {"type": "kill", "target": "crimson_blade_thug", "count": 8, "description": "Eliminate Crimson Blade thugs"},
+        {"type": "kill", "target": "crimson_blade_leader", "count": 1, "description": "Kill their leader, Scarface"}
+      ],
+      "rewards": {"gold": 300, "xp": 700, "faction_rep": {"thieves_guild": 30}},
+      "consequences": {
+        "flag_set": "thieves_aggressive_reputation",
+        "moral_alignment": "evil",
+        "future_impact": "Other gangs fear you, but may unite against Guild"
+      }
+    },
+    {
+      "id": "sabotage_and_steal",
+      "description": "Sabotage their operations and steal their profits",
+      "objectives": [
+        {"type": "explore", "target": "crimson_blades_stash", "description": "Find their hidden stash"},
+        {"type": "collect", "target": "crimson_blades_gold", "count": 1, "description": "Steal their gold"},
+        {"type": "explore", "target": "crimson_blades_warehouse", "description": "Sabotage their smuggling warehouse"}
+      ],
+      "rewards": {"gold": 450, "xp": 750, "faction_rep": {"thieves_guild": 25}},
+      "consequences": {
+        "flag_set": "thieves_cunning_reputation",
+        "future_impact": "Crimson Blades weakened but still present"
+      }
+    },
+    {
+      "id": "negotiate_truce",
+      "description": "Negotiate territory division with Crimson Blades",
+      "objectives": [
+        {"type": "talk", "target": "scarface_leader", "description": "Meet with Scarface to negotiate"},
+        {"type": "skill_check", "skill": "persuasion", "dc": 16, "description": "Convince them to accept terms"}
+      ],
+      "rewards": {"gold": 250, "xp": 800, "faction_rep": {"thieves_guild": 20}},
+      "consequences": {
+        "flag_set": "thieves_diplomatic_reputation",
+        "moral_alignment": "neutral",
+        "future_impact": "Peaceful coexistence, Crimson Blades may help later"
+      }
+    }
+  ],
+  "notes": "Major branching quest. Three distinct approaches with different consequences. Crimson Blades hideout near Crossroads. Player choice affects Guild's future reputation."
+}

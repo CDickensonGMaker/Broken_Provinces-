@@ -1,0 +1,61 @@
+{
+	"id": "guild_contract_spiders",
+	"title": "Silk and Venom",
+	"description": "Guildmaster Vorn has another contract for you. The old mine north of Millbrook has been abandoned for weeks - miners fled after encountering massive spiders. The creatures have made the mine their nest, and their webs now choke the upper tunnels. Clear out the infestation, kill the spider queen, and collect venom sacs for the alchemists. A messy job, but profitable.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "travel_millbrook_mine",
+			"description": "Travel to the abandoned mine near Millbrook",
+			"type": "reach",
+			"target": "millbrook_mine_entrance",
+			"required_count": 1
+		},
+		{
+			"id": "kill_giant_spiders",
+			"description": "Slay the giant spiders infesting the mine",
+			"type": "kill",
+			"target": "giant_spider",
+			"required_count": 12
+		},
+		{
+			"id": "collect_venom_sacs",
+			"description": "Collect venom sacs from dead spiders",
+			"type": "collect",
+			"target": "spider_venom_sac",
+			"required_count": 8
+		},
+		{
+			"id": "kill_spider_queen",
+			"description": "Defeat the Spider Queen in the depths",
+			"type": "kill",
+			"target": "spider_queen",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_vorn",
+			"description": "Return to Guildmaster Vorn with the venom sacs",
+			"type": "talk",
+			"target": "guildmaster_vorn_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 250,
+		"xp": 900,
+		"items": ["spider_silk_rope"],
+		"faction_reputation": {
+			"adventurers_guild": 40
+		}
+	},
+	"prerequisites": ["guild_contract_bandits"],
+	"next_quest": "guild_contract_troll",
+	"notes": "Spider infestation dungeon near Millbrook. Boss fight against spider queen. Venom sacs are valuable alchemy materials. Rewards include special spider silk rope item useful for climbing/exploration."
+}

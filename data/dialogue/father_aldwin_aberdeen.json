@@ -1,0 +1,291 @@
+{
+  "id": "father_aldwin_aberdeen",
+  "display_name": "Father Aldwin - Aberdeen Priest",
+  "description": "Dialogue for Father Aldwin, priest of Chronos in Aberdeen, who offers the Aberdeen's Blessing quest",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Father Aldwin",
+      "text": "Blessings of Chronos upon you, traveler. You arrive in troubling times. Aberdeen faces darkness, and we need champions willing to stand against it.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What kind of darkness?",
+          "next": "darkness_explanation",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "aberdeens_blessing",
+              "value": 0,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I've recovered the Sacred Hourglass.",
+          "next": "quest_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "aberdeens_blessing",
+              "value": 1
+            },
+            {
+              "type": "has_item",
+              "param": "sacred_hourglass",
+              "value": 1
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Tell me about Chronos.",
+          "next": "chronos_lore",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'm just passing through.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "darkness_explanation",
+      "speaker": "Father Aldwin",
+      "text": "The undead rise in greater numbers each night. They emerge from the old Temple of Chronos to the east - a sacred place that was abandoned when the corruption began. We fled like cowards, leaving our most holy relics behind. Now the dead claim what was once consecrated ground.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What relics were left behind?",
+          "next": "relic_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Why haven't you gone back for them?",
+          "next": "why_not_returned",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's unfortunate, but not my problem.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "relic_explanation",
+      "speaker": "Father Aldwin",
+      "text": "The Sacred Hourglass - a relic blessed by Chronos himself, or so the old texts claim. It measures the passage of time and mortality. While it remains in that corrupted place, the undead grow stronger, as if time itself bends to their will. We must reclaim it before the darkness spreads further.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll retrieve the hourglass.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "aberdeens_blessing",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "How dangerous is the temple?",
+          "next": "danger_assessment",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Find someone else.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "why_not_returned",
+      "speaker": "Father Aldwin",
+      "text": "We are priests, not warriors. The skeletal guardians that now inhabit the temple would cut us down before we reached the inner sanctum. We need someone skilled in combat, someone brave enough to face the undead and recover what we lost. Will you help us?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll go to the temple.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "aberdeens_blessing",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What's in it for me?",
+          "next": "reward_question",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "This is too dangerous.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "danger_assessment",
+      "speaker": "Father Aldwin",
+      "text": "Very dangerous. The undead are numerous - at least a dozen skeletal warriors patrol the temple grounds. They were once temple guards in life, and they retain their martial skill in death. But with faith, courage, and a sturdy weapon, they can be defeated. The relic is in the inner sanctum, behind the main altar.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm not afraid. I'll get the hourglass.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "aberdeens_blessing",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What will I be paid?",
+          "next": "reward_question",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Too risky for me.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "reward_question",
+      "speaker": "Father Aldwin",
+      "text": "Aberdeen is not a wealthy town, but I can offer 75 gold from the temple coffers. More importantly, you would have the eternal gratitude of Chronos and his faithful. The Temple of Chronos across the realm would know your name. Will you help us?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The gold and reputation are enough. I'll do it.",
+          "next": "accept_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "aberdeens_blessing",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Not enough. Find someone else.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_quest",
+      "speaker": "Father Aldwin",
+      "text": "May Chronos guide your steps. The temple lies to the east, past the abandoned farms. Clear the undead from the sanctum and retrieve the Sacred Hourglass. Be wary - the dead do not tire, and they know no fear. Return safely, and Aberdeen will be forever in your debt.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_turnin",
+      "speaker": "Father Aldwin",
+      "text": "You return! And you bear the Sacred Hourglass! By Chronos, I never thought I would see it again. Did you... did you cleanse the temple?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The undead are destroyed. The temple is yours again.",
+          "next": "quest_complete",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "aberdeens_blessing",
+              "value": 0
+            },
+            {
+              "type": "take_item",
+              "param": "sacred_hourglass",
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_complete",
+      "speaker": "Father Aldwin",
+      "text": "Blessed be! You have done what we could not. The temple can be reconsecrated, the hourglass restored to its rightful place. Here, take this gold - it is all we have, but you have earned it. And know that the Temple of Chronos will remember your name. May time itself favor you, brave one.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "chronos_lore",
+      "speaker": "Father Aldwin",
+      "text": "Chronos is the God of Time, one of the Three. He governs the passage of moments, the inevitability of fate, and the march of mortality. All things age, all things end - this is Chronos's domain. We measure time, we honor its passage, and we accept that all things must change.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me about the temple's problem.",
+          "next": "darkness_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Interesting.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "refuse",
+      "speaker": "Father Aldwin",
+      "text": "I understand. Not everyone has the courage to face the dead. If you change your mind, the offer stands. Aberdeen's need will not diminish with time.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Father Aldwin",
+      "text": "May Chronos bless your journey. Time waits for no one, so use it wisely.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

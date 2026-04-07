@@ -1,0 +1,60 @@
+{
+	"id": "starving_south",
+	"title": "The Starving South",
+	"description": "Larton is in crisis. A blight has destroyed the autumn harvest, and the winter stores are nearly depleted. The Trade Master fears that without intervention, people will starve before spring. He needs someone to travel north and petition the Human Empire for emergency food supplies - but the Empire's bureaucracy moves slowly, and Larton cannot wait.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "trade_master_larton",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "larton",
+	"objectives": [
+		{
+			"id": "assess_situation",
+			"description": "Speak with the Trade Master about the food crisis",
+			"type": "talk",
+			"target": "trade_master_larton",
+			"required_count": 1
+		},
+		{
+			"id": "travel_rotherhine",
+			"description": "Travel to Rotherhine to petition the Empire",
+			"type": "reach",
+			"target": "rotherhine",
+			"required_count": 1
+		},
+		{
+			"id": "petition_magistrate",
+			"description": "Petition the Imperial Magistrate for aid",
+			"type": "talk",
+			"target": "imperial_magistrate",
+			"required_count": 1
+		},
+		{
+			"id": "gather_supplies",
+			"description": "Gather emergency supplies (grain sacks: 0/5)",
+			"type": "collect",
+			"target": "grain_sack",
+			"required_count": 5
+		},
+		{
+			"id": "return_larton",
+			"description": "Deliver the supplies to Larton",
+			"type": "talk",
+			"target": "trade_master_larton",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "trade_master_larton",
+	"turn_in_zone": "larton",
+	"rewards": {
+		"gold": 200,
+		"xp": 450,
+		"items": [],
+		"faction_reputation": {
+			"human_empire": 50
+		}
+	},
+	"prerequisites": [],
+	"next_quest": "aberdeen_relief"
+}

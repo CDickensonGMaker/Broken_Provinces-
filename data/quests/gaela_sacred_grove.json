@@ -1,0 +1,75 @@
+{
+	"id": "gaela_sacred_grove",
+	"title": "The Sacred Grove",
+	"description": "An ancient grove sacred to Gaela lies in the wilderness near Elder Moor. The grove has stood untouched for centuries, but now loggers from a nearby camp plan to clear it for timber. The Priestess asks you to protect the grove - either by defending it from the loggers, or finding a peaceful compromise that preserves Gaela's sacred ground.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "locate_grove",
+			"description": "Locate the sacred grove near Elder Moor",
+			"type": "reach",
+			"target": "elder_moor",
+			"required_count": 1
+		},
+		{
+			"id": "assess_threat",
+			"description": "Assess the logging operation's threat",
+			"type": "interact",
+			"target": "logging_camp_marker",
+			"required_count": 1
+		},
+		{
+			"id": "resolve_conflict",
+			"description": "Resolve the conflict over the sacred grove",
+			"type": "talk",
+			"target": "logging_foreman",
+			"required_count": 1
+		},
+		{
+			"id": "report_outcome",
+			"description": "Report the outcome to Priestess of Gaela",
+			"type": "talk",
+			"target": "priest_gaela_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_gaela_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 150,
+		"xp": 500,
+		"items": [],
+		"faction_reputation": {
+			"church_of_three": 45
+		}
+	},
+	"choice_consequences": {
+		"defend_grove_violence": {
+			"flags_to_set": ["grove_defended_violently"],
+			"reputation_changes": {
+				"church_of_three": 20,
+				"merchant_guild": -30
+			}
+		},
+		"negotiate_compromise": {
+			"flags_to_set": ["grove_compromise_reached"],
+			"reputation_changes": {
+				"church_of_three": 25,
+				"merchant_guild": 10
+			}
+		},
+		"bribe_loggers": {
+			"flags_to_set": ["loggers_bribed"],
+			"reputation_changes": {
+				"church_of_three": 15
+			}
+		}
+	},
+	"prerequisites": ["gaela_blight"],
+	"next_quest": "gaela_seed_of_life"
+}

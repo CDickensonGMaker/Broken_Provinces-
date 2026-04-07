@@ -1,0 +1,75 @@
+{
+	"id": "tenger_diplomacy",
+	"title": "Desert Parley",
+	"description": "East Hollow sits on the border of Tenger territory, and tensions are rising. The village elder has received word that a Tenger warband approaches - but they carry a white flag, not weapons. This could be a chance for peace, or a trap. Someone needs to meet with the Tenger emissaries and determine their intentions before blood is spilled.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "village_elder_east_hollow",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "east_hollow",
+	"objectives": [
+		{
+			"id": "learn_situation",
+			"description": "Speak with the village elder about the Tenger approach",
+			"type": "talk",
+			"target": "village_elder_east_hollow",
+			"required_count": 1
+		},
+		{
+			"id": "travel_to_camp",
+			"description": "Travel to the Tenger camp in the desert hills",
+			"type": "reach",
+			"target": "tenger_camp",
+			"required_count": 1
+		},
+		{
+			"id": "meet_khan",
+			"description": "Meet with Khan Toghrul, leader of this warband",
+			"type": "talk",
+			"target": "khan_toghrul",
+			"required_count": 1
+		},
+		{
+			"id": "negotiate_terms",
+			"description": "Negotiate terms between the Tengers and East Hollow",
+			"type": "interact",
+			"target": "negotiation_table",
+			"required_count": 1
+		},
+		{
+			"id": "return_with_answer",
+			"description": "Return to East Hollow with the Tengers' answer",
+			"type": "talk",
+			"target": "village_elder_east_hollow",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "village_elder_east_hollow",
+	"turn_in_zone": "east_hollow",
+	"rewards": {
+		"gold": 150,
+		"xp": 400,
+		"items": [],
+		"faction_reputation": {
+			"tengers": 50,
+			"human_empire": 25
+		}
+	},
+	"choice_consequences": {
+		"peace_achieved": {
+			"flags_to_set": ["tenger_peace_east_hollow"],
+			"reputation_changes": {"tengers": 25, "human_empire": 25}
+		},
+		"trade_agreement": {
+			"flags_to_set": ["tenger_trade_agreement"],
+			"reputation_changes": {"tengers": 15}
+		},
+		"negotiation_failed": {
+			"flags_to_set": ["tenger_hostility_east_hollow"],
+			"reputation_changes": {"tengers": -25}
+		}
+	},
+	"prerequisites": [],
+	"next_quest": ""
+}

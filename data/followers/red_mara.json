@@ -1,0 +1,70 @@
+{
+    "id": "red_mara",
+    "display_name": "Red Mara",
+    "description": "A cunning independent thief with auburn hair. Former guild member turned rival, she's a master of stealth and backstabbing.",
+    "sprite_path": "res://assets/sprites/npcs/combat/thief.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0256,
+    "max_health": 55,
+    "damage": 28,
+    "armor": 8,
+    "combat_style": "melee",
+    "is_essential": true,
+    "follow_distance": 4.0,
+    "combat_range": 5.0,
+    "leash_range": 20.0,
+    "personality_traits": ["cunning", "sarcastic", "independent", "resourceful"],
+    "abilities": [
+        {
+            "id": "backstab",
+            "name": "Backstab",
+            "description": "A devastating attack from behind dealing massive damage",
+            "cooldown": 10.0,
+            "damage_mult": 3.0,
+            "effect": "none",
+            "requires_stealth": true
+        },
+        {
+            "id": "smoke_bomb",
+            "name": "Smoke Bomb",
+            "description": "Creates a cloud of smoke, allowing escape or repositioning",
+            "cooldown": 20.0,
+            "effect": "stealth",
+            "effect_duration": 5.0,
+            "aoe_radius": 4.0
+        },
+        {
+            "id": "pickpocket",
+            "name": "Pickpocket",
+            "description": "Attempts to steal gold or items from the target",
+            "cooldown": 30.0,
+            "effect": "steal",
+            "out_of_combat": true
+        }
+    ],
+    "combat_lines": [
+        "You never saw me coming.",
+        "This is what betrayal feels like.",
+        "Quick and quiet.",
+        "The shadows are my friends.",
+        "Your purse is lighter now.",
+        "Nothing personal. Just business."
+    ],
+    "idle_lines": [
+        "Watch your pockets around here.",
+        "The guild can rot for all I care.",
+        "Freedom is worth any price.",
+        "I've survived worse than this.",
+        "Trust is earned. Never given.",
+        "Every shadow hides an opportunity."
+    ],
+    "recruitment_quest": "mara_recruitment",
+    "recruitment_conditions": ["thieves_guild_questline_complete", "chose_mara"],
+    "recruitment_location": "dalhurst",
+    "home_location": "dalhurst",
+    "faction_id": "thieves_guild",
+    "guild": "thieves_guild",
+    "companion_type": "rogue",
+    "weapon_type": "daggers"
+}

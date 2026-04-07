@@ -752,6 +752,12 @@ func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> 
 	# Minimum 1 damage
 	amount = max(1, amount)
 
+	# Check if in a duel - DuelManager may clamp damage to prevent lethal blow
+	if DuelManager and DuelManager.is_in_duel(self):
+		amount = DuelManager.process_duel_damage(self, amount, damage_type, attacker)
+		if amount == 0:
+			return 0  # Duel ended, no damage applied
+
 	# Apply damage to player data
 	var actual_damage := player_data.take_damage(amount)
 
@@ -764,8 +770,8 @@ func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> 
 	if hud and hud.has_method("spawn_damage_number"):
 		hud.spawn_damage_number(global_position + Vector3.UP * 2, actual_damage)
 
-	# Check for death
-	if player_data.is_dead():
+	# Check for death (skip if in duel - duel handles non-lethal combat)
+	if player_data.is_dead() and not (DuelManager and DuelManager.is_in_duel(self)):
 		_on_death()
 
 	return actual_damage

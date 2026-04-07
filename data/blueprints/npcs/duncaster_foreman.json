@@ -1,0 +1,8 @@
+{
+  "name": "Foreman Dunric",
+  "who": "Burly man covered in coal dust\nGruff exterior but protective of his miners\nKnows every tunnel in the Duncaster mines",
+  "what": "Oversees mining operations at Duncaster\nCan provide work clearing dangerous tunnels\nKnows about strange things found deep underground",
+  "where": "Duncaster - Mine Entrance",
+  "sprite": "miner_npc",
+  "quests": "Mine Clearing, Deep Discoveries"
+}

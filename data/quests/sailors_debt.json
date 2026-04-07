@@ -1,0 +1,67 @@
+{
+	"id": "sailors_debt",
+	"title": "The Sailor's Debt",
+	"description": "A contact in the Thieves Guild has a job for you. A sailor named Brennan owes a substantial debt to certain parties in Dalhurst. He's been avoiding payment for weeks now, drinking away his earnings at the Rusty Anchor. The Guild wants you to collect - by persuasion or force. Just don't make a scene that draws the guard's attention.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "thieves_guild_fence",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "find_brennan",
+			"description": "Find the sailor Brennan at the Rusty Anchor tavern",
+			"type": "reach",
+			"target": "rusty_anchor_tavern",
+			"required_count": 1
+		},
+		{
+			"id": "confront_brennan",
+			"description": "Confront Brennan about his debt",
+			"type": "talk",
+			"target": "sailor_brennan",
+			"required_count": 1
+		},
+		{
+			"id": "collect_debt",
+			"description": "Collect the 150 gold debt (intimidate, persuade, or take by force)",
+			"type": "collect",
+			"target": "brennan_debt_gold",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_fence",
+			"description": "Return the gold to the Guild fence",
+			"type": "talk",
+			"target": "thieves_guild_fence",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "thieves_guild_fence",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 50,
+		"xp": 200,
+		"items": [],
+		"faction_reputation": {
+			"thieves_guild": 25
+		}
+	},
+	"choice_consequences": {
+		"intimidated_brennan": {
+			"flags_to_set": ["brennan_intimidated"],
+			"reputation_changes": {"thieves_guild": 5}
+		},
+		"beat_brennan": {
+			"flags_to_set": ["brennan_beaten"],
+			"reputation_changes": {"thieves_guild": 10, "town_guard": -5}
+		},
+		"let_brennan_go": {
+			"flags_to_set": ["brennan_escaped"],
+			"reputation_changes": {"thieves_guild": -15}
+		}
+	},
+	"prerequisites": ["thieves_guild_initiation"],
+	"next_quest": "thieves_guild_heist"
+}

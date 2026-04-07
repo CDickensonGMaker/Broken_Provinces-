@@ -1,0 +1,69 @@
+{
+	"id": "mercenary_09_betrayal",
+	"title": "The Turncloak",
+	"description": "Captain Steele suspects someone in the Iron Company is selling information to enemies. Recent ambushes have been too well-coordinated. He's tasking you with finding the traitor among the ranks. Investigate company members in Dalhurst and Elder Moor, gather evidence, and dispense Iron Company justice. Loyalty above all.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "captain_roderick_steele",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "iron_company",
+	"objectives": [
+		{
+			"id": "investigate_dalhurst",
+			"description": "Question Iron Company members in Dalhurst",
+			"type": "talk",
+			"target": "iron_company_veteran",
+			"required_count": 3
+		},
+		{
+			"id": "investigate_elder_moor",
+			"description": "Search for evidence in Elder Moor outpost",
+			"type": "reach",
+			"target": "elder_moor",
+			"required_count": 1
+		},
+		{
+			"id": "gather_evidence",
+			"description": "Collect incriminating letters or documents",
+			"type": "collect",
+			"target": "betrayal_evidence",
+			"required_count": 3
+		},
+		{
+			"id": "confront_traitor",
+			"description": "Confront the suspected traitor",
+			"type": "talk",
+			"target": "iron_company_traitor",
+			"required_count": 1
+		},
+		{
+			"id": "handle_justice",
+			"description": "Execute or exile the traitor",
+			"type": "kill",
+			"target": "iron_company_traitor",
+			"required_count": 1,
+			"is_optional": true
+		},
+		{
+			"id": "return_to_captain",
+			"description": "Report your findings to Captain Steele",
+			"type": "talk",
+			"target": "captain_roderick_steele",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "captain_roderick_steele",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 450,
+		"xp": 1000,
+		"items": ["lieutenant_badge"],
+		"faction_reputation": {
+			"iron_company": 60
+		}
+	},
+	"prerequisites": ["mercenary_08_rival_company"],
+	"next_quest": "mercenary_10_noble_war"
+}

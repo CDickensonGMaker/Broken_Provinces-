@@ -1,0 +1,60 @@
+{
+	"id": "morthane_cycle_broken",
+	"title": "The Broken Cycle",
+	"description": "A massive undead incursion threatens the entire region. The dead are rising in unprecedented numbers near Willow Dale, Crossroads, and even the outskirts of Thornfield. The Priest of Morthane believes something deep within Willow Dale's lowest chambers is disrupting the natural cycle of death and rebirth. He asks you to venture into the depths, find the source of this corruption, and destroy it - before the entire land becomes a kingdom of the unliving.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_morthane_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "investigate_willow_dale",
+			"description": "Descend into Willow Dale's deepest chambers",
+			"type": "reach",
+			"target": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "find_corruption_source",
+			"description": "Find the source of the undead corruption",
+			"type": "interact",
+			"target": "corrupted_altar",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_undead_lord",
+			"description": "Defeat the Undead Lord corrupting the cycle",
+			"type": "kill",
+			"target": "undead_lord",
+			"required_count": 1
+		},
+		{
+			"id": "cleanse_altar",
+			"description": "Cleanse the corrupted altar with Morthane's blessing",
+			"type": "interact",
+			"target": "altar_cleansing",
+			"required_count": 1
+		},
+		{
+			"id": "return_triumphant",
+			"description": "Return to Priest of Morthane with news of victory",
+			"type": "talk",
+			"target": "priest_morthane_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_morthane_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 250,
+		"xp": 750,
+		"items": ["morthanes_favor_ring"],
+		"faction_reputation": {
+			"church_of_three": 60
+		}
+	},
+	"prerequisites": ["morthane_restless_soul"],
+	"next_quest": ""
+}

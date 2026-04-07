@@ -1,0 +1,58 @@
+{
+	"id": "gaela_bonus_shepherd_quest",
+	"title": "The Lost Flock",
+	"description": "A shepherd from Millbrook has lost his flock to dire wolves in the wilderness. As a servant of Gaela, protector of pastoral life, you must find the sheep and return them safely.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "millbrook_shepherd",
+	"giver_npc_type": "civilian",
+	"giver_region": "millbrook",
+	"objectives": [
+		{
+			"id": "find_lost_sheep",
+			"description": "Find the shepherd's lost sheep near Willow Dale",
+			"type": "explore",
+			"target": "willow_dale",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "kill_dire_wolves",
+			"description": "Kill the Dire Wolves threatening the flock",
+			"type": "kill",
+			"target": "dire_wolf",
+			"required_count": 6,
+			"is_optional": false
+		},
+		{
+			"id": "escort_sheep_home",
+			"description": "Escort the sheep safely back to Millbrook",
+			"type": "escort",
+			"target": "sheep_flock",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "return_to_shepherd",
+			"description": "Return to the Shepherd in Millbrook",
+			"type": "talk",
+			"target": "millbrook_shepherd",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "millbrook_shepherd",
+	"turn_in_zone": "millbrook",
+	"rewards": {
+		"gold": 150,
+		"xp": 600,
+		"items": ["wool_cloak", "shepherds_crook"],
+		"faction_reputation": {
+			"church_of_gaela": 20,
+			"millbrook_farmers": 35
+		}
+	},
+	"prerequisites": ["gaela_03_protect_harvest"],
+	"next_quest": ""
+}

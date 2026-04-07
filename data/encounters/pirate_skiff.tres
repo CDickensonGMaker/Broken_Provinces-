@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="SeaEncounter" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/travel/sea_encounter.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "pirate_skiff"
+display_name = "Pirate Skiff Attack"
+description = "A small pirate vessel has spotted your ship and is moving to intercept. The crew looks hungry for plunder."
+encounter_type = 0
+is_combat = true
+can_flee = true
+flee_difficulty = 4
+enemy_spawns = Array[String](["pirate_seadog"])
+enemy_counts = Array[Vector2i]([Vector2i(2, 3)])
+is_wave_encounter = true
+wave_count = 2
+gold_reward = Vector2i(30, 80)
+guaranteed_loot = Array[String]([])
+loot_tier = 2
+loot_rolls = 1
+xp_reward = 75
+difficulty_rating = 2
+min_player_level = 1
+max_player_level = 8
+intro_dialogue_id = ""
+peaceful_dialogue_id = ""
+can_resolve_peacefully = true
+peaceful_skill = 13
+peaceful_skill_dc = 10
+music_track = "res://assets/audio/music/combat_sea.ogg"

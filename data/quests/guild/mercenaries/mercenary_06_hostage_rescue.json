@@ -1,0 +1,68 @@
+{
+	"id": "mercenary_06_hostage_rescue",
+	"title": "No One Left Behind",
+	"description": "A wealthy merchant's family member has been kidnapped by bandits operating from the Bandit Hideout. The ransom deadline is approaching. Captain Steele is sending you to extract the hostage - by stealth or force. Time is critical. Bring them back alive and earn your promotion to Sergeant.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "captain_roderick_steele",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "iron_company",
+	"objectives": [
+		{
+			"id": "infiltrate_hideout",
+			"description": "Reach the Bandit Hideout",
+			"type": "reach",
+			"target": "bandit_hideout",
+			"required_count": 1
+		},
+		{
+			"id": "locate_hostage",
+			"description": "Find the kidnapped merchant",
+			"type": "reach",
+			"target": "hostage_cell",
+			"required_count": 1
+		},
+		{
+			"id": "eliminate_guards",
+			"description": "Eliminate the bandit guards",
+			"type": "kill",
+			"target": "bandit_guard",
+			"required_count": 6
+		},
+		{
+			"id": "free_hostage",
+			"description": "Free the hostage from captivity",
+			"type": "talk",
+			"target": "kidnapped_merchant",
+			"required_count": 1
+		},
+		{
+			"id": "escort_to_safety",
+			"description": "Escort the hostage to Elder Moor",
+			"type": "reach",
+			"target": "elder_moor",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_captain",
+			"description": "Report mission success to Captain Steele",
+			"type": "talk",
+			"target": "captain_roderick_steele",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "captain_roderick_steele",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 300,
+		"xp": 700,
+		"items": ["sergeant_insignia"],
+		"faction_reputation": {
+			"iron_company": 50
+		}
+	},
+	"prerequisites": ["mercenary_05_siege_support"],
+	"next_quest": "mercenary_07_command_trial"
+}

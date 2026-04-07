@@ -1,0 +1,68 @@
+{
+	"id": "mercenary_12_legendary_battle",
+	"title": "Hold the Line",
+	"description": "Intelligence reports a coordinated attack on the Crossroads by multiple enemy forces - bandits, deserters, and even dark cultists. If the Crossroads falls, the entire region's trade routes collapse. Captain Steele is committing every available Iron Company soldier to this defense. This is your Thermopylae moment. Hold. The. Line.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "captain_roderick_steele",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "iron_company",
+	"objectives": [
+		{
+			"id": "rally_forces",
+			"description": "Gather all Iron Company forces at the Crossroads",
+			"type": "reach",
+			"target": "crossroads",
+			"required_count": 1
+		},
+		{
+			"id": "bandit_assault",
+			"description": "Repel the bandit coalition assault",
+			"type": "kill",
+			"target": "bandit_elite",
+			"required_count": 20
+		},
+		{
+			"id": "deserter_wave",
+			"description": "Defeat the deserter mercenaries",
+			"type": "kill",
+			"target": "deserter_mercenary",
+			"required_count": 15
+		},
+		{
+			"id": "cultist_infiltration",
+			"description": "Eliminate dark cultist saboteurs",
+			"type": "kill",
+			"target": "dark_cultist",
+			"required_count": 10
+		},
+		{
+			"id": "final_stand",
+			"description": "Defeat the enemy warlord in single combat",
+			"type": "kill",
+			"target": "enemy_warlord",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_captain",
+			"description": "Report the legendary victory to Captain Steele",
+			"type": "talk",
+			"target": "captain_roderick_steele",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "captain_roderick_steele",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 800,
+		"xp": 1600,
+		"items": ["crossroads_defender_shield"],
+		"faction_reputation": {
+			"iron_company": 100
+		}
+	},
+	"prerequisites": ["mercenary_11_monster_battalion"],
+	"next_quest": "mercenary_13_second_command"
+}

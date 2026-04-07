@@ -217,6 +217,15 @@ var sound_cache: Dictionary = {}
 const MAX_CONCURRENT_CREATURE_SOUNDS: int = 4
 var _active_creature_sounds: int = 0
 
+## Per-sound-file instance tracking to prevent duplicate sound overlap
+## Key: sound file path (String), Value: count of active instances (int)
+const MAX_SAME_SOUND_INSTANCES: int = 2
+var _active_sound_instances: Dictionary = {}
+
+## Stagger delay range for enemy sounds (seconds)
+const STAGGER_DELAY_MIN: float = 0.1
+const STAGGER_DELAY_MAX: float = 0.3
+
 func _ready() -> void:
 	_setup_audio_buses()
 	_create_players()
@@ -300,8 +309,9 @@ func play_sfx_3d(sound_path: String, position: Vector3, volume_db: float = 0.0) 
 
 
 ## Play an enemy sound from their data arrays (attack_sounds, hurt_sounds, death_sounds)
-## Returns true if a sound was played
-func play_enemy_sound(sound_array: Array, position: Vector3, volume_db: float = 0.0) -> bool:
+## Returns true if a sound was played (or scheduled to play with stagger)
+## stagger_delay: if true, adds a random delay (0.1-0.3s) before playing to prevent echo
+func play_enemy_sound(sound_array: Array, position: Vector3, volume_db: float = 0.0, stagger_delay: bool = false) -> bool:
 	if sound_array.is_empty():
 		return false
 
@@ -309,9 +319,51 @@ func play_enemy_sound(sound_array: Array, position: Vector3, volume_db: float = 
 	if _active_creature_sounds >= MAX_CONCURRENT_CREATURE_SOUNDS:
 		return false
 
-	# Pick a random sound from the array
-	var sound_path: String = sound_array[randi() % sound_array.size()]
+	# Pick a random sound from the array, with fallback if too many instances
+	var sound_path: String = _pick_available_sound(sound_array)
 	if sound_path.is_empty():
+		return false
+
+	# If stagger delay requested, queue the sound to play after a random delay
+	if stagger_delay:
+		var delay: float = randf_range(STAGGER_DELAY_MIN, STAGGER_DELAY_MAX)
+		get_tree().create_timer(delay).timeout.connect(
+			_play_enemy_sound_internal.bind(sound_path, position, volume_db)
+		)
+		return true
+
+	# Play immediately
+	return _play_enemy_sound_internal(sound_path, position, volume_db)
+
+
+## Pick an available sound from the array, avoiding sounds with too many instances
+## Returns empty string if no sound is available
+func _pick_available_sound(sound_array: Array) -> String:
+	if sound_array.is_empty():
+		return ""
+
+	# Shuffle order to randomize which sound we try first
+	var shuffled: Array = sound_array.duplicate()
+	shuffled.shuffle()
+
+	for sound_path: Variant in shuffled:
+		if sound_path is String and not sound_path.is_empty():
+			var current_count: int = _active_sound_instances.get(sound_path, 0)
+			if current_count < MAX_SAME_SOUND_INSTANCES:
+				return sound_path
+
+	# All sounds at limit - return empty to skip playing
+	return ""
+
+
+## Internal function to actually play the enemy sound
+func _play_enemy_sound_internal(sound_path: String, position: Vector3, volume_db: float) -> bool:
+	# Re-check limits (may have changed during stagger delay)
+	if _active_creature_sounds >= MAX_CONCURRENT_CREATURE_SOUNDS:
+		return false
+
+	var current_count: int = _active_sound_instances.get(sound_path, 0)
+	if current_count >= MAX_SAME_SOUND_INSTANCES:
 		return false
 
 	var stream := _load_sound(sound_path)
@@ -332,17 +384,27 @@ func play_enemy_sound(sound_array: Array, position: Vector3, volume_db: float = 
 	get_tree().current_scene.add_child(player)
 	player.global_position = position
 
-	# Increment counter and connect to finished signal
+	# Increment counters and connect to finished signal
 	_active_creature_sounds += 1
-	player.finished.connect(_on_creature_sound_finished.bind(player))
+	_active_sound_instances[sound_path] = current_count + 1
+	player.finished.connect(_on_creature_sound_finished.bind(player, sound_path))
 
 	player.play()
 	return true
 
 
 ## Callback when a creature sound finishes playing
-func _on_creature_sound_finished(player: AudioStreamPlayer) -> void:
+func _on_creature_sound_finished(player: AudioStreamPlayer, sound_path: String = "") -> void:
 	_active_creature_sounds = maxi(0, _active_creature_sounds - 1)
+
+	# Decrement per-sound instance count
+	if not sound_path.is_empty() and _active_sound_instances.has(sound_path):
+		var count: int = _active_sound_instances[sound_path]
+		if count <= 1:
+			_active_sound_instances.erase(sound_path)
+		else:
+			_active_sound_instances[sound_path] = count - 1
+
 	if is_instance_valid(player):
 		player.queue_free()
 

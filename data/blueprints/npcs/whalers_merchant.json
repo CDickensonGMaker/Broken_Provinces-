@@ -1,0 +1,8 @@
+{
+  "name": "Merchant Grimshaw",
+  "who": "Rugged trader with scars and hard eyes\nSurvives in the dangerous Whalers Abyss\nDeals fairly but takes no nonsense",
+  "what": "Runs the only legitimate trade post in Whalers Abyss\nSells supplies to travelers and less savory customers\nKnows canyon secrets and safe passages",
+  "where": "Whalers Abyss - Canyon Market",
+  "sprite": "merchant_civilian",
+  "quests": "Canyon Supplies, Abyss Navigation"
+}

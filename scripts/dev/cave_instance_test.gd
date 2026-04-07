@@ -282,7 +282,7 @@ func _add_cave_lighting() -> void:
 	var light := DirectionalLight3D.new()
 	light.name = "CaveLight"
 	light.rotation_degrees = Vector3(-45, 45, 0)
-	light.light_energy = 0.45
+	light.light_energy = 0.585
 	light.shadow_enabled = false
 	add_child(light)
 
@@ -291,7 +291,7 @@ func _add_cave_lighting() -> void:
 	env.background_color = Color(0.02, 0.02, 0.03)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.12, 0.1, 0.08)
-	env.ambient_light_energy = 0.75
+	env.ambient_light_energy = 0.975
 
 	env.volumetric_fog_enabled = true
 	env.volumetric_fog_density = 0.04

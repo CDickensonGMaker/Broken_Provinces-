@@ -1,0 +1,83 @@
+{
+	"id": "morthane_06_death_speaker",
+	"title": "Voices Beyond the Veil",
+	"description": "As a Devotee of Morthane, you may now learn to hear the whispers of the recently departed. A murder has occurred in Millbrook, and the Priest asks you to use this sacred gift to speak with the victim and bring justice to their killer.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_morthane_elder_moor",
+	"giver_npc_type": "priest",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "travel_millbrook",
+			"description": "Travel to Millbrook to investigate the murder",
+			"type": "reach",
+			"target": "millbrook",
+			"target_zone": "millbrook",
+			"required_count": 1
+		},
+		{
+			"id": "speak_guard_captain",
+			"description": "Speak to the guard captain about the murder",
+			"type": "talk",
+			"target": "guard_captain_millbrook",
+			"target_zone": "millbrook",
+			"required_count": 1
+		},
+		{
+			"id": "commune_with_dead",
+			"description": "Use Speak with Dead at the victim's body",
+			"type": "interact",
+			"target": "murder_victim_corpse",
+			"target_zone": "millbrook",
+			"required_count": 1
+		},
+		{
+			"id": "identify_killer",
+			"description": "Confront the killer based on the victim's testimony",
+			"type": "talk",
+			"target": "merchant_vrell",
+			"target_zone": "millbrook",
+			"required_count": 1
+		},
+		{
+			"id": "return_priest",
+			"description": "Return to the Priest of Morthane",
+			"type": "talk",
+			"target": "priest_morthane_elder_moor",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_morthane_elder_moor",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 250,
+		"xp": 750,
+		"items": [
+			{"id": "speak_with_dead_scroll", "quantity": 3}
+		],
+		"faction_reputation": {
+			"church_of_morthane": 35,
+			"guard_faction": 20
+		}
+	},
+	"prerequisites": ["morthane_05_devotion_choice"],
+	"next_quest": "morthane_07_lich_rumor",
+	"faction": "church_of_morthane",
+	"choice_consequences": {
+		"arrest_killer": {
+			"flags_to_set": ["merchant_vrell_arrested"],
+			"reputation_changes": {
+				"guard_faction": 15
+			}
+		},
+		"execute_killer": {
+			"flags_to_set": ["merchant_vrell_executed"],
+			"reputation_changes": {
+				"church_of_morthane": 10
+			}
+		}
+	}
+}

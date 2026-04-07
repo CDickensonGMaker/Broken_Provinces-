@@ -1,0 +1,421 @@
+{
+  "id": "thieves_guild_contract_board",
+  "display_name": "Guild Contract Board - Thieves Guild",
+  "description": "Dialogue for the Thieves Guild contract board that offers repeatable jobs. Available to Footpad rank and above.",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Contract Board",
+      "text": "[The board displays various job postings in coded language. A small legend helps members decode the listings.]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Check available contracts.",
+          "next": "job_list",
+          "conditions": [
+            {"type": "flag", "param": "thieves_rank_footpad", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Turn in completed contract.",
+          "next": "turnin_check",
+          "conditions": [
+            {"type": "quest_state", "param": "thieves_repeatable_jobs", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "How does this work?",
+          "next": "board_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'm not high enough rank.",
+          "next": "rank_required",
+          "conditions": [
+            {"type": "flag", "param": "thieves_rank_footpad", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Leave the board alone.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "job_list",
+      "speaker": "Contract Board",
+      "text": "[Current job postings:]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "[Simple Theft] Acquire jewelry from merchant's shop - 100 gold",
+          "next": "theft_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Smuggling] Transport package from Dalhurst to Thornfield - 175 gold",
+          "next": "smuggling_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Debt Collection] Collect payment from reluctant debtor - 150 gold",
+          "next": "debt_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Reconnaissance] Scout merchant warehouse security - 125 gold",
+          "next": "recon_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Intimidation] Deliver Guild message to problem contact - 160 gold",
+          "next": "intimidation_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Burglary] Professional break-in of minor noble manor - 250 gold",
+          "next": "burglary_details",
+          "conditions": [
+            {"type": "flag", "param": "thieves_rank_burglar", "value": 0}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Check back later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "theft_details",
+      "speaker": "Contract Board",
+      "text": "[Simple Theft Contract]\n\nTarget: Merchant shop in Dalhurst market\nObjective: Steal valuable jewelry without detection\nDifficulty: Easy\nReward: 100 gold, 150 XP, +5 Guild reputation\n\n[Accept this contract?]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Take the theft contract.",
+          "next": "accept_theft",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "thieves_repeatable_jobs", "value": 0},
+            {"type": "set_flag", "param": "current_job_theft", "value": 0}
+          ]
+        },
+        {
+          "text": "View other contracts.",
+          "next": "job_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Leave.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "smuggling_details",
+      "speaker": "Contract Board",
+      "text": "[Smuggling Contract]\n\nRoute: Dalhurst to Thornfield\nCargo: Contraband package (contents sealed)\nDifficulty: Medium\nReward: 175 gold, 250 XP, +8 Guild reputation\nWarning: Guard patrols active on route\n\n[Accept this contract?]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Take the smuggling contract.",
+          "next": "accept_smuggling",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "thieves_repeatable_jobs", "value": 0},
+            {"type": "set_flag", "param": "current_job_smuggling", "value": 0}
+          ]
+        },
+        {
+          "text": "View other contracts.",
+          "next": "job_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Leave.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "debt_details",
+      "speaker": "Contract Board",
+      "text": "[Debt Collection Contract]\n\nTarget: Debtor hiding at Crossroads tavern\nAmount Owed: 200 gold\nMethods: Persuasion, intimidation, or theft permitted\nDifficulty: Medium\nReward: 150 gold, 200 XP, +10 Guild reputation\n\n[Accept this contract?]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Take the collection contract.",
+          "next": "accept_debt",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "thieves_repeatable_jobs", "value": 0},
+            {"type": "set_flag", "param": "current_job_debt", "value": 0}
+          ]
+        },
+        {
+          "text": "View other contracts.",
+          "next": "job_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Leave.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recon_details",
+      "speaker": "Contract Board",
+      "text": "[Reconnaissance Contract]\n\nTarget: Merchant warehouse in dock district\nObjective: Document security measures, guard schedules\nDifficulty: Easy\nReward: 125 gold, 175 XP, +7 Guild reputation\nNote: Stealth required - no contact with guards\n\n[Accept this contract?]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Take the recon contract.",
+          "next": "accept_recon",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "thieves_repeatable_jobs", "value": 0},
+            {"type": "set_flag", "param": "current_job_recon", "value": 0}
+          ]
+        },
+        {
+          "text": "View other contracts.",
+          "next": "job_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Leave.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "intimidation_details",
+      "speaker": "Contract Board",
+      "text": "[Intimidation Contract]\n\nTarget: Uncooperative fence in Thornfield\nObjective: Deliver Guild message, ensure compliance\nDifficulty: Medium\nReward: 160 gold, 220 XP, +9 Guild reputation\nNote: Violence optional but not preferred\n\n[Accept this contract?]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Take the intimidation contract.",
+          "next": "accept_intimidation",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "thieves_repeatable_jobs", "value": 0},
+            {"type": "set_flag", "param": "current_job_intimidation", "value": 0}
+          ]
+        },
+        {
+          "text": "View other contracts.",
+          "next": "job_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Leave.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "burglary_details",
+      "speaker": "Contract Board",
+      "text": "[Professional Burglary Contract]\n\nTarget: Minor noble manor in Thornfield\nObjective: Break in, steal valuables, escape undetected\nDifficulty: Hard\nReward: 250 gold, 350 XP, +15 Guild reputation\nRequires: Burglar rank or higher\nWarning: Heavy security, detection means failure\n\n[Accept this contract?]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Take the burglary contract.",
+          "next": "accept_burglary",
+          "conditions": [],
+          "actions": [
+            {"type": "start_quest", "param": "thieves_repeatable_jobs", "value": 0},
+            {"type": "set_flag", "param": "current_job_burglary", "value": 0}
+          ]
+        },
+        {
+          "text": "View other contracts.",
+          "next": "job_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Leave.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_theft",
+      "speaker": "Contract Board",
+      "text": "[Contract Accepted]\n\nTarget location marked. Acquire the specified jewelry and return here. Avoid detection - getting caught voids the contract and damages Guild reputation.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_smuggling",
+      "speaker": "Contract Board",
+      "text": "[Contract Accepted]\n\nPackage available at the dead drop behind the tavern. Deliver to Silas in Thornfield. Avoid guard searches - confiscation means contract failure and fine.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_debt",
+      "speaker": "Contract Board",
+      "text": "[Contract Accepted]\n\nDebtor description and location provided. Collect 200 gold by any means necessary. Return payment here. Keep methods discreet - no guard involvement.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_recon",
+      "speaker": "Contract Board",
+      "text": "[Contract Accepted]\n\nWarehouse location marked. Document guard numbers, patrol timing, lock types, and entry points. Submit report here. Do not engage - observation only.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_intimidation",
+      "speaker": "Contract Board",
+      "text": "[Contract Accepted]\n\nMessage and target location provided. Deliver personally, ensure understanding. Report compliance or resistance. Prefer non-violent resolution.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_burglary",
+      "speaker": "Contract Board",
+      "text": "[Contract Accepted]\n\nManor location and basic security layout provided. Entry method your choice. Steal at least three valuable items. Clean escape required - detection voids contract.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "turnin_check",
+      "speaker": "Contract Board",
+      "text": "[Insert contract proof here]\n\n[The board has a slot for depositing evidence of completed contracts. A mechanism verifies completion and dispenses payment.]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Submit proof of completion.",
+          "next": "contract_complete",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "thieves_repeatable_jobs", "value": 0}]
+        },
+        {
+          "text": "Not ready yet.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "contract_complete",
+      "speaker": "Contract Board",
+      "text": "[Contract Verified - Payment Dispensed]\n\nGold and reputation credited to your Guild account. New contracts refresh daily. The shadows reward those who serve.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Take another contract.",
+          "next": "job_list",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Done for now.",
+          "next": "farewell_complete",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "board_explanation",
+      "speaker": "Contract Board",
+      "text": "[The Guild contract board provides repeatable work for members. Jobs range from simple theft to complex burglary. Higher ranks unlock better-paying contracts. Complete jobs, submit proof, receive payment. Contracts refresh daily.]",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "View available contracts.",
+          "next": "job_list",
+          "conditions": [{"type": "flag", "param": "thieves_rank_footpad", "value": 0}],
+          "actions": []
+        },
+        {
+          "text": "Understood.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "rank_required",
+      "speaker": "Contract Board",
+      "text": "[Access Denied - Insufficient Rank]\n\nContract board requires Footpad rank or higher. Complete assignments from Raven to advance. New members must prove reliability before accessing repeatable contracts.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_complete",
+      "speaker": "Contract Board",
+      "text": "[The shadows remember your service. Return when more work is desired.]",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Contract Board",
+      "text": "[The board awaits your return. Work is always available for those who serve the Guild.]",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

@@ -1,0 +1,224 @@
+MORTHANE QUEST CHAIN - VISUAL FLOW
+================================================================================
+
+TIER 1: INITIATE (Introduction to Morthane's Philosophy)
+────────────────────────────────────────────────────────────────────────────────
+
+    [START] Priest of Morthane (Elder Moor Temple)
+       |
+       v
+    ┌─────────────────────────────────────────────┐
+    │ Quest 1: "Final Rest"                       │
+    │ • Perform burial rites at Crossroads        │
+    │ • Learn Morthane's doctrine                 │
+    │ Reward: 50g, 200 XP, Burial Incense         │
+    └─────────────────────────────────────────────┘
+       |
+       v (auto-advance)
+    ┌─────────────────────────────────────────────┐
+    │ Quest 2: "Unfinished Business"              │
+    │ • Help ghost find peace in Dalhurst         │
+    │ • Investigation quest                       │
+    │ Reward: 75g, 300 XP, Ghost-touched Trinket  │
+    └─────────────────────────────────────────────┘
+       |
+       v (auto-advance)
+    ┌─────────────────────────────────────────────┐
+    │ Quest 3: "Vigil of the Dead"                │
+    │ • Defend Thornfield cemetery                │
+    │ • Combat grave robbers + undead             │
+    │ Reward: 100g, 400 XP, Grave Warden Blessing │
+    └─────────────────────────────────────────────┘
+       |
+       v (auto-advance)
+
+────────────────────────────────────────────────────────────────────────────────
+TIER 2: ACOLYTE (Moral Complexity & Devotion Choice)
+────────────────────────────────────────────────────────────────────────────────
+
+    ┌─────────────────────────────────────────────┐
+    │ Quest 4: "The Defiler's Path"               │
+    │ • Track necromancer to Willow Dale          │
+    │ • CHOICE: Kill / Redeem / Spare             │
+    │ Reward: 150g, 500 XP, Death Warden Cloak    │
+    └─────────────────────────────────────────────┘
+       |
+       v (auto-advance)
+    ┌─────────────────────────────────────────────┐
+    │ Quest 5: "Embracing the Cycle" ⭐           │
+    │ • Trial of Mortality (near-death ritual)    │
+    │ • CRITICAL CHOICE: Accept or Decline        │
+    │                                             │
+    │   [ACCEPT] → Set 'morthane_devotee' flag    │
+    │   └─> Continue to Tier 3 (Quests 6-10)     │
+    │                                             │
+    │   [DECLINE] → Set 'morthane_devotion_declined' │
+    │   └─> QUEST CHAIN ENDS                      │
+    │                                             │
+    │ Reward: 200g, 600 XP, Morthane's Amulet     │
+    │ Title: "Keeper of the Cycle"                │
+    └─────────────────────────────────────────────┘
+       |
+       ├─> [DECLINED] → END CHAIN
+       |
+       └─> [ACCEPTED] → Continue
+           |
+           v
+
+────────────────────────────────────────────────────────────────────────────────
+TIER 3: DEVOTEE EXCLUSIVE (Advanced Training)
+────────────────────────────────────────────────────────────────────────────────
+Prerequisites: Must have 'morthane_devotee' flag set
+
+    ┌─────────────────────────────────────────────┐
+    │ Quest 6: "Voices Beyond the Veil"           │
+    │ • Learn Speak with Dead ability             │
+    │ • Solve murder in Millbrook                 │
+    │ • CHOICE: Arrest or Execute killer          │
+    │ Reward: 250g, 750 XP, Speak with Dead Scrolls│
+    └─────────────────────────────────────────────┘
+       |
+       v (auto-advance)
+    ┌─────────────────────────────────────────────┐
+    │ Quest 7: "Whispers of Immortality"          │
+    │ • Stop lich transformation in Willow Dale   │
+    │ • Fight powerful undead                     │
+    │ Reward: 300g, 900 XP, Anti-undead Weapon    │
+    └─────────────────────────────────────────────┘
+       |
+       v (auto-advance)
+    ┌─────────────────────────────────────────────┐
+    │ Quest 8: "The Second Chance"                │
+    │ • Witness legitimate rebirth ritual         │
+    │ • Philosophical quest                       │
+    │ Reward: 350g, 1000 XP, Cycle's Wisdom Ring  │
+    └─────────────────────────────────────────────┘
+       |
+       v (auto-advance)
+
+────────────────────────────────────────────────────────────────────────────────
+TIER 4: CHAMPION (Climactic Finale)
+────────────────────────────────────────────────────────────────────────────────
+
+    ┌─────────────────────────────────────────────┐
+    │ Quest 9: "The Rising Tide"                  │
+    │ • Defend multiple towns from undead army    │
+    │ • Multi-stage epic quest                    │
+    │ • Defeat Death Knight commander             │
+    │ Reward: 500g, 1500 XP, Reaper's Blade       │
+    └─────────────────────────────────────────────┘
+       |
+       v (auto-advance)
+    ┌─────────────────────────────────────────────┐
+    │ Quest 10: "The Deathwalker" ⭐⭐            │
+    │ • FINAL QUEST: Become Champion of Morthane  │
+    │ • Death Walk ritual (near-death experience) │
+    │ • Journey to Kazer-Dun catacombs            │
+    │ • Defeat Undead Lord Malthor (final boss)   │
+    │                                             │
+    │ Sets flags: 'morthane_champion'             │
+    │             'deathwalker_title'             │
+    │                                             │
+    │ Reward: 750g, 2000 XP, Morthane's Shroud    │
+    └─────────────────────────────────────────────┘
+       |
+       v
+    [CHAIN COMPLETE - Champion of Morthane]
+
+────────────────────────────────────────────────────────────────────────────────
+REPEATABLE CONTENT (Post-Devotion)
+────────────────────────────────────────────────────────────────────────────────
+Prerequisites: Must have 'morthane_devotee' flag set (completed Quest 5)
+
+    ┌─────────────────────────────────────────────┐
+    │ Quest 11: "Cleansing Duty" (REPEATABLE)     │
+    │ • Clear undead spawns                       │
+    │ • Maintain natural order                    │
+    │ • 7-day cooldown                            │
+    │ Reward: 100g, 300 XP                        │
+    └─────────────────────────────────────────────┘
+       |
+       └──> Can repeat every 7 days
+
+
+================================================================================
+TOTAL REWARDS (If All Completed)
+================================================================================
+
+Gold:         2,925g (not counting repeatable)
+XP:           10,250 XP (not counting repeatable)
+Unique Items: 11 items (weapons, armor, consumables, trinkets)
+
+Faction Reputation:
+  • church_of_morthane: +370 (base) + choice bonuses
+  • church_of_three:    +187 (base)
+  • guard_faction:      +40 (conditional)
+  • mages_guild:        +10 (conditional)
+
+
+================================================================================
+KEY DECISION POINTS
+================================================================================
+
+Quest 4 - Necromancer's Fate:
+  ├─> Kill (church_of_morthane +10)
+  ├─> Redeem (church_of_morthane +5, mages_guild +10)
+  └─> Spare (spawns hostile enemy later)
+
+Quest 5 - Devotion Choice:
+  ├─> ACCEPT → Become devotee, unlock Quests 6-10 (church_of_morthane +30)
+  └─> DECLINE → Quest chain ENDS here
+
+Quest 6 - Killer's Justice:
+  ├─> Arrest (guard_faction +15)
+  └─> Execute (church_of_morthane +10)
+
+Quest 10 - Champion Ascension:
+  └─> Become Champion (church_of_morthane +50, unlock Deathwalker title)
+
+
+================================================================================
+GEOGRAPHIC COVERAGE
+================================================================================
+
+Quest Hub:          Elder Moor (Temple of Three Gods)
+Quest Locations:    Dalhurst, Thornfield, Millbrook, Crossroads
+Dungeon Quests:     Willow Dale, Bandit Hideout, Kazer-Dun Entrance
+
+ALL CONTENT NORTH OF KAZER-DUN (as required)
+
+
+================================================================================
+PROGRESSION TIERS
+================================================================================
+
+Tier 1 (Quests 1-3):   Player Level 5-10   | Basic undead, grave robbers
+Tier 2 (Quests 4-5):   Player Level 10-15  | Moral choices, necromancers
+Tier 3 (Quests 6-8):   Player Level 15-25  | Advanced abilities, investigation
+Tier 4 (Quests 9-10):  Player Level 25-35  | Epic battles, final boss
+Repeatable:            Player Level 10+     | Ongoing duty
+
+
+================================================================================
+PHILOSOPHY & LORE
+================================================================================
+
+Morthane is NOT evil. The deity represents:
+  • Death as a natural part of the cycle
+  • Rebirth as transformation and renewal
+  • Opposition to undeath (zombies, skeletons, liches)
+  • Honoring the dead and protecting burial grounds
+
+Devotees are:
+  • Philosophical undead hunters
+  • Guardians of the cycle
+  • Speakers for the dead
+  • Champions against corruption
+
+This makes them morally GOOD characters who understand mortality,
+NOT dark cultists or evil necromancers.
+
+
+================================================================================
+END OF QUEST FLOW
+================================================================================

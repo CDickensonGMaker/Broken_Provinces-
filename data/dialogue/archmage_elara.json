@@ -1,0 +1,998 @@
+{
+  "id": "archmage_elara",
+  "display_name": "Archmage Elara Moonweave - Arcane Circle",
+  "description": "Dialogue for Archmage Elara, leader of the Arcane Circle mage guild at the Athenaeum in Dalhurst",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Archmage Elara",
+      "text": "Welcome to the Athenaeum. I am Elara Moonweave, keeper of this repository of arcane knowledge. Few seek audience with me directly. What brings you to my study?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I wish to join the Arcane Circle.",
+          "next": "join_request",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "mage_01_entrance_exam",
+              "value": 0,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I've completed the entrance examination.",
+          "next": "exam_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "mage_01_entrance_exam",
+              "value": 1
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I'm here about Circle business.",
+          "next": "circle_business",
+          "conditions": [
+            {
+              "type": "faction_reputation",
+              "param": "arcane_circle",
+              "value": 20
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I wish to study in the restricted archives.",
+          "next": "restricted_request",
+          "conditions": [
+            {
+              "type": "faction_reputation",
+              "param": "arcane_circle",
+              "value": 60
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Tell me about the Arcane Circle.",
+          "next": "circle_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What magical threats concern you?",
+          "next": "magical_threats",
+          "conditions": [
+            {
+              "type": "faction_reputation",
+              "param": "arcane_circle",
+              "value": 40
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Forgive the intrusion. I'll take my leave.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "greeting_apprentice",
+      "speaker": "Archmage Elara",
+      "text": "Ah, one of our apprentices. Your progress has been noted. The Circle has work that requires capable hands. Have you come to serve the advancement of magical knowledge?",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "faction_reputation",
+          "param": "arcane_circle",
+          "value": 20
+        }
+      ],
+      "choices": [
+        {
+          "text": "What task requires attention?",
+          "next": "current_assignments",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I seek guidance on my studies.",
+          "next": "study_guidance",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I merely wished to pay my respects.",
+          "next": "farewell_apprentice",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "greeting_magus",
+      "speaker": "Archmage Elara",
+      "text": "Magus. Your dedication to the Circle has been exemplary. The council speaks highly of your contributions. What brings you to my chambers?",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "faction_reputation",
+          "param": "arcane_circle",
+          "value": 60
+        }
+      ],
+      "choices": [
+        {
+          "text": "I seek access to the forbidden archives.",
+          "next": "forbidden_access",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What concerns the Circle's leadership?",
+          "next": "leadership_concerns",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I wished to discuss a theoretical matter.",
+          "next": "theoretical_discussion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "join_request",
+      "speaker": "Archmage Elara",
+      "text": "The Circle does not accept students lightly. We are guardians of knowledge too dangerous for the uninitiated. Those who would join us must demonstrate not only aptitude, but wisdom. The reckless have no place among us.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "How do I prove myself worthy?",
+          "next": "entrance_exam_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What kind of knowledge do you guard?",
+          "next": "knowledge_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I am no mere dabbler in the arcane.",
+          "next": "confidence_response",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Perhaps I am not ready.",
+          "next": "not_ready",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "knowledge_explanation",
+      "speaker": "Archmage Elara",
+      "text": "The Athenaeum contains texts that could level cities if misused. Summoning rituals. Transmutation formulae. The binding words of entities from beyond our realm. We study these not from desire for power, but from necessity - to understand threats before they manifest.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand the weight of such responsibility.",
+          "next": "entrance_exam_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Entities from beyond? What do you mean?",
+          "next": "entities_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "This sounds dangerous.",
+          "next": "danger_acknowledgment",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "entities_explanation",
+      "speaker": "Archmage Elara",
+      "text": "There are... things that exist between worlds. Beings of pure magical essence that seek entry into our realm. The Circle's founding purpose was to prevent their incursion. Every century, they test our barriers. We must remain vigilant.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I would help defend against such threats.",
+          "next": "entrance_exam_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "This is more than I bargained for.",
+          "next": "not_ready",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "danger_acknowledgment",
+      "speaker": "Archmage Elara",
+      "text": "All magical knowledge is dangerous. Fire can warm or destroy. Healing magic can be reversed. The question is not whether knowledge is dangerous, but whether the practitioner has the wisdom to wield it responsibly.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I am willing to learn that wisdom.",
+          "next": "entrance_exam_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Perhaps magic is not for me.",
+          "next": "not_ready",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "confidence_response",
+      "speaker": "Archmage Elara",
+      "text": "Confidence is admirable. Arrogance is fatal. Many with your certainty lie buried beneath the Athenaeum's foundations - victims of their own overreach. If you truly possess ability, demonstrate it through action, not words.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Then give me the chance to prove myself.",
+          "next": "entrance_exam_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I apologize for my presumption.",
+          "next": "apology_accepted",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "apology_accepted",
+      "speaker": "Archmage Elara",
+      "text": "Humility is the first step toward wisdom. Perhaps there is hope for you yet. Would you like to attempt the entrance examination?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Yes. What must I do?",
+          "next": "entrance_exam_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need time to prepare.",
+          "next": "not_ready",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "entrance_exam_offer",
+      "speaker": "Archmage Elara",
+      "text": "Very well. Your entrance examination: the ruins of Velkyr's Tower, southeast of Dalhurst. A rogue mage once practiced forbidden arts there. His wards remain active, his experiments corrupt the land. Navigate his defenses, retrieve the grimoire from his sanctum, and return it to me.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I accept this task.",
+          "next": "accept_exam",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "mage_01_entrance_exam",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What can you tell me about Velkyr?",
+          "next": "velkyr_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What kind of wards should I expect?",
+          "next": "ward_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "This seems like more than a test.",
+          "next": "more_than_test",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "velkyr_info",
+      "speaker": "Archmage Elara",
+      "text": "Velkyr was a promising apprentice who became consumed by ambition. He sought power through forbidden summoning, believing he could control what he called forth. He was wrong. The Circle destroyed him, but his tower remains tainted. His grimoire details his methods - knowledge we must contain.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand. I'll retrieve the grimoire.",
+          "next": "accept_exam",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "mage_01_entrance_exam",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What kind of defenses remain?",
+          "next": "ward_info",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "ward_info",
+      "speaker": "Archmage Elara",
+      "text": "Arcane traps that trigger on proximity. Bound spirits that guard the passages. Perhaps corrupted creatures drawn by the tower's residual magic. A test of both magical understanding and practical survival. Precisely what an aspiring Circle member requires.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I will not fail.",
+          "next": "accept_exam",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "mage_01_entrance_exam",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I need to prepare first.",
+          "next": "preparation_advice",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "preparation_advice",
+      "speaker": "Archmage Elara",
+      "text": "Wise. Bring wards against spiritual interference. Fire is effective against most corrupted flesh. And a clear mind - panic kills more apprentices than any trap. Return when you are ready.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "more_than_test",
+      "speaker": "Archmage Elara",
+      "text": "The Circle does not waste effort on mere examinations. Every task we assign serves the greater purpose of protecting the realm. If you cannot see value in this dual purpose, perhaps you lack the perspective we require.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I see. The task is both test and service.",
+          "next": "accept_exam",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "mage_01_entrance_exam",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I prefer clear terms.",
+          "next": "prefer_clarity",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "prefer_clarity",
+      "speaker": "Archmage Elara",
+      "text": "Magic is rarely clear. Those who require simple answers struggle in our discipline. Consider whether you truly wish to pursue this path.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "accept_exam",
+      "speaker": "Archmage Elara",
+      "text": "Velkyr's Tower lies in the hills southeast of Dalhurst, past the old miller's road. The grimoire will be in his study at the tower's apex. Do not read from it - the incantations retain their power. Return it unopened, and you will have earned your place among us.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "exam_turnin",
+      "speaker": "Archmage Elara",
+      "text": "You have returned. The tower - did you recover Velkyr's grimoire?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I have it here, unopened as instructed.",
+          "next": "exam_complete",
+          "conditions": [
+            {
+              "type": "has_item",
+              "param": "velkyr_grimoire",
+              "value": 1
+            }
+          ],
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "mage_01_entrance_exam",
+              "value": 0
+            },
+            {
+              "type": "take_item",
+              "param": "velkyr_grimoire",
+              "value": 1
+            },
+            {
+              "type": "modify_reputation",
+              "param": "arcane_circle",
+              "value": 20
+            },
+            {
+              "type": "set_flag",
+              "param": "arcane_circle_member",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I'm still working on it.",
+          "next": "still_working",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "exam_complete",
+      "speaker": "Archmage Elara",
+      "text": "Excellent. You followed instructions precisely - a virtue that will serve you well here. The grimoire will be secured in the restricted archives. As for you... welcome to the Arcane Circle, Novice. Your education begins now.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Thank you, Archmage. I will not disappoint.",
+          "next": "welcome_to_circle",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What happens next?",
+          "next": "next_steps",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "welcome_to_circle",
+      "speaker": "Archmage Elara",
+      "text": "See that you don't. The library's lower floors are now open to you. Study there, but do not venture into the restricted sections without authorization. Your mentor will contact you with your first assignment. Go.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "next_steps",
+      "speaker": "Archmage Elara",
+      "text": "You will be assigned a mentor who will guide your studies. Perform your duties well, contribute to the Circle's work, and you will advance. Fail to meet our standards, and you will be expelled. The choice of your future is yours.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "still_working",
+      "speaker": "Archmage Elara",
+      "text": "Then why are you here? The grimoire will not retrieve itself. Return when your task is complete.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "circle_business",
+      "speaker": "Archmage Elara",
+      "text": "Speak. What matter requires my attention?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What assignments are available?",
+          "next": "current_assignments",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I've completed my current assignment.",
+          "next": "assignment_turnin",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I wish to discuss a magical phenomenon I witnessed.",
+          "next": "phenomenon_discussion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "current_assignments",
+      "speaker": "Archmage Elara",
+      "text": "The Circle always has work for capable practitioners. Research that requires field investigation. Artifacts that need retrieval. Magical anomalies that demand attention. Speak with the assignment coordinator in the lower hall - they maintain the active task registry.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "assignment_turnin",
+      "speaker": "Archmage Elara",
+      "text": "Report to your mentor for debriefing. I do not handle routine task completion. My time is reserved for matters of greater import.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "phenomenon_discussion",
+      "speaker": "Archmage Elara",
+      "text": "Interesting. Describe what you observed. Precisely.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I saw strange lights in the eastern wilderness.",
+          "next": "lights_discussion",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "A creature that seemed immune to magic.",
+          "next": "creature_discussion",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Actually, it was nothing. Forget I mentioned it.",
+          "next": "wasted_time",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "lights_discussion",
+      "speaker": "Archmage Elara",
+      "text": "The eastern lights... yes, we have received other reports. Likely residual magical discharge from the old battlefields. We will investigate when resources permit. Thank you for the report.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "creature_discussion",
+      "speaker": "Archmage Elara",
+      "text": "Magic immunity is rare but not unknown. Natural resistance, anti-magical contamination, or deliberate enchantment. Document your encounter in the research archives. Our scholars will analyze it.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wasted_time",
+      "speaker": "Archmage Elara",
+      "text": "Do not waste my time with trivialities. My patience has limits.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "restricted_request",
+      "speaker": "Archmage Elara",
+      "text": "The restricted archives contain knowledge that can corrupt or destroy the unprepared. What specifically do you seek?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Texts on summoning theory.",
+          "next": "summoning_request",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Historical records of magical disasters.",
+          "next": "disaster_records",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The binding words for extra-planar entities.",
+          "next": "binding_words",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "summoning_request",
+      "speaker": "Archmage Elara",
+      "text": "Summoning theory is available to those of sufficient rank. You may access the theoretical sections. The practical grimoires require council approval. Do not attempt any summoning without supervision - the consequences of failure are... permanent.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "disaster_records",
+      "speaker": "Archmage Elara",
+      "text": "A scholar's interest. Good. The disaster chronicles are educational. You may access them. Learn from the failures of others - it is less painful than learning from your own.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "binding_words",
+      "speaker": "Archmage Elara",
+      "text": "No. Those texts are not available to any but the inner council. Even speaking such words carelessly can attract attention from beyond. Why do you ask?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Academic curiosity, nothing more.",
+          "next": "curiosity_warning",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I encountered something I couldn't banish.",
+          "next": "encounter_warning",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "curiosity_warning",
+      "speaker": "Archmage Elara",
+      "text": "Curiosity about such matters is dangerous. The entities beyond our world are aware of those who seek them. Direct your scholarly interest elsewhere. This is not a suggestion.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "encounter_warning",
+      "speaker": "Archmage Elara",
+      "text": "Tell me everything. Now. Where did this encounter occur, and what did the entity look like? The Circle must know of any breach.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "It was in the eastern ruins, a shadowy figure...",
+          "next": "report_entity",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I may have exaggerated. It was probably nothing.",
+          "next": "exaggeration_anger",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "report_entity",
+      "speaker": "Archmage Elara",
+      "text": "I will dispatch investigators immediately. You did well to report this. Such sightings are rarely coincidental. The Circle may call upon you for further information. Be available.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "exaggeration_anger",
+      "speaker": "Archmage Elara",
+      "text": "Do not toy with me on matters of extra-planar intrusion. Such reports are not jokes. Leave my presence. Now.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "circle_info",
+      "speaker": "Archmage Elara",
+      "text": "The Arcane Circle has safeguarded magical knowledge for seven centuries. We train practitioners, regulate magical practice, and protect the realm from arcane threats. The Athenaeum is our seat of power - the greatest repository of magical knowledge in the known world.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What threats do you protect against?",
+          "next": "threats_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How does one join the Circle?",
+          "next": "join_request",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "mage_01_entrance_exam",
+              "value": 0,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Fascinating.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "threats_explanation",
+      "speaker": "Archmage Elara",
+      "text": "Rogue practitioners who abuse their gifts. Magical contamination from ancient battlefields. Artifacts that should never have been created. And the ever-present threat of extra-planar incursion. The Circle stands as the realm's first line of defense against magical catastrophe.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Noble work.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How can I help?",
+          "next": "join_request",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "mage_01_entrance_exam",
+              "value": 0,
+              "invert": true
+            }
+          ],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "magical_threats",
+      "speaker": "Archmage Elara",
+      "text": "The eastern lands grow more unstable. Magical residue from the old wars is awakening things best left dormant. And there are whispers of cultist activity - mortals foolish enough to bargain with powers beyond their understanding. Dark times may be approaching.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What can be done?",
+          "next": "what_can_be_done",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I will keep my eyes open.",
+          "next": "vigilance_appreciated",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "what_can_be_done",
+      "speaker": "Archmage Elara",
+      "text": "Vigilance. Preparation. The Circle investigates each report, contains each threat before it spreads. But we cannot be everywhere. Members who serve in the field are invaluable. Your continued service to the Circle contributes to this effort.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "vigilance_appreciated",
+      "speaker": "Archmage Elara",
+      "text": "Report anything unusual. The Circle rewards those who bring us actionable intelligence. May your studies progress well.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "study_guidance",
+      "speaker": "Archmage Elara",
+      "text": "What aspect of the arcane arts troubles you?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I struggle with elemental channeling.",
+          "next": "elemental_guidance",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Enchantment theory confuses me.",
+          "next": "enchantment_guidance",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I wish to understand warding better.",
+          "next": "warding_guidance",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "elemental_guidance",
+      "speaker": "Archmage Elara",
+      "text": "Elemental magic requires understanding the fundamental nature of each element, not just its physical properties. Fire is not merely heat - it is transformation, consumption, renewal. Meditate on these aspects. The technique will follow naturally.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "enchantment_guidance",
+      "speaker": "Archmage Elara",
+      "text": "Enchantment binds magical intent to physical form. The difficulty is not in the magic, but in the precision of intent. Your will must be absolute and unambiguous. Any uncertainty manifests as instability in the enchantment.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "warding_guidance",
+      "speaker": "Archmage Elara",
+      "text": "Wards are magical boundaries. They define what may pass and what may not. The key is clarity of definition. A ward against 'evil' fails because evil is subjective. A ward against 'entities lacking physical form' succeeds because it is precise.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "forbidden_access",
+      "speaker": "Archmage Elara",
+      "text": "Your rank permits access to most restricted materials. However, some texts remain sealed even to the Magi. If your research requires such materials, submit a formal petition to the council. We will evaluate your need.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "leadership_concerns",
+      "speaker": "Archmage Elara",
+      "text": "The council debates our response to increased cultist activity in the realm. Some advocate aggressive intervention. Others counsel patience and investigation. We also discuss the succession - I will not lead forever, and the Circle must be prepared.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What is your position on the cultists?",
+          "next": "cultist_position",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Who might succeed you?",
+          "next": "succession_question",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "cultist_position",
+      "speaker": "Archmage Elara",
+      "text": "I favor decisive action, but not reckless action. We must understand their goals before we strike. A poorly-targeted assault could scatter them, making them harder to track. Patience now serves the greater good.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "succession_question",
+      "speaker": "Archmage Elara",
+      "text": "That is a matter for the council to decide when the time comes. I have served for many years, and I will serve for many more. But I am not immortal. The Circle's continuity matters more than any individual, including myself.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "theoretical_discussion",
+      "speaker": "Archmage Elara",
+      "text": "Theoretical discussion is the foundation of magical advancement. What hypothesis do you bring?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I believe magical currents can be predicted like weather.",
+          "next": "currents_theory",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What if the barriers between worlds are weakening?",
+          "next": "barriers_theory",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "currents_theory",
+      "speaker": "Archmage Elara",
+      "text": "An interesting parallel. Some scholars have pursued this line of inquiry. The Athenaeum contains records of their findings. Research them. If you discover something new, document it. The Circle rewards genuine contribution to magical knowledge.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "barriers_theory",
+      "speaker": "Archmage Elara",
+      "text": "A troubling possibility that the council takes seriously. Historical records suggest the barriers fluctuate in strength over centuries. We may be entering a period of weakness. This is why vigilance against extra-planar incursion is paramount.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "not_ready",
+      "speaker": "Archmage Elara",
+      "text": "Then seek me again when you are. The Circle has no use for the hesitant.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Archmage Elara",
+      "text": "May your studies illuminate your path.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_apprentice",
+      "speaker": "Archmage Elara",
+      "text": "Continue your studies diligently. The Circle observes your progress.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

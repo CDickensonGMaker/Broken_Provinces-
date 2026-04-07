@@ -1,0 +1,66 @@
+{
+	"id": "adventurers_12_legendary_contract",
+	"title": "The Impossible Contract",
+	"description": "There's a contract that's been on the Guild board for years. Everyone who's tried it has failed or died. The deepest level of Willow Dale, sealed by the ancients, is said to contain unimaginable treasure - and unimaginable danger. Vorn says if you can clear it, you'll be the first adventurer to do so in the Guild's history. This is the impossible contract. Are you ready?",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "find_ancient_key",
+			"description": "Locate the three ancient key fragments in Willow Dale",
+			"type": "collect",
+			"target": "ancient_key_fragment",
+			"required_count": 3,
+			"is_optional": false
+		},
+		{
+			"id": "unlock_deepest_level",
+			"description": "Unlock the sealed door to the deepest level",
+			"type": "interact",
+			"target": "willow_dale_sealed_door",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "explore_deepest_level",
+			"description": "Navigate the ancient halls",
+			"type": "reach",
+			"target": "willow_dale_throne_room",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "defeat_ancient_guardian",
+			"description": "Defeat the Ancient Guardian boss",
+			"type": "kill",
+			"target": "ancient_guardian",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "claim_legendary_artifact",
+			"description": "Claim the legendary artifact from the throne",
+			"type": "collect",
+			"target": "blade_of_legends",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 750,
+		"xp": 1500,
+		"items": ["legendary_adventurer_cloak"],
+		"faction_reputation": {
+			"adventurers_guild": 200
+		}
+	},
+	"prerequisites": ["adventurers_11_guild_politics"],
+	"next_quest": "adventurers_13_champion",
+	"notes": "Rank: Elite. Multi-stage epic quest. Key fragments hidden in Willow Dale levels 1-3. Ancient Guardian is raid-tier boss. Blade of Legends is best weapon in game. Legendary Cloak gives massive stat bonuses. Completion unlocks Champion trial."
+}

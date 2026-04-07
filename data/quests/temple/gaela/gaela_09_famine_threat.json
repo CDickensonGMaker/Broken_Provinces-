@@ -1,0 +1,86 @@
+{
+	"id": "gaela_09_famine_threat",
+	"title": "When Harvests Fail",
+	"description": "A regional famine threatens the valley. Crops are failing in Elder Moor, Millbrook, and Thornfield. Priestess Elara fears dark magic is at work. As Gaela's Devotee, you must find the source and restore the land's fertility before people starve.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "priest",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "investigate_elder_moor",
+			"description": "Investigate crop failures in Elder Moor",
+			"type": "explore",
+			"target": "elder_moor",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "investigate_millbrook",
+			"description": "Investigate crop failures in Millbrook",
+			"type": "explore",
+			"target": "millbrook",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "investigate_thornfield",
+			"description": "Investigate crop failures in Thornfield",
+			"type": "explore",
+			"target": "thornfield",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "find_famine_source",
+			"description": "Discover the cursed totem causing the famine (hidden near Crossroads)",
+			"type": "collect",
+			"target": "cursed_famine_totem",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "destroy_cultist_circle",
+			"description": "Destroy the cultist circle maintaining the curse",
+			"type": "kill",
+			"target": "dark_cultist",
+			"required_count": 10,
+			"is_optional": false
+		},
+		{
+			"id": "kill_famine_ritualist",
+			"description": "Defeat the Dark Ritualist leading the curse",
+			"type": "kill",
+			"target": "dark_ritualist",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "cleanse_totem",
+			"description": "Return the cursed totem to Priestess Elara for cleansing",
+			"type": "talk",
+			"target": "priest_gaela_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_gaela_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 500,
+		"xp": 1500,
+		"items": ["cornucopia_charm", "gaelas_blessing_scroll", "gaelas_blessing_scroll"],
+		"faction_reputation": {
+			"church_of_gaela": 60,
+			"church_of_three": 50,
+			"elder_moor_citizens": 40,
+			"millbrook_farmers": 40,
+			"thornfield_citizens": 40
+		}
+	},
+	"prerequisites": ["gaela_08_seed_of_life"],
+	"required_flags": ["gaela_devotee"],
+	"next_quest": "gaela_10_lifebringer"
+}

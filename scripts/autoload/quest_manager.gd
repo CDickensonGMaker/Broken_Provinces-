@@ -7,6 +7,9 @@ signal quest_completed(quest_id: String)
 signal quest_failed(quest_id: String)
 signal quest_betrayed(quest_id: String)  # Player kept quest items or made selfish choice
 signal objective_completed(quest_id: String, objective_id: String)
+signal objective_time_expired(quest_id: String, objective_id: String)  # Timed objective ran out of time
+signal timed_objective_started(quest_id: String, objective_id: String, time_limit: int)  # Timer started
+signal timed_objective_tick(quest_id: String, objective_id: String, time_remaining: float)  # Timer update
 signal tracked_quest_changed(quest_id: String)
 signal choice_consequence_applied(quest_id: String, choice_id: String)  # Choice consequences executed
 signal follower_recruited(follower_id: String, quest_id: String)  # Follower recruited via quest
@@ -24,6 +27,8 @@ class Quest:
 	var objectives: Array[Objective] = []
 	var rewards: Dictionary = {}  # {gold, xp, items: [{id, quantity}], faction_reputation: {faction_id: amount}, follower: "follower_id", soulstone: "soulstone_id", unlock_area: "flag_name"}
 	var prerequisites: Array[String] = []  # Quest IDs that must be completed
+	var flag_prerequisites: Array[String] = []  # Flags that must be set (e.g., "chronos_devotee", "adventurers_guild_rank_veteran")
+	var forbidden_flags: Array[String] = []  # Flags that must NOT be set (e.g., other devotee flags)
 
 	# Quest source and giver tracking
 	var quest_source: Enums.QuestSource = Enums.QuestSource.STORY
@@ -71,14 +76,16 @@ class Quest:
 class Objective:
 	var id: String
 	var description: String
-	var type: String  # "kill", "collect", "talk", "reach", "interact", "deliver_soulstone", "solve_puzzle", "recruit_follower"
-	var target: String  # Enemy ID, item ID, NPC ID, location ID, soulstone ID, puzzle flag, follower ID
+	var type: String  # "kill", "collect", "talk", "reach", "interact", "deliver_soulstone", "solve_puzzle", "recruit_follower", "wave_defense"
+	var target: String  # Enemy ID, item ID, NPC ID, location ID, soulstone ID, puzzle flag, follower ID, wave_spawner_id
 	var target_zone: String = ""  # Zone where target is located (for cross-zone markers)
 	var required_count: int = 1
 	var current_count: int = 0
 	var is_completed: bool = false
 	var is_optional: bool = false
 	var completion_method: String = ""  # How this objective was completed (for multi-path quests)
+	var time_limit: int = 0  # Time limit in seconds (0 = no limit)
+	var fail_quest_on_timeout: bool = true  # If true, failing this timed objective fails the entire quest
 
 	## Dungeon spawn configuration (for spawning quest-specific content in dungeons)
 	## Format: {dungeon_id, room_type, spawn_type, entity_id, guaranteed_count}
@@ -123,6 +130,13 @@ var bounty_cooldowns: Dictionary = {}
 ## Default cooldown for bounties (5 in-game days)
 const DEFAULT_BOUNTY_COOLDOWN_DAYS := 5
 
+## Timed objectives tracking
+## Key: "quest_id:objective_id", Value: remaining time in seconds (float)
+var _timed_objectives: Dictionary = {}
+
+## Paused timed objectives (for cutscenes, menus, etc.)
+var _paused_timers: Dictionary = {}  # Same key format as _timed_objectives
+
 func _ready() -> void:
 	_load_quest_database()
 	# Defer signal connection to ensure other managers are ready
@@ -145,6 +159,250 @@ func _connect_signals() -> void:
 	# Connect to InventoryManager for temptation tracking (equipping quest items)
 	if InventoryManager and InventoryManager.has_signal("equipment_changed"):
 		InventoryManager.equipment_changed.connect(_on_equipment_changed)
+
+	# Connect to own signals for timed objective management
+	objective_completed.connect(_on_objective_completed_for_timer)
+
+
+func _process(delta: float) -> void:
+	_update_timed_objectives(delta)
+
+
+# =============================================================================
+# TIMED OBJECTIVES SYSTEM
+# =============================================================================
+
+## Update all active timed objectives
+func _update_timed_objectives(delta: float) -> void:
+	if _timed_objectives.is_empty():
+		return
+
+	# Don't tick timers when game is paused or in menu
+	if get_tree().paused:
+		return
+
+	var expired_keys: Array[String] = []
+
+	for key: String in _timed_objectives:
+		var remaining: float = _timed_objectives[key]
+		remaining -= delta
+
+		if remaining <= 0.0:
+			expired_keys.append(key)
+		else:
+			_timed_objectives[key] = remaining
+			# Emit tick signal for UI updates
+			var parts: PackedStringArray = key.split(":")
+			if parts.size() == 2:
+				timed_objective_tick.emit(parts[0], parts[1], remaining)
+
+	# Handle expired timers
+	for key: String in expired_keys:
+		_timed_objectives.erase(key)
+		var parts: PackedStringArray = key.split(":")
+		if parts.size() == 2:
+			_on_timed_objective_expired(parts[0], parts[1])
+
+
+## Called when a timed objective runs out of time
+func _on_timed_objective_expired(quest_id: String, objective_id: String) -> void:
+	if not quests.has(quest_id):
+		return
+
+	var quest: Quest = quests[quest_id]
+	if quest.state != Enums.QuestState.ACTIVE:
+		return
+
+	# Find the objective
+	var target_obj: Objective = null
+	for obj in quest.objectives:
+		if obj.id == objective_id:
+			target_obj = obj
+			break
+
+	if not target_obj or target_obj.is_completed:
+		return
+
+	# Emit the expired signal
+	objective_time_expired.emit(quest_id, objective_id)
+
+	# Show notification
+	var hud := get_tree().get_first_node_in_group("hud")
+	if hud and hud.has_method("show_notification"):
+		hud.show_notification("Time expired: %s" % target_obj.description)
+
+	# Fail quest or just mark objective as failed based on configuration
+	if target_obj.fail_quest_on_timeout:
+		fail_quest(quest_id, "timeout")
+	else:
+		# Just mark the objective as failed (optional objectives can timeout without failing quest)
+		target_obj.is_completed = true
+		target_obj.completion_method = "timeout_failed"
+		quest_updated.emit(quest_id, objective_id)
+
+
+## Start a timer for a timed objective
+func start_objective_timer(quest_id: String, objective_id: String, time_seconds: int) -> void:
+	if time_seconds <= 0:
+		return
+
+	var key: String = "%s:%s" % [quest_id, objective_id]
+	_timed_objectives[key] = float(time_seconds)
+	timed_objective_started.emit(quest_id, objective_id, time_seconds)
+
+
+## Stop/cancel a timer for a timed objective (e.g., when objective completes)
+func stop_objective_timer(quest_id: String, objective_id: String) -> void:
+	var key: String = "%s:%s" % [quest_id, objective_id]
+	_timed_objectives.erase(key)
+	_paused_timers.erase(key)
+
+
+## Pause a specific timer (useful for cutscenes)
+func pause_objective_timer(quest_id: String, objective_id: String) -> void:
+	var key: String = "%s:%s" % [quest_id, objective_id]
+	if _timed_objectives.has(key):
+		_paused_timers[key] = _timed_objectives[key]
+		_timed_objectives.erase(key)
+
+
+## Resume a paused timer
+func resume_objective_timer(quest_id: String, objective_id: String) -> void:
+	var key: String = "%s:%s" % [quest_id, objective_id]
+	if _paused_timers.has(key):
+		_timed_objectives[key] = _paused_timers[key]
+		_paused_timers.erase(key)
+
+
+## Pause all active timers
+func pause_all_timers() -> void:
+	for key: String in _timed_objectives:
+		_paused_timers[key] = _timed_objectives[key]
+	_timed_objectives.clear()
+
+
+## Resume all paused timers
+func resume_all_timers() -> void:
+	for key: String in _paused_timers:
+		_timed_objectives[key] = _paused_timers[key]
+	_paused_timers.clear()
+
+
+## Extend a timer by additional seconds
+func extend_objective_timer(quest_id: String, objective_id: String, extra_seconds: float) -> void:
+	var key: String = "%s:%s" % [quest_id, objective_id]
+	if _timed_objectives.has(key):
+		_timed_objectives[key] += extra_seconds
+	elif _paused_timers.has(key):
+		_paused_timers[key] += extra_seconds
+
+
+## Get remaining time for a timed objective (returns 0 if not timed or expired)
+func get_objective_time_remaining(quest_id: String, objective_id: String) -> float:
+	var key: String = "%s:%s" % [quest_id, objective_id]
+	if _timed_objectives.has(key):
+		return _timed_objectives[key]
+	if _paused_timers.has(key):
+		return _paused_timers[key]
+	return 0.0
+
+
+## Check if an objective timer is active
+func is_objective_timer_active(quest_id: String, objective_id: String) -> bool:
+	var key: String = "%s:%s" % [quest_id, objective_id]
+	return _timed_objectives.has(key) or _paused_timers.has(key)
+
+
+## Get the currently active timed objective for display (returns dict with quest_id, objective_id, time_remaining, description)
+## Returns empty dict if no timed objectives are active
+func get_active_timed_objective() -> Dictionary:
+	if _timed_objectives.is_empty():
+		return {}
+
+	# Return the first active timed objective (prioritize tracked quest)
+	var tracked_key: String = ""
+	if not tracked_quest_id.is_empty():
+		for key: String in _timed_objectives:
+			if key.begins_with(tracked_quest_id + ":"):
+				tracked_key = key
+				break
+
+	var key_to_use: String = tracked_key if not tracked_key.is_empty() else _timed_objectives.keys()[0]
+	var parts: PackedStringArray = key_to_use.split(":")
+
+	if parts.size() != 2:
+		return {}
+
+	var quest_id: String = parts[0]
+	var objective_id: String = parts[1]
+
+	if not quests.has(quest_id):
+		return {}
+
+	var quest: Quest = quests[quest_id]
+	for obj in quest.objectives:
+		if obj.id == objective_id:
+			return {
+				"quest_id": quest_id,
+				"objective_id": objective_id,
+				"time_remaining": _timed_objectives[key_to_use],
+				"description": obj.description,
+				"quest_title": quest.title
+			}
+
+	return {}
+
+
+## Start timers for timed objectives when a quest begins
+## Only starts timer for the first incomplete timed objective
+func _start_timed_objectives_for_quest(quest: Quest) -> void:
+	for obj in quest.objectives:
+		if obj.is_completed:
+			continue
+		if obj.time_limit > 0:
+			start_objective_timer(quest.id, obj.id, obj.time_limit)
+			# Only start timer for first timed objective
+			break
+
+
+## Called when any objective completes - stop its timer and potentially start next timed objective
+func _on_objective_completed_for_timer(quest_id: String, objective_id: String) -> void:
+	# Stop the timer for the completed objective
+	stop_objective_timer(quest_id, objective_id)
+
+	# Check if there's a next timed objective in the quest that should start
+	if not quests.has(quest_id):
+		return
+
+	var quest: Quest = quests[quest_id]
+	if quest.state != Enums.QuestState.ACTIVE:
+		return
+
+	# Find next incomplete timed objective and start its timer
+	for obj in quest.objectives:
+		if obj.is_completed:
+			continue
+		if obj.time_limit > 0 and not is_objective_timer_active(quest_id, obj.id):
+			start_objective_timer(quest_id, obj.id, obj.time_limit)
+			break
+
+
+## Clear all timers for a quest (called when quest completes or fails)
+func _clear_quest_timers(quest_id: String) -> void:
+	var keys_to_remove: Array[String] = []
+	for key: String in _timed_objectives:
+		if key.begins_with(quest_id + ":"):
+			keys_to_remove.append(key)
+	for key: String in keys_to_remove:
+		_timed_objectives.erase(key)
+
+	keys_to_remove.clear()
+	for key: String in _paused_timers:
+		if key.begins_with(quest_id + ":"):
+			keys_to_remove.append(key)
+	for key: String in keys_to_remove:
+		_paused_timers.erase(key)
+
 
 ## Handle entity killed event from combat manager (backup for spell kills via CombatManager)
 func _on_entity_killed(entity: Node, _killer: Node) -> void:
@@ -278,10 +536,22 @@ func _parse_quest(data: Dictionary) -> Quest:
 	var trigger: Variant = data.get("trigger_item", "")
 	quest.trigger_item = trigger if trigger != null else ""
 
-	# Prerequisites
+	# Prerequisites (quest IDs that must be completed)
 	var prereqs: Array = data.get("prerequisites", [])
 	for prereq in prereqs:
 		quest.prerequisites.append(str(prereq))
+
+	# Flag prerequisites (flags that must be set for quest to be available)
+	var flag_prereqs: Array = data.get("flag_prerequisites", [])
+	for flag_prereq: Variant in flag_prereqs:
+		if flag_prereq is String:
+			quest.flag_prerequisites.append(flag_prereq as String)
+
+	# Forbidden flags (flags that must NOT be set for quest to be available)
+	var forbidden: Array = data.get("forbidden_flags", [])
+	for flag_forbidden: Variant in forbidden:
+		if flag_forbidden is String:
+			quest.forbidden_flags.append(flag_forbidden as String)
 
 	# Objectives
 	for obj_data in data.get("objectives", []):
@@ -293,6 +563,9 @@ func _parse_quest(data: Dictionary) -> Quest:
 		obj.target_zone = obj_data.get("target_zone", "")
 		obj.required_count = obj_data.get("required_count", 1)
 		obj.is_optional = obj_data.get("is_optional", false)
+		# Timed objective support
+		obj.time_limit = obj_data.get("time_limit", 0)
+		obj.fail_quest_on_timeout = obj_data.get("fail_quest_on_timeout", true)
 		# Dungeon spawn configuration for quest-specific content
 		obj.dungeon_spawn = obj_data.get("dungeon_spawn", {})
 		quest.objectives.append(obj)
@@ -383,6 +656,13 @@ func start_quest(quest_id: String) -> bool:
 		if not quests.has(prereq) or quests[prereq].state != Enums.QuestState.COMPLETED:
 			return false
 
+	# Check flag prerequisites via FlagManager
+	if FlagManager:
+		if not FlagManager.check_flag_prerequisites(template.flag_prerequisites):
+			return false
+		if not FlagManager.check_forbidden_flags(template.forbidden_flags):
+			return false
+
 	# Create active quest from template
 	var quest := Quest.new()
 	quest.id = template.id
@@ -392,6 +672,8 @@ func start_quest(quest_id: String) -> bool:
 	quest.state = Enums.QuestState.ACTIVE
 	quest.rewards = template.rewards.duplicate()
 	quest.prerequisites = template.prerequisites.duplicate()
+	quest.flag_prerequisites = template.flag_prerequisites.duplicate()
+	quest.forbidden_flags = template.forbidden_flags.duplicate()
 
 	# Copy quest source and giver info
 	quest.quest_source = template.quest_source
@@ -438,6 +720,9 @@ func start_quest(quest_id: String) -> bool:
 			new_obj.target_zone = obj.target_zone
 		new_obj.required_count = obj.required_count
 		new_obj.is_optional = obj.is_optional
+		# Timed objective support
+		new_obj.time_limit = obj.time_limit
+		new_obj.fail_quest_on_timeout = obj.fail_quest_on_timeout
 		quest.objectives.append(new_obj)
 
 	# Copy spawn_on_accept, quest_items, and faction
@@ -467,6 +752,9 @@ func start_quest(quest_id: String) -> bool:
 
 	# Cache objective locations for navigation
 	_cache_objective_locations(quest_id)
+
+	# Start timers for timed objectives (only for first incomplete objective)
+	_start_timed_objectives_for_quest(quest)
 
 	return true
 
@@ -713,6 +1001,11 @@ func _resolve_objective_location(obj: Objective) -> Dictionary:
 			return _resolve_zone_location(obj.target)
 		"interact":
 			return _resolve_object_location(obj.target)
+		"escort":
+			# Escort destination - resolve the destination zone
+			if obj.target_zone != "":
+				return _resolve_zone_location(obj.target_zone)
+			return {}
 	return {}
 
 
@@ -1015,6 +1308,104 @@ func on_follower_recruited(follower_id: String) -> void:
 
 		_check_quest_completion(quest_id)
 
+
+## Track wave defense progress
+## wave_spawner_id: The ID of the WaveSpawner node's wave_defense_id
+## Called by WaveSpawner when a wave is completed
+func on_wave_defense_progress(wave_spawner_id: String) -> void:
+	for quest_id: String in quests:
+		var quest: Quest = quests[quest_id]
+		if quest.state != Enums.QuestState.ACTIVE:
+			continue
+
+		for obj in quest.objectives:
+			if obj.is_completed:
+				continue
+			if obj.type == "wave_defense" and obj.target == wave_spawner_id:
+				obj.current_count += 1
+				quest_updated.emit(quest_id, obj.id)
+
+				if obj.current_count >= obj.required_count:
+					obj.is_completed = true
+					obj.completion_method = "waves_cleared"
+					objective_completed.emit(quest_id, obj.id)
+
+		_check_quest_completion(quest_id)
+
+
+## Track wave defense completion (all waves cleared)
+## wave_spawner_id: The ID of the WaveSpawner node's wave_defense_id
+## Called by WaveSpawner when all waves are completed
+func on_wave_defense_complete(wave_spawner_id: String) -> void:
+	for quest_id: String in quests:
+		var quest: Quest = quests[quest_id]
+		if quest.state != Enums.QuestState.ACTIVE:
+			continue
+
+		for obj in quest.objectives:
+			if obj.is_completed:
+				continue
+			# Match both "wave_defense" and "wave_defense_complete" objective types
+			if (obj.type == "wave_defense" or obj.type == "wave_defense_complete") and obj.target == wave_spawner_id:
+				obj.current_count = obj.required_count  # Force complete
+				obj.is_completed = true
+				obj.completion_method = "all_waves_cleared"
+				quest_updated.emit(quest_id, obj.id)
+				objective_completed.emit(quest_id, obj.id)
+
+		_check_quest_completion(quest_id)
+
+
+## Track escort arrival at destination
+## escort_id: The escort NPC's escort_id
+## destination_id: The destination location ID reached
+func on_escort_arrived(escort_id: String, destination_id: String) -> void:
+	for quest_id: String in quests:
+		var quest: Quest = quests[quest_id]
+		if quest.state != Enums.QuestState.ACTIVE:
+			continue
+
+		for obj in quest.objectives:
+			if obj.is_completed:
+				continue
+			# Match escort objective type with matching escort_id or destination
+			if obj.type == "escort":
+				# Match by escort_id (target field) or by destination
+				if obj.target == escort_id or obj.target == destination_id:
+					obj.current_count = obj.required_count
+					obj.is_completed = true
+					obj.completion_method = "escort_arrived"
+					quest_updated.emit(quest_id, obj.id)
+					objective_completed.emit(quest_id, obj.id)
+
+		_check_quest_completion(quest_id)
+
+
+## Track escort NPC death (fails the quest)
+## escort_id: The escort NPC's escort_id
+## quest_id: Optional quest_id to fail (if known)
+func on_escort_died(escort_id: String, failed_quest_id: String = "") -> void:
+	# If quest_id is provided, fail that specific quest
+	if not failed_quest_id.is_empty() and quests.has(failed_quest_id):
+		fail_quest(failed_quest_id, "escort_died")
+		return
+
+	# Otherwise, search for quests with escort objectives matching this escort_id
+	for quest_id: String in quests:
+		var quest: Quest = quests[quest_id]
+		if quest.state != Enums.QuestState.ACTIVE:
+			continue
+
+		for obj in quest.objectives:
+			if obj.is_completed:
+				continue
+			# Check if this is an escort objective for the dead escort
+			if obj.type == "escort" and obj.target == escort_id:
+				# Fail the quest
+				fail_quest(quest_id, "escort_died")
+				break
+
+
 ## Check if quest objectives are all complete
 ## AUTO_COMPLETE quests will complete automatically, others require turn-in
 func _check_quest_completion(quest_id: String) -> void:
@@ -1121,6 +1512,9 @@ func complete_quest(quest_id: String, completion_type: Enums.QuestCompletionStat
 
 	quest_completed.emit(quest_id)
 
+	# Clear any active timers for this quest
+	_clear_quest_timers(quest_id)
+
 	# Set bounty cooldown if applicable
 	if quest.cooldown_days > 0:
 		_set_bounty_cooldown(quest_id, quest.cooldown_days)
@@ -1188,6 +1582,9 @@ func fail_quest(quest_id: String, reason: String = "") -> void:
 		# Set betrayal flag if failed via temptation
 		if reason == "temptation" and DialogueManager:
 			DialogueManager.set_dialogue_flag("betrayed_%s" % quest.faction, true)
+
+	# Clear any active timers for this quest
+	_clear_quest_timers(quest_id)
 
 	# Clear cached objective locations
 	_clear_objective_locations(quest_id)
@@ -1430,8 +1827,17 @@ func is_quest_available(quest_id: String) -> bool:
 		return false  # Already started
 
 	var template: Quest = quest_database[quest_id]
+
+	# Check quest prerequisites (other quests that must be completed)
 	for prereq in template.prerequisites:
 		if not quests.has(prereq) or quests[prereq].state != Enums.QuestState.COMPLETED:
+			return false
+
+	# Check flag prerequisites via FlagManager
+	if FlagManager:
+		if not FlagManager.check_flag_prerequisites(template.flag_prerequisites):
+			return false
+		if not FlagManager.check_forbidden_flags(template.forbidden_flags):
 			return false
 
 	return true
@@ -1923,7 +2329,7 @@ func _find_location_position(location_id: String) -> Vector3:
 
 ## Generate a dungeon for a quest (called when player enters dungeon area)
 ## Returns true if dungeon generation started successfully
-## TODO: Reimplement with Dingo Room Generator
+## Note: Uses SimpleDungeons addon for procedural generation
 func generate_quest_dungeon(quest_id: String) -> bool:
 	if not quests.has(quest_id):
 		push_warning("[QuestManager] Quest not found for dungeon generation: %s" % quest_id)
@@ -1936,8 +2342,9 @@ func generate_quest_dungeon(quest_id: String) -> bool:
 		push_warning("[QuestManager] Quest has no dungeon configuration: %s" % quest_id)
 		return false
 
-	# TODO: Dungeon generation system being reworked (switching to Dingo Room Generator)
-	push_warning("[QuestManager] Dungeon generation not yet implemented with new system")
+	# Quest dungeons use hand-crafted levels or SimpleDungeons via DungeonManager
+	# This stub exists for future procedural quest dungeon integration
+	push_warning("[QuestManager] Procedural quest dungeon generation not yet integrated")
 	return false
 
 
@@ -2024,7 +2431,8 @@ func to_dict() -> Dictionary:
 	var data := {
 		"tracked_quest_id": tracked_quest_id,
 		"quests": {},
-		"bounty_cooldowns": bounty_cooldowns.duplicate()
+		"bounty_cooldowns": bounty_cooldowns.duplicate(),
+		"timed_objectives": _timed_objectives.duplicate()
 	}
 	for quest_id in quests:
 		var quest: Quest = quests[quest_id]
@@ -2090,6 +2498,8 @@ func from_dict(data: Dictionary) -> void:
 		quest.completion_state = quests_data[quest_id].get("completion_state", Enums.QuestCompletionState.NONE)
 		quest.rewards = template.rewards.duplicate()
 		quest.prerequisites = template.prerequisites.duplicate()
+		quest.flag_prerequisites = template.flag_prerequisites.duplicate()
+		quest.forbidden_flags = template.forbidden_flags.duplicate()
 		quest.choice_consequences = template.choice_consequences.duplicate(true)
 		# Restore quest source and giver info from save or fall back to template
 		quest.quest_source = quests_data[quest_id].get("quest_source", template.quest_source)
@@ -2124,6 +2534,9 @@ func from_dict(data: Dictionary) -> void:
 			obj.target_zone = t_obj.target_zone
 			obj.required_count = t_obj.required_count
 			obj.is_optional = t_obj.is_optional
+			# Timed objective settings from template
+			obj.time_limit = t_obj.time_limit
+			obj.fail_quest_on_timeout = t_obj.fail_quest_on_timeout
 
 			# Restore progress
 			for saved in saved_objectives:
@@ -2143,6 +2556,15 @@ func from_dict(data: Dictionary) -> void:
 			# Track first active quest instead
 			var active := get_active_quests()
 			tracked_quest_id = active[0].id if active.size() > 0 else ""
+
+	# Restore timed objectives (timers that were running when saved)
+	_timed_objectives.clear()
+	_paused_timers.clear()
+	var saved_timers: Dictionary = data.get("timed_objectives", {})
+	for key: String in saved_timers:
+		var time_remaining: float = saved_timers[key]
+		if time_remaining > 0:
+			_timed_objectives[key] = time_remaining
 
 
 ## Reset quest state for a new game (called from death screen "New Game")

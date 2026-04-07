@@ -1,0 +1,50 @@
+{
+	"id": "adventurers_02_pest_control",
+	"title": "Pest Control",
+	"description": "The Dalhurst warehouse district has been overrun with giant rats. The merchants are desperate, and the Guild has been contracted to clear them out. A simple job for a new recruit - get in, kill the vermin, get paid.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "reach_warehouse",
+			"description": "Enter the infested warehouse in Dalhurst",
+			"type": "reach",
+			"target": "dalhurst_warehouse",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "kill_rats",
+			"description": "Exterminate the giant rats",
+			"type": "kill",
+			"target": "giant_rat",
+			"required_count": 12,
+			"is_optional": false
+		},
+		{
+			"id": "report_success",
+			"description": "Report the warehouse is clear",
+			"type": "talk",
+			"target": "guildmaster_vorn_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 75,
+		"xp": 250,
+		"faction_reputation": {
+			"adventurers_guild": 25,
+			"merchant_guild": 10
+		}
+	},
+	"prerequisites": ["adventurers_01_proving_ground"],
+	"next_quest": "adventurers_03_escort_duty",
+	"notes": "Rank: Initiate. Easy indoor combat. Teaches dungeon clearing. Rats spawn in Dalhurst warehouse interior."
+}

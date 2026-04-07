@@ -1,0 +1,59 @@
+{
+	"id": "mage_03_reagent_gathering",
+	"title": "Essence Collection",
+	"description": "The Arcane Circle needs fresh magical reagents for upcoming enchantments. Venture into the wilderness near Elder Moor and gather rare herbs, crystals, and essence from magical creatures. This is your final test as a Novice - succeed and you'll be promoted to Apprentice.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "archmage_elara_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "arcane_circle",
+	"objectives": [
+		{
+			"id": "collect_moonpetals",
+			"description": "Gather moonpetal flowers from Elder Moor forest",
+			"type": "collect",
+			"target": "moonpetal_flower",
+			"required_count": 5,
+			"notes": "Rare flowers found in Elder Moor wilderness"
+		},
+		{
+			"id": "collect_mana_crystals",
+			"description": "Collect mana crystals from the Crossroads area",
+			"type": "collect",
+			"target": "mana_crystal",
+			"required_count": 3,
+			"notes": "Found near magical shrines"
+		},
+		{
+			"id": "collect_spirit_essence",
+			"description": "Harvest spirit essence from undead creatures",
+			"type": "collect",
+			"target": "spirit_essence",
+			"required_count": 5,
+			"notes": "Dropped by undead enemies in the wilderness"
+		},
+		{
+			"id": "return_reagents",
+			"description": "Return the reagents to Archmage Elara",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "archmage_elara_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 125,
+		"xp": 350,
+		"items": ["apprentice_staff"],
+		"faction_reputation": {
+			"arcane_circle": 30
+		}
+	},
+	"on_complete_flags": ["arcane_circle_apprentice", "reagent_collection_complete"],
+	"prerequisites": ["library_duty_complete"],
+	"next_quest": "mage_04_enchantment_task",
+	"notes": "Final Novice quest. Promotion to Apprentice rank. Rewards magical staff. Requires wilderness exploration and combat."
+}

@@ -1,0 +1,8 @@
+{
+  "name": "Dock Worker Torval",
+  "who": "Grizzled veteran sailor with a missing finger\nSeen more than his share of strange events\nDismissive of ghost stories until recently",
+  "what": "Witness to dock incident\nHas the most detailed account but questions his own eyes\nMay require convincing to share full story",
+  "where": "Dalhurst - Docks (pier end)",
+  "sprite": "sailor_deckhand",
+  "quests": "Dock Investigation (witness)"
+}

@@ -1,0 +1,54 @@
+{
+	"id": "gaela_05_devotion_choice",
+	"title": "The Mother's Embrace",
+	"description": "Having proven your dedication to the Harvest Mother, Priestess Elara offers you the opportunity to become a Devotee of Gaela. This is a sacred commitment that will grant you deeper understanding of her domain.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "priest",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "meditate_at_shrine",
+			"description": "Meditate at Gaela's shrine in Dalhurst Temple",
+			"type": "explore",
+			"target": "dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "accept_devotion",
+			"description": "Speak with Priestess Elara to accept or decline devotion",
+			"type": "talk",
+			"target": "priest_gaela_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_gaela_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"choice_consequences": {
+		"accept_devotion": {
+			"flags_to_set": ["gaela_devotee"],
+			"reputation_changes": {
+				"church_of_gaela": 50
+			}
+		},
+		"decline_devotion": {
+			"flags_to_set": ["gaela_devotion_declined"],
+			"reputation_changes": {}
+		}
+	},
+	"rewards": {
+		"gold": 200,
+		"xp": 600,
+		"items": ["gaelas_amulet"],
+		"faction_reputation": {
+			"church_of_gaela": 30,
+			"church_of_three": 25
+		}
+	},
+	"prerequisites": ["gaela_04_sacred_grove"],
+	"next_quest": "gaela_06_blight_source"
+}

@@ -1,0 +1,630 @@
+{
+  "id": "apprentice_lyris_companion",
+  "display_name": "Apprentice Lyris - Arcane Circle Mage",
+  "description": "Companion dialogue for Apprentice Lyris, Arcane Circle elementalist mage",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Lyris",
+      "text": "Oh! You must be the one Archmage Elara mentioned! I'm Lyris - Apprentice Lyris, that is. The Circle has told me so much about your accomplishments!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The Circle said I could request a mage companion.",
+          "next": "recruitment_intro",
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "arcane_circle_questline_complete",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Tell me about your magical studies.",
+          "next": "magical_studies",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I should be going.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "greeting_companion",
+      "speaker": "Lyris",
+      "text": "I've been cataloging the arcane signatures in this area! Fascinating stuff. Oh - did you need something?",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "param": "lyris_recruited",
+          "value": 0
+        }
+      ],
+      "choices": [
+        {
+          "text": "How are you holding up?",
+          "next": "companion_status",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about yourself.",
+          "next": "personal_history",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What's your opinion on the other factions?",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Let's discuss combat tactics.",
+          "next": "tactics_discussion",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Wait here while I handle something.",
+          "next": "wait_command",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "wait",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Let's keep moving.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_intro",
+      "speaker": "Lyris",
+      "text": "Yes! Archmage Elara approved field assignments for exceptional candidates! I've been hoping for this opportunity - studying from books only teaches so much. Real-world application is where true understanding comes from!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What kind of magic do you specialize in?",
+          "next": "abilities_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'd be glad to have you along.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What about Zephyr? Is the elemental available too?",
+          "next": "mention_zephyr",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "abilities_explanation",
+      "speaker": "Lyris",
+      "text": "Elemental manipulation primarily! Fireball is my specialty - excellent for area damage. I've also mastered Frost Shield for defensive applications, and Arcane Missile for reliable damage output. The Three Laws govern all my spellwork, of course.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What are the Three Laws?",
+          "next": "three_laws",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Sounds perfect. Join me.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How do you compare to Zephyr?",
+          "next": "compare_to_zephyr",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "three_laws",
+      "speaker": "Lyris",
+      "text": "The First Law: Magic must serve, not rule. The Second Law: Balance must be maintained - every spell takes as well as gives. The Third Law: Knowledge shared is knowledge multiplied. They're the foundation of Circle philosophy!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Wise principles. Join me, and teach me more.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Interesting. I need time to decide.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "compare_to_zephyr",
+      "speaker": "Lyris",
+      "text": "Zephyr is... well, an elemental. Pure air and lightning given form. Incredibly powerful but... different. They think on timescales we can't comprehend. I offer versatility and the ability to actually explain what I'm doing! Plus, I'm easier to talk to.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I prefer having someone who can explain things. I choose you.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Let me consider my options.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "mention_zephyr",
+      "speaker": "Lyris",
+      "text": "The air elemental? Yes, Archmage Elara could assign Zephyr to you instead. They're powerful - pure elemental force! But the Circle can only spare one of us. Zephyr is more... raw power. I offer more versatility and support capabilities. Your choice!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I prefer having a mage who can strategize. I choose you.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need to think about this.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_accept_offer",
+      "speaker": "Lyris",
+      "text": "Really?! Oh, this is wonderful! I promise I won't let you down! I've been practicing combat spells for exactly this opportunity! This will be such valuable research - I mean, experience! Both!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Welcome to the team, Lyris.",
+          "next": "recruitment_accept",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "lyris_recruited",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "chose_lyris",
+              "value": 0
+            },
+            {
+              "type": "recruit_follower",
+              "param": "apprentice_lyris",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recruitment_accept",
+      "speaker": "Lyris",
+      "text": "Thank you! I'll make detailed notes of everything we encounter! The Circle will be so interested in my findings! Oh - and I'll keep you alive too, obviously. That's the primary objective. Priorities!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "magical_studies",
+      "speaker": "Lyris",
+      "text": "I've been an apprentice for six years now! Elemental magic is my specialty - fire, ice, and pure arcane energy. The Archmage says I'm progressing quickly, though I think she's just being encouraging. There's still so much to learn!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Six years? That seems like a long apprenticeship.",
+          "next": "long_apprenticeship",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What do you hope to achieve with your magic?",
+          "next": "magic_goals",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "long_apprenticeship",
+      "speaker": "Lyris",
+      "text": "Magic requires patience! Some apprentices study for decades before achieving mastery. I'm actually considered talented - scary thought, isn't it? But rush the fundamentals and you end up like the Burned Mages. Trust me, you don't want that.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "magic_goals",
+      "speaker": "Lyris",
+      "text": "I want to understand the fundamental nature of magical energy itself! Why does fire respond to some gestures but not others? Why do certain words focus power? The universe follows rules, and I want to know what they are!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "think_about_it",
+      "speaker": "Lyris",
+      "text": "Of course! Take all the time you need! I'll be here, studying the local ley line convergences. So fascinating! Let me know when you decide!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "companion_status",
+      "speaker": "Lyris",
+      "text": "Wonderfully! The field experience is invaluable - I'm learning so much! My spellcasting has improved significantly since leaving the tower. Archmage Elara was right - practical application accelerates theory. Oh, and I'm happy to be helping you too!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Glad to hear it. You've been a great help.",
+          "next": "appreciation_response",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Are you keeping up with your mana reserves?",
+          "next": "mana_check",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "appreciation_response",
+      "speaker": "Lyris",
+      "text": "Thank you! I was worried I'd be a burden at first. Book knowledge doesn't always translate to combat situations. But we make a good team! You handle the close-range threats, I provide artillery support. Textbook synergy!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "mana_check",
+      "speaker": "Lyris",
+      "text": "Currently at about seventy percent. I've been conserving by using Arcane Missiles for minor threats instead of Fireballs. Efficient resource management! The Circle drilled that into me - always maintain reserves for emergencies.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "personal_history",
+      "speaker": "Lyris",
+      "text": "I grew up in a merchant family in Larton. When I was ten, I accidentally set the kitchen on fire with my mind during an argument with my brother. The Circle sent someone to investigate, and... here I am! My family was terrified, then proud, now confused.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "That must have been frightening.",
+          "next": "frightening_discovery",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Do you still see your family?",
+          "next": "family_contact",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How did the Circle find you so quickly?",
+          "next": "circle_detection",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "frightening_discovery",
+      "speaker": "Lyris",
+      "text": "Terrifying! I didn't know what was happening. The flames just... appeared. My brother screamed, my mother threw water, and I stood there crying while everything burned. The Circle recruiter was actually quite kind about it all.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "family_contact",
+      "speaker": "Lyris",
+      "text": "I write letters every month! My brother eventually forgave me for the eyebrows - they grew back, mostly. My parents are proud now that they understand what I'm doing isn't demonic possession. The early years were... awkward.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "circle_detection",
+      "speaker": "Lyris",
+      "text": "The Circle maintains ward networks across the land! Any significant magical discharge triggers alerts. Wild talents like me are too dangerous to leave untrained - we'd accidentally destroy something important. Or ourselves. Usually ourselves.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "faction_opinions",
+      "speaker": "Lyris",
+      "text": "Oh! Faction analysis! I've studied this for my political theory courses. Let me share my observations!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What about the Adventurer's Guild?",
+          "next": "opinion_adventurers",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Thieves Guild?",
+          "next": "opinion_thieves",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Iron Company?",
+          "next": "opinion_iron_company",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's enough for now.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_adventurers",
+      "speaker": "Lyris",
+      "text": "Brave souls who delve into dangerous places for treasure and glory! The Circle works with them often - they retrieve magical artifacts we can't reach ourselves. Guildmaster Vorn has a standing agreement with Archmage Elara. Mutually beneficial!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Interesting perspective.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_thieves",
+      "speaker": "Lyris",
+      "text": "Ethically complicated! They operate outside the law, but the Circle recognizes their information networks are valuable. We've... occasionally purchased intelligence from them. Don't tell Archmage Elara I mentioned that.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Your secret is safe.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_iron_company",
+      "speaker": "Lyris",
+      "text": "Professional military excellence! The Circle respects their discipline. We've hired them for protection during dangerous research expeditions. Expensive but reliable. Captain Steele understands the value of mage support in combat operations.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Good to know.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_discussion",
+      "speaker": "Lyris",
+      "text": "Right! Combat protocols! I'll maintain position behind the front line - six to eight meters optimal. Arcane Missiles for single targets, Fireball for groups. Frost Shield goes on whoever is taking the most damage. Watch for friendly fire warnings!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What if enemies reach you?",
+          "next": "tactics_close_range",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How long can you sustain combat?",
+          "next": "tactics_endurance",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Good plan. Let's proceed.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_close_range",
+      "speaker": "Lyris",
+      "text": "Frost Shield on myself and retreat! My staff can serve as a weapon in emergencies, but honestly, if enemies are in melee range, something has gone wrong. Prevention is better than cure! Keep them away from me, please!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "tactics_endurance",
+      "speaker": "Lyris",
+      "text": "With efficient mana management? Extended engagements are feasible. I'll prioritize lower-cost spells for sustainability. In emergencies, I can channel everything into one massive Fireball, but that leaves me depleted. Use that option sparingly!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_command",
+      "speaker": "Lyris",
+      "text": "Of course! I'll study the local arcane resonances while I wait! There's always something to learn. Take your time - just not too long, please. I'm not great at defending myself alone.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_too_long",
+      "speaker": "Lyris",
+      "text": "You're back! Oh thank goodness. I was starting to worry! I documented seventeen distinct magical signatures while waiting, but I'm much happier seeing you. Can we get moving? I'm a bit exposed here.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Sorry for the delay. Let's go.",
+          "next": "follow_resume",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "follow",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "A few more minutes. Keep documenting.",
+          "next": "wait_reluctant",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "follow_resume",
+      "speaker": "Lyris",
+      "text": "Wonderful! I'll share my findings on the magical signatures later - some of them were quite unusual! Lead on!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_reluctant",
+      "speaker": "Lyris",
+      "text": "O-okay. I'll keep myself busy. Just... don't be too much longer? The research is fascinating but my nerves aren't great with isolation. Academic, not adventurer, remember!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Lyris",
+      "text": "Safe travels! May the Three Laws guide your path - that's what Archmage Elara always says! Come back if you need magical assistance!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_companion",
+      "speaker": "Lyris",
+      "text": "Right! Onward to discovery! I mean, adventure! Both are good!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ],
+  "barks": {
+    "combat_start": [
+      "By the Three Laws of Magic!",
+      "Feel the power of the elements!",
+      "Knowledge is my weapon!",
+      "I will not fail my mentors!"
+    ],
+    "combat_kill": [
+      "The Circle trained me well!",
+      "Arcane energy flows through me!",
+      "Target eliminated efficiently!"
+    ],
+    "combat_low_health": [
+      "Need protection!",
+      "Frost Shield failing!",
+      "I'm not a frontline fighter!"
+    ],
+    "player_low_health": [
+      "Frost Shield incoming!",
+      "Get behind me! Relatively!",
+      "Hold on - casting healing support!"
+    ],
+    "ambient_dungeon": [
+      "The arcane energies here are fascinating...",
+      "I should document this for the Circle.",
+      "I sense powerful forces at work nearby."
+    ],
+    "ambient_town": [
+      "Magic requires constant study and practice.",
+      "Archmage Elara would be proud, I hope.",
+      "Even mundane places have magical signatures."
+    ],
+    "ambient_wilderness": [
+      "This experience is invaluable for my research.",
+      "Natural ley lines run through here!",
+      "So much to study, so little time!"
+    ],
+    "order_acknowledged": [
+      "Understood!",
+      "On it!",
+      "Casting now!",
+      "Affirmative!"
+    ],
+    "order_attack": [
+      "Fireball away!",
+      "Engaging target!",
+      "Feel my magic!"
+    ],
+    "idle_long": [
+      "Should we be moving?",
+      "I'm documenting everything, but still...",
+      "The Archmage expects progress reports!"
+    ]
+  }
+}

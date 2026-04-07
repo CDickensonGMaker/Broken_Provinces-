@@ -177,6 +177,65 @@ func _spawn_npcs() -> void:
 	willem_profile.speech_style = "informal"
 	willem.npc_profile = willem_profile
 
+	# === LARTON ELDER (at town center - remaining authority figure) ===
+	var larton_elder := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(15, 0.5, -5),  # Near town center
+		"Elder Thorne",
+		"larton_elder",
+		null, 8, 2,
+		[],  # Quests handled by Mayor Aldric
+		true  # is_talk_target
+	)
+	larton_elder.region_id = ZONE_ID
+	larton_elder.faction_id = "human_empire"
+	larton_elder.no_quest_dialogue = "I've watched this town fall apart... first the ghost pirates, then the bandits. The Mayor does what he can, but we're running out of time and food."
+	var elder_profile := NPCKnowledgeProfile.new()
+	elder_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	elder_profile.personality_traits = ["weary", "wise", "despairing", "protective"]
+	elder_profile.knowledge_tags = ["larton", "history", "ghost_pirates", "bandits", "starvation"]
+	elder_profile.base_disposition = 50
+	elder_profile.speech_style = "formal"
+	larton_elder.npc_profile = elder_profile
+
+	# === LARTON FISHERMAN (at docks - one of few still trying to fish) ===
+	var larton_fisherman := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(-38, 0.3, 35),  # Near the dock area
+		"Hardy Fisherman",
+		"larton_fisherman",
+		null, 8, 2,
+		[], true
+	)
+	larton_fisherman.region_id = ZONE_ID
+	larton_fisherman.faction_id = "human_empire"
+	larton_fisherman.no_quest_dialogue = "Can't fish if ghost ships sink your boat. Can't sell fish if bandits steal your catch. But I keep trying... what else is there?"
+	var lfisher_profile := NPCKnowledgeProfile.new()
+	lfisher_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	lfisher_profile.personality_traits = ["stubborn", "practical", "desperate"]
+	lfisher_profile.knowledge_tags = ["larton", "fishing", "harbor", "ghost_pirates"]
+	lfisher_profile.base_disposition = 45
+	larton_fisherman.npc_profile = lfisher_profile
+
+	# === LARTON SAILOR (at harbor - trapped by the blockade) ===
+	var larton_sailor := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(-40, 0.3, 45),  # Harbor area
+		"Stranded Sailor",
+		"larton_sailor",
+		null, 8, 2,
+		[], true
+	)
+	larton_sailor.region_id = ZONE_ID
+	larton_sailor.faction_id = "human_empire"
+	larton_sailor.no_quest_dialogue = "My ship's been stuck in port for weeks. The captain won't risk the blockade... those ghost ships, they come out of nowhere. One moment clear seas, the next... screaming and fire."
+	var lsailor_profile := NPCKnowledgeProfile.new()
+	lsailor_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	lsailor_profile.personality_traits = ["frustrated", "scared", "knowledgeable"]
+	lsailor_profile.knowledge_tags = ["larton", "ships", "harbor", "ghost_pirates", "blockade"]
+	lsailor_profile.base_disposition = 40
+	larton_sailor.npc_profile = lsailor_profile
+
 	# === SURVIVOR GUARDS AT HIDEOUT (2 guards) ===
 	var guard_1 := GuardNPC.spawn_guard(
 		npcs_container,

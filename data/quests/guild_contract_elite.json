@@ -1,0 +1,69 @@
+{
+	"id": "guild_contract_elite",
+	"title": "The Thornfield Terror",
+	"description": "Your first Elite contract. For weeks, something has been slaughtering livestock and destroying crops around Thornfield - entire fields reduced to ash, animals torn apart with inhuman strength. The locals whisper of a chimera: a beast with the body of a lion, wings of a dragon, and breath of fire. Standard adventurers wouldn't survive the encounter. That's why Vorn is sending you. Find the beast's lair in the hills east of Thornfield, and put it down. This is what Elite pay is for.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "investigate_thornfield_farms",
+			"description": "Investigate the destroyed farms around Thornfield",
+			"type": "reach",
+			"target": "thornfield_farmlands",
+			"required_count": 1
+		},
+		{
+			"id": "question_survivors",
+			"description": "Question survivors about the creature",
+			"type": "talk",
+			"target": "thornfield_farmer",
+			"required_count": 1
+		},
+		{
+			"id": "track_beast",
+			"description": "Track the beast to its lair in the eastern hills",
+			"type": "reach",
+			"target": "chimera_lair",
+			"required_count": 1
+		},
+		{
+			"id": "slay_chimera",
+			"description": "Slay the Thornfield Chimera",
+			"type": "kill",
+			"target": "thornfield_chimera",
+			"required_count": 1
+		},
+		{
+			"id": "collect_chimera_heart",
+			"description": "Harvest the chimera's heart as proof",
+			"type": "collect",
+			"target": "chimera_heart",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_vorn_elite",
+			"description": "Return to Guildmaster Vorn with proof of the kill",
+			"type": "talk",
+			"target": "guildmaster_vorn_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 750,
+		"xp": 2000,
+		"items": ["chimera_scale_armor"],
+		"faction_reputation": {
+			"adventurers_guild": 75,
+			"thornfield_citizens": 50
+		}
+	},
+	"prerequisites": ["guild_elite_trial"],
+	"next_quest": "",
+	"notes": "High-tier boss encounter for Elite guild members only. Chimera is boss-level enemy (level 25-30) with fire breath AoE attacks, flight mobility, and high HP. Lair is cave dungeon east of Thornfield with lesser enemies leading up to boss chamber. Chimera heart is valuable crafting material. Chimera scale armor reward is high-tier equipment with fire resistance. This quest establishes Elite contracts as significantly more dangerous and lucrative than standard guild work."
+}

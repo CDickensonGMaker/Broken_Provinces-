@@ -1,0 +1,646 @@
+{
+  "id": "sylva_swiftfoot_companion",
+  "display_name": "Sylva Swiftfoot - Guild Ranger",
+  "description": "Full companion dialogue for Sylva Swiftfoot, Adventurer's Guild elven ranger",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Sylva",
+      "text": "Greetings, traveler. The wind carried word of your accomplishments to the Guild. I am Sylva Swiftfoot.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "An elf in the Adventurer's Guild? That's unusual.",
+          "next": "elf_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I've heard you're an excellent tracker.",
+          "next": "tracker_response",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Would you be interested in joining my company?",
+          "next": "recruitment_pitch",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I should be going.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "greeting_companion",
+      "speaker": "Sylva",
+      "text": "The forest whispers of your approach. What do you need?",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "param": "sylva_recruited",
+          "value": 0
+        }
+      ],
+      "choices": [
+        {
+          "text": "How are you finding our travels?",
+          "next": "companion_status",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about your past.",
+          "next": "personal_history",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What do you think of the other factions?",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Let's discuss strategy.",
+          "next": "tactics_discussion",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Wait here. I'll be back.",
+          "next": "wait_command",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "wait",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Let's continue.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "elf_explanation",
+      "speaker": "Sylva",
+      "text": "My people tend toward isolation, it's true. But three centuries of watching the world from afar grew... tiresome. I sought to understand humans, to learn their ways. The Guild accepts all who prove themselves capable. Even elves.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Three centuries? How old are you?",
+          "next": "age_discussion",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "And what have you learned about humans?",
+          "next": "human_observation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I could use elven skills on my journey.",
+          "next": "recruitment_pitch",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "age_discussion",
+      "speaker": "Sylva",
+      "text": "In human years? Four hundred and seventeen. Still young by elven standards - barely past adulthood. My grandmother watched the founding of Dalhurst. Time moves differently when you measure life in centuries rather than decades.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "That perspective must make human concerns seem trivial.",
+          "next": "perspective_response",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Have you seen much history unfold?",
+          "next": "history_witness",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "perspective_response",
+      "speaker": "Sylva",
+      "text": "Not trivial. Urgent. You humans burn so bright precisely because your time is limited. You accomplish more in a single lifetime than many elves do in ten. It's... inspiring, actually. And terrifying.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "history_witness",
+      "speaker": "Sylva",
+      "text": "I've watched kingdoms rise and fall. Seen forests grow from saplings to ancient groves. Witnessed the same mistakes repeated across generations. History is a patient teacher, but humanity rarely listens.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "human_observation",
+      "speaker": "Sylva",
+      "text": "Humans are chaos given form. Unpredictable, passionate, capable of great cruelty and greater kindness within the same heartbeat. You don't plan for generations - you act now, consequences be damned. It's exhausting and exhilarating.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "tracker_response",
+      "speaker": "Sylva",
+      "text": "The wind carries scents invisible to human noses. The earth tells stories in tracks and bent grass. Four centuries of practice have sharpened these senses. I can track prey through a blizzard or spot an ambush before the first arrow flies.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What about your combat abilities?",
+          "next": "abilities_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Those skills would serve me well.",
+          "next": "recruitment_pitch",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "abilities_explanation",
+      "speaker": "Sylva",
+      "text": "My Aimed Shot can pierce armor at distance. I lay traps that immobilize the unwary. And my Mark Prey ability singles out dangerous enemies, making all attacks against them more effective. I prefer to fight from range, supporting allies rather than charging into melee.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "A perfect complement to a frontline fighter.",
+          "next": "recruitment_pitch",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Interesting. I'll consider it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_pitch",
+      "speaker": "Sylva",
+      "text": "You wish me to accompany you? Guildmaster Vorn permits me to choose my own path, within reason. You've proven worthy through the Guild's trials. I would not be... opposed to traveling together.",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "param": "adventurers_guild_questline_complete",
+          "value": 0
+        }
+      ],
+      "choices": [
+        {
+          "text": "Then let us walk this path together.",
+          "next": "recruitment_accept",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "sylva_recruited",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "chose_sylva",
+              "value": 0
+            },
+            {
+              "type": "recruit_follower",
+              "param": "sylva_swiftfoot",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I need time to decide.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What about Theron? Can he come too?",
+          "next": "mention_theron",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_accept",
+      "speaker": "Sylva",
+      "text": "Very well. My bow is yours to command. I shall watch the paths ahead and guard against threats you cannot yet see. Lead on - I will not miss.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "mention_theron",
+      "speaker": "Sylva",
+      "text": "Theron is... enthusiastic. A capable warrior, if somewhat loud for my tastes. The Guild can only spare one of us. His strength lies in close combat and protecting allies. I prefer to end threats before they reach us. Choose what your journey requires.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I need eyes that see farther. I choose you.",
+          "next": "recruitment_accept",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "sylva_recruited",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "chose_sylva",
+              "value": 0
+            },
+            {
+              "type": "recruit_follower",
+              "param": "sylva_swiftfoot",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Let me think on this.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "think_about_it",
+      "speaker": "Sylva",
+      "text": "Patience is a virtue my people understand well. Take the time you need. The forest does not rush, yet it endures.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "companion_status",
+      "speaker": "Sylva",
+      "text": "Human lands are loud, crowded, and the air tastes of smoke and civilization. Yet there is beauty here too - in the struggle, in the defiance against inevitable entropy. I am... content with my choice to accompany you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Do you miss your homeland?",
+          "next": "miss_home",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'm glad you're with me.",
+          "next": "glad_response",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "miss_home",
+      "speaker": "Sylva",
+      "text": "Every dawn. The morning mist through ancient trees, the song of birds my grandmother named, the peace of knowing tomorrow would be much the same as yesterday. But that peace was also a cage. I chose freedom over comfort.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "glad_response",
+      "speaker": "Sylva",
+      "text": "As am I. You have shown me more of this world in months than I saw in my first three centuries. Change, it seems, requires uncomfortable proximity.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "personal_history",
+      "speaker": "Sylva",
+      "text": "I was born in the Silverleaf Grove, far to the east. My mother was a huntress, my father a poet. An unusual pairing - she brought home meat, he transformed it into metaphor. They taught me that observation and expression are two halves of wisdom.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Why did you leave?",
+          "next": "why_leave",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Are your parents still alive?",
+          "next": "parents_status",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What drew you to the Guild?",
+          "next": "guild_reason",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "why_leave",
+      "speaker": "Sylva",
+      "text": "Elven society values tradition above all. The same songs, the same stories, the same certainties passed down unchanged through millennia. I wanted to see what lay beyond those comfortable truths. Some call it restlessness. I call it curiosity.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "parents_status",
+      "speaker": "Sylva",
+      "text": "They endure, as elves do. My mother writes that the hunts grow easier as fewer dangers roam the old forests. My father claims he has nearly finished an epic poem begun before my birth. He's been 'nearly finished' for two centuries.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "guild_reason",
+      "speaker": "Sylva",
+      "text": "The Guild judges by skill, not lineage or lifespan. When I proved I could track what others couldn't, shoot what others missed, they accepted me without question. Guildmaster Vorn sees worth in anyone willing to earn it. A refreshing philosophy.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "faction_opinions",
+      "speaker": "Sylva",
+      "text": "You wish to know how I view the powers of this land? Very well. I have observed them all.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What of the Thieves Guild?",
+          "next": "opinion_thieves",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Iron Company?",
+          "next": "opinion_iron_company",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Arcane Circle?",
+          "next": "opinion_arcane",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's enough for now.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_thieves",
+      "speaker": "Sylva",
+      "text": "Resourceful survivors. Humans romanticize theft, but I see predators exploiting weakness - no different from wolves culling sick deer. The strong take from the weak. It is nature's way, even when dressed in shadow and cunning.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "A harsh assessment.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_iron_company",
+      "speaker": "Sylva",
+      "text": "Mercenaries who have elevated contract-keeping to near-religious devotion. I respect their discipline. In a world where words mean little, they make their word mean everything. There are worse foundations for an organization.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "You sound almost admiring.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_arcane",
+      "speaker": "Sylva",
+      "text": "Human magic is... brash. Where elven mages spend decades understanding a single spell, humans throw power at problems and hope for the best. Yet their results are undeniable. Archmage Elara wields magic that would take my people centuries to develop.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Different approaches to the same art.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_discussion",
+      "speaker": "Sylva",
+      "text": "I will stay back and rain arrows upon our enemies. When I use Mark Prey, focus your attacks on that target - it will fall faster. My traps can control the battlefield if we have time to prepare. Always scout before engaging.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What if enemies close the distance?",
+          "next": "tactics_close_range",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Can you handle multiple targets?",
+          "next": "tactics_multiple",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Sound tactics. Let's move.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_close_range",
+      "speaker": "Sylva",
+      "text": "I am not helpless in melee, but it is not my strength. If enemies reach me, I will disengage and create distance. Cover my retreat if you can. A dead archer helps no one.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "tactics_multiple",
+      "speaker": "Sylva",
+      "text": "Arrows fly faster than most realize. I can loose three in the time a warrior swings twice. Against groups, I'll prioritize the most dangerous - spellcasters first, then archers, then melee. Trust my judgment on threat assessment.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_command",
+      "speaker": "Sylva",
+      "text": "I will remain here and watch for threats. Return before too long - even patient elves have limits.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_too_long",
+      "speaker": "Sylva",
+      "text": "I have waited longer than most humans live for less. But this is becoming... tedious. What keeps you?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Apologies. Come with me now.",
+          "next": "follow_resume",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "follow",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Just a while longer.",
+          "next": "wait_reluctant",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "follow_resume",
+      "speaker": "Sylva",
+      "text": "At last. Standing still does not suit me, regardless of how long I have lived.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_reluctant",
+      "speaker": "Sylva",
+      "text": "Very well. But know that my patience, while vast, is not infinite. I came to experience the world, not watch a single location for hours.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Sylva",
+      "text": "May the winds guide your path. Until we meet again.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_companion",
+      "speaker": "Sylva",
+      "text": "The path awaits. Lead on - I will watch our flanks.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ],
+  "barks": {
+    "combat_start": [
+      "My arrows fly true.",
+      "You cannot hide from elven eyes.",
+      "The hunt begins.",
+      "One shot, one kill."
+    ],
+    "combat_kill": [
+      "Target eliminated.",
+      "As expected.",
+      "The prey falls."
+    ],
+    "combat_low_health": [
+      "I need to fall back!",
+      "Too close... too close...",
+      "Cover me!"
+    ],
+    "player_low_health": [
+      "Fall back! I'll cover you!",
+      "Retreat to my position!",
+      "Don't be foolish - withdraw!"
+    ],
+    "ambient_dungeon": [
+      "The air here is stale. Ancient.",
+      "My eyes see well in darkness. Stay close.",
+      "This place has known violence for centuries."
+    ],
+    "ambient_town": [
+      "These human cities are so... loud.",
+      "Even stone walls cannot block the call of nature.",
+      "I miss the forests of my homeland."
+    ],
+    "ambient_wilderness": [
+      "Now this is more familiar.",
+      "The wind carries whispers of danger.",
+      "I can track anything through this terrain."
+    ],
+    "order_acknowledged": [
+      "Understood.",
+      "It will be done.",
+      "As you say.",
+      "I hear you."
+    ],
+    "order_attack": [
+      "Arrows loose!",
+      "Engaging!",
+      "Target acquired."
+    ],
+    "idle_long": [
+      "Waiting serves no purpose.",
+      "The prey escapes while we stand idle.",
+      "I did not leave my homeland to watch grass grow."
+    ]
+  }
+}

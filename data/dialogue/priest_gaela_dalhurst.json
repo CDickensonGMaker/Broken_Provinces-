@@ -1,0 +1,586 @@
+{
+  "id": "priest_gaela_dalhurst",
+  "display_name": "Priestess of Gaela - Dalhurst Temple",
+  "description": "Dialogue for the Priestess of Gaela in the Temple of Three Gods, Dalhurst. Includes devotee recruitment, nature/growth themes, and quest hooks.",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Priestess of Gaela",
+      "text": "Blessings of the Harvest Mother upon you, traveler. I am Elara, servant of Gaela in this temple. The earth is patient and gives freely to those who tend it with care. How may I nurture your spirit today?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me about Gaela.",
+          "next": "gaela_lore",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I wish to become a devotee of Gaela.",
+          "next": "devotee_inquiry",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "gaela_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_not_set",
+              "param": "chronos_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_not_set",
+              "param": "morthane_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I wish to dedicate myself to Gaela.",
+          "next": "already_other_devotee",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "gaela_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_set",
+              "param": "chronos_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I wish to dedicate myself to Gaela.",
+          "next": "already_other_devotee",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "gaela_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_set",
+              "param": "morthane_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Greetings, Mother Elara. I have come to serve.",
+          "next": "devotee_greeting",
+          "conditions": [
+            {
+              "type": "flag_set",
+              "param": "gaela_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Do you have any tasks for me?",
+          "next": "quest_hub_pre_devotee",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "gaela_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "How may I serve Gaela today, Mother?",
+          "next": "quest_hub_devotee",
+          "conditions": [
+            {
+              "type": "flag_set",
+              "param": "gaela_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I seek wisdom about growth and nature.",
+          "next": "nature_wisdom",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Farewell, Priestess.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "gaela_lore",
+      "speaker": "Priestess of Gaela",
+      "text": "Gaela is the Harvest Mother, the Green Lady, the Nurturer of All That Grows. She governs the cycles of planting and harvest, the flourishing of life, and the healing of wounds both physical and spiritual. Where Chronos measures time and Morthane guides souls through death, Gaela fills the moments of life with abundance and meaning. Her domain is growth, healing, community, and the sacred bond between the land and those who tend it.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What are the principles of Gaela's faith?",
+          "next": "gaela_principles",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How does Gaela relate to the other two gods?",
+          "next": "three_gods_relation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Return to previous topics.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "gaela_principles",
+      "speaker": "Priestess of Gaela",
+      "text": "The faithful of Gaela live by four principles: First, nurture what you have been given - whether land, loved ones, or your own spirit. Second, give back more than you take - the earth's gifts are not free, but earned through stewardship. Third, protect the vulnerable - the seedling needs shelter until it grows strong. Fourth, celebrate the harvest - for joy shared multiplies, and gratitude honors the Green Lady's gifts. We are gardeners of the world, tending the sacred garden of existence.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Beautiful teachings. Thank you.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "three_gods_relation",
+      "speaker": "Priestess of Gaela",
+      "text": "The Three are one family, each essential to the cycle of existence. Chronos provides the time in which all things grow. Gaela fills that time with life, growth, and abundance. Morthane receives what has lived and returns it to the earth for rebirth. Think of a garden: Chronos is the seasons, Gaela is the growth, and Morthane is the compost that enriches the soil for next year's planting. We work together, never against one another.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I see. The cycle continues.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_inquiry",
+      "speaker": "Priestess of Gaela",
+      "text": "You wish to walk in the footsteps of the Harvest Mother? This is a path of nurturing, of patience, of deep connection to the living world. A devotee of Gaela learns the sacred arts of growth and healing, tends to the community's needs, and protects the natural order from corruption. But such dedication requires a whole heart. You cannot serve another god with the same depth while walking Gaela's path. The seed cannot grow in two gardens at once.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What would I gain as a devotee?",
+          "next": "devotee_benefits",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Why must I choose only one path?",
+          "next": "devotee_exclusivity",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I am ready to embrace Gaela's path.",
+          "next": "devotee_confirmation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I must think on this longer.",
+          "next": "devotee_decline_temp",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_benefits",
+      "speaker": "Priestess of Gaela",
+      "text": "As a devotee of the Green Lady, you would receive: sacred quests that reveal the mysteries of growth, healing, and the living world; the Amulet of Gaela, blessed to enhance your connection to nature; the knowledge to combat corruption and blight wherever they spread; and the path to becoming Champion of Gaela, the Lifebringer - one who can restore life to even the most blighted lands. The harvest is bountiful for those who serve faithfully.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I am ready to become a devotee.",
+          "next": "devotee_confirmation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about the exclusivity again.",
+          "next": "devotee_exclusivity",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need more time to decide.",
+          "next": "devotee_decline_temp",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_exclusivity",
+      "speaker": "Priestess of Gaela",
+      "text": "The Three welcome all worshippers to their shrines. You may always seek blessing from any priest, pray at any altar. But devotion is like a root system - it must go deep to support growth. If you split your roots between two gardens, neither can flourish. A devotee of Gaela attunes their very soul to the rhythm of growth. This attunement cannot harmonize with the frequencies of time or death in the same way. You may honor Chronos and Morthane, but your heart would belong to the Green Lady.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand. I choose Gaela.",
+          "next": "devotee_confirmation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What if I regret this choice later?",
+          "next": "devotee_regret",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need to consider this carefully.",
+          "next": "devotee_decline_temp",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_regret",
+      "speaker": "Priestess of Gaela",
+      "text": "Gaela teaches that every choice is a seed planted. Once planted, it will grow into something - you cannot unplant a seed, only tend what grows from it. If you become a devotee and later find your heart drawn elsewhere... you would live with that choice, as we all must. The other temples would not cast you out, but their deepest mysteries would remain beyond your reach. Plant your seeds where you wish to see them grow.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I have decided. I will serve Gaela.",
+          "next": "devotee_confirmation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Then I must wait until my heart is certain.",
+          "next": "devotee_decline_temp",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_confirmation",
+      "speaker": "Priestess of Gaela",
+      "text": "You stand at the threshold of the Mother's embrace, ready to take root in sacred soil. Once spoken, these words will bind your spirit to the green world and all that grows within it. You will become a Devotee of Gaela, child of the harvest, tender of life, enemy of blight and corruption. Do you confirm this choice with your whole heart?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I confirm. I devote myself to Gaela, Mother of the Harvest.",
+          "next": "devotee_ritual",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "gaela_devotee",
+              "value": 0
+            },
+            {
+              "type": "modify_reputation",
+              "param": "church_of_gaela",
+              "value": 50
+            },
+            {
+              "type": "modify_reputation",
+              "param": "church_of_three",
+              "value": 25
+            }
+          ]
+        },
+        {
+          "text": "Wait... I am not ready.",
+          "next": "devotee_decline_temp",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_ritual",
+      "speaker": "Priestess of Gaela",
+      "text": "Then kneel upon this sacred earth, child of nature. By the turning of seasons and the sacred cycle of seed to harvest, I name you Devotee of Gaela. May your hands bring healing, may your steps nurture the land, and may your heart overflow with the abundance of the Green Lady's love. Rise now, tender of the sacred garden. You are forever changed. The deeper mysteries of our faith await your discovery.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I am honored to serve the Harvest Mother.",
+          "next": "devotee_welcome",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_welcome",
+      "speaker": "Priestess of Gaela",
+      "text": "Welcome to the family of the Green Lady, dear one. From this moment, you have access to quests that will teach you the deepest truths of growth, healing, and protection. The path to becoming Champion of Gaela - the Lifebringer - lies before you. Tend well the garden of your spirit, and it will bloom in ways you cannot yet imagine. May your harvests always be bountiful.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "devotee_decline_temp",
+      "speaker": "Priestess of Gaela",
+      "text": "Growth cannot be rushed, dear one. The seed knows when the soil is ready. Take the time you need to let this decision ripen. You are always welcome here, and the temple has need of helpers even among those who have not yet committed to devotion. When your heart is ready, I will be here to receive you into the Mother's embrace.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "already_other_devotee",
+      "speaker": "Priestess of Gaela",
+      "text": "Ah, child... I sense you have already planted your roots in another's garden. Your soul bears the mark of devotion to another of the Three. This is not a rejection - it is simply the nature of deep commitment. You may always seek blessing here, offer prayers to Gaela, and aid our temple in its works. But the path of the Green Lady's devotee is not one you can walk while tending another garden.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand. May I still help the temple?",
+          "next": "other_devotee_help",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Very well. Farewell, Priestess.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "other_devotee_help",
+      "speaker": "Priestess of Gaela",
+      "text": "Of course, dear one. The Three work in harmony, and those who serve one serve all in their own way. You may undertake tasks that benefit the temple and the community - protecting crops, gathering healing herbs, defending against corruption. These acts honor Gaela even if you walk another path. Go with the Harvest Mother's blessing, child of another's garden.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "devotee_greeting",
+      "speaker": "Priestess of Gaela",
+      "text": "Welcome home, child of the Harvest Mother. The earth rejoices to see one of its devoted tenders return. What brings you to the temple today? Do you seek wisdom, or are you ready to continue your service to the Green Lady?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I seek wisdom about growth and nature.",
+          "next": "nature_wisdom",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I am ready for sacred service.",
+          "next": "quest_hub_devotee",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about becoming Champion.",
+          "next": "champion_path",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I wished to pay my respects to the Mother.",
+          "next": "farewell_devotee",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "nature_wisdom",
+      "speaker": "Priestess of Gaela",
+      "text": "Consider the seed, child. It does not force its way through the earth - it grows with patient persistence. It does not demand sunlight - it reaches toward it naturally. The seed does not fear the darkness of the soil, for it knows that darkness nurtures the roots that will support great growth. Be like the seed: patient in adversity, persistent in growth, and always reaching toward the light while honoring the depths that sustain you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Wise words. I will remember them.",
+          "next": "greeting",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "gaela_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Thank you, Mother. I will carry this wisdom.",
+          "next": "devotee_greeting",
+          "conditions": [
+            {
+              "type": "flag_set",
+              "param": "gaela_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "champion_path",
+      "speaker": "Priestess of Gaela",
+      "text": "The path to Champion of Gaela - the Lifebringer - requires mastery of all that the Green Lady teaches. You must learn to heal the sick, purify corruption, commune with the spirits of the land, and ultimately perform the ritual that can restore life to blighted earth. The final trials will take you to the darkest corrupted places, where you must prove that Gaela's light can overcome any shadow. Only then may you bear the Verdant Robes and the title of Lifebringer.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I am ready to continue my journey.",
+          "next": "quest_hub_devotee",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I will prepare myself further.",
+          "next": "farewell_devotee",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_hub_pre_devotee",
+      "speaker": "Priestess of Gaela",
+      "text": "There is always need for those who would tend Gaela's garden. For those who have not yet committed to devotion, we offer tasks that benefit both temple and community: gathering sacred herbs, protecting farmers from beasts, helping with the harvest. These acts of service teach you the Green Lady's ways and prove your heart's intention.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What tasks are available?",
+          "next": "quest_list_pre_devotee",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Perhaps another time.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_list_pre_devotee",
+      "speaker": "Priestess of Gaela",
+      "text": "Currently, the temple has need of: helpers to gather healing herbs from the surrounding lands; protectors to guard the farms from dire beasts; and those who would carry offerings to Gaela's sacred groves. Complete these tasks, and you will grow closer to understanding the Green Lady's path. Perhaps, in time, your heart will know whether devotion calls to you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I will consider these tasks.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about becoming a devotee.",
+          "next": "devotee_inquiry",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "gaela_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_not_set",
+              "param": "chronos_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_not_set",
+              "param": "morthane_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_hub_devotee",
+      "speaker": "Priestess of Gaela",
+      "text": "As a devotee, you have access to the sacred duties that protect and nurture the living world. The deeper quests involve: rooting out sources of corruption and blight; communing with the spirits of nature; learning the arts of sacred healing; and ultimately, restoring life to lands that have been poisoned. What service calls to your heart, child of the Green Lady?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What quests are currently available?",
+          "next": "quest_list_devotee",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I will return when I am prepared.",
+          "next": "farewell_devotee",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_list_devotee",
+      "speaker": "Priestess of Gaela",
+      "text": "The sacred garden needs many tenders. Early devotees learn to identify and purge corruption from the land. Advanced servants commune with land spirits and retrieve sacred seeds of power. Those approaching mastery must confront the sources of famine and blight, and learn the Lifebringer's ritual. Each task brings you closer to becoming Champion of Gaela. Tend your path with care.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand. I will prepare.",
+          "next": "farewell_devotee",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "speaker": "Priestess of Gaela",
+      "text": "May Gaela's blessings rain upon you like gentle spring showers. May your path be green with growth and your heart fertile with kindness. Return whenever you seek nurturing or wish to serve.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_devotee",
+      "speaker": "Priestess of Gaela",
+      "text": "Go with the Harvest Mother's blessing, dear child. May your steps bring life wherever you walk, and may the green world welcome you as one of its own. Return when your spirit needs tending or when you are ready for sacred service.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

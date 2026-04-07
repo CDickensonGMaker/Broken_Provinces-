@@ -261,3 +261,121 @@ func from_dict(data: Dictionary) -> void:
 	var new_tier: MoralityTier = get_morality_tier()
 	if new_tier != old_tier:
 		tier_changed.emit(old_tier, new_tier)
+
+
+# =============================================================================
+# GAMEPLAY HOOKS - How morality affects game mechanics
+# =============================================================================
+
+## Get disposition modifier for NPC interactions based on morality
+## Returns a bonus/penalty applied to base NPC disposition
+## npc_alignment: "good", "evil", "neutral", or empty for no preference
+func get_disposition_modifier(npc_alignment: String = "") -> int:
+	var tier: MoralityTier = get_morality_tier()
+
+	match npc_alignment.to_lower():
+		"good":
+			# Good-aligned NPCs like paragons, hate vile players
+			match tier:
+				MoralityTier.PARAGON:
+					return 20
+				MoralityTier.HONORABLE:
+					return 10
+				MoralityTier.WICKED:
+					return -15
+				MoralityTier.VILE:
+					return -30
+		"evil":
+			# Evil-aligned NPCs like wicked players, hate paragons
+			match tier:
+				MoralityTier.VILE:
+					return 15
+				MoralityTier.WICKED:
+					return 10
+				MoralityTier.HONORABLE:
+					return -10
+				MoralityTier.PARAGON:
+					return -20
+		"neutral", "":
+			# Neutral NPCs slightly prefer neutrality
+			if is_neutral():
+				return 5
+			elif tier == MoralityTier.PARAGON or tier == MoralityTier.VILE:
+				return -5
+
+	return 0
+
+
+## Get shop price modifier based on morality
+## Returns a multiplier (1.0 = normal, 1.2 = 20% more expensive, 0.9 = 10% cheaper)
+func get_price_modifier() -> float:
+	var tier: MoralityTier = get_morality_tier()
+
+	match tier:
+		MoralityTier.PARAGON:
+			return 0.9   # 10% discount - merchants trust you
+		MoralityTier.HONORABLE:
+			return 0.95  # 5% discount
+		MoralityTier.WICKED:
+			return 1.1   # 10% markup - merchants wary
+		MoralityTier.VILE:
+			return 1.25  # 25% markup - merchants fear/hate you
+
+	return 1.0  # Neutral = normal prices
+
+
+## Check if morality allows an action (for dialogue gating)
+## action_type: "good_only", "evil_only", "neutral_only", "not_evil", "not_good"
+func allows_action(action_type: String) -> bool:
+	match action_type.to_lower():
+		"good_only":
+			return is_good()
+		"evil_only":
+			return is_evil()
+		"neutral_only":
+			return is_neutral()
+		"not_evil":
+			return not is_evil()
+		"not_good":
+			return not is_good()
+		"paragon":
+			return is_tier(MoralityTier.PARAGON)
+		"vile":
+			return is_tier(MoralityTier.VILE)
+
+	return true  # Unknown action type allows by default
+
+
+## Get persuasion skill bonus/penalty based on morality and NPC alignment
+func get_persuasion_modifier(npc_alignment: String = "") -> int:
+	var tier: MoralityTier = get_morality_tier()
+
+	# Extreme alignments can help with same-aligned NPCs
+	if npc_alignment.to_lower() == "good" and tier == MoralityTier.PARAGON:
+		return 3  # +3 to persuasion with good NPCs as a paragon
+	if npc_alignment.to_lower() == "evil" and tier == MoralityTier.VILE:
+		return 3  # +3 to persuasion with evil NPCs as vile
+
+	# But hurt with opposite alignment
+	if npc_alignment.to_lower() == "good" and is_evil():
+		return -2
+	if npc_alignment.to_lower() == "evil" and is_good():
+		return -2
+
+	return 0
+
+
+## Get intimidation skill modifier based on morality
+## Evil characters are more intimidating, good characters less so
+func get_intimidation_modifier() -> int:
+	var tier: MoralityTier = get_morality_tier()
+
+	match tier:
+		MoralityTier.VILE:
+			return 4   # +4 intimidation - terrifying reputation
+		MoralityTier.WICKED:
+			return 2   # +2 intimidation
+		MoralityTier.PARAGON:
+			return -2  # -2 intimidation - too noble to be scary
+
+	return 0

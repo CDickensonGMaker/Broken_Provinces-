@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="CompanionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/companion_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "theron_the_bold"
+display_name = "Theron the Bold"
+character_class = "Warrior"
+description = "A seasoned human warrior from the Adventurer's Guild. Known for his aggressive fighting style and unwavering courage in battle. Theron has spent decades honing his skills in the arena and on the battlefield, earning a reputation as one of the Guild's finest defenders."
+max_health = 150
+base_damage = 18
+armor = 25
+speed_multiplier = 0.95
+attack_cooldown = 1.4
+combat_range = 10.0
+attack_range = 2.5
+ai_behavior = 2
+combat_style = 0
+is_essential = true
+knockout_duration = 0.0
+preferred_weapons = Array[String](["sword", "shield", "mace"])
+abilities = Array[String](["shield_bash", "battle_cry", "taunt"])
+ability_use_chance = 0.25
+ranged_projectile_path = ""
+sprite_path = "res://assets/sprites/npcs/combat/male_gladiator1.png"
+sprite_h_frames = 1
+sprite_v_frames = 1
+sprite_pixel_size = 0.0320
+tint_color = Color(1.0, 1.0, 1.0, 1.0)
+unlock_type = 1
+unlock_param = "adventurers_guild_champion"
+unlock_threshold = 0
+dialogue_path = "res://data/dialogue/companions/theron_the_bold.json"
+knowledge_profile_path = ""
+combat_bark_lines = Array[String](["For the Guild!", "Stand behind me!", "You face Theron the Bold!", "Come test your steel against mine!", "I've slain worse than you!", "Hold the line!"])
+knockout_lines = Array[String](["I... can't fall here...", "Not... yet...", "Retreat... I'll hold them..."])
+recovery_lines = Array[String](["I'm not done yet!", "Back on my feet!", "The Bold does not stay down!"])

@@ -1,0 +1,78 @@
+{
+	"id": "fish_fraud",
+	"title": "Fishy Business",
+	"description": "Something's rotten in Millbrook, and it's not just the fish. The local fishermen are accusing a merchant named Hector of short-changing them on their catches and selling the fish at inflated prices in the city. The town magistrate wants an outsider to investigate - someone without ties to either party who can get to the bottom of this before it turns violent.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "magistrate_millbrook",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "millbrook",
+	"objectives": [
+		{
+			"id": "meet_magistrate",
+			"description": "Meet with Magistrate Thornbury about the dispute",
+			"type": "talk",
+			"target": "magistrate_millbrook",
+			"required_count": 1
+		},
+		{
+			"id": "interview_fishermen",
+			"description": "Interview the fishermen at the docks",
+			"type": "talk",
+			"target": "head_fisherman_millbrook",
+			"required_count": 1
+		},
+		{
+			"id": "interview_merchant",
+			"description": "Interview Hector the fish merchant",
+			"type": "talk",
+			"target": "merchant_hector",
+			"required_count": 1
+		},
+		{
+			"id": "examine_scales",
+			"description": "Examine the merchant's weighing scales",
+			"type": "interact",
+			"target": "merchant_scales",
+			"required_count": 1
+		},
+		{
+			"id": "find_evidence",
+			"description": "Search for evidence of fraud in Hector's records",
+			"type": "interact",
+			"target": "hector_ledger",
+			"required_count": 1
+		},
+		{
+			"id": "present_findings",
+			"description": "Present your findings to the Magistrate",
+			"type": "talk",
+			"target": "magistrate_millbrook",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "magistrate_millbrook",
+	"turn_in_zone": "millbrook",
+	"rewards": {
+		"gold": 100,
+		"xp": 250,
+		"items": []
+	},
+	"choice_consequences": {
+		"expose_hector": {
+			"flags_to_set": ["hector_exposed", "millbrook_justice_served"],
+			"reputation_changes": {"millbrook": 25}
+		},
+		"side_with_hector": {
+			"flags_to_set": ["hector_protected", "fishermen_betrayed"],
+			"reputation_changes": {"millbrook": -15}
+		},
+		"find_compromise": {
+			"flags_to_set": ["millbrook_compromise"],
+			"reputation_changes": {"millbrook": 10}
+		}
+	},
+	"prerequisites": [],
+	"next_quest": ""
+}

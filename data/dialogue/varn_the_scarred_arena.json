@@ -1,0 +1,222 @@
+{
+  "id": "varn_the_scarred_arena",
+  "display_name": "Varn the Scarred - Arena Introduction",
+  "description": "Dialogue for Varn the Scarred who introduces the player to the Bloodsand Arena",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Varn the Scarred",
+      "text": "You've got the look of a fighter about you. Ever consider testing your skills in the arena?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What arena?",
+          "next": "arena_intro",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "meet_the_arena_master",
+              "value": 0,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Tell me about yourself.",
+          "next": "varn_backstory",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not interested in fighting for sport.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "arena_intro",
+      "speaker": "Varn the Scarred",
+      "text": "The Bloodsand Arena. South of here, in the desert. It's where warriors go to prove themselves - or die trying. I fought there for years before I took this scar and retired. The gold is good, the glory even better... if you survive.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Sounds dangerous.",
+          "next": "danger_response",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How do I enter?",
+          "next": "enter_arena",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'm not interested in dying for entertainment.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "varn_backstory",
+      "speaker": "Varn the Scarred",
+      "text": "I earned this scar in the arena - an ogre's axe nearly took my head off. Twenty-seven victories, undefeated champion for two years. Then one mistake, one moment of overconfidence, and I'm lucky to be alive. I retired while I still could. Some fighters aren't so wise.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Do you regret fighting in the arena?",
+          "next": "regrets",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about the arena.",
+          "next": "arena_intro",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Thanks for sharing.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "regrets",
+      "speaker": "Varn the Scarred",
+      "text": "Regrets? No. I won glory, gold, and the respect of everyone who saw me fight. The scar reminds me that I'm mortal, but it also reminds me that I survived what killed lesser warriors. Would I do it again? In a heartbeat. Just with more caution.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "How do I join the arena?",
+          "next": "enter_arena",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Interesting story.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "danger_response",
+      "speaker": "Varn the Scarred",
+      "text": "Of course it's dangerous. That's the point. Civilians pay to watch warriors face death. The brave become legends. The rest become cautionary tales. But if you've got skill and courage, you can earn more in one fight than most make in a year.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm interested. How do I join?",
+          "next": "enter_arena",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Too risky for me.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "enter_arena",
+      "speaker": "Varn the Scarred",
+      "text": "The Bloodsand Arena is run by Gormund the Pitmaster. He's the one who sets up the fights and takes the bets. Travel south from Elder Moor through the desert. You'll see the arena - hard to miss. Tell Gormund that Varn sent you. He'll give you a shot.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll head there now.",
+          "next": "accept_intro_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "meet_the_arena_master",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What should I know before I go?",
+          "next": "arena_advice",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Maybe later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "arena_advice",
+      "speaker": "Varn the Scarred",
+      "text": "The arena has rules. No magic unless it's an arcane duel. No fleeing the sand. Fight until your opponent yields or dies - or until you do. Start with the lower tier fights to get a feel for it. And don't underestimate your opponents. Many have died thinking they were better than they were.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Thanks for the advice. I'll find Gormund.",
+          "next": "accept_intro_quest",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "meet_the_arena_master",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "On second thought, this isn't for me.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_intro_quest",
+      "speaker": "Varn the Scarred",
+      "text": "Good luck. If you survive your first fight, come back and tell me about it. I'll want to hear how Gormund is running things these days. And remember - in the arena, hesitation kills.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "refuse",
+      "speaker": "Varn the Scarred",
+      "text": "Not everyone has the stomach for it. No shame in that. But if you change your mind, you know where to find me.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Varn the Scarred",
+      "text": "May your blade stay sharp.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

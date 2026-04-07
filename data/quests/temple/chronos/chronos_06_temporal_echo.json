@@ -1,0 +1,87 @@
+{
+	"id": "chronos_06_temporal_echo",
+	"title": "Echoes of What Was",
+	"description": "As a Devotee of Chronos, you have been granted the gift of Temporal Sight - the ability to glimpse echoes of past events. The ruins of Willow Dale hold secrets locked in time. The Priest asks you to venture there and witness what transpired when the settlement fell. Beware - temporal guardians protect such sacred visions.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_chronos_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"faction": "church_of_chronos",
+	"objectives": [
+		{
+			"id": "enter_willow_dale",
+			"description": "Enter the Willow Dale Ruins",
+			"type": "reach",
+			"target": "willow_dale",
+			"required_count": 1
+		},
+		{
+			"id": "activate_temporal_echo",
+			"description": "Activate the Temporal Echo at the ruined shrine",
+			"type": "solve_puzzle",
+			"target": "willow_dale_temporal_shrine",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_temporal_guardians",
+			"description": "Defeat the Temporal Guardians (spectral protectors)",
+			"type": "kill",
+			"target": "temporal_guardian",
+			"required_count": 3
+		},
+		{
+			"id": "witness_vision",
+			"description": "Witness the vision of Willow Dale's fall",
+			"type": "talk",
+			"target": "temporal_echo_trigger",
+			"required_count": 1
+		},
+		{
+			"id": "report_vision",
+			"description": "Return to the Priest with what you witnessed",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_chronos_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 250,
+		"xp": 750,
+		"items": ["time_touched_blade"],
+		"faction_reputation": {
+			"church_of_chronos": 30,
+			"church_of_three": 10
+		}
+	},
+	"prerequisites": ["chronos_05_devotion_choice"],
+	"flags_required": ["chronos_devotee"],
+	"next_quest": "chronos_07_paradox",
+	"spawn_on_accept": [
+		{
+			"type": "enemy",
+			"location": "willow_dale",
+			"coords": [-490, 0, -475],
+			"enemy_type": "temporal_guardian",
+			"count": 1
+		},
+		{
+			"type": "enemy",
+			"location": "willow_dale",
+			"coords": [-480, 0, -490],
+			"enemy_type": "temporal_guardian",
+			"count": 1
+		},
+		{
+			"type": "enemy",
+			"location": "willow_dale",
+			"coords": [-475, 0, -480],
+			"enemy_type": "temporal_guardian",
+			"count": 1
+		}
+	],
+	"notes": "DESIGN INTENT: First devotee-exclusive quest. Requires 'chronos_devotee' flag to be offered. Introduces new enemy type 'temporal_guardian' - spectral/ghostly enemies that are thematic to time magic. The time_touched_blade is a unique weapon with temporal properties (chance to slow enemies on hit). This quest combines combat, puzzle-solving, and narrative revelation. The vision at the end reveals lore about Willow Dale's destruction - could tie into larger story. Temporal Echo shrine is an interactable object in Willow Dale that triggers a cutscene/dialogue."
+}

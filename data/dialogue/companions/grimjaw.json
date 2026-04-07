@@ -1,0 +1,621 @@
+{
+  "id": "grimjaw_companion",
+  "display_name": "Grimjaw - Iron Company Berserker",
+  "description": "Companion dialogue for Grimjaw, Iron Company half-orc berserker",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Grimjaw",
+      "text": "Hrm. You small one that Captain talked about. Grimjaw hear you fight good. Not die easy.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The Company said I could have one of their soldiers.",
+          "next": "recruitment_intro",
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "iron_company_questline_complete",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "You're a half-orc. That's unusual in a mercenary company.",
+          "next": "orc_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I should go.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "greeting_companion",
+      "speaker": "Grimjaw",
+      "text": "Boss! Grimjaw ready for smash! What we kill today?",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "param": "grimjaw_recruited",
+          "value": 0
+        }
+      ],
+      "choices": [
+        {
+          "text": "How are you doing, Grimjaw?",
+          "next": "companion_status",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about your past.",
+          "next": "personal_history",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What do you think of the other guilds?",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Let's talk battle tactics.",
+          "next": "tactics_discussion",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Wait here. Don't break anything.",
+          "next": "wait_command",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "wait",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Let's move out.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "orc_explanation",
+      "speaker": "Grimjaw",
+      "text": "Grimjaw not full orc. Half. Mother was human village woman. Father was... raider. Not good orc. Grimjaw born between worlds. Humans fear. Orcs mock. But Company? Company only care if Grimjaw can fight. Grimjaw can fight GOOD.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "That must have been difficult.",
+          "next": "difficult_life",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Company gave you a home.",
+          "next": "company_home",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Show me what you can do.",
+          "next": "recruitment_intro",
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "iron_company_questline_complete",
+              "value": 0
+            }
+          ],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "difficult_life",
+      "speaker": "Grimjaw",
+      "text": "Difficult? Ha! Difficult make Grimjaw strong! Every punch teach lesson. Every hungry night sharpen hunger for more. Now Grimjaw strongest in Company. Difficult was... gift.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "company_home",
+      "speaker": "Grimjaw",
+      "text": "Yes! Captain Steele see Grimjaw fight in arena. Say 'You waste killing for coins. Come fight for honor.' Grimjaw not know honor then. Now Grimjaw understand. Company is family. Better than blood family. Blood family abandon. Company stay.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "recruitment_intro",
+      "speaker": "Grimjaw",
+      "text": "Captain say Grimjaw can go with you. You proved worthy. Grimjaw happy! Sitting in barracks is boring. Want to SMASH things! You take Grimjaw on adventure?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What can you do in a fight?",
+          "next": "abilities_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Yes, come with me.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What about Sergeant Ironheart?",
+          "next": "mention_kira",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "abilities_explanation",
+      "speaker": "Grimjaw",
+      "text": "Grimjaw RAGE! Blood burns hot, hit harder, feel no pain! Cleave through many enemies with big axe! And ROAR make weak ones run away scared! When Grimjaw fight... everything dies!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Impressive! Join me.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How does that compare to Sergeant Ironheart?",
+          "next": "compare_to_kira",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need to think about it.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "compare_to_kira",
+      "speaker": "Grimjaw",
+      "text": "Sergeant Lady is good fighter. All defense and discipline. Boring! But smart. She protect, Grimjaw destroy. Different styles. She is shield. Grimjaw is AXE! You want protection or destruction?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I want destruction. You're my choice.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Let me consider both options.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "mention_kira",
+      "speaker": "Grimjaw",
+      "text": "Sergeant Lady? She is good soldier. Very... proper. Follow rules perfect. Grimjaw respect her, but she too careful. Company only send one of us. You want careful defense or wild attack? Choose!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I choose wild attack. Come with me.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need more time to decide.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_accept_offer",
+      "speaker": "Grimjaw",
+      "text": "YES! Grimjaw so happy! Finally, real fighting! Not boring guard duty. Not training against straw men. REAL enemies to smash! You not regret this! Grimjaw strongest!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Welcome to the team, Grimjaw.",
+          "next": "recruitment_accept",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "grimjaw_recruited",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "chose_grimjaw",
+              "value": 0
+            },
+            {
+              "type": "recruit_follower",
+              "param": "grimjaw",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recruitment_accept",
+      "speaker": "Grimjaw",
+      "text": "GRIMJAW READY! Point at enemies. Grimjaw make them dead. Very dead. Most dead they ever been! Let's GO!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "think_about_it",
+      "speaker": "Grimjaw",
+      "text": "Hrm. Thinking is for small ones. But okay. Grimjaw wait. Not patient, but wait. Decide fast though - Grimjaw might find other adventure!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "companion_status",
+      "speaker": "Grimjaw",
+      "text": "Grimjaw GREAT! Blood pumping, muscles ready! This adventure good. Lots of fighting. Grimjaw grateful you take orc along. Most humans... not so trusting. You different. Grimjaw like different.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "You've earned my trust, Grimjaw.",
+          "next": "trust_earned",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Any wounds bothering you?",
+          "next": "wounds_check",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "trust_earned",
+      "speaker": "Grimjaw",
+      "text": "*looks emotional* Trust is... hard for Grimjaw. Not many give it. You give trust, Grimjaw give everything. Life. Death. All of Grimjaw's strength. Is yours. Orc blood oath.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wounds_check",
+      "speaker": "Grimjaw",
+      "text": "Wounds? Ha! Grimjaw barely notice wounds. Pain just makes Grimjaw angrier. Angrier means stronger! Only wound that stop Grimjaw is death wound. And even then... Grimjaw might keep fighting little bit!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "personal_history",
+      "speaker": "Grimjaw",
+      "text": "Grimjaw born in mountain village. Mother was... captive. She die when Grimjaw small. Orcs raise Grimjaw to fight, but always mock. 'Half-blood weak!' they say. Grimjaw prove them wrong. Beat every orc who mock. Then leave.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Where did you go after leaving?",
+          "next": "after_leaving",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Do you miss the orc lands?",
+          "next": "miss_orcs",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How did you find the Iron Company?",
+          "next": "finding_company",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "after_leaving",
+      "speaker": "Grimjaw",
+      "text": "Wandered. Fought for food. Fought for coin. Arena pits mostly. Crowds loved watching half-orc smash things. Grimjaw was... entertainment. Not respected. Just feared. Is different thing.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "miss_orcs",
+      "speaker": "Grimjaw",
+      "text": "Miss? No. Orc ways are... brutal. Only strong survive. Weak ones die or become slaves. Grimjaw learned strength there, yes. But also learned cruelty is not same as strength. Company taught that. Better lesson.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "finding_company",
+      "speaker": "Grimjaw",
+      "text": "Captain Steele watch Grimjaw fight in pit. Grimjaw beat five men without stopping. Captain come after, say 'You fight like beast, but eyes show more. Come learn to fight like soldier.' Grimjaw went. Best choice ever.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "faction_opinions",
+      "speaker": "Grimjaw",
+      "text": "Other groups? Grimjaw not think about much. Captain says understand enemies. So Grimjaw try. Ask about who?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The Adventurer's Guild?",
+          "next": "opinion_adventurers",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Thieves Guild?",
+          "next": "opinion_thieves",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Arcane Circle?",
+          "next": "opinion_arcane",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's enough.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_adventurers",
+      "speaker": "Grimjaw",
+      "text": "Adventurers! Some good fighters. Some just wear shiny armor and die quick. Grimjaw respect ones who survive. Theron? He fight with honor. Good warrior. Would enjoy battle alongside. Against? Also good battle!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Simple perspective.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_thieves",
+      "speaker": "Grimjaw",
+      "text": "Thieves are... confusing. Why sneak when can SMASH? But Grimjaw admit - sneaky ones survive where strong ones fall. Sergeant Lady say 'Different tools, different jobs.' Grimjaw is hammer. They are... lockpicks? Small and twisty.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Colorful metaphor.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_arcane",
+      "speaker": "Grimjaw",
+      "text": "*nervous look* Wizards bad. Magic is... cheating. How Grimjaw supposed to fight lightning from sky? Or fire that follows? Grimjaw not afraid of much, but magic... magic scary. Don't tell anyone Grimjaw said that.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Your secret is safe.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_discussion",
+      "speaker": "Grimjaw",
+      "text": "Grimjaw tactics simple! Enemy appears. Grimjaw CHARGE! Hit hard, hit fast, hit many times! When blood gets hot, Grimjaw RAGE! Everything dies! You stay behind, pick off ones that run away. Good plan!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What if there are too many enemies?",
+          "next": "tactics_overwhelmed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Should I worry about friendly fire?",
+          "next": "tactics_friendly_fire",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Simple but effective. Let's go.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_overwhelmed",
+      "speaker": "Grimjaw",
+      "text": "Too many? MORE TO SMASH! But... Sergeant Lady taught Grimjaw sometimes retreat is okay. If Grimjaw use Intimidate, weak ones run. Then fewer to fight. Is not coward way. Is... tactical way.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "tactics_friendly_fire",
+      "speaker": "Grimjaw",
+      "text": "Grimjaw try be careful! But when RAGE hits... hard to see friend from enemy. All just red. You stay BEHIND Grimjaw. Way behind. Grimjaw swing in front, you safe in back. Is good arrangement!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_command",
+      "speaker": "Grimjaw",
+      "text": "Hrrrm. Waiting is boring. But Grimjaw obey. Will try not break things. TRY. No promises if something attacks. Then Grimjaw break THAT thing.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_too_long",
+      "speaker": "Grimjaw",
+      "text": "BOSS! Grimjaw been waiting forever! Muscles getting stiff. Brain getting bored. Bored Grimjaw is dangerous Grimjaw. Might start breaking things just for something to do!",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Sorry! Follow me now.",
+          "next": "follow_resume",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "follow",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Just a bit longer. Don't break anything.",
+          "next": "wait_reluctant",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "follow_resume",
+      "speaker": "Grimjaw",
+      "text": "FINALLY! Grimjaw was about to smash wall from boredom! Let's go find things to fight! Adventure time!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_reluctant",
+      "speaker": "Grimjaw",
+      "text": "*grumbling* Fine. But if something breaks, not Grimjaw's fault. Grimjaw warned you. Bored orc is destructive orc. Natural fact.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Grimjaw",
+      "text": "You leaving? Okay. Grimjaw go back to waiting. Boring waiting. Come back when ready for SMASHING!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_companion",
+      "speaker": "Grimjaw",
+      "text": "YES! Moving time! Grimjaw's axe is thirsty! Lead way, boss!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ],
+  "barks": {
+    "combat_start": [
+      "GRIMJAW SMASH!",
+      "Blood for the Company!",
+      "RrrrAAAAGH!",
+      "You make Grimjaw angry!"
+    ],
+    "combat_kill": [
+      "Grimjaw strongest!",
+      "Die! Die! DIE!",
+      "Too easy!"
+    ],
+    "combat_low_health": [
+      "Pain makes Grimjaw STRONGER!",
+      "Is that all you got?!",
+      "RAGE BUILDING!"
+    ],
+    "player_low_health": [
+      "Boss hurt! Grimjaw ANGRY!",
+      "Nobody hurt boss while Grimjaw lives!",
+      "PROTECT THE SMALL ONE!"
+    ],
+    "ambient_dungeon": [
+      "Grimjaw ready for fight.",
+      "Orc blood burns hot. Need battle.",
+      "Something to smash here. Grimjaw feels it."
+    ],
+    "ambient_town": [
+      "Company gave Grimjaw purpose. Grimjaw grateful.",
+      "Small ones run from Grimjaw. Smart.",
+      "Too many walls. Not enough fighting."
+    ],
+    "ambient_wilderness": [
+      "Captain Steele good leader. Grimjaw follow.",
+      "Grimjaw's axe thirsty.",
+      "Open space! Good for big swings!"
+    ],
+    "order_acknowledged": [
+      "Grimjaw do it!",
+      "YES!",
+      "Okay boss!",
+      "GRIMJAW OBEYS!"
+    ],
+    "order_attack": [
+      "CHAAARGE!",
+      "SMASH TIME!",
+      "GRIMJAW COMING!"
+    ],
+    "idle_long": [
+      "When we fight things?",
+      "Grimjaw getting bored...",
+      "Muscles need workout! Let's GO!"
+    ]
+  }
+}

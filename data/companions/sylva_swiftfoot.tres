@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="CompanionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/companion_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "sylva_swiftfoot"
+display_name = "Sylva Swiftfoot"
+character_class = "Ranger"
+description = "An elven ranger who joined the Adventurer's Guild to hone her skills. Expert marksman and tracker with keen senses developed over three centuries of life. Sylva's arrows never miss their mark, and her knowledge of nature makes her invaluable in the wilderness."
+max_health = 85
+base_damage = 22
+armor = 12
+speed_multiplier = 1.15
+attack_cooldown = 1.0
+combat_range = 18.0
+attack_range = 15.0
+ai_behavior = 0
+combat_style = 1
+is_essential = true
+knockout_duration = 0.0
+preferred_weapons = Array[String](["bow", "crossbow", "dagger"])
+abilities = Array[String](["aimed_shot", "trap", "mark_prey"])
+ability_use_chance = 0.30
+ranged_projectile_path = "res://scenes/projectiles/arrow.tscn"
+sprite_path = "res://assets/sprites/npcs/civilians/female_hunter.png"
+sprite_h_frames = 1
+sprite_v_frames = 1
+sprite_pixel_size = 0.0280
+tint_color = Color(1.0, 1.0, 1.0, 1.0)
+unlock_type = 1
+unlock_param = "adventurers_guild_champion"
+unlock_threshold = 0
+dialogue_path = "res://data/dialogue/companions/sylva_swiftfoot.json"
+knowledge_profile_path = ""
+combat_bark_lines = Array[String](["My arrows fly true.", "You cannot hide from elven eyes.", "The hunt begins.", "Nature shows no mercy to predators.", "One shot, one kill.", "Stay still... this will be quick."])
+knockout_lines = Array[String](["The forest... calls...", "I... cannot fall...", "Run... I'll cover you..."])
+recovery_lines = Array[String](["The wind guides me still.", "I return to the hunt.", "Elven resilience."])

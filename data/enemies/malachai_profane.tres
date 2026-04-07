@@ -1,0 +1,151 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/enemy_attack_data.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+id = "profane_bolt"
+display_name = "Profane Bolt"
+damage = Array[int]([10, 16, 5])
+damage_type = 5
+windup_time = 0.5
+active_time = 0.15
+recovery_time = 0.35
+cooldown = 2.0
+range_distance = 15.0
+is_ranged = true
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 22.0
+inflicts_condition = 0
+condition_chance = 0.0
+condition_duration = 0.0
+stagger_power = 0.6
+knockback_force = 2.0
+weight = 1.0
+min_range = 4.0
+max_range = 15.0
+requires_los = true
+animation_name = "cast"
+sound_effect = ""
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+id = "corruption_wave"
+display_name = "Corruption Wave"
+damage = Array[int]([14, 22, 8])
+damage_type = 5
+windup_time = 1.0
+active_time = 0.4
+recovery_time = 0.6
+cooldown = 8.0
+range_distance = 8.0
+is_ranged = true
+is_aoe = true
+aoe_radius = 6.0
+projectile_speed = 15.0
+inflicts_condition = 6
+condition_chance = 0.8
+condition_duration = 8.0
+stagger_power = 1.0
+knockback_force = 4.0
+weight = 0.5
+min_range = 0.0
+max_range = 8.0
+requires_los = true
+animation_name = "wave"
+sound_effect = ""
+
+[sub_resource type="Resource" id="3"]
+script = ExtResource("2")
+id = "dark_ritual"
+display_name = "Dark Ritual"
+damage = Array[int]([20, 35, 12])
+damage_type = 5
+windup_time = 3.0
+active_time = 0.5
+recovery_time = 1.5
+cooldown = 25.0
+range_distance = 20.0
+is_ranged = true
+is_aoe = true
+aoe_radius = 10.0
+projectile_speed = 0.0
+inflicts_condition = 5
+condition_chance = 1.0
+condition_duration = 5.0
+stagger_power = 2.0
+knockback_force = 6.0
+weight = 0.2
+min_range = 0.0
+max_range = 20.0
+requires_los = false
+animation_name = "ritual"
+sound_effect = ""
+
+[resource]
+script = ExtResource("1")
+id = "malachai_profane"
+display_name = "Malachai the Profane"
+description = "The charismatic and utterly depraved leader of the Keepers cult. Malachai believes himself chosen by dark powers to bring about a new age of blood and shadow. His mastery of forbidden rituals allows him to corrupt the very essence of life, and his fanatical followers will die gladly at his command."
+level = 35
+min_level = 30
+max_level = 45
+max_hp = 400
+armor_value = 14
+movement_speed = 3.5
+turn_speed = 5.0
+grit = 5
+agility = 6
+will = 18
+knowledge = 15
+behavior = 2
+faction = 7
+political_faction = "cult"
+aggro_range = 20.0
+attack_range = 12.0
+preferred_distance = 10.0
+flee_hp_threshold = 0.0
+is_boss = true
+attacks = Array[ExtResource("2")]([SubResource("1"), SubResource("2"), SubResource("3")])
+can_block = false
+block_chance = 0.0
+stagger_resistance = 0.4
+fire_resistance = 0.2
+frost_resistance = 0.1
+lightning_resistance = 0.1
+poison_resistance = 0.5
+necrotic_resistance = 0.8
+physical_resistance = 0.1
+fire_weakness = 0.0
+frost_weakness = 0.0
+lightning_weakness = 0.0
+holy_weakness = 0.8
+causes_horror = true
+horror_difficulty = 20
+loot_table_av = 10
+gold_drop = Array[int]([400, 700])
+guaranteed_drops = Array[String](["malachais_grimoire"])
+drop_table = {
+"cult_robes": 0.8,
+"ritual_dagger": 0.7,
+"soul_gem": 0.5,
+"dark_tome": 0.4,
+"blood_gem": 0.3
+}
+xp_reward = 900
+scene_path = ""
+icon_path = "res://assets/sprites/enemies/humanoid/cultist_red.png"
+scale = 1.2
+sprite_path = "res://assets/sprites/enemies/humanoid/cultist_red.png"
+attack_sprite_path = ""
+sprite_hframes = 1
+sprite_vframes = 1
+attack_hframes = 1
+attack_vframes = 1
+sprite_pixel_size = 0.04
+idle_sounds = Array[String](["res://assets/audio/sfx/monsters/cultist_1.wav", "res://assets/audio/sfx/monsters/cultist_2.wav"])
+attack_sounds = Array[String](["res://assets/audio/sfx/monsters/cultist_1.wav", "res://assets/audio/sfx/monsters/cultist_2.wav"])
+hurt_sounds = Array[String](["res://assets/audio/sfx/monsters/cultist_2.wav"])
+death_sounds = Array[String](["res://assets/audio/sfx/monsters/cultist_1.wav"])

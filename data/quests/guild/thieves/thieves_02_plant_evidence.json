@@ -1,0 +1,55 @@
+{
+  "id": "thieves_02_plant_evidence",
+  "title": "Framed",
+  "description": "The Guild needs a rival merchant discredited. Steal from the jeweler's shop and plant the stolen goods in Marcus the blacksmith's home. Make it look like he's the thief.",
+  "giver_npc_id": "raven_thief_contact",
+  "giver_region": "dalhurst",
+  "faction": "thieves_guild",
+  "rank_required": 0,
+  "objectives": [
+    {
+      "id": "obj_steal_jewels",
+      "type": "collect",
+      "target": "stolen_jewelry",
+      "required_count": 1,
+      "description": "Steal jewelry from the jeweler's shop"
+    },
+    {
+      "id": "obj_plant_evidence",
+      "type": "explore",
+      "target": "marcus_blacksmith_home",
+      "description": "Plant the stolen jewelry in Marcus's home"
+    },
+    {
+      "id": "obj_report_back",
+      "type": "talk",
+      "target": "raven_thief_contact",
+      "description": "Report your success to Raven"
+    }
+  ],
+  "rewards": {
+    "gold": 100,
+    "xp": 300,
+    "items": [],
+    "faction_reputation": {
+      "thieves_guild": 15
+    }
+  },
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "raven_thief_contact",
+  "turn_in_zone": "dalhurst",
+  "next_quest": "thieves_03_fence_connection",
+  "flags_set": ["thieves_framed_marcus"],
+  "moral_choice": {
+    "description": "You can choose to plant the evidence or warn Marcus instead",
+    "good_option": "Warn Marcus about the frame job",
+    "evil_option": "Plant the evidence as instructed",
+    "consequences": {
+      "warn_marcus": {
+        "faction_rep": {"thieves_guild": -5},
+        "alternative_reward": {"gold": 50, "xp": 200}
+      }
+    }
+  },
+  "notes": "Stealth and deception test. Player has moral choice. Jeweler and blacksmith should be in Dalhurst."
+}

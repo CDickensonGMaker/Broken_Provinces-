@@ -1,0 +1,76 @@
+{
+	"id": "guild_elite_trial",
+	"title": "The Elite Trial",
+	"description": "You've proven yourself capable, but Guildmaster Vorn now offers something few achieve: a chance to become an Elite member. The trial is simple in concept, brutal in execution. First, you must clear the deepest chamber of Willow Dale ruins alone - no backup, no rescue. Then, you'll face Katrina Steelwind, the Guild's champion, in single combat. Only those who pass both tests earn the black seal of an Elite adventurer - and access to the Guild's most dangerous contracts.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "accept_trial",
+			"description": "Accept the Elite Trial from Guildmaster Vorn",
+			"type": "talk",
+			"target": "guildmaster_vorn_dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "travel_willow_dale",
+			"description": "Travel to Willow Dale ruins alone",
+			"type": "reach",
+			"target": "willow_dale_depths",
+			"required_count": 1
+		},
+		{
+			"id": "clear_willow_dale_depths",
+			"description": "Survive the depths of Willow Dale and defeat the guardian",
+			"type": "kill",
+			"target": "willow_dale_guardian",
+			"required_count": 1
+		},
+		{
+			"id": "collect_trial_token",
+			"description": "Collect the Trial Token from the guardian's corpse",
+			"type": "collect",
+			"target": "elite_trial_token",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_guild",
+			"description": "Return to the Guild Hall in Dalhurst",
+			"type": "reach",
+			"target": "adventurers_guild_hall",
+			"required_count": 1
+		},
+		{
+			"id": "duel_katrina",
+			"description": "Defeat Katrina Steelwind in honorable combat",
+			"type": "kill",
+			"target": "katrina_steelwind",
+			"required_count": 1
+		},
+		{
+			"id": "receive_elite_rank",
+			"description": "Receive your Elite rank from Guildmaster Vorn",
+			"type": "talk",
+			"target": "guildmaster_vorn_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 500,
+		"xp": 1500,
+		"items": ["elite_guild_seal"],
+		"faction_reputation": {
+			"adventurers_guild": 100
+		}
+	},
+	"prerequisites": ["guild_contract_troll"],
+	"next_quest": "guild_contract_elite",
+	"unlocks_quests": ["guild_contract_elite"],
+	"notes": "Major trial quest for guild advancement. Two-part challenge: solo dungeon clear in Willow Dale depths (hard difficulty enemies + boss), then duel with NPC champion back at guild hall. Katrina is non-lethal - she yields at 25% HP and player yields if reduced to 25% (quest fails, can retry). Unlocks elite contract tier and special vendor access. Elite seal grants 10% discount at all Guild-affiliated merchants."
+}

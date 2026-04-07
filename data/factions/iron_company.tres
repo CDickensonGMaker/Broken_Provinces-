@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "iron_company"
+display_name = "Iron Company"
+description = "An elite mercenary company known for their discipline, professionalism, and adherence to contracts. Unlike common sellswords, the Iron Company operates with military precision and maintains a strict code of honor. They accept only the most challenging and lucrative contracts, from escorting noble caravans to sieging enemy fortifications."
+parent_faction = ""
+allies = ["adventurers_guild", "human_empire"]
+enemies = ["goblins", "tengers", "cultists"]
+neutrals = ["thieves_guild", "dwarves", "elves_pro_human"]
+alignment = 20
+ranks = [{"name": "Deserter", "min_reputation": -100, "benefits": []}, {"name": "Blacklisted", "min_reputation": -50, "benefits": []}, {"name": "Unknown", "min_reputation": -10, "benefits": []}, {"name": "Recruit", "min_reputation": 0, "benefits": ["barracks_access"]}, {"name": "Soldier", "min_reputation": 20, "benefits": ["barracks_access", "equipment_discount"]}, {"name": "Sergeant", "min_reputation": 40, "benefits": ["barracks_access", "equipment_discount", "training_access"]}, {"name": "Lieutenant", "min_reputation": 60, "benefits": ["barracks_access", "equipment_discount", "training_access", "officer_quarters"]}, {"name": "Captain", "min_reputation": 80, "benefits": ["barracks_access", "equipment_discount", "training_access", "officer_quarters", "command_authority"]}]
+default_reputation = -10
+joinable = true
+join_threshold = 10
+is_hidden = false
+faction_color = Color(0.5, 0.5, 0.55, 1.0)

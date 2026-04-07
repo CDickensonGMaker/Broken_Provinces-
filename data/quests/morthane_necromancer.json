@@ -1,0 +1,80 @@
+{
+	"id": "morthane_necromancer",
+	"title": "The Necromancer's Trail",
+	"description": "The necromantic totem you destroyed in the cemetery was no random artifact - it bore signs of deliberate craftsmanship. The Priest of Morthane has traced its origins to a necromancer operating near Crossroads. He asks you to find this necromancer, but warns you: not all who walk the path of death magic are purely evil. Some seek to understand the cycle, not pervert it. Your judgement will be needed.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_morthane_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "investigate_crossroads",
+			"description": "Investigate reports near Crossroads",
+			"type": "reach",
+			"target": "crossroads",
+			"required_count": 1
+		},
+		{
+			"id": "find_lair",
+			"description": "Locate the necromancer's hidden lair",
+			"type": "interact",
+			"target": "necromancer_lair_entrance",
+			"required_count": 1
+		},
+		{
+			"id": "confront_necromancer",
+			"description": "Confront the necromancer",
+			"type": "talk",
+			"target": "necromancer_valdris",
+			"required_count": 1
+		},
+		{
+			"id": "make_judgement",
+			"description": "Make your judgement on the necromancer's fate",
+			"type": "interact",
+			"target": "judgement_choice",
+			"required_count": 1
+		},
+		{
+			"id": "report_decision",
+			"description": "Report your decision to Priest of Morthane",
+			"type": "talk",
+			"target": "priest_morthane_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_morthane_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 150,
+		"xp": 500,
+		"items": [],
+		"faction_reputation": {
+			"church_of_three": 40
+		}
+	},
+	"choice_consequences": {
+		"destroy_necromancer": {
+			"flags_to_set": ["necromancer_destroyed"],
+			"reputation_changes": {
+				"church_of_three": 25
+			}
+		},
+		"spare_with_oath": {
+			"flags_to_set": ["necromancer_spared"],
+			"reputation_changes": {
+				"church_of_three": 30
+			}
+		},
+		"help_necromancer": {
+			"flags_to_set": ["necromancer_allied"],
+			"reputation_changes": {
+				"church_of_three": -10
+			}
+		}
+	},
+	"prerequisites": ["temple_undead_menace"],
+	"next_quest": "morthane_restless_soul"
+}

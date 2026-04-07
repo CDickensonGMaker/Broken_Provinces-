@@ -1,0 +1,59 @@
+{
+	"id": "gaela_06_blight_source",
+	"title": "Root of Corruption",
+	"description": "A mysterious blight is spreading from Willow Dale Ruins, corrupting the land and killing crops. As a Devotee of Gaela, you must investigate the source of this unnatural corruption and stop it.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "priest",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "investigate_willow_dale",
+			"description": "Investigate the source of the blight in Willow Dale Ruins",
+			"type": "explore",
+			"target": "willow_dale",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "find_corrupted_artifact",
+			"description": "Find the corrupted artifact causing the blight",
+			"type": "collect",
+			"target": "corrupted_stone",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "kill_blight_cultists",
+			"description": "Defeat the cultists maintaining the corruption",
+			"type": "kill",
+			"target": "dark_cultist",
+			"required_count": 6,
+			"is_optional": false
+		},
+		{
+			"id": "cleanse_artifact",
+			"description": "Return the corrupted artifact to Priestess Elara for cleansing",
+			"type": "talk",
+			"target": "priest_gaela_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_gaela_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 250,
+		"xp": 750,
+		"items": ["purifying_charm", "natures_vigor_potion", "natures_vigor_potion"],
+		"faction_reputation": {
+			"church_of_gaela": 40,
+			"church_of_three": 30
+		}
+	},
+	"prerequisites": ["gaela_05_devotion_choice"],
+	"required_flags": ["gaela_devotee"],
+	"next_quest": "gaela_07_spirit_of_land"
+}

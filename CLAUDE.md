@@ -394,6 +394,50 @@ recipe.ingredients.size()  # ERROR!
 recipe.materials.size()
 ```
 
+### DuelManager Functions (Non-lethal NPC Combat)
+```gdscript
+# Start a duel
+DuelManager.start_duel(
+    opponent_node: Node,        # The NPC to duel
+    duel_id: String = "",       # Unique ID for quest tracking
+    yield_threshold: float = 0.2,  # HP% at which opponent yields (20%)
+    duel_center: Vector3 = Vector3.ZERO,  # Arena center (auto-calculated if zero)
+    duel_radius: float = 15.0,  # Barrier radius
+    create_barrier: bool = true # Create invisible walls
+) -> bool
+
+# Duel state queries
+DuelManager.is_duel_active() -> bool
+DuelManager.is_in_duel(entity: Node) -> bool
+DuelManager.get_duel_state() -> DuelManager.DuelState
+DuelManager.get_duel_result_string() -> String  # "victory", "defeat", "draw", "none"
+
+# Duel control
+DuelManager.player_surrender() -> void  # Player yields
+DuelManager.cancel_duel() -> void       # Cancel without result
+DuelManager.force_end_duel(result: DuelManager.DuelResult) -> void
+DuelManager.restore_opponent_hp() -> void  # For rematches
+
+# Signals
+signal duel_started(opponent: Node, duel_id: String)
+signal duel_ended(result: int, opponent: Node, duel_id: String)  # result is DuelResult
+signal opponent_yielded(opponent: Node, duel_id: String)
+signal player_yielded(duel_id: String)
+signal duel_hp_changed(entity: Node, current_hp: int, max_hp: int, hp_percent: float)
+
+# Enums
+enum DuelState { INACTIVE, ACTIVE, PLAYER_WON, PLAYER_LOST, DRAW }
+enum DuelResult { PLAYER_VICTORY, PLAYER_DEFEAT, DRAW, CANCELLED }
+```
+
+**Quest Integration:**
+- Duel victories update quest progress via `QuestManager.update_progress("duel_win", duel_id, 1)`
+- Use objective type "duel_win" with target set to the duel_id
+
+**Dialogue Integration:**
+- Use `DialogueAction.start_duel(duel_id, yield_threshold)` in dialogue choices
+- ActionType: `DialogueData.ActionType.START_DUEL`
+
 ---
 
 ## BILLBOARDSPRITE API
@@ -2218,6 +2262,140 @@ FollowerManager.add_follower(follower)
 ```
 
 3. **Unlock via quest reward** in quest JSON to allow recruitment.
+
+---
+
+## GUILD RANK SYSTEM
+
+The guild rank system manages player progression through guild ranks based on **reputation AND quest completion requirements**.
+
+### Core Files
+| File | Purpose |
+|------|---------|
+| `scripts/autoload/guild_rank_manager.gd` | Manages rank progression, quest tracking |
+| `scripts/autoload/flag_manager.gd` | Stores rank flags for dialogue checks |
+| `scripts/autoload/faction_manager.gd` | Handles reputation and membership |
+
+### Supported Guilds
+
+| Guild ID | Display Name | Ranks |
+|----------|--------------|-------|
+| `adventurers_guild` | Adventurer's Guild | 6 ranks (rep + quests) |
+| `thieves_guild` | Thieves Guild | 6 ranks (rep + quests) |
+| `iron_company` | Iron Company | 5 ranks (rep only) |
+| `arcane_circle` | Arcane Circle | 5 ranks (rep only) |
+| `the_keepers` | The Keepers | 4 ranks (rep only) |
+
+### Rank Requirements
+
+**Adventurer's Guild** (requires both reputation AND guild quest completions):
+| Rank | Display Name | Rep Required | Quests Required |
+|------|--------------|--------------|-----------------|
+| 0 | Initiate | 0 | 0 (join) |
+| 1 | Journeyman | 25 | 3 |
+| 2 | Adventurer | 50 | 6 |
+| 3 | Veteran | 75 | 9 |
+| 4 | Elite | 100 | 12 |
+| 5 | Champion | 100 | 14 |
+
+**Thieves Guild** (requires both reputation AND guild quest completions):
+| Rank | Display Name | Rep Required | Quests Required |
+|------|--------------|--------------|-----------------|
+| 0 | Pickpocket | 0 | 0 (join) |
+| 1 | Cutpurse | 25 | 3 |
+| 2 | Burglar | 50 | 6 |
+| 3 | Shadowfoot | 75 | 9 |
+| 4 | Master Thief | 100 | 12 |
+| 5 | Guildmaster's Shadow | 100 | 14 |
+
+**Iron Company** (reputation only):
+| Rank | Display Name | Rep Required |
+|------|--------------|--------------|
+| 0 | Recruit | 0 (join) |
+| 1 | Soldier | 25 |
+| 2 | Sergeant | 50 |
+| 3 | Lieutenant | 75 |
+| 4 | Captain | 100 |
+
+**Arcane Circle** (reputation only):
+| Rank | Display Name | Rep Required |
+|------|--------------|--------------|
+| 0 | Novice | 0 (join) |
+| 1 | Apprentice | 25 |
+| 2 | Journeyman | 50 |
+| 3 | Magus | 75 |
+| 4 | Archmage | 100 |
+
+### GuildRankManager API
+
+```gdscript
+# Get current rank name (or empty if not a member)
+var rank: String = GuildRankManager.get_guild_rank("adventurers_guild")
+
+# Get numeric rank level (0-5, or -1 if not a member)
+var level: int = GuildRankManager.get_guild_rank_level("adventurers_guild")
+
+# Check if player has achieved a specific rank or higher
+if GuildRankManager.has_rank("adventurers_guild", "veteran"):
+    # Player is Veteran or higher
+
+# Get quest completion count for a guild
+var quests: int = GuildRankManager.get_guild_quest_count("adventurers_guild")
+
+# Check if player is a guild member
+if GuildRankManager.is_guild_member("adventurers_guild"):
+    # Player has joined the guild
+
+# Get next rank requirements
+var info: Dictionary = GuildRankManager.get_next_rank_info("adventurers_guild")
+# Returns: {name, display_name, rep_required, quests_required, rep_current, quests_current, rep_needed, quests_needed}
+
+# Get all rank info with progress
+var ranks: Array[Dictionary] = GuildRankManager.get_all_ranks_info("adventurers_guild")
+```
+
+### Signals
+```gdscript
+signal rank_promoted(guild_id: String, old_rank: String, new_rank: String, rank_level: int)
+signal rank_check_failed(guild_id: String, reason: String)
+```
+
+### How Quest Completion Is Tracked
+
+Guild quests are automatically counted when they include `faction_reputation` in rewards:
+```json
+{
+    "rewards": {
+        "faction_reputation": {
+            "adventurers_guild": 25
+        }
+    }
+}
+```
+
+When such a quest completes, `GuildRankManager` increments the quest count for that guild and checks for rank promotion.
+
+### Dialogue Integration
+
+Use FlagManager flags to gate dialogue options by rank:
+```json
+{
+    "flag_prerequisites": ["adventurers_guild_rank_veteran"]
+}
+```
+
+Available flags (set automatically when rank achieved):
+- `adventurers_guild_rank_initiate`, `_journeyman`, `_adventurer`, `_veteran`, `_elite`, `_champion`
+- `thieves_guild_rank_pickpocket`, `_cutpurse`, `_burglar`, `_shadowfoot`, `_master_thief`, `_guildmasters_shadow`
+- `iron_company_rank_recruit`, `_soldier`, `_sergeant`, `_lieutenant`, `_captain`
+- `arcane_circle_rank_novice`, `_apprentice`, `_journeyman`, `_magus`, `_archmage`
+- `keepers_rank_initiate`, `_seeker`, `_warden`, `_keeper`
+
+### Rank-Up Notification
+
+When promoted, players see: "You have been promoted to [Rank] in the [Guild]!"
+
+This notification appears via the HUD notification system.
 
 ---
 

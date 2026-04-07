@@ -1,0 +1,57 @@
+{
+	"id": "chronos_08_prophet_training",
+	"title": "Glimpses of Tomorrow",
+	"description": "You have proven yourself worthy of deeper mysteries. The Priest of Chronos offers to train you in the art of prophecy - to see not just echoes of the past, but glimpses of what may come. This training requires meditation at sacred sites across the land, opening your mind to the currents of fate. The visions may be unsettling, but knowledge of the future is the greatest gift Chronos bestows.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_chronos_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"faction": "church_of_chronos",
+	"objectives": [
+		{
+			"id": "meditate_elder_moor",
+			"description": "Meditate at the Elder Moor shrine",
+			"type": "reach",
+			"target": "elder_moor",
+			"required_count": 1
+		},
+		{
+			"id": "meditate_thornfield",
+			"description": "Meditate at the Thornfield sacred grove",
+			"type": "reach",
+			"target": "thornfield",
+			"required_count": 1
+		},
+		{
+			"id": "meditate_crossroads",
+			"description": "Meditate at the Crossroads monument",
+			"type": "reach",
+			"target": "crossroads",
+			"required_count": 1
+		},
+		{
+			"id": "receive_first_vision",
+			"description": "Receive your first true prophetic vision",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_chronos_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 350,
+		"xp": 1000,
+		"items": ["prophets_circlet"],
+		"faction_reputation": {
+			"church_of_chronos": 40,
+			"church_of_three": 15
+		}
+	},
+	"prerequisites": ["chronos_07_paradox"],
+	"flags_required": ["chronos_devotee"],
+	"next_quest": "chronos_09_timeline_threat",
+	"notes": "DESIGN INTENT: Training montage quest with narrative payoff. The three meditation sites introduce a ritual pattern. Each meditation triggers a small vision/cutscene showing fragments of possible futures - these could foreshadow later story events or player choices. The Prophet's Circlet grants +Intuition and unlocks 'Prophet's Sight' - a passive ability that occasionally shows hints about quest outcomes or hidden paths. This quest elevates the player to near-mastery of Chronos worship. The final vision received from the Priest could hint at the threat in quest 9, creating narrative flow."
+}

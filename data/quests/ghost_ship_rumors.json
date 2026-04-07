@@ -1,0 +1,58 @@
+{
+	"id": "ghost_ship_rumors",
+	"title": "Ghost Ship Rumors",
+	"description": "Fishermen at Dalhurst harbor speak in hushed tones about a phantom vessel seen drifting through the morning mist. The ship appears at dawn, crewless and silent, then vanishes before anyone can get close. The Harbor Master wants answers - is it a smuggler's trick, pirates playing games, or something far more sinister from beneath the waves?",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "harbor_master_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "talk_fishermen",
+			"description": "Question the fishermen about their sightings",
+			"type": "talk",
+			"target": "old_fisherman_dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "investigate_coast",
+			"description": "Search the western coastline for signs of the ghost ship",
+			"type": "reach",
+			"target": "dalhurst_western_shore",
+			"required_count": 1
+		},
+		{
+			"id": "find_wreckage",
+			"description": "Investigate the debris washed ashore",
+			"type": "interact",
+			"target": "ghost_ship_wreckage",
+			"required_count": 1
+		},
+		{
+			"id": "examine_cargo",
+			"description": "Examine the strange cargo from the wreck",
+			"type": "interact",
+			"target": "mysterious_cargo",
+			"required_count": 1
+		},
+		{
+			"id": "report_findings",
+			"description": "Report your findings to the Harbor Master",
+			"type": "talk",
+			"target": "harbor_master_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "harbor_master_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 125,
+		"xp": 300,
+		"items": ["sailor_spyglass"]
+	},
+	"prerequisites": [],
+	"next_quest": "harbor_ghost_ship",
+	"notes": "This quest leads into the existing harbor_ghost_ship quest, providing setup and context."
+}

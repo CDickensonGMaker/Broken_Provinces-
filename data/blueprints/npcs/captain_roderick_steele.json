@@ -1,0 +1,27 @@
+{
+  "name": "Captain Roderick Steele",
+  "who": "Grizzled mercenary captain of the Iron Company\nScarred veteran with decades of combat experience\nDisciplined, honorable, demands absolute loyalty\nRespects strength and tactical skill\nFace marked by old battle scars, steel-gray hair",
+  "what": "Commands the Iron Company mercenary guild\nRecruits and trains professional soldiers\nTakes military contracts - protection, warfare, tactical missions\nRuns operations from the Iron Hall in Dalhurst\nKnown for leading from the front, never asking soldiers to do what he won't",
+  "where": "Dalhurst - Iron Hall (fortified mercenary headquarters)",
+  "quests": "Sign the Contract (mercenary_01_enlistment), Full Iron Company quest chain (14 quests), Repeatable Contracts (mercenary_repeatable_contracts)",
+  "sprite": {
+    "type": "warrior",
+    "path": "res://assets/sprites/npcs/mercenary_captain.png",
+    "h_frames": 5,
+    "v_frames": 1,
+    "pixel_size": 0.0384,
+    "notes": "Heavy armor, battle-scarred face, commanding presence"
+  },
+  "dialogue": {
+    "archetype": "mercenary_leader",
+    "topics": ["iron_company", "contracts", "warfare", "discipline", "honor"],
+    "disposition_base": 40,
+    "notes": "Military speech patterns, direct and no-nonsense, respects proven warriors"
+  },
+  "combat": {
+    "can_fight": true,
+    "level": 45,
+    "is_essential": true,
+    "notes": "Elite warrior, only fights if Iron Hall attacked or in ceremonial duel"
+  }
+}

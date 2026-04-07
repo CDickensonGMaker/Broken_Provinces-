@@ -1248,6 +1248,9 @@ func _crew_engage_enemies() -> void:
 		if crew_member and is_instance_valid(crew_member) and crew_member is BoatCrewMember:
 			crew_member.enter_combat()
 
+	# Engage player's companions via CompanionManager
+	_engage_companions()
+
 
 ## Called when encounter ends to return crew to normal
 func _crew_stop_fighting() -> void:
@@ -1257,6 +1260,72 @@ func _crew_stop_fighting() -> void:
 	for crew_member in [helmsman, deck_hand_1, deck_hand_2]:
 		if crew_member and is_instance_valid(crew_member) and crew_member is BoatCrewMember:
 			crew_member.exit_combat()
+
+	# Disengage player's companions
+	_disengage_companions()
+
+
+# =============================================================================
+# COMPANION INTEGRATION
+# =============================================================================
+
+## Engage player's companions for boat combat
+func _engage_companions() -> void:
+	if not has_node("/root/CompanionManager"):
+		return
+
+	var cm: Node = get_node("/root/CompanionManager")
+
+	# Set up boat combat bounds (deck area)
+	var deck_bounds: AABB = _get_deck_bounds()
+	var companion_positions: Array[Vector3] = _get_companion_defense_positions()
+
+	if cm.has_method("setup_boat_combat"):
+		cm.setup_boat_combat(deck_bounds, companion_positions)
+
+	if cm.has_method("enter_combat"):
+		cm.enter_combat()
+
+
+## Disengage player's companions after combat
+func _disengage_companions() -> void:
+	if not has_node("/root/CompanionManager"):
+		return
+
+	var cm: Node = get_node("/root/CompanionManager")
+
+	if cm.has_method("end_boat_combat"):
+		cm.end_boat_combat()
+
+	if cm.has_method("exit_combat"):
+		cm.exit_combat()
+
+
+## Get the deck bounds for companion AI constraint
+func _get_deck_bounds() -> AABB:
+	# Approximate boat deck bounds
+	# Position is the minimum corner, size is the dimensions
+	# Deck surface is at Y ~2.31
+	return AABB(
+		Vector3(-4, 2.0, -7),   # Min corner (port, deck floor, stern)
+		Vector3(8, 3, 14)       # Size (width, height, length)
+	)
+
+
+## Get defense positions for companions on deck
+func _get_companion_defense_positions() -> Array[Vector3]:
+	var positions: Array[Vector3] = []
+	const DECK_Y := 2.31
+
+	# Positions spread across the deck for defense coverage
+	# These are near key defensive points on the boat
+	positions.append(Vector3(-2, DECK_Y, 3))   # Port side mid-deck
+	positions.append(Vector3(2, DECK_Y, 3))    # Starboard side mid-deck
+	positions.append(Vector3(0, DECK_Y, 0))    # Center deck
+	positions.append(Vector3(-2, DECK_Y, -3))  # Port side forward
+	positions.append(Vector3(2, DECK_Y, -3))   # Starboard side forward
+
+	return positions
 
 
 func _start_encounter(encounter: SeaEncounter) -> void:
@@ -1851,7 +1920,7 @@ func _check_enemies_remaining() -> void:
 				alive_count += 1
 				# Connect death signal if not already connected
 				if not e.died.is_connected(_on_enemy_died):
-					e.died.connect(_on_enemy_died)
+					e.died.connect(_on_enemy_died.bind(e))
 
 	if alive_count == 0 and is_in_encounter:
 		_resolve_current_encounter(BoatTravelManager.EncounterResult.VICTORY)

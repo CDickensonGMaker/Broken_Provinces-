@@ -1,0 +1,123 @@
+{
+  "id": "thieves_12_guild_traitor",
+  "title": "Shadows Within",
+  "description": "The Guildmaster summons you urgently. Someone high in the Guild hierarchy is working with the authorities - feeding them information, sabotaging jobs. She suspects her own inner circle. Investigate three lieutenants: Vex, Raven, and Magnus. The truth will shock you.",
+  "giver_npc_id": "guildmaster_nightshade",
+  "giver_region": "dalhurst",
+  "faction": "thieves_guild",
+  "rank_required": 3,
+  "objectives": [
+    {
+      "id": "obj_investigate_vex",
+      "type": "investigate",
+      "description": "Investigate Shadowmaster Vex's activities"
+    },
+    {
+      "id": "obj_investigate_raven",
+      "type": "investigate",
+      "description": "Investigate Raven's recent contacts"
+    },
+    {
+      "id": "obj_investigate_magnus",
+      "type": "investigate",
+      "description": "Investigate Magnus the Fence's dealings"
+    },
+    {
+      "id": "obj_gather_evidence",
+      "type": "collect",
+      "target": "traitor_evidence",
+      "required_count": 3,
+      "description": "Gather evidence against suspects"
+    },
+    {
+      "id": "obj_uncover_truth",
+      "type": "revelation",
+      "description": "Discover the true traitor's identity"
+    },
+    {
+      "id": "obj_confront_traitor",
+      "type": "combat_or_talk",
+      "target": "guild_high_traitor",
+      "description": "Confront the traitor"
+    }
+  ],
+  "rewards": {
+    "gold": 500,
+    "xp": 1100,
+    "items": ["nightshade_dagger"],
+    "faction_reputation": {
+      "thieves_guild": 50
+    }
+  },
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "guildmaster_nightshade",
+  "turn_in_zone": "dalhurst",
+  "next_quest": "thieves_13_right_hand",
+  "flags_set": ["thieves_inner_circle_secure", "thieves_traitor_defeated"],
+  "investigation_structure": {
+    "twist": "Evidence points to Vex, but the REAL traitor is Magnus. Vex is being framed.",
+    "suspects": [
+      {
+        "name": "shadowmaster_vex",
+        "false_evidence": ["meeting_logs_with_guards", "unexplained_wealth"],
+        "truth": "Being framed by Magnus, meetings were tracking Magnus"
+      },
+      {
+        "name": "raven_thief_contact",
+        "evidence": ["suspicious_letters", "canceled_jobs"],
+        "truth": "Letters are from family, jobs canceled because Magnus sabotaged them"
+      },
+      {
+        "name": "magnus_fence",
+        "hidden_evidence": ["coded_messages_to_magistrate", "guard_payoff_receipts"],
+        "truth": "TRUE TRAITOR - selling Guild secrets to build independent criminal empire"
+      }
+    ],
+    "revelation_trigger": {
+      "description": "Finding Magnus's hidden ledger reveals he's been embezzling and informing",
+      "location": "magnus_safehouse_willow_dale"
+    }
+  },
+  "confrontation_options": [
+    {
+      "id": "combat_magnus",
+      "description": "Fight Magnus and his hired thugs",
+      "combat_encounter": {
+        "enemies": ["magnus_fence_boss", "hired_thug", "hired_thug", "hired_thug"],
+        "difficulty": "hard"
+      },
+      "rewards": {"gold_bonus": 200}
+    },
+    {
+      "id": "persuade_surrender",
+      "description": "Convince Magnus to surrender and confess",
+      "skill_check": {"type": "persuasion", "dc": 18},
+      "success_bonus": {"xp": 200, "faction_rep": {"thieves_guild": 10}},
+      "failure": "Triggers combat"
+    },
+    {
+      "id": "accept_bribe",
+      "description": "Accept Magnus's massive bribe and let him escape",
+      "moral_alignment": "evil",
+      "rewards": {"gold": 1000, "faction_rep": {"thieves_guild": -50}},
+      "consequences": {
+        "flag_set": "thieves_betrayed_nightshade",
+        "quest_chain_ends": true,
+        "future_impact": "Expelled from Guild, Magnus becomes enemy"
+      }
+    }
+  ],
+  "consequences": {
+    "defeat_magnus": {
+      "flag_set": "magnus_defeated",
+      "vex_reaction": "Grateful, becomes close ally",
+      "guild_stability": "restored"
+    },
+    "wrongly_accuse_vex": {
+      "flag_set": "wrongly_accused_vex",
+      "faction_rep": {"thieves_guild": -30},
+      "future_impact": "Vex becomes hostile, Magnus escapes, Guild weakened"
+    }
+  },
+  "notes": "Complex investigation with misdirection. True traitor is Magnus, not obvious suspect Vex. Confrontation in Willow Dale. Rewards Nightshade Dagger (Guildmaster's personal weapon). Critical for Guild storyline."
+}

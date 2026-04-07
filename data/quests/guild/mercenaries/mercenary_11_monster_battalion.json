@@ -1,0 +1,68 @@
+{
+	"id": "mercenary_11_monster_battalion",
+	"title": "The Horde",
+	"description": "A massive goblin and orc warband is marching on Millbrook. The town militia is outnumbered three to one. Captain Steele is deploying the full Iron Company to defend the settlement. This is large-scale tactical warfare - defensive positions, siege weapons, and holding the line against overwhelming odds. Millbrook must not fall.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "captain_roderick_steele",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "iron_company",
+	"objectives": [
+		{
+			"id": "fortify_millbrook",
+			"description": "Organize defenses in Millbrook",
+			"type": "reach",
+			"target": "millbrook",
+			"required_count": 1
+		},
+		{
+			"id": "first_wave",
+			"description": "Repel the first wave of goblin scouts",
+			"type": "kill",
+			"target": "goblin_scout",
+			"required_count": 15
+		},
+		{
+			"id": "second_wave",
+			"description": "Hold the line against orc warriors",
+			"type": "kill",
+			"target": "orc_warrior",
+			"required_count": 12
+		},
+		{
+			"id": "siege_breaker",
+			"description": "Destroy the enemy siege weapons",
+			"type": "kill",
+			"target": "siege_operator",
+			"required_count": 3
+		},
+		{
+			"id": "final_wave",
+			"description": "Defeat the orc warchief and break the horde",
+			"type": "kill",
+			"target": "orc_warchief",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_captain",
+			"description": "Report Millbrook's salvation to Captain Steele",
+			"type": "talk",
+			"target": "captain_roderick_steele",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "captain_roderick_steele",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 700,
+		"xp": 1400,
+		"items": ["horde_breaker_blade"],
+		"faction_reputation": {
+			"iron_company": 80
+		}
+	},
+	"prerequisites": ["mercenary_10_noble_war"],
+	"next_quest": "mercenary_12_legendary_battle"
+}

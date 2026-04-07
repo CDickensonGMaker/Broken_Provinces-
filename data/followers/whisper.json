@@ -1,0 +1,73 @@
+{
+    "id": "whisper",
+    "display_name": "Whisper",
+    "description": "A halfling infiltrator known for her incredible speed and agility. Her dual daggers are coated in deadly poisons.",
+    "sprite_path": "res://assets/sprites/npcs/combat/thief.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0192,
+    "max_health": 45,
+    "damage": 16,
+    "armor": 5,
+    "combat_style": "melee",
+    "is_essential": true,
+    "follow_distance": 4.5,
+    "combat_range": 4.0,
+    "leash_range": 18.0,
+    "personality_traits": ["quiet", "agile", "mischievous", "loyal"],
+    "abilities": [
+        {
+            "id": "vanish",
+            "name": "Vanish",
+            "description": "Becomes completely invisible for a short duration",
+            "cooldown": 15.0,
+            "effect": "stealth",
+            "effect_duration": 8.0
+        },
+        {
+            "id": "poisoned_blade",
+            "name": "Poisoned Blade",
+            "description": "Coats weapons in poison, adding damage over time to attacks",
+            "cooldown": 25.0,
+            "effect": "poison",
+            "effect_duration": 10.0,
+            "dot_damage": 5,
+            "dot_interval": 1.0
+        },
+        {
+            "id": "distraction",
+            "name": "Distraction",
+            "description": "Creates a noise to draw enemy attention away",
+            "cooldown": 18.0,
+            "effect": "distract",
+            "effect_duration": 6.0,
+            "range": 10.0
+        }
+    ],
+    "combat_lines": [
+        "...",
+        "*quiet laughter*",
+        "They never hear me.",
+        "Small target, big problems.",
+        "The poison does its work.",
+        "Now you see me... now you don't."
+    ],
+    "idle_lines": [
+        "...",
+        "*looks around nervously*",
+        "Big folk make so much noise.",
+        "I could rob this place blind. If I wanted.",
+        "The shadows are comfortable.",
+        "You can trust me. Mostly."
+    ],
+    "recruitment_quest": "whisper_recruitment",
+    "recruitment_conditions": ["thieves_guild_questline_complete", "chose_whisper"],
+    "recruitment_location": "dalhurst",
+    "home_location": "dalhurst",
+    "faction_id": "thieves_guild",
+    "guild": "thieves_guild",
+    "companion_type": "infiltrator",
+    "weapon_type": "dual_daggers",
+    "race": "halfling",
+    "attack_speed": 1.5
+}

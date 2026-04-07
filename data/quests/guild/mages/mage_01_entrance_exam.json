@@ -1,0 +1,50 @@
+{
+	"id": "mage_01_entrance_exam",
+	"title": "The Entrance Exam",
+	"description": "Archmage Elara Moonweave of the Arcane Circle has agreed to test your aptitude for magic. You must demonstrate basic magical knowledge and prove your worth to join the guild. Travel to the Crossroads shrine and perform a simple magical ritual to gather arcane essence.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "archmage_elara_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "arcane_circle",
+	"objectives": [
+		{
+			"id": "speak_with_elara",
+			"description": "Speak with Archmage Elara about joining the Arcane Circle",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "collect_arcane_essence",
+			"description": "Gather arcane essence from the Crossroads shrine",
+			"type": "collect",
+			"target": "arcane_essence",
+			"required_count": 3,
+			"notes": "Use the Detect Magic spell Elara taught you to find essence nodes"
+		},
+		{
+			"id": "test_spell_knowledge",
+			"description": "Demonstrate basic spell knowledge to Elara",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "archmage_elara_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 100,
+		"xp": 300,
+		"items": ["novice_robes", "spell_scroll_minor_heal"],
+		"faction_reputation": {
+			"arcane_circle": 25
+		}
+	},
+	"on_complete_flags": ["arcane_circle_novice", "elara_entrance_exam_passed"],
+	"prerequisites": [],
+	"next_quest": "mage_02_library_duty",
+	"notes": "First quest in Arcane Circle guild chain. Player becomes Novice rank. Rewards basic healing spell and novice robes."
+}

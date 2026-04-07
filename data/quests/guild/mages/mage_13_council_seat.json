@@ -1,0 +1,57 @@
+{
+	"id": "mage_13_council_seat",
+	"title": "The Inner Circle",
+	"description": "You have solved the unsolvable and proven your mastery of the arcane arts. Now comes the final test: a ceremonial magical duel with Archmage Elara Moonweave herself. This is not a battle to the death, but a demonstration of power, skill, and wisdom. Impress the council and take your rightful seat among the Magisters of the Arcane Circle.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "archmage_elara_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "arcane_circle",
+	"objectives": [
+		{
+			"id": "prepare_for_duel",
+			"description": "Prepare for the ceremonial duel",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "enter_dueling_arena",
+			"description": "Enter the Arcane Circle's dueling arena",
+			"type": "reach",
+			"target": "dueling_arena_dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "duel_elara",
+			"description": "Duel Archmage Elara Moonweave",
+			"type": "special_combat",
+			"target": "archmage_elara_duel",
+			"required_count": 1,
+			"notes": "Non-lethal duel, defeat by reducing HP to 25%. Elara uses all schools of magic."
+		},
+		{
+			"id": "join_council",
+			"description": "Take your seat on the Arcane Circle council",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "archmage_elara_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 1000,
+		"xp": 2000,
+		"items": ["magister_robes", "arcane_circle_signet"],
+		"faction_reputation": {
+			"arcane_circle": 100
+		}
+	},
+	"on_complete_flags": ["arcane_circle_magister", "council_member", "arcane_circle_complete"],
+	"prerequisites": ["archmage_trial_passed"],
+	"next_quest": "mage_repeatable_research",
+	"notes": "Final guild rank quest. Special boss fight (non-lethal). Rewards best robes and guild signet ring. Unlocks repeatable research quests."
+}

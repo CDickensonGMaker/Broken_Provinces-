@@ -1,0 +1,8 @@
+{
+  "name": "Fisherman Orin",
+  "who": "Weathered man with sun-darkened skin\nPatient and philosophical about life\nKnows the lake and its secrets",
+  "what": "Fishes the lake shores near Millbrook\nHas seen strange lights on the water at night\nCan provide boat for lake crossing",
+  "where": "Millbrook - Lake Shore",
+  "sprite": "fisherman_npc",
+  "quests": "Lake Mysteries, Strange Lights"
+}

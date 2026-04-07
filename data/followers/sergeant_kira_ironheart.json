@@ -1,0 +1,75 @@
+{
+    "id": "sergeant_kira_ironheart",
+    "display_name": "Sergeant Kira Ironheart",
+    "description": "A disciplined soldier of the Iron Company. Master of polearms and defensive tactics, she leads by example.",
+    "sprite_path": "res://assets/sprites/npcs/combat/female_gladiator1.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0300,
+    "max_health": 110,
+    "damage": 20,
+    "armor": 22,
+    "combat_style": "melee",
+    "is_essential": true,
+    "follow_distance": 3.0,
+    "combat_range": 8.0,
+    "leash_range": 20.0,
+    "personality_traits": ["disciplined", "stoic", "protective", "honorable"],
+    "abilities": [
+        {
+            "id": "sweeping_strike",
+            "name": "Sweeping Strike",
+            "description": "A wide arc attack that hits multiple enemies",
+            "cooldown": 10.0,
+            "damage_mult": 0.8,
+            "effect": "aoe",
+            "aoe_arc": 180,
+            "max_targets": 4
+        },
+        {
+            "id": "defensive_stance",
+            "name": "Defensive Stance",
+            "description": "Greatly increases armor but reduces movement speed",
+            "cooldown": 20.0,
+            "effect": "buff_armor",
+            "effect_duration": 12.0,
+            "armor_bonus": 30,
+            "speed_penalty": 0.5
+        },
+        {
+            "id": "rally",
+            "name": "Rally",
+            "description": "Restores health to nearby allies and removes fear effects",
+            "cooldown": 35.0,
+            "effect": "heal_allies",
+            "heal_amount": 25,
+            "range": 8.0,
+            "removes_fear": true
+        }
+    ],
+    "combat_lines": [
+        "Hold formation!",
+        "The Iron Company does not retreat!",
+        "Disciplined strikes win battles!",
+        "You face the Company's finest!",
+        "Protect your flanks!",
+        "Steel and resolve!"
+    ],
+    "idle_lines": [
+        "Discipline is the foundation of victory.",
+        "The Company's reputation is everything.",
+        "A soldier's duty never ends.",
+        "Captain Steele would approve of this mission.",
+        "Keep your weapons maintained and ready.",
+        "In formation, we are invincible."
+    ],
+    "recruitment_quest": "iron_company_champion",
+    "recruitment_conditions": ["iron_company_questline_complete", "chose_kira"],
+    "recruitment_location": "dalhurst",
+    "home_location": "dalhurst",
+    "faction_id": "iron_company",
+    "guild": "iron_company",
+    "companion_type": "soldier",
+    "weapon_type": "halberd",
+    "attack_range": 3.5
+}

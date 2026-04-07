@@ -1,0 +1,68 @@
+{
+	"id": "adventurers_04_bandit_contract",
+	"title": "Bandit Elimination",
+	"description": "As a full Guild Member, you're ready for serious contracts. A bandit camp near Crossroads has been raiding merchant caravans. The Guild has been hired to eliminate them - permanently. Clear the camp, kill the leader, and the contract is fulfilled.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "locate_camp",
+			"description": "Find the bandit camp near Crossroads",
+			"type": "reach",
+			"target": "crossroads_bandit_camp",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "kill_bandits",
+			"description": "Eliminate the bandits",
+			"type": "kill",
+			"target": "human_bandit",
+			"required_count": 8,
+			"is_optional": false
+		},
+		{
+			"id": "kill_leader",
+			"description": "Kill the bandit leader",
+			"type": "kill",
+			"target": "bandit_captain",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "report_completion",
+			"description": "Return to Guildmaster Vorn",
+			"type": "talk",
+			"target": "guildmaster_vorn_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 200,
+		"xp": 500,
+		"faction_reputation": {
+			"adventurers_guild": 50,
+			"merchant_guild": 20
+		}
+	},
+	"choice_consequences": {
+		"stealth_approach": {
+			"flags_to_set": ["bandit_contract_stealth"],
+			"reputation_changes": {"adventurers_guild": 15}
+		},
+		"frontal_assault": {
+			"flags_to_set": ["bandit_contract_direct"],
+			"reputation_changes": {"adventurers_guild": 10}
+		}
+	},
+	"prerequisites": ["adventurers_03_escort_duty"],
+	"next_quest": "adventurers_05_missing_team",
+	"notes": "Rank: Member. First real combat contract. Bandit camp spawns near Crossroads. Optional stealth approach for bonus reputation."
+}

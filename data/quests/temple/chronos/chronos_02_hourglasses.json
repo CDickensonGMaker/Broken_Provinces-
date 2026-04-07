@@ -1,0 +1,80 @@
+{
+	"id": "chronos_02_hourglasses",
+	"title": "Sands of Service",
+	"description": "The Priest of Chronos requires sacred sand from three blessed sites to craft ceremonial hourglasses. The sand must be collected from Elder Moor's old timekeeping shrine, a windswept hilltop near Thornfield, and the ruins of Willow Dale where time once stood still.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_chronos_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"faction": "church_of_chronos",
+	"objectives": [
+		{
+			"id": "collect_elder_moor_sand",
+			"description": "Collect sacred sand from Elder Moor",
+			"type": "collect",
+			"target": "elder_moor_sand",
+			"required_count": 1
+		},
+		{
+			"id": "collect_thornfield_sand",
+			"description": "Collect sacred sand from the hilltop near Thornfield",
+			"type": "collect",
+			"target": "thornfield_sand",
+			"required_count": 1
+		},
+		{
+			"id": "collect_willow_dale_sand",
+			"description": "Collect sacred sand from Willow Dale Ruins",
+			"type": "collect",
+			"target": "willow_dale_sand",
+			"required_count": 1
+		},
+		{
+			"id": "return_sands",
+			"description": "Deliver the three sands to the Priest of Chronos",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_chronos_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 75,
+		"xp": 300,
+		"items": ["ceremonial_hourglass"],
+		"faction_reputation": {
+			"church_of_chronos": 15,
+			"church_of_three": 5
+		}
+	},
+	"prerequisites": ["chronos_01_first_vision"],
+	"next_quest": "chronos_03_late_delivery",
+	"spawn_on_accept": [
+		{
+			"type": "chest",
+			"location": "elder_moor",
+			"coords": [15, 0, 20],
+			"contains": ["elder_moor_sand"],
+			"loot_tier": "common"
+		},
+		{
+			"type": "chest",
+			"location": "thornfield",
+			"coords": [310, 0, -190],
+			"contains": ["thornfield_sand"],
+			"loot_tier": "common"
+		},
+		{
+			"type": "chest",
+			"location": "willow_dale",
+			"coords": [-485, 0, -485],
+			"contains": ["willow_dale_sand"],
+			"loot_tier": "common"
+		}
+	],
+	"quest_items": ["elder_moor_sand", "thornfield_sand", "willow_dale_sand"],
+	"notes": "DESIGN INTENT: Multi-location collection quest that encourages exploration across the allowed zones. Players must visit 3 different areas, introducing them to the geography. Willow Dale is a dungeon, adding mild danger. The ceremonial_hourglass trinket is a keepsake item that can be sold or kept."
+}

@@ -1,0 +1,43 @@
+{
+	"id": "chronos_03_late_delivery",
+	"title": "Time-Sensitive",
+	"description": "The Priest of Chronos has received an urgent prophecy that must reach the High Chronist in Thornfield before nightfall. Time itself seems to press against you - bandits have been spotted on the roads, and delay could mean the prophecy's warning comes too late.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_chronos_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"faction": "church_of_chronos",
+	"objectives": [
+		{
+			"id": "receive_sealed_prophecy",
+			"description": "Receive the sealed prophecy from the Priest",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "deliver_to_thornfield",
+			"description": "Deliver the prophecy to the High Chronist in Thornfield before nightfall",
+			"type": "talk",
+			"target": "high_chronist_thornfield",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "high_chronist_thornfield",
+	"turn_in_zone": "thornfield",
+	"rewards": {
+		"gold": 100,
+		"xp": 400,
+		"items": [],
+		"faction_reputation": {
+			"church_of_chronos": 20,
+			"church_of_three": 10
+		}
+	},
+	"prerequisites": ["chronos_02_hourglasses"],
+	"next_quest": "chronos_04_false_prophet",
+	"quest_items": ["sealed_time_prophecy"],
+	"notes": "DESIGN INTENT: Time-pressure quest (though not mechanically enforced in this version). The flavor text emphasizes urgency. Bandits on the road between Dalhurst and Thornfield provide optional combat encounters. This quest introduces the High Chronist NPC in Thornfield, who will become important later. Higher reputation reward for successful delivery."
+}

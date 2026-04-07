@@ -1,0 +1,73 @@
+{
+	"id": "thieves_guild_informant",
+	"title": "Loose Lips",
+	"description": "The Guild has a problem: someone's been selling secrets. Guard patrols have been too well-prepared, safe houses compromised, jobs falling apart before they start. The fence has identified the rat - a former member named Tomas, now drinking away his guilt at the Crossroads inn. Your orders are clear: silence him. Permanently. But there are alternatives, if you're creative. A bribe might buy his silence and future service. Or intimidate him into fleeing the region entirely. The Guild wants results - dead, bought, or gone. Your choice how to deliver.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "thieves_guild_fence",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "travel_crossroads_inn",
+			"description": "Travel to the inn at Crossroads",
+			"type": "reach",
+			"target": "crossroads_inn",
+			"required_count": 1
+		},
+		{
+			"id": "locate_tomas",
+			"description": "Find the informant Tomas inside the inn",
+			"type": "talk",
+			"target": "tomas_informant",
+			"required_count": 1
+		},
+		{
+			"id": "deal_with_tomas",
+			"description": "Deal with Tomas (kill, bribe, or intimidate)",
+			"type": "kill",
+			"target": "tomas_informant",
+			"required_count": 1,
+			"is_optional": true
+		},
+		{
+			"id": "report_to_fence",
+			"description": "Report the outcome to the Guild fence",
+			"type": "talk",
+			"target": "thieves_guild_fence",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "thieves_guild_fence",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 150,
+		"xp": 350,
+		"items": [],
+		"faction_reputation": {
+			"thieves_guild": 40
+		}
+	},
+	"choice_consequences": {
+		"killed_tomas": {
+			"flags_to_set": ["tomas_dead"],
+			"reputation_changes": {"thieves_guild": 20}
+		},
+		"bribed_tomas": {
+			"flags_to_set": ["tomas_recruited"],
+			"reputation_changes": {"thieves_guild": 30}
+		},
+		"intimidated_tomas": {
+			"flags_to_set": ["tomas_fled"],
+			"reputation_changes": {"thieves_guild": 15}
+		},
+		"let_tomas_escape": {
+			"flags_to_set": ["tomas_escaped_alive"],
+			"reputation_changes": {"thieves_guild": -40}
+		}
+	},
+	"prerequisites": ["thieves_guild_heist"],
+	"next_quest": "thieves_guild_rival",
+	"notes": "Moral choice quest with consequences. Killing is straightforward but brutal. Bribery (200 gold + DC 14 Persuasion) turns Tomas into an informant for the Guild - best outcome. Intimidation (DC 16) scares him out of the region. Letting him escape or failing to convince him results in major Guild reputation loss and he continues informing. Killing Tomas in public triggers town guard investigation (bounty). Doing it quietly at night avoids heat."
+}

@@ -1,0 +1,173 @@
+================================================================================
+GAELA QUEST CHAIN - QUICK REFERENCE
+Temple of Three Gods - Goddess of Harvest
+================================================================================
+
+QUEST GIVER: Priestess Elara (priest_gaela_dalhurst) in Dalhurst Temple
+
+TOTAL QUESTS: 13
+- Main Chain: 10 quests
+- Bonus Quests: 2
+- Repeatable: 1 (weekly)
+
+TOTAL REWARDS (Main Chain):
+- Gold: 2,725g
+- XP: 8,150 XP
+- Faction: +395 church_of_gaela, +285 church_of_three
+
+================================================================================
+MAIN QUEST CHAIN
+================================================================================
+
+TIER 1: INITIATE (Quests 1-3)
+------------------------------
+[1] Seeds of Faith (gaela_01_first_offering)
+    - Bring offering, help farmer
+    - 50g, 200 XP
+
+[2] The Healer's Garden (gaela_02_healing_herbs)
+    - Gather herbs from 3 locations
+    - 75g, 300 XP
+
+[3] Guardians of the Field (gaela_03_protect_harvest)
+    - Kill dire wolves and giant rats threatening Millbrook
+    - 100g, 400 XP
+
+TIER 2: ACOLYTE (Quests 4-5)
+-----------------------------
+[4] The Sacred Grove (gaela_04_sacred_grove)
+    - Negotiate nature vs economy conflict
+    - CHOICE-BASED QUEST
+    - 150g, 500 XP
+
+[5] The Mother's Embrace (gaela_05_devotion_choice)
+    - DEVOTION CHOICE: Accept or decline becoming a Devotee
+    - SETS FLAG: gaela_devotee (required for quests 6-10)
+    - 200g, 600 XP
+
+TIER 3: DEVOTEE EXCLUSIVE (Quests 6-8)
+---------------------------------------
+PREREQUISITE: gaela_devotee flag REQUIRED
+
+[6] Root of Corruption (gaela_06_blight_source)
+    - Stop blight spreading from Willow Dale
+    - 250g, 750 XP
+
+[7] Voice of the Green (gaela_07_spirit_of_land)
+    - Free trapped land spirit near Crossroads
+    - 300g, 900 XP
+
+[8] The Eternal Seed (gaela_08_seed_of_life)
+    - Retrieve legendary Seed to cure plague
+    - Defeat Ancient Treant
+    - 350g, 1000 XP
+
+TIER 4: CHAMPION (Quests 9-10)
+-------------------------------
+PREREQUISITE: gaela_devotee flag REQUIRED
+
+[9] When Harvests Fail (gaela_09_famine_threat)
+    - Stop regional famine (multi-location)
+    - Defeat Dark Ritualist
+    - 500g, 1500 XP
+
+[10] The Lifebringer (gaela_10_lifebringer)
+     - FINAL QUEST: Become Gaela's Champion
+     - Perform ritual to restore corrupted lands
+     - SETS FLAGS: gaela_champion, lifebringer_ritual_complete
+     - 750g, 2000 XP
+     - REWARDS: Gaela's Verdant Robes, Champion's Laurel, Eternal Harvest Ring
+
+================================================================================
+BONUS & REPEATABLE QUESTS
+================================================================================
+
+Bountiful Harvest (gaela_bonus_bountiful_harvest)
+- Gather harvest festival produce
+- Prerequisite: gaela_devotee
+- 400g, 1200 XP
+
+The Lost Flock (gaela_bonus_shepherd_quest)
+- Rescue shepherd's flock from dire wolves
+- Escort mission
+- Prerequisite: Quest 3 complete
+- 150g, 600 XP
+
+Tending the Garden (gaela_repeatable_tending) - REPEATABLE
+- Weekly repeatable garden maintenance
+- Prerequisite: gaela_devotee
+- Cooldown: 7 days
+- 25g, 100 XP
+
+================================================================================
+KEY FEATURES
+================================================================================
+
+DEVOTEE SYSTEM:
+- Quest 5 offers devotion choice (accept or decline)
+- Accepting sets flag: gaela_devotee
+- Unlocks quests 6-10 (exclusive content)
+- Does NOT lock out other temple quests
+- Other priests acknowledge devotion in dialogue
+
+CHOICE-BASED QUESTS:
+- Quest 4: Three outcomes (protect grove, allow logging, find alternative)
+- Quest 10: Accept or decline Champion title
+
+FACTION INTEGRATION:
+- Primary: church_of_gaela
+- Secondary: church_of_three (parent faction)
+- Regional: millbrook_farmers, thornfield_citizens, dalhurst_merchants
+
+GEOGRAPHIC LIMITS:
+- All quests in: Elder Moor, Dalhurst, Thornfield, Millbrook, Crossroads,
+  Willow Dale, Bandit Hideout, Kazer-Dun Entrance
+- DO NOT send players south of Kazer-Dun
+
+================================================================================
+REQUIRED NPCS (to verify/create)
+================================================================================
+
+[EXISTS] priest_gaela_dalhurst (Dalhurst) - Main quest giver
+[CREATE] millbrook_farmer (Millbrook) - Quests 1, 3
+[CREATE] logging_foreman_elder_moor (Elder Moor) - Quest 4
+[CREATE] thornfield_healer (Thornfield) - Quest 8
+[CREATE] millbrook_shepherd (Millbrook) - Bonus quest
+
+================================================================================
+PROGRESSION PATH
+================================================================================
+
+1. Talk to Priestess Elara in Dalhurst Temple
+2. Complete Quests 1-3 (Initiate tier)
+3. Complete Quest 4 (choice-based)
+4. Quest 5: DEVOTION CHOICE
+   - Accept → Unlock quests 6-10
+   - Decline → Chain ends
+5. Complete Quests 6-8 (Devotee tier)
+6. Complete Quests 9-10 (Champion tier)
+7. Optional: Bonus quests and weekly repeatable
+
+ESTIMATED COMPLETION TIME: 8-12 hours for full chain
+
+================================================================================
+FILES CREATED
+================================================================================
+
+1. gaela_01_first_offering.json
+2. gaela_02_healing_herbs.json
+3. gaela_03_protect_harvest.json
+4. gaela_04_sacred_grove.json
+5. gaela_05_devotion_choice.json
+6. gaela_06_blight_source.json
+7. gaela_07_spirit_of_land.json
+8. gaela_08_seed_of_life.json
+9. gaela_09_famine_threat.json
+10. gaela_10_lifebringer.json
+11. gaela_repeatable_tending.json
+12. gaela_bonus_bountiful_harvest.json
+13. gaela_bonus_shepherd_quest.json
+14. README.md (full documentation)
+15. QUEST_SUMMARY.txt (this file)
+
+================================================================================

@@ -1,0 +1,152 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/enemy_attack_data.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+id = "captain_slash"
+display_name = "Cleaving Slash"
+damage = Array[int]([10, 18, 6])
+damage_type = 0
+windup_time = 0.4
+active_time = 0.25
+recovery_time = 0.35
+cooldown = 1.5
+range_distance = 3.2
+is_ranged = false
+is_aoe = true
+aoe_radius = 2.0
+projectile_speed = 0.0
+inflicts_condition = 0
+condition_chance = 0.0
+condition_duration = 0.0
+stagger_power = 1.0
+knockback_force = 3.0
+weight = 1.0
+min_range = 0.0
+max_range = 3.2
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+id = "captain_thrust"
+display_name = "Piercing Thrust"
+damage = Array[int]([12, 20, 8])
+damage_type = 0
+windup_time = 0.5
+active_time = 0.2
+recovery_time = 0.4
+cooldown = 3.0
+range_distance = 3.5
+is_ranged = false
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 0.0
+inflicts_condition = 6
+condition_chance = 0.5
+condition_duration = 5.0
+stagger_power = 1.2
+knockback_force = 2.0
+weight = 0.7
+min_range = 0.0
+max_range = 3.5
+requires_los = true
+animation_name = "thrust"
+sound_effect = ""
+
+[sub_resource type="Resource" id="3"]
+script = ExtResource("2")
+id = "rally_cry"
+display_name = "Rally Cry"
+damage = Array[int]([0, 0, 0])
+damage_type = 0
+windup_time = 1.0
+active_time = 0.5
+recovery_time = 0.5
+cooldown = 20.0
+range_distance = 15.0
+is_ranged = false
+is_aoe = true
+aoe_radius = 15.0
+projectile_speed = 0.0
+inflicts_condition = 0
+condition_chance = 0.0
+condition_duration = 0.0
+stagger_power = 0.0
+knockback_force = 0.0
+weight = 0.2
+min_range = 0.0
+max_range = 100.0
+requires_los = false
+animation_name = "rally"
+sound_effect = ""
+
+[resource]
+script = ExtResource("1")
+id = "black_wolf_captain"
+display_name = "Black Wolf Captain"
+description = "A battle-hardened commander of the Black Wolf Company. Captains have earned their position through years of bloodshed and cunning tactics. They lead their men from the front, inspiring them with rallying cries while cutting down enemies with brutal efficiency."
+level = 25
+min_level = 20
+max_level = 35
+max_hp = 220
+armor_value = 25
+movement_speed = 4.0
+turn_speed = 5.0
+grit = 12
+agility = 7
+will = 8
+knowledge = 5
+bravery = 14
+behavior = 0
+faction = 6
+political_faction = "black_wolf"
+aggro_range = 16.0
+attack_range = 3.2
+preferred_distance = 2.5
+flee_hp_threshold = 0.0
+is_boss = true
+attacks = Array[ExtResource("2")]([SubResource("1"), SubResource("2"), SubResource("3")])
+can_block = true
+block_chance = 0.45
+stagger_resistance = 0.5
+fire_resistance = 0.0
+frost_resistance = 0.0
+lightning_resistance = 0.0
+poison_resistance = 0.15
+necrotic_resistance = 0.0
+physical_resistance = 0.2
+fire_weakness = 0.0
+frost_weakness = 0.0
+lightning_weakness = 0.0
+holy_weakness = 0.0
+causes_horror = false
+horror_difficulty = 0
+loot_table_av = 7
+gold_drop = Array[int]([100, 200])
+guaranteed_drops = Array[String](["black_wolf_orders"])
+drop_table = {
+"fine_longsword": 0.5,
+"health_potion": 0.5,
+"plate_armor": 0.3,
+"repair_kit": 0.4,
+"gold_ring": 0.2
+}
+xp_reward = 350
+scene_path = ""
+icon_path = "res://assets/sprites/enemies/humanoid/human_bandit_alt.png"
+scale = 1.15
+sprite_path = "res://assets/sprites/enemies/humanoid/human_bandit_alt.png"
+attack_sprite_path = ""
+sprite_hframes = 4
+sprite_vframes = 1
+attack_hframes = 4
+attack_vframes = 1
+sprite_pixel_size = 0.035
+idle_sounds = Array[String](["res://assets/audio/sfx/monsters/low_growl.wav"])
+attack_sounds = Array[String](["res://assets/audio/sfx/weapons/sword_clank_1.wav", "res://assets/audio/sfx/weapons/sword_clank_2.wav", "res://assets/audio/sfx/weapons/sword_clank_3.wav"])
+hurt_sounds = Array[String](["res://assets/audio/sfx/monsters/mid_growl.wav"])
+death_sounds = Array[String](["res://assets/audio/sfx/monsters/low_growl.wav"])

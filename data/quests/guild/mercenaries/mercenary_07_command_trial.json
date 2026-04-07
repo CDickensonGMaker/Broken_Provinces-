@@ -1,0 +1,62 @@
+{
+	"id": "mercenary_07_command_trial",
+	"title": "Lead from the Front",
+	"description": "As a newly promoted Sergeant, you must prove you can command soldiers in battle. Captain Steele is assigning you a squad of recruits for a live combat mission against goblins near Thornfield. Your tactical decisions will determine their survival. Lead well, and you'll cement your place as a squad leader in the Iron Company.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "captain_roderick_steele",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "iron_company",
+	"objectives": [
+		{
+			"id": "muster_squad",
+			"description": "Gather your assigned squad in Thornfield",
+			"type": "reach",
+			"target": "thornfield",
+			"required_count": 1
+		},
+		{
+			"id": "clear_goblin_camp",
+			"description": "Lead the assault on the goblin camp",
+			"type": "kill",
+			"target": "goblin_warrior",
+			"required_count": 12
+		},
+		{
+			"id": "defeat_shaman",
+			"description": "Eliminate the goblin shaman leader",
+			"type": "kill",
+			"target": "goblin_shaman",
+			"required_count": 1
+		},
+		{
+			"id": "keep_squad_alive",
+			"description": "Keep at least 3 squad members alive",
+			"type": "reach",
+			"target": "squad_survival_checkpoint",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "return_to_captain",
+			"description": "Report mission results to Captain Steele",
+			"type": "talk",
+			"target": "captain_roderick_steele",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "captain_roderick_steele",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 350,
+		"xp": 800,
+		"items": ["sergeant_cloak"],
+		"faction_reputation": {
+			"iron_company": 40
+		}
+	},
+	"prerequisites": ["mercenary_06_hostage_rescue"],
+	"next_quest": "mercenary_08_rival_company"
+}

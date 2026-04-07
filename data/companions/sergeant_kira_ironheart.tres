@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="CompanionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/companion_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "sergeant_kira_ironheart"
+display_name = "Sergeant Kira Ironheart"
+character_class = "Soldier"
+description = "A disciplined soldier of the Iron Company. Master of polearms and defensive tactics, she leads by example. Kira has served the Company for fifteen years, rising through the ranks through skill and unwavering dedication. Her halberd has reach that keeps enemies at bay."
+max_health = 130
+base_damage = 20
+armor = 22
+speed_multiplier = 0.90
+attack_cooldown = 1.6
+combat_range = 10.0
+attack_range = 3.5
+ai_behavior = 2
+combat_style = 0
+is_essential = true
+knockout_duration = 0.0
+preferred_weapons = Array[String](["halberd", "polearm", "spear"])
+abilities = Array[String](["sweeping_strike", "defensive_stance", "rally"])
+ability_use_chance = 0.25
+ranged_projectile_path = ""
+sprite_path = "res://assets/sprites/npcs/combat/female_gladiator1.png"
+sprite_h_frames = 1
+sprite_v_frames = 1
+sprite_pixel_size = 0.0300
+tint_color = Color(1.0, 1.0, 1.0, 1.0)
+unlock_type = 1
+unlock_param = "iron_company_champion"
+unlock_threshold = 0
+dialogue_path = "res://data/dialogue/companions/sergeant_kira_ironheart.json"
+knowledge_profile_path = ""
+combat_bark_lines = Array[String](["Hold formation!", "The Iron Company does not retreat!", "Disciplined strikes win battles!", "You face the Company's finest!", "Protect your flanks!", "Steel and resolve!"])
+knockout_lines = Array[String](["The line... must hold...", "Company... retreat...", "Captain... Steele..."])
+recovery_lines = Array[String](["Back in formation!", "The Company stands!", "Discipline prevails!"])

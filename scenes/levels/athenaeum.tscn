@@ -1,0 +1,510 @@
+[gd_scene load_steps=18 format=3 uid="uid://athenaeum_001"]
+
+[ext_resource type="Script" path="res://scripts/levels/athenaeum.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
+
+[sub_resource type="Environment" id="Environment_athenaeum"]
+background_mode = 1
+background_color = Color(0.05, 0.06, 0.1, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.25, 0.28, 0.4, 1)
+ambient_light_energy = 0.5
+fog_enabled = true
+fog_light_color = Color(0.1, 0.12, 0.18, 1)
+fog_density = 0.01
+fog_sky_affect = 0.0
+
+[sub_resource type="StandardMaterial3D" id="mat_marble_floor"]
+albedo_color = Color(0.75, 0.73, 0.78, 1)
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="mat_stone_wall"]
+albedo_color = Color(0.42, 0.4, 0.48, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="mat_dark_wood"]
+albedo_color = Color(0.22, 0.18, 0.15, 1)
+roughness = 0.75
+
+[sub_resource type="StandardMaterial3D" id="mat_bookshelf"]
+albedo_color = Color(0.28, 0.22, 0.18, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="mat_books"]
+albedo_color = Color(0.5, 0.35, 0.25, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_arcane_trim"]
+albedo_color = Color(0.3, 0.35, 0.5, 1)
+metallic = 0.4
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="mat_arcane_glow"]
+albedo_color = Color(0.4, 0.5, 0.9, 1)
+emission_enabled = true
+emission = Color(0.3, 0.4, 0.8, 1)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="StandardMaterial3D" id="mat_ceiling"]
+albedo_color = Color(0.25, 0.25, 0.32, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="mat_pillar"]
+albedo_color = Color(0.55, 0.53, 0.6, 1)
+roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="mat_desk"]
+albedo_color = Color(0.25, 0.2, 0.18, 1)
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="mat_carpet"]
+albedo_color = Color(0.35, 0.25, 0.45, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="mat_restricted"]
+albedo_color = Color(0.15, 0.12, 0.2, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_crystal"]
+albedo_color = Color(0.6, 0.7, 1.0, 0.8)
+metallic = 0.3
+roughness = 0.2
+emission_enabled = true
+emission = Color(0.4, 0.5, 0.9, 1)
+emission_energy_multiplier = 0.8
+
+[node name="Athenaeum" type="Node3D"]
+script = ExtResource("1")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_athenaeum")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.433, 0.25, 0, 0.5, 0.866, -0.5, -0.75, 0.433, 0, 30, 0)
+light_color = Color(0.8, 0.85, 1.0, 1)
+light_energy = 0.3
+shadow_enabled = true
+shadow_bias = 0.02
+
+[node name="Player" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 25)
+
+[node name="HUD" parent="." instance=ExtResource("3")]
+
+;; ============== MAIN LIBRARY HALL ==============
+[node name="MainLibrary" type="Node3D" parent="."]
+
+[node name="Floor" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(40, 1, 50)
+material = SubResource("mat_marble_floor")
+
+[node name="Ceiling" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.5, 0)
+use_collision = true
+size = Vector3(40, 1, 50)
+material = SubResource("mat_ceiling")
+
+[node name="NorthWall" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -25)
+use_collision = true
+size = Vector3(40, 10, 1)
+material = SubResource("mat_stone_wall")
+
+[node name="SouthWallLeft" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 5, 25)
+use_collision = true
+size = Vector3(12, 10, 1)
+material = SubResource("mat_stone_wall")
+
+[node name="SouthWallRight" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 5, 25)
+use_collision = true
+size = Vector3(12, 10, 1)
+material = SubResource("mat_stone_wall")
+
+[node name="EastWall" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 5, 0)
+use_collision = true
+size = Vector3(1, 10, 50)
+material = SubResource("mat_stone_wall")
+
+[node name="WestWall" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 5, 0)
+use_collision = true
+size = Vector3(1, 10, 50)
+material = SubResource("mat_stone_wall")
+
+;; Pillars with arcane trim
+[node name="Pillar1" type="CSGCylinder3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 5, -15)
+use_collision = true
+radius = 1.0
+height = 10.0
+material = SubResource("mat_pillar")
+
+[node name="Pillar2" type="CSGCylinder3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 5, -15)
+use_collision = true
+radius = 1.0
+height = 10.0
+material = SubResource("mat_pillar")
+
+[node name="Pillar3" type="CSGCylinder3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 5, 0)
+use_collision = true
+radius = 1.0
+height = 10.0
+material = SubResource("mat_pillar")
+
+[node name="Pillar4" type="CSGCylinder3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 5, 0)
+use_collision = true
+radius = 1.0
+height = 10.0
+material = SubResource("mat_pillar")
+
+[node name="Pillar5" type="CSGCylinder3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 5, 15)
+use_collision = true
+radius = 1.0
+height = 10.0
+material = SubResource("mat_pillar")
+
+[node name="Pillar6" type="CSGCylinder3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 5, 15)
+use_collision = true
+radius = 1.0
+height = 10.0
+material = SubResource("mat_pillar")
+
+;; Bookshelves - West Side
+[node name="BookshelfW1" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 3, -18)
+use_collision = true
+size = Vector3(0.8, 6, 8)
+material = SubResource("mat_bookshelf")
+
+[node name="BookshelfW2" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 3, -5)
+use_collision = true
+size = Vector3(0.8, 6, 8)
+material = SubResource("mat_bookshelf")
+
+[node name="BookshelfW3" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 3, 8)
+use_collision = true
+size = Vector3(0.8, 6, 8)
+material = SubResource("mat_bookshelf")
+
+;; Bookshelves - East Side
+[node name="BookshelfE1" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 3, -18)
+use_collision = true
+size = Vector3(0.8, 6, 8)
+material = SubResource("mat_bookshelf")
+
+[node name="BookshelfE2" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 3, -5)
+use_collision = true
+size = Vector3(0.8, 6, 8)
+material = SubResource("mat_bookshelf")
+
+[node name="BookshelfE3" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 3, 8)
+use_collision = true
+size = Vector3(0.8, 6, 8)
+material = SubResource("mat_bookshelf")
+
+;; Central Bookshelves (aisles)
+[node name="BookshelfC1" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 2.5, -10)
+use_collision = true
+size = Vector3(0.6, 5, 12)
+material = SubResource("mat_bookshelf")
+
+[node name="BookshelfC2" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2.5, -10)
+use_collision = true
+size = Vector3(0.6, 5, 12)
+material = SubResource("mat_bookshelf")
+
+;; Arcane Lights
+[node name="ArcaneLight1" type="OmniLight3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 8, -15)
+light_color = Color(0.6, 0.7, 1.0, 1)
+light_energy = 2.0
+omni_range = 12.0
+
+[node name="ArcaneLight2" type="OmniLight3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 8, -15)
+light_color = Color(0.6, 0.7, 1.0, 1)
+light_energy = 2.0
+omni_range = 12.0
+
+[node name="ArcaneLight3" type="OmniLight3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
+light_color = Color(0.7, 0.75, 1.0, 1)
+light_energy = 2.5
+omni_range = 15.0
+
+[node name="ArcaneLight4" type="OmniLight3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 8, 15)
+light_color = Color(0.6, 0.7, 1.0, 1)
+light_energy = 2.0
+omni_range = 12.0
+
+[node name="ArcaneLight5" type="OmniLight3D" parent="MainLibrary"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 8, 15)
+light_color = Color(0.6, 0.7, 1.0, 1)
+light_energy = 2.0
+omni_range = 12.0
+
+;; Floating Arcane Crystal (centerpiece)
+[node name="ArcaneCrystal" type="CSGBox3D" parent="MainLibrary"]
+transform = Transform3D(0.707, 0, 0.707, 0, 1, 0, -0.707, 0, 0.707, 0, 5, 0)
+size = Vector3(1.5, 2.5, 1.5)
+material = SubResource("mat_crystal")
+
+[node name="CrystalGlow" type="OmniLight3D" parent="MainLibrary/ArcaneCrystal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+light_color = Color(0.5, 0.6, 1.0, 1)
+light_energy = 3.0
+omni_range = 8.0
+
+;; ============== STUDY ALCOVES (West Wing) ==============
+[node name="StudyAlcoves" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, 0)
+
+[node name="Floor" type="CSGBox3D" parent="StudyAlcoves"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(15, 1, 30)
+material = SubResource("mat_marble_floor")
+
+[node name="Ceiling" type="CSGBox3D" parent="StudyAlcoves"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.5, 0)
+use_collision = true
+size = Vector3(15, 1, 30)
+material = SubResource("mat_ceiling")
+
+[node name="WestWall" type="CSGBox3D" parent="StudyAlcoves"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 3, 0)
+use_collision = true
+size = Vector3(1, 6, 30)
+material = SubResource("mat_stone_wall")
+
+[node name="NorthWall" type="CSGBox3D" parent="StudyAlcoves"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -15)
+use_collision = true
+size = Vector3(15, 6, 1)
+material = SubResource("mat_stone_wall")
+
+[node name="SouthWall" type="CSGBox3D" parent="StudyAlcoves"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 15)
+use_collision = true
+size = Vector3(15, 6, 1)
+material = SubResource("mat_stone_wall")
+
+;; Study Desks
+[node name="Desk1" type="CSGBox3D" parent="StudyAlcoves"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.5, -10)
+use_collision = true
+size = Vector3(2.5, 1, 1.5)
+material = SubResource("mat_desk")
+
+[node name="Desk2" type="CSGBox3D" parent="StudyAlcoves"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.5, -3)
+use_collision = true
+size = Vector3(2.5, 1, 1.5)
+material = SubResource("mat_desk")
+
+[node name="Desk3" type="CSGBox3D" parent="StudyAlcoves"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.5, 4)
+use_collision = true
+size = Vector3(2.5, 1, 1.5)
+material = SubResource("mat_desk")
+
+[node name="Desk4" type="CSGBox3D" parent="StudyAlcoves"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.5, 11)
+use_collision = true
+size = Vector3(2.5, 1, 1.5)
+material = SubResource("mat_desk")
+
+[node name="StudyLight" type="OmniLight3D" parent="StudyAlcoves"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+light_color = Color(0.7, 0.75, 1.0, 1)
+light_energy = 1.5
+omni_range = 16.0
+
+;; ============== RESTRICTED ARCHIVE (North Wing) ==============
+[node name="RestrictedArchive" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -40)
+
+[node name="Floor" type="CSGBox3D" parent="RestrictedArchive"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(20, 1, 12)
+material = SubResource("mat_restricted")
+
+[node name="Ceiling" type="CSGBox3D" parent="RestrictedArchive"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.5, 0)
+use_collision = true
+size = Vector3(20, 1, 12)
+material = SubResource("mat_ceiling")
+
+[node name="NorthWall" type="CSGBox3D" parent="RestrictedArchive"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -6)
+use_collision = true
+size = Vector3(20, 5, 1)
+material = SubResource("mat_stone_wall")
+
+[node name="EastWall" type="CSGBox3D" parent="RestrictedArchive"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.5, 0)
+use_collision = true
+size = Vector3(1, 5, 12)
+material = SubResource("mat_stone_wall")
+
+[node name="WestWall" type="CSGBox3D" parent="RestrictedArchive"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.5, 0)
+use_collision = true
+size = Vector3(1, 5, 12)
+material = SubResource("mat_stone_wall")
+
+;; Dark Bookshelves
+[node name="DarkShelf1" type="CSGBox3D" parent="RestrictedArchive"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 2, -3)
+use_collision = true
+size = Vector3(0.6, 4, 6)
+material = SubResource("mat_dark_wood")
+
+[node name="DarkShelf2" type="CSGBox3D" parent="RestrictedArchive"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2, -3)
+use_collision = true
+size = Vector3(0.6, 4, 6)
+material = SubResource("mat_dark_wood")
+
+[node name="RestrictedLight" type="OmniLight3D" parent="RestrictedArchive"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+light_color = Color(0.5, 0.4, 0.7, 1)
+light_energy = 1.2
+omni_range = 12.0
+
+;; ============== ARCHMAGE'S CHAMBER (Upper Level / Northeast) ==============
+[node name="ArchmagesChamber" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, -20)
+
+[node name="Floor" type="CSGBox3D" parent="ArchmagesChamber"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(14, 1, 16)
+material = SubResource("mat_marble_floor")
+
+[node name="Carpet" type="CSGBox3D" parent="ArchmagesChamber"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+size = Vector3(10, 0.05, 12)
+material = SubResource("mat_carpet")
+
+[node name="Ceiling" type="CSGBox3D" parent="ArchmagesChamber"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, 0)
+use_collision = true
+size = Vector3(14, 1, 16)
+material = SubResource("mat_ceiling")
+
+[node name="NorthWall" type="CSGBox3D" parent="ArchmagesChamber"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, -8)
+use_collision = true
+size = Vector3(14, 7, 1)
+material = SubResource("mat_stone_wall")
+
+[node name="SouthWallLeft" type="CSGBox3D" parent="ArchmagesChamber"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 3.5, 8)
+use_collision = true
+size = Vector3(4, 7, 1)
+material = SubResource("mat_stone_wall")
+
+[node name="SouthWallRight" type="CSGBox3D" parent="ArchmagesChamber"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 3.5, 8)
+use_collision = true
+size = Vector3(4, 7, 1)
+material = SubResource("mat_stone_wall")
+
+[node name="EastWall" type="CSGBox3D" parent="ArchmagesChamber"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 3.5, 0)
+use_collision = true
+size = Vector3(1, 7, 16)
+material = SubResource("mat_stone_wall")
+
+;; Archmage's Desk
+[node name="Desk" type="CSGBox3D" parent="ArchmagesChamber"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -4)
+use_collision = true
+size = Vector3(4, 1, 2)
+material = SubResource("mat_dark_wood")
+
+[node name="Chair" type="CSGBox3D" parent="ArchmagesChamber"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -6)
+use_collision = true
+size = Vector3(1.5, 2, 1)
+material = SubResource("mat_dark_wood")
+
+[node name="ChamberLight" type="OmniLight3D" parent="ArchmagesChamber"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+light_color = Color(0.7, 0.75, 1.0, 1)
+light_energy = 2.0
+omni_range = 12.0
+
+;; ============== NAVIGATION ==============
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+
+;; ============== NPCs ==============
+[node name="NPCs" type="Node3D" parent="."]
+
+[node name="NPCPositions" type="Node3D" parent="NPCs"]
+
+[node name="ArchmageElara" type="Marker3D" parent="NPCs/NPCPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, -22)
+
+[node name="Librarian" type="Marker3D" parent="NPCs/NPCPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+
+[node name="Apprentice1" type="Marker3D" parent="NPCs/NPCPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, -8)
+
+[node name="Apprentice2" type="Marker3D" parent="NPCs/NPCPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, 2)
+
+[node name="Apprentice3" type="Marker3D" parent="NPCs/NPCPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -8)
+
+;; ============== SPAWN POINTS ==============
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="DefaultSpawn" type="Node3D" parent="SpawnPoints" groups=["default_spawn", "spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 20)
+
+[node name="from_city" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 20)
+
+[node name="from_fast_travel" type="Node3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.1, 15)
+
+;; ============== DOORS ==============
+[node name="DoorPositions" type="Node3D" parent="."]
+
+[node name="ExitDoor" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 24)
+
+[node name="RestrictedDoor" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -28)
+
+[node name="ArchmageDoor" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0, -20)
+
+;; ============== INTERACTABLES ==============
+[node name="Interactables" type="Node3D" parent="."]
+
+[node name="LibrarianDesk" type="Marker3D" parent="Interactables"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)

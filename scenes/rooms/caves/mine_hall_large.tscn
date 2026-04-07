@@ -21,7 +21,7 @@ room_height = 8.0
 [node name="Terrain" type="Node3D" parent="."]
 
 [node name="CaveMesh" parent="Terrain" instance=ExtResource("2_mesh")]
-transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 9, 0, 17)
+transform = Transform3D(1.813, 0, 0, 0, 1.813, 0, 0, 0, 1.813, 9, 0, 17)
 
 [node name="FloorCollision" type="StaticBody3D" parent="Terrain"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 17)
@@ -46,34 +46,34 @@ shape = SubResource("BoxShape3D_wall")
 [node name="CenterLight1" type="OmniLight3D" parent="Lighting"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 6, 8)
 light_color = Color(0.65, 0.6, 0.5, 1)
-light_energy = 0.8
+light_energy = 1.04
 omni_range = 16.0
 omni_attenuation = 1.2
 
 [node name="CenterLight2" type="OmniLight3D" parent="Lighting"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 6, 17)
 light_color = Color(0.65, 0.6, 0.5, 1)
-light_energy = 0.8
+light_energy = 1.04
 omni_range = 16.0
 omni_attenuation = 1.2
 
 [node name="CenterLight3" type="OmniLight3D" parent="Lighting"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 6, 26)
 light_color = Color(0.65, 0.6, 0.5, 1)
-light_energy = 0.8
+light_energy = 1.04
 omni_range = 16.0
 omni_attenuation = 1.2
 
 [node name="AccentLight1" type="OmniLight3D" parent="Lighting"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 3, 6)
 light_color = Color(0.4, 0.45, 0.55, 1)
-light_energy = 0.3
+light_energy = 0.39
 omni_range = 8.0
 
 [node name="AccentLight2" type="OmniLight3D" parent="Lighting"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 3, 28)
 light_color = Color(0.4, 0.45, 0.55, 1)
-light_energy = 0.3
+light_energy = 0.39
 omni_range = 8.0
 
 [node name="EnemySpawns" type="Node3D" parent="."]

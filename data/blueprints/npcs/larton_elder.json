@@ -1,0 +1,8 @@
+{
+  "name": "Elder Varmund",
+  "who": "Dignified older man with silver hair and kind eyes\nLeader of Larton for decades\nDeeply concerned about his people's welfare",
+  "what": "Governs the coastal town of Larton\nSeeks help with maritime threats\nKnows old stories of the region",
+  "where": "Larton - Town Center",
+  "sprite": "village_leader",
+  "quests": "Larton's Troubles, Coastal Defense"
+}

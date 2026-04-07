@@ -1,0 +1,8 @@
+{
+  "name": "Gate Warden Thorek",
+  "who": "Stout dwarf in heavy plate armor\nBeard braided with iron rings\nSuspicious of surface dwellers but honorable",
+  "what": "Guards the entrance to Kazer-Dun\nDetermines who may enter dwarven territory\nCan grant passage to those who prove their worth",
+  "where": "Kazer-Dun Entrance - Gate",
+  "sprite": "dwarf_guard",
+  "quests": "Dwarven Entry (gate check)"
+}

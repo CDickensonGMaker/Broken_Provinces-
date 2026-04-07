@@ -1,0 +1,58 @@
+{
+	"id": "gaela_01_first_offering",
+	"title": "Seeds of Faith",
+	"description": "Priestess Elara of Gaela asks you to bring an offering to the goddess's shrine in Elder Moor. Fresh produce or flowers from the region would please the Harvest Mother.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "priest",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "gather_offering",
+			"description": "Gather fresh produce or flowers (Wildflowers, Cabbage, or Wheat)",
+			"type": "collect",
+			"target": "wildflower",
+			"required_count": 3,
+			"is_optional": false
+		},
+		{
+			"id": "visit_shrine",
+			"description": "Place the offering at Gaela's shrine in Elder Moor",
+			"type": "explore",
+			"target": "elder_moor",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "help_farmer",
+			"description": "Speak with a struggling farmer near Millbrook",
+			"type": "talk",
+			"target": "millbrook_farmer",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "return_to_priestess",
+			"description": "Return to Priestess Elara in Dalhurst",
+			"type": "talk",
+			"target": "priest_gaela_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_gaela_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 50,
+		"xp": 200,
+		"items": ["minor_healing_herb", "minor_healing_herb"],
+		"faction_reputation": {
+			"church_of_gaela": 10,
+			"church_of_three": 5
+		}
+	},
+	"prerequisites": [],
+	"next_quest": "gaela_02_healing_herbs"
+}

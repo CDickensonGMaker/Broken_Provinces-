@@ -1,0 +1,54 @@
+{
+	"id": "mercenary_03_first_blood",
+	"title": "Baptism of Steel",
+	"description": "Training is over. Captain Steele is sending you on your first real combat mission: a squad assault on a bandit outpost near Elder Moor. This is the Iron Company way - follow orders, stay in formation, and don't break ranks. Come back alive and you'll earn the rank of Soldier.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "captain_roderick_steele",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "iron_company",
+	"objectives": [
+		{
+			"id": "travel_to_outpost",
+			"description": "Travel to the bandit outpost near Elder Moor",
+			"type": "reach",
+			"target": "bandit_outpost_elder_moor",
+			"required_count": 1
+		},
+		{
+			"id": "clear_bandits",
+			"description": "Clear the bandit outpost with your squad",
+			"type": "kill",
+			"target": "bandit",
+			"required_count": 8
+		},
+		{
+			"id": "kill_bandit_leader",
+			"description": "Defeat the bandit leader",
+			"type": "kill",
+			"target": "bandit_leader",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_captain",
+			"description": "Report victory to Captain Steele",
+			"type": "talk",
+			"target": "captain_roderick_steele",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "captain_roderick_steele",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 150,
+		"xp": 400,
+		"items": ["iron_company_armor"],
+		"faction_reputation": {
+			"iron_company": 50
+		}
+	},
+	"prerequisites": ["mercenary_02_drill"],
+	"next_quest": "mercenary_04_caravan_guard"
+}

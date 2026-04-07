@@ -1,0 +1,280 @@
+{
+  "id": "thieves_guild_fence",
+  "display_name": "Thieves Guild Fence - Dalhurst",
+  "description": "Dialogue for the Thieves Guild fence who gives and receives debt collection quests",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Fence",
+      "text": "Keep your voice down. What do you want?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm here about work.",
+          "next": "work_available",
+          "conditions": [
+            {
+              "type": "flag_set",
+              "param": "thieves_guild_member",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I completed the job - Brennan's debt.",
+          "next": "sailors_debt_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "sailors_debt",
+              "value": 1
+            },
+            {
+              "type": "has_item",
+              "param": "brennan_debt_gold",
+              "value": 1
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Tell me about the Guild.",
+          "next": "guild_info",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Nothing. I'm leaving.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "work_available",
+      "speaker": "Fence",
+      "text": "Work? You think we hand out jobs to anyone who walks up? You need to prove yourself first. Talk to the recruiter if you haven't already. After you're in, then we talk business.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I've already proven myself.",
+          "next": "proven_member",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "thieves_guild_initiation",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Where do I find the recruiter?",
+          "next": "recruiter_location",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "thieves_guild_initiation",
+              "value": 0,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Understood.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "proven_member",
+      "speaker": "Fence",
+      "text": "Ah, yes. The ledger job. Clean work. You've got potential. We have a... delicate matter that needs handling. A sailor named Brennan owes the Guild a considerable sum. 150 gold. He's been drinking it away at the Rusty Anchor instead of paying his debts.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What do you want me to do?",
+          "next": "sailors_debt_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Not interested in debt collection.",
+          "next": "refuse_debt_quest",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "sailors_debt_offer",
+      "speaker": "Fence",
+      "text": "Simple. Find Brennan. Get the gold. Use whatever means necessary - persuasion, intimidation, force. Just don't cause a scene that brings the guards down on us. Bring me the 150 gold and you'll get your cut. Do we have a deal?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll collect the debt.",
+          "next": "accept_sailors_debt",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "sailors_debt",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I need more information first.",
+          "next": "sailors_debt_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "This sounds messy. I'll pass.",
+          "next": "refuse_debt_quest",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_sailors_debt",
+      "speaker": "Fence",
+      "text": "Good. Brennan spends most evenings at the Rusty Anchor. He's the one with the nervous look and empty coin purse. Get the gold and come straight back here. And remember - no guards.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "sailors_debt_details",
+      "speaker": "Fence",
+      "text": "Brennan borrowed 150 gold three weeks ago. Said he needed it for 'ship repairs.' Instead, he's been buying rounds for the whole tavern. The Guild doesn't like being made a fool of. Find him at the Rusty Anchor and collect. Will you do it?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Yes, I'll collect the debt.",
+          "next": "accept_sailors_debt",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "sailors_debt",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Still not interested.",
+          "next": "refuse_debt_quest",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "refuse_debt_quest",
+      "speaker": "Fence",
+      "text": "Your loss. Come back if you change your mind.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "sailors_debt_turnin",
+      "speaker": "Fence",
+      "text": "Ah, you're back. Did you get the gold from Brennan?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Here's the 150 gold.",
+          "next": "sailors_debt_complete",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "sailors_debt",
+              "value": 0
+            },
+            {
+              "type": "take_item",
+              "param": "brennan_debt_gold",
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sailors_debt_complete",
+      "speaker": "Fence",
+      "text": "Excellent work. The Guild appreciates your... efficiency. Here's your cut - 50 gold. And this reputation boost will serve you well. Keep proving yourself and more lucrative opportunities will come your way.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "recruiter_location",
+      "speaker": "Fence",
+      "text": "The recruiter operates in the shadows. Look for a hooded figure in the market district after dark. They'll approach you if you seem... promising.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Thanks for the tip.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "guild_info",
+      "speaker": "Fence",
+      "text": "The Thieves Guild operates in every major city. We handle... acquisitions. Information. Favors. We don't steal from our own, and we don't bring heat from the guards. Follow those rules and you'll do well.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "How do I join?",
+          "next": "recruiter_location",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "thieves_guild_initiation",
+              "value": 0,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I understand.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "speaker": "Fence",
+      "text": "Stay out of trouble. Or at least, don't get caught.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

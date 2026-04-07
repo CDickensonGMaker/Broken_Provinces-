@@ -1,0 +1,57 @@
+{
+	"id": "mercenary_04_caravan_guard",
+	"title": "Gold on the Road",
+	"description": "A wealthy merchant named Aldric has hired the Iron Company to guard him and his cargo traveling from Dalhurst to Thornfield. Bandits have been raiding the eastern roads. Your job: protect Aldric at all costs. Multiple ambushes are expected along the route.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "captain_roderick_steele",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "iron_company",
+	"objectives": [
+		{
+			"id": "meet_merchant",
+			"description": "Meet Aldric the merchant at the Crossroads",
+			"type": "talk",
+			"target": "aldric_the_merchant",
+			"target_zone": "crossroads",
+			"required_count": 1
+		},
+		{
+			"id": "escort_merchant",
+			"description": "Escort Aldric safely to Thornfield (keep him alive!)",
+			"type": "escort",
+			"target": "aldric_the_merchant",
+			"target_zone": "thornfield",
+			"required_count": 1
+		},
+		{
+			"id": "defend_ambush",
+			"description": "Defeat the bandit ambush",
+			"type": "kill",
+			"target": "human_bandit",
+			"required_count": 6
+		},
+		{
+			"id": "return_to_captain",
+			"description": "Report mission success to Captain Steele",
+			"type": "talk",
+			"target": "captain_roderick_steele",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "captain_roderick_steele",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 200,
+		"xp": 500,
+		"items": [],
+		"faction_reputation": {
+			"iron_company": 30
+		}
+	},
+	"prerequisites": ["mercenary_03_first_blood"],
+	"next_quest": "mercenary_05_siege_support",
+	"notes": "Rank: Private -> Corporal. Escort quest using EscortNPC system. Aldric spawns at Crossroads. Ambush trigger zones along route spawn bandits. Quest fails if Aldric dies."
+}

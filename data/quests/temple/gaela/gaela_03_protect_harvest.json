@@ -1,0 +1,59 @@
+{
+	"id": "gaela_03_protect_harvest",
+	"title": "Guardians of the Field",
+	"description": "Farmers in Millbrook report that dire wolves and giant rats are threatening their crops. Priestess Elara asks you to protect the harvest by driving the creatures away.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "priest",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "kill_dire_wolves",
+			"description": "Kill Dire Wolves threatening Millbrook farms",
+			"type": "kill",
+			"target": "dire_wolf",
+			"required_count": 5,
+			"is_optional": false
+		},
+		{
+			"id": "kill_giant_rats",
+			"description": "Kill Giant Rats infesting the grain stores",
+			"type": "kill",
+			"target": "giant_rat",
+			"required_count": 8,
+			"is_optional": false
+		},
+		{
+			"id": "report_to_farmer",
+			"description": "Report to the Millbrook farmer",
+			"type": "talk",
+			"target": "millbrook_farmer",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "return_to_priestess",
+			"description": "Return to Priestess Elara in Dalhurst",
+			"type": "talk",
+			"target": "priest_gaela_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_gaela_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 100,
+		"xp": 400,
+		"items": ["farmers_blessing_charm"],
+		"faction_reputation": {
+			"church_of_gaela": 20,
+			"church_of_three": 15,
+			"millbrook_farmers": 25
+		}
+	},
+	"prerequisites": ["gaela_02_healing_herbs"],
+	"next_quest": "gaela_04_sacred_grove"
+}

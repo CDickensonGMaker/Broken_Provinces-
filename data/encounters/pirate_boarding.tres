@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="SeaEncounter" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/travel/sea_encounter.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "pirate_boarding"
+display_name = "Pirate Ship Boarding"
+description = "A full pirate galleon has caught up to your vessel! Grappling hooks fly as the pirates prepare to board."
+encounter_type = 0
+is_combat = true
+can_flee = false
+flee_difficulty = 8
+enemy_spawns = Array[String](["pirate_seadog", "pirate_captain"])
+enemy_counts = Array[Vector2i]([Vector2i(3, 5), Vector2i(1, 1)])
+is_wave_encounter = true
+wave_count = 4
+gold_reward = Vector2i(80, 200)
+guaranteed_loot = Array[String](["treasure_map"])
+loot_tier = 3
+loot_rolls = 2
+xp_reward = 150
+difficulty_rating = 5
+min_player_level = 5
+max_player_level = 15
+intro_dialogue_id = ""
+peaceful_dialogue_id = ""
+can_resolve_peacefully = true
+peaceful_skill = 10
+peaceful_skill_dc = 15
+music_track = "res://assets/audio/music/combat_sea.ogg"

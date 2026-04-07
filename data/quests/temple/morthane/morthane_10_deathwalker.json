@@ -1,0 +1,101 @@
+{
+	"id": "morthane_10_deathwalker",
+	"title": "The Deathwalker",
+	"description": "You have proven yourself time and again as a defender of the natural cycle. The Priest of Morthane offers you the ultimate test - to become a Champion of Morthane, a Deathwalker who walks the line between life and death itself. You will face a near-death experience, gain understanding of the cycle's deepest mysteries, and face an ancient undead lord.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_morthane_elder_moor",
+	"giver_npc_type": "priest",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "prepare_champion_trial",
+			"description": "Meditate at the Shrine of Endings to prepare",
+			"type": "interact",
+			"target": "shrine_of_endings_champion",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		},
+		{
+			"id": "undergo_death_walk",
+			"description": "Undergo the Death Walk ritual (near-death experience)",
+			"type": "interact",
+			"target": "death_walk_altar",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		},
+		{
+			"id": "journey_kazer_dun",
+			"description": "Journey to the entrance of Kazer-Dun",
+			"type": "reach",
+			"target": "kazer_dun_entrance",
+			"target_zone": "kazer_dun_entrance",
+			"required_count": 1
+		},
+		{
+			"id": "enter_catacombs",
+			"description": "Enter the ancient catacombs beneath Kazer-Dun",
+			"type": "reach",
+			"target": "kazer_dun_catacombs",
+			"target_zone": "kazer_dun_entrance",
+			"required_count": 1
+		},
+		{
+			"id": "destroy_lesser_undead",
+			"description": "Clear the catacombs of lesser undead",
+			"type": "kill",
+			"target": "skeleton_shade",
+			"target_zone": "kazer_dun_entrance",
+			"required_count": 15
+		},
+		{
+			"id": "confront_undead_lord",
+			"description": "Confront the Undead Lord in the deep catacombs",
+			"type": "kill",
+			"target": "undead_lord_malthor",
+			"target_zone": "kazer_dun_entrance",
+			"required_count": 1
+		},
+		{
+			"id": "claim_deathwalker_mantle",
+			"description": "Claim Morthane's blessing at the ancient altar",
+			"type": "interact",
+			"target": "morthane_champion_altar",
+			"target_zone": "kazer_dun_entrance",
+			"required_count": 1
+		},
+		{
+			"id": "return_priest",
+			"description": "Return to the Priest as a Champion of Morthane",
+			"type": "talk",
+			"target": "priest_morthane_elder_moor",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_morthane_elder_moor",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 750,
+		"xp": 2000,
+		"items": [
+			{"id": "morthane_shroud", "quantity": 1}
+		],
+		"faction_reputation": {
+			"church_of_morthane": 100,
+			"church_of_three": 50
+		}
+	},
+	"choice_consequences": {
+		"become_champion": {
+			"flags_to_set": ["morthane_champion", "deathwalker_title"],
+			"reputation_changes": {
+				"church_of_morthane": 50
+			}
+		}
+	},
+	"prerequisites": ["morthane_09_undead_army"],
+	"next_quest": "",
+	"faction": "church_of_morthane"
+}

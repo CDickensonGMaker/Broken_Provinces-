@@ -1,0 +1,629 @@
+{
+  "id": "priest_morthane_dalhurst",
+  "display_name": "Priest of Morthane - Dalhurst Temple",
+  "description": "Dialogue for the Priest of Morthane in the Temple of Three Gods, Dalhurst. Includes devotee recruitment, cycle of death themes, and quest hooks.",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Priest of Morthane",
+      "text": "You stand in the presence of death's keeper, traveler. I am the voice of Morthane in this temple - guardian of the sacred cycle that binds all living things. Do not fear my words. Death is not an enemy, but a teacher. How may I illuminate your understanding?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me about Morthane.",
+          "next": "morthane_lore",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I wish to become a devotee of Morthane.",
+          "next": "devotee_inquiry",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "morthane_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_not_set",
+              "param": "chronos_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_not_set",
+              "param": "gaela_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I wish to walk the path of Morthane.",
+          "next": "already_other_devotee",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "morthane_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_set",
+              "param": "chronos_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I wish to walk the path of Morthane.",
+          "next": "already_other_devotee",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "morthane_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_set",
+              "param": "gaela_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Greetings, Keeper. I have come to serve the cycle.",
+          "next": "devotee_greeting",
+          "conditions": [
+            {
+              "type": "flag_set",
+              "param": "morthane_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Do you have any tasks for me?",
+          "next": "quest_hub_pre_devotee",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "morthane_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "What duties await me, Keeper?",
+          "next": "quest_hub_devotee",
+          "conditions": [
+            {
+              "type": "flag_set",
+              "param": "morthane_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I seek wisdom about death and rebirth.",
+          "next": "death_wisdom",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Farewell, Priest.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "morthane_lore",
+      "speaker": "Priest of Morthane",
+      "text": "Morthane is the Keeper of the Cycle, the Guardian of Endings and Beginnings, the one who receives the dead and guides them to rebirth. Many fear Morthane without understanding - our god is not death itself, but the sacred transition that death represents. Without Morthane, souls would wander lost forever, and the corruption of undeath would spread unchecked. We are the shepherds of souls, the hunters of those who would pervert the natural order.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What are the principles of Morthane's faith?",
+          "next": "morthane_principles",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How does Morthane relate to the other two gods?",
+          "next": "three_gods_relation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What is undeath, and why is it wrong?",
+          "next": "undeath_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Return to previous topics.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "morthane_principles",
+      "speaker": "Priest of Morthane",
+      "text": "The faithful of Morthane live by three principles: First, honor the cycle - all things must end so that new things may begin. Death is not to be feared, but accepted as part of existence's rhythm. Second, shepherd the dead - those who pass deserve proper rites, peace for their souls, and transition to what lies beyond. Third, destroy the abominations - undeath is a corruption of the cycle, a perversion that traps souls in rotting shells. We hunt those who create such horrors.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Sobering teachings. Thank you.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "three_gods_relation",
+      "speaker": "Priest of Morthane",
+      "text": "The Three are aspects of one eternal truth. Chronos governs time - the container in which all things exist. Gaela governs growth - the flourishing of life within that time. Morthane governs transition - the endings that make space for new beginnings. We are like breath: Gaela is the inhale, Morthane is the exhale, and Chronos is the rhythm that binds them. Without any one of us, the cycle would break.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The cycle must continue. I understand.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "undeath_explanation",
+      "speaker": "Priest of Morthane",
+      "text": "When a soul passes, Morthane receives it and guides it to rebirth - this is the natural order. But necromancers, liches, and dark powers can tear souls from this path, binding them to rotting corpses or spectral forms. This is undeath - an abomination that traps souls in endless suffering, prevents rebirth, and spreads corruption to all it touches. Zombies, skeletons, wraiths, vampires - all are victims of this perversion. We do not destroy them out of hatred, but mercy. We free the trapped souls.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I see. It is an act of compassion.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I wish to help destroy these abominations.",
+          "next": "devotee_inquiry",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "morthane_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_not_set",
+              "param": "chronos_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_not_set",
+              "param": "gaela_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_inquiry",
+      "speaker": "Priest of Morthane",
+      "text": "You would walk the path of endings? This is not a path for the faint of heart. A devotee of Morthane faces death without flinching, hunts the undead without mercy, and shepherds souls with gentle hands. You would learn to speak with the dead, to sense corruption, and to wield holy power against those who pervert the cycle. But devotion is exclusive - you cannot serve Morthane deeply while giving your soul to another of the Three.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What would I gain as a devotee?",
+          "next": "devotee_benefits",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Why must I choose only one god?",
+          "next": "devotee_exclusivity",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I am ready to embrace Morthane's path.",
+          "next": "devotee_confirmation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I must contemplate this choice.",
+          "next": "devotee_decline_temp",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_benefits",
+      "speaker": "Priest of Morthane",
+      "text": "As a devotee of the Keeper, you would receive: sacred quests that take you into the darkest places where undeath festers; the Amulet of Morthane, blessed to protect against corruption and reveal the unseen; the ability to speak with spirits and learn secrets from the dead; and the path to becoming Champion of Morthane, the Deathwalker - one who walks between worlds and commands the respect of both living and dead.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I am ready to become a devotee.",
+          "next": "devotee_confirmation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about the exclusivity again.",
+          "next": "devotee_exclusivity",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need more time to decide.",
+          "next": "devotee_decline_temp",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_exclusivity",
+      "speaker": "Priest of Morthane",
+      "text": "The Three accept all worshippers - you may always seek blessing from any temple. But devotion is different. To be devoted to Morthane means your soul becomes attuned to the boundary between life and death. This attunement cannot coexist with deep devotion to time's flow or life's growth - the frequencies do not harmonize. You may honor Chronos and Gaela, but your spirit would be bound to the cycle's keeper. It is the nature of profound commitment.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand. I choose Morthane.",
+          "next": "devotee_confirmation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What if I later regret this choice?",
+          "next": "devotee_regret",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need to consider this carefully.",
+          "next": "devotee_decline_temp",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_regret",
+      "speaker": "Priest of Morthane",
+      "text": "Morthane teaches that all choices lead to endings, and all endings lead to new beginnings. If you choose this path and later find it was not your true calling... you would live with that choice, as all mortals must live with their decisions. The other temples would not reject you, but their deepest mysteries would remain closed. Think of it this way: even wrong choices teach us who we truly are. There is wisdom in any ending.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I have decided. I will serve Morthane.",
+          "next": "devotee_confirmation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Then I must wait until I am certain.",
+          "next": "devotee_decline_temp",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_confirmation",
+      "speaker": "Priest of Morthane",
+      "text": "You stand at the threshold between worlds, ready to step into Morthane's embrace. Once you speak these words, your soul will be bound to the cycle of death and rebirth. You will become a Devotee of Morthane, keeper of endings, shepherd of souls, hunter of the undead. Do you confirm this choice, knowing that death watches your answer?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I confirm. I devote myself to Morthane, Keeper of the Cycle.",
+          "next": "devotee_ritual",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "morthane_devotee",
+              "value": 0
+            },
+            {
+              "type": "modify_reputation",
+              "param": "church_of_morthane",
+              "value": 50
+            },
+            {
+              "type": "modify_reputation",
+              "param": "church_of_three",
+              "value": 25
+            }
+          ]
+        },
+        {
+          "text": "Wait... I am not ready.",
+          "next": "devotee_decline_temp",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_ritual",
+      "speaker": "Priest of Morthane",
+      "text": "Then kneel before the veil between worlds. By the sacred cycle and the eternal passage of souls, I name you Devotee of Morthane. May your eyes pierce the darkness, may your hands bring peace to the restless dead, and may your spirit walk unafraid between the realms of living and dead. Rise now, Keeper of the Cycle. You are forever changed. Death no longer stalks you as an enemy - it walks beside you as a companion.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I am honored to serve the Keeper.",
+          "next": "devotee_welcome",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_welcome",
+      "speaker": "Priest of Morthane",
+      "text": "Welcome to the order of those who walk in death's shadow without fear. From this moment, you have access to quests that will take you to the darkest places and test your resolve against the most terrible corruptions. The path to becoming Champion of Morthane - the Deathwalker - lies before you. Steel yourself, for the road ahead passes through graveyards and crypts, through battlefields and necromancer lairs. May Morthane guide your blade.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "devotee_decline_temp",
+      "speaker": "Priest of Morthane",
+      "text": "Death is patient. It waits for all things, and so too does Morthane wait for those who would serve. Take the time you need to contemplate this path. You are welcome here regardless, and may still serve the temple in lesser capacities. When you are ready to face the threshold, I will be here.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "already_other_devotee",
+      "speaker": "Priest of Morthane",
+      "text": "I sense the mark of devotion upon your soul - but it is not Morthane's mark. You have already bound yourself to another of the Three. This is not rejection, merely acknowledgment of what is. Death accepts all eventually, but devotion can only be given once. You may still pray here, seek blessing, and aid our cause against the undead. But the deepest mysteries of Morthane's path are not for you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand. May I still help the temple?",
+          "next": "other_devotee_help",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Very well. Farewell, Priest.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "other_devotee_help",
+      "speaker": "Priest of Morthane",
+      "text": "The undead do not discriminate between the devoted of different gods - they threaten all living things equally. Any who would raise arms against them serves Morthane's purpose, even without devotion. You may undertake tasks that hunt abominations, protect burial grounds, and bring peace to restless spirits. These acts honor the cycle regardless of where your soul is pledged. Go with death's blessing, walker of another path.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "devotee_greeting",
+      "speaker": "Priest of Morthane",
+      "text": "The Keeper's servant returns. I sense you have walked closer to the veil since last we spoke. Death leaves its mark on all who serve Morthane - not as corruption, but as wisdom. What brings you before me, Keeper of the Cycle?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I seek wisdom about death and rebirth.",
+          "next": "death_wisdom",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I am ready for sacred duty.",
+          "next": "quest_hub_devotee",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about becoming the Deathwalker.",
+          "next": "champion_path",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I wished to pay respects to the Keeper.",
+          "next": "farewell_devotee",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "death_wisdom",
+      "speaker": "Priest of Morthane",
+      "text": "Consider this: every ending is a beginning wearing different clothes. The corpse becomes soil, the soil becomes grain, the grain becomes life, and life returns to Morthane in time. Fear not the ending of things - fear only the corruption that prevents the cycle from turning. Undeath is terrible not because it is death, but because it is death denied, rebirth prevented, souls trapped in rotting prisons. True death is liberation. Remember this.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Profound wisdom. I will remember.",
+          "next": "greeting",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "morthane_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Thank you, Keeper. I carry this understanding.",
+          "next": "devotee_greeting",
+          "conditions": [
+            {
+              "type": "flag_set",
+              "param": "morthane_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "champion_path",
+      "speaker": "Priest of Morthane",
+      "text": "The path to Champion of Morthane - the Deathwalker - is not walked lightly. You must complete all sacred quests, proving your mastery over death's domain. You will learn to speak with the dead, to sense corruption across vast distances, and to wield holy power that burns the undead like sunlight. The final trial requires you to walk between worlds, to stand in death's realm and return. Only then may you bear the Shroud of Morthane and the title of Deathwalker.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I am ready to continue my journey.",
+          "next": "quest_hub_devotee",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I will prepare myself further first.",
+          "next": "farewell_devotee",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_hub_pre_devotee",
+      "speaker": "Priest of Morthane",
+      "text": "Even those who have not committed to devotion may serve the cycle. The undead threaten all living things, and any who would stand against them performs Morthane's work. For those proving their worth, we offer tasks: performing burial rites for the fallen, investigating restless spirits, defending cemeteries from grave robbers and worse.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What tasks are available?",
+          "next": "quest_list_pre_devotee",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Perhaps another time.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_list_pre_devotee",
+      "speaker": "Priest of Morthane",
+      "text": "Currently, the temple requires: those who will perform last rites for the unburied dead in the surrounding lands; investigators to discover why certain spirits cannot find rest; and defenders to protect our sacred burial grounds from those who would desecrate them. Complete these tasks, and you may prove yourself worthy of Morthane's deeper mysteries.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I will consider these tasks.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about becoming a devotee.",
+          "next": "devotee_inquiry",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "morthane_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_not_set",
+              "param": "chronos_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_not_set",
+              "param": "gaela_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_hub_devotee",
+      "speaker": "Priest of Morthane",
+      "text": "As a devotee, you have access to sacred duties that take you into the heart of corruption itself. The deeper quests involve: learning to speak with the dead; hunting necromancers and their creations; stopping lich transformations; and ultimately, confronting the greatest threats to the cycle. What darkness would you face, Keeper?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What quests are currently available?",
+          "next": "quest_list_devotee",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I will return when I am prepared.",
+          "next": "farewell_devotee",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_list_devotee",
+      "speaker": "Priest of Morthane",
+      "text": "The cycle's enemies grow bold. Early devotees learn the art of speaking with spirits and solving the mysteries of restless dead. Advanced servants track necromancers to their lairs and stop lich transformations. Those nearing mastery must defend against undead armies and walk between worlds themselves. Each duty brings you closer to becoming Deathwalker. Choose your battles wisely.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand. I will prepare.",
+          "next": "farewell_devotee",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "speaker": "Priest of Morthane",
+      "text": "Go in peace, knowing that death watches over you not as a threat, but as a guardian. When your time comes, Morthane will be there to guide you. Until then, live well and honor the cycle. Return when you seek understanding or wish to serve.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_devotee",
+      "speaker": "Priest of Morthane",
+      "text": "Walk without fear, Keeper of the Cycle. The dead cannot harm one who serves their shepherd. May your blade strike true against the corrupted, and may the spirits you free remember your mercy. Return when darkness calls or when you are ready for sacred duty.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

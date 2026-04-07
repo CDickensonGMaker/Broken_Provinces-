@@ -1,0 +1,34 @@
+{
+  "name": "Whisper",
+  "who": "Halfling infiltrator of the Thieves Guild\nRarely speaks, lets her daggers do the talking\nMaster of poisons and stealth\nPotential companion upon completing guild questline\nFiercely loyal to those who earn her trust",
+  "what": "Guild's top infiltration specialist\nPoison crafting expert\nOffers training in stealth techniques\nPotential companion if chosen over Red Mara",
+  "where": "Dalhurst - Thieves Guild hideout\nAvailable as companion after questline completion",
+  "quests": "Thieves Guild Shadow Master reward choice",
+  "sprite": {
+    "type": "rogue",
+    "path": "res://assets/sprites/npcs/combat/thief.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0192,
+    "notes": "Small halfling in dark clothing, dual daggers visible"
+  },
+  "dialogue": {
+    "archetype": "silent_assassin",
+    "topics": ["stealth", "poisons", "guild_secrets", "halfling_culture"],
+    "disposition_base": 30,
+    "notes": "Speaks rarely and briefly, communicates through gestures"
+  },
+  "combat": {
+    "can_fight": true,
+    "level": 32,
+    "is_essential": true,
+    "notes": "Fast attacker - low HP, rapid strikes, poison damage"
+  },
+  "follower": {
+    "can_recruit": true,
+    "recruitment_conditions": ["Complete Thieves Guild questline", "Choose Whisper over Red Mara"],
+    "skills": ["vanish", "poisoned_blade", "distraction"],
+    "combat_style": "rogue_flanker",
+    "notes": "Quick flanking attacks, poison DOT, excellent at escaping"
+  }
+}

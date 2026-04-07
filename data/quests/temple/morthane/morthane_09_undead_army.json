@@ -1,0 +1,89 @@
+{
+	"id": "morthane_09_undead_army",
+	"title": "The Rising Tide",
+	"description": "A massive undead incursion threatens multiple settlements. Something has corrupted the burial grounds near the Bandit Hideout, causing waves of undead to rise. This is the greatest threat to the cycle you have faced. You must find and destroy the source before entire towns fall.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_morthane_elder_moor",
+	"giver_npc_type": "priest",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "defend_crossroads",
+			"description": "Defend Crossroads from the first undead wave",
+			"type": "kill",
+			"target": "skeleton_warrior",
+			"target_zone": "crossroads",
+			"required_count": 12
+		},
+		{
+			"id": "defend_thornfield",
+			"description": "Defend Thornfield from skeleton shades",
+			"type": "kill",
+			"target": "skeleton_shade",
+			"target_zone": "thornfield",
+			"required_count": 8
+		},
+		{
+			"id": "trace_source",
+			"description": "Follow the undead trail to the Bandit Hideout",
+			"type": "reach",
+			"target": "bandit_hideout",
+			"target_zone": "bandit_hideout",
+			"required_count": 1
+		},
+		{
+			"id": "find_corruption_source",
+			"description": "Locate the corruption source in the hideout",
+			"type": "interact",
+			"target": "corruption_nexus",
+			"target_zone": "bandit_hideout",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_death_knight",
+			"description": "Defeat the Death Knight commanding the undead army",
+			"type": "kill",
+			"target": "death_knight_commander",
+			"target_zone": "bandit_hideout",
+			"required_count": 1
+		},
+		{
+			"id": "purify_corruption",
+			"description": "Purify the corruption nexus with Morthane's flame",
+			"type": "interact",
+			"target": "corruption_nexus_purified",
+			"target_zone": "bandit_hideout",
+			"required_count": 1
+		},
+		{
+			"id": "return_priest",
+			"description": "Return to the Priest of Morthane",
+			"type": "talk",
+			"target": "priest_morthane_elder_moor",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_morthane_elder_moor",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 500,
+		"xp": 1500,
+		"items": [
+			{"id": "reapers_blade", "quantity": 1}
+		],
+		"faction_reputation": {
+			"church_of_morthane": 60,
+			"church_of_three": 30,
+			"guard_faction": 25
+		}
+	},
+	"starter_items": [
+		{"id": "morthane_sacred_flame", "quantity": 1}
+	],
+	"prerequisites": ["morthane_08_rebirth_ritual"],
+	"next_quest": "morthane_10_deathwalker",
+	"faction": "church_of_morthane"
+}

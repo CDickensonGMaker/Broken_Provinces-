@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "church_of_morthane"
+display_name = "Church of Morthane"
+description = "The followers of Morthane, the dual-aspected deity of Death and Rebirth. They believe death is not an end but a transformation. Morthane's priests conduct funerary rites, comfort the grieving, and guard against undead abominations. They also celebrate births as souls returning to the mortal realm."
+parent_faction = "church_of_three"
+allies = ["church_of_three", "human_empire"]
+enemies = ["cultists", "undead"]
+neutrals = ["church_of_chronos", "church_of_gaela", "the_keepers"]
+alignment = 40
+ranks = [{"name": "Defiler", "min_reputation": -100, "benefits": []}, {"name": "Graveless", "min_reputation": -50, "benefits": []}, {"name": "Mourner", "min_reputation": -20, "benefits": []}, {"name": "Vigil Keeper", "min_reputation": 0, "benefits": ["morthane_blessing"]}, {"name": "Soul Guide", "min_reputation": 25, "benefits": ["morthane_blessing", "last_rites"]}, {"name": "Grave Warden", "min_reputation": 50, "benefits": ["morthane_blessing", "last_rites", "spirit_sight"]}, {"name": "Death's Hand", "min_reputation": 75, "benefits": ["morthane_blessing", "last_rites", "spirit_sight", "rebirth_ritual"]}, {"name": "Devotee of the Cycle", "min_reputation": 90, "benefits": ["morthane_blessing", "last_rites", "spirit_sight", "rebirth_ritual", "morthane_champion"]}]
+default_reputation = 0
+joinable = false
+join_threshold = 25
+is_hidden = false
+faction_color = Color(0.5, 0.4, 0.6, 1.0)

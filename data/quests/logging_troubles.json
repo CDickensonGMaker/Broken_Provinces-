@@ -1,0 +1,74 @@
+{
+	"id": "logging_troubles",
+	"title": "Wolves in the Wood",
+	"description": "Elder Moor's logging operations have ground to a halt. A pack of dire wolves has moved into the western forest, and they've already killed two woodsmen. Tharin Ironbeard can't afford to lose more workers, but someone needs to deal with the wolf threat before the settlement runs out of timber for winter.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "tharin_ironbeard",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "speak_tharin",
+			"description": "Learn about the wolf problem from Tharin Ironbeard",
+			"type": "talk",
+			"target": "tharin_ironbeard",
+			"required_count": 1
+		},
+		{
+			"id": "travel_logging_camp",
+			"description": "Travel to the western logging camp",
+			"type": "reach",
+			"target": "western_logging_camp",
+			"required_count": 1
+		},
+		{
+			"id": "investigate_attacks",
+			"description": "Investigate the sites of the wolf attacks",
+			"type": "interact",
+			"target": "wolf_attack_site",
+			"required_count": 2
+		},
+		{
+			"id": "track_wolves",
+			"description": "Track the wolf pack to their den",
+			"type": "reach",
+			"target": "dire_wolf_den",
+			"required_count": 1
+		},
+		{
+			"id": "kill_wolves",
+			"description": "Eliminate the dire wolf pack (0/5)",
+			"type": "kill",
+			"target": "dire_wolf",
+			"required_count": 5
+		},
+		{
+			"id": "kill_alpha",
+			"description": "Defeat the Alpha Dire Wolf",
+			"type": "kill",
+			"target": "alpha_dire_wolf",
+			"required_count": 1
+		},
+		{
+			"id": "return_tharin",
+			"description": "Report your success to Tharin",
+			"type": "talk",
+			"target": "tharin_ironbeard",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "tharin_ironbeard",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 125,
+		"xp": 350,
+		"items": ["wolf_pelt_cloak"],
+		"faction_reputation": {
+			"elder_moor": 30
+		}
+	},
+	"prerequisites": [],
+	"next_quest": ""
+}

@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="CompanionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/companion_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "apprentice_lyris"
+display_name = "Apprentice Lyris"
+character_class = "Mage"
+description = "A talented young mage of the Arcane Circle. Specializes in elemental magic and support spells. Despite her youth, Lyris shows remarkable talent for the arcane arts. She wields fire and frost with equal skill, and her protective wards have saved many lives."
+max_health = 60
+base_damage = 25
+armor = 5
+speed_multiplier = 1.0
+attack_cooldown = 1.2
+combat_range = 15.0
+attack_range = 12.0
+ai_behavior = 3
+combat_style = 2
+is_essential = true
+knockout_duration = 0.0
+preferred_weapons = Array[String](["staff", "wand", "tome"])
+abilities = Array[String](["fireball", "frost_shield", "arcane_missile"])
+ability_use_chance = 0.45
+ranged_projectile_path = "res://scenes/projectiles/arcane_bolt.tscn"
+sprite_path = "res://assets/sprites/npcs/civilians/wizard_mage.png"
+sprite_h_frames = 1
+sprite_v_frames = 1
+sprite_pixel_size = 0.0256
+tint_color = Color(1.0, 1.0, 1.0, 1.0)
+unlock_type = 1
+unlock_param = "arcane_circle_champion"
+unlock_threshold = 0
+dialogue_path = "res://data/dialogue/companions/apprentice_lyris.json"
+knowledge_profile_path = ""
+combat_bark_lines = Array[String](["By the Three Laws of Magic!", "Feel the power of the elements!", "The Circle trained me well!", "Knowledge is my weapon!", "Arcane energy flows through me!", "I will not fail my mentors!"])
+knockout_lines = Array[String](["The spell... fading...", "Archmage... forgive me...", "My focus... broken..."])
+recovery_lines = Array[String](["Magic sustains me!", "Back to casting!", "The arcane endures!"])

@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="CompanionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/companion_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "whisper"
+display_name = "Whisper"
+character_class = "Infiltrator"
+description = "A halfling infiltrator known for her incredible speed and agility. Her dual daggers are coated in deadly poisons. Whisper speaks rarely but strikes often, preferring to let her blades do the talking. The Thieves Guild values her for jobs requiring absolute discretion."
+max_health = 55
+base_damage = 16
+armor = 5
+speed_multiplier = 1.35
+attack_cooldown = 0.7
+combat_range = 6.0
+attack_range = 1.8
+ai_behavior = 1
+combat_style = 0
+is_essential = true
+knockout_duration = 0.0
+preferred_weapons = Array[String](["dagger", "dual_daggers", "poisoned_blade"])
+abilities = Array[String](["vanish", "poisoned_blade", "distraction"])
+ability_use_chance = 0.40
+ranged_projectile_path = ""
+sprite_path = "res://assets/sprites/npcs/combat/thief.png"
+sprite_h_frames = 1
+sprite_v_frames = 1
+sprite_pixel_size = 0.0192
+tint_color = Color(0.95, 0.95, 1.0, 1.0)
+unlock_type = 1
+unlock_param = "whisper_recruitment"
+unlock_threshold = 0
+dialogue_path = "res://data/dialogue/companions/whisper.json"
+knowledge_profile_path = ""
+combat_bark_lines = Array[String](["...", "*quiet laughter*", "They never hear me.", "Small target, big problems.", "The poison does its work.", "Now you see me... now you don't."])
+knockout_lines = Array[String](["...", "*pained silence*", "Too... slow..."])
+recovery_lines = Array[String](["*soft exhale*", "Still here.", "...back."])

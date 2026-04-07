@@ -1,0 +1,8 @@
+{
+  "name": "Foreman Garvek",
+  "who": "Stocky man with calloused hands and sawdust in his beard\nLeads the Elder Moor logging operations\nPractical and no-nonsense but fair to workers",
+  "what": "Oversees logging camp operations\nCan provide work for players seeking coin\nKnows about strange happenings in the surrounding forest",
+  "where": "Elder Moor - Logging Camp",
+  "sprite": "lumberjack_npc",
+  "quests": "Logging Camp Tasks, Forest Investigation"
+}

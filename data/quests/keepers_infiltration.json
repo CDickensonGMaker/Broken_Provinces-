@@ -1,0 +1,96 @@
+{
+	"id": "keepers_infiltration",
+	"title": "Among the Faithful",
+	"description": "The Shadowed Hand is planning something in Millbrook - a gathering of the faithful, Aldric calls it. A dozen cultists meeting to perform a ritual under the next full moon. This is your chance to learn their true purpose. Aldric wants you to infiltrate the meeting, pretend to be a new recruit, and gather intelligence without blowing your cover. If they suspect you're a spy, you'll be dead before you can call for help. Keep your wits sharp, your story straight, and your blade hidden. This is what the Keepers do best.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "aldric_vane",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "acquire_cult_token",
+			"description": "Obtain a cult identification token from a member",
+			"type": "collect",
+			"target": "shadowed_hand_token",
+			"required_count": 1
+		},
+		{
+			"id": "travel_millbrook_meeting",
+			"description": "Travel to the cult meeting site outside Millbrook",
+			"type": "reach",
+			"target": "millbrook_ritual_ground",
+			"required_count": 1
+		},
+		{
+			"id": "infiltrate_cult_meeting",
+			"description": "Infiltrate the cult meeting as a new recruit",
+			"type": "interact",
+			"target": "cult_gathering",
+			"required_count": 1
+		},
+		{
+			"id": "pass_induction_test",
+			"description": "Pass the cult's induction ritual without suspicion",
+			"type": "interact",
+			"target": "induction_ritual",
+			"required_count": 1
+		},
+		{
+			"id": "gather_cult_intelligence",
+			"description": "Gather intelligence on the cult's plans during the meeting",
+			"type": "interact",
+			"target": "cult_leader_speech",
+			"required_count": 1
+		},
+		{
+			"id": "discover_ritual_purpose",
+			"description": "Learn the true purpose of the upcoming ritual",
+			"type": "interact",
+			"target": "ritual_preparations",
+			"required_count": 1
+		},
+		{
+			"id": "escape_without_detection",
+			"description": "Leave the meeting without exposing yourself",
+			"type": "reach",
+			"target": "meeting_exit_point",
+			"required_count": 1
+		},
+		{
+			"id": "debrief_aldric",
+			"description": "Debrief with Aldric Vane about what you learned",
+			"type": "talk",
+			"target": "aldric_vane",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "aldric_vane",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 350,
+		"xp": 800,
+		"items": ["keepers_disguise_kit"],
+		"faction_reputation": {
+			"the_keepers": 70
+		}
+	},
+	"choice_consequences": {
+		"perfect_infiltration": {
+			"flags_to_set": ["cult_infiltration_success", "cult_trusts_player"],
+			"reputation_changes": {"the_keepers": 40, "shadowed_hand_cult": 25}
+		},
+		"cover_blown": {
+			"flags_to_set": ["cult_infiltration_failed", "cult_knows_player_spy"],
+			"reputation_changes": {"the_keepers": 10, "shadowed_hand_cult": -100}
+		},
+		"killed_cult_leader_early": {
+			"flags_to_set": ["cult_leader_assassinated"],
+			"reputation_changes": {"the_keepers": -20, "shadowed_hand_cult": -150}
+		}
+	},
+	"prerequisites": ["keepers_artifact"],
+	"next_quest": "keepers_confrontation",
+	"notes": "Social stealth and deception quest. Token can be pickpocketed from cultist in Dalhurst or found on corpse from previous quest. Infiltration requires multiple Deception skill checks (DC 14, 16, 18). Induction ritual tests player knowledge - must give correct responses based on cult documents from earlier. Intelligence gathered reveals: cult plans to summon entity called 'The Hollow King' to corrupt the region. Perfect infiltration lets player maintain double-agent status (can access cult quests later). Blown cover triggers combat with entire cult gathering (hard fight). Killing leader early stops ritual but cult scatters and regroups (harder to track). Keepers Disguise Kit reward grants +2 Deception and quick-change disguise ability."
+}

@@ -1,0 +1,636 @@
+{
+  "id": "theron_the_bold_companion",
+  "display_name": "Theron the Bold - Guild Champion",
+  "description": "Full companion dialogue for Theron the Bold, Adventurer's Guild warrior",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Theron",
+      "text": "Hail, friend! The Guild spoke highly of your deeds. It seems we've finally met face to face.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "You must be Theron. Your reputation precedes you.",
+          "next": "reputation_response",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Are you interested in adventuring together?",
+          "next": "recruitment_pitch",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about your combat experience.",
+          "next": "combat_history",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I should go.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "greeting_companion",
+      "speaker": "Theron",
+      "text": "Ready for battle, as always. What's on your mind?",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "param": "theron_recruited",
+          "value": 0
+        }
+      ],
+      "choices": [
+        {
+          "text": "How are you holding up?",
+          "next": "companion_status",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about yourself.",
+          "next": "personal_history",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What do you think of the other guilds?",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'd like to discuss tactics.",
+          "next": "tactics_discussion",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Wait here for a while.",
+          "next": "wait_command",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "wait",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Let's keep moving.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "reputation_response",
+      "speaker": "Theron",
+      "text": "Ha! Reputation is a double-edged sword. It draws both allies and challengers. I've earned mine through blood, sweat, and years of service to the Guild. Every scar tells a story.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's the most dangerous creature you've fought?",
+          "next": "dangerous_fight",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Would you fight alongside me?",
+          "next": "recruitment_pitch",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Perhaps another time.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_pitch",
+      "speaker": "Theron",
+      "text": "Adventure together? Now that's an interesting proposition. Guildmaster Vorn has given me leave to seek worthy companions. You've proven yourself capable through the trials. I would be honored to fight at your side.",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "param": "adventurers_guild_questline_complete",
+          "value": 0
+        }
+      ],
+      "choices": [
+        {
+          "text": "Then join me. Let's make legends together.",
+          "next": "recruitment_accept",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "theron_recruited",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "chose_theron",
+              "value": 0
+            },
+            {
+              "type": "recruit_follower",
+              "param": "theron_the_bold",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I need to think about it.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What about Sylva? Is she also available?",
+          "next": "mention_sylva",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_accept",
+      "speaker": "Theron",
+      "text": "Excellent! My sword and shield are yours. Together, we'll carve our names into history! Lead on, and know that Theron the Bold stands with you.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "mention_sylva",
+      "speaker": "Theron",
+      "text": "Ah, Sylva Swiftfoot. A fine archer and tracker. The Guild can only spare one champion to accompany you, I'm afraid. You'll need to choose between us. My strength is in direct combat - holding the line and protecting allies. Sylva excels at range and support.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I could use a strong shield at my side. I choose you.",
+          "next": "recruitment_accept",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "theron_recruited",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "chose_theron",
+              "value": 0
+            },
+            {
+              "type": "recruit_follower",
+              "param": "theron_the_bold",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I need to think about this choice.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "think_about_it",
+      "speaker": "Theron",
+      "text": "Take your time. A warrior should choose their companions wisely. I'll be here when you've made your decision.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "combat_history",
+      "speaker": "Theron",
+      "text": "Twenty years of battle have taught me much. I've fought goblins, bandits, ogres, and worse. The key to survival is not just strength, but knowing when to attack and when to defend. A shield isn't just for blocking - it's a weapon of its own.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What abilities do you bring to a fight?",
+          "next": "abilities_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Impressive. Would you join me?",
+          "next": "recruitment_pitch",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Thank you for sharing.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "abilities_explanation",
+      "speaker": "Theron",
+      "text": "My Shield Bash can stun enemies, giving you openings. Battle Cry inspires allies to fight harder. And when things get dire, my Taunt forces enemies to focus on me. I'm built to take punishment so others don't have to.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "That sounds perfect for my party.",
+          "next": "recruitment_pitch",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Good to know. Thank you.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "dangerous_fight",
+      "speaker": "Theron",
+      "text": "A troll beneath Millbrook Bridge. Took three of us to bring it down, and two didn't walk away. I carry their memory with every battle. It's why I fight - so their sacrifice wasn't in vain.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm sorry for your loss.",
+          "next": "loss_response",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's the adventurer's life.",
+          "next": "pragmatic_response",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "loss_response",
+      "speaker": "Theron",
+      "text": "Thank you. They died with honor, protecting a village that couldn't protect itself. The Guild gave them a warrior's farewell. It's what we all hope for, in the end.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "pragmatic_response",
+      "speaker": "Theron",
+      "text": "Aye, it is. We accept that risk when we take the oath. But it doesn't make the losses easier. It makes us fight smarter, protect each other better.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "companion_status",
+      "speaker": "Theron",
+      "text": "Fighting fit and eager for the next challenge! My sword arm grows stronger with each battle. You've led us through much already. I have no regrets following you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Have you been injured recently?",
+          "next": "injury_check",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Good to hear. Stay sharp.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "injury_check",
+      "speaker": "Theron",
+      "text": "Nothing that won't heal! A warrior's body is covered in scars. Each one is a lesson learned. The day I stop earning new scars is the day I grow complacent - and that's when death finds you.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "personal_history",
+      "speaker": "Theron",
+      "text": "I was born in a small village near the Elder Moor. Raiders took everything when I was young - my home, my family's livelihood, nearly my life. A passing Guild adventurer saved what remained. From that day, I knew my calling.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What happened to your family?",
+          "next": "family_history",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Did you ever find those raiders?",
+          "next": "raiders_revenge",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Guild became your family.",
+          "next": "guild_family",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "family_history",
+      "speaker": "Theron",
+      "text": "My father died defending our home. Mother survived but never recovered from the shock. She passed a few winters later. My sister married a merchant and moved to Larton. We exchange letters when we can. She worries, but she understands.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "raiders_revenge",
+      "speaker": "Theron",
+      "text": "Years later, I tracked down their leader. He'd become a petty warlord in the borderlands. I challenged him to single combat and took his head. It didn't bring my father back, but it gave me closure. And saved others from the same fate.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "guild_family",
+      "speaker": "Theron",
+      "text": "It did. Guildmaster Vorn saw potential in an angry young man and tempered my rage into discipline. The other members became brothers and sisters in arms. When you fight beside someone, trust them with your life... bonds form that blood alone cannot create.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "faction_opinions",
+      "speaker": "Theron",
+      "text": "You want my honest opinion on the other powers in this land? Very well.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What do you think of the Thieves Guild?",
+          "next": "opinion_thieves",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What about the Iron Company?",
+          "next": "opinion_iron_company",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "And the Arcane Circle?",
+          "next": "opinion_arcane",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's enough for now.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_thieves",
+      "speaker": "Theron",
+      "text": "Thieves. Rogues who prey on honest folk. I know some see them as a necessary evil, maintaining order among criminals. But I've seen too many victims of their 'business.' Still, in my experience, even a thief can find honor if given the chance.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "A pragmatic view.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_iron_company",
+      "speaker": "Theron",
+      "text": "Disciplined. Professional. The Iron Company are warriors I respect, even if we sometimes compete for contracts. Captain Steele runs a tight ship. They fight for coin, but they honor their contracts absolutely. In battle, I'd rather have them at my side than against me.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "High praise.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_arcane",
+      "speaker": "Theron",
+      "text": "Wizards make me nervous, I won't lie. Too much power in the hands of too few. But Archmage Elara has proven the Circle's worth many times over. Magic is a tool, like any weapon. It's the wielder's intent that matters.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Wise perspective.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_discussion",
+      "speaker": "Theron",
+      "text": "When we enter combat, I'll move to the front. Let me draw their attention with Taunt while you flank. If you see me raise my shield high, that means I'm about to use Battle Cry - that's your signal to press the attack.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What if we're overwhelmed?",
+          "next": "tactics_overwhelmed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Should I stay behind you?",
+          "next": "tactics_positioning",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Good plan. Let's go.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_overwhelmed",
+      "speaker": "Theron",
+      "text": "If numbers turn against us, fall back and let me hold the chokepoint. My shield can take punishment that would fell lesser warriors. Buy time, regroup, then counterattack when they've exhausted themselves on my defense.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "tactics_positioning",
+      "speaker": "Theron",
+      "text": "Use me as cover when you need to, but don't stay static. I'm the anvil - you're the hammer. Flank them, strike from angles they don't expect. When they turn to face you, I'll punish them for it.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_command",
+      "speaker": "Theron",
+      "text": "Understood. I'll hold this position until you return. Be careful out there - I won't be at your back.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_too_long",
+      "speaker": "Theron",
+      "text": "I've waited long enough. A warrior grows restless standing idle. Are we moving, or shall I find my own adventure?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Sorry for the delay. Follow me.",
+          "next": "follow_resume",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "follow",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Just a bit longer.",
+          "next": "wait_reluctant",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "follow_resume",
+      "speaker": "Theron",
+      "text": "Finally! Let's go find something worthy of our steel.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_reluctant",
+      "speaker": "Theron",
+      "text": "Very well. But know that patience is not among my virtues. My sword arm itches for action.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Theron",
+      "text": "May your blade stay sharp and your shield hold true. Until we meet again.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_companion",
+      "speaker": "Theron",
+      "text": "Lead on. My sword is ready.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ],
+  "barks": {
+    "combat_start": [
+      "For the Guild!",
+      "Stand behind me!",
+      "You face Theron the Bold!",
+      "Come test your steel against mine!"
+    ],
+    "combat_kill": [
+      "Another one falls!",
+      "Is that the best you've got?",
+      "Who's next?"
+    ],
+    "combat_low_health": [
+      "I... won't... fall!",
+      "Just a scratch!",
+      "This isn't over!"
+    ],
+    "player_low_health": [
+      "Stay behind me!",
+      "Fall back! I'll cover you!",
+      "Don't you dare die on me!"
+    ],
+    "ambient_dungeon": [
+      "Stay alert. Danger lurks in these shadows.",
+      "I've seen places like this before. Stay close.",
+      "The air here reeks of death. Be ready."
+    ],
+    "ambient_town": [
+      "I could use a good ale after this.",
+      "Civilized lands. A welcome change.",
+      "Even in peace, a warrior must stay prepared."
+    ],
+    "ambient_wilderness": [
+      "Nature can be as dangerous as any dungeon.",
+      "Keep your eyes open. Bandits love these roads.",
+      "Beautiful country. Shame about the monsters."
+    ],
+    "order_acknowledged": [
+      "As you command!",
+      "At once!",
+      "Consider it done!",
+      "By my steel!"
+    ],
+    "order_attack": [
+      "CHARGE!",
+      "To battle!",
+      "They die today!"
+    ],
+    "idle_long": [
+      "Are we waiting for something?",
+      "My sword arm grows restless.",
+      "Adventure awaits! Let's move!"
+    ]
+  }
+}

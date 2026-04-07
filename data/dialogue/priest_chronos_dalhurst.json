@@ -1,0 +1,586 @@
+{
+  "id": "priest_chronos_dalhurst",
+  "display_name": "Priest of Chronos - Dalhurst Temple",
+  "description": "Dialogue for the Priest of Chronos in the Temple of Three Gods, Dalhurst. Includes devotee recruitment, time-themed wisdom, and quest hooks.",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Priest of Chronos",
+      "text": "The sands of time have brought you to this sacred place, traveler. I am the keeper of Chronos's wisdom here in Dalhurst. How may I guide you through the endless flow of moments?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Tell me about Chronos.",
+          "next": "chronos_lore",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I wish to become a devotee of Chronos.",
+          "next": "devotee_inquiry",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "chronos_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_not_set",
+              "param": "gaela_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_not_set",
+              "param": "morthane_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I wish to serve Chronos.",
+          "next": "already_other_devotee",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "chronos_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_set",
+              "param": "gaela_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I wish to serve Chronos.",
+          "next": "already_other_devotee",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "chronos_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_set",
+              "param": "morthane_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Greetings, Master. What wisdom do you have for me today?",
+          "next": "devotee_greeting",
+          "conditions": [
+            {
+              "type": "flag_set",
+              "param": "chronos_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Do you have any tasks for me?",
+          "next": "quest_hub_pre_devotee",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "chronos_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Do you have any sacred duties for me, Master?",
+          "next": "quest_hub_devotee",
+          "conditions": [
+            {
+              "type": "flag_set",
+              "param": "chronos_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I seek temporal wisdom.",
+          "next": "time_wisdom",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Farewell.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "chronos_lore",
+      "speaker": "Priest of Chronos",
+      "text": "Chronos is the God of Time, the Eternal Watcher, the Keeper of Moments. He governs the flow of all things - from the first breath of creation to the final whisper of entropy. Through Chronos, we understand that time is not our enemy, but our teacher. Every moment is precious. Every second carries meaning. The past instructs us, the present defines us, and the future awaits our choices.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What are the principles of Chronos's faith?",
+          "next": "chronos_principles",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How does Chronos relate to the other two gods?",
+          "next": "three_gods_relation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Return to previous topics.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "chronos_principles",
+      "speaker": "Priest of Chronos",
+      "text": "The faithful of Chronos live by three principles: First, honor the passage of time - do not waste the moments given to you. Second, accept the inevitability of change - all things transform, and resistance breeds suffering. Third, seek wisdom in patience - the future reveals itself to those who wait with open eyes. We do not fear death, for it is merely another transition in time's eternal dance.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "These are wise teachings.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "three_gods_relation",
+      "speaker": "Priest of Chronos",
+      "text": "The Three are aspects of existence itself. Chronos governs time and fate - the when of all things. Gaela governs growth and harvest - the flourishing of life. Morthane governs death and rebirth - the transition between states. Together, they form a sacred cycle: life grows in time, death claims what has ripened, and rebirth begins anew. We are not rivals, but siblings in divine purpose.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand. Thank you.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_inquiry",
+      "speaker": "Priest of Chronos",
+      "text": "You wish to walk the path of the Timekeeper? This is not a decision to be made lightly. A devotee of Chronos dedicates their soul to understanding time's mysteries. You would gain access to our deepest teachings, our most sacred quests, and the blessing of temporal insight. But know this - becoming a devotee of one god means you cannot serve the others in the same way. The Three accept shared worship, but deep devotion can only be given to one.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What would I gain as a devotee?",
+          "next": "devotee_benefits",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Why can I only be devoted to one god?",
+          "next": "devotee_exclusivity",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I am ready to commit to Chronos.",
+          "next": "devotee_confirmation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need more time to consider.",
+          "next": "devotee_decline_temp",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_benefits",
+      "speaker": "Priest of Chronos",
+      "text": "As a devotee of Chronos, you would receive: access to our inner circle of sacred quests that reveal time's deepest secrets; the Amulet of Chronos, a blessed artifact that sharpens your perception of moments yet to come; the respect and trust of all who serve the Timekeeper across the realm; and eventually, the title of Champion of Chronos, should you prove worthy. The path is long, but the rewards are eternal.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I am ready to become a devotee.",
+          "next": "devotee_confirmation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about the exclusivity again.",
+          "next": "devotee_exclusivity",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need more time to decide.",
+          "next": "devotee_decline_temp",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_exclusivity",
+      "speaker": "Priest of Chronos",
+      "text": "The Three Gods accept all worshippers - you may pray at any shrine, seek blessing from any priest. But devotion is different. It is a bond of the soul, a commitment that shapes your very being. To be devoted to Chronos means your spirit resonates with time itself. This resonance cannot harmonize with the frequencies of growth or death in the same way. You may still respect and honor Gaela and Morthane, but your heart would belong to the Timekeeper.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand. I choose Chronos.",
+          "next": "devotee_confirmation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What if I later regret this choice?",
+          "next": "devotee_regret",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need to think on this.",
+          "next": "devotee_decline_temp",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_regret",
+      "speaker": "Priest of Chronos",
+      "text": "Chronos teaches us that all choices have weight, and none can be unmade. The sands that fall through the hourglass cannot flow upward again. If you become a devotee and later find your heart elsewhere... you would carry both the blessing and the burden of that choice. The other temples would not refuse you aid, but their deepest mysteries would remain closed. Choose wisely, for time does not forgive hesitation, yet it also does not reward haste.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I have decided. I will serve Chronos.",
+          "next": "devotee_confirmation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Then I must wait until I am certain.",
+          "next": "devotee_decline_temp",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_confirmation",
+      "speaker": "Priest of Chronos",
+      "text": "You stand at the threshold of eternity, ready to take this step. Once spoken, these words cannot be unspoken. You will become a Devotee of Chronos, bound to the flow of time, privy to its secrets, and sworn to protect its sacred rhythm. Do you confirm this choice, knowing full well its permanence?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I confirm. I devote myself to Chronos, God of Time.",
+          "next": "devotee_ritual",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "chronos_devotee",
+              "value": 0
+            },
+            {
+              "type": "modify_reputation",
+              "param": "church_of_chronos",
+              "value": 50
+            },
+            {
+              "type": "modify_reputation",
+              "param": "church_of_three",
+              "value": 25
+            }
+          ]
+        },
+        {
+          "text": "Wait... I am not ready.",
+          "next": "devotee_decline_temp",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_ritual",
+      "speaker": "Priest of Chronos",
+      "text": "Then kneel, child of time. By the eternal sands and the infinite moments, I name you Devotee of Chronos. May your eyes see beyond the present, may your steps align with destiny's path, and may your soul find peace in time's embrace. Rise now, Acolyte of the Timekeeper. You are forever changed. The deeper mysteries of our faith now open before you, and sacred quests await your service.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I am honored to serve.",
+          "next": "devotee_welcome",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "devotee_welcome",
+      "speaker": "Priest of Chronos",
+      "text": "Welcome to our inner circle, Acolyte. From this moment forward, you have access to quests that test not just your body, but your understanding of time itself. Seek me when you are ready for sacred duties. The path to becoming Champion of Chronos is long, but you have taken the first step. May the sands flow ever in your favor.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "devotee_decline_temp",
+      "speaker": "Priest of Chronos",
+      "text": "Wisdom lies in knowing when to wait. Take the time you need - Chronos is patient, and so are his servants. When your heart is ready, return to me. Until then, you may still serve the temple through lesser tasks, and learn of our ways. The door to devotion remains open.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "already_other_devotee",
+      "speaker": "Priest of Chronos",
+      "text": "Ah, I sense the mark of another upon your soul. You have already pledged yourself to one of the Three - a sacred bond that cannot be undone. While you may always seek wisdom here and perform tasks for our temple, the path of Chronos's devotee is closed to you. This is not rejection, but the natural order. Honor your chosen path, and know that all three gods work toward the same cosmic purpose.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand. May I still help the temple?",
+          "next": "other_devotee_help",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Very well. Farewell.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "other_devotee_help",
+      "speaker": "Priest of Chronos",
+      "text": "Of course. The Three do not refuse aid from any who offer it freely. You may undertake tasks that benefit the temple, and in doing so, honor the harmony between our faiths. The preliminary quests remain available to you, though the deepest mysteries of Chronos must remain sealed. Go with time's blessing, child of another path.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "devotee_greeting",
+      "speaker": "Priest of Chronos",
+      "text": "Greetings, Acolyte of the Timekeeper. The sands continue to fall, and your presence honors this temple. What brings you before me today? Do you seek wisdom, or are you ready for another sacred duty in service to Chronos?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I seek temporal wisdom.",
+          "next": "time_wisdom",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I am ready for a sacred duty.",
+          "next": "quest_hub_devotee",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me more about becoming a Champion.",
+          "next": "champion_path",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I just wished to pay my respects.",
+          "next": "farewell_devotee",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "time_wisdom",
+      "speaker": "Priest of Chronos",
+      "text": "Time is both swift and eternal. A moment can change everything, yet the ages move with inexorable patience. Remember: the past is a lesson, not a prison. The future is a promise, not a certainty. Only the present is yours to shape. Do not mourn what has been lost to time - instead, honor it by living fully in each moment that remains.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Wise words. Thank you.",
+          "next": "greeting",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "chronos_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I will meditate on this wisdom, Master.",
+          "next": "devotee_greeting",
+          "conditions": [
+            {
+              "type": "flag_set",
+              "param": "chronos_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "champion_path",
+      "speaker": "Priest of Chronos",
+      "text": "The path to Champion of Chronos is long and demanding. You must complete all sacred quests, proving your mastery over temporal understanding. The final trials will test your spirit in ways you cannot yet imagine - you will face the bleeding of timelines, the paradoxes of existence, and the eternal vigil that guards the flow of all moments. Only then may you bear the title of Champion and wield the Timekeeper's Aegis.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I am ready to continue my journey.",
+          "next": "quest_hub_devotee",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I will prepare myself further first.",
+          "next": "farewell_devotee",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_hub_pre_devotee",
+      "speaker": "Priest of Chronos",
+      "text": "There are always tasks for those who would serve the temple. Seekers who have not yet committed to devotion may undertake our introductory quests - recovering sacred artifacts, delivering prophecies, investigating threats to the flow of time. These tasks will test your worth and teach you of Chronos's ways. Speak with me when you are ready to begin a specific quest.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What quests are available?",
+          "next": "quest_list_pre_devotee",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Perhaps another time.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_list_pre_devotee",
+      "speaker": "Priest of Chronos",
+      "text": "Currently, the temple has need of champions who can: retrieve sacred artifacts from places corrupted by temporal disturbance; deliver time-sensitive prophecies to those who must receive them; and investigate false seers who profane Chronos's gift of foresight. Complete these tasks, and you may prove yourself worthy of deeper commitment to our faith.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I will consider these tasks.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about becoming a devotee first.",
+          "next": "devotee_inquiry",
+          "conditions": [
+            {
+              "type": "flag_not_set",
+              "param": "chronos_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_not_set",
+              "param": "gaela_devotee",
+              "value": 0
+            },
+            {
+              "type": "flag_not_set",
+              "param": "morthane_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_hub_devotee",
+      "speaker": "Priest of Chronos",
+      "text": "As a devotee, you have access to the sacred duties that define our inner circle. The deeper quests involve: confronting temporal echoes of the past; solving paradoxes that threaten the flow of time; training in the arts of prophecy; and ultimately, defending against threats to the timeline itself. What would you undertake, Acolyte?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What quests are currently available?",
+          "next": "quest_list_devotee",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I will return when I am prepared.",
+          "next": "farewell_devotee",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_list_devotee",
+      "speaker": "Priest of Chronos",
+      "text": "The sacred duties before you are many. Early devotees must face temporal echoes and prove their understanding of time's nature. Advanced acolytes confront paradoxes and receive training in prophetic arts. Those nearing the end of their journey must face the bleeding of timelines and stand the eternal vigil. Each task brings you closer to becoming Champion. Choose wisely when you are ready.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I understand. I will prepare.",
+          "next": "farewell_devotee",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "speaker": "Priest of Chronos",
+      "text": "May Chronos guide your steps through the moments ahead. Time waits for no one, so use it wisely. Return when you seek wisdom or wish to serve.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_devotee",
+      "speaker": "Priest of Chronos",
+      "text": "Go with the blessing of the Timekeeper, Acolyte. May your moments be filled with purpose, and may you always see the path that time reveals. Return when you are ready for sacred duty.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

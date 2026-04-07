@@ -187,6 +187,83 @@ func _spawn_npcs() -> void:
 	harbor_master_profile.speech_style = "formal"
 	harbor_master.npc_profile = harbor_master_profile
 
+	# === SAILOR BORVEN (Key witness for lake_creature quest) ===
+	var sailor_borven := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(-55, 0, 30),  # At the docks
+		"Sailor Borven",
+		"sailor_borven",
+		null,  # Default sprite
+		8, 2,
+		[],  # No quests - talk target only
+		true  # is_talk_target
+	)
+	sailor_borven.region_id = ZONE_ID
+	sailor_borven.faction_id = "human_empire"
+	sailor_borven.no_quest_dialogue = "Aye, I've seen things out on that lake... things that shouldn't exist. Tentacles as thick as masts, eyes glowing beneath the water. The fishermen are too scared to go out anymore."
+	var borven_profile := NPCKnowledgeProfile.new()
+	borven_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	borven_profile.personality_traits = ["superstitious", "weathered", "fearful", "honest"]
+	borven_profile.knowledge_tags = ["dalhurst", "harbor", "ships", "lake_creature", "fishing", "sea_tales"]
+	borven_profile.base_disposition = 50
+	borven_profile.speech_style = "casual"
+	sailor_borven.npc_profile = borven_profile
+
+	# === SAILOR WITNESSES (Additional witnesses at docks area) ===
+	# Witness 1 - Near the pier
+	var witness_1 := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(-58, 0, 25),  # Docks area
+		"Frightened Sailor",
+		"sailor_witness_1",
+		null, 8, 2, [], true
+	)
+	witness_1.region_id = ZONE_ID
+	witness_1.faction_id = "human_empire"
+	witness_1.no_quest_dialogue = "I was there when the creature attacked Old Marley's boat... dragged it under in seconds. We barely escaped with our lives."
+	var w1_profile := NPCKnowledgeProfile.new()
+	w1_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	w1_profile.personality_traits = ["traumatized", "nervous", "superstitious"]
+	w1_profile.knowledge_tags = ["dalhurst", "lake_creature", "harbor"]
+	w1_profile.base_disposition = 40
+	witness_1.npc_profile = w1_profile
+
+	# Witness 2 - Near cargo area
+	var witness_2 := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(-52, 0, 22),  # Near cargo
+		"Shaken Deckhand",
+		"sailor_witness_2",
+		null, 8, 2, [], true
+	)
+	witness_2.region_id = ZONE_ID
+	witness_2.faction_id = "human_empire"
+	witness_2.no_quest_dialogue = "The captain says we ain't leaving port until that thing is dealt with. Can't say I blame him... I've seen what it does to ships."
+	var w2_profile := NPCKnowledgeProfile.new()
+	w2_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	w2_profile.personality_traits = ["worried", "practical"]
+	w2_profile.knowledge_tags = ["dalhurst", "lake_creature", "ships"]
+	w2_profile.base_disposition = 45
+	witness_2.npc_profile = w2_profile
+
+	# Witness 3 - Near the shipwright
+	var witness_3 := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(-48, 0, -55),  # Near shipwright guild
+		"Grizzled Fisherman",
+		"sailor_witness_3",
+		null, 8, 2, [], true
+	)
+	witness_3.region_id = ZONE_ID
+	witness_3.faction_id = "human_empire"
+	witness_3.no_quest_dialogue = "Fished these waters for forty years. Never seen anything like this before. Something woke it up... or maybe someone summoned it."
+	var w3_profile := NPCKnowledgeProfile.new()
+	w3_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	w3_profile.personality_traits = ["experienced", "suspicious", "gruff"]
+	w3_profile.knowledge_tags = ["dalhurst", "lake_creature", "fishing", "local_history"]
+	w3_profile.base_disposition = 40
+	witness_3.npc_profile = w3_profile
+
 	# === GUARDS ===
 	# Guard positions at key entry/watch points
 	var guard_positions: Array[Vector3] = [
@@ -209,7 +286,12 @@ func _spawn_npcs() -> void:
 	# Temple of the Three Gods is at (-2, 0, -7) with altar at local (0, 0.6, -5)
 	# Altar world position is approximately (-2, 0.6, -12)
 	# Priest of Chronos (God of Time) - Left side of altar
-	var priest_chronos_quests: Array[String] = ["temple_prophecy_chronos"]
+	var priest_chronos_quests: Array[String] = [
+		"temple_prophecy_chronos",
+		"chronos_time_fragment",
+		"chronos_false_prophet",
+		"chronos_hourglass"
+	]
 	var priest_chronos := QuestGiver.spawn_quest_giver(
 		npcs_container,
 		Vector3(-4, 0, -10),  # Inside temple, left of altar
@@ -222,13 +304,25 @@ func _spawn_npcs() -> void:
 	priest_chronos.region_id = ZONE_ID
 	priest_chronos.faction_id = "church_of_three"
 	priest_chronos.no_quest_dialogue = "The sands of time flow ever onward, child. May Chronos guide your steps."
+	# Load devotee choice dialogue from JSON
+	var chronos_dialogue: DialogueData = DialogueLoader.load_from_json("res://data/dialogue/priest_chronos_dalhurst.json")
+	if chronos_dialogue:
+		priest_chronos.dialogue_data = chronos_dialogue
+		priest_chronos.use_legacy_dialogue = false
+	else:
+		push_warning("[Dalhurst] Failed to load Priest of Chronos dialogue")
 	var chronos_profile := NPCKnowledgeProfile.priest()
 	chronos_profile.knowledge_tags = ["dalhurst", "temple", "religion", "priest_chronos", "time", "fate", "prophecy"]
 	chronos_profile.personality_traits = ["pious", "mysterious", "patient"]
 	priest_chronos.npc_profile = chronos_profile
 
 	# Priestess of Gaela (Goddess of the Harvest) - Center of altar
-	var priest_gaela_quests: Array[String] = ["temple_blessing_quest"]
+	var priest_gaela_quests: Array[String] = [
+		"temple_blessing_quest",
+		"gaela_blight",
+		"gaela_sacred_grove",
+		"gaela_seed_of_life"
+	]
 	var priest_gaela := QuestGiver.spawn_quest_giver(
 		npcs_container,
 		Vector3(-2, 0, -10),  # Inside temple, center near altar
@@ -241,13 +335,25 @@ func _spawn_npcs() -> void:
 	priest_gaela.region_id = ZONE_ID
 	priest_gaela.faction_id = "church_of_three"
 	priest_gaela.no_quest_dialogue = "Gaela's blessings upon you, traveler. May your harvests be bountiful and your spirit nourished."
+	# Load devotee choice dialogue from JSON
+	var gaela_dialogue: DialogueData = DialogueLoader.load_from_json("res://data/dialogue/priest_gaela_dalhurst.json")
+	if gaela_dialogue:
+		priest_gaela.dialogue_data = gaela_dialogue
+		priest_gaela.use_legacy_dialogue = false
+	else:
+		push_warning("[Dalhurst] Failed to load Priestess of Gaela dialogue")
 	var gaela_profile := NPCKnowledgeProfile.priest()
 	gaela_profile.knowledge_tags = ["dalhurst", "temple", "religion", "priest_gaela", "harvest", "nature", "blessings"]
 	gaela_profile.personality_traits = ["pious", "nurturing", "kind"]
 	priest_gaela.npc_profile = gaela_profile
 
 	# Priest of Morthane (God/Goddess of Death & Rebirth) - Right side of altar
-	var priest_morthane_quests: Array[String] = ["temple_undead_menace"]
+	var priest_morthane_quests: Array[String] = [
+		"temple_undead_menace",
+		"morthane_necromancer",
+		"morthane_restless_soul",
+		"morthane_cycle_broken"
+	]
 	var priest_morthane := QuestGiver.spawn_quest_giver(
 		npcs_container,
 		Vector3(0, 0, -10),  # Inside temple, right of altar
@@ -260,6 +366,13 @@ func _spawn_npcs() -> void:
 	priest_morthane.region_id = ZONE_ID
 	priest_morthane.faction_id = "church_of_three"
 	priest_morthane.no_quest_dialogue = "Death comes to all, but through Morthane's grace, rebirth follows. The cycle must be protected."
+	# Load devotee choice dialogue from JSON
+	var morthane_dialogue: DialogueData = DialogueLoader.load_from_json("res://data/dialogue/priest_morthane_dalhurst.json")
+	if morthane_dialogue:
+		priest_morthane.dialogue_data = morthane_dialogue
+		priest_morthane.use_legacy_dialogue = false
+	else:
+		push_warning("[Dalhurst] Failed to load Priest of Morthane dialogue")
 	var morthane_profile := NPCKnowledgeProfile.priest()
 	morthane_profile.knowledge_tags = ["dalhurst", "temple", "religion", "priest_morthane", "death", "rebirth", "undead"]
 	morthane_profile.personality_traits = ["pious", "solemn", "wise"]

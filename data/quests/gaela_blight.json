@@ -1,0 +1,60 @@
+{
+	"id": "gaela_blight",
+	"title": "The Spreading Blight",
+	"description": "The crops around Millbrook are withering and dying despite the farmers' best efforts. The Priestess of Gaela fears this is no natural drought - something is poisoning the land itself. She asks you to investigate the source of this blight before the entire harvest is lost and the town faces starvation.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "travel_millbrook",
+			"description": "Travel to Millbrook to investigate",
+			"type": "reach",
+			"target": "millbrook",
+			"required_count": 1
+		},
+		{
+			"id": "examine_crops",
+			"description": "Examine the blighted crops",
+			"type": "interact",
+			"target": "blighted_field",
+			"required_count": 1
+		},
+		{
+			"id": "find_source",
+			"description": "Find the source of the blight",
+			"type": "interact",
+			"target": "corrupted_water_source",
+			"required_count": 1
+		},
+		{
+			"id": "cleanse_corruption",
+			"description": "Cleanse the corrupted source",
+			"type": "interact",
+			"target": "purification_ritual",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_priestess",
+			"description": "Report to Priestess of Gaela",
+			"type": "talk",
+			"target": "priest_gaela_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_gaela_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 125,
+		"xp": 450,
+		"items": ["blessing_of_bounty"],
+		"faction_reputation": {
+			"church_of_three": 40
+		}
+	},
+	"prerequisites": ["temple_blessing_quest"],
+	"next_quest": "gaela_sacred_grove"
+}

@@ -1,0 +1,655 @@
+{
+  "id": "red_mara_companion",
+  "display_name": "Red Mara - Rogue",
+  "description": "Companion dialogue for Red Mara, independent thief and Thieves Guild reward companion",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Red Mara",
+      "text": "Well, well. Look who came crawling back. Miss me already?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The Guild said you might be available for hire.",
+          "next": "guild_offer",
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "thieves_guild_questline_complete",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I could use someone with your talents.",
+          "next": "recruitment_pitch",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Just passing through.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "greeting_companion",
+      "speaker": "Red Mara",
+      "text": "Something on your mind, partner? Make it quick - I'm calculating our next score.",
+      "is_end": false,
+      "auto_continue": "",
+      "conditions": [
+        {
+          "type": "flag",
+          "param": "mara_recruited",
+          "value": 0
+        }
+      ],
+      "choices": [
+        {
+          "text": "How are you doing?",
+          "next": "companion_status",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Tell me about your past.",
+          "next": "personal_history",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What's your take on the other factions?",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Let's talk strategy.",
+          "next": "tactics_discussion",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Wait here. Don't steal anything.",
+          "next": "wait_command",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "wait",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Let's keep moving.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "guild_offer",
+      "speaker": "Red Mara",
+      "text": "The Guild's finally recognizing my worth, are they? After all the grief they gave me... Well, turns out their leadership and I have come to an understanding. You proved yourself to them - and by extension, to me. I'm willing to work together.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What changed between you and the Guild?",
+          "next": "guild_reconciliation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What do you bring to the table?",
+          "next": "abilities_explanation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'd like you to join me.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "guild_reconciliation",
+      "speaker": "Red Mara",
+      "text": "Let's just say some corrupt elements have been... removed. The new leadership understands that sometimes the Guild needs independents who can do what regular members can't. I'm their deniable asset. It suits everyone.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "And you're okay with that arrangement?",
+          "next": "arrangement_opinion",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Let's discuss your skills.",
+          "next": "abilities_explanation",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "arrangement_opinion",
+      "speaker": "Red Mara",
+      "text": "Okay? It's ideal. I keep my independence, they stop trying to kill me, and we both profit when interests align. That's the best kind of partnership - mutual benefit with room to breathe.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Then join me, and we'll benefit together.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need to think about it.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_pitch",
+      "speaker": "Red Mara",
+      "text": "My talents? Backstabbing, both literal and figurative. Sneaking past guards, opening locks, acquiring information. Smoke bombs for quick escapes. And let's not forget my contacts in every major city's underworld. I'm an investment, not an expense.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I want you on my team.",
+          "next": "recruitment_accept_offer",
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "thieves_guild_questline_complete",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "What's in it for you?",
+          "next": "whats_in_it",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll consider it.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "whats_in_it",
+      "speaker": "Red Mara",
+      "text": "Adventure. Opportunity. Treasure that hasn't been claimed by the Guild's bureaucracy. And honestly? You're interesting. Most people bore me within minutes. You've kept my attention. That's worth something.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Then let's make it official.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I need time to decide.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_accept_offer",
+      "speaker": "Red Mara",
+      "text": "Partners, then. Just remember - I work with you, not for you. We split the take, share the risks, and watch each other's backs. Break that trust, and you'll regret it. Understand?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Partners. I can work with that.",
+          "next": "recruitment_accept",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "mara_recruited",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "chose_mara",
+              "value": 0
+            },
+            {
+              "type": "recruit_follower",
+              "param": "red_mara",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "What about Whisper? Can I recruit both of you?",
+          "next": "mention_whisper",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "recruitment_accept",
+      "speaker": "Red Mara",
+      "text": "Good. Now let's go find something valuable to liberate. I've been cooped up in this city too long.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "mention_whisper",
+      "speaker": "Red Mara",
+      "text": "That little halfling? She's Guild through and through - follows their rules, takes their orders. Good at what she does, I'll admit. But the Guild only loans out one of us at a time. You're choosing between stealth and... well, more stealth, but with daggers.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I prefer your independent thinking. I choose you.",
+          "next": "recruitment_accept",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "set_flag",
+              "param": "mara_recruited",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "chose_mara",
+              "value": 0
+            },
+            {
+              "type": "recruit_follower",
+              "param": "red_mara",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Let me consider my options.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "abilities_explanation",
+      "speaker": "Red Mara",
+      "text": "Backstab - position me right, and I'll deal three times normal damage. Smoke Bomb creates cover for repositioning or escape. And Pickpocket... well, enemies often carry useful things they don't need anymore. Why wait until they're dead to claim them?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Perfect skills for what I have planned.",
+          "next": "recruitment_accept_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Interesting. Let me think.",
+          "next": "think_about_it",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "think_about_it",
+      "speaker": "Red Mara",
+      "text": "Take your time. Just don't take too long - good partners are hard to find, and I might get a better offer.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "companion_status",
+      "speaker": "Red Mara",
+      "text": "Better than expected, honestly. Our little arrangement has been... profitable. And you're not boring, which counts for more than you'd think. Most people are tediously predictable. You keep surprising me.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Is that a compliment?",
+          "next": "compliment_clarify",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Good to hear. Stay sharp.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "compliment_clarify",
+      "speaker": "Red Mara",
+      "text": "Don't let it go to your head. I've worked with hundreds of people. Most of them bored me, betrayed me, or got themselves killed being stupid. You've done none of those. That makes you... exceptional. By low standards, but still.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "personal_history",
+      "speaker": "Red Mara",
+      "text": "My past? That's worth extra, usually. But since we're partners... I grew up in the Dalhurst gutters. Learned to steal before I could read. The Guild recruited me young, trained me well. Then I learned what they really were.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What did you learn about the Guild?",
+          "next": "guild_truth",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Do you have any family?",
+          "next": "family_status",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Why the name 'Red Mara'?",
+          "next": "name_origin",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "guild_truth",
+      "speaker": "Red Mara",
+      "text": "The old leadership was selling out their own members to the guard. Small-time thieves getting arrested to protect bigger operations. People I knew. People who trusted the Guild. When I found proof, I had two choices: stay silent or leave loudly. You know which I chose.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "family_status",
+      "speaker": "Red Mara",
+      "text": "Mother died when I was eight. Consumption. Never knew my father - could've been anyone. The streets raised me, the Guild shaped me. Family is overrated anyway. The people you choose matter more than the ones you're born to.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "name_origin",
+      "speaker": "Red Mara",
+      "text": "The hair, obviously. Mara was my mother's name. I took it when I went independent - a way to honor her while building my own reputation. 'Red Mara' sounds more memorable than whatever my birth name was. Names are tools, like everything else.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "faction_opinions",
+      "speaker": "Red Mara",
+      "text": "Ah, reading the competition? Smart. I know all these players intimately. Some from business, some from beds, some from blade-point. Ask away.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What about the Adventurer's Guild?",
+          "next": "opinion_adventurers",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Iron Company?",
+          "next": "opinion_iron_company",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The Arcane Circle?",
+          "next": "opinion_arcane",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "That's enough for now.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_adventurers",
+      "speaker": "Red Mara",
+      "text": "Treasure hunters with delusions of heroism. Some are genuinely noble - sickeningly so. Others are just thieves with better publicity. I respect their guts, if not their methods. At least they're honest about wanting gold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Fair assessment.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_iron_company",
+      "speaker": "Red Mara",
+      "text": "Mercenaries with a strict code. They'd kill their own mothers if the contract paid well and specified maternal assassination. Useful allies if you can afford them. Terrifying enemies. I've learned to stay off their bad side.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Noted.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "opinion_arcane",
+      "speaker": "Red Mara",
+      "text": "Wizards scare me. Not ashamed to admit it. You can predict what a warrior will do, outthink a merchant, outrun a guard. But magic? One wrong step and you're a toad, a pile of ash, or worse. I avoid the Circle when possible.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Wise caution.",
+          "next": "faction_opinions",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_discussion",
+      "speaker": "Red Mara",
+      "text": "My style is simple: don't be seen, and if seen, don't be caught. I'll circle around for backstabs while you keep them busy. If things go bad, I'll smoke bomb and we regroup. Never fight fair when you can fight smart.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What if stealth isn't an option?",
+          "next": "tactics_no_stealth",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Can you handle direct combat?",
+          "next": "tactics_direct",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Good plan. Let's go.",
+          "next": "farewell_companion",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "tactics_no_stealth",
+      "speaker": "Red Mara",
+      "text": "Then we reassess priorities. Maybe we shouldn't be in that fight at all. Retreat is always an option. But if we must engage openly... I'll focus on their weakest links. Casters first, then anyone looking distracted. Create chaos and exploit it.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "tactics_direct",
+      "speaker": "Red Mara",
+      "text": "Can I? Yes. Should I? No. My daggers are sharp but I'm not built to trade blows with armored soldiers. I hit, I move, I hit again. Standing still is dying slowly. Keep their attention so I can work.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_command",
+      "speaker": "Red Mara",
+      "text": "No promises on the stealing. But fine, I'll wait. Don't be long - idle hands find trouble, as my mother used to say. Well, she said it about picking pockets, but the principle applies.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_too_long",
+      "speaker": "Red Mara",
+      "text": "You know, I could have robbed three nobles blind in the time you've left me standing here. This better be worth it.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Sorry for the wait. Let's go.",
+          "next": "follow_resume",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "command_follower",
+              "param": "follow",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Just a bit longer.",
+          "next": "wait_reluctant",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "follow_resume",
+      "speaker": "Red Mara",
+      "text": "Finally. Standing around is bad for business. Let's find something worth taking.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "wait_reluctant",
+      "speaker": "Red Mara",
+      "text": "Fine. But I'm billing you for lost opportunities. My time has value, partner.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Red Mara",
+      "text": "Watch your pockets on the way out. Not everyone in this part of town is as principled as me.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_companion",
+      "speaker": "Red Mara",
+      "text": "Lead on. I'll be right behind you. Watching. Calculating. You know, the usual.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ],
+  "barks": {
+    "combat_start": [
+      "You never saw me coming.",
+      "Quick and quiet.",
+      "The shadows are my friends.",
+      "Nothing personal. Just business."
+    ],
+    "combat_kill": [
+      "Too easy.",
+      "Your purse is lighter now.",
+      "This is what betrayal feels like."
+    ],
+    "combat_low_health": [
+      "Need to fall back!",
+      "Smoke! Now!",
+      "This isn't worth dying for!"
+    ],
+    "player_low_health": [
+      "Pull back! I'll cover you!",
+      "Get behind something!",
+      "Don't you dare die owing me gold!"
+    ],
+    "ambient_dungeon": [
+      "Watch your pockets around here.",
+      "I've robbed places like this before.",
+      "Treasure or traps. Usually both."
+    ],
+    "ambient_town": [
+      "The guild can rot for all I care.",
+      "Every shadow hides an opportunity.",
+      "I've survived worse than this city."
+    ],
+    "ambient_wilderness": [
+      "Trust is earned. Never given.",
+      "Freedom is worth any price.",
+      "Too exposed out here. I prefer rooftops."
+    ],
+    "order_acknowledged": [
+      "On it.",
+      "Consider it done.",
+      "For the right price.",
+      "I hear you."
+    ],
+    "order_attack": [
+      "Backstab time.",
+      "Targeting...",
+      "They won't see me coming."
+    ],
+    "idle_long": [
+      "Are we robbing something or what?",
+      "Standing around earns nothing.",
+      "My daggers grow bored. So do I."
+    ]
+  }
+}

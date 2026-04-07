@@ -1,0 +1,8 @@
+{
+  "name": "Gate Warden Thaelis",
+  "who": "Stern elven guard in ornate armor\nVigilant protector of Silvanost's entrance\nJudges visitors with piercing gaze",
+  "what": "Guards the main entrance to Silvanost\nDetermines who may enter elven territory\nCan be convinced to grant passage to worthy travelers",
+  "where": "Silvanost - Entrance",
+  "sprite": "elf_guard",
+  "quests": "Elven Entry (gate check)"
+}

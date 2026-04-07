@@ -21,7 +21,7 @@ room_height = 6.0
 [node name="Terrain" type="Node3D" parent="."]
 
 [node name="CaveMesh" parent="Terrain" instance=ExtResource("2_mesh")]
-transform = Transform3D(1.9, 0, 0, 0, 1.9, 0, 0, 0, 1.9, 8, 0, 8)
+transform = Transform3D(2.755, 0, 0, 0, 2.755, 0, 0, 0, 2.755, 8, 0, 8)
 
 [node name="FloorCollision" type="StaticBody3D" parent="Terrain"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 8)
@@ -46,7 +46,7 @@ shape = SubResource("BoxShape3D_wall")
 [node name="AmbientLight" type="OmniLight3D" parent="Lighting"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4, 8)
 light_color = Color(0.5, 0.45, 0.4, 1)
-light_energy = 0.6
+light_energy = 0.78
 omni_range = 14.0
 omni_attenuation = 1.2
 

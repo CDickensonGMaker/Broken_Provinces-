@@ -1,0 +1,8 @@
+{
+  "name": "Bard Lyris",
+  "who": "Traveling bard with lute and easy smile\nCharming exterior hides sharp observational skills\nKeeper operative posing as entertainer",
+  "what": "Keeper contact operating under cover as tavern bard\nGathers information through song and conversation\nProvides Keeper missions for the southern region",
+  "where": "Millbrook - Tavern",
+  "sprite": "bard_civilian",
+  "quests": "Keeper's Trust (Millbrook), Songs and Secrets"
+}

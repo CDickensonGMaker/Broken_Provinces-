@@ -1,0 +1,68 @@
+{
+	"id": "wizard_field_test",
+	"title": "Practical Application",
+	"description": "Master Helvant believes magic should serve the people. He's arranged for you to help villagers around Dalhurst using your newly-learned spells. Prove that you can apply magic to real-world problems, not just combat.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "master_helvant_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "wizards_guild",
+	"objectives": [
+		{
+			"id": "light_harbor_beacon",
+			"description": "Use fire magic to light the harbor beacon in Dalhurst",
+			"type": "interact",
+			"target": "dalhurst_harbor_beacon",
+			"required_count": 1,
+			"notes": "Beacon for guiding ships - player uses fire spell to light it"
+		},
+		{
+			"id": "purify_thornfield_well",
+			"description": "Purify the contaminated well water in Thornfield",
+			"type": "interact",
+			"target": "thornfield_well",
+			"required_count": 1,
+			"notes": "Well has been tainted - requires arcane purification ritual"
+		},
+		{
+			"id": "clear_road_obstacle",
+			"description": "Magically move the fallen tree blocking the road to Crossroads",
+			"type": "interact",
+			"target": "crossroads_tree_obstacle",
+			"required_count": 1,
+			"notes": "Large tree blocks the road - telekinesis or earth magic needed"
+		},
+		{
+			"id": "combat_test_bandits",
+			"description": "Defeat the bandit group threatening travelers near Crossroads",
+			"type": "kill",
+			"target": "bandit_crossroads_group",
+			"required_count": 5,
+			"notes": "Combat test - must use magic against real threats"
+		},
+		{
+			"id": "return_to_helvant_field",
+			"description": "Report your successes to Master Helvant",
+			"type": "talk",
+			"target": "master_helvant_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "master_helvant_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 75,
+		"xp": 350,
+		"items": ["spell_scroll_ice_shard", "enchanted_amulet_minor"],
+		"faction_reputation": {
+			"wizards_guild": 20,
+			"common_folk": 10
+		}
+	},
+	"on_complete_flags": ["helvant_field_test_complete"],
+	"prerequisites": ["wizard_first_lesson"],
+	"next_quest": "wizard_lost_tome",
+	"notes": "Third quest - mix of utility magic and combat. Shows the player helping communities with magic. Rewards Ice Shard spell and a minor enchanted amulet (+5 arcana)."
+}

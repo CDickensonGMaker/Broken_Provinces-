@@ -142,6 +142,50 @@ func _spawn_npcs() -> void:
 	victim2.npc_type = "millbrook_victim"  # Same type for quest counting
 	victim2.no_quest_dialogue = "I saw the bandit captain - scarred face, black cloak.\nThey've made camp somewhere in the eastern woods.\nPlease, someone has to stop them!"
 
+	# === MILLBROOK FISHERMAN (at lake shore) ===
+	var fisherman_pos := Vector3(-15, 0, -15)  # Near the lake/mill brook
+	var millbrook_fisherman := QuestGiver.spawn_quest_giver(
+		self,
+		fisherman_pos,
+		"Old Finn",
+		"millbrook_fisherman",
+		null, 8, 2,
+		[],  # Quest IDs to be added later
+		true  # is_talk_target
+	)
+	millbrook_fisherman.region_id = ZONE_ID
+	millbrook_fisherman.faction_id = "human_empire"
+	millbrook_fisherman.no_quest_dialogue = "The fish ain't biting like they used to. Something's stirring in the deep waters... I've seen shadows moving beneath the surface. Best stay away from the lake after dark."
+	var fisherman_profile := NPCKnowledgeProfile.new()
+	fisherman_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	fisherman_profile.personality_traits = ["superstitious", "weathered", "observant"]
+	fisherman_profile.knowledge_tags = ["millbrook", "fishing", "lake", "local_area", "lake_creature"]
+	fisherman_profile.base_disposition = 50
+	fisherman_profile.speech_style = "casual"
+	millbrook_fisherman.npc_profile = fisherman_profile
+
+	# === MILLBROOK KEEPER CONTACT (in tavern area) ===
+	var keeper_pos := Vector3(5, 0, 15)  # Near the inn/tavern area
+	var millbrook_keeper := QuestGiver.spawn_quest_giver(
+		self,
+		keeper_pos,
+		"Quiet Traveler",
+		"millbrook_keeper_contact",
+		null, 8, 2,
+		[],  # Quest IDs to be added later
+		false
+	)
+	millbrook_keeper.region_id = ZONE_ID
+	millbrook_keeper.faction_id = "keepers"
+	millbrook_keeper.no_quest_dialogue = "Just passing through... like you, perhaps. This hamlet sees more traffic than you'd think. The roads between Dalhurst and the south bring all sorts."
+	var keeper_profile := NPCKnowledgeProfile.new()
+	keeper_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	keeper_profile.personality_traits = ["observant", "quiet", "mysterious"]
+	keeper_profile.knowledge_tags = ["millbrook", "keepers", "roads", "travelers"]
+	keeper_profile.base_disposition = 35  # Cautious
+	keeper_profile.speech_style = "casual"
+	millbrook_keeper.npc_profile = keeper_profile
+
 
 ## Spawn fast travel shrine at marker position
 func _spawn_fast_travel_shrine() -> void:

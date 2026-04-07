@@ -1,0 +1,41 @@
+{
+	"id": "adventurers_repeatable_bounty",
+	"title": "Guild Bounty Board",
+	"description": "The Guild always has work for capable adventurers. Check the bounty board for available contracts - monster extermination, bandit clearing, escort jobs. Rewards scale with difficulty. Simple work for a Champion, but the gold is steady.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"repeatable": true,
+	"objectives": [
+		{
+			"id": "complete_bounty",
+			"description": "Complete the selected bounty contract",
+			"type": "kill",
+			"target": "bounty_target",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "claim_reward",
+			"description": "Return to the Guild for payment",
+			"type": "talk",
+			"target": "guildmaster_vorn_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 200,
+		"xp": 500,
+		"faction_reputation": {
+			"adventurers_guild": 25
+		}
+	},
+	"prerequisites": ["adventurers_13_champion"],
+	"notes": "REPEATABLE. Available after Champion rank. Bounty targets rotate weekly. Includes: bandit leaders, monster dens, escort missions, dungeon clearing. Rewards scale with target difficulty. Can complete unlimited times. Works with BountyManager system."
+}

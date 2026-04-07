@@ -105,6 +105,13 @@ var condition_labels: Dictionary = {}  # Condition enum -> PanelContainer
 ## Stealth indicator (HIDDEN text when player is hidden)
 var stealth_indicator: Label = null
 
+## Escort health UI (shows escorted NPC health during escort quests)
+var escort_health_container: Control = null
+var escort_health_bar: ProgressBar = null
+var escort_name_label: Label = null
+var escort_damage_flash_timer: float = 0.0
+const ESCORT_DAMAGE_FLASH_DURATION: float = 0.3
+
 ## Town/settlement zone IDs - used for quest routing and turn-in
 const TOWN_ZONES: Array[String] = [
 	"elder_moor", "village_elder_moor",
@@ -153,6 +160,17 @@ var debug_fps_label: Label
 ## Decorative border frame overlay
 var border_frame: GameBorderFrame = null
 
+## Wave defense counter UI
+var wave_counter_ui: WaveCounterUI = null
+
+## Timed objective UI (countdown timer for timed objectives)
+var timed_objective_ui: TimedObjectiveUI = null
+
+## Companion HUD elements
+var companion_status_ui: CompanionStatusUI = null
+var companion_command_ui: CompanionCommandUI = null
+var _companion_command_mode_active: bool = false
+
 func _ready() -> void:
 	# Add to hud group so other scripts can find us
 	add_to_group("hud")
@@ -198,6 +216,10 @@ func _ready() -> void:
 	_setup_quest_tracker()
 	_setup_conditions_display()
 	_setup_stealth_indicator()
+	_setup_escort_health()
+	_setup_wave_counter()
+	_setup_timed_objective_ui()
+	_setup_companion_hud()
 	_connect_signals()
 	_setup_menus()
 	_connect_scene_signals()
@@ -241,6 +263,12 @@ func _input(event: InputEvent) -> void:
 			_toggle_debug_overlay()
 			get_viewport().set_input_as_handled()
 			return
+		# C key toggles companion command mode (only when companions active)
+		if key_event.keycode == KEY_C and key_event.pressed and not key_event.echo:
+			if _has_active_companions():
+				_toggle_companion_command_mode()
+				get_viewport().set_input_as_handled()
+				return
 
 func _setup_menus() -> void:
 	# Setup game menu (loaded via @onready)
@@ -472,6 +500,8 @@ func _process(delta: float) -> void:
 	_update_quest_tracker()
 	_update_debug_overlay()
 	_update_stealth_indicator()
+	_update_escort_damage_flash(delta)
+	_update_companion_command_mode()
 
 ## Skull frame texture for health/stamina bars
 var skull_frame_texture: Texture2D = null
@@ -935,6 +965,175 @@ func _setup_stealth_indicator() -> void:
 	stealth_indicator.visible = false
 
 	add_child(stealth_indicator)
+
+
+## Setup escort health UI (displayed during escort quests)
+func _setup_escort_health() -> void:
+	# Create container for escort health (positioned on right side, below enemy health area)
+	escort_health_container = Control.new()
+	escort_health_container.name = "EscortHealthContainer"
+	escort_health_container.custom_minimum_size = Vector2(200, 50)
+
+	# Position at top-right area, slightly lower
+	escort_health_container.anchors_preset = Control.PRESET_TOP_RIGHT
+	escort_health_container.anchor_left = 1.0
+	escort_health_container.anchor_right = 1.0
+	escort_health_container.anchor_top = 0.0
+	escort_health_container.anchor_bottom = 0.0
+	escort_health_container.offset_left = -220
+	escort_health_container.offset_right = -10
+	escort_health_container.offset_top = 100
+	escort_health_container.offset_bottom = 150
+
+	# Create background panel
+	var bg_panel := PanelContainer.new()
+	bg_panel.name = "Background"
+	bg_panel.anchor_right = 1.0
+	bg_panel.anchor_bottom = 1.0
+
+	# Create dark semi-transparent style
+	var bg_style := StyleBoxFlat.new()
+	bg_style.bg_color = Color(0.1, 0.1, 0.1, 0.7)
+	bg_style.border_width_left = 2
+	bg_style.border_width_right = 2
+	bg_style.border_width_top = 2
+	bg_style.border_width_bottom = 2
+	bg_style.border_color = Color(0.5, 0.4, 0.3, 0.8)  # Bronze border
+	bg_style.corner_radius_top_left = 4
+	bg_style.corner_radius_top_right = 4
+	bg_style.corner_radius_bottom_left = 4
+	bg_style.corner_radius_bottom_right = 4
+	bg_panel.add_theme_stylebox_override("panel", bg_style)
+	escort_health_container.add_child(bg_panel)
+
+	# Create vertical layout inside panel
+	var vbox := VBoxContainer.new()
+	vbox.name = "VBox"
+	vbox.add_theme_constant_override("separation", 4)
+	bg_panel.add_child(vbox)
+
+	# Escort name label
+	escort_name_label = Label.new()
+	escort_name_label.name = "EscortNameLabel"
+	escort_name_label.text = "Escorting: Unknown"
+	escort_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	escort_name_label.add_theme_font_size_override("font_size", 12)
+	escort_name_label.add_theme_color_override("font_color", Color(0.9, 0.85, 0.7))  # Warm white
+	vbox.add_child(escort_name_label)
+
+	# Health bar
+	escort_health_bar = ProgressBar.new()
+	escort_health_bar.name = "EscortHealthBar"
+	escort_health_bar.max_value = 100
+	escort_health_bar.value = 100
+	escort_health_bar.show_percentage = false
+	escort_health_bar.custom_minimum_size = Vector2(0, 16)
+
+	# Style the health bar (green/red gradient)
+	var bar_bg := StyleBoxFlat.new()
+	bar_bg.bg_color = Color(0.2, 0.1, 0.1, 0.8)  # Dark red background
+	escort_health_bar.add_theme_stylebox_override("background", bar_bg)
+
+	var bar_fill := StyleBoxFlat.new()
+	bar_fill.bg_color = Color(0.3, 0.7, 0.3, 0.9)  # Green fill
+	escort_health_bar.add_theme_stylebox_override("fill", bar_fill)
+
+	vbox.add_child(escort_health_bar)
+
+	# Start hidden (only shown when escort is active)
+	escort_health_container.visible = false
+
+	add_child(escort_health_container)
+
+	# Connect to EscortManager signals (use safe access)
+	var escort_mgr: Node = get_node_or_null("/root/EscortManager")
+	if escort_mgr:
+		if escort_mgr.has_signal("escort_health_changed") and not escort_mgr.escort_health_changed.is_connected(_on_escort_health_changed):
+			escort_mgr.escort_health_changed.connect(_on_escort_health_changed)
+		if escort_mgr.has_signal("escort_started") and not escort_mgr.escort_started.is_connected(_on_escort_started):
+			escort_mgr.escort_started.connect(_on_escort_started)
+		if escort_mgr.has_signal("escort_ended") and not escort_mgr.escort_ended.is_connected(_on_escort_ended):
+			escort_mgr.escort_ended.connect(_on_escort_ended)
+
+
+## Show escort health bar with name and health values
+func show_escort_health(escort_name: String, current_hp: int, max_hp: int) -> void:
+	if not escort_health_container:
+		return
+
+	escort_health_container.visible = true
+
+	if escort_name_label:
+		escort_name_label.text = "Escorting: %s" % escort_name
+
+	if escort_health_bar:
+		escort_health_bar.max_value = max_hp
+		escort_health_bar.value = current_hp
+
+		# Update bar color based on health percentage
+		var health_pct: float = float(current_hp) / float(max_hp) if max_hp > 0 else 0.0
+		var bar_fill := escort_health_bar.get_theme_stylebox("fill") as StyleBoxFlat
+		if bar_fill:
+			if health_pct > 0.5:
+				bar_fill.bg_color = Color(0.3, 0.7, 0.3, 0.9)  # Green
+			elif health_pct > 0.25:
+				bar_fill.bg_color = Color(0.8, 0.6, 0.2, 0.9)  # Yellow/orange
+			else:
+				bar_fill.bg_color = Color(0.8, 0.2, 0.2, 0.9)  # Red
+
+
+## Hide escort health bar
+func hide_escort_health() -> void:
+	if escort_health_container:
+		escort_health_container.visible = false
+
+
+## Flash the escort health bar when damaged
+func flash_escort_damage() -> void:
+	escort_damage_flash_timer = ESCORT_DAMAGE_FLASH_DURATION
+
+	# Flash the container red
+	if escort_health_container:
+		var bg_panel := escort_health_container.get_node_or_null("Background") as PanelContainer
+		if bg_panel:
+			var style := bg_panel.get_theme_stylebox("panel") as StyleBoxFlat
+			if style:
+				style.border_color = Color(1.0, 0.3, 0.3, 1.0)  # Bright red
+
+
+## Update escort damage flash effect
+func _update_escort_damage_flash(delta: float) -> void:
+	if escort_damage_flash_timer > 0:
+		escort_damage_flash_timer -= delta
+		if escort_damage_flash_timer <= 0:
+			# Restore normal border color
+			if escort_health_container:
+				var bg_panel := escort_health_container.get_node_or_null("Background") as PanelContainer
+				if bg_panel:
+					var style := bg_panel.get_theme_stylebox("panel") as StyleBoxFlat
+					if style:
+						style.border_color = Color(0.5, 0.4, 0.3, 0.8)  # Bronze
+
+
+## Signal handlers for EscortManager
+func _on_escort_health_changed(escort_id: String, current_hp: int, max_hp: int) -> void:
+	if not EscortManager:
+		return
+	var escort: EscortNPC = EscortManager.get_escort(escort_id)
+	if escort:
+		show_escort_health(escort.npc_name, current_hp, max_hp)
+
+
+func _on_escort_started(escort_id: String, escort: EscortNPC) -> void:
+	if escort:
+		show_escort_health(escort.npc_name, escort.current_health, escort.max_health)
+
+
+func _on_escort_ended(escort_id: String, reason: String) -> void:
+	# Only hide if this was the primary escort
+	if EscortManager and not EscortManager.has_active_escort():
+		hide_escort_health()
+
 
 ## Update stealth indicator visibility
 func _update_stealth_indicator() -> void:
@@ -3694,3 +3893,194 @@ func flash_screen(color: Color = Color(1.0, 0.2, 0.2, 0.3), duration: float = 0.
 	var tween := create_tween()
 	tween.tween_property(flash, "color:a", 0.0, duration)
 	tween.tween_callback(flash.queue_free)
+
+
+## ============================================================================
+## WAVE DEFENSE COUNTER
+## ============================================================================
+
+func _setup_wave_counter() -> void:
+	# Create wave counter UI (hidden by default)
+	wave_counter_ui = WaveCounterUI.new()
+	wave_counter_ui.name = "WaveCounterUI"
+
+	# Position in top-center area of screen
+	wave_counter_ui.anchor_left = 0.5
+	wave_counter_ui.anchor_right = 0.5
+	wave_counter_ui.anchor_top = 0.0
+	wave_counter_ui.anchor_bottom = 0.0
+	wave_counter_ui.offset_left = -100
+	wave_counter_ui.offset_right = 100
+	wave_counter_ui.offset_top = 60  # Below any top-center elements
+	wave_counter_ui.offset_bottom = 160
+
+	add_child(wave_counter_ui)
+
+
+## Show the wave counter and connect to a wave spawner
+func show_wave_counter(spawner: WaveSpawner) -> void:
+	if wave_counter_ui:
+		wave_counter_ui.connect_to_spawner(spawner)
+		wave_counter_ui.show_counter()
+
+
+## Hide the wave counter
+func hide_wave_counter() -> void:
+	if wave_counter_ui:
+		wave_counter_ui.disconnect_spawner()
+		wave_counter_ui.hide_counter()
+
+
+# =============================================================================
+# TIMED OBJECTIVE UI
+# =============================================================================
+
+func _setup_timed_objective_ui() -> void:
+	# Create timed objective UI (hidden by default, auto-shows when timer active)
+	timed_objective_ui = TimedObjectiveUI.new()
+	timed_objective_ui.name = "TimedObjectiveUI"
+
+	# Position in top-right area, below escort health area
+	timed_objective_ui.anchor_left = 1.0
+	timed_objective_ui.anchor_right = 1.0
+	timed_objective_ui.anchor_top = 0.0
+	timed_objective_ui.anchor_bottom = 0.0
+	timed_objective_ui.offset_left = -250
+	timed_objective_ui.offset_right = -10
+	timed_objective_ui.offset_top = 160  # Below escort health area
+	timed_objective_ui.offset_bottom = 260
+
+	add_child(timed_objective_ui)
+
+
+# =============================================================================
+# COMPANION HUD
+# =============================================================================
+
+func _setup_companion_hud() -> void:
+	# Create companion status UI (positioned on left side)
+	companion_status_ui = CompanionStatusUI.new()
+	companion_status_ui.name = "CompanionStatusUI"
+
+	# Position on left side of screen, below skull frame/health bars
+	companion_status_ui.anchor_left = 0.0
+	companion_status_ui.anchor_right = 0.0
+	companion_status_ui.anchor_top = 0.0
+	companion_status_ui.anchor_bottom = 0.0
+	companion_status_ui.offset_left = 10
+	companion_status_ui.offset_right = 200
+	companion_status_ui.offset_top = 180  # Below health bars area
+	companion_status_ui.offset_bottom = 340
+
+	add_child(companion_status_ui)
+
+	# Create companion command UI (positioned at bottom center)
+	companion_command_ui = CompanionCommandUI.new()
+	companion_command_ui.name = "CompanionCommandUI"
+
+	# Position at bottom-center of screen
+	companion_command_ui.anchor_left = 0.5
+	companion_command_ui.anchor_right = 0.5
+	companion_command_ui.anchor_top = 1.0
+	companion_command_ui.anchor_bottom = 1.0
+	companion_command_ui.offset_left = -140  # Half of PANEL_WIDTH
+	companion_command_ui.offset_right = 140
+	companion_command_ui.offset_top = -120
+	companion_command_ui.offset_bottom = -20
+
+	add_child(companion_command_ui)
+
+	# Connect to CompanionManager signals for auto-show/hide
+	_connect_companion_hud_signals()
+
+
+## Connect companion HUD to CompanionManager signals
+func _connect_companion_hud_signals() -> void:
+	if not CompanionManager:
+		return
+
+	if CompanionManager.has_signal("companion_joined"):
+		if not CompanionManager.companion_joined.is_connected(_on_companion_hud_companion_added):
+			CompanionManager.companion_joined.connect(_on_companion_hud_companion_added)
+
+	if CompanionManager.has_signal("companion_left"):
+		if not CompanionManager.companion_left.is_connected(_on_companion_hud_companion_removed):
+			CompanionManager.companion_left.connect(_on_companion_hud_companion_removed)
+
+
+## Check if any companions are active
+func _has_active_companions() -> bool:
+	if not CompanionManager:
+		return false
+	return CompanionManager.get_companion_count() > 0
+
+
+## Toggle companion command mode
+func _toggle_companion_command_mode() -> void:
+	_companion_command_mode_active = not _companion_command_mode_active
+
+	if companion_command_ui:
+		if _companion_command_mode_active:
+			companion_command_ui.show_command_mode()
+		else:
+			companion_command_ui.hide_command_mode()
+
+
+## Update companion command mode (auto-hide when no companions)
+func _update_companion_command_mode() -> void:
+	# Auto-hide command mode if no companions
+	if _companion_command_mode_active and not _has_active_companions():
+		_companion_command_mode_active = false
+		if companion_command_ui:
+			companion_command_ui.hide_command_mode()
+
+
+## Called when a companion joins (auto-show status UI)
+func _on_companion_hud_companion_added(_companion_id: String, _companion: CompanionNPC) -> void:
+	# Status UI handles its own visibility via signals
+	# Just ensure command UI hint is shown briefly
+	if companion_command_ui and CompanionManager.get_companion_count() == 1:
+		# First companion added - show command hint notification
+		show_notification("Press [C] to command companions")
+
+
+## Called when a companion is removed
+func _on_companion_hud_companion_removed(_companion_id: String) -> void:
+	# Auto-hide command mode if no more companions
+	if not _has_active_companions():
+		_companion_command_mode_active = false
+		if companion_command_ui:
+			companion_command_ui.hide_command_mode()
+
+
+## Manually show companion command UI (for external scripts)
+func show_companion_commands() -> void:
+	if _has_active_companions() and companion_command_ui:
+		_companion_command_mode_active = true
+		companion_command_ui.show_command_mode()
+
+
+## Manually hide companion command UI
+func hide_companion_commands() -> void:
+	_companion_command_mode_active = false
+	if companion_command_ui:
+		companion_command_ui.hide_command_mode()
+
+
+## Show a companion bark (speech bubble text) - called by CompanionNPC
+func show_companion_bark(companion_name: String, text: String) -> void:
+	# Show as a game log entry or notification
+	var bark_text: String = "%s: \"%s\"" % [companion_name, text]
+	add_log_entry(bark_text, Color(0.7, 0.85, 0.9))
+
+
+## Refresh companion HUD after scene load
+func refresh_companion_hud() -> void:
+	if companion_status_ui:
+		companion_status_ui.refresh_companions()
+
+	# Auto-hide command mode if no companions
+	if not _has_active_companions():
+		_companion_command_mode_active = false
+		if companion_command_ui:
+			companion_command_ui.hide_command_mode()

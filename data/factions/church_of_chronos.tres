@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "church_of_chronos"
+display_name = "Church of Chronos"
+description = "The followers of Chronos, God of Time. They believe in the inevitability of fate and the importance of patience. Chronos priests can grant visions of possible futures and blessings of temporal insight. They maintain the great hourglasses and water clocks that mark the passage of time in temples."
+parent_faction = "church_of_three"
+allies = ["church_of_three", "human_empire"]
+enemies = ["cultists", "undead"]
+neutrals = ["church_of_gaela", "church_of_morthane", "thieves_guild"]
+alignment = 50
+ranks = [{"name": "Unbeliever", "min_reputation": -100, "benefits": []}, {"name": "Doubter", "min_reputation": -50, "benefits": []}, {"name": "Curious", "min_reputation": -20, "benefits": []}, {"name": "Seeker", "min_reputation": 0, "benefits": ["chronos_blessing"]}, {"name": "Acolyte", "min_reputation": 25, "benefits": ["chronos_blessing", "time_meditation"]}, {"name": "Timekeeper", "min_reputation": 50, "benefits": ["chronos_blessing", "time_meditation", "temporal_insight"]}, {"name": "Chronicler", "min_reputation": 75, "benefits": ["chronos_blessing", "time_meditation", "temporal_insight", "vision_access"]}, {"name": "Devotee of Time", "min_reputation": 90, "benefits": ["chronos_blessing", "time_meditation", "temporal_insight", "vision_access", "chronos_champion"]}]
+default_reputation = 0
+joinable = false
+join_threshold = 25
+is_hidden = false
+faction_color = Color(0.6, 0.7, 0.9, 1.0)

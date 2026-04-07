@@ -1,0 +1,52 @@
+{
+  "id": "thieves_03_fence_connection",
+  "title": "Moving Goods",
+  "description": "The Guild needs a new fence in Thornfield. Smuggle a package of stolen goods to contact Silas without alerting the guards. Guards patrol the road between Dalhurst and Thornfield.",
+  "giver_npc_id": "raven_thief_contact",
+  "giver_region": "dalhurst",
+  "faction": "thieves_guild",
+  "rank_required": 0,
+  "objectives": [
+    {
+      "id": "obj_receive_package",
+      "type": "collect",
+      "target": "smuggled_package",
+      "required_count": 1,
+      "description": "Receive the package from Raven"
+    },
+    {
+      "id": "obj_deliver_package",
+      "type": "talk",
+      "target": "silas_fence",
+      "description": "Deliver the package to Silas in Thornfield"
+    },
+    {
+      "id": "obj_return_confirmation",
+      "type": "talk",
+      "target": "raven_thief_contact",
+      "description": "Return to Raven with confirmation"
+    }
+  ],
+  "rewards": {
+    "gold": 125,
+    "xp": 350,
+    "items": ["lockpick_set"],
+    "faction_reputation": {
+      "thieves_guild": 20
+    }
+  },
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "raven_thief_contact",
+  "turn_in_zone": "dalhurst",
+  "next_quest": "thieves_04_debt_collection",
+  "flags_set": ["thieves_rank_footpad", "thieves_fence_thornfield"],
+  "challenge": {
+    "type": "stealth",
+    "description": "Avoid guard patrols on the road. Getting caught may result in confiscation or fine.",
+    "detection_penalty": {
+      "gold_loss": 50,
+      "faction_rep": {"thieves_guild": -10}
+    }
+  },
+  "notes": "Promotion to Footpad upon completion. Establishes fence contact in Thornfield. Silas becomes recurring NPC."
+}

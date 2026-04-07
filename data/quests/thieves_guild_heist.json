@@ -1,0 +1,93 @@
+{
+	"id": "thieves_guild_heist",
+	"title": "The Dalhurst Job",
+	"description": "The Guild has a lucrative target: Merchant Lord Harwick, a wealthy trader who's been shorting protection payments. His manor sits in the Dalhurst merchant district, stuffed with coin and valuables. The job is yours to plan. Go in quiet through the servant's entrance at night, or disguise yourself as a guest during his evening parties, or simply smash a window and grab what you can before the guards arrive. The Guild doesn't care about method - only results. Just remember: the cleaner the job, the better your reputation.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "thieves_guild_fence",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "case_harwick_manor",
+			"description": "Scout Harwick's manor during the day",
+			"type": "reach",
+			"target": "harwick_manor",
+			"required_count": 1
+		},
+		{
+			"id": "gather_intel",
+			"description": "Gather information about guard patrols and entrances",
+			"type": "interact",
+			"target": "manor_exterior",
+			"required_count": 1
+		},
+		{
+			"id": "choose_approach",
+			"description": "Decide your approach and execute the heist",
+			"type": "interact",
+			"target": "manor_vault",
+			"required_count": 1
+		},
+		{
+			"id": "steal_harwick_ledger",
+			"description": "Steal Harwick's ledger with incriminating evidence",
+			"type": "collect",
+			"target": "harwick_ledger",
+			"required_count": 1
+		},
+		{
+			"id": "steal_valuables",
+			"description": "Steal at least 500 gold worth of valuables",
+			"type": "collect",
+			"target": "harwick_valuables",
+			"required_count": 1
+		},
+		{
+			"id": "escape_manor",
+			"description": "Escape the manor without being captured",
+			"type": "reach",
+			"target": "manor_escape_point",
+			"required_count": 1
+		},
+		{
+			"id": "deliver_to_fence",
+			"description": "Deliver the goods to the Guild fence",
+			"type": "talk",
+			"target": "thieves_guild_fence",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "thieves_guild_fence",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 300,
+		"xp": 400,
+		"items": [],
+		"faction_reputation": {
+			"thieves_guild": 50
+		}
+	},
+	"choice_consequences": {
+		"stealth_approach": {
+			"flags_to_set": ["heist_stealth_success"],
+			"reputation_changes": {"thieves_guild": 25, "town_guard": 0}
+		},
+		"disguise_approach": {
+			"flags_to_set": ["heist_disguise_success"],
+			"reputation_changes": {"thieves_guild": 20, "merchant_guild": -10}
+		},
+		"smash_grab_approach": {
+			"flags_to_set": ["heist_smash_grab"],
+			"reputation_changes": {"thieves_guild": 10, "town_guard": -30, "merchant_guild": -20}
+		},
+		"caught_during_heist": {
+			"flags_to_set": ["heist_caught"],
+			"reputation_changes": {"thieves_guild": -25, "town_guard": -50}
+		}
+	},
+	"prerequisites": ["sailors_debt"],
+	"next_quest": "thieves_guild_informant",
+	"notes": "Multi-approach heist quest. Stealth route (hardest) requires Stealth skill checks and lockpicking. Disguise route requires stolen invitation + Speech checks. Smash-and-grab is combat-heavy and triggers guard response. Getting caught triggers bounty system and potential arrest. Clean heist (no detection) gives best reputation. Harwick's ledger reveals corruption - optional choice to give to town guard for reduced bounty or keep for Guild leverage."
+}

@@ -1,0 +1,66 @@
+{
+	"id": "adventurers_10_dragon_rumor",
+	"title": "Smoke on the Horizon",
+	"description": "Travelers report seeing a dragon circling the mountains near Kazer-Dun entrance. If true, this is catastrophic. The Guild needs someone to investigate - carefully. If it's really a dragon, don't engage. But if it's just a wyvern or drake, well... that's a trophy worth claiming.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "investigate_sightings",
+			"description": "Travel to Kazer-Dun entrance and investigate",
+			"type": "reach",
+			"target": "kazer_dun_entrance",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "track_creature",
+			"description": "Track the flying creature to its lair",
+			"type": "reach",
+			"target": "wyvern_nest",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "identify_creature",
+			"description": "Confirm it's a wyvern, not a dragon",
+			"type": "interact",
+			"target": "wyvern_observation",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "slay_wyvern",
+			"description": "Hunt and kill the wyvern",
+			"type": "kill",
+			"target": "wyvern",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "harvest_scales",
+			"description": "Harvest wyvern scales as proof",
+			"type": "collect",
+			"target": "wyvern_scales",
+			"required_count": 5,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 500,
+		"xp": 1200,
+		"items": ["dragonscale_shield"],
+		"faction_reputation": {
+			"adventurers_guild": 150
+		}
+	},
+	"prerequisites": ["adventurers_09_rival_guild"],
+	"next_quest": "adventurers_11_guild_politics",
+	"notes": "Rank: Elite. Major boss fight. Wyvern is extremely dangerous - recommend level 20+ and good equipment. Dragonscale shield is legendary-tier defensive item. Nest near Kazer-Dun entrance."
+}

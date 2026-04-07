@@ -1,0 +1,65 @@
+{
+	"id": "adventurers_05_missing_team",
+	"title": "Missing in Action",
+	"description": "A Guild team went into Willow Dale two days ago and hasn't returned. Vorn fears the worst, but he needs to know what happened. Find the missing adventurers - or recover their bodies and personal effects for their families. The Guild takes care of its own, even in death.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "enter_willow_dale",
+			"description": "Enter Willow Dale ruins",
+			"type": "reach",
+			"target": "willow_dale",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "find_team_remains",
+			"description": "Search for the missing team",
+			"type": "reach",
+			"target": "willow_dale_corpse_site",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "recover_guild_tokens",
+			"description": "Recover Guild tokens from the fallen",
+			"type": "collect",
+			"target": "guild_token",
+			"required_count": 3,
+			"is_optional": false
+		},
+		{
+			"id": "kill_responsible_enemies",
+			"description": "Avenge the fallen team",
+			"type": "kill",
+			"target": "giant_spider",
+			"required_count": 5,
+			"is_optional": true
+		},
+		{
+			"id": "return_tokens",
+			"description": "Return the tokens to Guildmaster Vorn",
+			"type": "talk",
+			"target": "guildmaster_vorn_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 175,
+		"xp": 450,
+		"faction_reputation": {
+			"adventurers_guild": 60
+		}
+	},
+	"prerequisites": ["adventurers_04_bandit_contract"],
+	"next_quest": "adventurers_06_monster_hunt",
+	"notes": "Rank: Member. Emotional stakes - recovering fallen comrades. Willow Dale dungeon. Optional revenge objective for extra XP. Bodies spawn in spider nest area."
+}

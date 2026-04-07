@@ -1,0 +1,248 @@
+{
+  "id": "thieves_guild_recruiter",
+  "display_name": "Thieves Guild Recruiter - Dalhurst",
+  "description": "Dialogue for the Thieves Guild recruiter who offers the initiation quest (Light Fingers)",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Hooded Figure",
+      "text": "You've got that look about you. The kind that sees opportunity where others see locked doors. I represent certain... interests in Dalhurst. Interested in making some real coin?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'm listening.",
+          "next": "pitch",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "thieves_guild_initiation",
+              "value": 0,
+              "invert": true
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I've completed the job - the ledger is yours.",
+          "next": "quest_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "thieves_guild_initiation",
+              "value": 1
+            },
+            {
+              "type": "has_item",
+              "param": "merchant_ledger",
+              "value": 1
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Already did your initiation.",
+          "next": "already_member",
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "thieves_guild_initiation",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Not interested.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "pitch",
+      "speaker": "Hooded Figure",
+      "text": "The Thieves Guild of Dalhurst has eyes everywhere. We handle... delicate acquisitions. Information brokering. Debt collection. It's profitable work for those with the right skills. But first, we need to see if you've got what it takes.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What kind of test?",
+          "next": "initiation_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I don't work for criminals.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "initiation_offer",
+      "speaker": "Hooded Figure",
+      "text": "Simple job. There's a merchant named Hartwin who runs a general goods shop in the market district. He keeps a ledger documenting all his transactions - including some rather... dubious dealings. We want that ledger. Steal it without getting caught, and you're in.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Why do you want this ledger?",
+          "next": "ledger_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How am I supposed to steal it without being seen?",
+          "next": "steal_advice",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll do it.",
+          "next": "accept_initiation",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "thieves_guild_initiation",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "This sounds too risky.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "ledger_details",
+      "speaker": "Hooded Figure",
+      "text": "Hartwin's been dealing with some unsavory types - smugglers, counterfeiters. The ledger is evidence of his crimes. We can use it for leverage... or sell it to his competitors. Either way, it's valuable. The question is, can you get it?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "How do I steal it?",
+          "next": "steal_advice",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll get it done.",
+          "next": "accept_initiation",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "thieves_guild_initiation",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I'm not interested in blackmail.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "steal_advice",
+      "speaker": "Hooded Figure",
+      "text": "Scout the shop during the day - learn the layout, see where he keeps important documents. The ledger will be in his office or behind the counter. Wait for the right moment when he's distracted. Use your wits. And whatever you do, don't get caught. Getting arrested means you failed.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Understood. I'll get the ledger.",
+          "next": "accept_initiation",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "thieves_guild_initiation",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "This is too much risk for me.",
+          "next": "refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accept_initiation",
+      "speaker": "Hooded Figure",
+      "text": "Good. Hartwin's General Goods is in the market district, near the fountain. Case the shop during business hours. When you have the ledger, bring it to the Guild fence in the warehouse district - look for the red door. And remember, don't get caught.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_turnin",
+      "speaker": "Hooded Figure",
+      "text": "Let me see it. Ah yes, this is exactly what we needed. Clean job, no guards involved. You've got talent. Welcome to the Guild. The fence will have more work for you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Hand over the ledger.",
+          "next": "initiation_complete",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "thieves_guild_initiation",
+              "value": 0
+            },
+            {
+              "type": "take_item",
+              "param": "merchant_ledger",
+              "value": 1
+            },
+            {
+              "type": "set_flag",
+              "param": "thieves_guild_member",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "initiation_complete",
+      "speaker": "Hooded Figure",
+      "text": "Here's your payment - 75 gold and a Guild token. Show that token to the fence and they'll know you're one of us. The Guild takes care of its own. Stay sharp, and stay profitable.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "already_member",
+      "speaker": "Hooded Figure",
+      "text": "You're already in. Talk to the fence in the warehouse district for actual work. I just find new recruits.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "refuse",
+      "speaker": "Hooded Figure",
+      "text": "Your loss. If you change your mind, you know where to find me. Just remember - you never saw me, and we never had this conversation.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

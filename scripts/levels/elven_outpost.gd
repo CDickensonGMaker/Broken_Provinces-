@@ -11,6 +11,7 @@ func _ready() -> void:
 	_create_terrain()
 	_spawn_fast_travel_shrine()
 	_create_spawn_points()
+	_spawn_elven_npcs()
 	_setup_navigation()
 
 
@@ -55,6 +56,75 @@ func _create_spawn_points() -> void:
 		spawn.add_to_group("spawn_points")
 		spawn.set_meta("spawn_id", data.id)
 		add_child(spawn)
+
+
+## Spawn elven NPCs in the outpost
+func _spawn_elven_npcs() -> void:
+	# === ELF DIPLOMAT SILVANA (central meeting area) ===
+	var diplomat_pos := Vector3(0, 0.1, -10)  # Central diplomatic area
+	var elf_diplomat := QuestGiver.spawn_quest_giver(
+		self,
+		diplomat_pos,
+		"Envoy Silvana",
+		"elf_diplomat_silvana",
+		null, 8, 2,
+		[],  # Quest IDs to be added later
+		false
+	)
+	elf_diplomat.region_id = ZONE_ID
+	elf_diplomat.faction_id = "elves"
+	elf_diplomat.no_quest_dialogue = "Welcome to our outpost, traveler. Relations between our peoples have been... strained of late. But perhaps that can change. The Council of Elders watches your kind with interest."
+	var diplomat_profile := NPCKnowledgeProfile.new()
+	diplomat_profile.archetype = NPCKnowledgeProfile.Archetype.SCHOLAR
+	diplomat_profile.personality_traits = ["diplomatic", "cautious", "eloquent", "observant"]
+	diplomat_profile.knowledge_tags = ["elves", "diplomacy", "council", "human_relations", "elven_city"]
+	diplomat_profile.base_disposition = 40  # Cautious but diplomatic
+	diplomat_profile.speech_style = "formal"
+	elf_diplomat.npc_profile = diplomat_profile
+
+	# === ELF GATE GUARD (near entrance) ===
+	var gate_guard_pos := Vector3(0, 0.1, 20)  # Near the southern entrance
+	var elf_gate_guard := QuestGiver.spawn_quest_giver(
+		self,
+		gate_guard_pos,
+		"Sentinel Aelindor",
+		"elf_gate_guard",
+		null, 8, 2,
+		[],  # Quest IDs to be added later
+		true  # is_talk_target
+	)
+	elf_gate_guard.region_id = ZONE_ID
+	elf_gate_guard.faction_id = "elves"
+	elf_gate_guard.no_quest_dialogue = "State your business, human. This outpost serves as the threshold between your lands and ours. Those who enter with ill intent do not leave."
+	var gate_guard_profile := NPCKnowledgeProfile.new()
+	gate_guard_profile.archetype = NPCKnowledgeProfile.Archetype.GUARD
+	gate_guard_profile.personality_traits = ["stern", "vigilant", "proud", "dutiful"]
+	gate_guard_profile.knowledge_tags = ["elves", "security", "outpost", "threats", "visitors"]
+	gate_guard_profile.base_disposition = 25  # Suspicious of humans
+	gate_guard_profile.speech_style = "formal"
+	elf_gate_guard.npc_profile = gate_guard_profile
+
+	# === ELF MERCHANT (trading area) ===
+	var merchant_pos := Vector3(-15, 0.1, -5)  # Trading/market area
+	var elf_merchant := QuestGiver.spawn_quest_giver(
+		self,
+		merchant_pos,
+		"Trader Faeniel",
+		"elf_merchant",
+		null, 8, 2,
+		[],  # Quest IDs to be added later
+		false
+	)
+	elf_merchant.region_id = ZONE_ID
+	elf_merchant.faction_id = "elves"
+	elf_merchant.no_quest_dialogue = "Elven craftsmanship is unmatched by human hands - a simple truth. But we trade fairly with those who show respect. Our wines, textiles, and enchanted trinkets are sought across the continent."
+	var merchant_profile := NPCKnowledgeProfile.new()
+	merchant_profile.archetype = NPCKnowledgeProfile.Archetype.MERCHANT
+	merchant_profile.personality_traits = ["proud", "shrewd", "cultured", "patient"]
+	merchant_profile.knowledge_tags = ["elves", "trade", "elven_goods", "wines", "enchantments"]
+	merchant_profile.base_disposition = 45  # Willing to trade
+	merchant_profile.speech_style = "formal"
+	elf_merchant.npc_profile = merchant_profile
 
 
 func _setup_navigation() -> void:

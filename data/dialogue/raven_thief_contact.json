@@ -1,0 +1,678 @@
+{
+  "id": "raven_thief_contact",
+  "display_name": "Raven - Thieves Guild Contact",
+  "description": "Dialogue for Raven, who handles early Thieves Guild quests (01-05) and serves as the initial guild contact for new members.",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Raven",
+      "text": "New face in the shadows. Word is you passed the initiation - stole Hartwin's ledger clean. That takes skill. I'm Raven. I find work for Guild members who've proven they can be trusted. Ready to earn?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What kind of work?",
+          "next": "work_intro",
+          "conditions": [
+            {"type": "flag", "param": "thieves_guild_member", "value": 0},
+            {"type": "quest_complete", "param": "thieves_01_light_fingers", "value": 0, "invert": true}
+          ],
+          "actions": []
+        },
+        {
+          "text": "The evidence is planted.",
+          "next": "quest_02_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "thieves_02_plant_evidence", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "The package reached Silas.",
+          "next": "quest_03_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "thieves_03_fence_connection", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "I collected the debt from Garrett.",
+          "next": "quest_04_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "thieves_04_debt_collection", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "The blackmail material is delivered.",
+          "next": "quest_05_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "thieves_05_blackmail", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "I completed my first job.",
+          "next": "quest_01_turnin",
+          "conditions": [
+            {"type": "quest_state", "param": "thieves_01_light_fingers", "value": 1}
+          ],
+          "actions": []
+        },
+        {
+          "text": "Just checking in.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "work_intro",
+      "speaker": "Raven",
+      "text": "The Guild handles acquisitions, information, debt collection, and... persuasion. Start small, prove yourself, and bigger jobs come your way. Your first task: lift three coin purses in the market. Easy pickings for someone with your skills.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Pickpocketing? Simple enough.",
+          "next": "quest_01_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_01_light_fingers", "value": 0}]
+        },
+        {
+          "text": "What's the pay?",
+          "next": "quest_01_pay",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I was hoping for something more... substantial.",
+          "next": "start_small",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_01_pay",
+      "speaker": "Raven",
+      "text": "Keep whatever you lift from the marks - that's your pay. Plus 50 gold from the Guild when you report success. Easy money for light work. The real rewards come later, once you've proven reliable.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Fair enough. I'll do it.",
+          "next": "quest_01_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_01_light_fingers", "value": 0}]
+        },
+        {
+          "text": "I'll think about it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "start_small",
+      "speaker": "Raven",
+      "text": "Everyone starts small. Even Shadowmaster Vex began with pickpocketing. Prove you can handle simple jobs without getting caught, and bigger opportunities open up. That's how it works.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Fine. I'll lift some purses.",
+          "next": "quest_01_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_01_light_fingers", "value": 0}]
+        },
+        {
+          "text": "Maybe later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_01_accept",
+      "speaker": "Raven",
+      "text": "The market district during busy hours - that's your hunting ground. Three purses minimum. Don't get caught, don't cause a scene, and don't steal from anyone wearing Guild colors. Report back when you're done.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_01_turnin",
+      "speaker": "Raven",
+      "text": "Three purses lifted without incident? Good work. Here's your 50 gold bonus. You've shown you can operate without making noise. Ready for something that requires a bit more... finesse?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What do you have?",
+          "next": "quest_02_offer",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_01_light_fingers", "value": 0},
+            {"type": "set_flag", "param": "thieves_rank_pickpocket", "value": 0}
+          ]
+        },
+        {
+          "text": "I'll take a break first.",
+          "next": "farewell_success",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_01_light_fingers", "value": 0},
+            {"type": "set_flag", "param": "thieves_rank_pickpocket", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_02_offer",
+      "speaker": "Raven",
+      "text": "There's a merchant named Aldric who's been undercutting our... business partners. The Guild wants him out of the way. Plant this bag of counterfeit coins in his shop, then tip off the guards. He'll be arrested, and our friends can operate freely.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Framing someone? That's cold.",
+          "next": "quest_02_cold",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What's the pay?",
+          "next": "quest_02_pay",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll plant the evidence.",
+          "next": "quest_02_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_02_plant_evidence", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_02_cold",
+      "speaker": "Raven",
+      "text": "Cold? Aldric's been cheating honest fences out of business for months. He's not innocent - just clever enough to avoid the law. We're giving him what he deserves. It's not personal, it's business.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Fine. I'll do it.",
+          "next": "quest_02_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_02_plant_evidence", "value": 0}]
+        },
+        {
+          "text": "I don't frame people.",
+          "next": "quest_02_refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_02_pay",
+      "speaker": "Raven",
+      "text": "100 gold for the job. Quick work if you're careful. Get in, plant the coins somewhere the guards will find them, get out, then send an anonymous tip. Aldric goes to jail, you get paid.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "100 gold? I'm in.",
+          "next": "quest_02_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_02_plant_evidence", "value": 0}]
+        },
+        {
+          "text": "Not worth the risk.",
+          "next": "quest_02_refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_02_refuse",
+      "speaker": "Raven",
+      "text": "Your choice. But the Guild remembers who takes the hard jobs. Come back if you change your mind.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_02_accept",
+      "speaker": "Raven",
+      "text": "Aldric's shop is in the market district. Plant the counterfeit coins somewhere obvious - his strongbox, behind the counter. Then tip off the city guard. Don't be seen, don't get connected to it.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_02_turnin",
+      "speaker": "Raven",
+      "text": "Aldric's in jail? The guards found the coins exactly where they needed to. Clean work. Here's your 100 gold. The Guild's fences are grateful - you've made some useful friends. Ready for the next job?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's next?",
+          "next": "quest_03_offer",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "thieves_02_plant_evidence", "value": 0}]
+        },
+        {
+          "text": "I need a break.",
+          "next": "farewell_success",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "thieves_02_plant_evidence", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_03_offer",
+      "speaker": "Raven",
+      "text": "The Guild needs a new fence in Thornfield. I need you to smuggle this package of goods to our contact there - a man named Silas. Guards patrol the road, so you'll need to be clever. Get the package to Silas, get confirmation, report back.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's in the package?",
+          "next": "quest_03_contents",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll deliver it.",
+          "next": "quest_03_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_03_fence_connection", "value": 0}]
+        },
+        {
+          "text": "Smuggling between cities? That's risky.",
+          "next": "quest_03_risk",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_03_contents",
+      "speaker": "Raven",
+      "text": "Jewelry, gemstones, small valuables. Things that are easy to move and hard to trace. Silas will fence them and establish a permanent connection for future operations. It's standard smuggling - just don't let the guards search you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Understood. I'll make the delivery.",
+          "next": "quest_03_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_03_fence_connection", "value": 0}]
+        },
+        {
+          "text": "What if I get caught?",
+          "next": "quest_03_caught",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_03_risk",
+      "speaker": "Raven",
+      "text": "Risk means reward. 125 gold plus a lockpick set when you complete the delivery. And promotion to Footpad rank - you'll be more than just a pickpocket. Silas needs to see your face so he knows who to trust.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "For that reward, I'll do it.",
+          "next": "quest_03_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_03_fence_connection", "value": 0}]
+        },
+        {
+          "text": "I'll think about it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_03_caught",
+      "speaker": "Raven",
+      "text": "If the guards catch you with the package? You lose 50 gold in fines and Guild reputation. Don't let them search you. Travel at night, stick to back roads, blend in with other travelers. Simple precautions.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I can manage that. Give me the package.",
+          "next": "quest_03_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_03_fence_connection", "value": 0}]
+        },
+        {
+          "text": "Too risky for me.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_03_accept",
+      "speaker": "Raven",
+      "text": "Take the road to Thornfield. Silas runs a curio shop on the west side of town. Show him the Guild token and deliver the package. Get his confirmation seal, then return here. Guards patrol the road - be smart.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_03_turnin",
+      "speaker": "Raven",
+      "text": "Silas confirmed the delivery? Excellent. The Thornfield connection is established. Here's your 125 gold and a quality lockpick set - you'll need them for future jobs. Welcome to Footpad rank. The next job requires some... persuasion skills.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What kind of persuasion?",
+          "next": "quest_04_offer",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_03_fence_connection", "value": 0},
+            {"type": "set_flag", "param": "thieves_rank_footpad", "value": 0}
+          ]
+        },
+        {
+          "text": "I'll rest first.",
+          "next": "farewell_footpad",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_03_fence_connection", "value": 0},
+            {"type": "set_flag", "param": "thieves_rank_footpad", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quest_04_offer",
+      "speaker": "Raven",
+      "text": "A sailor named Garrett owes the Guild 200 gold. He's been hiding at the Crossroads tavern, spending money on drinks instead of paying his debts. Collect the debt - persuade him, intimidate him, or take it from his belongings. Just get the gold.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Debt collection? I can handle that.",
+          "next": "quest_04_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_04_debt_collection", "value": 0}]
+        },
+        {
+          "text": "What's his story?",
+          "next": "quest_04_story",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I don't shake down regular people.",
+          "next": "quest_04_refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_04_story",
+      "speaker": "Raven",
+      "text": "Garrett borrowed gold for 'ship repairs' three weeks ago. Instead, he's been drinking it away. The Guild doesn't like being made fools of. Get the 200 gold however you need to. Your cut is 150 gold for bringing back the debt.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll collect what he owes.",
+          "next": "quest_04_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_04_debt_collection", "value": 0}]
+        },
+        {
+          "text": "What if he can't pay?",
+          "next": "quest_04_cant_pay",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_04_cant_pay",
+      "speaker": "Raven",
+      "text": "Then you get creative. Search his room at the tavern. Take his valuables. Make it clear to him that debts get paid one way or another. But don't cause a scene - we don't want guards involved.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Understood. I'll get the gold.",
+          "next": "quest_04_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_04_debt_collection", "value": 0}]
+        },
+        {
+          "text": "This isn't my kind of work.",
+          "next": "quest_04_refuse",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_04_refuse",
+      "speaker": "Raven",
+      "text": "Everyone in the Guild does what's needed. Think about it and come back if you change your mind.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_04_accept",
+      "speaker": "Raven",
+      "text": "Garrett's at the Crossroads tavern - the one with the blue lantern. Find him, collect 200 gold one way or another, and bring it back. Keep the methods clean - no guards, no witnesses. 150 gold is your cut.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_04_turnin",
+      "speaker": "Raven",
+      "text": "You have Garrett's debt? Let me count it... 200 gold, exactly. Well done. Here's your 150 gold cut. The Guild's reputation for collecting is maintained. One more job and you'll be ready for Shadowmaster Vex's attention.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What's the final job?",
+          "next": "quest_05_offer",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "thieves_04_debt_collection", "value": 0}]
+        },
+        {
+          "text": "I need to rest.",
+          "next": "farewell_success",
+          "conditions": [],
+          "actions": [{"type": "complete_quest", "param": "thieves_04_debt_collection", "value": 0}]
+        }
+      ]
+    },
+    {
+      "id": "quest_05_offer",
+      "speaker": "Raven",
+      "text": "This one requires subtlety. A merchant in Millbrook has been causing problems for Guild operations. We have leverage on him - certain... indiscretions. Deliver this sealed letter to his home and make it clear that compliance is expected. Classic blackmail.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Blackmail? What did he do?",
+          "next": "quest_05_details",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll deliver the message.",
+          "next": "quest_05_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_05_blackmail", "value": 0}]
+        },
+        {
+          "text": "Blackmail is a dangerous game.",
+          "next": "quest_05_danger",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_05_details",
+      "speaker": "Raven",
+      "text": "He's been embezzling from his business partner and hiding the money. We have proof. The letter reminds him of this and suggests he start looking the other way when Guild operations pass through his warehouse. Cooperation or exposure. His choice.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll make sure he understands.",
+          "next": "quest_05_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_05_blackmail", "value": 0}]
+        },
+        {
+          "text": "What if he refuses?",
+          "next": "quest_05_refuse_target",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_05_danger",
+      "speaker": "Raven",
+      "text": "Dangerous but effective. This is how the Guild maintains influence without violence. One delivered letter, one frightened merchant, and our operations run smoothly for months. 175 gold for clean delivery.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Alright. Give me the letter.",
+          "next": "quest_05_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_05_blackmail", "value": 0}]
+        },
+        {
+          "text": "Not for me.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_05_refuse_target",
+      "speaker": "Raven",
+      "text": "Then we expose him and he loses everything. But that rarely happens. People who have something to hide usually cooperate when they realize we know their secrets. Just deliver the letter and be convincing.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll be convincing. Give me the job.",
+          "next": "quest_05_accept",
+          "conditions": [],
+          "actions": [{"type": "start_quest", "param": "thieves_05_blackmail", "value": 0}]
+        },
+        {
+          "text": "I'll think about it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "quest_05_accept",
+      "speaker": "Raven",
+      "text": "The merchant's name is Dorman. His home is in Millbrook's wealthy district. Deliver the letter directly to him - not a servant, him. Make sure he reads it in your presence and acknowledges the terms. Then report back.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "quest_05_turnin",
+      "speaker": "Raven",
+      "text": "Dorman agreed to cooperate? Excellent. His warehouse will be very useful for our smuggling operations. Here's your 175 gold. You've proven yourself at every level. Shadowmaster Vex wants to meet you - you're ready for the serious work.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Where do I find Shadowmaster Vex?",
+          "next": "meet_vex",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_05_blackmail", "value": 0},
+            {"type": "set_flag", "param": "ready_for_vex", "value": 0}
+          ]
+        },
+        {
+          "text": "I'll seek Vex out soon.",
+          "next": "farewell_vex_ready",
+          "conditions": [],
+          "actions": [
+            {"type": "complete_quest", "param": "thieves_05_blackmail", "value": 0},
+            {"type": "set_flag", "param": "ready_for_vex", "value": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "meet_vex",
+      "speaker": "Raven",
+      "text": "Vex operates from the Guild's inner chambers. Tell them Raven vouches for your work. Vex handles the complex jobs - heists, rival gangs, investigations. You've graduated from my assignments. Good luck.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_success",
+      "speaker": "Raven",
+      "text": "Rest well. The Guild always has more work when you're ready.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_footpad",
+      "speaker": "Raven",
+      "text": "Enjoy Footpad rank. Return when you're ready for more.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell_vex_ready",
+      "speaker": "Raven",
+      "text": "Don't keep Vex waiting too long. The good jobs go to those who show initiative.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    },
+    {
+      "id": "farewell",
+      "speaker": "Raven",
+      "text": "The shadows remember. Return when you're ready to work.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": []
+    }
+  ]
+}

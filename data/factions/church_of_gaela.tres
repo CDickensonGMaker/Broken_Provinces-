@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "church_of_gaela"
+display_name = "Church of Gaela"
+description = "The followers of Gaela, Goddess of the Harvest. They celebrate growth, fertility, and prosperity. Gaela's priests tend to gardens and orchards, bless crops and livestock, and provide healing through herbal remedies. They hold festivals at planting and harvest times throughout the realm."
+parent_faction = "church_of_three"
+allies = ["church_of_three", "human_empire"]
+enemies = ["cultists", "undead"]
+neutrals = ["church_of_chronos", "church_of_morthane", "dwarves"]
+alignment = 70
+ranks = [{"name": "Locust", "min_reputation": -100, "benefits": []}, {"name": "Blighter", "min_reputation": -50, "benefits": []}, {"name": "Fallow", "min_reputation": -20, "benefits": []}, {"name": "Seedling", "min_reputation": 0, "benefits": ["gaela_blessing"]}, {"name": "Tender", "min_reputation": 25, "benefits": ["gaela_blessing", "herb_lore"]}, {"name": "Cultivator", "min_reputation": 50, "benefits": ["gaela_blessing", "herb_lore", "fertility_rites"]}, {"name": "Grove Keeper", "min_reputation": 75, "benefits": ["gaela_blessing", "herb_lore", "fertility_rites", "natures_bounty"]}, {"name": "Devotee of Growth", "min_reputation": 90, "benefits": ["gaela_blessing", "herb_lore", "fertility_rites", "natures_bounty", "gaela_champion"]}]
+default_reputation = 0
+joinable = false
+join_threshold = 25
+is_hidden = false
+faction_color = Color(0.4, 0.7, 0.3, 1.0)

@@ -1,0 +1,51 @@
+{
+	"id": "wizard_aptitude_test",
+	"title": "The Spark Within",
+	"description": "Master Helvant, a wizard in Dalhurst, is willing to test your aptitude for magic. He claims that true magical talent reveals itself through three trials of mind, will, and connection to the arcane. Pass his tests and he may take you on as an apprentice.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "master_helvant_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "wizards_guild",
+	"objectives": [
+		{
+			"id": "collect_moonpetal",
+			"description": "Collect a moonpetal flower from the Crossroads shrine",
+			"type": "collect",
+			"target": "moonpetal_flower",
+			"required_count": 1,
+			"notes": "Test of awareness - can you find rare magical reagents?"
+		},
+		{
+			"id": "collect_silver_dust",
+			"description": "Collect silver dust from a defeated undead creature",
+			"type": "collect",
+			"target": "silver_dust",
+			"required_count": 1,
+			"notes": "Test of will - can you face supernatural foes?"
+		},
+		{
+			"id": "return_to_helvant",
+			"description": "Return the reagents to Master Helvant",
+			"type": "talk",
+			"target": "master_helvant_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "master_helvant_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 25,
+		"xp": 150,
+		"items": ["spell_scroll_magic_missile"],
+		"faction_reputation": {
+			"wizards_guild": 10
+		}
+	},
+	"on_complete_flags": ["helvant_accepted_apprentice"],
+	"prerequisites": [],
+	"next_quest": "wizard_first_lesson",
+	"notes": "First quest in wizard apprentice chain. Rewards the player with their first basic spell (Magic Missile) and acceptance as Helvant's apprentice."
+}

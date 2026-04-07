@@ -1,0 +1,93 @@
+{
+	"id": "merchant_protection",
+	"title": "Road Guard",
+	"description": "A wealthy merchant named Aldwin Crane needs to transport valuable goods from Thornfield to Dalhurst, but bandit activity has made the roads dangerous. He's willing to pay handsomely for a capable escort. The journey will take you through wild territory, and there's no guarantee the bandits won't try something. Are you up for the job?",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "merchant_aldwin",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "thornfield",
+	"objectives": [
+		{
+			"id": "meet_merchant",
+			"description": "Meet Aldwin Crane at the Thornfield trading post",
+			"type": "talk",
+			"target": "merchant_aldwin",
+			"required_count": 1
+		},
+		{
+			"id": "begin_journey",
+			"description": "Begin the escort journey westward",
+			"type": "reach",
+			"target": "thornfield_west_road",
+			"required_count": 1
+		},
+		{
+			"id": "first_leg",
+			"description": "Escort the caravan through the first stretch of road",
+			"type": "reach",
+			"target": "crossroads",
+			"required_count": 1
+		},
+		{
+			"id": "repel_ambush_1",
+			"description": "Repel the bandit ambush",
+			"type": "kill",
+			"target": "human_bandit",
+			"required_count": 4
+		},
+		{
+			"id": "second_leg",
+			"description": "Continue escorting through the forest road",
+			"type": "reach",
+			"target": "forest_road_midpoint",
+			"required_count": 1
+		},
+		{
+			"id": "repel_ambush_2",
+			"description": "Repel the second bandit attack",
+			"type": "kill",
+			"target": "human_bandit",
+			"required_count": 3
+		},
+		{
+			"id": "arrive_dalhurst",
+			"description": "Safely deliver the merchant to Dalhurst",
+			"type": "reach",
+			"target": "dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "collect_payment",
+			"description": "Collect your payment from Aldwin",
+			"type": "talk",
+			"target": "merchant_aldwin",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "merchant_aldwin",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 200,
+		"xp": 375,
+		"items": []
+	},
+	"choice_consequences": {
+		"cargo_intact": {
+			"flags_to_set": ["aldwin_cargo_safe"],
+			"reputation_changes": {"dalhurst": 15, "thornfield": 15}
+		},
+		"cargo_damaged": {
+			"flags_to_set": ["aldwin_cargo_lost"],
+			"reputation_changes": {"dalhurst": -5, "thornfield": -5}
+		},
+		"bribed_by_bandits": {
+			"flags_to_set": ["aldwin_betrayed"],
+			"reputation_changes": {"dalhurst": -25, "thornfield": -25, "thieves_guild": 15}
+		}
+	},
+	"prerequisites": [],
+	"next_quest": "",
+	"notes": "Classic escort quest with multiple combat encounters. The bribed_by_bandits option allows players to side with the bandits for thieves guild reputation."
+}

@@ -1,0 +1,73 @@
+{
+	"id": "mage_10_forbidden_tome",
+	"title": "The Locked Section",
+	"description": "As an Adept, you've earned access to the Athenaeum's restricted vault - the Locked Section. Archmage Elara has granted you permission to study one forbidden topic to advance your knowledge. But with great power comes great responsibility. What you learn may test your morality and loyalty to the Arcane Circle's principles.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "archmage_elara_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"faction": "arcane_circle",
+	"objectives": [
+		{
+			"id": "receive_vault_key",
+			"description": "Receive the vault key from Archmage Elara",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1
+		},
+		{
+			"id": "enter_locked_section",
+			"description": "Enter the restricted vault",
+			"type": "reach",
+			"target": "restricted_vault",
+			"required_count": 1
+		},
+		{
+			"id": "choose_forbidden_topic",
+			"description": "Choose which forbidden topic to study",
+			"type": "interact",
+			"target": "forbidden_bookshelf",
+			"required_count": 1,
+			"notes": "Dialogue choice: Necromancy, Blood Magic, or Dimensional Travel"
+		},
+		{
+			"id": "study_forbidden_knowledge",
+			"description": "Study the forbidden texts",
+			"type": "interact",
+			"target": "study_desk",
+			"required_count": 1
+		},
+		{
+			"id": "field_test",
+			"description": "Perform a controlled field test of the forbidden magic",
+			"type": "reach",
+			"target": "testing_grounds_elder_moor",
+			"required_count": 1,
+			"notes": "Use the spell in a safe area"
+		},
+		{
+			"id": "moral_choice",
+			"description": "Decide how to use this dangerous knowledge",
+			"type": "talk",
+			"target": "archmage_elara_dalhurst",
+			"required_count": 1,
+			"notes": "Dialogue choice affects reputation and spell access"
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "archmage_elara_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 500,
+		"xp": 1100,
+		"items": ["forbidden_spell_variable"],
+		"faction_reputation": {
+			"arcane_circle": 35
+		}
+	},
+	"on_complete_flags": ["forbidden_knowledge_acquired", "vault_access_granted"],
+	"prerequisites": ["arcane_circle_adept"],
+	"next_quest": "mage_11_planar_breach",
+	"notes": "First Adept quest. Moral choice quest with consequences. Rewards powerful forbidden spell based on player choice."
+}

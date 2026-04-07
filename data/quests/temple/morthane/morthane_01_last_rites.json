@@ -1,0 +1,56 @@
+{
+	"id": "morthane_01_last_rites",
+	"title": "Final Rest",
+	"description": "The Priest of Morthane asks you to perform last rites for unburied dead outside Dalhurst. The dead deserve proper ceremony to complete their cycle. This will be your first lesson in Morthane's doctrine: death is natural, but the dead must be honored.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_morthane_elder_moor",
+	"giver_npc_type": "priest",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "travel_to_graves",
+			"description": "Find the unmarked graves west of Crossroads",
+			"type": "reach",
+			"target": "crossroads",
+			"target_zone": "crossroads",
+			"required_count": 1
+		},
+		{
+			"id": "perform_rites",
+			"description": "Perform last rites at the burial site (use Burial Incense)",
+			"type": "interact",
+			"target": "burial_site_marker",
+			"target_zone": "crossroads",
+			"required_count": 3
+		},
+		{
+			"id": "return_priest",
+			"description": "Return to the Priest of Morthane",
+			"type": "talk",
+			"target": "priest_morthane_elder_moor",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_morthane_elder_moor",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 50,
+		"xp": 200,
+		"items": [
+			{"id": "burial_incense", "quantity": 3}
+		],
+		"faction_reputation": {
+			"church_of_morthane": 10,
+			"church_of_three": 5
+		}
+	},
+	"starter_items": [
+		{"id": "burial_incense", "quantity": 3}
+	],
+	"prerequisites": [],
+	"next_quest": "morthane_02_restless_spirit",
+	"faction": "church_of_morthane"
+}

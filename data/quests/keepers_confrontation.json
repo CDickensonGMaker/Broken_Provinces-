@@ -1,0 +1,101 @@
+{
+	"id": "keepers_confrontation",
+	"title": "The Shadow Revealed",
+	"description": "The time for subtlety is over. The Shadowed Hand's leader - a fallen priest named Malachai the Profane - plans to complete his summoning ritual at the old temple ruins near Crossroads in three days. If he succeeds, the entity called the Hollow King will manifest and spread corruption across the land. Aldric is mobilizing Keepers from across the region, but you'll lead the assault. Storm the ritual site, stop the summoning, and end Malachai's cult for good. This is no longer an investigation. This is war.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "aldric_vane",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "gather_keeper_allies",
+			"description": "Meet with Keeper reinforcements at the staging point",
+			"type": "reach",
+			"target": "keeper_staging_area",
+			"required_count": 1
+		},
+		{
+			"id": "plan_assault",
+			"description": "Coordinate the assault plan with Aldric",
+			"type": "talk",
+			"target": "aldric_vane",
+			"required_count": 1
+		},
+		{
+			"id": "assault_ritual_site",
+			"description": "Lead the assault on the temple ruins near Crossroads",
+			"type": "reach",
+			"target": "crossroads_temple_ruins",
+			"required_count": 1
+		},
+		{
+			"id": "breach_outer_defenses",
+			"description": "Break through the cult's outer defenses",
+			"type": "kill",
+			"target": "cult_defender",
+			"required_count": 10
+		},
+		{
+			"id": "disrupt_ritual",
+			"description": "Reach the ritual chamber and disrupt the summoning",
+			"type": "interact",
+			"target": "summoning_circle",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_malachai",
+			"description": "Defeat Malachai the Profane before the summoning completes",
+			"type": "kill",
+			"target": "malachai_the_profane",
+			"required_count": 1
+		},
+		{
+			"id": "seal_hollow_king",
+			"description": "Seal the portal before the Hollow King manifests",
+			"type": "interact",
+			"target": "hollow_king_portal",
+			"required_count": 1
+		},
+		{
+			"id": "report_victory",
+			"description": "Report the cult's defeat to Aldric Vane",
+			"type": "talk",
+			"target": "aldric_vane",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "aldric_vane",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 750,
+		"xp": 1500,
+		"items": ["keeper_master_insignia"],
+		"faction_reputation": {
+			"the_keepers": 150,
+			"human_empire": 50
+		}
+	},
+	"choice_consequences": {
+		"stopped_summoning": {
+			"flags_to_set": ["hollow_king_sealed", "cult_destroyed"],
+			"reputation_changes": {"the_keepers": 50}
+		},
+		"summoning_partial_success": {
+			"flags_to_set": ["hollow_king_partially_manifested", "region_corrupted"],
+			"reputation_changes": {"the_keepers": 20}
+		},
+		"let_summoning_complete": {
+			"flags_to_set": ["hollow_king_released", "world_threat_active"],
+			"reputation_changes": {"the_keepers": -100}
+		},
+		"spared_malachai": {
+			"flags_to_set": ["malachai_imprisoned"],
+			"reputation_changes": {"the_keepers": 25}
+		}
+	},
+	"prerequisites": ["keepers_infiltration"],
+	"next_quest": "",
+	"notes": "Epic finale for Keepers questline. Large-scale battle with NPC Keeper allies fighting cultists. Temple ruins near Crossroads are multi-level dungeon with cult defenders, summoned demons, and Malachai boss fight. Ritual disruption is timed objective - must reach ritual chamber within 10 minutes or summoning progresses. Malachai is high-level boss (30+) with dark magic attacks and necromancy. FAILURE STATE: If summoning completes, Hollow King partially manifests as world boss (triggers ongoing regional corruption events). SUCCESS: Cult destroyed, Malachai dead/captured, portal sealed. CHOICE: Can spare Malachai at 10% HP (Keepers interrogate him for intel on other cults). Keeper Master Insignia grants access to Keeper safe houses and special vendor discounts. Sets up potential future questline if Hollow King partially manifested."
+}

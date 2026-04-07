@@ -1,0 +1,73 @@
+{
+	"id": "chronos_false_prophet",
+	"title": "The False Seer",
+	"description": "Word has reached the Temple that a charlatan in Thornfield is claiming to possess prophetic powers, drawing crowds and collecting coin. The Priest of Chronos asks you to investigate this supposed seer - are they a fraud, or do they truly possess a fragment of Chronos's gift? Your findings will determine their fate.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_chronos_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "travel_thornfield",
+			"description": "Travel to Thornfield",
+			"type": "reach",
+			"target": "thornfield",
+			"required_count": 1
+		},
+		{
+			"id": "investigate_seer",
+			"description": "Investigate the false prophet's claims",
+			"type": "talk",
+			"target": "false_seer_thornfield",
+			"required_count": 1
+		},
+		{
+			"id": "witness_vision",
+			"description": "Witness the seer's supposed prophecy",
+			"type": "interact",
+			"target": "prophecy_demonstration",
+			"required_count": 1
+		},
+		{
+			"id": "report_findings",
+			"description": "Report your findings to Priest of Chronos",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_chronos_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 150,
+		"xp": 500,
+		"items": [],
+		"faction_reputation": {
+			"church_of_three": 45
+		}
+	},
+	"choice_consequences": {
+		"expose_fraud": {
+			"flags_to_set": ["false_seer_exposed"],
+			"reputation_changes": {
+				"church_of_three": 10
+			}
+		},
+		"confirm_gift": {
+			"flags_to_set": ["seer_has_true_sight"],
+			"reputation_changes": {
+				"church_of_three": 15
+			}
+		},
+		"exploit_seer": {
+			"flags_to_set": ["exploited_seer"],
+			"reputation_changes": {
+				"church_of_three": -20
+			}
+		}
+	},
+	"prerequisites": ["chronos_time_fragment"],
+	"next_quest": "chronos_hourglass"
+}

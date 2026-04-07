@@ -1,0 +1,122 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/data/enemy_attack_data.gd" id="2"]
+
+[sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+id = "void_touch"
+display_name = "Void Touch"
+damage = Array[int]([8, 14, 5])
+damage_type = 7
+windup_time = 0.4
+active_time = 0.25
+recovery_time = 0.35
+cooldown = 1.8
+range_distance = 3.5
+is_ranged = false
+is_aoe = false
+aoe_radius = 0.0
+projectile_speed = 0.0
+inflicts_condition = 6
+condition_chance = 0.4
+condition_duration = 5.0
+stagger_power = 0.7
+knockback_force = 2.5
+weight = 1.0
+min_range = 0.0
+max_range = 3.5
+requires_los = true
+animation_name = "attack"
+sound_effect = ""
+
+[sub_resource type="Resource" id="2"]
+script = ExtResource("2")
+id = "planar_rift"
+display_name = "Planar Rift"
+damage = Array[int]([10, 18, 6])
+damage_type = 7
+windup_time = 1.2
+active_time = 0.4
+recovery_time = 0.6
+cooldown = 8.0
+range_distance = 10.0
+is_ranged = true
+is_aoe = true
+aoe_radius = 4.0
+projectile_speed = 0.0
+inflicts_condition = 5
+condition_chance = 0.6
+condition_duration = 3.0
+stagger_power = 1.2
+knockback_force = 5.0
+weight = 0.4
+min_range = 3.0
+max_range = 10.0
+requires_los = true
+animation_name = "rift"
+sound_effect = ""
+
+[resource]
+script = ExtResource("1")
+id = "planar_entity"
+display_name = "Planar Entity"
+description = "A being from beyond the material plane, summoned or accidentally drawn through weakened barriers between worlds. These creatures defy normal physics, their forms shifting and warping as they move. Their very presence causes unease, and their touch can rend the fabric of reality."
+level = 25
+min_level = 20
+max_level = 35
+max_hp = 160
+armor_value = 10
+movement_speed = 5.0
+turn_speed = 7.0
+grit = 6
+agility = 10
+will = 12
+knowledge = 8
+behavior = 1
+faction = 5
+aggro_range = 16.0
+attack_range = 3.5
+preferred_distance = 5.0
+flee_hp_threshold = 0.0
+is_boss = false
+attacks = Array[ExtResource("2")]([SubResource("1"), SubResource("2")])
+can_block = false
+block_chance = 0.0
+stagger_resistance = 0.35
+fire_resistance = 0.3
+frost_resistance = 0.3
+lightning_resistance = 0.3
+poison_resistance = 1.0
+necrotic_resistance = 0.5
+physical_resistance = 0.3
+fire_weakness = 0.0
+frost_weakness = 0.0
+lightning_weakness = 0.0
+holy_weakness = 0.4
+causes_horror = true
+horror_difficulty = 16
+loot_table_av = 6
+gold_drop = Array[int]([0, 0])
+guaranteed_drops = Array[String]([])
+drop_table = {
+"void_essence": 0.5,
+"planar_shard": 0.35,
+"arcane_dust": 0.3,
+"rare_gem": 0.1
+}
+xp_reward = 220
+scene_path = ""
+icon_path = ""
+scale = 1.3
+sprite_path = ""
+attack_sprite_path = ""
+sprite_hframes = 4
+sprite_vframes = 1
+attack_hframes = 4
+attack_vframes = 1
+sprite_pixel_size = 0.04
+idle_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_1.wav"])
+attack_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_1.wav"])
+hurt_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_2.wav"])
+death_sounds = Array[String](["res://assets/audio/sfx/monsters/undead_1.wav"])

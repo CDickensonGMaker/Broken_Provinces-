@@ -1,0 +1,76 @@
+{
+    "id": "apprentice_lyris",
+    "display_name": "Apprentice Lyris",
+    "description": "A talented young mage of the Arcane Circle. Specializes in elemental magic and support spells.",
+    "sprite_path": "res://assets/sprites/npcs/civilians/wizard_mage.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0256,
+    "max_health": 50,
+    "damage": 25,
+    "armor": 5,
+    "combat_style": "magic",
+    "is_essential": true,
+    "follow_distance": 6.0,
+    "combat_range": 12.0,
+    "leash_range": 25.0,
+    "personality_traits": ["curious", "studious", "ambitious", "kind"],
+    "abilities": [
+        {
+            "id": "fireball",
+            "name": "Fireball",
+            "description": "Launches an explosive ball of fire at enemies",
+            "cooldown": 6.0,
+            "damage_mult": 1.8,
+            "effect": "burn",
+            "effect_duration": 4.0,
+            "dot_damage": 8,
+            "aoe_radius": 3.0
+        },
+        {
+            "id": "frost_shield",
+            "name": "Frost Shield",
+            "description": "Creates a protective barrier of ice around an ally",
+            "cooldown": 20.0,
+            "effect": "shield",
+            "shield_amount": 40,
+            "effect_duration": 15.0,
+            "slow_attackers": true
+        },
+        {
+            "id": "arcane_missile",
+            "name": "Arcane Missile",
+            "description": "Fires seeking bolts of arcane energy",
+            "cooldown": 3.0,
+            "damage_mult": 1.0,
+            "effect": "homing",
+            "projectile_count": 3
+        }
+    ],
+    "combat_lines": [
+        "By the Three Laws of Magic!",
+        "Feel the power of the elements!",
+        "The Circle trained me well!",
+        "Knowledge is my weapon!",
+        "Arcane energy flows through me!",
+        "I will not fail my mentors!"
+    ],
+    "idle_lines": [
+        "The arcane energies here are fascinating...",
+        "I should document this for the Circle.",
+        "Archmage Elara would be proud, I hope.",
+        "Magic requires constant study and practice.",
+        "I sense powerful forces at work nearby.",
+        "This experience is invaluable for my research."
+    ],
+    "recruitment_quest": "arcane_circle_champion",
+    "recruitment_conditions": ["arcane_circle_questline_complete", "chose_lyris"],
+    "recruitment_location": "dalhurst",
+    "home_location": "dalhurst",
+    "faction_id": "arcane_circle",
+    "guild": "arcane_circle",
+    "companion_type": "mage",
+    "weapon_type": "staff",
+    "mana": 100,
+    "mana_regen": 2.0
+}

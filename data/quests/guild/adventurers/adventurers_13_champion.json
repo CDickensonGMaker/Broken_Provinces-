@@ -1,0 +1,57 @@
+{
+	"id": "adventurers_13_champion",
+	"title": "Legend in the Making",
+	"description": "You've accomplished what no other adventurer has. Vorn says you're ready for the final test - the Trial of Champions. Face him in single combat in the Guild arena. It's not to the death, but it's no gentle sparring match either. Win, and you'll be named Champion of the Adventurer's Guild - a title that carries weight across the entire realm.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "guildmaster_vorn_dalhurst",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "prepare_for_trial",
+			"description": "Speak to Vorn when ready for the Champion trial",
+			"type": "talk",
+			"target": "guildmaster_vorn_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "enter_arena",
+			"description": "Enter the Guild arena",
+			"type": "reach",
+			"target": "guild_arena",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "defeat_vorn",
+			"description": "Defeat Guildmaster Vorn in single combat",
+			"type": "kill",
+			"target": "vorn_champion_form",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "claim_title",
+			"description": "Receive the title of Champion",
+			"type": "talk",
+			"target": "guildmaster_vorn_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "guildmaster_vorn_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 1000,
+		"xp": 2000,
+		"items": ["champion_circlet", "vorns_battleaxe"],
+		"faction_reputation": {
+			"adventurers_guild": 300
+		}
+	},
+	"prerequisites": ["adventurers_12_legendary_contract"],
+	"notes": "Rank: Elite → Champion (final promotion). Boss fight against Vorn at full power. Non-lethal but extremely challenging. Champion Circlet grants +5 to all combat stats. Vorn's Battleaxe is unique legendary weapon. Unlocks repeatable bounty board. Max guild rank achieved."
+}

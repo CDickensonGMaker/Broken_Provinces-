@@ -1,0 +1,76 @@
+[gd_scene load_steps=3 format=3 uid="uid://custom_cave_test"]
+
+[ext_resource type="Script" path="res://scripts/dev/custom_cave_test.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://assets/models/caves/custom_cave_1.glb" id="2_cave_model"]
+
+[node name="CustomCaveTest" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="CaveModel" parent="." instance=ExtResource("2_cave_model")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="CaveLight" type="DirectionalLight3D" parent="Lighting"]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 10, 0)
+light_energy = 0.6
+shadow_enabled = false
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Lighting"]
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="EntranceSpawn" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+metadata/spawn_id = "default"
+
+[node name="FromExteriorSpawn" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+metadata/spawn_id = "from_exterior"
+
+[node name="DoorPositions" type="Node3D" parent="."]
+
+[node name="ExitDoor" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -4)
+metadata/target_scene = "res://scenes/dev/cave_door_test.tscn"
+metadata/spawn_id = "from_cave"
+metadata/door_label = "Exit Cave"
+metadata/show_frame = false
+
+[node name="CaveAreas" type="Node3D" parent="."]
+
+[node name="CaveArea_Entrance" type="Marker3D" parent="CaveAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+metadata/area_type = "entrance"
+metadata/area_radius = 12.0
+
+[node name="CaveArea_Passage_1" type="Marker3D" parent="CaveAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 15)
+metadata/area_type = "passage"
+metadata/area_radius = 8.0
+metadata/enemy_max = 2
+
+[node name="CaveArea_Chamber_1" type="Marker3D" parent="CaveAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 2, 25)
+metadata/area_type = "chamber"
+metadata/area_radius = 15.0
+metadata/enemy_max = 4
+metadata/chest_chance = 0.5
+
+[node name="CaveArea_Junction_1" type="Marker3D" parent="CaveAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2, 20)
+metadata/area_type = "junction"
+metadata/area_radius = 10.0
+metadata/enemy_max = 2
+
+[node name="CaveArea_TreasureRoom" type="Marker3D" parent="CaveAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 2, 35)
+metadata/area_type = "treasure_room"
+metadata/area_radius = 10.0
+metadata/enemy_max = 2
+metadata/chest_chance = 1.0
+
+[node name="CaveArea_Exit" type="Marker3D" parent="CaveAreas"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 2, 40)
+metadata/area_type = "exit"
+metadata/area_radius = 8.0

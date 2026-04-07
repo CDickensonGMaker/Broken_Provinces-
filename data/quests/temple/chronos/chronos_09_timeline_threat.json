@@ -1,0 +1,123 @@
+{
+	"id": "chronos_09_timeline_threat",
+	"title": "When Time Bleeds",
+	"description": "Your prophetic training has borne terrible fruit - a vision of catastrophe. A rift in time has opened near the Bandit Hideout, allowing creatures from other timelines to bleed through into the present. These time-warped abominations threaten to unravel reality itself. The Priest of Chronos calls upon you as his champion to seal the breach before the damage becomes irreversible. Time itself is wounded - and it bleeds monsters.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_chronos_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"faction": "church_of_chronos",
+	"objectives": [
+		{
+			"id": "locate_temporal_rift",
+			"description": "Locate the temporal rift near Bandit Hideout",
+			"type": "reach",
+			"target": "bandit_hideout",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_time_aberrations_wave1",
+			"description": "Defeat the first wave of time-warped creatures (5 enemies)",
+			"type": "kill",
+			"target": "time_aberration",
+			"required_count": 5
+		},
+		{
+			"id": "collect_chronos_sealing_stones",
+			"description": "Collect 3 Chronos Sealing Stones from the area",
+			"type": "collect",
+			"target": "chronos_sealing_stone",
+			"required_count": 3
+		},
+		{
+			"id": "activate_rift_seal",
+			"description": "Activate the sealing ritual at the rift",
+			"type": "solve_puzzle",
+			"target": "temporal_rift_seal",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_rift_guardian",
+			"description": "Defeat the Rift Guardian (boss encounter)",
+			"type": "kill",
+			"target": "temporal_rift_guardian",
+			"required_count": 1
+		},
+		{
+			"id": "report_success",
+			"description": "Return to the Priest of Chronos with news of victory",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_chronos_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 500,
+		"xp": 1500,
+		"items": ["timekeepers_aegis"],
+		"faction_reputation": {
+			"church_of_chronos": 50,
+			"church_of_three": 20
+		}
+	},
+	"prerequisites": ["chronos_08_prophet_training"],
+	"flags_required": ["chronos_devotee"],
+	"next_quest": "chronos_10_eternal_vigil",
+	"spawn_on_accept": [
+		{
+			"type": "enemy",
+			"location": "bandit_hideout",
+			"coords": [95, 0, -395],
+			"enemy_type": "time_aberration",
+			"count": 2
+		},
+		{
+			"type": "enemy",
+			"location": "bandit_hideout",
+			"coords": [105, 0, -405],
+			"enemy_type": "time_aberration",
+			"count": 2
+		},
+		{
+			"type": "enemy",
+			"location": "bandit_hideout",
+			"coords": [100, 0, -385],
+			"enemy_type": "time_aberration",
+			"count": 1
+		},
+		{
+			"type": "chest",
+			"location": "bandit_hideout",
+			"coords": [90, 0, -400],
+			"contains": ["chronos_sealing_stone"],
+			"loot_tier": "rare"
+		},
+		{
+			"type": "chest",
+			"location": "bandit_hideout",
+			"coords": [110, 0, -390],
+			"contains": ["chronos_sealing_stone"],
+			"loot_tier": "rare"
+		},
+		{
+			"type": "chest",
+			"location": "bandit_hideout",
+			"coords": [100, 0, -410],
+			"contains": ["chronos_sealing_stone"],
+			"loot_tier": "rare"
+		},
+		{
+			"type": "enemy",
+			"location": "bandit_hideout",
+			"coords": [100, 0, -400],
+			"enemy_type": "temporal_rift_guardian",
+			"count": 1
+		}
+	],
+	"quest_items": ["chronos_sealing_stone"],
+	"notes": "DESIGN INTENT: Climactic multi-stage quest. Combines combat, collection, puzzle-solving, and a boss fight. The time_aberration enemies are twisted versions of normal creatures (wolves with multiple heads, bandits phasing in and out of time). The Rift Guardian is a major boss - a being from another timeline with powerful temporal abilities. The Timekeeper's Aegis is legendary-tier armor or shield with significant time-based protection. This quest should feel like a major heroic moment - the player is literally saving the timeline. The sealing puzzle involves placing the 3 stones at ritual points around the rift in a specific pattern."
+}

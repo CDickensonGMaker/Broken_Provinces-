@@ -1,0 +1,81 @@
+{
+    "id": "zephyr",
+    "display_name": "Zephyr",
+    "description": "An air elemental bound as a familiar by the Arcane Circle. A being of pure wind and lightning, loyal to those who prove themselves to the Circle.",
+    "sprite_path": "res://assets/sprites/npcs/civilians/wizard_wild.png",
+    "h_frames": 1,
+    "v_frames": 1,
+    "pixel_size": 0.0320,
+    "max_health": 75,
+    "damage": 20,
+    "armor": 8,
+    "combat_style": "magic",
+    "is_essential": true,
+    "follow_distance": 5.0,
+    "combat_range": 10.0,
+    "leash_range": 30.0,
+    "personality_traits": ["ethereal", "curious", "playful", "ancient"],
+    "abilities": [
+        {
+            "id": "wind_gust",
+            "name": "Wind Gust",
+            "description": "A powerful blast of wind that knocks enemies back",
+            "cooldown": 8.0,
+            "damage_mult": 0.8,
+            "effect": "knockback",
+            "knockback_force": 8.0,
+            "aoe_cone": 60
+        },
+        {
+            "id": "lightning_arc",
+            "name": "Lightning Arc",
+            "description": "Chain lightning that jumps between enemies",
+            "cooldown": 12.0,
+            "damage_mult": 1.5,
+            "effect": "chain",
+            "max_chains": 4,
+            "chain_range": 5.0
+        },
+        {
+            "id": "invisibility",
+            "name": "Invisibility",
+            "description": "Becomes one with the wind, turning invisible",
+            "cooldown": 25.0,
+            "effect": "stealth",
+            "effect_duration": 10.0,
+            "breaks_on_attack": true
+        }
+    ],
+    "special_traits": {
+        "flying": true,
+        "immune_knockdown": true,
+        "incorporeal": false,
+        "elemental_type": "air"
+    },
+    "combat_lines": [
+        "*crackling wind sounds*",
+        "The storm comes for you!",
+        "Wind and lightning obey me!",
+        "*howling gust*",
+        "You cannot touch the wind!",
+        "Feel the tempest's fury!"
+    ],
+    "idle_lines": [
+        "*gentle breeze sounds*",
+        "The winds carry many secrets...",
+        "This realm is so... solid.",
+        "*curious swirling*",
+        "I sense the weather changing.",
+        "The Circle's binding is gentle. I serve willingly."
+    ],
+    "recruitment_quest": "arcane_circle_champion",
+    "recruitment_conditions": ["arcane_circle_questline_complete", "chose_zephyr"],
+    "recruitment_location": "dalhurst",
+    "home_location": "dalhurst",
+    "faction_id": "arcane_circle",
+    "guild": "arcane_circle",
+    "companion_type": "elemental",
+    "weapon_type": "none",
+    "race": "elemental",
+    "movement_speed_bonus": 1.3
+}

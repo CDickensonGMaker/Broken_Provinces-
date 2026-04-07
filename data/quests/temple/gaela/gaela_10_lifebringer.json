@@ -1,0 +1,83 @@
+{
+	"id": "gaela_10_lifebringer",
+	"title": "The Lifebringer",
+	"description": "You have proven yourself worthy to become Gaela's Champion. Priestess Elara tasks you with the ultimate test: restore life to the corrupted lands near Willow Dale, transforming wasteland into fertile ground. This sacred ritual will cement your place as the Lifebringer.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_gaela_dalhurst",
+	"giver_npc_type": "priest",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "gather_sacred_soil",
+			"description": "Gather Sacred Soil from Gaela's shrine in Dalhurst",
+			"type": "collect",
+			"target": "sacred_soil",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "gather_moonwater",
+			"description": "Gather Moonwater from Elder Moor's sacred spring",
+			"type": "collect",
+			"target": "moonwater",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "gather_lifeseed",
+			"description": "Gather a Lifeseed from the Ancient Grove near Crossroads",
+			"type": "collect",
+			"target": "ancient_lifeseed",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "cleanse_corrupted_zone",
+			"description": "Clear the corrupted zone near Willow Dale of all dark creatures",
+			"type": "kill",
+			"target": "corrupted_beast",
+			"required_count": 12,
+			"is_optional": false
+		},
+		{
+			"id": "perform_ritual",
+			"description": "Perform the Lifebringer Ritual at the heart of the corrupted zone",
+			"type": "explore",
+			"target": "willow_dale",
+			"required_count": 1,
+			"is_optional": false
+		},
+		{
+			"id": "return_triumphant",
+			"description": "Return to Priestess Elara as Gaela's Champion",
+			"type": "talk",
+			"target": "priest_gaela_dalhurst",
+			"required_count": 1,
+			"is_optional": false
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_gaela_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"choice_consequences": {
+		"accept_champion_title": {
+			"flags_to_set": ["gaela_champion", "lifebringer_ritual_complete"],
+			"reputation_changes": {
+				"church_of_gaela": 100
+			}
+		}
+	},
+	"rewards": {
+		"gold": 750,
+		"xp": 2000,
+		"items": ["gaelas_verdant_robes", "champions_laurel", "eternal_harvest_ring"],
+		"faction_reputation": {
+			"church_of_gaela": 100,
+			"church_of_three": 75
+		}
+	},
+	"prerequisites": ["gaela_09_famine_threat"],
+	"required_flags": ["gaela_devotee"],
+	"next_quest": ""
+}

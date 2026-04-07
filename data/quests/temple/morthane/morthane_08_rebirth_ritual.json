@@ -1,0 +1,86 @@
+{
+	"id": "morthane_08_rebirth_ritual",
+	"title": "The Second Chance",
+	"description": "Not all death magic is evil. A dying merchant in Crossroads wishes to undergo Morthane's sacred Rebirth Ritual - a chance to be reborn with new purpose, to serve the cycle itself. You will assist the Priest in this rare and beautiful ceremony.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_morthane_elder_moor",
+	"giver_npc_type": "priest",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "travel_crossroads",
+			"description": "Travel to Crossroads to meet the merchant",
+			"type": "reach",
+			"target": "crossroads",
+			"target_zone": "crossroads",
+			"required_count": 1
+		},
+		{
+			"id": "speak_dying_merchant",
+			"description": "Speak with the dying merchant Elara",
+			"type": "talk",
+			"target": "merchant_elara",
+			"target_zone": "crossroads",
+			"required_count": 1
+		},
+		{
+			"id": "gather_ritual_components",
+			"description": "Gather ritual components: Death's Lily, Grave Soil, and Rebirth Incense",
+			"type": "collect",
+			"target": "rebirth_ritual_components",
+			"target_zone": "crossroads",
+			"required_count": 3
+		},
+		{
+			"id": "prepare_ritual_circle",
+			"description": "Prepare the ritual circle at the Shrine of Endings",
+			"type": "interact",
+			"target": "rebirth_ritual_circle",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		},
+		{
+			"id": "witness_rebirth",
+			"description": "Witness Elara's rebirth as a Servant of the Cycle",
+			"type": "interact",
+			"target": "rebirth_ritual_altar",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		},
+		{
+			"id": "return_priest",
+			"description": "Speak with the Priest about the meaning of rebirth",
+			"type": "talk",
+			"target": "priest_morthane_elder_moor",
+			"target_zone": "elder_moor",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_morthane_elder_moor",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 350,
+		"xp": 1000,
+		"items": [
+			{"id": "cycle_wisdom_ring", "quantity": 1}
+		],
+		"faction_reputation": {
+			"church_of_morthane": 45,
+			"church_of_three": 22
+		}
+	},
+	"spawn_on_accept": [
+		{
+			"type": "chest",
+			"location": "crossroads",
+			"coords": [5, 0, 5],
+			"contains": ["deaths_lily", "grave_soil", "rebirth_incense"],
+			"loot_tier": "rare"
+		}
+	],
+	"prerequisites": ["morthane_07_lich_rumor"],
+	"next_quest": "morthane_09_undead_army",
+	"faction": "church_of_morthane"
+}

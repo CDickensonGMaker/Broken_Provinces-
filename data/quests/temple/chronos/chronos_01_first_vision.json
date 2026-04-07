@@ -1,0 +1,59 @@
+{
+	"id": "chronos_01_first_vision",
+	"title": "The First Vision",
+	"description": "The Priest of Chronos has asked you to prove your dedication by meditating at an ancient shrine near Crossroads. He speaks of visions that come to those who seek the favor of the Timekeeper. Clear your mind and experience what Chronos wishes to reveal.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "priest_chronos_dalhurst",
+	"giver_npc_type": "civilian",
+	"giver_region": "dalhurst",
+	"faction": "church_of_chronos",
+	"objectives": [
+		{
+			"id": "visit_shrine",
+			"description": "Travel to the ancient shrine near Crossroads",
+			"type": "reach",
+			"target": "crossroads",
+			"required_count": 1
+		},
+		{
+			"id": "collect_offering",
+			"description": "Gather a Timekeeper's Hourglass token from the shrine",
+			"type": "collect",
+			"target": "timekeepers_token",
+			"required_count": 1
+		},
+		{
+			"id": "return_to_priest",
+			"description": "Return the token to the Priest of Chronos",
+			"type": "talk",
+			"target": "priest_chronos_dalhurst",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "priest_chronos_dalhurst",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 50,
+		"xp": 200,
+		"items": ["minor_time_blessing"],
+		"faction_reputation": {
+			"church_of_chronos": 10,
+			"church_of_three": 5
+		}
+	},
+	"prerequisites": [],
+	"next_quest": "chronos_02_hourglasses",
+	"spawn_on_accept": [
+		{
+			"type": "chest",
+			"location": "crossroads",
+			"coords": [-485, 0, -185],
+			"contains": ["timekeepers_token"],
+			"loot_tier": "common"
+		}
+	],
+	"quest_items": ["timekeepers_token"],
+	"notes": "DESIGN INTENT: Introductory quest to establish player interest in Chronos. Simple fetch quest with light narrative flavor. Spawns a shrine marker at Crossroads for the player to discover. Rewards are modest - this is just the first step on the path."
+}

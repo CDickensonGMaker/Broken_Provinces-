@@ -1,0 +1,76 @@
+{
+	"id": "elven_ambassador",
+	"title": "The Elven Embassy",
+	"description": "The Keepers have received troubling news: an Elven ambassador from Silvanost was last seen traveling toward Dalhurst, carrying a treaty that could reshape relations between the races. She never arrived. Aldric Vane believes dark forces may have intercepted her. Find the ambassador - and the treaty - before the delicate peace between humans and elves collapses.",
+	"is_main_quest": false,
+	"quest_source": "faction",
+	"giver_npc_id": "aldric_vane",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "dalhurst",
+	"objectives": [
+		{
+			"id": "investigate_last_sighting",
+			"description": "Investigate the ambassador's last known location on the eastern road",
+			"type": "reach",
+			"target": "eastern_crossroads",
+			"required_count": 1
+		},
+		{
+			"id": "find_ambush_site",
+			"description": "Find evidence of what happened to the ambassador",
+			"type": "interact",
+			"target": "ambush_site",
+			"required_count": 1
+		},
+		{
+			"id": "track_captors",
+			"description": "Track the captors to their hideout",
+			"type": "reach",
+			"target": "cultist_camp",
+			"required_count": 1
+		},
+		{
+			"id": "defeat_cultists",
+			"description": "Defeat the cultists holding the ambassador",
+			"type": "kill",
+			"target": "cultist",
+			"required_count": 6
+		},
+		{
+			"id": "rescue_ambassador",
+			"description": "Free Ambassador Liraethel",
+			"type": "interact",
+			"target": "ambassador_liraethel",
+			"required_count": 1
+		},
+		{
+			"id": "recover_treaty",
+			"description": "Recover the stolen treaty",
+			"type": "collect",
+			"target": "elven_treaty",
+			"required_count": 1
+		},
+		{
+			"id": "escort_silvanost",
+			"description": "Escort the ambassador safely to the Elven outpost",
+			"type": "reach",
+			"target": "elven_outpost",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "aldric_vane",
+	"turn_in_zone": "dalhurst",
+	"rewards": {
+		"gold": 300,
+		"xp": 600,
+		"items": ["elven_blessing_charm"],
+		"faction_reputation": {
+			"the_keepers": 50,
+			"elves": 75,
+			"elves_pro_human": 25
+		}
+	},
+	"prerequisites": ["keepers_initiation"],
+	"next_quest": ""
+}

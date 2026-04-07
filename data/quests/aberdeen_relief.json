@@ -1,0 +1,60 @@
+{
+	"id": "aberdeen_relief",
+	"title": "Aberdeen Relief",
+	"description": "With Larton stabilized, word has reached you that Aberdeen faces similar troubles. The swamp town has been cut off by flooding and goblin activity, and their supplies are running dangerously low. Mayor Bjorn has sent desperate messages asking for aid. Someone needs to brave the treacherous path and bring them hope.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "trade_master_larton",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "larton",
+	"objectives": [
+		{
+			"id": "obtain_supplies",
+			"description": "Purchase or gather supplies for Aberdeen (ration packs: 0/10)",
+			"type": "collect",
+			"target": "ration_pack",
+			"required_count": 10
+		},
+		{
+			"id": "travel_aberdeen",
+			"description": "Travel through the swamps to Aberdeen",
+			"type": "reach",
+			"target": "aberdeen",
+			"required_count": 1
+		},
+		{
+			"id": "clear_road",
+			"description": "Clear the swamp creatures blocking the supply route",
+			"type": "kill",
+			"target": "giant_rat",
+			"required_count": 8
+		},
+		{
+			"id": "deliver_supplies",
+			"description": "Deliver the supplies to Mayor Bjorn",
+			"type": "talk",
+			"target": "mayor_bjorn_aberdeen",
+			"required_count": 1
+		},
+		{
+			"id": "establish_route",
+			"description": "Mark the safe path for future supply caravans",
+			"type": "interact",
+			"target": "route_marker",
+			"required_count": 3
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "mayor_bjorn_aberdeen",
+	"turn_in_zone": "aberdeen",
+	"rewards": {
+		"gold": 175,
+		"xp": 400,
+		"items": ["aberdeen_hero_medal"],
+		"faction_reputation": {
+			"human_empire": 25
+		}
+	},
+	"prerequisites": ["starving_south"],
+	"next_quest": ""
+}
