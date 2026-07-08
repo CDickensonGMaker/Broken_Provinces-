@@ -60,6 +60,36 @@ const DISPOSITION_WARM: int = 60
 const DISPOSITION_FRIENDLY: int = 75
 const DISPOSITION_ALLIED: int = 90
 
+## Maps a lowercase archetype token (parsed from career_greetings/career_topics
+## response_ids) to its NPCKnowledgeProfile.Archetype value. Used to route that
+## content into archetype_pools / tag it with required_archetype at load time.
+## career_topics.json response_ids encode the PLAYER'S starting career, not the
+## speaking NPC's archetype directly - the extra "soldier"/"scout"/"apprentice"/
+## "alchemist" entries map onto the closest existing NPC archetype (guard, hunter,
+## scholar). Tokens with no reasonable NPC-archetype equivalent (e.g. "cultist",
+## "grave_digger") are deliberately omitted so those responses stay generic/unrestricted.
+const ARCHETYPE_TOKEN_MAP: Dictionary = {
+	"generic_villager": NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+	"farmer": NPCKnowledgeProfile.Archetype.FARMER,
+	"guard": NPCKnowledgeProfile.Archetype.GUARD,
+	"merchant": NPCKnowledgeProfile.Archetype.MERCHANT,
+	"innkeeper": NPCKnowledgeProfile.Archetype.INNKEEPER,
+	"blacksmith": NPCKnowledgeProfile.Archetype.BLACKSMITH,
+	"scholar": NPCKnowledgeProfile.Archetype.SCHOLAR,
+	"priest": NPCKnowledgeProfile.Archetype.PRIEST,
+	"hunter": NPCKnowledgeProfile.Archetype.HUNTER,
+	"miner": NPCKnowledgeProfile.Archetype.MINER,
+	"noble": NPCKnowledgeProfile.Archetype.NOBLE,
+	"beggar": NPCKnowledgeProfile.Archetype.BEGGAR,
+	"thief": NPCKnowledgeProfile.Archetype.THIEF,
+	"bard": NPCKnowledgeProfile.Archetype.BARD,
+	# career_topics.json player-career tokens mapped onto their closest NPC archetype
+	"soldier": NPCKnowledgeProfile.Archetype.GUARD,
+	"scout": NPCKnowledgeProfile.Archetype.HUNTER,
+	"apprentice": NPCKnowledgeProfile.Archetype.SCHOLAR,
+	"alchemist": NPCKnowledgeProfile.Archetype.SCHOLAR,
+}
+
 
 # =============================================================================
 # STATE
@@ -89,6 +119,14 @@ var unique_responses: Dictionary = {}
 ## Memory - tracks what each NPC has told the player
 ## Format: "npc_id:response_id" -> original_text
 var npc_memory: Dictionary = {}
+
+## Heard-count companion to npc_memory - tracks HOW MANY conversations have included
+## each response, so the persistent anti-repeat fallback can prefer the least-heard
+## line instead of breaking when everything eligible has already been heard.
+## Format: "npc_id:response_id" -> int count
+## NOTE: This is intentionally a SEPARATE dictionary from npc_memory (not folded into
+## its value) to preserve the existing save format - npc_memory's shape must not change.
+var npc_memory_heard_count: Dictionary = {}
 
 ## Reference to the conversation UI
 var conversation_ui: Node = null
@@ -224,6 +262,20 @@ func _load_response_pools() -> void:
 		var responses_loaded := _load_responses_from_dict(pool_data)
 		total_responses += responses_loaded
 
+	# Load weather.tres separately - it's an authored ConversationResponsePool .tres
+	# resource (not JSON), so it goes through _register_pool() instead of the JSON path.
+	# WEATHER topic is added to get_available_topics() so this content actually surfaces.
+	var weather_tres_path := pool_dir + "weather.tres"
+	if ResourceLoader.exists(weather_tres_path):
+		var weather_pool: ConversationResponsePool = load(weather_tres_path) as ConversationResponsePool
+		if weather_pool:
+			_register_pool(weather_pool)
+			total_responses += weather_pool.responses.size()
+		else:
+			push_warning("ConversationSystem: weather.tres exists but failed to load as ConversationResponsePool: %s" % weather_tres_path)
+	else:
+		push_warning("ConversationSystem: weather.tres not found at %s" % weather_tres_path)
+
 
 ## Register all responses from a pool (legacy .tres support)
 func _register_pool(pool: ConversationResponsePool) -> void:
@@ -287,16 +339,86 @@ func _load_responses_from_dict(pool_data: Dictionary) -> int:
 				if condition:
 					response.conditions.append(condition)
 
-		# Route greetings and farewells to their separate pools
-		if pool_id == "greetings":
+		# Resolve archetype restriction (if any) from the pool_id + response_id.
+		# career_greetings/career_topics content is authored per-archetype but was
+		# previously dumped into the shared generic pool with no gating at all.
+		var resolved_archetype: int = _resolve_archetype_for_response(pool_id, response.response_id)
+		response.required_archetype = resolved_archetype
+
+		# Route greetings and farewells to their separate pools. career_greetings has no
+		# TopicType dimension to key an archetype_pools bucket by (these are greeting-slot
+		# content, not topic content), so archetype-tagged greetings stay in the shared
+		# greeting_pool and rely on the required_archetype hard-filter in _filter_responses()
+		# instead of a parallel archetype-keyed greeting tier.
+		if pool_id == "greetings" or pool_id == "career_greetings":
 			greeting_pool.append(response)
 		elif pool_id == "farewells":
 			farewell_pool.append(response)
+		elif pool_id == "career_topics" and resolved_archetype != -1:
+			# Real Tier 2 (archetype) content - only NPCs of this archetype offer as a
+			# candidate; select_response() already prefers archetype tier over generic.
+			var archetype_for_registration: NPCKnowledgeProfile.Archetype = resolved_archetype as NPCKnowledgeProfile.Archetype
+			register_archetype_response(archetype_for_registration, response.topic_type, response)
 		else:
+			# Generic Tier 3 fallback. Includes career_topics entries whose token had no
+			# NPC-archetype equivalent (e.g. "cultist", "grave_digger") - required_archetype
+			# stays -1 for those, so they remain unrestricted/available to any NPC.
 			register_response(response.topic_type, response)
 		count += 1
 
 	return count
+
+
+## Parse the archetype token from a career_greetings response_id.
+## Format: "greeting_<archetype>_to_<player_career>" -> returns "<archetype>".
+## Returns "" if the response_id doesn't match this pattern.
+func _parse_greeting_archetype_token(response_id: String) -> String:
+	if not response_id.begins_with("greeting_"):
+		return ""
+	var remainder: String = response_id.substr(len("greeting_"))
+	var to_index: int = remainder.find("_to_")
+	if to_index == -1:
+		return ""
+	return remainder.substr(0, to_index)
+
+
+## Parse the archetype token from a career_topics response_id.
+## Format: "topic_<player_career_token>_<label>" - the career token is checked
+## against ARCHETYPE_TOKEN_MAP (checking a two-word token like "grave_digger" first,
+## since some player careers are two words). Returns "" if no token could be extracted.
+func _parse_topic_archetype_token(response_id: String) -> String:
+	if not response_id.begins_with("topic_"):
+		return ""
+	var remainder: String = response_id.substr(len("topic_"))
+	var parts: PackedStringArray = remainder.split("_")
+	if parts.is_empty():
+		return ""
+	if parts.size() >= 2:
+		var two_word_token: String = "%s_%s" % [parts[0], parts[1]]
+		if ARCHETYPE_TOKEN_MAP.has(two_word_token):
+			return two_word_token
+	return parts[0]
+
+
+## Resolve the required_archetype value (NPCKnowledgeProfile.Archetype int, or -1 for
+## "no restriction") for a response, based on which pool it came from and its response_id.
+func _resolve_archetype_for_response(pool_id: String, response_id: String) -> int:
+	if response_id.is_empty():
+		return -1
+
+	var token: String = ""
+	if pool_id == "career_greetings":
+		token = _parse_greeting_archetype_token(response_id)
+	elif pool_id == "career_topics":
+		token = _parse_topic_archetype_token(response_id)
+	else:
+		return -1
+
+	if token.is_empty() or not ARCHETYPE_TOKEN_MAP.has(token):
+		return -1
+
+	var archetype_value: int = ARCHETYPE_TOKEN_MAP[token]
+	return archetype_value
 
 
 ## Parse a DialogueAction from a JSON dictionary
@@ -438,6 +560,10 @@ func get_available_topics(profile: NPCKnowledgeProfile) -> Array[ConversationTop
 		if current_npc.is_in_group("merchants") or current_npc.is_in_group("traveling_merchants") or current_npc.is_in_group("shops"):
 			if ConversationTopic.TopicType.TRADE not in topics:
 				topics.append(ConversationTopic.TopicType.TRADE)
+
+	# WEATHER is low-priority small talk, always available to non-guard NPCs (guards
+	# return early above with DIRECTIONS + GOODBYE only)
+	topics.append(ConversationTopic.TopicType.WEATHER)
 
 	# Add QUESTS topic if this NPC has quests to give or receive
 	if is_instance_valid(current_npc) and _npc_has_quests(current_npc):
@@ -628,6 +754,10 @@ func select_topic(topic_type: ConversationTopic.TopicType) -> void:
 		# Store in memory
 		var injected_text := current_context.inject_variables(response.text)
 		npc_memory[memory_key] = injected_text
+
+		# Bump heard-count (separate dict, does not alter npc_memory's saved shape)
+		var prior_heard_count: int = npc_memory_heard_count.get(memory_key, 0)
+		npc_memory_heard_count[memory_key] = prior_heard_count + 1
 
 		# Mark as discussed in context
 		current_context.mark_response_discussed(response.response_id)
@@ -977,6 +1107,9 @@ func clear_known_topics() -> void:
 func to_dict() -> Dictionary:
 	return {
 		"npc_memory": npc_memory.duplicate(),
+		# New key, additive only - does not change npc_memory's own saved shape/format.
+		# Old saves loading this dict simply won't have it and default to {} below.
+		"npc_memory_heard_count": npc_memory_heard_count.duplicate(),
 		"conversation_flags": conversation_flags.duplicate(),
 		"player_known_topics": player_known_topics.duplicate()
 	}
@@ -985,6 +1118,7 @@ func to_dict() -> Dictionary:
 ## Deserialize conversation state from save
 func from_dict(data: Dictionary) -> void:
 	npc_memory = data.get("npc_memory", {}).duplicate()
+	npc_memory_heard_count = data.get("npc_memory_heard_count", {}).duplicate()
 	conversation_flags = data.get("conversation_flags", {}).duplicate()
 	# Load known topics (convert to typed array)
 	var topics_data: Array = data.get("player_known_topics", [])
@@ -1002,6 +1136,7 @@ func reset_for_new_game() -> void:
 
 	# Clear memory, flags, and known topics
 	npc_memory.clear()
+	npc_memory_heard_count.clear()
 	conversation_flags.clear()
 	context_variables.clear()
 	player_known_topics.clear()
@@ -1674,6 +1809,7 @@ func perform_persuasion(action: PersuasionAction, bribe_amount: int = 0) -> Dict
 			action_name = "ADMIRE"
 		PersuasionAction.INTIMIDATE:
 			dc = 15
+			@warning_ignore("integer_division")
 			stat_to_use = (grit + speech) / 2  # Average of Grit and Speech
 			stat_name = "Grit+Speech"
 			skill_to_use = intimidation_skill
@@ -1684,6 +1820,7 @@ func perform_persuasion(action: PersuasionAction, bribe_amount: int = 0) -> Dict
 			action_name = "BRIBE"
 			# Bribe amount adds bonus to check
 			if bribe_amount > 0:
+				@warning_ignore("integer_division")
 				skill_to_use += bribe_amount / 10  # +1 per 10 gold
 		PersuasionAction.TAUNT:
 			dc = 10
@@ -1736,7 +1873,8 @@ func perform_persuasion(action: PersuasionAction, bribe_amount: int = 0) -> Dict
 				InventoryManager.remove_gold(bribe_amount)
 			if success:
 				# Success: +5 to +20 based on bribe amount
-				var base_change: int = 5 + mini(int(bribe_amount / 5), 15)  # +1 per 5 gold, max +15 bonus
+				@warning_ignore("integer_division")
+				var base_change: int = 5 + mini(bribe_amount / 5, 15)  # +1 per 5 gold, max +15 bonus
 				disposition_change = base_change
 				if is_crit:
 					disposition_change = int(disposition_change * 1.5)
@@ -1832,7 +1970,7 @@ func _get_skill_governing_stat(skill_enum: int) -> int:
 			return Enums.Stat.SPEECH
 		Enums.Skill.ARCANA_LORE, Enums.Skill.HISTORY, Enums.Skill.INTUITION, \
 		Enums.Skill.ENGINEERING, Enums.Skill.INVESTIGATION, \
-		Enums.Skill.RELIGION, Enums.Skill.NATURE, Enums.Skill.ALCHEMY, Enums.Skill.SMITHING:
+		Enums.Skill.RELIGION, Enums.Skill.NATURE:
 			return Enums.Stat.KNOWLEDGE
 		Enums.Skill.FIRST_AID, Enums.Skill.HERBALISM, Enums.Skill.SURVIVAL:
 			return Enums.Stat.VITALITY
@@ -1878,8 +2016,6 @@ func _get_skill_name(skill_enum: int) -> String:
 		Enums.Skill.FIRST_AID: return "First Aid"
 		Enums.Skill.HERBALISM: return "Herbalism"
 		Enums.Skill.SURVIVAL: return "Survival"
-		Enums.Skill.ALCHEMY: return "Alchemy"
-		Enums.Skill.SMITHING: return "Smithing"
 		Enums.Skill.LOCKPICKING: return "Lockpicking"
 	return "Unknown"
 
@@ -2075,10 +2211,24 @@ func _populate_location_context(context: ConversationContext) -> void:
 		context.player_name = GameManager.player_data.character_name
 
 
-## Filter responses based on disposition, knowledge, and other criteria
+## Filter responses based on disposition, knowledge, archetype, and repeat history.
+##
+## Tiering (in order, first non-empty tier wins):
+##   1. eligible + never discussed this conversation + never told to this NPC before (ideal)
+##   2. eligible + never discussed this conversation, but already told before -> least-heard subset
+##   3. eligible (ignoring the this-conversation exclusion too) -> least-heard subset
+## This guarantees a non-empty result whenever `responses` contains at least one entry
+## that passes disposition/knowledge/condition/archetype gating - the persistent npc_memory
+## anti-repeat can make a response LESS likely to be picked again, but it can never make
+## the conversation dead-end with zero options.
 func _filter_responses(responses: Array, profile: NPCKnowledgeProfile, disposition: int) -> Array:
-	var filtered: Array = []
+	var npc_id: String = ""
+	if is_instance_valid(current_npc):
+		npc_id = _get_npc_id(current_npc)
 
+	# Base eligibility: disposition range, knowledge tags, scripted conditions, archetype match.
+	# This does NOT consider repeat history yet.
+	var eligible: Array = []
 	for response: Variant in responses:
 		if not response is ConversationResponse:
 			continue
@@ -2097,13 +2247,91 @@ func _filter_responses(responses: Array, profile: NPCKnowledgeProfile, dispositi
 		if not _check_conditions(resp):
 			continue
 
-		# Check if already discussed (skip repeated responses)
-		if current_context and resp.was_already_said(current_context.discussed_responses):
+		# Hard archetype gate: a response authored for one archetype must never be said
+		# by a mismatched NPC (e.g. a farmer speaking a guard-tagged line). Untagged
+		# responses (-1) are unrestricted generic content and pass through unaffected.
+		if not _check_archetype_match(resp, profile):
 			continue
 
-		filtered.append(resp)
+		eligible.append(resp)
 
-	return filtered
+	if eligible.is_empty():
+		return eligible
+
+	# Never repeat a line within the SAME sitting, if avoidable.
+	var not_this_session: Array = []
+	for resp: ConversationResponse in eligible:
+		if current_context and resp.was_already_said(current_context.discussed_responses):
+			continue
+		not_this_session.append(resp)
+
+	if not_this_session.is_empty():
+		# Every eligible response was already said earlier in THIS conversation (tiny pool).
+		# Fall back to the full eligible set rather than breaking the conversation.
+		not_this_session = eligible
+
+	# Persistent anti-repeat: prefer lines this NPC has never told the player before,
+	# across ANY past conversation (npc_memory), not just this one.
+	var never_heard: Array = []
+	for resp: ConversationResponse in not_this_session:
+		if resp.response_id.is_empty():
+			# Can't be memory-tracked, so it's always treated as fresh.
+			never_heard.append(resp)
+			continue
+		var memory_key: String = _get_memory_key(npc_id, resp.response_id)
+		if not npc_memory.has(memory_key):
+			never_heard.append(resp)
+
+	if not never_heard.is_empty():
+		return never_heard
+
+	# CRITICAL FALLBACK: the player has heard everything eligible from this NPC before.
+	# Never return an empty pool here - prefer the least-repeated line(s) instead.
+	return _least_heard_subset(not_this_session, npc_id)
+
+
+## Narrow a response list down to whichever entries have the lowest npc_memory heard-count.
+## Used only as the last-resort fallback in _filter_responses when every eligible response
+## has already been told to the player at least once.
+func _least_heard_subset(responses: Array, npc_id: String) -> Array:
+	if responses.is_empty():
+		return responses
+
+	var min_count: int = -1
+	for response: Variant in responses:
+		var resp: ConversationResponse = response
+		var heard_count: int = _get_heard_count(npc_id, resp.response_id)
+		if min_count == -1 or heard_count < min_count:
+			min_count = heard_count
+
+	var result: Array = []
+	for response: Variant in responses:
+		var resp: ConversationResponse = response
+		if _get_heard_count(npc_id, resp.response_id) == min_count:
+			result.append(resp)
+
+	return result
+
+
+## Get how many times this NPC has told the player this response (0 if never/untracked).
+func _get_heard_count(npc_id: String, response_id: String) -> int:
+	if response_id.is_empty():
+		return 0
+	var memory_key: String = _get_memory_key(npc_id, response_id)
+	var count: int = npc_memory_heard_count.get(memory_key, 0)
+	return count
+
+
+## Hard archetype gate for Fix 2c: a response tagged with required_archetype may only be
+## given by an NPC whose profile.archetype matches. Untagged (-1) responses are generic
+## and always pass. If a response is tagged but there's no profile to check against, treat
+## it as a mismatch (fail closed) rather than risk mis-attributing archetype-flavored lines.
+func _check_archetype_match(response: ConversationResponse, profile: NPCKnowledgeProfile) -> bool:
+	if response.required_archetype == -1:
+		return true
+	if not profile:
+		return false
+	return profile.archetype == response.required_archetype
 
 
 ## Check if NPC has required knowledge for response

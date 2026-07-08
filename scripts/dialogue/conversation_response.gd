@@ -29,6 +29,13 @@ extends Resource
 ## Topics this response unlocks for the player (Morrowind-style topic discovery)
 ## These topic IDs become available to ask other NPCs after hearing this response
 @export var unlock_topics: Array[String] = []
+## Hard archetype restriction (NPCKnowledgeProfile.Archetype int value). -1 = no restriction
+## (response stays generic/available to any NPC). Set at pool-load time for content whose
+## response_id declares an archetype (e.g. "greeting_merchant_to_noble", "topic_priest_temple_secrets").
+## Enforced in ConversationSystem._filter_responses() regardless of which pool/tier the
+## response is registered in - this is a hard exclude, unlike personality_affinity which only
+## biases weighted selection.
+@export var required_archetype: int = -1
 
 
 # =============================================================================
