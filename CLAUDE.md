@@ -1,5 +1,22 @@
 # Catacombs of Gore - Agent Instructions
 
+<!-- Claude Code Game Studios Integration -->
+<!-- 17 game studio agents + 12 validator agents, War-Room for cross-domain decisions -->
+
+## Agent Architecture
+
+This project uses two complementary agent systems:
+
+1. **Game Studio Agents** (`.claude/agents/*.md`) - Full game development team for design, architecture, and creative decisions. Invoke via Task tool or `/war-room`.
+
+2. **Validator Agents** (`.claude/settings.json`) - Automated validation that runs proactively after code changes.
+
+@.claude/docs/coordination-rules.md
+
+> **Cross-domain decisions?** Use `/war-room "your question"` to summon the Council of Architects.
+
+---
+
 ## PROACTIVE AGENT ENGAGEMENT (MANDATORY)
 
 **CRITICAL:** Agents MUST be employed AUTOMATICALLY. Do NOT wait for user to ask.
@@ -688,6 +705,8 @@ When creating hand-crafted levels (dungeons, zones, etc.), use this standardized
 | `EnemySpawns` | Enemy spawn markers | Marker3D with enemy metadata |
 | `DoorPositions` | Door spawn markers | Marker3D with door metadata |
 | `ChestPositions` | Chest spawn markers | Marker3D with chest metadata |
+| `HiddenChestPositions` | Hidden chest markers | Marker3D with hidden chest metadata |
+| `SecretWallPositions` | Secret wall markers | Marker3D with secret wall metadata |
 
 **CRITICAL:** Scripts must use these EXACT names. Do NOT use alternatives like:
 - `Enemies` (wrong) → Use `EnemySpawns`
@@ -875,6 +894,78 @@ metadata/lock_difficulty = 15
 metadata/is_persistent = false
 metadata/loot_tier = "common"  # junk, common, uncommon, rare, epic, legendary
 ```
+
+### HiddenChestPositions Marker Metadata
+Hidden chests are invisible until the player's detection bonus beats the DC.
+```
+metadata/chest_name = "Ancient Cache"
+metadata/detection_dc = 15           # DC for passive detection check
+metadata/loot_tier = "uncommon"      # junk, common, uncommon, rare, epic, legendary
+metadata/is_locked = false
+metadata/lock_dc = 10
+```
+
+**Spawn Pattern (in level script):**
+```gdscript
+var hidden_positions := get_node_or_null("HiddenChestPositions")
+if hidden_positions:
+    for marker in hidden_positions.get_children():
+        if marker is Marker3D:
+            HiddenChest.spawn_hidden_chest(
+                self,
+                marker.global_position,
+                marker.get_meta("chest_name", "Hidden Cache"),
+                marker.get_meta("detection_dc", 15),
+                HiddenChest.parse_tier(marker.get_meta("loot_tier", "uncommon")),
+                marker.get_meta("is_locked", false),
+                marker.get_meta("lock_dc", 10)
+            )
+```
+
+**Detection DC Guidelines:**
+| Loot Tier | DC | Player Finds At |
+|-----------|-----|-----------------|
+| COMMON | 8-10 | Early game (bonus ~5) |
+| UNCOMMON | 12-15 | Some investment (bonus ~10) |
+| RARE | 16-18 | Focused build (bonus ~15) |
+| EPIC | 19-22 | High investment (bonus ~20) |
+| LEGENDARY | 23-25 | Dedicated build (bonus ~25) |
+
+**Detection Bonus Calculation:**
+`get_hidden_detection_bonus() = Knowledge + History + Investigation`
+
+### SecretWallPositions Marker Metadata
+Secret walls are false walls that disappear when the player's detection bonus beats the DC, revealing hidden passages or rooms.
+```
+metadata/wall_name = "Secret Passage"
+metadata/detection_dc = 15           # DC for passive detection check
+metadata/wall_width = 3.0            # Wall width in units
+metadata/wall_height = 3.0           # Wall height in units
+metadata/wall_depth = 0.5            # Wall thickness
+metadata/rotation_y = 0.0            # Rotation in degrees (0 = facing Z, 90 = facing X)
+```
+
+**Spawn Pattern (in level script):**
+```gdscript
+var secret_positions := get_node_or_null("SecretWallPositions")
+if secret_positions:
+    for marker in secret_positions.get_children():
+        if marker is Marker3D:
+            SecretWall.spawn_secret_wall(
+                self,
+                marker.global_position,
+                marker.get_meta("wall_name", "Secret Passage"),
+                marker.get_meta("detection_dc", 15),
+                Vector3(
+                    marker.get_meta("wall_width", 3.0),
+                    marker.get_meta("wall_height", 3.0),
+                    marker.get_meta("wall_depth", 0.5)
+                ),
+                marker.get_meta("rotation_y", 0.0)
+            )
+```
+
+**Detection DC Guidelines:** Same as HiddenChestPositions (see above).
 
 ---
 
@@ -2567,3 +2658,52 @@ Use this checklist for hard bug testing before export:
 - [ ] Exported build launches
 - [ ] No missing resources or errors in exported build
 - [ ] Performance acceptable in exported build
+
+
+<!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:7510c1e2 -->
+## Beads Issue Tracker
+
+This project uses **bd (beads)** for issue tracking. Run `bd prime` to see full workflow context and commands.
+
+### Quick Reference
+
+```bash
+bd ready              # Find available work
+bd show <id>          # View issue details
+bd update <id> --claim  # Claim work
+bd close <id>         # Complete work
+```
+
+### Rules
+
+- Use `bd` for ALL task tracking — do NOT use TodoWrite, TaskCreate, or markdown TODO lists
+- Run `bd prime` for detailed command reference and session close protocol
+- Use `bd remember` for persistent knowledge — do NOT use MEMORY.md files
+
+**Architecture in one line:** issues live in a local Dolt DB; sync uses `refs/dolt/data` on your git remote; `.beads/issues.jsonl` is a passive export. See https://github.com/gastownhall/beads/blob/main/docs/SYNC_CONCEPTS.md for details and anti-patterns.
+
+## Session Completion
+
+**When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
+
+**MANDATORY WORKFLOW:**
+
+1. **File issues for remaining work** - Create issues for anything that needs follow-up
+2. **Run quality gates** (if code changed) - Tests, linters, builds
+3. **Update issue status** - Close finished work, update in-progress items
+4. **PUSH TO REMOTE** - This is MANDATORY:
+   ```bash
+   git pull --rebase
+   git push
+   git status  # MUST show "up to date with origin"
+   ```
+5. **Clean up** - Clear stashes, prune remote branches
+6. **Verify** - All changes committed AND pushed
+7. **Hand off** - Provide context for next session
+
+**CRITICAL RULES:**
+- Work is NOT complete until `git push` succeeds
+- NEVER stop before pushing - that leaves work stranded locally
+- NEVER say "ready to push when you are" - YOU must push
+- If push fails, resolve and retry until it succeeds
+<!-- END BEADS INTEGRATION -->

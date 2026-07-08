@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "CatacombsOfGore",
+  "project_id": "f93809a3-5d35-4d09-9648-06c95db9cc1c"
+}
