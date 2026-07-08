@@ -176,7 +176,16 @@ const MALE_NAMES := [
 	"Niall", "Oisin", "Ronan",
 	# New names - General medieval fantasy (13)
 	"Alaric", "Bertram", "Corwin", "Darian", "Emeric", "Florian", "Gideon",
-	"Kelwin", "Lothar", "Marius", "Severin", "Theron", "Vance"
+	"Kelwin", "Lothar", "Marius", "Severin", "Theron", "Vance",
+	# Expansion 2026-07 - Grim/Dark Age flavor (28)
+	"Ansgar", "Bardolph", "Caddock", "Drogo", "Eberhard", "Falk", "Gerulf",
+	"Hadmar", "Isenbard", "Jorund", "Kaspar", "Ludolf", "Meinhard", "Norbert",
+	"Odo", "Percival", "Quentin", "Radulf", "Sunward", "Tancred", "Ulfgar",
+	"Volkmar", "Waldemar", "Ansel", "Bram", "Colm", "Duncan", "Erwin",
+	# Expansion 2026-07 - Common folk / laborer names (22)
+	"Tam", "Ned", "Wat", "Hob", "Jack", "Piers", "Rolf", "Simkin", "Toby",
+	"Aldous", "Bennet", "Clem", "Dob", "Gil", "Hamo", "Jenkin", "Lambert",
+	"Miles", "Ranulf", "Symond", "Tobias", "Walter"
 ]
 
 const FEMALE_NAMES := [
@@ -197,7 +206,16 @@ const FEMALE_NAMES := [
 	"Maeve", "Niamh", "Orlaith", "Rhiannon", "Saoirse", "Siobhan",
 	# New names - General medieval fantasy
 	"Alys", "Beatrix", "Clarice", "Drusilla", "Elowen", "Jocelyn", "Margery",
-	"Rosalind", "Seraphina", "Vivienne", "Yseult"
+	"Rosalind", "Seraphina", "Vivienne", "Yseult",
+	# Expansion 2026-07 - Grim/Dark Age flavor (26)
+	"Adela", "Bertrada", "Cunigunde", "Dietlinde", "Ermengard", "Frideswide",
+	"Gisela", "Hedwig", "Irmgard", "Jutta", "Kunissa", "Lioba", "Mechtild",
+	"Notburga", "Oda", "Petronilla", "Reinhild", "Swanhild", "Theodelinda",
+	"Uta", "Walburga", "Ysolt", "Amalia", "Brigid", "Ciara", "Demelza",
+	# Expansion 2026-07 - Common folk names (20)
+	"Nell", "Tilda", "Mabel", "Joan", "Agnes", "Bess", "Cissy", "Dot",
+	"Emma", "Fern", "Gytha", "Hild", "Ida", "Kate", "Lark", "Meg",
+	"Peg", "Rose", "Sal", "Wynn"
 ]
 
 ## Tracks used names per zone to prevent duplicates
@@ -207,7 +225,73 @@ static var _used_names_by_zone: Dictionary = {}
 const SURNAMES := [
 	"Ironhand", "Blackwood", "Stonehelm", "Ashford", "Brightwater", "Coldstream",
 	"Darkhollow", "Frostborn", "Goldsmith", "Hawkwind", "Longstride", "Moorwalker",
-	"Northwind", "Oakenshield", "Ravencrest", "Silvermane", "Thornwood", "Whitehall"
+	"Northwind", "Oakenshield", "Ravencrest", "Silvermane", "Thornwood", "Whitehall",
+	# Expansion 2026-07 - nature/place surnames (24)
+	"Aldermoor", "Birchbank", "Cindermill", "Dampmarsh", "Eastbrook", "Fallowfield",
+	"Greenbriar", "Hollowell", "Kettleford", "Larkspur", "Mirefoot", "Nettlebed",
+	"Oxbridge", "Pinewatch", "Quickwater", "Reedmere", "Saltmarsh", "Tanglewood",
+	"Underhill", "Vexley", "Wanderford", "Yarrow", "Fernbrake", "Gorsefield",
+	# Expansion 2026-07 - trade/occupation surnames (18)
+	"Cooper", "Fletcher", "Mason", "Tanner", "Wheeler", "Thatcher", "Sawyer",
+	"Chandler", "Carter", "Webber", "Fowler", "Baker", "Miller", "Smith",
+	"Turner", "Ward", "Draper", "Kellner",
+	# Expansion 2026-07 - grim/dark flavor surnames (18)
+	"Ashgrave", "Blackmarsh", "Crowfeather", "Dreadmoor", "Emberfall", "Gallowglass",
+	"Grimsbane", "Hollowbone", "Ironmarch", "Mourncastle", "Nightfen", "Palegate",
+	"Rookwood", "Sorrowfield", "Thistledown", "Veilwater", "Wolfsbane", "Wrathmere"
+]
+
+## Epithets for memorable common folk ("Old Tam", "Meg One-Eye").
+## Applied instead of a surname for a small fraction of generated NPCs.
+const EPITHETS_PREFIX := [
+	"Old", "Young", "Big", "Little", "Mad", "Quiet", "Red", "Black", "Grey", "Lucky"
+]
+const EPITHETS_SUFFIX := [
+	"One-Eye", "the Lame", "the Younger", "the Elder", "Two-Fingers", "the Quiet",
+	"the Fair", "Ill-Luck", "the Wanderer", "Half-Hand", "the Pious", "Longshanks",
+	"the Sour", "Crookback", "the Bold", "Ratcatcher", "the Widow", "Greycloak"
+]
+
+## Dwarf names (Kazan-Dun folk; avoid story dwarves Tharin, Grond, Finn, Greta, Gormund)
+const DWARF_MALE_NAMES := [
+	"Balgrim", "Dorin", "Farin", "Gimli", "Harek", "Kargan", "Lodur", "Morgrim",
+	"Norri", "Orik", "Rurik", "Snorri", "Thorgar", "Ulfrik", "Vondal", "Brokk",
+	"Dain", "Eberk", "Gruumsh", "Hjalmar", "Kildrak", "Ovar", "Rangrim", "Tordek"
+]
+const DWARF_FEMALE_NAMES := [
+	"Amber", "Bardryn", "Dagnal", "Eldeth", "Falkrunn", "Gunnloda", "Helja",
+	"Kathra", "Kristryd", "Ilde", "Mardred", "Riswynn", "Sannl", "Torbera",
+	"Vistra", "Bruenhilde", "Dathla", "Grendel", "Hlin", "Torgga"
+]
+const DWARF_CLAN_NAMES := [
+	"Ironbeard", "Stoneheart", "Deepdelve", "Ironpick", "Coalbrow", "Granitefist",
+	"Hammerfall", "Orewatcher", "Rockmantle", "Steelvein", "Torchbearer", "Undermount",
+	"Bronzebottom", "Cavehowl", "Deepforge", "Gemcutter", "Leadbelly", "Mithrilborn"
+]
+
+## Halfling names (river- and hearth-folk)
+const HALFLING_MALE_NAMES := [
+	"Alton", "Cade", "Eldon", "Finnan", "Garret", "Lindal", "Lyle", "Merric",
+	"Milo", "Osborn", "Perrin", "Reed", "Roscoe", "Wellby", "Pippin", "Dell"
+]
+const HALFLING_FEMALE_NAMES := [
+	"Andry", "Bree", "Callie", "Cora", "Euphemia", "Jillian", "Kithri", "Lavinia",
+	"Lidda", "Merla", "Nedda", "Paela", "Portia", "Seraphina", "Shaena", "Trym"
+]
+const HALFLING_FAMILY_NAMES := [
+	"Brushgather", "Goodbarrel", "Greenbottle", "Highhill", "Hilltopple", "Leagallow",
+	"Tealeaf", "Thorngage", "Tosscobble", "Underbough", "Applethorn", "Cherrycheeks",
+	"Honeypot", "Quickstep", "Riverbend", "Warmhearth"
+]
+
+## Elf names (Silvanost visitors; rare in Act I human lands)
+const ELF_MALE_NAMES := [
+	"Adran", "Aelar", "Beiro", "Carric", "Erdan", "Galinndan", "Hadarai", "Immeral",
+	"Ivellios", "Laucian", "Mindartis", "Paelias", "Quarion", "Riardon", "Soveliss", "Thamior"
+]
+const ELF_FEMALE_NAMES := [
+	"Adrie", "Althaea", "Anastrianna", "Andraste", "Antinua", "Bethrynna", "Caelynn",
+	"Drusilia", "Enna", "Felosial", "Ielenia", "Keyleth", "Leshanna", "Meriele", "Naivara", "Quelenna"
 ]
 
 # =============================================================================
@@ -298,14 +382,38 @@ static func get_random_nearby_region(settlement_id: String) -> String:
 
 
 ## Get a random NPC name (not zone-aware, may produce duplicates)
-static func get_random_name(is_female: bool = false) -> String:
+## race: "human" (default), "dwarf", "halfling", "elf"
+static func get_random_name(is_female: bool = false, race: String = "human") -> String:
 	var first_names: Array = FEMALE_NAMES if is_female else MALE_NAMES
+	var last_names: Array = SURNAMES
+	var surname_chance: float = 0.3
+
+	match race:
+		"dwarf":
+			first_names = DWARF_FEMALE_NAMES if is_female else DWARF_MALE_NAMES
+			last_names = DWARF_CLAN_NAMES
+			surname_chance = 0.8  # dwarves almost always carry clan names
+		"halfling":
+			first_names = HALFLING_FEMALE_NAMES if is_female else HALFLING_MALE_NAMES
+			last_names = HALFLING_FAMILY_NAMES
+			surname_chance = 0.6
+		"elf":
+			first_names = ELF_FEMALE_NAMES if is_female else ELF_MALE_NAMES
+			surname_chance = 0.0  # elves go by single names among humans
+
 	var first: String = first_names[randi() % first_names.size()]
 
-	# 30% chance to include surname
-	if randf() < 0.3:
-		var surname: String = SURNAMES[randi() % SURNAMES.size()]
+	if randf() < surname_chance:
+		var surname: String = last_names[randi() % last_names.size()]
 		return first + " " + surname
+
+	# Humans without surnames: small chance of a memorable epithet instead
+	if race == "human" and randf() < 0.15:
+		if randf() < 0.5:
+			var prefix: String = EPITHETS_PREFIX[randi() % EPITHETS_PREFIX.size()]
+			return prefix + " " + first
+		var suffix: String = EPITHETS_SUFFIX[randi() % EPITHETS_SUFFIX.size()]
+		return first + " " + suffix
 
 	return first
 
