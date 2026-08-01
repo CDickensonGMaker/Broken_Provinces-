@@ -10,6 +10,7 @@
 # Build/export folders
 /build/
 /export/
+/exports/
 /android/
 /ios/
 
@@ -49,6 +50,10 @@ reference/
 *.pck
 *.console.exe
 *.7z
+*.zip
+
+# Blender autosaves
+*.blend1
 
 # Gameplay recordings and video captures
 Gameplay footage/
