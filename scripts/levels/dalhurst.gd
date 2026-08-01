@@ -38,6 +38,8 @@ func _ready() -> void:
 	_setup_navigation()
 	_setup_building_collision()  # Add collision to GLB buildings
 	_spawn_npcs()
+	_spawn_thieves_guild()
+	_spawn_master_helvant()
 	_spawn_locked_doors()
 	_spawn_thieves()
 	_setup_cell_streaming()
@@ -551,16 +553,19 @@ func _spawn_npcs() -> void:
 
 	# === LADY NIGHTSHADE'S CURIOSITIES (Magic Shop) ===
 	# Building is at (35, 0, 15) - sells magical items, weapons, and spell scrolls
+	## Lady Nightshade herself runs the counter only as the Thieves Guild's front;
+	## she is spawned as the guildmaster in _spawn_thieves_guild(). The shop is
+	## staffed by her clerk so the same woman never stands in two places.
 	var nightshade: Merchant = Merchant.spawn_merchant(
 		npcs_container,
 		Vector3(35, 0, 15),
-		"Lady Nightshade",
+		"Curiosities Clerk",
 		LootTables.LootTier.RARE,
 		"magic"
 	)
 	if nightshade:
 		nightshade.region_id = ZONE_ID
-		nightshade.npc_id = "lady_nightshade_dalhurst"
+		nightshade.merchant_id = "curiosities_clerk_dalhurst"
 		var nightshade_profile := NPCKnowledgeProfile.new()
 		nightshade_profile.archetype = NPCKnowledgeProfile.Archetype.MERCHANT
 		nightshade_profile.personality_traits = ["mysterious", "knowledgeable", "cryptic"]
@@ -863,6 +868,197 @@ func _spawn_locked_doors() -> void:
 		)
 		door.rotation = marker.rotation
 		doors_spawned += 1
+
+
+## Spawn the Thieves Guild chain of command.
+## Every one of these NPCs already has a written dialogue tree in data/dialogue/
+## and is the giver/turn-in for quests whose giver_region is "dalhurst"; without
+## the spawns the whole thieves questline (initiation + 13 guild jobs + the four
+## fence contracts) is unreachable.
+func _spawn_thieves_guild() -> void:
+	var npcs_container: Node3D = get_node_or_null("NPCs")
+	if not npcs_container:
+		npcs_container = self
+
+	# Recruiter - works the tavern crowd, offers the initiation job
+	var recruiter := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(-12, 0, -36),  # Outside The Gilded Grog tavern
+		"Guild Recruiter",
+		"thieves_guild_recruiter",
+		null,
+		8, 2,
+		["thieves_guild_initiation"]
+	)
+	_dress_thief(recruiter, "res://data/dialogue/thieves_guild_recruiter.json",
+			["watchful", "smooth", "opportunistic"],
+			"Keep your ears open and your hands quiet. That's the whole trade.")
+
+	# The Fence - runs the four independent fence contracts
+	var fence_quests: Array[String] = [
+		"sailors_debt",
+		"thieves_guild_heist",
+		"thieves_guild_informant",
+		"thieves_guild_rival",
+	]
+	var fence := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(31, 0, 19),  # Back alley behind the Curiosities
+		"The Fence",
+		"thieves_guild_fence",
+		null,
+		8, 2,
+		fence_quests
+	)
+	_dress_thief(fence, "res://data/dialogue/thieves_guild_fence.json",
+			["cagey", "shrewd", "impatient"],
+			"Bring me goods, not conversation.")
+
+	# Raven - handles guild jobs 01-04
+	var raven_quests: Array[String] = [
+		"thieves_01_light_fingers",
+		"thieves_02_plant_evidence",
+		"thieves_03_fence_connection",
+		"thieves_04_debt_collection",
+	]
+	var raven := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(33, 0, 11),
+		"Raven",
+		"raven_thief_contact",
+		null,
+		8, 2,
+		raven_quests
+	)
+	_dress_thief(raven, "res://data/dialogue/raven_thief_contact.json",
+			["quick", "wry", "encouraging"],
+			"Stay sharp. The Guild remembers who earns.")
+
+	# Shadowmaster Vex - handles guild jobs 05-09
+	var vex_quests: Array[String] = [
+		"thieves_05_blackmail",
+		"thieves_06_warehouse_job",
+		"thieves_07_noble_heist",
+		"thieves_08_rival_gang",
+		"thieves_09_informant",
+	]
+	var vex := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(39, 0, 12),
+		"Shadowmaster Vex",
+		"shadowmaster_vex",
+		null,
+		8, 2,
+		vex_quests
+	)
+	_dress_thief(vex, "res://data/dialogue/shadowmaster_vex.json",
+			["calculating", "patient", "demanding"],
+			"Plans first. Blades last. That is how we survive.")
+
+	# Lady Nightshade - guildmaster, jobs 10-13, front is her curiosities shop
+	var nightshade_quests: Array[String] = [
+		"thieves_10_government_job",
+		"thieves_11_impossible_vault",
+		"thieves_12_guild_traitor",
+		"thieves_13_right_hand",
+	]
+	var nightshade := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(37, 0, 17),  # Inside her shop, behind the counter
+		"Lady Nightshade",
+		"guildmaster_nightshade",
+		null,
+		8, 2,
+		nightshade_quests
+	)
+	_dress_thief(nightshade, "res://data/dialogue/lady_nightshade.json",
+			["mysterious", "commanding", "cryptic"],
+			"The Guild does not forget its friends. Or its debts.")
+
+	# Red Mara - independent rival, talk target for thieves_guild_rival
+	var red_mara := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(-46, 0, 12),  # Harbour, her territory
+		"Red Mara",
+		"red_mara",
+		null,
+		8, 2,
+		[],
+		true  # is_talk_target
+	)
+	_dress_thief(red_mara, "res://data/dialogue/red_mara.json",
+			["brash", "independent", "dangerous"],
+			"I answer to nobody wearing Nightshade's colours.")
+
+
+## Shared setup for the Thieves Guild NPCs: faction, region, dialogue tree and
+## conversation profile.
+func _dress_thief(npc: QuestGiver, dialogue_path: String, traits: Array[String],
+		idle_line: String) -> void:
+	if not npc:
+		push_error("[Dalhurst] Failed to spawn a Thieves Guild NPC")
+		return
+	npc.region_id = ZONE_ID
+	npc.faction_id = "thieves_guild"
+	npc.no_quest_dialogue = idle_line
+	var dialogue: DialogueData = DialogueLoader.load_from_json(dialogue_path)
+	if dialogue:
+		npc.dialogue_data = dialogue
+		npc.use_legacy_dialogue = false
+	else:
+		push_warning("[Dalhurst] Failed to load dialogue %s" % dialogue_path)
+	var profile := NPCKnowledgeProfile.new()
+	profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	profile.personality_traits = traits
+	profile.knowledge_tags = ["dalhurst", "thieves_guild", "underworld", "local_area"]
+	profile.base_disposition = 35
+	npc.npc_profile = profile
+
+
+## Spawn Master Helvant, the wizard whose six-quest apprentice chain
+## (wizard_aptitude_test -> wizard_final_trial) is set in Dalhurst's mage quarter.
+func _spawn_master_helvant() -> void:
+	var npcs_container: Node3D = get_node_or_null("NPCs")
+	if not npcs_container:
+		npcs_container = self
+
+	var helvant_quests: Array[String] = [
+		"wizard_aptitude_test",
+		"wizard_first_lesson",
+		"wizard_field_test",
+		"wizard_lost_tome",
+		"wizard_stolen_pages",
+		"wizard_final_trial",
+	]
+	var helvant := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(56, 0, -12),  # Mage quarter, near the magic shop
+		"Master Helvant",
+		"master_helvant_dalhurst",
+		null,
+		8, 2,
+		helvant_quests
+	)
+	if not helvant:
+		push_error("[Dalhurst] Failed to spawn Master Helvant")
+		return
+	helvant.region_id = ZONE_ID
+	helvant.faction_id = "arcane_circle"
+	helvant.no_quest_dialogue = "Magic rewards patience, apprentice. Study, and return when you are ready."
+	var helvant_dialogue: DialogueData = DialogueLoader.load_from_json(
+			"res://data/dialogue/master_helvant_wizard_training.json")
+	if helvant_dialogue:
+		helvant.dialogue_data = helvant_dialogue
+		helvant.use_legacy_dialogue = false
+	else:
+		push_warning("[Dalhurst] Failed to load Master Helvant dialogue")
+	var helvant_profile := NPCKnowledgeProfile.new()
+	helvant_profile.archetype = NPCKnowledgeProfile.Archetype.PRIEST
+	helvant_profile.personality_traits = ["scholarly", "exacting", "patient"]
+	helvant_profile.knowledge_tags = ["dalhurst", "magic", "arcane_circle", "willow_dale", "teaching"]
+	helvant_profile.base_disposition = 55
+	helvant_profile.speech_style = "formal"
+	helvant.npc_profile = helvant_profile
 
 
 ## Spawn thieves that lurk in the city

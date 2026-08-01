@@ -52,6 +52,8 @@ func _ready() -> void:
 	_spawn_thieves()
 	# Spawn guards to patrol the area
 	_spawn_guards()
+	# Spawn the Priest of Morthane who keeps the shrine and gives the death-rites line
+	_spawn_priest_of_morthane()
 
 	# Spawn fall leaves on the ground for forest atmosphere
 	_spawn_fall_leaves()
@@ -707,3 +709,48 @@ func _spawn_guards() -> void:
 	garvek_profile.base_disposition = 45
 	garvek_profile.speech_style = "casual"
 	garvek.npc_profile = garvek_profile
+
+
+## Spawn the Priest of Morthane who keeps Elder Moor's shrine.
+## He is the giver and turn-in for the eleven-quest Morthane devotion line
+## (giver_region "elder_moor"); Morthane is one of the Three Gods already
+## worshipped at the Dalhurst temple, where his counterpart priest stands.
+func _spawn_priest_of_morthane() -> void:
+	var npcs_container: Node3D = get_node_or_null("NPCs")
+	if not npcs_container:
+		npcs_container = Node3D.new()
+		npcs_container.name = "NPCs"
+		add_child(npcs_container)
+
+	var morthane_quests: Array[String] = [
+		"morthane_01_last_rites",
+		"morthane_02_restless_spirit",
+		"morthane_03_cemetery_duty",
+		"morthane_04_necromancer_trail",
+		"morthane_05_devotion_choice",
+		"morthane_06_death_speaker",
+		"morthane_07_lich_rumor",
+		"morthane_08_rebirth_ritual",
+		"morthane_09_undead_army",
+		"morthane_10_deathwalker",
+		"morthane_repeatable_cleansing",
+	]
+	var priest := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(-13, 0, -28),  # Beside the Elder Moor shrine
+		"Priest of Morthane",
+		"priest_morthane_elder_moor",
+		null,
+		8, 2,
+		morthane_quests
+	)
+	if not priest:
+		push_error("[Elder Moor] Failed to spawn the Priest of Morthane")
+		return
+	priest.region_id = ZONE_ID
+	priest.faction_id = "church_of_three"
+	priest.no_quest_dialogue = "Death is not the end, traveller. It is the turning of the wheel. Honour the dead and they will not trouble the living."
+	var priest_profile := NPCKnowledgeProfile.priest()
+	priest_profile.knowledge_tags = ["elder_moor", "religion", "priest_morthane", "death", "rebirth", "undead"]
+	priest_profile.personality_traits = ["pious", "solemn", "wise"]
+	priest.npc_profile = priest_profile
