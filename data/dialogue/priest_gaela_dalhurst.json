@@ -116,6 +116,18 @@
           "actions": []
         },
         {
+          "text": "The grove and the loggers. It is settled.",
+          "next": "grove_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "gaela_04_sacred_grove",
+              "value": 2
+            }
+          ],
+          "actions": []
+        },
+        {
           "text": "Farewell, Priestess.",
           "next": "farewell",
           "conditions": [],
@@ -581,6 +593,94 @@
       "is_end": true,
       "auto_continue": "",
       "choices": []
+    },
+    {
+      "id": "grove_turnin",
+      "speaker": "Mother Elara",
+      "text": "Settled. Tell me how, child, and tell me before I hear it from the loggers, who will make it sound like a victory, or from the grove, which will not say anything at all.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The grove is untouched. Not one tree.",
+          "next": "grove_protected",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "They may cut the eastern edge. No further.",
+          "next": "grove_limited",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I found them timber somewhere else.",
+          "next": "grove_alternative",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "grove_protected",
+      "speaker": "Mother Elara",
+      "text": "Not one tree. ... Thank you. And now the ungracious part, because Gaela is a goddess of growing things and not of comfortable silences: fourteen families in that camp have no work this winter, and they will remember which priestess they have to thank. Faith costs somebody something. It is rarely the person holding it.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "gaela_04_sacred_grove:protect_grove_fully",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "gaela_04_sacred_grove",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "grove_limited",
+      "speaker": "Mother Elara",
+      "text": "The eastern edge. Where the ash are young and the ground has been turned before. ... You did not pick that line by accident, did you. The grove will close over it in thirty years and the camp eats this winter, and I get to be the priestess who allowed it - which is a smaller thing to be than the one who forbade it, and a much more useful one.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "gaela_04_sacred_grove:allow_limited_logging",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "gaela_04_sacred_grove",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "grove_alternative",
+      "speaker": "Mother Elara",
+      "text": "You found them another wood. Child, do you know how few people ever do that - solve the argument instead of winning it? Gaela does not have a word for it. She has words for growth and for rot and for the turning between them, and what you did is all three at once. The grove stands, the camp works. Take the blessing, and take my thanks.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "gaela_04_sacred_grove:find_alternative",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "gaela_04_sacred_grove",
+          "value": 0
+        }
+      ]
     }
   ]
 }

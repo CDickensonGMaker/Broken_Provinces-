@@ -116,6 +116,18 @@
           "actions": []
         },
         {
+          "text": "The paradox stone. I have decided.",
+          "next": "paradox_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "chronos_07_paradox",
+              "value": 2
+            }
+          ],
+          "actions": []
+        },
+        {
           "text": "Farewell.",
           "next": "farewell",
           "conditions": [],
@@ -581,6 +593,68 @@
       "is_end": true,
       "auto_continue": "",
       "choices": []
+    },
+    {
+      "id": "paradox_turnin",
+      "speaker": "Master of Hours",
+      "text": "You have decided. I already know which, of course - not because I have seen it, but because I have watched people decide this particular thing for thirty years, and there are only ever two answers. Say it anyway. Saying it is what makes it yours.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I destroyed it.",
+          "next": "paradox_destroyed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I kept it. It can be used.",
+          "next": "paradox_harnessed",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "paradox_destroyed",
+      "speaker": "Master of Hours",
+      "text": "Broken. Then the hour it was holding has finally been allowed to pass, and everything that was waiting inside it is simply over. Some of that was terrible. Some of it, I am sorry to tell you, was a great deal of good that will now never happen. Chronos grieves neither one. Neither, in the end, should we.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "chronos_07_paradox:destroy_stone",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "chronos_07_paradox",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "paradox_harnessed",
+      "speaker": "Master of Hours",
+      "text": "Kept. Every order that has kept one has kept it for exactly the reason you are about to give me, and I will not make you give it. Here is the only counsel I have: the stone does not make time. It borrows it, and it borrows it from a specific hour of a specific life, and it has never once been asked whose. Use it well, and count.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "chronos_07_paradox:harness_stone",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "chronos_07_paradox",
+          "value": 0
+        }
+      ]
     }
   ]
 }

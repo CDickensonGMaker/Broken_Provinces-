@@ -98,4 +98,61 @@ shrine or priest, which `wave_b_dispositions.md` still holds for Caleb.
 
 ## Step 24 — Second showcase + faction spread
 
-*(filled in as step 24 lands)*
+### The showcase: `adventurers_04_bandit_contract`
+
+| What | Where | Why it was needed | Basis |
+|---|---|---|---|
+| Four roads through the contract: take the outpost apart · bring the captain back alive · one quiet throat and let the crew scatter · warn them, take their purse, tell Vorn they had gone | `data/quests/guild/adventurers/adventurers_04_bandit_contract.json` | The counterpart to the Millbrook flagship, and a deliberately different flavour: Millbrook is a hamlet asking a stranger for help, this is an employer handing over a contract with a word in it he hopes you will interpret | Existing quest premise: the Guild is *hired* to eliminate |
+| Vorn's four turn-in scenes, including the one where he writes "dispersed" on the contract and your name beside it | `data/dialogue/guildmaster_vorn.json` | The quest's meaning lives in his reaction, not in the reward table. He prefers the quiet execution and cannot say so; he knows you sold the contract and pays you anyway | His written voice in the existing tree |
+| Old objective "kill 8 bandits" dropped | same quest | It forced the assault road onto every path, which is the opposite of a multi-path quest | — |
+| `locate_camp` repointed `crossroads_bandit_camp` → `bandit_camp_east` | same quest | `crossroads_bandit_camp` has never existed in `world_grid.gd` or on disk. `bandit_camp_east` is the built "Bandit Outpost" | Repoint, not invention |
+| The eastern outpost now records that it was found and that it was emptied | `scripts/levels/bandit_camp_east.gd` | So `locate_camp` and `killed_the_captain` pre-complete for a player who cleared it before taking the contract — the same New Vegas moment as the Millbrook flagship, in a second place | Step 21's `world_condition` |
+
+### The spread: ten quests whose branches nobody could reach
+
+Step 12 catalogued 42 quests carrying `choice_consequences` that no dialogue
+action ever fired. Ten are now live — **34 branches**, validator warnings 310 →
+276. Almost none of this was invention: most of these quests already had branch
+turn-in prose written and abandoned.
+
+| Faction | Quests activated | Branches | Notes |
+|---|---|---|---|
+| Adventurers Guild | `adventurers_04_bandit_contract`, `adventurers_08_ogre_problem`, `adventurers_09_rival_guild`, `adventurers_11_guild_politics` | 15 | **`guildmaster_vorn.json` was never attached to Guildmaster Vorn** — the entire thirteen-contract Guild line existed as a written dialogue tree nobody could open. Attached in `dalhurst.gd`. Its 09 and 11 branch nodes were already authored and simply never fired a consequence; 04 and 08 got new branch scenes, and 09's bribe road had no node at all |
+| Thieves Guild | `thieves_guild_informant`, `thieves_guild_rival` | 8 | New turn-in hubs on `thieves_guild_fence.json`. The Fence's read on each outcome is the content: every road works today and costs something in two years |
+| The Keepers | `keepers_artifact`, `keepers_confrontation` | 7 | New hubs on `aldric_vane_keepers.json`. Aldric believes whatever you tell him, and says so before you answer |
+| Temple of the Three | `gaela_04_sacred_grove`, `chronos_07_paradox` | 5 | New hubs on `priest_gaela_dalhurst.json` and `priest_chronos_dalhurst.json` |
+
+**Defect found and fixed:** every turn-in choice in `guildmaster_vorn.json`
+tested `quest_state == 1` (AVAILABLE) against a quest that is `2` (ACTIVE) once
+started, so thirteen turn-ins could never appear even if the tree had been
+attached. 13 conditions corrected.
+
+**Defect found and left alone:** these trees use `"type": "flag"` for
+conditions, which `DialogueLoader` does not recognise and treats as NONE — the
+choice always shows. Correcting it to `flag_set` would hide branch choices
+whose flags nothing sets, making several quests unturninable. The current
+behaviour (the player states what he did) is what the content was written for.
+Left as-is deliberately; noted here so nobody "fixes" it in isolation.
+
+### Tabled — 27 quests, 70 branches still unreachable
+
+Not activated, and each needs something no file supplies:
+
+| Quest | Branches | Why it was tabled |
+|---|---|---|
+| `guild_contract_troll` | 4 | Vorn's tree has no node for it; the contract quests sit outside the numbered Guild line and need their own hub |
+| `thieves_guild_heist`, `thieves_guild_mastermind`, `thieves_guild_initiation` | 9 | Turn in to `guildmaster_nightshade` / `guild_mastermind` — `wave_b_dispositions.md` holds the question of whether the mastermind IS Nightshade, and that is a story call |
+| `keepers_cult_trail`, `keepers_infiltration` | 6 | Branches are *stealth outcomes* ("perfect_stealth", "cover_blown"), which the stealth system has to report, not a dialogue choice. Wiring them to a menu would be a lie |
+| `morthane_04_necromancer_trail`, `morthane_06_death_speaker`, `morthane_10_deathwalker` | 6 | Giver is `priest_morthane_elder_moor`, who has no dialogue tree at all (the Dalhurst priest's tree is a different NPC) |
+| `chronos_04_false_prophet`, `chronos_05_devotion_choice`, `gaela_05_devotion_choice`, `morthane_05_devotion_choice`, `gaela_10_lifebringer` | 9 | The devotion choices are already made through the devotee ritual nodes; wiring a second door would let a player take devotion twice |
+| `chronos_false_prophet`, `gaela_sacred_grove` | 6 | Duplicates of the `temple/` versions under old ids. Which id survives is a cleanup decision, not a wiring one |
+| `lost_apprentice`, `lost_woodsman`, `miners_in_peril`, `merchant_protection` | 10 | Branches are *rescue outcomes* — who lived. They belong to the escort/rescue code reporting a result, not to a menu |
+| `sailors_debt`, `whalers_debt`, `fish_fraud` | 9 | Turn in to NPCs on the `wave_b_dispositions.md` list (`head_fisherman_millbrook`, the Larton figures) |
+| `noble_soulstone_request` | 2 | Giver `noble_hakon` is unspawned and on the dispositions list |
+| `tenger_diplomacy` | 3 | Giver `khan_toghrul`; the bible's Tegnar question is `[OPEN]` |
+| `morthane_necromancer` | 3 | Two differently-named necromancers in one line; dispositions list asks Caleb whether they are one villain |
+| `wizard_stolen_pages` | 3 | Wizard questline giver is `thornfield_wizard`, unspawned, on the dispositions list |
+
+**Nothing here was invented to make a number move.** Where a branch could not be
+reached without inventing a person, a place or a ruling, it stayed unreachable
+and went in this table.

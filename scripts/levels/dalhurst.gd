@@ -408,6 +408,14 @@ func _spawn_npcs() -> void:
 	guild_master.region_id = ZONE_ID
 	guild_master.faction_id = "adventurers_guild"
 	guild_master.no_quest_dialogue = "Looking for work? Check the bounty board outside, or speak with me about official guild contracts."
+	# The whole thirteen-contract Adventurers Guild line lives in this tree and
+	# has never been attached to the man who is supposed to speak it.
+	var vorn_dialogue: DialogueData = DialogueLoader.get_dialogue("res://data/dialogue/guildmaster_vorn.json")
+	if vorn_dialogue:
+		guild_master.dialogue_data = vorn_dialogue
+		guild_master.use_legacy_dialogue = false
+	else:
+		push_warning("[Dalhurst] Failed to load Guildmaster Vorn's dialogue")
 	var gm_profile := NPCKnowledgeProfile.new()
 	gm_profile.archetype = NPCKnowledgeProfile.Archetype.MERCHANT
 	gm_profile.personality_traits = ["experienced", "gruff", "fair"]

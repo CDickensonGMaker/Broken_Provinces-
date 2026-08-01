@@ -48,6 +48,30 @@
           "actions": []
         },
         {
+          "text": "The phylactery. We need to talk about it.",
+          "next": "artifact_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "keepers_artifact",
+              "value": 2
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "The summoning at the ritual site is finished.",
+          "next": "confrontation_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "keepers_confrontation",
+              "value": 2
+            }
+          ],
+          "actions": []
+        },
+        {
           "text": "I don't work for strangers.",
           "next": "refuse",
           "conditions": [],
@@ -405,6 +429,208 @@
       "is_end": true,
       "auto_continue": "",
       "choices": []
+    },
+    {
+      "id": "artifact_turnin",
+      "speaker": "Aldric Vane",
+      "text": "You found it. I can tell by how carefully you are standing. So: where is it now? Think before you answer - I will believe whatever you say, and that is the problem with being asked by me.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Destroyed. It is ash.",
+          "next": "artifact_destroyed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I still have it.",
+          "next": "artifact_kept",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "The cult has it.",
+          "next": "artifact_given",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "artifact_destroyed",
+      "speaker": "Aldric Vane",
+      "text": "Ash. Good. That is the answer the order exists to produce, and it is the answer nobody ever wants to give, because a destroyed thing teaches you nothing and a kept thing teaches you for years. Every Keeper who ever kept one had excellent reasons. We have a shelf of their names.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "keepers_artifact:destroyed_phylactery",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "keepers_artifact",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "artifact_kept",
+      "speaker": "Aldric Vane",
+      "text": "You have it. On you. Now. ... Thank you for saying so - most do not, and the ones who do not are how the order learned to ask. Keep it, then. Keep it exactly as carefully as you are keeping it right now, and understand that the day you stop noticing you have it is the day it starts noticing you.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "keepers_artifact:kept_phylactery",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "keepers_artifact",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "artifact_given",
+      "speaker": "Aldric Vane",
+      "text": "They have it. ... No, do not explain. I have heard the explanations, and they are always sound, and they are always given by someone who was in a room with them and was not in a room with us. The order will move on this. You will not be told how. Take your payment - we pay for information, and you have given us a great deal.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "keepers_artifact:gave_to_cult",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "keepers_artifact",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "confrontation_turnin",
+      "speaker": "Aldric Vane",
+      "text": "Finished. Sit down and use small words, because I am going to have to repeat this to people who were not there. What came through?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Nothing. I stopped it before the circle closed.",
+          "next": "confrontation_stopped",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Something. Not all of it. It is still out there.",
+          "next": "confrontation_partial",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "All of it. I was too late.",
+          "next": "confrontation_complete",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I stopped it. And I let Malachai live.",
+          "next": "confrontation_spared",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "confrontation_stopped",
+      "speaker": "Aldric Vane",
+      "text": "Nothing came through. Say that again in front of the order and watch grown men sit down. That is what we are for, and it happens perhaps twice in a Keeper's life. Paid, and thanked, and I would like you to hear the second one properly.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "keepers_confrontation:stopped_summoning",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "keepers_confrontation",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "confrontation_partial",
+      "speaker": "Aldric Vane",
+      "text": "Partial. So there is a piece of something walking around with no idea what it is, and it will spend the next decade finding out. That is the outcome the order hates most - not a disaster, a project. You will be hearing from us about it. Paid.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "keepers_confrontation:summoning_partial_success",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "keepers_confrontation",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "confrontation_complete",
+      "speaker": "Aldric Vane",
+      "text": "All of it. ... Then you were too late, and you came back anyway to tell me, which is more than the last three did. We do not punish that here. We write it down and we start again, and the writing down is the part that has kept this order alive for four hundred years. Paid. Go and sleep.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "keepers_confrontation:let_summoning_complete",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "keepers_confrontation",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "confrontation_spared",
+      "speaker": "Aldric Vane",
+      "text": "Alive. Malachai is alive, and he knows the shape of the circle, and he knows your face. ... The order's position is that this was a mistake. My position, which is not the order's, is that a man who can be questioned is worth four who cannot, and I intend to question him for a very long time. Paid. Do not repeat any part of this conversation.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "keepers_confrontation:spared_malachai",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "keepers_confrontation",
+          "value": 0
+        }
+      ]
     }
   ]
 }

@@ -15,7 +15,12 @@
           "text": "I want to join the guild.",
           "next": "join_request",
           "conditions": [
-            {"type": "quest_complete", "param": "adventurers_01_proving_ground", "value": 0, "invert": true}
+            {
+              "type": "quest_complete",
+              "param": "adventurers_01_proving_ground",
+              "value": 0,
+              "invert": true
+            }
           ],
           "actions": []
         },
@@ -23,7 +28,11 @@
           "text": "The wolves are dead.",
           "next": "quest_01_turnin",
           "conditions": [
-            {"type": "quest_state", "param": "adventurers_01_proving_ground", "value": 1}
+            {
+              "type": "quest_state",
+              "param": "adventurers_01_proving_ground",
+              "value": 2
+            }
           ],
           "actions": []
         },
@@ -31,7 +40,11 @@
           "text": "The rat infestation is cleared.",
           "next": "quest_02_turnin",
           "conditions": [
-            {"type": "quest_state", "param": "adventurers_02_pest_control", "value": 1}
+            {
+              "type": "quest_state",
+              "param": "adventurers_02_pest_control",
+              "value": 2
+            }
           ],
           "actions": []
         },
@@ -39,7 +52,11 @@
           "text": "Halvard reached Thornfield safely.",
           "next": "quest_03_turnin",
           "conditions": [
-            {"type": "quest_state", "param": "adventurers_03_escort_duty", "value": 1}
+            {
+              "type": "quest_state",
+              "param": "adventurers_03_escort_duty",
+              "value": 2
+            }
           ],
           "actions": []
         },
@@ -47,7 +64,11 @@
           "text": "The bandit camp is destroyed.",
           "next": "quest_04_turnin",
           "conditions": [
-            {"type": "quest_state", "param": "adventurers_04_bandit_contract", "value": 1}
+            {
+              "type": "quest_state",
+              "param": "adventurers_04_bandit_contract",
+              "value": 2
+            }
           ],
           "actions": []
         },
@@ -55,7 +76,11 @@
           "text": "I found your missing team...",
           "next": "quest_05_turnin",
           "conditions": [
-            {"type": "quest_state", "param": "adventurers_05_missing_team", "value": 1}
+            {
+              "type": "quest_state",
+              "param": "adventurers_05_missing_team",
+              "value": 2
+            }
           ],
           "actions": []
         },
@@ -63,7 +88,11 @@
           "text": "The Beast of Millbrook is dead.",
           "next": "quest_06_turnin",
           "conditions": [
-            {"type": "quest_state", "param": "adventurers_06_monster_hunt", "value": 1}
+            {
+              "type": "quest_state",
+              "param": "adventurers_06_monster_hunt",
+              "value": 2
+            }
           ],
           "actions": []
         },
@@ -71,7 +100,11 @@
           "text": "Willow Dale's deep section is cleared.",
           "next": "quest_07_turnin",
           "conditions": [
-            {"type": "quest_state", "param": "adventurers_07_dungeon_delve", "value": 1}
+            {
+              "type": "quest_state",
+              "param": "adventurers_07_dungeon_delve",
+              "value": 2
+            }
           ],
           "actions": []
         },
@@ -79,7 +112,11 @@
           "text": "The ogre won't trouble the roads anymore.",
           "next": "quest_08_turnin",
           "conditions": [
-            {"type": "quest_state", "param": "adventurers_08_ogre_problem", "value": 1}
+            {
+              "type": "quest_state",
+              "param": "adventurers_08_ogre_problem",
+              "value": 2
+            }
           ],
           "actions": []
         },
@@ -87,7 +124,11 @@
           "text": "I dealt with the Iron Blades.",
           "next": "quest_09_turnin",
           "conditions": [
-            {"type": "quest_state", "param": "adventurers_09_rival_guild", "value": 1}
+            {
+              "type": "quest_state",
+              "param": "adventurers_09_rival_guild",
+              "value": 2
+            }
           ],
           "actions": []
         },
@@ -95,7 +136,11 @@
           "text": "The wyvern is slain.",
           "next": "quest_10_turnin",
           "conditions": [
-            {"type": "quest_state", "param": "adventurers_10_dragon_rumor", "value": 1}
+            {
+              "type": "quest_state",
+              "param": "adventurers_10_dragon_rumor",
+              "value": 2
+            }
           ],
           "actions": []
         },
@@ -103,7 +148,11 @@
           "text": "I've uncovered the corruption.",
           "next": "quest_11_turnin",
           "conditions": [
-            {"type": "quest_state", "param": "adventurers_11_guild_politics", "value": 1}
+            {
+              "type": "quest_state",
+              "param": "adventurers_11_guild_politics",
+              "value": 2
+            }
           ],
           "actions": []
         },
@@ -111,7 +160,11 @@
           "text": "The impossible contract is complete.",
           "next": "quest_12_turnin",
           "conditions": [
-            {"type": "quest_state", "param": "adventurers_12_legendary_contract", "value": 1}
+            {
+              "type": "quest_state",
+              "param": "adventurers_12_legendary_contract",
+              "value": 2
+            }
           ],
           "actions": []
         },
@@ -119,7 +172,11 @@
           "text": "I've defeated Katrina.",
           "next": "quest_13_turnin",
           "conditions": [
-            {"type": "quest_state", "param": "adventurers_13_champion", "value": 1}
+            {
+              "type": "quest_state",
+              "param": "adventurers_13_champion",
+              "value": 2
+            }
           ],
           "actions": []
         },
@@ -127,7 +184,11 @@
           "text": "Do you have any contracts available?",
           "next": "available_work",
           "conditions": [
-            {"type": "quest_complete", "param": "adventurers_01_proving_ground", "value": 0}
+            {
+              "type": "quest_complete",
+              "param": "adventurers_01_proving_ground",
+              "value": 0
+            }
           ],
           "actions": []
         },
@@ -156,7 +217,13 @@
           "text": "I'll handle the wolves.",
           "next": "quest_01_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_01_proving_ground", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_01_proving_ground",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "Tell me more about this wolf problem.",
@@ -183,7 +250,13 @@
           "text": "I'm in. I'll clear them out.",
           "next": "quest_01_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_01_proving_ground", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_01_proving_ground",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "What's the pay?",
@@ -210,7 +283,13 @@
           "text": "Deal. I'll kill the wolves.",
           "next": "quest_01_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_01_proving_ground", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_01_proving_ground",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "Not worth it.",
@@ -240,9 +319,21 @@
           "next": "quest_02_offer",
           "conditions": [],
           "actions": [
-            {"type": "complete_quest", "param": "adventurers_01_proving_ground", "value": 0},
-            {"type": "set_flag", "param": "adventurers_guild_member", "value": 0},
-            {"type": "set_flag", "param": "adventurers_rank_initiate", "value": 0}
+            {
+              "type": "complete_quest",
+              "param": "adventurers_01_proving_ground",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_guild_member",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_rank_initiate",
+              "value": 0
+            }
           ]
         },
         {
@@ -250,9 +341,21 @@
           "next": "farewell_new_member",
           "conditions": [],
           "actions": [
-            {"type": "complete_quest", "param": "adventurers_01_proving_ground", "value": 0},
-            {"type": "set_flag", "param": "adventurers_guild_member", "value": 0},
-            {"type": "set_flag", "param": "adventurers_rank_initiate", "value": 0}
+            {
+              "type": "complete_quest",
+              "param": "adventurers_01_proving_ground",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_guild_member",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_rank_initiate",
+              "value": 0
+            }
           ]
         }
       ]
@@ -268,7 +371,13 @@
           "text": "I'll clear the warehouse.",
           "next": "quest_02_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_02_pest_control", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_02_pest_control",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "Rats? I expected something more challenging.",
@@ -295,7 +404,13 @@
           "text": "Fine. I'll handle the rats.",
           "next": "quest_02_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_02_pest_control", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_02_pest_control",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "I'll think about it.",
@@ -324,13 +439,25 @@
           "text": "What do you have?",
           "next": "quest_03_offer",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_02_pest_control", "value": 0}]
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "adventurers_02_pest_control",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "I need a break first.",
           "next": "farewell",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_02_pest_control", "value": 0}]
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "adventurers_02_pest_control",
+              "value": 0
+            }
+          ]
         }
       ]
     },
@@ -345,7 +472,13 @@
           "text": "I'll protect Halvard.",
           "next": "quest_03_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_03_escort_duty", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_03_escort_duty",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "How dangerous is the route?",
@@ -372,7 +505,13 @@
           "text": "I can handle bandits. I'll take the contract.",
           "next": "quest_03_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_03_escort_duty", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_03_escort_duty",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "I'll think about it.",
@@ -402,8 +541,16 @@
           "next": "quest_04_offer",
           "conditions": [],
           "actions": [
-            {"type": "complete_quest", "param": "adventurers_03_escort_duty", "value": 0},
-            {"type": "set_flag", "param": "adventurers_rank_member", "value": 0}
+            {
+              "type": "complete_quest",
+              "param": "adventurers_03_escort_duty",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_rank_member",
+              "value": 0
+            }
           ]
         },
         {
@@ -411,8 +558,16 @@
           "next": "farewell_member",
           "conditions": [],
           "actions": [
-            {"type": "complete_quest", "param": "adventurers_03_escort_duty", "value": 0},
-            {"type": "set_flag", "param": "adventurers_rank_member", "value": 0}
+            {
+              "type": "complete_quest",
+              "param": "adventurers_03_escort_duty",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_rank_member",
+              "value": 0
+            }
           ]
         }
       ]
@@ -428,7 +583,13 @@
           "text": "I'll wipe them out.",
           "next": "quest_04_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_04_bandit_contract", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_04_bandit_contract",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "Tell me about the captain.",
@@ -455,7 +616,13 @@
           "text": "Consider it done.",
           "next": "quest_04_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_04_bandit_contract", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_04_bandit_contract",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "I need to prepare first.",
@@ -476,21 +643,33 @@
     {
       "id": "quest_04_turnin",
       "speaker": "Guildmaster Vorn",
-      "text": "The bandit captain is dead? Good. The merchants can breathe easier now. Here's your 200 gold. You're proving to be reliable, Member. I have... a more somber task that needs handling.",
+      "text": "The eastern outpost. Tell me how it went, and tell me straight - I have to write it on a contract that says eliminate, and I would rather know what I am writing.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
         {
-          "text": "What is it?",
-          "next": "quest_05_offer",
+          "text": "I took the outpost apart. The captain is dead, as written.",
+          "next": "quest_04_complete_direct",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_04_bandit_contract", "value": 0}]
+          "actions": []
         },
         {
-          "text": "I'll take a break first.",
-          "next": "farewell",
+          "text": "I brought the captain back alive. He is the magistrate's problem now.",
+          "next": "quest_04_complete_prisoner",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_04_bandit_contract", "value": 0}]
+          "actions": []
+        },
+        {
+          "text": "I took the captain alone and quietly. The rest scattered by morning.",
+          "next": "quest_04_complete_quiet",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "They had already moved on when I got there.",
+          "next": "quest_04_complete_sold",
+          "conditions": [],
+          "actions": []
         }
       ]
     },
@@ -505,7 +684,13 @@
           "text": "I'll find them.",
           "next": "quest_05_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_05_missing_team", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_05_missing_team",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "What were they hunting in Willow Dale?",
@@ -532,7 +717,13 @@
           "text": "I'll bring them home.",
           "next": "quest_05_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_05_missing_team", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_05_missing_team",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "Let me prepare.",
@@ -561,13 +752,25 @@
           "text": "I killed every spider I found.",
           "next": "quest_05_complete_revenge",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_05_missing_team", "value": 0}]
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "adventurers_05_missing_team",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "I recovered the tokens. That's what mattered.",
           "next": "quest_05_complete_basic",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_05_missing_team", "value": 0}]
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "adventurers_05_missing_team",
+              "value": 0
+            }
+          ]
         }
       ]
     },
@@ -624,7 +827,13 @@
           "text": "I'll hunt this beast.",
           "next": "quest_06_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_06_monster_hunt", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_06_monster_hunt",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "What kind of creature is it?",
@@ -651,7 +860,13 @@
           "text": "A worthy challenge. I accept.",
           "next": "quest_06_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_06_monster_hunt", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_06_monster_hunt",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "I'll think about it.",
@@ -681,8 +896,16 @@
           "next": "quest_07_offer",
           "conditions": [],
           "actions": [
-            {"type": "complete_quest", "param": "adventurers_06_monster_hunt", "value": 0},
-            {"type": "set_flag", "param": "adventurers_rank_veteran", "value": 0}
+            {
+              "type": "complete_quest",
+              "param": "adventurers_06_monster_hunt",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_rank_veteran",
+              "value": 0
+            }
           ]
         },
         {
@@ -690,8 +913,16 @@
           "next": "farewell_veteran",
           "conditions": [],
           "actions": [
-            {"type": "complete_quest", "param": "adventurers_06_monster_hunt", "value": 0},
-            {"type": "set_flag", "param": "adventurers_rank_veteran", "value": 0}
+            {
+              "type": "complete_quest",
+              "param": "adventurers_06_monster_hunt",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_rank_veteran",
+              "value": 0
+            }
           ]
         }
       ]
@@ -707,7 +938,13 @@
           "text": "I'll explore the new section.",
           "next": "quest_07_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_07_dungeon_delve", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_07_dungeon_delve",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "What dangers are expected?",
@@ -734,7 +971,13 @@
           "text": "Undead and traps. I can handle it.",
           "next": "quest_07_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_07_dungeon_delve", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_07_dungeon_delve",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "Let me prepare first.",
@@ -763,13 +1006,25 @@
           "text": "What's next for a Veteran?",
           "next": "quest_08_offer",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_07_dungeon_delve", "value": 0}]
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "adventurers_07_dungeon_delve",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "I'll put these boots to good use.",
           "next": "farewell",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_07_dungeon_delve", "value": 0}]
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "adventurers_07_dungeon_delve",
+              "value": 0
+            }
+          ]
         }
       ]
     },
@@ -784,7 +1039,13 @@
           "text": "I'll handle the ogre.",
           "next": "quest_08_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_08_ogre_problem", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_08_ogre_problem",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "Negotiate with an ogre?",
@@ -811,7 +1072,13 @@
           "text": "Interesting. I'll see what works.",
           "next": "quest_08_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_08_ogre_problem", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_08_ogre_problem",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "Let me think about the approach.",
@@ -832,21 +1099,27 @@
     {
       "id": "quest_08_turnin",
       "speaker": "Guildmaster Vorn",
-      "text": "The ogre's dealt with? Excellent. The merchants are already moving caravans again. Here's your 350 gold. Now, I have a delicate matter that needs a veteran's touch - guild politics.",
+      "text": "The ogre. How did it end?",
       "is_end": false,
       "auto_continue": "",
       "choices": [
         {
-          "text": "Guild politics?",
-          "next": "quest_09_offer",
+          "text": "I killed it.",
+          "next": "quest_08_complete_killed",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_08_ogre_problem", "value": 0}]
+          "actions": []
         },
         {
-          "text": "I'll hear about it later.",
-          "next": "farewell",
+          "text": "I talked to it. It is moving off the road.",
+          "next": "quest_08_complete_talked",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_08_ogre_problem", "value": 0}]
+          "actions": []
+        },
+        {
+          "text": "I paid it. It is somebody else's ogre now.",
+          "next": "quest_08_complete_paid",
+          "conditions": [],
+          "actions": []
         }
       ]
     },
@@ -861,7 +1134,13 @@
           "text": "I'll deal with the Iron Blades.",
           "next": "quest_09_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_09_rival_guild", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_09_rival_guild",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "What are my options?",
@@ -888,7 +1167,13 @@
           "text": "I'll find the best solution.",
           "next": "quest_09_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_09_rival_guild", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_09_rival_guild",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "Let me consider my approach.",
@@ -916,24 +1201,48 @@
         {
           "text": "We formed an alliance.",
           "next": "quest_09_complete_alliance",
-          "conditions": [{"type": "flag", "param": "rival_guild_alliance", "value": 0}],
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "rival_guild_alliance",
+              "value": 0
+            }
+          ],
           "actions": []
         },
         {
           "text": "We negotiated territory boundaries.",
           "next": "quest_09_complete_negotiate",
-          "conditions": [{"type": "flag", "param": "rival_guild_negotiated", "value": 0}],
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "rival_guild_negotiated",
+              "value": 0
+            }
+          ],
           "actions": []
         },
         {
           "text": "I defeated their leader in a duel.",
           "next": "quest_09_complete_duel",
-          "conditions": [{"type": "flag", "param": "rival_guild_duel_victory", "value": 0}],
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "rival_guild_duel_victory",
+              "value": 0
+            }
+          ],
           "actions": []
         },
         {
           "text": "I drove them out by force.",
           "next": "quest_09_complete_force",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I paid them to take their contracts elsewhere.",
+          "next": "quest_09_complete_bribe",
           "conditions": [],
           "actions": []
         }
@@ -951,9 +1260,24 @@
           "next": "quest_10_offer",
           "conditions": [],
           "actions": [
-            {"type": "complete_quest", "param": "adventurers_09_rival_guild", "value": 0},
-            {"type": "set_flag", "param": "adventurers_rank_elite", "value": 0}
+            {
+              "type": "complete_quest",
+              "param": "adventurers_09_rival_guild",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_rank_elite",
+              "value": 0
+            }
           ]
+        }
+      ],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "adventurers_09_rival_guild:alliance_formed",
+          "value": 0
         }
       ]
     },
@@ -969,9 +1293,24 @@
           "next": "quest_10_offer",
           "conditions": [],
           "actions": [
-            {"type": "complete_quest", "param": "adventurers_09_rival_guild", "value": 0},
-            {"type": "set_flag", "param": "adventurers_rank_elite", "value": 0}
+            {
+              "type": "complete_quest",
+              "param": "adventurers_09_rival_guild",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_rank_elite",
+              "value": 0
+            }
           ]
+        }
+      ],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "adventurers_09_rival_guild:negotiate_territory",
+          "value": 0
         }
       ]
     },
@@ -987,9 +1326,24 @@
           "next": "quest_10_offer",
           "conditions": [],
           "actions": [
-            {"type": "complete_quest", "param": "adventurers_09_rival_guild", "value": 0},
-            {"type": "set_flag", "param": "adventurers_rank_elite", "value": 0}
+            {
+              "type": "complete_quest",
+              "param": "adventurers_09_rival_guild",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_rank_elite",
+              "value": 0
+            }
           ]
+        }
+      ],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "adventurers_09_rival_guild:challenge_to_duel",
+          "value": 0
         }
       ]
     },
@@ -1005,9 +1359,24 @@
           "next": "quest_10_offer",
           "conditions": [],
           "actions": [
-            {"type": "complete_quest", "param": "adventurers_09_rival_guild", "value": 0},
-            {"type": "set_flag", "param": "adventurers_rank_elite", "value": 0}
+            {
+              "type": "complete_quest",
+              "param": "adventurers_09_rival_guild",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_rank_elite",
+              "value": 0
+            }
           ]
+        }
+      ],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "adventurers_09_rival_guild:violent_confrontation",
+          "value": 0
         }
       ]
     },
@@ -1022,7 +1391,13 @@
           "text": "I'll investigate the dragon sighting.",
           "next": "quest_10_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_10_dragon_rumor", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_10_dragon_rumor",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "A dragon? Seriously?",
@@ -1049,7 +1424,13 @@
           "text": "I'll find out what's up there.",
           "next": "quest_10_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_10_dragon_rumor", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_10_dragon_rumor",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "Let me prepare for this.",
@@ -1078,13 +1459,25 @@
           "text": "What else needs doing?",
           "next": "quest_11_offer",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_10_dragon_rumor", "value": 0}]
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "adventurers_10_dragon_rumor",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "This shield is magnificent.",
           "next": "farewell",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_10_dragon_rumor", "value": 0}]
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "adventurers_10_dragon_rumor",
+              "value": 0
+            }
+          ]
         }
       ]
     },
@@ -1099,7 +1492,13 @@
           "text": "I'll find the traitor.",
           "next": "quest_11_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_11_guild_politics", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_11_guild_politics",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "Who do you suspect?",
@@ -1126,7 +1525,13 @@
           "text": "I'll uncover the truth.",
           "next": "quest_11_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_11_guild_politics", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_11_guild_politics",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "I need to think about this.",
@@ -1154,19 +1559,37 @@
         {
           "text": "I exposed them. They're in custody now.",
           "next": "quest_11_complete_expose",
-          "conditions": [{"type": "flag", "param": "guild_corruption_exposed", "value": 0}],
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "guild_corruption_exposed",
+              "value": 0
+            }
+          ],
           "actions": []
         },
         {
           "text": "They offered me gold to stay quiet...",
           "next": "quest_11_complete_bribe",
-          "conditions": [{"type": "flag", "param": "guild_corruption_covered_up", "value": 0}],
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "guild_corruption_covered_up",
+              "value": 0
+            }
+          ],
           "actions": []
         },
         {
           "text": "They resisted. I had no choice.",
           "next": "quest_11_complete_kill",
-          "conditions": [{"type": "flag", "param": "guild_traitor_eliminated", "value": 0}],
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "guild_traitor_eliminated",
+              "value": 0
+            }
+          ],
           "actions": []
         }
       ]
@@ -1182,7 +1605,20 @@
           "text": "What's left for an officer to accomplish?",
           "next": "quest_12_offer",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_11_guild_politics", "value": 0}]
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "adventurers_11_guild_politics",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "adventurers_11_guild_politics:expose_traitor",
+          "value": 0
         }
       ]
     },
@@ -1197,7 +1633,20 @@
           "text": "Is there other work?",
           "next": "quest_12_offer",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_11_guild_politics", "value": 0}]
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "adventurers_11_guild_politics",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "adventurers_11_guild_politics:accept_bribe",
+          "value": 0
         }
       ]
     },
@@ -1212,7 +1661,20 @@
           "text": "What else needs doing?",
           "next": "quest_12_offer",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_11_guild_politics", "value": 0}]
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "adventurers_11_guild_politics",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "adventurers_11_guild_politics:kill_traitor",
+          "value": 0
         }
       ]
     },
@@ -1227,7 +1689,13 @@
           "text": "I'll conquer the impossible contract.",
           "next": "quest_12_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_12_legendary_contract", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_12_legendary_contract",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "Why has everyone failed?",
@@ -1254,7 +1722,13 @@
           "text": "The Blade of Legends? I'm in.",
           "next": "quest_12_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_12_legendary_contract", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_12_legendary_contract",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "I need to prepare extensively.",
@@ -1275,7 +1749,13 @@
           "text": "You're right. I'll do it.",
           "next": "quest_12_accept",
           "conditions": [],
-          "actions": [{"type": "start_quest", "param": "adventurers_12_legendary_contract", "value": 0}]
+          "actions": [
+            {
+              "type": "start_quest",
+              "param": "adventurers_12_legendary_contract",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "Let me think about it.",
@@ -1304,7 +1784,13 @@
           "text": "What else could there be?",
           "next": "quest_13_offer",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_12_legendary_contract", "value": 0}]
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "adventurers_12_legendary_contract",
+              "value": 0
+            }
+          ]
         }
       ]
     },
@@ -1376,9 +1862,21 @@
           "next": "champion_duties",
           "conditions": [],
           "actions": [
-            {"type": "complete_quest", "param": "adventurers_13_champion", "value": 0},
-            {"type": "set_flag", "param": "adventurers_rank_champion", "value": 0},
-            {"type": "set_flag", "param": "adventurers_questline_complete", "value": 0}
+            {
+              "type": "complete_quest",
+              "param": "adventurers_13_champion",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_rank_champion",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_questline_complete",
+              "value": 0
+            }
           ]
         },
         {
@@ -1386,9 +1884,21 @@
           "next": "champion_farewell",
           "conditions": [],
           "actions": [
-            {"type": "complete_quest", "param": "adventurers_13_champion", "value": 0},
-            {"type": "set_flag", "param": "adventurers_rank_champion", "value": 0},
-            {"type": "set_flag", "param": "adventurers_questline_complete", "value": 0}
+            {
+              "type": "complete_quest",
+              "param": "adventurers_13_champion",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_rank_champion",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_questline_complete",
+              "value": 0
+            }
           ]
         }
       ]
@@ -1441,8 +1951,17 @@
           "text": "[Continue]",
           "next": "quest_02_offer",
           "conditions": [
-            {"type": "quest_complete", "param": "adventurers_01_proving_ground", "value": 0},
-            {"type": "quest_complete", "param": "adventurers_02_pest_control", "value": 0, "invert": true}
+            {
+              "type": "quest_complete",
+              "param": "adventurers_01_proving_ground",
+              "value": 0
+            },
+            {
+              "type": "quest_complete",
+              "param": "adventurers_02_pest_control",
+              "value": 0,
+              "invert": true
+            }
           ],
           "actions": []
         },
@@ -1450,8 +1969,17 @@
           "text": "[Continue]",
           "next": "quest_03_offer",
           "conditions": [
-            {"type": "quest_complete", "param": "adventurers_02_pest_control", "value": 0},
-            {"type": "quest_complete", "param": "adventurers_03_escort_duty", "value": 0, "invert": true}
+            {
+              "type": "quest_complete",
+              "param": "adventurers_02_pest_control",
+              "value": 0
+            },
+            {
+              "type": "quest_complete",
+              "param": "adventurers_03_escort_duty",
+              "value": 0,
+              "invert": true
+            }
           ],
           "actions": []
         },
@@ -1459,8 +1987,17 @@
           "text": "[Continue]",
           "next": "quest_04_offer",
           "conditions": [
-            {"type": "quest_complete", "param": "adventurers_03_escort_duty", "value": 0},
-            {"type": "quest_complete", "param": "adventurers_04_bandit_contract", "value": 0, "invert": true}
+            {
+              "type": "quest_complete",
+              "param": "adventurers_03_escort_duty",
+              "value": 0
+            },
+            {
+              "type": "quest_complete",
+              "param": "adventurers_04_bandit_contract",
+              "value": 0,
+              "invert": true
+            }
           ],
           "actions": []
         },
@@ -1468,8 +2005,17 @@
           "text": "[Continue]",
           "next": "quest_05_offer",
           "conditions": [
-            {"type": "quest_complete", "param": "adventurers_04_bandit_contract", "value": 0},
-            {"type": "quest_complete", "param": "adventurers_05_missing_team", "value": 0, "invert": true}
+            {
+              "type": "quest_complete",
+              "param": "adventurers_04_bandit_contract",
+              "value": 0
+            },
+            {
+              "type": "quest_complete",
+              "param": "adventurers_05_missing_team",
+              "value": 0,
+              "invert": true
+            }
           ],
           "actions": []
         },
@@ -1477,8 +2023,17 @@
           "text": "[Continue]",
           "next": "quest_06_offer",
           "conditions": [
-            {"type": "quest_complete", "param": "adventurers_05_missing_team", "value": 0},
-            {"type": "quest_complete", "param": "adventurers_06_monster_hunt", "value": 0, "invert": true}
+            {
+              "type": "quest_complete",
+              "param": "adventurers_05_missing_team",
+              "value": 0
+            },
+            {
+              "type": "quest_complete",
+              "param": "adventurers_06_monster_hunt",
+              "value": 0,
+              "invert": true
+            }
           ],
           "actions": []
         },
@@ -1486,8 +2041,17 @@
           "text": "[Continue]",
           "next": "quest_07_offer",
           "conditions": [
-            {"type": "quest_complete", "param": "adventurers_06_monster_hunt", "value": 0},
-            {"type": "quest_complete", "param": "adventurers_07_dungeon_delve", "value": 0, "invert": true}
+            {
+              "type": "quest_complete",
+              "param": "adventurers_06_monster_hunt",
+              "value": 0
+            },
+            {
+              "type": "quest_complete",
+              "param": "adventurers_07_dungeon_delve",
+              "value": 0,
+              "invert": true
+            }
           ],
           "actions": []
         },
@@ -1495,8 +2059,17 @@
           "text": "[Continue]",
           "next": "quest_08_offer",
           "conditions": [
-            {"type": "quest_complete", "param": "adventurers_07_dungeon_delve", "value": 0},
-            {"type": "quest_complete", "param": "adventurers_08_ogre_problem", "value": 0, "invert": true}
+            {
+              "type": "quest_complete",
+              "param": "adventurers_07_dungeon_delve",
+              "value": 0
+            },
+            {
+              "type": "quest_complete",
+              "param": "adventurers_08_ogre_problem",
+              "value": 0,
+              "invert": true
+            }
           ],
           "actions": []
         },
@@ -1504,8 +2077,17 @@
           "text": "[Continue]",
           "next": "quest_09_offer",
           "conditions": [
-            {"type": "quest_complete", "param": "adventurers_08_ogre_problem", "value": 0},
-            {"type": "quest_complete", "param": "adventurers_09_rival_guild", "value": 0, "invert": true}
+            {
+              "type": "quest_complete",
+              "param": "adventurers_08_ogre_problem",
+              "value": 0
+            },
+            {
+              "type": "quest_complete",
+              "param": "adventurers_09_rival_guild",
+              "value": 0,
+              "invert": true
+            }
           ],
           "actions": []
         },
@@ -1513,8 +2095,17 @@
           "text": "[Continue]",
           "next": "quest_10_offer",
           "conditions": [
-            {"type": "quest_complete", "param": "adventurers_09_rival_guild", "value": 0},
-            {"type": "quest_complete", "param": "adventurers_10_dragon_rumor", "value": 0, "invert": true}
+            {
+              "type": "quest_complete",
+              "param": "adventurers_09_rival_guild",
+              "value": 0
+            },
+            {
+              "type": "quest_complete",
+              "param": "adventurers_10_dragon_rumor",
+              "value": 0,
+              "invert": true
+            }
           ],
           "actions": []
         },
@@ -1522,8 +2113,17 @@
           "text": "[Continue]",
           "next": "quest_11_offer",
           "conditions": [
-            {"type": "quest_complete", "param": "adventurers_10_dragon_rumor", "value": 0},
-            {"type": "quest_complete", "param": "adventurers_11_guild_politics", "value": 0, "invert": true}
+            {
+              "type": "quest_complete",
+              "param": "adventurers_10_dragon_rumor",
+              "value": 0
+            },
+            {
+              "type": "quest_complete",
+              "param": "adventurers_11_guild_politics",
+              "value": 0,
+              "invert": true
+            }
           ],
           "actions": []
         },
@@ -1531,8 +2131,17 @@
           "text": "[Continue]",
           "next": "quest_12_offer",
           "conditions": [
-            {"type": "quest_complete", "param": "adventurers_11_guild_politics", "value": 0},
-            {"type": "quest_complete", "param": "adventurers_12_legendary_contract", "value": 0, "invert": true}
+            {
+              "type": "quest_complete",
+              "param": "adventurers_11_guild_politics",
+              "value": 0
+            },
+            {
+              "type": "quest_complete",
+              "param": "adventurers_12_legendary_contract",
+              "value": 0,
+              "invert": true
+            }
           ],
           "actions": []
         },
@@ -1540,8 +2149,17 @@
           "text": "[Continue]",
           "next": "quest_13_offer",
           "conditions": [
-            {"type": "quest_complete", "param": "adventurers_12_legendary_contract", "value": 0},
-            {"type": "quest_complete", "param": "adventurers_13_champion", "value": 0, "invert": true}
+            {
+              "type": "quest_complete",
+              "param": "adventurers_12_legendary_contract",
+              "value": 0
+            },
+            {
+              "type": "quest_complete",
+              "param": "adventurers_13_champion",
+              "value": 0,
+              "invert": true
+            }
           ],
           "actions": []
         },
@@ -1549,7 +2167,11 @@
           "text": "[Continue]",
           "next": "bounty_board_available",
           "conditions": [
-            {"type": "quest_complete", "param": "adventurers_13_champion", "value": 0}
+            {
+              "type": "quest_complete",
+              "param": "adventurers_13_champion",
+              "value": 0
+            }
           ],
           "actions": []
         }
@@ -1573,7 +2195,14 @@
         {
           "text": "How do I join?",
           "next": "join_request",
-          "conditions": [{"type": "quest_complete", "param": "adventurers_01_proving_ground", "value": 0, "invert": true}],
+          "conditions": [
+            {
+              "type": "quest_complete",
+              "param": "adventurers_01_proving_ground",
+              "value": 0,
+              "invert": true
+            }
+          ],
           "actions": []
         },
         {
@@ -1631,6 +2260,330 @@
       "is_end": true,
       "auto_continue": "",
       "choices": []
+    },
+    {
+      "id": "quest_04_complete_direct",
+      "speaker": "Guildmaster Vorn",
+      "text": "As written. Good. That is the version the merchants paid for and the version I can put my name under without thinking about it afterwards. Two hundred, and you are somebody I can hand the awkward ones to now.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "You have an awkward one?",
+          "next": "quest_05_offer",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "apply_choice_consequence",
+              "param": "adventurers_04_bandit_contract:killed_the_captain",
+              "value": 0
+            },
+            {
+              "type": "complete_quest",
+              "param": "adventurers_04_bandit_contract",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I will take a break first.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "apply_choice_consequence",
+              "param": "adventurers_04_bandit_contract:killed_the_captain",
+              "value": 0
+            },
+            {
+              "type": "complete_quest",
+              "param": "adventurers_04_bandit_contract",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "quest_04_complete_prisoner",
+      "speaker": "Guildmaster Vorn",
+      "text": "Alive. ... The merchants are going to hang him in the square and charge for a view of it, and every one of them will feel better about themselves for having had a trial first. It is not what the contract said. It is what the contract meant. Two hundred, and I will be the one explaining the difference.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What is next?",
+          "next": "quest_05_offer",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "apply_choice_consequence",
+              "param": "adventurers_04_bandit_contract:took_him_alive",
+              "value": 0
+            },
+            {
+              "type": "complete_quest",
+              "param": "adventurers_04_bandit_contract",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Explain it however you like.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "apply_choice_consequence",
+              "param": "adventurers_04_bandit_contract:took_him_alive",
+              "value": 0
+            },
+            {
+              "type": "complete_quest",
+              "param": "adventurers_04_bandit_contract",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "quest_04_complete_quiet",
+      "speaker": "Guildmaster Vorn",
+      "text": "One throat and a camp that woke up leaderless. The raids stop, nobody the Guild has to feed, nobody's widow at my door in a month. Between us, Member - that is the best possible answer and I could never have asked for it out loud. Two hundred.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "There is more work?",
+          "next": "quest_05_offer",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "apply_choice_consequence",
+              "param": "adventurers_04_bandit_contract:quiet_execution",
+              "value": 0
+            },
+            {
+              "type": "complete_quest",
+              "param": "adventurers_04_bandit_contract",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "apply_choice_consequence",
+              "param": "adventurers_04_bandit_contract:quiet_execution",
+              "value": 0
+            },
+            {
+              "type": "complete_quest",
+              "param": "adventurers_04_bandit_contract",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "quest_04_complete_sold",
+      "speaker": "Guildmaster Vorn",
+      "text": "Moved on. ... I have been doing this a long time, and 'they had already gone' is what a man says when he wants the money and does not want the conversation. Take your two hundred. I am writing 'dispersed' on the contract, and I am writing your name beside it, and if those raids start again on that road I will remember both.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Write what you like.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "apply_choice_consequence",
+              "param": "adventurers_04_bandit_contract:sold_the_contract",
+              "value": 0
+            },
+            {
+              "type": "complete_quest",
+              "param": "adventurers_04_bandit_contract",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "quest_08_complete_killed",
+      "speaker": "Guildmaster Vorn",
+      "text": "Killed. Clean and final and the caravans are already rolling. Here is your three hundred and fifty. Now - I have a delicate matter that needs a veteran's touch. Guild politics.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Guild politics?",
+          "next": "quest_09_offer",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "apply_choice_consequence",
+              "param": "adventurers_08_ogre_problem:killed_ogre",
+              "value": 0
+            },
+            {
+              "type": "complete_quest",
+              "param": "adventurers_08_ogre_problem",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "I will hear about it later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "apply_choice_consequence",
+              "param": "adventurers_08_ogre_problem:killed_ogre",
+              "value": 0
+            },
+            {
+              "type": "complete_quest",
+              "param": "adventurers_08_ogre_problem",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "quest_08_complete_talked",
+      "speaker": "Guildmaster Vorn",
+      "text": "You talked to it. People will not believe that and I am not going to correct them, because a Guild that can end a thing without killing it is worth more per contract than one that cannot. Three hundred and fifty. There is a delicate matter next - guild politics.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Guild politics?",
+          "next": "quest_09_offer",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "apply_choice_consequence",
+              "param": "adventurers_08_ogre_problem:negotiated_with_ogre",
+              "value": 0
+            },
+            {
+              "type": "complete_quest",
+              "param": "adventurers_08_ogre_problem",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "apply_choice_consequence",
+              "param": "adventurers_08_ogre_problem:negotiated_with_ogre",
+              "value": 0
+            },
+            {
+              "type": "complete_quest",
+              "param": "adventurers_08_ogre_problem",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "quest_08_complete_paid",
+      "speaker": "Guildmaster Vorn",
+      "text": "Paid it. So there is now an ogre on somebody else's road with a taste for being paid, and in six months a guild in another town takes a contract about it. That is how this works and I am not going to pretend otherwise. Three hundred and fifty. Next matter is guild politics.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Guild politics?",
+          "next": "quest_09_offer",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "apply_choice_consequence",
+              "param": "adventurers_08_ogre_problem:bribed_ogre",
+              "value": 0
+            },
+            {
+              "type": "complete_quest",
+              "param": "adventurers_08_ogre_problem",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "text": "Later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "apply_choice_consequence",
+              "param": "adventurers_08_ogre_problem:bribed_ogre",
+              "value": 0
+            },
+            {
+              "type": "complete_quest",
+              "param": "adventurers_08_ogre_problem",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "quest_09_complete_bribe",
+      "speaker": "Guildmaster Vorn",
+      "text": "You bought them off. With your own coin, I notice, since none of mine is missing. The Iron Blades are gone, and they are gone owing you a favour, which is a strange thing for a rival guild to be. Four hundred and your Elite badge. I am not certain whether I have promoted a diplomat or a man with a rival guild in his pocket.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What is next for an Elite?",
+          "next": "quest_10_offer",
+          "conditions": [],
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "adventurers_09_rival_guild",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "adventurers_rank_elite",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "adventurers_09_rival_guild:bribe_to_leave",
+          "value": 0
+        }
+      ]
     }
   ]
 }

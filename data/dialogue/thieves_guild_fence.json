@@ -47,6 +47,30 @@
           "actions": []
         },
         {
+          "text": "Tomas is handled.",
+          "next": "informant_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "thieves_guild_informant",
+              "value": 2
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "The rival crew will not be a problem.",
+          "next": "rival_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "thieves_guild_rival",
+              "value": 2
+            }
+          ],
+          "actions": []
+        },
+        {
           "text": "Nothing. I'm leaving.",
           "next": "farewell",
           "conditions": [],
@@ -275,6 +299,234 @@
       "is_end": true,
       "auto_continue": "",
       "choices": []
+    },
+    {
+      "id": "informant_turnin",
+      "speaker": "Guild Fence",
+      "text": "Handled is a word with a lot of room in it. Narrow it down for me, because I have to decide what I tell the guild, and I would rather decide it now than in front of them.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "He is dead.",
+          "next": "informant_killed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I paid him. He is leaving the city.",
+          "next": "informant_bribed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I put the fear in him. He will never talk again.",
+          "next": "informant_scared",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I let him go.",
+          "next": "informant_free",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "informant_killed",
+      "speaker": "Guild Fence",
+      "text": "Then nobody hears anything from Tomas again, and nobody hears anything from the six people he was about to name either, and that is worth more to us than it should be. Clean, permanent, and expensive in ways you will notice later. Your cut.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "thieves_guild_informant:killed_tomas",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "thieves_guild_informant",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "informant_bribed",
+      "speaker": "Guild Fence",
+      "text": "Bought. Fine - a man who takes money to leave will take money to come back, but by then he is out of the city and out of anyone's reach, and the guild has not had to bury anybody. Your cut. Do not tell me what it cost you.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "thieves_guild_informant:bribed_tomas",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "thieves_guild_informant",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "informant_scared",
+      "speaker": "Guild Fence",
+      "text": "Frightened. That works right up until somebody frightens him harder, and the watch is very good at frightening people harder. Still - he is silent today, and today is what I was asked about. Your cut.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "thieves_guild_informant:intimidated_tomas",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "thieves_guild_informant",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "informant_free",
+      "speaker": "Guild Fence",
+      "text": "You let him walk. ... I am going to write down that he could not be found, and you are going to remember that I did that for you, and one day I am going to remind you. Take your cut, and take a long look at the door on your way out.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "thieves_guild_informant:let_tomas_escape",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "thieves_guild_informant",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "rival_turnin",
+      "speaker": "Guild Fence",
+      "text": "The rival crew. Tell me what is left of them.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Nothing. I broke them.",
+          "next": "rival_destroyed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "A line down the middle of the district. They keep the docks.",
+          "next": "rival_negotiated",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "They work for us now.",
+          "next": "rival_absorbed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "It went badly. They are still there, and now they know my face.",
+          "next": "rival_failed",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "rival_destroyed",
+      "speaker": "Guild Fence",
+      "text": "Broken. Every corner of that district is ours and every thief in it is frightened of us, which is efficient and is also how you end up with three new crews in a year, because frightened men organise. Your cut. Enjoy the quiet while it lasts.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "thieves_guild_rival:destroyed_rival_crew",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "thieves_guild_rival",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "rival_negotiated",
+      "speaker": "Guild Fence",
+      "text": "A line. Old-fashioned. Everybody keeps breathing and everybody knows where they stand, and in two years somebody young decides the line is an insult. That is two years from now. Your cut.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "thieves_guild_rival:negotiated_territory",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "thieves_guild_rival",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "rival_absorbed",
+      "speaker": "Guild Fence",
+      "text": "You brought them in. Eleven experienced thieves who spent last winter robbing us, now sitting in our rooms hearing our business. That is either the best week this guild has had in a decade, or the beginning of something I will be blamed for. Your cut, and a great deal of my attention from now on.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "thieves_guild_rival:absorbed_rival_crew",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "thieves_guild_rival",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "rival_failed",
+      "speaker": "Guild Fence",
+      "text": "So they are still there, they are angry, and they can pick you out of a crowd. I have seen worse outcomes. Not many. Take your cut - it is a small one, and you know why.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "thieves_guild_rival:failed_negotiation",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "thieves_guild_rival",
+          "value": 0
+        }
+      ]
     }
   ]
 }

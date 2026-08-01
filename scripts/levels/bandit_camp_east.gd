@@ -16,6 +16,7 @@ func _ready() -> void:
 	_spawn_enemies_from_markers()
 	_spawn_chests_from_markers()
 	_spawn_doors_from_markers()
+	_record_arrival()
 	_setup_navigation()
 	_setup_cell_streaming()
 	# Only setup day/night lighting when this is the main scene (has Player node)
@@ -105,6 +106,33 @@ func _spawn_enemies_from_markers() -> void:
 				h_frames,
 				v_frames
 			)
+
+
+## Standing here is finding it, and an emptied outpost is an emptied outpost
+## whether or not anyone had handed the player a contract about it first. Both
+## facts pre-complete objectives in adventurers_04_bandit_contract.
+func _record_arrival() -> void:
+	if QuestManager:
+		QuestManager.on_location_reached(ZONE_ID)
+	if WorldState:
+		WorldState.set_flag("bandit_camp_east_found", true)
+
+	for node: Node in get_tree().get_nodes_in_group("enemies"):
+		if is_instance_valid(node) and is_ancestor_of(node) and node.has_signal("died"):
+			if not node.died.is_connected(_on_outpost_death):
+				node.died.connect(_on_outpost_death)
+
+
+func _on_outpost_death(_killer: Node) -> void:
+	call_deferred("_check_outpost_emptied")
+
+
+func _check_outpost_emptied() -> void:
+	for node: Node in get_tree().get_nodes_in_group("enemies"):
+		if is_instance_valid(node) and not node.is_queued_for_deletion() and is_ancestor_of(node):
+			return
+	if WorldState:
+		WorldState.set_flag("eastern_outpost_cleared", true)
 
 
 func _spawn_chests_from_markers() -> void:
