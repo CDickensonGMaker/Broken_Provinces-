@@ -82,7 +82,7 @@ class Quest:
 class Objective:
 	var id: String
 	var description: String
-	var type: String  # "kill", "collect", "talk", "reach", "interact", "deliver_soulstone", "solve_puzzle", "recruit_follower", "wave_defense"
+	var type: String  # "kill", "collect", "talk", "reach", "explore", "interact", "choice", "deliver_soulstone", "solve_puzzle", "recruit_follower", "wave_defense"
 	var target: String  # Enemy ID, item ID, NPC ID, location ID, soulstone ID, puzzle flag, follower ID, wave_spawner_id
 	var target_zone: String = ""  # Zone where target is located (for cross-zone markers)
 	var required_count: int = 1
@@ -166,8 +166,25 @@ func _connect_signals() -> void:
 	if InventoryManager and InventoryManager.has_signal("equipment_changed"):
 		InventoryManager.equipment_changed.connect(_on_equipment_changed)
 
+	# Connect to PlayerGPS so "explore" objectives settle on discovery
+	if PlayerGPS:
+		if PlayerGPS.has_signal("location_discovered"):
+			PlayerGPS.location_discovered.connect(_on_location_discovered)
+		if PlayerGPS.has_signal("cell_revealed"):
+			PlayerGPS.cell_revealed.connect(_on_cell_revealed)
+
 	# Connect to own signals for timed objective management
 	objective_completed.connect(_on_objective_completed_for_timer)
+
+
+func _on_location_discovered(location_id: String, _location_name: String) -> void:
+	on_location_explored(location_id)
+
+
+func _on_cell_revealed(coords: Vector2i) -> void:
+	var cell: WorldGrid.CellInfo = WorldGrid.get_cell(coords)
+	if cell and not cell.location_id.is_empty():
+		on_location_explored(cell.location_id)
 
 
 func _process(delta: float) -> void:
@@ -1006,7 +1023,7 @@ func _resolve_objective_location(obj: Objective) -> Dictionary:
 			if obj.target_zone != "":
 				return _resolve_zone_location(obj.target_zone)
 			return {}
-		"reach":
+		"reach", "explore":
 			return _resolve_zone_location(obj.target)
 		"interact":
 			return _resolve_object_location(obj.target)
@@ -1238,6 +1255,35 @@ func on_npc_talked(npc_id: String) -> void:
 ## Track location reached
 func on_location_reached(location_id: String) -> void:
 	update_progress("reach", location_id, 1)
+	# Standing somewhere is also having explored it
+	on_location_explored(location_id)
+
+
+## Settle "explore" objectives for a place the player has now seen.
+## Exploring is a yes/no fact, not a count, and the same arrival can arrive
+## twice (cell reveal plus location reach), so a match completes the objective
+## outright instead of incrementing it.
+func on_location_explored(location_id: String) -> void:
+	if location_id.is_empty():
+		return
+
+	for quest_id: String in quests:
+		var quest: Quest = quests[quest_id]
+		if quest.state != Enums.QuestState.ACTIVE:
+			continue
+
+		var settled: bool = false
+		for obj: Objective in quest.objectives:
+			if obj.is_completed or obj.type != "explore" or obj.target != location_id:
+				continue
+			obj.current_count = obj.required_count
+			obj.is_completed = true
+			settled = true
+			quest_updated.emit(quest_id, obj.id)
+			objective_completed.emit(quest_id, obj.id)
+
+		if settled:
+			_check_quest_completion(quest_id)
 
 ## Track object interaction
 func on_interact(object_id: String) -> void:
@@ -2225,7 +2271,7 @@ func _set_objective_destination(nav: QuestNavigation, quest: Quest) -> void:
 					nav.destination_zone = obj.target_zone
 					nav.destination_name = obj.description
 
-			"reach":
+			"reach", "explore":
 				# Find location marker
 				var loc_pos: Vector3 = _find_location_position(obj.target)
 				if loc_pos != Vector3.ZERO:
