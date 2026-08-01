@@ -496,7 +496,7 @@ func _spawn_tavern(parent: Node3D, pos: Vector3, npc_name: String = "Innkeeper")
 			innkeeper.sprite_texture = sprite_tex
 			innkeeper.sprite_h_frames = 5
 			innkeeper.sprite_v_frames = 1
-			innkeeper.sprite_pixel_size = 0.0378
+			innkeeper.sprite_pixel_size = 0.0256  # 96px frame, 2.46m
 
 	innkeeper.region_id = ZONE_ID
 	tavern.add_child(innkeeper)

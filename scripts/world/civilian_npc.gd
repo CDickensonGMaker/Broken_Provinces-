@@ -1067,7 +1067,7 @@ static func spawn_wizard(parent: Node, pos: Vector3, zone_id: String = "") -> Ci
 	# Check ActorRegistry for Zoo patches first
 	var registry_config: Variant = _get_registry_sprite_config(parent, "wizard_mage")
 	var sprite_path: String = "res://assets/sprites/npcs/civilians/wizard_mage.png"
-	var h_frames: int = 1
+	var h_frames: int = 4  # 277x96 four-pose strip
 	var v_frames: int = 1
 	var pixel_size: float = PIXEL_SIZE_WIZARD
 
@@ -1179,8 +1179,8 @@ static func spawn_dwarf_guard(parent: Node, pos: Vector3, zone_id: String = "") 
 		parent,
 		pos,
 		"res://assets/sprites/npcs/dwarves/dwarf_2.png",
-		1,  # Single frame (48x96)
-		1,  # Single frame
+		4,  # dwarf_2/dwarf_3/dwarf_molten2 are 266x96 four-pose strips, not 48x96
+		1,
 		false,
 		PIXEL_SIZE_DWARF
 	)
@@ -1196,8 +1196,8 @@ static func spawn_dwarf_warrior(parent: Node, pos: Vector3, zone_id: String = ""
 		parent,
 		pos,
 		"res://assets/sprites/npcs/dwarves/dwarf_3.png",
-		1,  # Single frame (48x96)
-		1,  # Single frame
+		4,  # dwarf_2/dwarf_3/dwarf_molten2 are 266x96 four-pose strips, not 48x96
+		1,
 		false,
 		PIXEL_SIZE_DWARF
 	)
@@ -1222,8 +1222,8 @@ static func spawn_dwarf_civilian(parent: Node, pos: Vector3, zone_id: String = "
 		parent,
 		pos,
 		sprite_path,
-		1,  # Single frame (48x96)
-		1,  # Single frame
+		4,  # dwarf_2/dwarf_3/dwarf_molten2 are 266x96 four-pose strips, not 48x96
+		1,
 		false,
 		PIXEL_SIZE_DWARF
 	)
@@ -1259,8 +1259,8 @@ static func spawn_dwarf_wounded(parent: Node, pos: Vector3, zone_id: String = ""
 	npc.position = pos
 	npc.enable_wandering = false  # Wounded soldiers can't move
 	npc.sprite_texture = load("res://assets/sprites/npcs/dwarves/dwarf_3.png")
-	npc.sprite_h_frames = 1  # Single frame (48x96)
-	npc.sprite_v_frames = 1  # Single frame
+	npc.sprite_h_frames = 4  # 266x96 four-pose strip, not 48x96
+	npc.sprite_v_frames = 1
 	npc.sprite_pixel_size = PIXEL_SIZE_DWARF
 	# Pale, injured look
 	npc.tint_color = Color(0.75, 0.7, 0.7)
@@ -1314,8 +1314,8 @@ static func spawn_dwarf_forge_master(parent: Node, pos: Vector3, zone_id: String
 		parent,
 		pos,
 		"res://assets/sprites/npcs/dwarves/dwarf_molten1.png",
-		1,  # Single frame (48x96)
-		1,  # Single frame
+		4,  # dwarf_2/dwarf_3/dwarf_molten2 are 266x96 four-pose strips, not 48x96
+		1,
 		false,
 		PIXEL_SIZE_DWARF
 	)
@@ -1331,8 +1331,8 @@ static func spawn_dwarf_forge_worker(parent: Node, pos: Vector3, zone_id: String
 		parent,
 		pos,
 		"res://assets/sprites/npcs/dwarves/dwarf_molten2.png",
-		1,  # Single frame (48x96)
-		1,  # Single frame
+		4,  # dwarf_2/dwarf_3/dwarf_molten2 are 266x96 four-pose strips, not 48x96
+		1,
 		false,
 		PIXEL_SIZE_DWARF
 	)
@@ -1348,8 +1348,8 @@ static func spawn_dwarf_forge_guard(parent: Node, pos: Vector3, zone_id: String 
 		parent,
 		pos,
 		"res://assets/sprites/npcs/dwarves/dwarf_molten3.png",
-		1,  # Single frame (48x96)
-		1,  # Single frame
+		4,  # dwarf_2/dwarf_3/dwarf_molten2 are 266x96 four-pose strips, not 48x96
+		1,
 		false,
 		PIXEL_SIZE_DWARF
 	)
@@ -1416,8 +1416,8 @@ static func spawn_magic_shop_worker(parent: Node, pos: Vector3, zone_id: String 
 		parent,
 		pos,
 		"res://assets/sprites/npcs/merchants/magic_shop_worker.png",
-		1,  # Single frame (48x96)
-		1,  # Single frame
+		3,  # 130x96 three-pose strip
+		1,
 		false,
 		PIXEL_SIZE_MAGIC_SHOP
 	)
@@ -1882,7 +1882,7 @@ static func spawn_innkeeper_male(parent: Node, pos: Vector3, zone_id: String = "
 	# Check ActorRegistry for Zoo patches first
 	var registry_config: Variant = _get_registry_sprite_config(parent, "innkeeper_male")
 	var sprite_path: String = "res://assets/sprites/npcs/merchants/Innkeeper_man.png"
-	var h_frames: int = 1
+	var h_frames: int = 4  # 240x96 four-pose strip
 	var v_frames: int = 1
 	var pixel_size: float = PIXEL_SIZE_INNKEEPER
 

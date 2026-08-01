@@ -15,6 +15,50 @@ enum AnimState {
 ## Ground sink offset - adjust if sprites appear floating or sunk
 const GROUND_SINK: float = 0.0  ## No offset - user will calibrate sprites manually
 
+# =============================================================================
+# SPRITE SCALE STANDARD
+# =============================================================================
+#
+# A sprite's world height is pixel_size * frame_height, and nothing in the engine
+# checks that. Every call site used to carry a hand-computed pixel_size with the
+# frame height it assumed written in a comment beside it - which held right up
+# until an artist handed over a 128px sheet instead of a 96px one, at which point
+# the same number silently made a man three and a quarter metres tall.
+#
+# So state the height you want and let the frame height be measured:
+#
+#     pixel_size = BillboardSprite.humanoid_pixel_size(texture.get_height())
+#
+# The anchor is the existing house look, not a new decision: 0.0256 on the 96px
+# civilian sheets, which is 2.4576m of frame. The drawn figure is shorter than
+# that - these sheets carry headroom - so a villager reads as roughly a head
+# taller than the player's eyeline, which is how the game has always looked.
+
+## Frame height every civilian sheet in the game is drawn at
+const REFERENCE_FRAME_HEIGHT: int = 96
+## World height of a humanoid frame. 0.0256 * 96, the established civilian scale.
+const HUMANOID_FRAME_HEIGHT_M: float = 2.4576
+## Dwarves stand shorter. 0.0193 * 96, the established dwarf scale.
+const DWARF_FRAME_HEIGHT_M: float = 1.8528
+
+
+## pixel_size that makes one frame stand `target_height_m` tall in the world.
+static func pixel_size_for_height(target_height_m: float, frame_height_px: int) -> float:
+	if frame_height_px <= 0:
+		push_warning("BillboardSprite: frame height must be positive, got %d" % frame_height_px)
+		return 0.0
+	return target_height_m / float(frame_height_px)
+
+
+## pixel_size for a person, whatever sheet the artist handed over.
+static func humanoid_pixel_size(frame_height_px: int) -> float:
+	return pixel_size_for_height(HUMANOID_FRAME_HEIGHT_M, frame_height_px)
+
+
+## pixel_size for a dwarf, whatever sheet the artist handed over.
+static func dwarf_pixel_size(frame_height_px: int) -> float:
+	return pixel_size_for_height(DWARF_FRAME_HEIGHT_M, frame_height_px)
+
 ## Configuration
 @export var sprite_sheet: Texture2D
 @export var h_frames: int = 4  ## Columns in sprite sheet

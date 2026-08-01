@@ -8,8 +8,12 @@ const INNKEEPER_SPRITE_MALE := "res://assets/sprites/npcs/merchants/Innkeeper_ma
 const INNKEEPER_SPRITE_FEMALE := "res://assets/sprites/npcs/merchants/Innkeeper_woman.png"
 
 ## Normalized pixel sizes (target height 2.46 units / frame height)
-const PIXEL_SIZE_MALE := 0.0234  # ~105px frame height
-const PIXEL_SIZE_FEMALE := 0.0378  # ~65px frame height
+# Both innkeeper sheets are 96px tall. The old numbers were computed against
+# frame heights nobody ever measured - 105px and 65px - which made the woman
+# 3.6m tall and the man 2.2m. Ask BillboardSprite for the height instead.
+const INNKEEPER_FRAME_HEIGHT := 96
+const PIXEL_SIZE_MALE := BillboardSprite.HUMANOID_FRAME_HEIGHT_M / float(INNKEEPER_FRAME_HEIGHT)
+const PIXEL_SIZE_FEMALE := BillboardSprite.HUMANOID_FRAME_HEIGHT_M / float(INNKEEPER_FRAME_HEIGHT)
 
 ## Gender-specific names (optional - can be overridden via merchant_name export)
 const MALE_NAMES: Array[String] = ["Gareth", "Brom", "Aldric", "Thom", "Willem"]

@@ -1901,6 +1901,16 @@ greeting -> destinations -> confirm_larton -> depart_larton (END + actions)
 
 ## NPC SPRITE SPECIFICATIONS (CRITICAL)
 
+> **Measured 2026-08-01 and largely wrong below.** The real house format is
+> **48x96 per frame**, not 32x64, and sheets run 1, 2, 3, 4, 5 or 8 poses wide
+> depending on who drew them - there is no single standard frame count. Scale is
+> `pixel_size = target_height / frame_height`; ask
+> `BillboardSprite.humanoid_pixel_size(texture.get_height())` rather than
+> copying a number. The full per-sprite table, the fixes applied and the ones
+> left for Caleb are in `docs/audits/sprite_audit.md`, and
+> `tools/check_sprites.tscn` re-measures on demand. Treat the tables below as
+> historical.
+
 ### Standard Sprite Sheet Format
 **All humanoid NPC sprites use 1x5 layout** (5 horizontal frames, 1 row)
 
