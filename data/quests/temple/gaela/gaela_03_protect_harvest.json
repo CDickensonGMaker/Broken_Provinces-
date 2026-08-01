@@ -51,7 +51,7 @@
 		"faction_reputation": {
 			"church_of_gaela": 20,
 			"church_of_three": 15,
-			"millbrook_farmers": 25
+			"millbrook": 25
 		}
 	},
 	"prerequisites": ["gaela_02_healing_herbs"],

@@ -73,22 +73,22 @@
 		"xp": 600,
 		"items": ["spell_scroll_arcane_shield"],
 		"faction_reputation": {
-			"wizards_guild": 30
+			"arcane_circle": 30
 		}
 	},
 	"choice_consequences": {
 		"defeated_rival_mage": {
 			"flags_to_set": ["rival_mage_defeated"],
-			"reputation_changes": {"wizards_guild": 10}
+			"reputation_changes": {"arcane_circle": 10}
 		},
 		"negotiated_with_rival": {
 			"flags_to_set": ["rival_mage_allied"],
-			"reputation_changes": {"wizards_guild": 5},
+			"reputation_changes": {"arcane_circle": 5},
 			"notes": "Rival may appear as ally in future content"
 		},
 		"bribed_rival_mage": {
 			"flags_to_set": ["rival_mage_bribed"],
-			"reputation_changes": {"wizards_guild": -5},
+			"reputation_changes": {"arcane_circle": -5},
 			"notes": "Helvant disapproves of paying criminals"
 		}
 	},

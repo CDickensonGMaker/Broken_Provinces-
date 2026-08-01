@@ -75,9 +75,9 @@
 		"faction_reputation": {
 			"church_of_gaela": 60,
 			"church_of_three": 50,
-			"elder_moor_citizens": 40,
-			"millbrook_farmers": 40,
-			"thornfield_citizens": 40
+			"elder_moor": 40,
+			"millbrook": 40,
+			"thornfield": 40
 		}
 	},
 	"prerequisites": ["gaela_08_seed_of_life"],

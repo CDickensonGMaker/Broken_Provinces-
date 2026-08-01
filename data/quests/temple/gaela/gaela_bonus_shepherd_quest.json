@@ -50,7 +50,7 @@
 		"items": ["wool_cloak", "shepherds_crook"],
 		"faction_reputation": {
 			"church_of_gaela": 20,
-			"millbrook_farmers": 35
+			"millbrook": 35
 		}
 	},
 	"prerequisites": ["gaela_03_protect_harvest"],

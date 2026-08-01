@@ -77,7 +77,7 @@
 		"faction_reputation": {
 			"church_of_morthane": 60,
 			"church_of_three": 30,
-			"guard_faction": 25
+			"town_guard": 25
 		}
 	},
 	"starter_items": [

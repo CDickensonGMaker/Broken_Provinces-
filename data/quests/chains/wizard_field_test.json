@@ -57,7 +57,7 @@
 		"xp": 350,
 		"items": ["spell_scroll_ice_shard", "enchanted_amulet_minor"],
 		"faction_reputation": {
-			"wizards_guild": 20,
+			"arcane_circle": 20,
 			"common_folk": 10
 		}
 	},

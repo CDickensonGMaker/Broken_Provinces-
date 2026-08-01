@@ -26,7 +26,7 @@
 		"xp": 350,
 		"items": ["temple_blessing_scroll"],
 		"faction_reputation": {
-			"temple_of_three": 40
+			"church_of_three": 40
 		}
 	},
 	"prerequisites": ["rescue_sacrifice_victim_2"],

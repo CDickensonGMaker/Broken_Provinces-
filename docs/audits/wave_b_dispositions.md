@@ -155,6 +155,50 @@ Everything below stays unresolved because it needs numbers or lore.
 | Literal placeholders | `specialization_bonus_variable`, `forbidden_spell_variable`, `research_materials_variable` | 3 | The quest author left a TODO in the data. Each needs a real reward chosen |
 | Lore artefacts | `sacred_hourglass`, `paradox_stone`, `eternal_hourglass_fragment`, `crown_of_mountain_kings`, `hammer_of_first_king`, `soulbound_phylactery`, `seed_of_life` | ~8 | Named relics of the Three Gods, Kazan-Dun and the Keepers. All touch bible `[OPEN]` questions |
 
-Enemy ids (74 warnings) are the same shape of problem — `goblin_king`,
+## 7. Choice consequences — the branches are written, nothing offers them
+
+43 quests carry `choice_consequences` data (107 branches). Wave A fixed the
+engine half: `start_quest` now copies the branch data onto the live quest, so
+`QuestManager.apply_choice_consequence()` works. The content half is still dark.
+
+**Exactly one quest can reach its branches**: `thieves_08_rival_gang`, because
+`data/dialogue/shadowmaster_vex.json` carries the three
+`apply_choice_consequence` actions. For the other 42 quests, no dialogue node,
+no objective and no script ever calls the action — the branch data sits in the
+JSON and nothing can fire it.
+
+Wiring them is not a data fix: each branch needs a dialogue node with the choice
+text, the conditions that gate it, and the NPC's reaction. That is writing, times
+104 branches, in the voices of characters whose personalities are themselves on
+this list. **Proposed fix:** work through them a faction at a time (thieves ×5
+are the cheapest — Vex's file shows the pattern), starting with the quests whose
+NPCs now exist.
+
+The validator now reports every unreachable branch as a `QUEST_CHOICE` warning,
+so the backlog is visible and cannot grow silently.
+
+Malformed branch data found and fixed in this pass:
+
+* `items_given` was authored in `chronos_07_paradox` but QuestManager never
+  executed it — it does now, and the supported key set is documented on the
+  `Quest.choice_consequences` field.
+* 34 faction ids in rewards and consequences named factions that do not exist,
+  so the reputation change was silently dropped: `keepers`→`the_keepers`,
+  `temple_of_three`→`church_of_three`, `temple_of_chronos`→`church_of_chronos`,
+  `guard_faction`→`town_guard`, `wizards_guild`/`wizard`/`mages_guild`/
+  `mages_circle`→`arcane_circle`, and four settlement aliases.
+
+Faction ids still dropped on the floor (43 warnings), because the faction itself
+does not exist and inventing one means inventing its relations and rep curve:
+`merchant_guild`/`merchants_guild` (19), `common_folk` (10), `shadowed_hand_cult`
+(4), `nobility` (4), `hunters_guild` (3), `scholars_guild`, `aberdeen`, `larton`.
+
+Branch effects that point at content that does not exist: `spawn_enemy`
+`keeper_assassin`, `hostile_marcus`, `necromancer_aeris` (enemy stats needed);
+`unlock_follower` `apprentice_marcus` (no companion resource — `red_mara`, the
+other one, does exist); `items_given` `chronos_blessing_major`,
+`paradox_talisman`.
+
+Enemy ids (77 warnings) are the same shape of problem — `goblin_king`,
 `arena_champion_tier1`, `lich_aspirant_valdris` and friends need stats, sprites
 and a tier — and are deliberately left as warnings rather than guessed at.

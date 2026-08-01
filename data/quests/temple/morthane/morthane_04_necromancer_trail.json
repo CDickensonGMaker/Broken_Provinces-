@@ -74,7 +74,7 @@
 			"flags_to_set": ["necromancer_aeris_redeemed"],
 			"reputation_changes": {
 				"church_of_morthane": 5,
-				"mages_guild": 10
+				"arcane_circle": 10
 			}
 		},
 		"spare_necromancer": {

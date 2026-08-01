@@ -26,7 +26,7 @@
 		"xp": 300,
 		"items": [],
 		"faction_reputation": {
-			"temple_of_three": 35
+			"church_of_three": 35
 		}
 	},
 	"prerequisites": ["stolen_relic_2"],

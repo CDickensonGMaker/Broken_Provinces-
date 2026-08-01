@@ -51,18 +51,34 @@ const INTERACTABLE_IDS: Array[String] = [
 ## reported as warnings so the list stays visible instead of silently rotting.
 const LORE_ONLY_IDS: Array[String] = []
 
+## Consequence keys QuestManager actually executes; anything else in a
+## choice_consequences entry is a note to the reader and never fires.
+const CONSEQUENCE_KEYS: Array[String] = [
+	"flags_to_set",
+	"reputation_changes",
+	"unlock_follower",
+	"spawn_enemy",
+	"items_given",
+]
+
+const FACTION_DIR := "res://data/factions"
+
 var errors: Array[Dictionary] = []
 var warnings: Array[Dictionary] = []
 
 var npc_ids: Dictionary = {}
 var item_ids: Dictionary = {}
 var enemy_ids: Dictionary = {}
+var faction_ids: Dictionary = {}
+var invoked_choices: Dictionary = {}
 
 
 func _initialize() -> void:
 	_collect_item_ids()
 	_collect_enemy_ids()
 	_collect_npc_ids()
+	_collect_faction_ids()
+	_collect_invoked_choices()
 
 	_check_quests()
 	_check_encounter_tables()
@@ -81,6 +97,31 @@ func _collect_item_ids() -> void:
 			var id: String = _read_field(path, "id")
 			if not id.is_empty():
 				item_ids[id] = path
+
+
+func _collect_faction_ids() -> void:
+	for path: String in _walk(FACTION_DIR, ".tres"):
+		faction_ids[path.get_file().get_basename()] = path
+
+
+## Harvests every "quest_id:choice_id" an apply_choice_consequence action names,
+## from dialogue JSON and from any script that calls QuestManager directly.
+func _collect_invoked_choices() -> void:
+	var json_re := RegEx.new()
+	json_re.compile("\"apply_choice_consequence\"[^}]*?\"param(?:_string)?\"\\s*:\\s*\"([^\"]+)\"")
+	for dir: String in DIALOGUE_DIRS:
+		for path: String in _walk(dir, ".json"):
+			var text: String = _read_text(path)
+			for m: RegExMatch in json_re.search_all(text):
+				invoked_choices[m.get_string(1)] = path
+
+	var call_re := RegEx.new()
+	call_re.compile("apply_choice_consequence\\(\\s*\"([^\"]+)\"\\s*,\\s*\"([^\"]+)\"")
+	for dir: String in SCRIPT_DIRS:
+		for path: String in _walk(dir, ".gd"):
+			var text: String = _read_text(path)
+			for m: RegExMatch in call_re.search_all(text):
+				invoked_choices["%s:%s" % [m.get_string(1), m.get_string(2)]] = path
 
 
 func _collect_enemy_ids() -> void:
@@ -239,6 +280,53 @@ func _check_quests() -> void:
 			if entry is String:
 				_expect_item(entry, path, "rewards.items", false)
 
+		var reward_rep: Dictionary = rewards.get("faction_reputation", {})
+		for faction_id: Variant in reward_rep.keys():
+			_expect_faction(String(faction_id), path, "rewards.faction_reputation")
+
+		_check_choice_consequences(quest, path)
+
+
+## Quest branches only fire when a dialogue action calls
+## apply_choice_consequence "quest_id:choice_id". A branch nothing calls is
+## authored data the player can never reach, so it is reported as a warning.
+func _check_choice_consequences(quest: Dictionary, path: String) -> void:
+	var consequences: Dictionary = quest.get("choice_consequences", {})
+	if consequences.is_empty():
+		return
+	var quest_id: String = quest.get("id", "")
+
+	for choice_id: Variant in consequences.keys():
+		var key: String = "%s:%s" % [quest_id, choice_id]
+		if not invoked_choices.has(key):
+			_warn("QUEST_CHOICE", path, String(choice_id),
+					"no dialogue action calls apply_choice_consequence \"%s\", so the branch is unreachable" % key)
+
+		var entry: Variant = consequences[choice_id]
+		if not (entry is Dictionary):
+			_fail("QUEST_CHOICE", path, String(choice_id), "consequence is not an object")
+			continue
+		var consequence: Dictionary = entry
+
+		for consequence_key: Variant in consequence.keys():
+			if not CONSEQUENCE_KEYS.has(String(consequence_key)):
+				_warn("QUEST_CHOICE", path, String(choice_id),
+						"key \"%s\" is not executed by QuestManager (documentation only)" % consequence_key)
+
+		var rep: Dictionary = consequence.get("reputation_changes", {})
+		for faction_id: Variant in rep.keys():
+			_expect_faction(String(faction_id), path,
+					"choice[%s].reputation_changes" % choice_id)
+
+		var spawn_enemy: String = consequence.get("spawn_enemy", "")
+		if not spawn_enemy.is_empty():
+			_expect_enemy(spawn_enemy.split("@")[0], path, "choice[%s].spawn_enemy" % choice_id)
+
+		var items_given: Array = consequence.get("items_given", [])
+		for item_id: Variant in items_given:
+			if item_id is String:
+				_expect_item(String(item_id), path, "choice[%s].items_given" % choice_id, true)
+
 
 func _check_encounter_tables() -> void:
 	var text: String = _read_text(ENCOUNTER_MANAGER_PATH)
@@ -365,6 +453,13 @@ func _expect_item(id: String, path: String, where: String, as_warning: bool) -> 
 		_warn("QUEST_ITEM", path, id, "%s references an unknown item id" % where)
 	else:
 		_fail("QUEST_ITEM", path, id, "%s references an unknown item id" % where)
+
+
+func _expect_faction(id: String, path: String, where: String) -> void:
+	if id.is_empty() or faction_ids.has(id):
+		return
+	_warn("QUEST_FACTION", path, id,
+			"%s names a faction with no resource in data/factions, so the change is dropped" % where)
 
 
 func _expect_enemy(id: String, path: String, where: String) -> void:

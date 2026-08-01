@@ -65,7 +65,7 @@
 		"xp": 250,
 		"items": ["spell_scroll_flame_burst", "apprentice_robe"],
 		"faction_reputation": {
-			"wizards_guild": 15
+			"arcane_circle": 15
 		}
 	},
 	"on_complete_flags": ["helvant_lesson_one_complete"],

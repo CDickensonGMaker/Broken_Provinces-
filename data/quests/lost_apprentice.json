@@ -55,16 +55,16 @@
 	"choice_consequences": {
 		"marcus_joined_party": {
 			"flags_to_set": ["marcus_available_follower"],
-			"reputation_changes": {"wizard": 5},
+			"reputation_changes": {"arcane_circle": 5},
 			"unlock_follower": "apprentice_marcus"
 		},
 		"marcus_sent_home": {
 			"flags_to_set": ["marcus_returned_to_dalhurst"],
-			"reputation_changes": {"wizard": 15}
+			"reputation_changes": {"arcane_circle": 15}
 		},
 		"marcus_abandoned": {
 			"flags_to_set": ["marcus_hostile_future"],
-			"reputation_changes": {"wizard": -20},
+			"reputation_changes": {"arcane_circle": -20},
 			"spawn_enemy": "hostile_marcus@willow_dale_exterior"
 		}
 	},

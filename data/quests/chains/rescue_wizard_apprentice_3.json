@@ -26,7 +26,7 @@
 		"xp": 380,
 		"items": ["mana_potion", "mana_potion"],
 		"faction_reputation": {
-			"mages_circle": 30
+			"arcane_circle": 30
 		}
 	},
 	"prerequisites": ["rescue_wizard_apprentice_2"],

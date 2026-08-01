@@ -60,7 +60,7 @@
 		],
 		"faction_reputation": {
 			"church_of_morthane": 35,
-			"guard_faction": 20
+			"town_guard": 20
 		}
 	},
 	"prerequisites": ["morthane_05_devotion_choice"],
@@ -70,7 +70,7 @@
 		"arrest_killer": {
 			"flags_to_set": ["merchant_vrell_arrested"],
 			"reputation_changes": {
-				"guard_faction": 15
+				"town_guard": 15
 			}
 		},
 		"execute_killer": {

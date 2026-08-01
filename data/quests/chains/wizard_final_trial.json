@@ -57,7 +57,7 @@
 		"xp": 1000,
 		"items": ["spell_scroll_meteor_storm", "adept_wizard_robes", "staff_of_the_adept"],
 		"faction_reputation": {
-			"wizards_guild": 50
+			"arcane_circle": 50
 		}
 	},
 	"on_complete_flags": ["helvant_adept_graduated", "wizard_questline_complete", "unlock_advanced_spells"],

@@ -45,7 +45,7 @@
 		"xp": 750,
 		"items": ["keepers_badge"],
 		"faction_reputation": {
-			"keepers": 100
+			"the_keepers": 100
 		}
 	},
 	"prerequisites": ["keepers_letter_delivery"],

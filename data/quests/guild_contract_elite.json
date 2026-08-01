@@ -60,7 +60,7 @@
 		"items": ["chimera_scale_armor"],
 		"faction_reputation": {
 			"adventurers_guild": 75,
-			"thornfield_citizens": 50
+			"thornfield": 50
 		}
 	},
 	"prerequisites": ["guild_elite_trial"],

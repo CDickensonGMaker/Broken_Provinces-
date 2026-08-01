@@ -59,8 +59,8 @@
 		"faction_reputation": {
 			"church_of_gaela": 50,
 			"church_of_three": 35,
-			"millbrook_farmers": 25,
-			"thornfield_citizens": 25
+			"millbrook": 25,
+			"thornfield": 25
 		}
 	},
 	"prerequisites": ["gaela_05_devotion_choice"],

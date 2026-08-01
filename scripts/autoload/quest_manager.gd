@@ -69,8 +69,14 @@ class Quest:
 	var dungeon_room_set: String = ""  # Room set to use (empty = default)
 	var dungeon_size: String = "MEDIUM"  # Size preset: SMALL, MEDIUM, LARGE, HUGE
 
-	# Choice consequence system - maps choice_id to consequence data
-	# Format: {"choice_id": {"flags_to_set": ["flag1"], "reputation_changes": {"faction_id": 10}, "unlock_follower": "follower_id", "spawn_enemy": "enemy_id_at_location"}}
+	# Choice consequence system - maps choice_id to consequence data.
+	# Supported keys, all optional:
+	#   flags_to_set: ["flag"]                 dialogue flags to raise
+	#   reputation_changes: {faction_id: int}  faction must exist in data/factions
+	#   unlock_follower: "follower_id"         raises the follower_unlocked flag
+	#   spawn_enemy: "enemy_id@location_id"    location half optional
+	#   items_given: ["item_id"]               one of each, handed over on the spot
+	# Any other key is documentation only and is never executed.
 	var choice_consequences: Dictionary = {}
 
 class Objective:
@@ -1681,6 +1687,12 @@ func _execute_choice_consequence(quest_id: String, choice_id: String, consequenc
 	var spawn_enemy: String = consequence.get("spawn_enemy", "")
 	if not spawn_enemy.is_empty():
 		_spawn_consequence_enemy(spawn_enemy)
+
+	# Hand over items the branch promises
+	var items_given: Array = consequence.get("items_given", [])
+	for item_id: Variant in items_given:
+		if item_id is String and InventoryManager:
+			InventoryManager.add_item(item_id as String, 1)
 
 	choice_consequence_applied.emit(quest_id, choice_id)
 

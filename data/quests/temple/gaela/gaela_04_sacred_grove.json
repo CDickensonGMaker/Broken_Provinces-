@@ -41,21 +41,21 @@
 			"flags_to_set": ["sacred_grove_protected"],
 			"reputation_changes": {
 				"church_of_gaela": 30,
-				"dalhurst_merchants": -10
+				"dalhurst": -10
 			}
 		},
 		"allow_limited_logging": {
 			"flags_to_set": ["sacred_grove_compromise"],
 			"reputation_changes": {
 				"church_of_gaela": 20,
-				"dalhurst_merchants": 10
+				"dalhurst": 10
 			}
 		},
 		"find_alternative": {
 			"flags_to_set": ["sacred_grove_alternative"],
 			"reputation_changes": {
 				"church_of_gaela": 25,
-				"dalhurst_merchants": 15
+				"dalhurst": 15
 			}
 		}
 	},

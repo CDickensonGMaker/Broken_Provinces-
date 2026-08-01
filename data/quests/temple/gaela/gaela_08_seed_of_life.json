@@ -59,7 +59,7 @@
 		"faction_reputation": {
 			"church_of_gaela": 50,
 			"church_of_three": 40,
-			"thornfield_citizens": 50
+			"thornfield": 50
 		}
 	},
 	"prerequisites": ["gaela_07_spirit_of_land"],

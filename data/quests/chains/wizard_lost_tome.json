@@ -56,7 +56,7 @@
 		"xp": 500,
 		"items": ["scroll_lightning_bolt"],
 		"faction_reputation": {
-			"wizards_guild": 25
+			"arcane_circle": 25
 		}
 	},
 	"on_complete_flags": ["helvant_grimoire_recovered", "grimoire_pages_missing"],

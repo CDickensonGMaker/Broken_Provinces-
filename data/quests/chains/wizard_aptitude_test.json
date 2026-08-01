@@ -41,7 +41,7 @@
 		"xp": 150,
 		"items": ["scroll_magic_missile"],
 		"faction_reputation": {
-			"wizards_guild": 10
+			"arcane_circle": 10
 		}
 	},
 	"on_complete_flags": ["helvant_accepted_apprentice"],
