@@ -465,8 +465,14 @@ func _get_biome_ground_color(biome: WorldGrid.Biome) -> Color:
 			return Color(0.35, 0.38, 0.25)  # Hilly grass
 		WorldGrid.Biome.ROCKY, WorldGrid.Biome.MOUNTAINS:
 			return Color(0.3, 0.28, 0.25)  # Rocky ground
-		WorldGrid.Biome.COAST, WorldGrid.Biome.DESERT:
+		WorldGrid.Biome.COAST, WorldGrid.Biome.DESERT, WorldGrid.Biome.ROCKY_DESERT:
 			return Color(0.55, 0.50, 0.40)  # Sandy
+		WorldGrid.Biome.WINTER, WorldGrid.Biome.ROCKY_WINTER:
+			return Color(0.78, 0.82, 0.86)  # Snow
+		WorldGrid.Biome.ROCKY_FOREST:
+			return Color(0.24, 0.31, 0.19)  # Forest over stone
+		WorldGrid.Biome.ROCKY_PLAINS:
+			return Color(0.38, 0.37, 0.26)  # Upland pasture
 		_:
 			return Color(0.2, 0.35, 0.15)  # Default forest
 

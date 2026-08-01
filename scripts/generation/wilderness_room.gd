@@ -17,8 +17,11 @@ var seamless_mode: bool = false
 @export var room_size: float = 100.0
 @export var room_seed: int = 0  # 0 = random
 
-## Biome types
-enum Biome { FOREST, PLAINS, SWAMP, HILLS, ROCKY, DESERT }
+## Biome types. Ordinals match TerrainConfig.Biome and are APPEND-ONLY.
+enum Biome {
+	FOREST, PLAINS, SWAMP, HILLS, ROCKY, DESERT,
+	ROCKY_FOREST, ROCKY_PLAINS, WINTER, ROCKY_WINTER, ROCKY_DESERT
+}
 @export var biome: Biome = Biome.FOREST
 
 ## Static texture cache - loaded once, reused across all instances
@@ -35,28 +38,6 @@ static var _texture_cache: Dictionary = {}
 ## Ancient statue spawn limit - only 15 can exist in the entire world
 static var _statues_spawned: int = 0
 const MAX_STATUES: int = 15
-
-## Tile template scenes for biome-based tile selection
-## Maps Biome enum to array of scene paths for hand-crafted tile variations
-const TILE_TEMPLATES: Dictionary = {
-	Biome.FOREST: [
-		"res://scenes/wilderness/tile_forest_01.tscn",
-		"res://scenes/wilderness/tile_forest_02.tscn"
-	],
-	Biome.PLAINS: [
-		"res://scenes/wilderness/tile_plains_01.tscn",
-		"res://scenes/wilderness/tile_plains_02.tscn"
-	],
-	Biome.SWAMP: [
-		"res://scenes/wilderness/tile_swamp_01.tscn"
-	],
-	Biome.HILLS: [
-		"res://scenes/wilderness/tile_plains_01.tscn"  # Fallback to plains
-	],
-	Biome.ROCKY: [
-		"res://scenes/wilderness/tile_plains_02.tscn"  # Fallback to plains
-	]
-}
 
 ## 3D tree models for decorative (non-harvestable) trees
 ## Uses tree_pack_1.1 models - 36 different tree variants for visual variety
@@ -323,7 +304,7 @@ func _setup_materials() -> void:
 		ruin_material.uv1_scale = Vector3(0.5, 0.5, 1.0)  # Tile the texture
 		ruin_material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 
-	match biome:
+	match TerrainConfig.palette_of(biome):
 		Biome.FOREST:
 			ground_material.albedo_color = Color(0.2, 0.35, 0.15)  # Green grass
 			rock_material.albedo_color = Color(0.4, 0.38, 0.35)   # Gray rock
@@ -341,6 +322,12 @@ func _setup_materials() -> void:
 		Biome.ROCKY:
 			ground_material.albedo_color = Color(0.3, 0.28, 0.25)  # Rocky ground
 			rock_material.albedo_color = Color(0.35, 0.32, 0.3)
+		Biome.DESERT:
+			ground_material.albedo_color = Color(0.62, 0.54, 0.35)  # Pale sand
+			rock_material.albedo_color = Color(0.58, 0.48, 0.36)
+		Biome.WINTER:
+			ground_material.albedo_color = Color(0.78, 0.82, 0.86)  # Snow
+			rock_material.albedo_color = Color(0.55, 0.58, 0.62)
 
 
 ## Create ground plane with simple solid color (PS1 style - no complex textures)
@@ -1749,7 +1736,7 @@ func _get_tree_texture() -> Texture2D:
 ## Uses rock type variants in highlands biomes
 func _create_rock() -> Node3D:
 	# Determine if this is a highlands area (more iron ore)
-	var is_highlands: bool = (biome == Biome.ROCKY or biome == Biome.HILLS)
+	var is_highlands: bool = TerrainConfig.is_rocky(biome) or biome == Biome.HILLS
 
 	# Use static factory method which handles rock type selection
 	var rock := HarvestableRock.spawn_random_rock(self, Vector3.ZERO, is_highlands)
@@ -3233,13 +3220,7 @@ func _create_edge_transitions() -> void:
 
 ## Convert WorldGrid.Biome to local Biome enum
 func _world_biome_to_local(world_biome: WorldGrid.Biome) -> int:
-	match world_biome:
-		WorldGrid.Biome.FOREST: return Biome.FOREST
-		WorldGrid.Biome.PLAINS: return Biome.PLAINS
-		WorldGrid.Biome.SWAMP: return Biome.SWAMP
-		WorldGrid.Biome.HILLS: return Biome.HILLS
-		WorldGrid.Biome.ROCKY, WorldGrid.Biome.MOUNTAINS: return Biome.ROCKY
-		_: return Biome.PLAINS
+	return WorldGrid.to_wilderness_biome(world_biome)
 
 
 ## Spawn transition props along an edge based on adjacent biome

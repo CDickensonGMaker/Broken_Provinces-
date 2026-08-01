@@ -18,8 +18,13 @@ const GRID_MAX := Vector2i(7, 31)    # Bottom-right corner relative to Elder Moo
 ## Terrain types
 enum Terrain { BLOCKED, HIGHLANDS, FOREST, WATER, COAST, SWAMP, ROAD, POI, DESERT }
 
-## Biome types matching WildernessRoom.Biome
-enum Biome { FOREST, PLAINS, SWAMP, HILLS, ROCKY, MOUNTAINS, COAST, UNDEAD, HORDE, DESERT }
+## Biome types matching WildernessRoom.Biome.
+## APPEND-ONLY: saved games and World Forge maps store the integer, so no value may be
+## reordered or reused.
+enum Biome {
+	FOREST, PLAINS, SWAMP, HILLS, ROCKY, MOUNTAINS, COAST, UNDEAD, HORDE, DESERT,
+	WINTER, ROCKY_FOREST, ROCKY_PLAINS, ROCKY_WINTER, ROCKY_DESERT
+}
 
 ## Location types for special cells
 enum LocationType { NONE, VILLAGE, TOWN, CITY, CAPITAL, DUNGEON, LANDMARK, BRIDGE, OUTPOST, BLOCKED }
@@ -928,18 +933,24 @@ static func get_discovered_cells() -> Array[Vector2i]:
 ## BIOME CONVERSION
 ## ============================================================================
 
-## Convert to WildernessRoom.Biome int value
-## WildernessRoom.Biome: FOREST=0, PLAINS=1, SWAMP=2, HILLS=3, ROCKY=4
+## Convert to WildernessRoom.Biome int value. The two enums share ordinals for the
+## biomes that exist in both; the ones that do not - COAST, UNDEAD, HORDE - resolve to
+## the nearest ground cover.
 static func to_wilderness_biome(biome: Biome) -> int:
 	match biome:
-		Biome.FOREST: return 0        # FOREST
-		Biome.PLAINS: return 1        # PLAINS
-		Biome.SWAMP: return 2         # SWAMP
-		Biome.HILLS: return 3         # HILLS
-		Biome.ROCKY, Biome.MOUNTAINS: return 4  # ROCKY
-		Biome.DESERT: return 1        # Map to PLAINS (dry grass)
-		Biome.COAST: return 1         # Map to PLAINS (coastal grass)
-		_: return 0
+		Biome.FOREST: return TerrainConfig.Biome.WOODLANDS
+		Biome.PLAINS: return TerrainConfig.Biome.GRASSLANDS
+		Biome.SWAMP: return TerrainConfig.Biome.SWAMP
+		Biome.HILLS: return TerrainConfig.Biome.HILLS
+		Biome.ROCKY, Biome.MOUNTAINS: return TerrainConfig.Biome.ROCKY
+		Biome.DESERT: return TerrainConfig.Biome.DESERT
+		Biome.WINTER: return TerrainConfig.Biome.WINTER
+		Biome.ROCKY_FOREST: return TerrainConfig.Biome.ROCKY_WOODLANDS
+		Biome.ROCKY_PLAINS: return TerrainConfig.Biome.ROCKY_GRASSLANDS
+		Biome.ROCKY_WINTER: return TerrainConfig.Biome.ROCKY_WINTER
+		Biome.ROCKY_DESERT: return TerrainConfig.Biome.ROCKY_DESERT
+		Biome.COAST: return TerrainConfig.Biome.GRASSLANDS
+		_: return TerrainConfig.Biome.WOODLANDS
 
 
 ## ============================================================================
