@@ -61,6 +61,7 @@ EscortManager="*res://scripts/autoload/escort_manager.gd"
 CompanionManager="*res://scripts/autoload/companion_manager.gd"
 GuildRankManager="*res://scripts/autoload/guild_rank_manager.gd"
 WeatherManager="*res://scripts/autoload/weather_manager.gd"
+UIManager="*res://scripts/autoload/ui_manager.gd"
 
 [display]
 

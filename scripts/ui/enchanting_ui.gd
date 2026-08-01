@@ -1,7 +1,9 @@
 ## enchanting_ui.gd - UI for enchanting equipment at enchanting stations
 class_name EnchantingUI
-extends CanvasLayer
+extends BasePopupUI
 
+## Kept for callers that listened before this UI joined BasePopupUI; it fires
+## alongside the inherited ui_closed.
 signal closed
 
 ## Reference to the station that opened this UI
@@ -38,54 +40,26 @@ const SLOT_NAMES: Dictionary = {
 	"amulet": "Amulet"
 }
 
-func _ready() -> void:
-	layer = 100
-	process_mode = Node.PROCESS_MODE_ALWAYS
-	_create_ui()
+func _configure() -> void:
+	popup_tier = Tier.FULLSCREEN
+	# The station owns the pause and the mouse; close() hands control back to it.
+	pauses_game = false
+	starts_visible = true
+	# The table is a deliberate stop, not a glance - only the buttons and ESC
+	# leave it, so a stray click cannot lose a half-chosen enchantment.
+	closes_on_click_outside = false
+
+func _post_build() -> void:
 	_populate_equipment()
 	_update_soulstone_display()
 
-func _create_ui() -> void:
-	# Dark overlay
-	var overlay := ColorRect.new()
-	overlay.color = Color(0, 0, 0, 0.7)
-	overlay.anchors_preset = Control.PRESET_FULL_RECT
-	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(overlay)
-
-	# Main panel (matching shop_ui.gd/crafting_ui.gd pattern)
-	root_panel = PanelContainer.new()
-	root_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	root_panel.offset_left = 60
-	root_panel.offset_top = 80
-	root_panel.offset_right = -60
-	root_panel.offset_bottom = -40
-	add_child(root_panel)
-
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.12, 0.1, 0.15, 0.95)
-	style.border_color = Color(0.5, 0.3, 0.7)
-	style.set_border_width_all(2)
-	style.corner_radius_top_left = 8
-	style.corner_radius_top_right = 8
-	style.corner_radius_bottom_left = 8
-	style.corner_radius_bottom_right = 8
-	style.content_margin_left = 16
-	style.content_margin_right = 16
-	style.content_margin_top = 16
-	style.content_margin_bottom = 16
-	root_panel.add_theme_stylebox_override("panel", style)
-
-	# Main VBox (matching shop_ui.gd pattern)
-	var vbox := VBoxContainer.new()
-	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-	vbox.offset_left = 10
-	vbox.offset_top = 10
-	vbox.offset_right = -10
-	vbox.offset_bottom = -10
+func _build_popup(vbox: VBoxContainer) -> void:
+	root_panel = panel
+	# The arcane variant of the standard panel: same border weight, violet
+	var style := UITheme.make_panel_style(Color(0.12, 0.1, 0.15, 0.95), Color(0.5, 0.3, 0.7))
+	style.set_content_margin_all(16)
+	panel.add_theme_stylebox_override("panel", style)
 	vbox.add_theme_constant_override("separation", 12)
-	root_panel.add_child(vbox)
 
 	# Title
 	title_label = Label.new()
@@ -184,12 +158,14 @@ func _create_ui() -> void:
 	apply_button.custom_minimum_size = Vector2(160, 40)
 	apply_button.disabled = true
 	apply_button.pressed.connect(_on_apply_pressed)
+	_style_button(apply_button)
 	button_hbox.add_child(apply_button)
 
 	close_button = Button.new()
 	close_button.text = "Close"
 	close_button.custom_minimum_size = Vector2(100, 40)
 	close_button.pressed.connect(_on_close_pressed)
+	_style_button(close_button)
 	button_hbox.add_child(close_button)
 
 func _populate_equipment() -> void:
@@ -306,19 +282,19 @@ func _on_apply_pressed() -> void:
 func _on_close_pressed() -> void:
 	close()
 
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
-		close()
-		get_viewport().set_input_as_handled()
-
 func open() -> void:
+	show_popup()
 	visible = true
 	_populate_equipment()
 	_update_soulstone_display()
 
 func close() -> void:
+	# The station unpauses the game and frees this node. Without a station
+	# (dev scenes, the popup check) we do both jobs ourselves.
 	if station and station.has_method("close"):
 		station.close()
-	else:
-		closed.emit()
-		queue_free()
+		return
+
+	super.close()
+	closed.emit()
+	queue_free()

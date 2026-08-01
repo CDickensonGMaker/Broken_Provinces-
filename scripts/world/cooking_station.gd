@@ -10,7 +10,7 @@ var pot_mesh: MeshInstance3D
 var interaction_area: Area3D
 
 ## UI instances
-var crafting_ui: Control = null
+var crafting_ui: CraftingUI = null
 var crafting_ui_script = preload("res://scripts/ui/crafting_ui.gd")
 
 ## PS1-style materials
@@ -160,23 +160,16 @@ func _open_crafting_ui() -> void:
 		crafting_ui.queue_free()
 
 	# Create the UI
-	crafting_ui = Control.new()
-	crafting_ui.set_script(crafting_ui_script)
-	crafting_ui.name = "CraftingUI"
+	crafting_ui = CraftingUI.new()
 
 	# Set station type to cooking (only show Food category)
 	crafting_ui.set("station_type", "cooking")
 
-	# Add to scene tree
-	var canvas := CanvasLayer.new()
-	canvas.name = "CraftingUICanvas"
-	canvas.layer = 100
-	get_tree().current_scene.add_child(canvas)
-	canvas.add_child(crafting_ui)
+	# On the shared popup canvas, above the HUD and outliving this station
+	UIManager.host(crafting_ui, "CraftingUI")
 
 	# Connect close signal
-	if crafting_ui.has_signal("ui_closed"):
-		crafting_ui.ui_closed.connect(_on_crafting_ui_closed.bind(canvas))
+	crafting_ui.ui_closed.connect(_on_crafting_ui_closed)
 
 	# Enter menu mode
 	GameManager.enter_menu()
@@ -184,18 +177,17 @@ func _open_crafting_ui() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 	# Open the UI
-	if crafting_ui.has_method("open"):
-		crafting_ui.open()
+	crafting_ui.open()
 
 
-func _on_crafting_ui_closed(canvas: CanvasLayer) -> void:
+func _on_crafting_ui_closed() -> void:
 	## Handle crafting UI close
 	GameManager.exit_menu()
 	get_tree().paused = false
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-	if canvas and is_instance_valid(canvas):
-		canvas.queue_free()
+	if crafting_ui and is_instance_valid(crafting_ui):
+		crafting_ui.queue_free()
 
 	crafting_ui = null
 

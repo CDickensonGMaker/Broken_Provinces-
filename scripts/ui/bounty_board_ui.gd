@@ -1,7 +1,6 @@
 ## bounty_board_ui.gd - UI for viewing and accepting bounties
-extends Control
-
-signal ui_closed
+class_name BountyBoardUI
+extends BasePopupUI
 
 ## Reference to the bounty board
 var bounty_board: Node = null  # BountyBoard type
@@ -20,77 +19,24 @@ var current_mode: ViewMode = ViewMode.AVAILABLE
 ## Currently selected bounty
 var selected_bounty = null  # BountyBoard.Bounty type
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
-	_create_ui()
+func _configure() -> void:
+	popup_tier = Tier.FULLSCREEN
+	# The board node pauses the game and frees the mouse before it builds us,
+	# and undoes both when it hears ui_closed. We only report.
+	pauses_game = false
+	starts_visible = true
+
+func _post_build() -> void:
 	_refresh_display()
 
-func _input(event: InputEvent) -> void:
-	if not visible:
-		return
-
-	# Close on escape, pause, or tab menu key
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("pause") or event.is_action_pressed("menu"):
-		_close()
-		get_viewport().set_input_as_handled()
-
-## Create the UI layout
-func _create_ui() -> void:
-	# Set root control to fill viewport (matching shop_ui.gd)
-	set_anchors_preset(Control.PRESET_FULL_RECT)
-
-	# Click-outside overlay - clicking this closes the UI
-	var click_outside := Button.new()
-	click_outside.set_anchors_preset(Control.PRESET_FULL_RECT)
-	click_outside.flat = true
-	click_outside.focus_mode = Control.FOCUS_NONE
-	click_outside.mouse_filter = Control.MOUSE_FILTER_STOP
-	click_outside.pressed.connect(_close)
-	add_child(click_outside)
-
-	# Dark overlay (visual only)
-	var overlay := ColorRect.new()
-	overlay.color = Color(0, 0, 0, 0.75)
-	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
-	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(overlay)
-
-	# Main panel - full rect with margins (matching shop_ui.gd)
-	main_panel = PanelContainer.new()
-	main_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	main_panel.mouse_filter = Control.MOUSE_FILTER_STOP  # Block clicks from reaching overlay
-	main_panel.offset_left = 60
-	main_panel.offset_top = 80
-	main_panel.offset_right = -60
-	main_panel.offset_bottom = -40
-
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.08, 0.1)
-	style.border_color = Color(0.3, 0.25, 0.2)
-	style.set_border_width_all(2)
-	main_panel.add_theme_stylebox_override("panel", style)
-	add_child(main_panel)
-
-	var main_vbox := VBoxContainer.new()
-	main_vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-	main_vbox.offset_left = 10
-	main_vbox.offset_top = 10
-	main_vbox.offset_right = -10
-	main_vbox.offset_bottom = -10
+func _build_popup(main_vbox: VBoxContainer) -> void:
+	main_panel = panel
 	main_vbox.add_theme_constant_override("separation", 10)
-	main_panel.add_child(main_vbox)
 
 	# Title
-	var title_label := Label.new()
-	title_label.text = "BOUNTY BOARD"
-	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.add_theme_color_override("font_color", Color(0.9, 0.75, 0.4))
-	title_label.add_theme_font_size_override("font_size", 24)
-	main_vbox.add_child(title_label)
+	main_vbox.add_child(UITheme.make_title("BOUNTY BOARD", 24))
 
-	# Separator
-	var sep := HSeparator.new()
-	main_vbox.add_child(sep)
+	main_vbox.add_child(_make_separator())
 
 	# Tabs
 	tabs_container = HBoxContainer.new()
@@ -101,9 +47,7 @@ func _create_ui() -> void:
 	_create_tab_button("Available", ViewMode.AVAILABLE)
 	_create_tab_button("Active", ViewMode.ACTIVE)
 
-	# Separator
-	var sep2 := HSeparator.new()
-	main_vbox.add_child(sep2)
+	main_vbox.add_child(_make_separator())
 
 	# Content area (split view)
 	var content_hbox := HBoxContainer.new()
@@ -146,7 +90,7 @@ func _create_ui() -> void:
 	var close_btn := Button.new()
 	close_btn.text = "Close [ESC]"
 	close_btn.custom_minimum_size = Vector2(0, 35)
-	close_btn.pressed.connect(_close)
+	close_btn.pressed.connect(close)
 	_style_button(close_btn)
 	main_vbox.add_child(close_btn)
 
@@ -158,26 +102,6 @@ func _create_tab_button(text: String, mode: ViewMode) -> void:
 	btn.pressed.connect(_on_tab_selected.bind(mode))
 	_style_button(btn)
 	tabs_container.add_child(btn)
-
-## Style a button
-func _style_button(btn: Button) -> void:
-	var normal := StyleBoxFlat.new()
-	normal.bg_color = Color(0.12, 0.12, 0.15)
-	normal.border_color = Color(0.3, 0.25, 0.2)
-	normal.set_border_width_all(1)
-	# No corner radius - match other UIs
-
-	var hover := StyleBoxFlat.new()
-	hover.bg_color = Color(0.25, 0.2, 0.15)
-	hover.border_color = Color(0.8, 0.6, 0.2)
-	hover.set_border_width_all(1)
-	# No corner radius - match other UIs
-
-	btn.add_theme_stylebox_override("normal", normal)
-	btn.add_theme_stylebox_override("hover", hover)
-	btn.add_theme_stylebox_override("pressed", hover)
-	btn.add_theme_color_override("font_color", Color(0.9, 0.85, 0.75))
-	btn.add_theme_color_override("font_hover_color", Color(0.9, 0.75, 0.4))
 
 ## Handle tab selection
 func _on_tab_selected(mode: ViewMode) -> void:
@@ -451,6 +375,3 @@ func _on_abandon_pressed() -> void:
 	selected_bounty = null
 	_refresh_display()
 
-## Close the UI
-func _close() -> void:
-	ui_closed.emit()

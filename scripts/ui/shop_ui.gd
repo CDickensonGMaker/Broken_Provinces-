@@ -1,21 +1,7 @@
 ## shop_ui.gd - Barter-style shop UI for buying and selling items
 ## Uses cart-based selection system with transaction summary
 class_name ShopUI
-extends Control
-
-signal ui_closed
-
-# Dark gothic colors (matching game_menu.gd and repair_station_ui.gd)
-const COL_BG = Color(0.08, 0.08, 0.1)
-const COL_PANEL = Color(0.12, 0.12, 0.15)
-const COL_BORDER = Color(0.3, 0.25, 0.2)
-const COL_TEXT = Color(0.9, 0.85, 0.75)
-const COL_DIM = Color(0.5, 0.5, 0.5)
-const COL_GOLD = Color(0.8, 0.6, 0.2)
-const COL_SELECT = Color(0.25, 0.2, 0.15)
-const COL_GREEN = Color(0.3, 0.8, 0.3)
-const COL_RED = Color(0.8, 0.3, 0.3)
-const COL_YELLOW = Color(1.0, 0.8, 0.3)
+extends BasePopupUI
 
 # Reference to merchant
 var merchant: Node = null
@@ -54,55 +40,13 @@ var hover_tooltip: PanelContainer = null
 var hovered_player_idx: int = -1
 var hovered_shop_idx: int = -1
 
-func _ready() -> void:
-	visible = false
-	process_mode = Node.PROCESS_MODE_ALWAYS
-	_build_ui()
+func _configure() -> void:
+	popup_tier = Tier.FULLSCREEN
+	pauses_game = true
+	# Deliberately no click-outside: a stray click used to discard the cart.
+	closes_on_click_outside = false
 
-func _input(event: InputEvent) -> void:
-	if not visible:
-		return
-
-	# Close on escape, pause, or tab menu key
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("pause") or event.is_action_pressed("menu"):
-		close()
-		get_viewport().set_input_as_handled()
-
-func _build_ui() -> void:
-	# Set root control to fill viewport
-	set_anchors_preset(Control.PRESET_FULL_RECT)
-
-	# Dark overlay (visual only)
-	var overlay = ColorRect.new()
-	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
-	overlay.color = Color(0, 0, 0, 0.75)
-	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(overlay)
-
-	# Main panel (matching game_menu.gd size)
-	var main = PanelContainer.new()
-	main.set_anchors_preset(Control.PRESET_FULL_RECT)
-	main.mouse_filter = Control.MOUSE_FILTER_STOP  # Block clicks from reaching overlay
-	main.offset_left = 60
-	main.offset_top = 80
-	main.offset_right = -60
-	main.offset_bottom = -40
-	var main_style = StyleBoxFlat.new()
-	main_style.bg_color = COL_BG
-	main_style.border_color = COL_BORDER
-	main_style.set_border_width_all(2)
-	main.add_theme_stylebox_override("panel", main_style)
-	add_child(main)
-
-	var vbox = VBoxContainer.new()
-	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-	vbox.offset_left = 10
-	vbox.offset_top = 10
-	vbox.offset_right = -10
-	vbox.offset_bottom = -10
-	vbox.add_theme_constant_override("separation", 8)
-	main.add_child(vbox)
-
+func _build_popup(vbox: VBoxContainer) -> void:
 	# Title
 	title_label = Label.new()
 	title_label.text = "MERCHANT"
@@ -976,54 +920,25 @@ func _style_button(btn: Button) -> void:
 	btn.add_theme_color_override("font_pressed_color", COL_GOLD)
 	btn.add_theme_color_override("font_disabled_color", COL_DIM)
 
-func _make_separator() -> Control:
-	var sep = HSeparator.new()
-	sep.add_theme_constant_override("separation", 5)
-	return sep
-
 ## One shop UI exists at a time, owned here. Every merchant, quest giver,
 ## innkeeper and traveling merchant opens through this rather than building its
 ## own Control, CanvasLayer and pause handling.
-static var _instance: ShopUI = null
-static var _canvas: CanvasLayer = null
-
-
 ## Open the shop for a merchant-like node, creating the shared instance if needed
 static func open_for(merchant_node: Node) -> ShopUI:
-	var tree: SceneTree = Engine.get_main_loop() as SceneTree
-	if tree == null:
+	var instance: ShopUI = UIManager.get_or_create("ShopUI", ShopUI) as ShopUI
+	if instance == null:
 		return null
 
-	var host: Node = tree.current_scene
-	if host == null:
-		return null
-
-	if not is_instance_valid(_instance) or not is_instance_valid(_canvas) or _canvas.get_parent() != host:
-		if is_instance_valid(_canvas):
-			_canvas.queue_free()
-		_canvas = CanvasLayer.new()
-		_canvas.name = "ShopUICanvas"
-		_canvas.layer = 100
-		_canvas.process_mode = Node.PROCESS_MODE_ALWAYS
-		host.add_child(_canvas)
-
-		_instance = ShopUI.new()
-		_instance.name = "ShopUI"
-		_canvas.add_child(_instance)
-
-	_instance.open(merchant_node)
-	return _instance
+	instance.open(merchant_node)
+	return instance
 
 
 func open(p_merchant: Node = null) -> void:
 	merchant = p_merchant
+	show_popup()
 	visible = true
 	_clear_carts()
 	_refresh_display()
-
-	GameManager.enter_menu()
-	get_tree().paused = true
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 	# Update title if we have a merchant name
 	if merchant and merchant.get("merchant_name"):
@@ -1048,15 +963,9 @@ func close() -> void:
 	if not visible:
 		return
 
-	visible = false
 	merchant = null
 	_hide_hover_tooltip()
-
-	GameManager.exit_menu()
-	get_tree().paused = false
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
-	ui_closed.emit()
+	super.close()
 
 # ==================== HOVER TOOLTIP SYSTEM ====================
 

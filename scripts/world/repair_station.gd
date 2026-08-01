@@ -11,7 +11,7 @@ var interaction_area: Area3D
 
 ## UI instances
 var repair_ui: Control = null
-var crafting_ui: Control = null
+var crafting_ui: CraftingUI = null
 var choice_ui: Control = null
 var repair_ui_script = preload("res://scripts/ui/repair_station_ui.gd")
 var crafting_ui_script = preload("res://scripts/ui/crafting_ui.gd")
@@ -250,27 +250,19 @@ func _open_crafting_ui() -> void:
 		crafting_ui.queue_free()
 
 	# Create the UI
-	crafting_ui = Control.new()
-	crafting_ui.set_script(crafting_ui_script)
-	crafting_ui.name = "CraftingUI"
+	crafting_ui = CraftingUI.new()
 
 	# Set station type to blacksmith (only show Weapon, Armor, Tool, Material - no potions)
 	crafting_ui.set("station_type", "blacksmith")
 
-	# Add to scene tree
-	var canvas := CanvasLayer.new()
-	canvas.name = "CraftingUICanvas"
-	canvas.layer = 100
-	get_tree().current_scene.add_child(canvas)
-	canvas.add_child(crafting_ui)
+	# On the shared popup canvas, above the HUD and outliving this station
+	UIManager.host(crafting_ui, "CraftingUI")
 
 	# Connect close signal
-	if crafting_ui.has_signal("ui_closed"):
-		crafting_ui.ui_closed.connect(_on_crafting_ui_closed.bind(canvas))
+	crafting_ui.ui_closed.connect(_on_crafting_ui_closed)
 
 	# Open the UI
-	if crafting_ui.has_method("open"):
-		crafting_ui.open()
+	crafting_ui.open()
 
 
 func _on_repair_ui_closed(canvas: CanvasLayer) -> void:
@@ -278,19 +270,19 @@ func _on_repair_ui_closed(canvas: CanvasLayer) -> void:
 	GameManager.exit_menu()
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-	if canvas and is_instance_valid(canvas):
-		canvas.queue_free()
+	if crafting_ui and is_instance_valid(crafting_ui):
+		crafting_ui.queue_free()
 
 	repair_ui = null
 
 
-func _on_crafting_ui_closed(canvas: CanvasLayer) -> void:
+func _on_crafting_ui_closed() -> void:
 	## Handle crafting UI close
 	GameManager.exit_menu()
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-	if canvas and is_instance_valid(canvas):
-		canvas.queue_free()
+	if crafting_ui and is_instance_valid(crafting_ui):
+		crafting_ui.queue_free()
 
 	crafting_ui = null
 

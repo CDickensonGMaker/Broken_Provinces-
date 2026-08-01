@@ -104,10 +104,12 @@ func open() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 	# The UI builds itself in code; there is no scene file for it
+	# On the shared popup canvas, not on this 3D table: a table that streams out
+	# while its menu is open used to take the menu with it, and a menu parented
+	# to the scene drew under the HUD.
 	enchanting_ui = EnchantingUI.new()
-	enchanting_ui.name = "EnchantingUI"
 	enchanting_ui.station = self
-	get_tree().current_scene.add_child(enchanting_ui)
+	UIManager.host(enchanting_ui, "EnchantingUI")
 	enchanting_ui.open()
 
 	station_opened.emit()

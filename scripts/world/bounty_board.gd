@@ -64,8 +64,7 @@ var completed_bounty_ids: Array[String] = []  # Prevent repeats until refresh
 var bounty_templates: Dictionary = {}
 
 ## UI reference
-var bounty_ui: Control = null
-var bounty_canvas: CanvasLayer = null
+var bounty_ui: BountyBoardUI = null
 
 ## Unique ID counter for bounties
 var _bounty_id_counter: int = 0
@@ -399,41 +398,29 @@ func _open_bounty_ui() -> void:
 	GameManager.enter_menu()
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
-	# Load and instantiate UI
-	var ui_script := preload("res://scripts/ui/bounty_board_ui.gd")
-	bounty_ui = Control.new()
-	bounty_ui.set_script(ui_script)
-	bounty_ui.name = "BountyBoardUI"
-	bounty_ui.set("bounty_board", self)
+	# On the shared popup canvas, not on this 3D board: a board that streams out
+	# or dies while its menu is open used to take the menu with it and strand
+	# the game paused with the mouse captured.
+	bounty_ui = BountyBoardUI.new()
+	bounty_ui.bounty_board = self
+	UIManager.host(bounty_ui, "BountyBoardUI")
 
-	# Parent to the scene, not to this 3D board: a board that streams out or dies
-	# while its menu is open used to take the menu with it and strand the game
-	# paused with the mouse captured.
-	bounty_canvas = CanvasLayer.new()
-	bounty_canvas.name = "BountyBoardCanvas"
-	bounty_canvas.layer = 100
-	bounty_canvas.process_mode = Node.PROCESS_MODE_ALWAYS
-	get_tree().current_scene.add_child(bounty_canvas)
-	bounty_canvas.add_child(bounty_ui)
-
-	if bounty_ui.has_signal("ui_closed"):
-		bounty_ui.ui_closed.connect(_on_bounty_ui_closed.bind(bounty_canvas))
+	bounty_ui.ui_closed.connect(_on_bounty_ui_closed)
 
 ## Close bounty UI
-func _on_bounty_ui_closed(canvas: CanvasLayer) -> void:
+func _on_bounty_ui_closed() -> void:
 	GameManager.exit_menu()
 	get_tree().paused = false
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-	if canvas and is_instance_valid(canvas):
-		canvas.queue_free()
+	if bounty_ui and is_instance_valid(bounty_ui):
+		bounty_ui.queue_free()
 	bounty_ui = null
-	bounty_canvas = null
 
 
 func _exit_tree() -> void:
 	if bounty_ui and is_instance_valid(bounty_ui):
-		_on_bounty_ui_closed(bounty_canvas)
+		_on_bounty_ui_closed()
 
 ## Accept a bounty
 func accept_bounty(bounty: Bounty) -> bool:
