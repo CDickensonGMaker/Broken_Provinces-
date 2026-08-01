@@ -21,6 +21,7 @@ var current_mode: ViewMode = ViewMode.AVAILABLE
 var selected_bounty = null  # BountyBoard.Bounty type
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_create_ui()
 	_refresh_display()
 
@@ -58,11 +59,10 @@ func _create_ui() -> void:
 	main_panel = PanelContainer.new()
 	main_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	main_panel.mouse_filter = Control.MOUSE_FILTER_STOP  # Block clicks from reaching overlay
-	main_panel.offset_left = 20
-	main_panel.offset_top = 20
-	main_panel.offset_right = -20
-	main_panel.offset_bottom = -20
-	main_panel.process_mode = Node.PROCESS_MODE_ALWAYS
+	main_panel.offset_left = 60
+	main_panel.offset_top = 80
+	main_panel.offset_right = -60
+	main_panel.offset_bottom = -40
 
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.08, 0.08, 0.1)
@@ -115,6 +115,8 @@ func _create_ui() -> void:
 	var list_scroll := ScrollContainer.new()
 	list_scroll.custom_minimum_size = Vector2(280, 0)
 	list_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	list_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list_scroll.size_flags_stretch_ratio = 1.0
 	content_hbox.add_child(list_scroll)
 
 	bounty_list_container = VBoxContainer.new()
@@ -126,6 +128,8 @@ func _create_ui() -> void:
 	bounty_detail_panel = PanelContainer.new()
 	bounty_detail_panel.custom_minimum_size = Vector2(320, 0)
 	bounty_detail_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	bounty_detail_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bounty_detail_panel.size_flags_stretch_ratio = 2.0
 
 	var detail_style := StyleBoxFlat.new()
 	detail_style.bg_color = Color(0.06, 0.06, 0.08)
@@ -143,7 +147,6 @@ func _create_ui() -> void:
 	close_btn.text = "Close [ESC]"
 	close_btn.custom_minimum_size = Vector2(0, 35)
 	close_btn.pressed.connect(_close)
-	close_btn.process_mode = Node.PROCESS_MODE_ALWAYS
 	_style_button(close_btn)
 	main_vbox.add_child(close_btn)
 
@@ -153,7 +156,6 @@ func _create_tab_button(text: String, mode: ViewMode) -> void:
 	btn.text = text
 	btn.custom_minimum_size = Vector2(100, 30)
 	btn.pressed.connect(_on_tab_selected.bind(mode))
-	btn.process_mode = Node.PROCESS_MODE_ALWAYS
 	_style_button(btn)
 	tabs_container.add_child(btn)
 
@@ -225,7 +227,6 @@ func _create_bounty_list_item(bounty) -> void:
 	var item_btn := Button.new()
 	item_btn.custom_minimum_size = Vector2(0, 50)
 	item_btn.pressed.connect(_on_bounty_selected.bind(bounty))
-	item_btn.process_mode = Node.PROCESS_MODE_ALWAYS
 
 	# Style based on tier and completion status
 	var bg_color: Color = Color(0.1, 0.1, 0.12)
@@ -387,14 +388,12 @@ func _refresh_detail_panel() -> void:
 				_style_action_button(turn_in_btn, Color(0.4, 0.4, 0.4))
 			turn_in_btn.custom_minimum_size = Vector2(0, 40)
 			turn_in_btn.pressed.connect(_on_turn_in_pressed)
-			turn_in_btn.process_mode = Node.PROCESS_MODE_ALWAYS
 			content_container.add_child(turn_in_btn)
 		else:
 			var abandon_btn := Button.new()
 			abandon_btn.text = "Abandon Bounty"
 			abandon_btn.custom_minimum_size = Vector2(0, 40)
 			abandon_btn.pressed.connect(_on_abandon_pressed)
-			abandon_btn.process_mode = Node.PROCESS_MODE_ALWAYS
 			_style_action_button(abandon_btn, Color(0.7, 0.3, 0.3))
 			content_container.add_child(abandon_btn)
 	else:
@@ -402,7 +401,6 @@ func _refresh_detail_panel() -> void:
 		accept_btn.text = "Accept Bounty"
 		accept_btn.custom_minimum_size = Vector2(0, 40)
 		accept_btn.pressed.connect(_on_accept_pressed)
-		accept_btn.process_mode = Node.PROCESS_MODE_ALWAYS
 		_style_action_button(accept_btn, Color(0.3, 0.5, 0.8))
 		content_container.add_child(accept_btn)
 
