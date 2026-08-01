@@ -8,7 +8,9 @@ extends Resource
 ## Version 4: Added StatsSaveData, JournalSaveData (notes, bestiary, codex unlocks)
 ## Version 5: Added SoulstoneSaveData (soulstone economy system)
 ## Version 6: Added WeatherSaveData (visual weather system)
-const SAVE_VERSION := 6
+## Version 7: Added WorldStateSaveData (persistent world facts and modifications);
+##            FactionSaveData now carries ongoing effects, hostility and crime days
+const SAVE_VERSION := 7
 
 ## Metadata
 @export var version: int = SAVE_VERSION
@@ -94,6 +96,9 @@ var companion_data = null  # CompanionSaveData
 ## Weather system section
 var weather_data = null  # WeatherSaveData
 
+## World state section (persistent world facts and modifications)
+var world_state_data = null  # WorldStateSaveData
+
 ## Audio settings section
 @export_group("Settings")
 @export var audio_settings: Dictionary = {}
@@ -125,6 +130,7 @@ func _init() -> void:
 	escort_data = EscortSaveData.new()
 	companion_data = CompanionSaveData.new()
 	weather_data = WeatherSaveData.new()
+	world_state_data = WorldStateSaveData.new()
 
 ## Convert to dictionary for JSON serialization
 func to_dict() -> Dictionary:
@@ -159,6 +165,7 @@ func to_dict() -> Dictionary:
 		"escorts": escort_data.to_dict() if escort_data else {},
 		"companions": companion_data.to_dict() if companion_data else {},
 		"weather": weather_data.to_dict() if weather_data else {},
+		"world_state": world_state_data.to_dict() if world_state_data else {},
 		"audio_settings": audio_settings
 	}
 
@@ -221,6 +228,8 @@ func from_dict(data: Dictionary) -> void:
 		companion_data.from_dict(data.get("companions", {}))
 	if weather_data:
 		weather_data.from_dict(data.get("weather", {}))
+	if world_state_data:
+		world_state_data.from_dict(data.get("world_state", {}))
 
 	audio_settings = data.get("audio_settings", {})
 
@@ -819,6 +828,27 @@ class MoralitySaveData:
 		hours_since_last_decay = data.get("hours_since_last_decay", 0.0)
 
 
+## World state save data structure
+## Facts about the world that outlive any single quest, plus the standing
+## modifications those facts imply (razed settlements, opened passes).
+class WorldStateSaveData:
+	## World facts (flag -> bool/int/float/String)
+	var flags: Dictionary = {}
+
+	## Standing world modifications (mod_id -> payload Dictionary)
+	var world_modifications: Dictionary = {}
+
+	func to_dict() -> Dictionary:
+		return {
+			"flags": flags,
+			"world_modifications": world_modifications
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		flags = data.get("flags", {})
+		world_modifications = data.get("world_modifications", {})
+
+
 ## Faction system save data structure
 class FactionSaveData:
 	## Player reputation per faction (faction_id -> reputation int)
@@ -827,15 +857,35 @@ class FactionSaveData:
 	## Faction memberships (faction_id -> {rank: String, joined_time: float})
 	var memberships: Dictionary = {}
 
+	## Ongoing daily effects (effect_id -> effect config Dictionary)
+	var ongoing_effects: Dictionary = {}
+
+	## Standing hostility per faction (faction_id -> 0..100)
+	var hostility: Dictionary = {}
+
+	## Last crime day per faction (faction_id -> in-game day)
+	var last_crime_day: Dictionary = {}
+
+	## Last reputation decay day per faction (faction_id -> in-game day)
+	var last_decay_day: Dictionary = {}
+
 	func to_dict() -> Dictionary:
 		return {
 			"reputations": reputations,
-			"memberships": memberships
+			"memberships": memberships,
+			"ongoing_effects": ongoing_effects,
+			"hostility": hostility,
+			"last_crime_day": last_crime_day,
+			"last_decay_day": last_decay_day
 		}
 
 	func from_dict(data: Dictionary) -> void:
 		reputations = data.get("reputations", {})
 		memberships = data.get("memberships", {})
+		ongoing_effects = data.get("ongoing_effects", {})
+		hostility = data.get("hostility", {})
+		last_crime_day = data.get("last_crime_day", {})
+		last_decay_day = data.get("last_decay_day", {})
 
 
 ## NPC disposition modifier save data structure

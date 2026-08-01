@@ -1731,10 +1731,108 @@ What EXISTS:
 - **NEW: Extended reward types** (follower, soulstone, unlock_area)
 - **NEW: Daily faction penalties** (accumulating rep loss with clear_penalty support)
 
+- **NEW: OR-objective groups** (`group` on an objective; any member settles it)
+- **NEW: WorldState autoload** (durable world facts + world modifications, saved)
+- **NEW: Pre-completion** (`world_condition` on an objective settles it on offer)
+
 What's MISSING:
-- OR objectives (can't do "kill OR intimidate")
-- Pre-completion detection (no world state checks)
 - Branching quest paths (JSON structure exists, needs more wiring)
+- `COMPLETE_QUEST_OBJECTIVE` DialogueAction type
+
+**OR-objective groups (JSON format):**
+
+Objectives that share a `group` id are alternative answers to the same problem.
+Settling any one of them settles the group; the rest are marked `is_settled`
+and the quest stops waiting on them. The journal shows those as
+`[-] ... (settled another way)` - the player did not do them, and does not owe
+them. Every existing quest loads unchanged: an objective with no `group` stands
+alone exactly as before.
+
+```json
+{
+  "objective_groups": {
+    "settle_the_camp": { "description": "Settle the camp, however you like", "required": 1 }
+  },
+  "objectives": [
+    { "id": "kill_leader",       "type": "kill",     "target": "bandit_leader", "group": "settle_the_camp" },
+    { "id": "intimidate_leader", "type": "interact", "target": "camp_parley",   "group": "settle_the_camp" },
+    { "id": "bribe_leader",      "type": "interact", "target": "camp_bribe",    "group": "settle_the_camp" }
+  ]
+}
+```
+
+`objective_groups` is optional decoration - a group works without an entry.
+`required` (default 1) is how many members must complete before the group
+settles, for the rare "any two of these three" case.
+
+**World-state pre-completion (JSON format):**
+
+```json
+{ "id": "clear_camp", "type": "kill", "target": "bandit", "required_count": 6,
+  "world_condition": { "flag": "bandit_camp_cleared" } }
+```
+
+When the quest is offered, any objective whose `world_condition` already holds
+completes immediately with `completion_method = "already_done"`. If that
+settles every objective, the quest completes on offer - the New Vegas "you
+already did this, here's your money" moment.
+
+Condition shapes (see `WorldState.evaluate_condition`):
+`{"flag": "x"}` · `{"flag": "x", "equals": "razed"}` · `{"flag": "x", "at_least": 3}` ·
+`{"world_modification": "mountain_pass"}` · `{"all": [...]}` · `{"any": [...]}` ·
+`{"not": {...}}`. An empty condition is always false, so a typo can never
+hand the player a free quest.
+
+**WorldState autoload API:**
+
+FlagManager holds the player's paperwork (devotee, guild rank, dialogue flags).
+WorldState holds facts about the *world* that outlive any single quest.
+
+```gdscript
+WorldState.set_flag("bandit_camp_cleared")             # value defaults to true
+WorldState.set_flag("kazan_dun_state", "fallen")       # bool, int, float or String
+WorldState.get_flag(flag, default_value) -> Variant
+WorldState.has_flag(flag) -> bool                      # recorded AND truthy
+WorldState.clear_flag(flag) -> void
+WorldState.get_all_flags() -> Dictionary
+
+WorldState.set_world_modification("mountain_pass", {"cells": [[3, -4]], "passable": true})
+WorldState.get_world_modification(mod_id) -> Dictionary
+WorldState.has_world_modification(mod_id) -> bool
+WorldState.clear_world_modification(mod_id) -> void
+WorldState.get_world_modifications() -> Dictionary
+
+WorldState.evaluate_condition(condition: Dictionary) -> bool
+
+signal flag_changed(flag: String, old_value: Variant, new_value: Variant)
+signal world_modification_changed(mod_id: String, data: Dictionary)
+```
+
+Boolean facts are mirrored one way onto FlagManager, so dialogue conditions and
+`flag_prerequisites` can read world facts with the vocabulary they already
+speak. Writing a flag on FlagManager does NOT make it a world fact.
+
+Named facts the engine reads directly: `bandit_camp_cleared`,
+`bandit_camp_joined`, `player_is_bandit_boss`, `kazan_dun_helped`,
+`kazan_dun_fallen`, `dwarf_king_body_recovered`, `mountain_pass_open`.
+
+**Quest field regression guard:**
+
+`start_quest()` and `from_dict()` build the active quest by copying the template
+field by field, by hand. Fields have gone missing that way twice
+(`choice_consequences`, fixed in 6452717; `dungeon_spawn`, found by this guard).
+`tools/check_quest_engine.tscn` reads the property list off `QuestManager.Quest`
+and `QuestManager.Objective` and diffs the started quest - and the saved-then-
+reloaded quest - against the template, so a field added to the class and
+forgotten in the copy fails the day it is written.
+
+```powershell
+& $godot45 --headless --path . res://tools/check_quest_engine.tscn
+```
+
+**When you add a field to Quest or Objective you must also add a value for it
+to `tools/fixtures/quest_field_reference.json`**, or the guard fails, telling
+you so. That is the point: the guard can only protect fields it knows about.
 
 **New Quest Features (Implemented):**
 
@@ -1800,7 +1898,7 @@ Quest System (`quest_manager.gd`):
 - Now tracks `completion_method` for each objective
 - Now parses `choice_consequences` from JSON
 - Now handles BETRAYED state separately from FAILED
-- Still needs OR objectives and pre-completion checks
+- Now settles OR-objective groups and pre-completes against WorldState
 
 Dialogue ↔ Quest Integration:
 - Dialogue can START quests via action
@@ -1814,9 +1912,9 @@ Dialogue ↔ Quest Integration:
 2. Wire skill checks to quests - Success/fail routes to different quest branches
 3. Conversation → Quest bridge - Intimidating bandit leader completes "deal with bandits"
 
-**Phase 3: World State**
-1. Create WorldState autoload - Track flags like `bandits_camp_x_cleared`
-2. Pre-completion checks - When quest offered, check if already done
+**Phase 3: World State** - DONE
+1. ~~Create WorldState autoload~~ - built, see the JSON and API above
+2. ~~Pre-completion checks~~ - built, `world_condition` on an objective
 3. Auto-complete system - Skip objectives that world state shows are met
 
 **Phase 4: Advanced**
@@ -2547,13 +2645,13 @@ These features are deferred until after initial playtest release:
 
 ### Dynamic Quest System
 - Multiple completion paths per quest (see PLANNED FEATURES section)
-- OR objectives, method-based rewards
-- World state tracking and pre-completion detection
+- ~~OR objectives~~ BUILT; method-based rewards still open
+- ~~World state tracking and pre-completion detection~~ BUILT
 
 ### Quest-Triggered World Changes
 - **Mountain Pass Opening** - Clear blocked mountain cells between middle and eastern regions after main quest chain
-- WorldState autoload to track persistent world modifications
-- `world_modifications` dictionary saved/loaded with game
+- ~~WorldState autoload to track persistent world modifications~~ BUILT - see the Dynamic Quest System section
+- ~~`world_modifications` dictionary saved/loaded with game~~ BUILT - `WorldState.set_world_modification()`
 - QuestManager hook: when specific quests complete, trigger terrain changes
 - CellStreamer respawns affected cells with new terrain
 - World map updates to show newly accessible areas

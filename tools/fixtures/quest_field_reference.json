@@ -1,0 +1,93 @@
+{
+  "_comment": "Reference quest carrying every documented quest and objective field. It is never offered to a player - tools/check_quest_engine.gd loads it, instantiates it, saves it and reloads it, then diffs every field against this template. A field that stops surviving any of those three trips fails the check. When you add a field to QuestManager.Quest or QuestManager.Objective, add it here too.",
+  "id": "_field_reference_quest",
+  "title": "Field Reference",
+  "description": "Every documented field, in one quest.",
+  "is_main_quest": true,
+  "quest_source": "board_bounty",
+  "giver_npc_id": "_reference_giver",
+  "giver_npc_type": "guard",
+  "giver_region": "elder_moor",
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "_reference_turnin",
+  "turn_in_region": "dalhurst",
+  "turn_in_zone": "dalhurst_square",
+  "next_quest": "_field_reference_followup",
+  "trigger_item": "bread",
+  "faction": "town_guard",
+  "cooldown_days": 3,
+  "possible_zones": [],
+  "prerequisites": ["_field_reference_prereq"],
+  "flag_prerequisites": ["_field_reference_flag"],
+  "forbidden_flags": ["_field_reference_forbidden_flag"],
+  "dungeon_type": "crypt",
+  "dungeon_seed": 4242,
+  "dungeon_room_set": "crypt_rooms",
+  "dungeon_size": "SMALL",
+  "starter_items": [{"id": "bread", "quantity": 2}],
+  "quest_items": ["bread"],
+  "spawn_on_accept": [
+    {"type": "camp", "location": "elder_moor", "coords": [1.0, 2.0, 3.0], "loot_tier": "common"}
+  ],
+  "rewards": {
+    "gold": 100,
+    "xp": 50,
+    "items": [{"id": "bread", "quantity": 1}],
+    "faction_reputation": {"town_guard": 5},
+    "follower": "_reference_follower",
+    "soulstone": "_reference_soulstone",
+    "unlock_area": "_reference_area_flag"
+  },
+  "choice_consequences": {
+    "spare_him": {
+      "flags_to_set": ["_reference_spared"],
+      "reputation_changes": {"town_guard": -5},
+      "unlock_follower": "_reference_follower",
+      "spawn_enemy": "human_bandit@elder_moor",
+      "items_given": ["bread"]
+    }
+  },
+  "objective_groups": {
+    "settle_the_camp": {
+      "description": "Settle the camp, however you like",
+      "required": 1
+    }
+  },
+  "objectives": [
+    {
+      "id": "kill_the_leader",
+      "description": "Kill the camp's leader",
+      "type": "kill",
+      "target": "bandit_leader",
+      "target_zone": "bandit_hideout",
+      "required_count": 1,
+      "is_optional": false,
+      "group": "settle_the_camp",
+      "time_limit": 0,
+      "fail_quest_on_timeout": false,
+      "world_condition": {"flag": "_field_reference_world_fact"},
+      "dungeon_spawn": {
+        "dungeon_id": "_reference_dungeon",
+        "room_type": "boss",
+        "spawn_type": "enemy",
+        "entity_id": "bandit_leader",
+        "guaranteed_count": 1
+      }
+    },
+    {
+      "id": "buy_the_leader_off",
+      "description": "Pay the camp's leader to move on",
+      "type": "choice",
+      "target": "bribe",
+      "required_count": 1,
+      "group": "settle_the_camp"
+    },
+    {
+      "id": "report_back",
+      "description": "Report back",
+      "type": "talk",
+      "target": "_reference_turnin",
+      "required_count": 1
+    }
+  ]
+}

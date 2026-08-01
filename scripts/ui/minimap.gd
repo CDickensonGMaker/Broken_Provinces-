@@ -529,7 +529,7 @@ func _update_quest_markers() -> void:
 		else:
 			# Show markers for each incomplete objective
 			for obj in quest.objectives:
-				if obj.is_completed or obj.is_optional:
+				if obj.is_satisfied() or obj.is_optional:
 					continue
 
 				var color: Color = COLOR_QUEST_MAIN if is_main else COLOR_QUEST_SIDE

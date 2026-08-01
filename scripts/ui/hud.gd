@@ -1125,7 +1125,7 @@ func _on_objective_completed(quest_id: String, _objective_id: String) -> void:
 		# Count remaining objectives
 		var remaining := 0
 		for obj in quest.objectives:
-			if not obj.is_completed and not obj.is_optional:
+			if not obj.is_satisfied() and not obj.is_optional:
 				remaining += 1
 		if remaining > 0:
 			log_quest_updated("Objective complete (%d remaining)" % remaining)

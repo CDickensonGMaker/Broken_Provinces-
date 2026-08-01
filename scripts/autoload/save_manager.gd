@@ -476,6 +476,10 @@ func _collect_save_data():
 	if save_data.weather_data:
 		_collect_weather_data(save_data.weather_data)
 
+	# World state data (persistent world facts and modifications)
+	if save_data.world_state_data:
+		_collect_world_state_data(save_data.world_state_data)
+
 	return save_data
 
 ## Collect player data
@@ -797,6 +801,10 @@ func _apply_save_data(save_data) -> void:
 	# Restore weather system data
 	if save_data.weather_data:
 		_apply_weather_data(save_data.weather_data)
+
+	# Restore world state (must land before anything that reads world facts)
+	if save_data.world_state_data:
+		_apply_world_state_data(save_data.world_state_data)
 
 ## Apply player data
 func _apply_player_data(player_data) -> void:
@@ -1137,6 +1145,10 @@ func _collect_faction_data(faction_save_data) -> void:
 	var faction_dict: Dictionary = FactionManager.to_dict()
 	faction_save_data.reputations = faction_dict.get("reputations", {})
 	faction_save_data.memberships = faction_dict.get("memberships", {})
+	faction_save_data.ongoing_effects = faction_dict.get("ongoing_effects", {})
+	faction_save_data.hostility = faction_dict.get("hostility", {})
+	faction_save_data.last_crime_day = faction_dict.get("last_crime_day", {})
+	faction_save_data.last_decay_day = faction_dict.get("last_decay_day", {})
 
 
 ## Apply faction data
@@ -1146,7 +1158,34 @@ func _apply_faction_data(faction_save_data) -> void:
 
 	FactionManager.from_dict({
 		"reputations": faction_save_data.reputations,
-		"memberships": faction_save_data.memberships
+		"memberships": faction_save_data.memberships,
+		"ongoing_effects": faction_save_data.ongoing_effects,
+		"hostility": faction_save_data.hostility,
+		"last_crime_day": faction_save_data.last_crime_day,
+		"last_decay_day": faction_save_data.last_decay_day
+	})
+
+
+## Collect world state data
+func _collect_world_state_data(world_state_save_data) -> void:
+	if not has_node("/root/WorldState"):
+		return
+
+	var world_state := get_node("/root/WorldState")
+	var world_state_dict: Dictionary = world_state.to_dict()
+	world_state_save_data.flags = world_state_dict.get("flags", {})
+	world_state_save_data.world_modifications = world_state_dict.get("world_modifications", {})
+
+
+## Apply world state data
+func _apply_world_state_data(world_state_save_data) -> void:
+	if not has_node("/root/WorldState"):
+		return
+
+	var world_state := get_node("/root/WorldState")
+	world_state.from_dict({
+		"flags": world_state_save_data.flags,
+		"world_modifications": world_state_save_data.world_modifications
 	})
 
 
@@ -1898,6 +1937,10 @@ func reset_world_state() -> void:
 	# Reset faction reputations
 	if FactionManager:
 		FactionManager.reset()
+
+	# Reset world facts
+	if has_node("/root/WorldState"):
+		get_node("/root/WorldState").reset_for_new_game()
 
 	# Reset codex
 	if CodexManager:

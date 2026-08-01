@@ -967,7 +967,7 @@ func _update_compass_quest_marker(player: Node3D, yaw_degrees: float, ppd: float
 		var target_objective: QuestManager.Objective = null
 
 		for obj in target_quest.objectives:
-			if not obj.is_completed and not obj.is_optional:
+			if not obj.is_satisfied() and not obj.is_optional:
 				target_objective = obj
 				break
 

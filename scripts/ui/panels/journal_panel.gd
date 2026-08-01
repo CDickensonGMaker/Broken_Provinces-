@@ -362,12 +362,18 @@ func _on_quest_selected(index: int) -> void:
 		for obj in objectives:
 			var text: String = obj.description if "description" in obj else "???"
 			var done: bool = obj.is_completed if "is_completed" in obj else false
+			var settled: bool = obj.is_settled if "is_settled" in obj else false
 			var current: int = obj.current_count if "current_count" in obj else 0
 			var required: int = obj.required_count if "required_count" in obj else 1
 
-			if required > 1:
+			if required > 1 and not settled:
 				text += " (%d/%d)" % [current, required]
-			text = ("[X] " if done else "[ ] ") + text
+			# A settled objective is one the player answered another way. It is
+			# not a task he did, and not a task still waiting on him.
+			if settled:
+				text = "[-] " + text + " (settled another way)"
+			else:
+				text = ("[X] " if done else "[ ] ") + text
 			obj_list.add_item(text)
 
 	# Update track button text based on quest state

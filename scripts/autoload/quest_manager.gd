@@ -79,6 +79,15 @@ class Quest:
 	# Any other key is documentation only and is never executed.
 	var choice_consequences: Dictionary = {}
 
+	# OR-objective groups. Objectives carrying the same `group` id are
+	# alternatives: settling any one of them settles the group. This dictionary
+	# is optional decoration for those groups - a group works without an entry
+	# here, and an entry without members does nothing.
+	#   group_id: {description: String, required: int}
+	# `required` is how many members must complete before the group is settled;
+	# it defaults to 1, which is the OR case.
+	var objective_groups: Dictionary = {}
+
 class Objective:
 	var id: String
 	var description: String
@@ -92,6 +101,25 @@ class Objective:
 	var completion_method: String = ""  # How this objective was completed (for multi-path quests)
 	var time_limit: int = 0  # Time limit in seconds (0 = no limit)
 	var fail_quest_on_timeout: bool = true  # If true, failing this timed objective fails the entire quest
+
+	## OR-group membership. Empty means this objective stands alone. Objectives
+	## sharing a group id are alternative ways to settle the same problem.
+	var group: String = ""
+
+	## True when a sibling in this objective's group settled it instead. The
+	## player never did this one and the journal should not claim he did, but
+	## the quest no longer waits on it.
+	var is_settled: bool = false
+
+	## World-state condition that pre-completes this objective the moment the
+	## quest is offered - the "you already did this" case. Shape is documented
+	## on WorldState.evaluate_condition().
+	var world_condition: Dictionary = {}
+
+	## The quest no longer waits on this objective, whether the player did it
+	## or a sibling settled the group.
+	func is_satisfied() -> bool:
+		return is_completed or is_settled
 
 	## Dungeon spawn configuration (for spawning quest-specific content in dungeons)
 	## Format: {dungeon_id, room_type, spawn_type, entity_id, guaranteed_count}
@@ -262,6 +290,7 @@ func _on_timed_objective_expired(quest_id: String, objective_id: String) -> void
 		target_obj.is_completed = true
 		target_obj.completion_method = "timeout_failed"
 		quest_updated.emit(quest_id, objective_id)
+		_check_quest_completion(quest_id)
 
 
 ## Start a timer for a timed objective
@@ -591,7 +620,17 @@ func _parse_quest(data: Dictionary) -> Quest:
 		obj.fail_quest_on_timeout = obj_data.get("fail_quest_on_timeout", true)
 		# Dungeon spawn configuration for quest-specific content
 		obj.dungeon_spawn = obj_data.get("dungeon_spawn", {})
+		# OR-group membership and world-state pre-completion
+		obj.group = obj_data.get("group", "")
+		var obj_condition: Variant = obj_data.get("world_condition", {})
+		if obj_condition is Dictionary:
+			obj.world_condition = (obj_condition as Dictionary).duplicate(true)
 		quest.objectives.append(obj)
+
+	# Optional descriptions for the OR groups the objectives declared
+	var groups_data: Variant = data.get("objective_groups", {})
+	if groups_data is Dictionary:
+		quest.objective_groups = (groups_data as Dictionary).duplicate(true)
 
 	# Starter items (given to player when quest starts)
 	var starter_items_data: Array = data.get("starter_items", [])
@@ -746,10 +785,16 @@ func start_quest(quest_id: String) -> bool:
 		# Timed objective support
 		new_obj.time_limit = obj.time_limit
 		new_obj.fail_quest_on_timeout = obj.fail_quest_on_timeout
+		new_obj.dungeon_spawn = obj.dungeon_spawn.duplicate(true)
+		new_obj.group = obj.group
+		new_obj.world_condition = obj.world_condition.duplicate(true)
 		quest.objectives.append(new_obj)
 
 	# Copy the authored branch consequences so choices can fire while active
 	quest.choice_consequences = template.choice_consequences.duplicate(true)
+	quest.objective_groups = template.objective_groups.duplicate(true)
+	for starter: Dictionary in template.starter_items:
+		quest.starter_items.append(starter.duplicate())
 
 	# Copy spawn_on_accept, quest_items, and faction
 	for spawn: Dictionary in template.spawn_on_accept:
@@ -775,6 +820,12 @@ func start_quest(quest_id: String) -> bool:
 
 	# Check existing inventory for "collect" objectives (pre-collection support)
 	_check_existing_inventory_for_quest(quest)
+
+	# Settle anything the world says the player already did, then let any
+	# OR groups those settlements belong to close behind them.
+	_apply_world_pre_completion(quest)
+	_settle_objective_groups(quest)
+	_check_quest_completion(quest_id)
 
 	# Cache objective locations for navigation
 	_cache_objective_locations(quest_id)
@@ -1226,7 +1277,7 @@ func are_prior_objectives_complete(quest: Quest, target_obj: Objective) -> bool:
 		if obj.is_optional:
 			continue
 		# If any prior required objective is incomplete, return false
-		if not obj.is_completed:
+		if not obj.is_satisfied():
 			return false
 	return true
 
@@ -1463,6 +1514,67 @@ func on_escort_died(escort_id: String, failed_quest_id: String = "") -> void:
 
 ## Check if quest objectives are all complete
 ## AUTO_COMPLETE quests will complete automatically, others require turn-in
+## Settle any objective whose world-state condition already holds when the
+## quest is offered. This is the "you already did this" moment: the player
+## cleared the camp weeks ago, so the man asking him to clear it is thanking
+## him instead of sending him.
+func _apply_world_pre_completion(quest: Quest) -> void:
+	var world_state: Node = get_node_or_null("/root/WorldState")
+	if world_state == null:
+		return
+
+	for obj: Objective in quest.objectives:
+		if obj.is_completed or obj.world_condition.is_empty():
+			continue
+		if not world_state.evaluate_condition(obj.world_condition):
+			continue
+
+		obj.current_count = obj.required_count
+		obj.is_completed = true
+		obj.completion_method = "already_done"
+		quest_updated.emit(quest.id, obj.id)
+		objective_completed.emit(quest.id, obj.id)
+
+
+## Close OR groups. Objectives sharing a `group` id are alternative answers to
+## the same problem - kill the leader, or intimidate him, or buy him off. Once
+## enough members are complete (one, unless the group asks for more) the rest
+## stop being work the quest is waiting on. They are marked settled rather than
+## completed so the journal can say the player chose a different road instead
+## of claiming he walked all three.
+## Returns true if anything changed.
+func _settle_objective_groups(quest: Quest) -> bool:
+	var completed_per_group: Dictionary = {}
+	var has_groups: bool = false
+
+	for obj: Objective in quest.objectives:
+		if obj.group.is_empty():
+			continue
+		has_groups = true
+		if obj.is_completed:
+			completed_per_group[obj.group] = int(completed_per_group.get(obj.group, 0)) + 1
+
+	if not has_groups:
+		return false
+
+	var changed: bool = false
+	for obj: Objective in quest.objectives:
+		if obj.group.is_empty() or obj.is_completed or obj.is_settled:
+			continue
+
+		var required: int = 1
+		var group_info: Variant = quest.objective_groups.get(obj.group, null)
+		if group_info is Dictionary:
+			required = maxi(1, int((group_info as Dictionary).get("required", 1)))
+
+		if int(completed_per_group.get(obj.group, 0)) >= required:
+			obj.is_settled = true
+			changed = true
+			quest_updated.emit(quest.id, obj.id)
+
+	return changed
+
+
 func _check_quest_completion(quest_id: String) -> void:
 	if not quests.has(quest_id):
 		return
@@ -1470,6 +1582,11 @@ func _check_quest_completion(quest_id: String) -> void:
 	var quest: Quest = quests[quest_id]
 	if quest.state != Enums.QuestState.ACTIVE:
 		return
+
+	# Close any OR group whose alternatives are now moot. This must happen
+	# before the auto-complete gate below, and for every quest, not only the
+	# auto-completing ones - a hand-turned-in quest still needs its groups shut.
+	_settle_objective_groups(quest)
 
 	# Only auto-complete if turn_in_type is AUTO_COMPLETE
 	if quest.turn_in_type != Enums.TurnInType.AUTO_COMPLETE:
@@ -1486,7 +1603,7 @@ func are_objectives_complete(quest_id: String) -> bool:
 
 	var quest: Quest = quests[quest_id]
 	for obj in quest.objectives:
-		if not obj.is_optional and not obj.is_completed:
+		if not obj.is_optional and not obj.is_satisfied():
 			return false
 	return true
 
@@ -2140,7 +2257,7 @@ func _are_primary_objectives_complete(quest_id: String) -> bool:
 		if obj.type == "talk":
 			continue
 		# If any non-talk required objective is incomplete, return false
-		if not obj.is_completed:
+		if not obj.is_satisfied():
 			return false
 	return true
 
@@ -2544,7 +2661,8 @@ func to_dict() -> Dictionary:
 				"id": obj.id,
 				"current_count": obj.current_count,
 				"is_completed": obj.is_completed,
-				"completion_method": obj.completion_method  # NEW: How objective was completed
+				"completion_method": obj.completion_method,  # NEW: How objective was completed
+				"is_settled": obj.is_settled  # A sibling in this objective's OR group answered it
 			})
 		data.quests[quest_id] = quest_data
 	return data
@@ -2573,6 +2691,19 @@ func from_dict(data: Dictionary) -> void:
 		quest.id = template.id
 		quest.title = template.title
 		quest.description = template.description
+		quest.is_main_quest = template.is_main_quest
+		quest.trigger_item = template.trigger_item
+		quest.faction = template.faction
+		quest.cooldown_days = template.cooldown_days
+		quest.objective_groups = template.objective_groups.duplicate(true)
+		for zone: String in template.possible_zones:
+			quest.possible_zones.append(zone)
+		for spawn: Dictionary in template.spawn_on_accept:
+			quest.spawn_on_accept.append(spawn.duplicate(true))
+		for starter: Dictionary in template.starter_items:
+			quest.starter_items.append(starter.duplicate())
+		for quest_item_id: String in template.quest_items:
+			quest.quest_items.append(quest_item_id)
 		quest.state = quests_data[quest_id].get("state", Enums.QuestState.ACTIVE)
 		quest.completion_state = quests_data[quest_id].get("completion_state", Enums.QuestCompletionState.NONE)
 		quest.rewards = template.rewards.duplicate()
@@ -2616,6 +2747,9 @@ func from_dict(data: Dictionary) -> void:
 			# Timed objective settings from template
 			obj.time_limit = t_obj.time_limit
 			obj.fail_quest_on_timeout = t_obj.fail_quest_on_timeout
+			obj.dungeon_spawn = t_obj.dungeon_spawn.duplicate(true)
+			obj.group = t_obj.group
+			obj.world_condition = t_obj.world_condition.duplicate(true)
 
 			# Restore progress
 			for saved in saved_objectives:
@@ -2623,6 +2757,7 @@ func from_dict(data: Dictionary) -> void:
 					obj.current_count = saved.get("current_count", 0)
 					obj.is_completed = saved.get("is_completed", false)
 					obj.completion_method = saved.get("completion_method", "")
+					obj.is_settled = saved.get("is_settled", false)
 					break
 
 			quest.objectives.append(obj)
