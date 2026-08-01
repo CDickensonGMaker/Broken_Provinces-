@@ -2019,20 +2019,7 @@ func _create_fallen_tree() -> Node3D:
 ## Get floor texture based on biome (randomly picks from available)
 ## Uses only approved floor assets - NO plant/grass textures
 func _get_floor_texture() -> Texture2D:
-	# Only use the 5 approved floor textures across all biomes
-	var textures: Array[String] = [
-		"res://assets/textures/environment/floors/plains_floor1.png",
-		"res://assets/textures/environment/floors/plains_floor2.png",
-		"res://assets/textures/environment/floors/plains_floor3.png",
-		"res://assets/textures/environment/floors/leaves_full.png",
-		"res://assets/textures/environment/floors/leaves_half.png"
-	]
-
-	if textures.is_empty():
-		return null
-
-	var path: String = textures[rng.randi() % textures.size()]
-	return load(path)
+	return BiomePalette.pick_floor_texture(biome, rng)
 
 
 ## Get road/cobblestone texture (randomly picks from stone floor textures)

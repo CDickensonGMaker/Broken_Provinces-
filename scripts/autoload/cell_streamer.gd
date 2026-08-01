@@ -477,68 +477,12 @@ func _get_biome_ground_color(biome: WorldGrid.Biome) -> Color:
 			return Color(0.2, 0.35, 0.15)  # Default forest
 
 
-## Get floor texture for a biome (randomly picks from available textures)
-## Textures in: assets/textures/environment/floors/ and assets/sprites/environment/ground/
+## Get floor texture for a biome. The table itself lives in BiomePalette so the flat
+## ground fallback here and the terrain mesh in WildernessRoom cannot disagree.
 func _get_biome_floor_texture(biome: WorldGrid.Biome) -> Texture2D:
-	var textures: Array[String] = []
-
-	match biome:
-		WorldGrid.Biome.FOREST:
-			textures = [
-				"res://assets/textures/environment/floors/leaves_full.png",
-				"res://assets/textures/environment/floors/leaves_half.png",
-				"res://assets/sprites/environment/ground/grassland_1.png",
-				"res://assets/sprites/environment/ground/grassland_2.png",
-				"res://assets/sprites/environment/ground/grassland_3.png",
-			]
-		WorldGrid.Biome.PLAINS:
-			textures = [
-				"res://assets/textures/environment/floors/plains_floor1.png",
-				"res://assets/textures/environment/floors/plains_floor2.png",
-				"res://assets/textures/environment/floors/plains_floor3.png",
-				"res://assets/sprites/environment/ground/grassland_1.png",
-				"res://assets/sprites/environment/ground/grassland_2.png",
-			]
-		WorldGrid.Biome.SWAMP:
-			textures = [
-				"res://assets/textures/environment/floors/swamp_flood1.png",
-				"res://assets/textures/environment/floors/swamp_flood2.png",
-				"res://assets/textures/environment/floors/leaves_half.png",
-			]
-		WorldGrid.Biome.HILLS:
-			textures = [
-				"res://assets/textures/environment/floors/plains_floor2.png",
-				"res://assets/sprites/environment/ground/grassland_1.png",
-				"res://assets/textures/environment/floors/rockhill_floor1.png",
-			]
-		WorldGrid.Biome.ROCKY, WorldGrid.Biome.MOUNTAINS:
-			textures = [
-				"res://assets/textures/environment/floors/rockhill_floor1.png",
-				"res://assets/textures/environment/floors/rockhill_floor2.png",
-				"res://assets/textures/environment/floors/rockhill_floor3.png",
-			]
-		WorldGrid.Biome.COAST, WorldGrid.Biome.DESERT:
-			textures = [
-				"res://assets/textures/environment/floors/plains_floor1.png",
-				"res://assets/textures/environment/floors/plains_floor2.png",
-			]
-		_:
-			textures = [
-				"res://assets/textures/environment/floors/plains_floor1.png",
-				"res://assets/sprites/environment/ground/grassland_1.png",
-			]
-
-	# Randomly pick a texture
-	if textures.is_empty():
-		return null
-
-	var idx: int = randi() % textures.size()
-	var tex_path: String = textures[idx]
-
-	if ResourceLoader.exists(tex_path):
-		return load(tex_path) as Texture2D
-
-	return null
+	var rng := RandomNumberGenerator.new()
+	rng.seed = GameManager.world_seed + int(biome)
+	return BiomePalette.pick_floor_texture(WorldGrid.to_wilderness_biome(biome), rng)
 
 
 ## Unload a cell
