@@ -68,6 +68,11 @@ const DISPOSITION_ALLIED: int = 90
 ## "alchemist" entries map onto the closest existing NPC archetype (guard, hunter,
 ## scholar). Tokens with no reasonable NPC-archetype equivalent (e.g. "cultist",
 ## "grave_digger") are deliberately omitted so those responses stay generic/unrestricted.
+## How much more likely an archetype-tagged line is than a generic one, when both
+## are eligible. Three means a guard sounds like a guard roughly three times in
+## four while still having the villager lines left to draw on.
+const ARCHETYPE_WEIGHT_BONUS: float = 3.0
+
 const ARCHETYPE_TOKEN_MAP: Dictionary = {
 	"generic_villager": NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
 	"farmer": NPCKnowledgeProfile.Archetype.FARMER,
@@ -111,6 +116,14 @@ var response_pools: Dictionary = {}
 ## Response pools organized by archetype, then topic
 ## Format: Archetype -> {TopicType -> Array[ConversationResponse]}
 var archetype_pools: Dictionary = {}
+
+## How many responses landed in each tier at load. Counted so the three-tier
+## system can be seen working rather than assumed - for years tier 1 held nothing
+## at all and nobody could tell, because a silent fallback to tier 3 looks
+## exactly like a working conversation, just a repetitive one.
+var _tier1_registered: int = 0
+var _tier2_registered: int = 0
+var _tier3_registered: int = 0
 
 ## Unique responses for specific NPCs
 ## Format: npc_id -> {TopicType -> Array[ConversationResponse]}
@@ -237,6 +250,11 @@ func _load_response_pools() -> void:
 		"career_topics.json"
 	]
 
+	# Per-NPC pools are dropped into conversation_pools/unique/ rather than listed
+	# above, so adding a named NPC's own voice never means editing this file.
+	for unique_path: String in _list_unique_pool_files(pool_dir):
+		pool_files.append(unique_path)
+
 	var total_responses := 0
 	for file_name: String in pool_files:
 		var pool_path := pool_dir + file_name
@@ -275,6 +293,28 @@ func _load_response_pools() -> void:
 			push_warning("ConversationSystem: weather.tres exists but failed to load as ConversationResponsePool: %s" % weather_tres_path)
 	else:
 		push_warning("ConversationSystem: weather.tres not found at %s" % weather_tres_path)
+
+	Log.d("[ConversationSystem] %d responses loaded - tier 1 (unique) %d, tier 2 (archetype) %d, tier 3 (generic) %d" % [
+		total_responses, _tier1_registered, _tier2_registered, _tier3_registered
+	])
+
+
+## List the per-NPC pool files under conversation_pools/unique/, as paths
+## relative to the pool directory. Returns empty if the folder does not exist.
+func _list_unique_pool_files(pool_dir: String) -> Array[String]:
+	var found: Array[String] = []
+	var unique_dir := pool_dir + "unique/"
+	if not DirAccess.dir_exists_absolute(unique_dir):
+		return found
+
+	for file_name: String in DirAccess.get_files_at(unique_dir):
+		# Exported builds serve .json through the import system with a suffix
+		var clean_name: String = file_name.trim_suffix(".remap")
+		if clean_name.ends_with(".json"):
+			found.append("unique/" + clean_name)
+
+	found.sort()
+	return found
 
 
 ## Register all responses from a pool (legacy .tres support)
@@ -339,11 +379,16 @@ func _load_responses_from_dict(pool_data: Dictionary) -> int:
 				if condition:
 					response.conditions.append(condition)
 
-		# Resolve archetype restriction (if any) from the pool_id + response_id.
-		# career_greetings/career_topics content is authored per-archetype but was
-		# previously dumped into the shared generic pool with no gating at all.
-		var resolved_archetype: int = _resolve_archetype_for_response(pool_id, response.response_id)
+		# Who may say this. An explicit "archetype" field on the response (or on the
+		# pool) wins; otherwise fall back to reading the token out of the response_id,
+		# which is how all the existing content declares it.
+		var resolved_archetype: int = _read_declared_archetype(resp_dict, pool_data)
+		if resolved_archetype == -1:
+			resolved_archetype = _resolve_archetype_for_response(pool_id, response.response_id)
 		response.required_archetype = resolved_archetype
+
+		# Tier 1: content written for one named NPC and nobody else.
+		var unique_npc_ids: Array[String] = _read_declared_npc_ids(resp_dict, pool_data)
 
 		# Route greetings and farewells to their separate pools. career_greetings has no
 		# TopicType dimension to key an archetype_pools bucket by (these are greeting-slot
@@ -354,16 +399,24 @@ func _load_responses_from_dict(pool_data: Dictionary) -> int:
 			greeting_pool.append(response)
 		elif pool_id == "farewells":
 			farewell_pool.append(response)
-		elif pool_id == "career_topics" and resolved_archetype != -1:
-			# Real Tier 2 (archetype) content - only NPCs of this archetype offer as a
-			# candidate; select_response() already prefers archetype tier over generic.
+		elif not unique_npc_ids.is_empty():
+			# Tier 1 (unique). select_response() reaches for this first, so a named
+			# NPC answers in his own words before falling back to his trade's.
+			for npc_id: String in unique_npc_ids:
+				register_unique_response(npc_id, response.topic_type, response)
+			_tier1_registered += 1
+		elif resolved_archetype != -1:
+			# Tier 2 (archetype) - only NPCs of this archetype offer it as a candidate;
+			# select_response() already prefers the archetype tier over generic.
 			var archetype_for_registration: NPCKnowledgeProfile.Archetype = resolved_archetype as NPCKnowledgeProfile.Archetype
 			register_archetype_response(archetype_for_registration, response.topic_type, response)
+			_tier2_registered += 1
 		else:
-			# Generic Tier 3 fallback. Includes career_topics entries whose token had no
-			# NPC-archetype equivalent (e.g. "cultist", "grave_digger") - required_archetype
-			# stays -1 for those, so they remain unrestricted/available to any NPC.
+			# Generic Tier 3 fallback. Includes entries whose token had no NPC-archetype
+			# equivalent (e.g. "cultist", "grave_digger") - required_archetype stays -1
+			# for those, so they remain unrestricted/available to any NPC.
 			register_response(response.topic_type, response)
+			_tier3_registered += 1
 		count += 1
 
 	return count
@@ -382,14 +435,14 @@ func _parse_greeting_archetype_token(response_id: String) -> String:
 	return remainder.substr(0, to_index)
 
 
-## Parse the archetype token from a career_topics response_id.
-## Format: "topic_<player_career_token>_<label>" - the career token is checked
-## against ARCHETYPE_TOKEN_MAP (checking a two-word token like "grave_digger" first,
-## since some player careers are two words). Returns "" if no token could be extracted.
-func _parse_topic_archetype_token(response_id: String) -> String:
-	if not response_id.begins_with("topic_"):
+## Parse the archetype token that follows a response_id's leading prefix.
+## Format: "<prefix>_<archetype_token>_<label>" - the token is checked against
+## ARCHETYPE_TOKEN_MAP (trying a two-word token like "grave_digger" first, since
+## some tokens are two words). Returns "" if no token could be extracted.
+func _parse_prefixed_archetype_token(response_id: String, prefix: String) -> String:
+	if not response_id.begins_with(prefix):
 		return ""
-	var remainder: String = response_id.substr(len("topic_"))
+	var remainder: String = response_id.substr(len(prefix))
 	var parts: PackedStringArray = remainder.split("_")
 	if parts.is_empty():
 		return ""
@@ -398,6 +451,23 @@ func _parse_topic_archetype_token(response_id: String) -> String:
 		if ARCHETYPE_TOKEN_MAP.has(two_word_token):
 			return two_word_token
 	return parts[0]
+
+
+## Pools whose response_ids name the SPEAKER's archetype, and the id prefix to
+## strip before reading the token.
+##
+## The distinction matters and is the whole reason this is a list rather than a
+## rule. In `personal` and `directions` the token is who is talking - a
+## "personal_priest_chronos_1" line is a priest talking about his own faith, and
+## a farmer must never say it. In `local_news` and `rumors` the same-looking
+## token is who is being talked ABOUT - "news_gossip_blacksmith" is gossip about
+## the smith, and anyone in town may carry it. Those pools stay generic on
+## purpose; do not add them here.
+const SPEAKER_SCOPED_POOLS: Dictionary = {
+	"career_topics": "topic_",
+	"personal": "personal_",
+	"directions": "dir_",
+}
 
 
 ## Resolve the required_archetype value (NPCKnowledgeProfile.Archetype int, or -1 for
@@ -409,8 +479,9 @@ func _resolve_archetype_for_response(pool_id: String, response_id: String) -> in
 	var token: String = ""
 	if pool_id == "career_greetings":
 		token = _parse_greeting_archetype_token(response_id)
-	elif pool_id == "career_topics":
-		token = _parse_topic_archetype_token(response_id)
+	elif SPEAKER_SCOPED_POOLS.has(pool_id):
+		var prefix: String = SPEAKER_SCOPED_POOLS[pool_id]
+		token = _parse_prefixed_archetype_token(response_id, prefix)
 	else:
 		return -1
 
@@ -419,6 +490,45 @@ func _resolve_archetype_for_response(pool_id: String, response_id: String) -> in
 
 	var archetype_value: int = ARCHETYPE_TOKEN_MAP[token]
 	return archetype_value
+
+
+## Read an explicit archetype declaration off a response or its pool.
+## Accepts a name ("priest") or a raw NPCKnowledgeProfile.Archetype int.
+## Returns -1 when nothing is declared.
+func _read_declared_archetype(resp_dict: Dictionary, pool_data: Dictionary) -> int:
+	var declared: Variant = resp_dict.get("archetype", pool_data.get("archetype", null))
+	if declared == null:
+		return -1
+	if declared is int:
+		return declared
+	var token: String = str(declared).to_lower()
+	if ARCHETYPE_TOKEN_MAP.has(token):
+		var mapped: int = ARCHETYPE_TOKEN_MAP[token]
+		return mapped
+	push_warning("ConversationSystem: unknown archetype '%s' on response '%s'" % [
+		token, resp_dict.get("response_id", "?")
+	])
+	return -1
+
+
+## Read the NPC ids a response is unique to, off the response or its pool.
+## Accepts "npc_id" (one) or "npc_ids" (several). Empty means the response is
+## not per-NPC content.
+func _read_declared_npc_ids(resp_dict: Dictionary, pool_data: Dictionary) -> Array[String]:
+	var ids: Array[String] = []
+
+	var single: Variant = resp_dict.get("npc_id", pool_data.get("npc_id", ""))
+	if single is String and not (single as String).is_empty():
+		ids.append(single)
+
+	var many: Variant = resp_dict.get("npc_ids", pool_data.get("npc_ids", []))
+	if many is Array:
+		for entry: Variant in many:
+			var id_text: String = str(entry)
+			if not id_text.is_empty() and id_text not in ids:
+				ids.append(id_text)
+
+	return ids
 
 
 ## Parse a DialogueAction from a JSON dictionary
@@ -775,8 +885,12 @@ func select_topic(topic_type: ConversationTopic.TopicType) -> void:
 	response_delivered.emit(response, current_context)
 
 
-## Select an appropriate response using three-tier system
-## Priority: unique (per-NPC) -> archetype -> generic
+## Select an appropriate response using the three-tier system.
+##
+## Tier 1 (a named NPC's own words) wins outright when it has anything to say -
+## if Tharin has a line about his father's mill, that is the line.
+## Tiers 2 and 3 are then drawn from together, with archetype content weighted
+## ARCHETYPE_WEIGHT_BONUS higher than generic. See the note in the body.
 func select_response(topic_type: ConversationTopic.TopicType) -> ConversationResponse:
 	if not current_context:
 		return null
@@ -794,19 +908,25 @@ func select_response(topic_type: ConversationTopic.TopicType) -> ConversationRes
 			if not filtered.is_empty():
 				return _weighted_select(filtered, profile)
 
-	# Tier 2: Check archetype-specific responses
+	# Tiers 2 and 3 are drawn from together, not one instead of the other.
+	#
+	# Strict preference was the obvious reading and it is the wrong one. A guard
+	# has four lines written for guards and there are thirty-eight villager lines
+	# he could also plausibly say; if the archetype tier wins outright he says one
+	# of four, forever, in every town. Answering in character must not mean
+	# answering from a pool of four. So the archetype lines join the generic ones
+	# and carry a weight bonus instead - he sounds like a guard most of the time
+	# and still has something new to say the tenth time you ask.
+	var pooled: Array = []
 	if profile and archetype_pools.has(profile.archetype):
 		var archetype_pool: Dictionary = archetype_pools[profile.archetype]
 		if archetype_pool.has(topic_type):
-			var candidates: Array = archetype_pool[topic_type]
-			var filtered := _filter_responses(candidates, profile, disposition)
-			if not filtered.is_empty():
-				return _weighted_select(filtered, profile)
-
-	# Tier 3: Fall back to generic responses
+			pooled.append_array(archetype_pool[topic_type])
 	if response_pools.has(topic_type):
-		var candidates: Array = response_pools[topic_type]
-		var filtered := _filter_responses(candidates, profile, disposition)
+		pooled.append_array(response_pools[topic_type])
+
+	if not pooled.is_empty():
+		var filtered := _filter_responses(pooled, profile, disposition)
 		if not filtered.is_empty():
 			return _weighted_select(filtered, profile)
 
@@ -2486,6 +2606,11 @@ func _weighted_select(responses: Array, profile: NPCKnowledgeProfile) -> Convers
 	for response: Variant in responses:
 		var resp: ConversationResponse = response
 		var weight: float = resp.get_selection_weight(profile)
+
+		# Content written for this speaker's trade beats content written for
+		# nobody in particular, without shutting the generic pool out entirely.
+		if resp.required_archetype != -1:
+			weight *= ARCHETYPE_WEIGHT_BONUS
 
 		weights.append(weight)
 		total_weight += weight
