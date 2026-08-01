@@ -18,7 +18,7 @@ const MIN_ARCANA_LORE: int = 3
 @onready var particle_effect: GPUParticles3D = $ParticleEffect
 
 ## UI reference (created when opened)
-var enchanting_ui: Control = null
+var enchanting_ui: EnchantingUI = null
 var is_open: bool = false
 
 func _ready() -> void:
@@ -100,15 +100,15 @@ func open() -> void:
 
 	is_open = true
 	GameManager.enter_menu()
+	get_tree().paused = true
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
-	# Load and show enchanting UI
-	var ui_scene := load("res://scenes/ui/enchanting_ui.tscn")
-	if ui_scene:
-		enchanting_ui = ui_scene.instantiate()
-		enchanting_ui.station = self
-		get_tree().root.add_child(enchanting_ui)
-		if enchanting_ui.has_method("open"):
-			enchanting_ui.open()
+	# The UI builds itself in code; there is no scene file for it
+	enchanting_ui = EnchantingUI.new()
+	enchanting_ui.name = "EnchantingUI"
+	enchanting_ui.station = self
+	get_tree().current_scene.add_child(enchanting_ui)
+	enchanting_ui.open()
 
 	station_opened.emit()
 
@@ -119,6 +119,8 @@ func close() -> void:
 
 	is_open = false
 	GameManager.exit_menu()
+	get_tree().paused = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 	if enchanting_ui and is_instance_valid(enchanting_ui):
 		if enchanting_ui.has_method("close"):

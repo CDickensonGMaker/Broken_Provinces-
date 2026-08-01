@@ -40,6 +40,8 @@ const COL_RED := Color(0.8, 0.4, 0.4)
 const COL_GREEN := Color(0.4, 0.8, 0.4)
 
 func _ready() -> void:
+	layer = 100
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_create_ui()
 	_populate_effects_library()
 	_update_preview()

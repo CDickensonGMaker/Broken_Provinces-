@@ -15,7 +15,7 @@ signal altar_closed
 @onready var particle_effect: GPUParticles3D = $ParticleEffect
 
 ## UI reference
-var spell_maker_ui: Control = null
+var spell_maker_ui: SpellMakerUI = null
 var is_open: bool = false
 
 func _ready() -> void:
@@ -109,15 +109,15 @@ func open() -> void:
 
 	is_open = true
 	GameManager.enter_menu()
+	get_tree().paused = true
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
-	# Load and show spell maker UI
-	var ui_scene := load("res://scenes/ui/spell_maker_ui.tscn")
-	if ui_scene:
-		spell_maker_ui = ui_scene.instantiate()
-		spell_maker_ui.altar = self
-		get_tree().root.add_child(spell_maker_ui)
-		if spell_maker_ui.has_method("open"):
-			spell_maker_ui.open()
+	# The UI builds itself in code; there is no scene file for it
+	spell_maker_ui = SpellMakerUI.new()
+	spell_maker_ui.name = "SpellMakerUI"
+	spell_maker_ui.altar = self
+	get_tree().current_scene.add_child(spell_maker_ui)
+	spell_maker_ui.open()
 
 	altar_opened.emit()
 
@@ -128,6 +128,8 @@ func close() -> void:
 
 	is_open = false
 	GameManager.exit_menu()
+	get_tree().paused = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 	if spell_maker_ui and is_instance_valid(spell_maker_ui):
 		if spell_maker_ui.has_method("close"):

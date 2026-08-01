@@ -39,6 +39,8 @@ const SLOT_NAMES: Dictionary = {
 }
 
 func _ready() -> void:
+	layer = 100
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_create_ui()
 	_populate_equipment()
 	_update_soulstone_display()

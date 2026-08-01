@@ -235,6 +235,7 @@ func _open_crafting_ui() -> void:
 
 	# Enter menu mode
 	GameManager.enter_menu()
+	get_tree().paused = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 	# Open the UI
@@ -245,6 +246,7 @@ func _open_crafting_ui() -> void:
 func _on_crafting_ui_closed(canvas: CanvasLayer) -> void:
 	## Handle crafting UI close
 	GameManager.exit_menu()
+	get_tree().paused = false
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 	if canvas and is_instance_valid(canvas):

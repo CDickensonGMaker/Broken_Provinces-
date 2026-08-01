@@ -50,6 +50,7 @@ const STATION_CATEGORIES := {
 
 func _ready() -> void:
 	visible = false
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_build_ui()
 
 
