@@ -38,7 +38,7 @@
 	"rewards": {
 		"gold": 100,
 		"xp": 300,
-		"items": ["novice_robes", "spell_scroll_minor_heal"],
+		"items": ["novice_robes", "scroll_healing_light"],
 		"faction_reputation": {
 			"arcane_circle": 25
 		}

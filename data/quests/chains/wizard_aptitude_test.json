@@ -39,7 +39,7 @@
 	"rewards": {
 		"gold": 25,
 		"xp": 150,
-		"items": ["spell_scroll_magic_missile"],
+		"items": ["scroll_magic_missile"],
 		"faction_reputation": {
 			"wizards_guild": 10
 		}

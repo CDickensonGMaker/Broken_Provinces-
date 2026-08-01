@@ -24,7 +24,7 @@
 	"rewards": {
 		"gold": 275,
 		"xp": 380,
-		"items": ["minor_mana_potion", "minor_mana_potion"],
+		"items": ["mana_potion", "mana_potion"],
 		"faction_reputation": {
 			"mages_circle": 30
 		}

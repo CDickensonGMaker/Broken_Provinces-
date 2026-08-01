@@ -49,7 +49,7 @@
 	"rewards": {
 		"gold": 25,
 		"xp": 100,
-		"items": ["minor_healing_herb", "wildflower"],
+		"items": ["healing_herb", "blue_flower"],
 		"faction_reputation": {
 			"church_of_gaela": 5,
 			"church_of_three": 2

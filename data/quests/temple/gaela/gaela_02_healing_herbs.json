@@ -47,7 +47,7 @@
 	"rewards": {
 		"gold": 75,
 		"xp": 300,
-		"items": ["healing_poultice_recipe", "minor_healing_herb", "minor_healing_herb", "minor_healing_herb"],
+		"items": ["healing_poultice_recipe", "healing_herb", "healing_herb", "healing_herb"],
 		"faction_reputation": {
 			"church_of_gaela": 15,
 			"church_of_three": 10

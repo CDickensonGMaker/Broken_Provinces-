@@ -122,6 +122,18 @@ func _load_item_databases() -> void:
 		# Quest items
 		"corrupted_totem_shard", "goblin_war_horn", "bandit_bounty_note",
 		"mysterious_contract",
+		"merchant_ledger", "trade_ledger", "sealed_letter", "cursed_tome",
+		"silver_necklace", "wedding_ring", "ghost_locket", "harlen_locket",
+		"sacred_relic", "smuggled_package", "incriminating_letters",
+		"royal_decree_documents",
+		# Rank, membership and proof tokens
+		"guild_token", "adventurer_badge_member", "adventurer_badge_veteran",
+		"adventurer_badge_elite", "guild_officer_seal", "elite_guild_seal",
+		"thieves_guild_token", "guildmasters_signet", "iron_company_token",
+		"sergeant_insignia", "lieutenant_badge", "siege_veteran_medal",
+		"war_veteran_medal", "aberdeen_hero_medal", "keeper_master_insignia",
+		"arcane_circle_signet", "black_wolf_trophy", "dwarven_seal_of_passage",
+		"free_meal_voucher",
 		# Materials
 		"iron_ore", "iron_ingot", "gold_ore", "gold_ingot",
 		"silver_ore", "silver_ingot",

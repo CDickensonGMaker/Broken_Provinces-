@@ -119,6 +119,42 @@ behind her own counter, and the shop is staffed by a "Curiosities Clerk". If you
 would rather she simply run the shop *and* the guild from one node,
 `QuestGiver.has_shop` exists (untested — no other NPC in the game uses it).
 
-## 6. Items
+## 6. Items — 108 reward references and 84 collect targets still unresolved
 
-See `## Items` at the bottom of this file after step 11.
+Wave B created or repointed only the items whose *purpose* the quest data already
+fixes, per the CLAUDE.md item philosophy (every item must do something; no junk):
+
+* **Created, 19 rank/membership tokens** — guild tokens, badges, seals, medals,
+  the Iron Company chit, the dwarven seal of passage, the meal voucher. These
+  carry no stats by design: their job is to prove standing, and the quests that
+  award them say exactly that.
+* **Created, 12 plot objects** — ledgers, the sealed courier letter, the cursed
+  tome, three keepsakes, the smuggled package, the blackmail letters, the royal
+  decree papers, the stolen relic. Weight and value only; they exist to be
+  carried and handed over.
+* **Repointed to items that already exist** — `minor_healing_herb`→`healing_herb`,
+  `minor_mana_potion`→`mana_potion`, `spell_scroll_magic_missile`→`scroll_magic_missile`,
+  `spell_scroll_lightning_bolt`→`scroll_lightning_bolt`,
+  `spell_scroll_minor_heal`→`scroll_healing_light`, `fresh_bread`→`bread`,
+  `wildflower`→`blue_flower`.
+* **Validator fix, not content** — `gold_ring`, `iron_sword` and
+  `ring_of_protection` were never missing; they live in `data/armor` and
+  `data/weapons`, which the validator did not scan. It does now.
+
+Everything below stays unresolved because it needs numbers or lore.
+
+| group | example ids | refs | why it needs Caleb |
+|---|---|---|---|
+| Faction reward gear | `iron_company_armor`, `iron_company_sword`, `iron_lieutenant_armor`, `thieves_guild_armor`, `shadow_cloak`, `shadowstep_boots`, `keepers_cloak`, `keepers_silent_boots`, `master_thief_cloak` | ~30 | Every one needs damage/armour values, a quality tier and a place on the loot curve. Handing a player free gear at quest 3 of 13 is a balance decision, not a wiring one |
+| Rank robes and staves (mage line) | `novice_robes`, `apprentice_robe`, `apprentice_staff`, `journeyman_robes`, `adept_robes`, `adept_wizard_robes`, `magister_robes`, `archmage_staff`, `staff_of_containment`, `staff_of_the_adept` | ~11 | Same: a full progression ladder of magic gear, which the game does not have yet |
+| Named/unique weapons | `vorns_battleaxe`, `nightshade_dagger`, `ghost_captains_cutlass`, `horde_breaker_blade`, `time_touched_blade`, `blade_of_legends` | 6 | Uniques are lore. Names, effects and who made them |
+| Divine blessings and charms | `blessing_of_gaela`, `blessing_of_chronos`, `morthane_amulet`, `chronos_amulet`, `gaelas_amulet`, `minor_time_blessing`, `spirit_ward_charm`, `purifying_charm`, `natures_bond_ring`… | ~25 | What a god's blessing *does* mechanically is an unwritten system. The Three Gods' favour has no rules yet |
+| Herbs, reagents, foods | `major_healing_herb`, `moonpetal_flower`, `moonleaf`, `silvervine`, `sunroot`, `moonwater`, `sacred_soil`, `fish_oil`, `wild_honey`, `great_pumpkin` | ~20 | Each wants an effect and a place in alchemy/cooking; the herb set is a small design pass of its own |
+| Spell scrolls with no matching spell | `spell_scroll_ice_shard`, `spell_scroll_ice_spike`, `spell_scroll_flame_burst`, `spell_scroll_flame_bolt`, `spell_scroll_arcane_shield`, `spell_scroll_meteor_storm` | 6 | The spells themselves do not exist. Repointing them to `scroll_ice_storm`/`scroll_fireball` would quietly change what the reward is |
+| Heist loot abstractions | `vault_treasures`, `vault_gold`, `valuable_goods`, `ashford_artifacts`, `harwick_valuables`, `stolen_jewelry`, `debt_payment`, `brennan_debt_gold`, `garrett_debt` | ~10 | These are *piles of money*, not objects. Cleaner as a gold reward or a `stolen_goods` stack (which exists) — but that is a quest-design call per heist |
+| Literal placeholders | `specialization_bonus_variable`, `forbidden_spell_variable`, `research_materials_variable` | 3 | The quest author left a TODO in the data. Each needs a real reward chosen |
+| Lore artefacts | `sacred_hourglass`, `paradox_stone`, `eternal_hourglass_fragment`, `crown_of_mountain_kings`, `hammer_of_first_king`, `soulbound_phylactery`, `seed_of_life` | ~8 | Named relics of the Three Gods, Kazan-Dun and the Keepers. All touch bible `[OPEN]` questions |
+
+Enemy ids (74 warnings) are the same shape of problem — `goblin_king`,
+`arena_champion_tier1`, `lich_aspirant_valdris` and friends need stats, sprites
+and a tier — and are deliberately left as warnings rather than guessed at.

@@ -15,7 +15,14 @@ extends SceneTree
 const REPORT_PATH := "res://docs/audits/validation_report.md"
 
 const QUEST_DIR := "res://data/quests"
-const ITEM_DIR := "res://data/items"
+## Quest rewards name weapons, armour and spells by the same id space as items,
+## and InventoryManager resolves all four, so all four count as "an item exists".
+const ITEM_DIRS: Array[String] = [
+	"res://data/items",
+	"res://data/weapons",
+	"res://data/armor",
+	"res://data/spells",
+]
 const ENEMY_DIR := "res://data/enemies"
 const NPC_DIR := "res://data/npcs"
 const DIALOGUE_DIRS: Array[String] = ["res://data/dialogue", "res://data/dialogues"]
@@ -69,10 +76,11 @@ func _initialize() -> void:
 # --- id collection -----------------------------------------------------------
 
 func _collect_item_ids() -> void:
-	for path: String in _walk(ITEM_DIR, ".tres"):
-		var id: String = _read_field(path, "id")
-		if not id.is_empty():
-			item_ids[id] = path
+	for dir: String in ITEM_DIRS:
+		for path: String in _walk(dir, ".tres"):
+			var id: String = _read_field(path, "id")
+			if not id.is_empty():
+				item_ids[id] = path
 
 
 func _collect_enemy_ids() -> void:

@@ -43,7 +43,7 @@
 	"rewards": {
 		"gold": 80,
 		"xp": 250,
-		"items": ["fresh_bread"]
+		"items": ["bread"]
 	},
 	"prerequisites": [],
 	"next_quest": ""

@@ -54,7 +54,7 @@
 	"rewards": {
 		"gold": 100,
 		"xp": 500,
-		"items": ["spell_scroll_lightning_bolt"],
+		"items": ["scroll_lightning_bolt"],
 		"faction_reputation": {
 			"wizards_guild": 25
 		}

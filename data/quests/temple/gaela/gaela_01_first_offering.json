@@ -12,7 +12,7 @@
 			"id": "gather_offering",
 			"description": "Gather fresh produce or flowers (Wildflowers, Cabbage, or Wheat)",
 			"type": "collect",
-			"target": "wildflower",
+			"target": "blue_flower",
 			"required_count": 3,
 			"is_optional": false
 		},
@@ -47,7 +47,7 @@
 	"rewards": {
 		"gold": 50,
 		"xp": 200,
-		"items": ["minor_healing_herb", "minor_healing_herb"],
+		"items": ["healing_herb", "healing_herb"],
 		"faction_reputation": {
 			"church_of_gaela": 10,
 			"church_of_three": 5
