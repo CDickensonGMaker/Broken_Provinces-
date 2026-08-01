@@ -51,7 +51,7 @@ Not connected to the main story; a "huge flavor drop" the player can skip entire
   - **Skip it** → by the time the player reaches the kingdom, Kazan-Dun is **completely overrun by goblins**; the player hears about the fall from NPCs, and visiting shows the fallen fortress.
   - **Help them** → rewards and **unique interactions later down the road** for having saved the dwarves.
   - **Choices within choices:** did they recover the body at all? Support the infant's regency (the uncle) or the trial-by-combat side? Maybe *weaken the uncle* so the other side wins, for some benefit.
-- NOTE — tension with the July decree: the decree ships Kazan-Dun **dark** in the Act I release (Named Sacrifice #1). Caleb's 8/1 vision has the dwarf arc live in Act I. Release-scope ruling pending (see decision queue).
+- RESOLVED 8/1: the July decree was scoped to the **March demo** and is historical, not current law ("we're revisiting the entire thing and working on the game more"). The dwarf arc is live Act I content in the full game. The decree's *bug diagnoses* remain valid evidence; its *scope cuts* do not bind.
 
 ## Design laws (Caleb, 8/1)
 1. **The world reacts to your choices** — the defining design goal of this RPG. Consequences surface later (fallen fortresses, unique allies), not as instant feedback.
