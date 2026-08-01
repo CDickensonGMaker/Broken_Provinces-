@@ -19,17 +19,19 @@
 - The **king has been missing ~20 years**; to the people it's rumor.
 - Structure (Birthright-flavored): the player starts in a **small hamlet** amid all the region's problems, does "all this stuff," and **makes their way to the main kingdom — and that's when the game really starts**: finding out where the king is.
 - **The truth:** the king left to find an **elixir of immortality**, which he learned of from the elves — they told him because of something he'd done for them in the past. He found the place. He is **trapped in the cave where the elixir is**. He is still mortal — just stuck.
-- `[OPEN]` Does the player ever reach/free the king within this game, or is that the saga's long arc beyond Act I?
+- **Pacing law (Caleb, 8/1):** Fallout: New Vegas structure — the player does "all this stuff" for roughly **half the game before really starting the main quest line**; reaching the main kingdom IS the Act I→II hinge.
+- `[OPEN — deliberately]` Does the player ever reach/free the king within this game? Caleb: "I don't know — that's kind of why we're talking about this stuff." Do not resolve without him.
 - `[OPEN]` What did the king do for the elves that earned the secret?
 
-### Subplot — the claimant
+### Subplot — the claimant (RULED 8/1)
 - While the king is gone, an **elf woman arrives with a son she claims she had with the king**, and works to put the child on the throne.
 - **The truth:** the boy **is** the king's son — the king never knew he had a child with her.
-- `[OPEN]` Her name, the boy's name, and whether this plays in Act I or after the Dalhurst cliffhanger.
+- **Act placement (Caleb, 8/1):** *sprinkled* into Act I — NPCs talk about it in passing, nothing more. It becomes **the main side quest of Act II**, which is **still within this game**: Act II begins when the player reaches the main kingdom, where the political intrigue lives — the elf lady and her son, the factions inside the kingdom, quests fanning out across the world. At that point **the hub shifts from Dalhurst to the kingdom**.
+- `[OPEN]` Her name, the boy's name.
 
 ## The undead continent — rebellion in the ranks
-- A whole **undead wasteland** ruled by a **vampire lord** and a beautiful, immortal **princess/queen**. `[OPEN]` exact shape of the ruling pair — one ruler with consort, or the "princess" IS the ruler; Caleb said it aloud as "vampire lord and it's like beautiful immortal princess or queen."
-- The **daughter** of the ruling line **rebelled and ran away further west** on the same continent.
+- A whole **undead wasteland** ruled by **Lord Baron Viktor and his wife** (RULED 8/1 — a ruling pair; the beautiful immortal queen is his wife).
+- **Their daughter** rebelled and ran away further west on the same continent.
 - She is growing **a third faction: passive undead with real intelligence**. The mass undead armies are brainless zombies/ghouls while royalty are smart — she thinks that's **unfair** and is trying to give that same enlightenment to *all* undead.
 - `[OPEN]` Names; whether this continent is playable/visitable in any planned game or is world-canon backdrop for now.
 
@@ -45,7 +47,16 @@ Not connected to the main story; a "huge flavor drop" the player can skip entire
   - **Traditionalists:** the **uncle** stands as caretaker-regent until the child comes of age.
   - **The other side:** demands **trial by combat** to determine the next king — originally they wanted to fight *the child*, which is why the uncle stepped up in his place.
   - It's a standing "will-they-won't-they fight," and the player's recovery of the body lets the lineage question resolve.
-- Ties to existing content: Kazan-Dun's five built levels currently ship dark in Act I (decree) — this storyline is the Act II anchor.
+- **Act placement (Caleb, 8/1):** the dead-king storyline **is part of Act I** *if the player goes there* — it never gates anything. The world-reacts law applies in full:
+  - **Skip it** → by the time the player reaches the kingdom, Kazan-Dun is **completely overrun by goblins**; the player hears about the fall from NPCs, and visiting shows the fallen fortress.
+  - **Help them** → rewards and **unique interactions later down the road** for having saved the dwarves.
+  - **Choices within choices:** did they recover the body at all? Support the infant's regency (the uncle) or the trial-by-combat side? Maybe *weaken the uncle* so the other side wins, for some benefit.
+- NOTE — tension with the July decree: the decree ships Kazan-Dun **dark** in the Act I release (Named Sacrifice #1). Caleb's 8/1 vision has the dwarf arc live in Act I. Release-scope ruling pending (see decision queue).
+
+## Design laws (Caleb, 8/1)
+1. **The world reacts to your choices** — the defining design goal of this RPG. Consequences surface later (fallen fortresses, unique allies), not as instant feedback.
+2. **FNV pacing** — half the game of regional freedom before the main quest truly starts at the kingdom.
+3. **Morrowind over Daggerfall** — open to making the world larger to fit the quest ideas, but only with meaning: "I don't want world just to have a world." Everything placed is intentional and part of the world; no filler that turns repetitive. Thread the needle between the two.
 
 ## The Tegnar
 - **Eight-foot bear-men riding huge horses** — Genghis-horde conquest culture out of The Lost Regiment's monstrous hordes. They take whole swaths of continents and keep subject peoples.
@@ -53,11 +64,12 @@ Not connected to the main story; a "huge flavor drop" the player can skip entire
 - The **desert in-game** is their **furthest outcropping — a scouting camp** (partially built in the files: "Tegner" enemies).
 - `[OPEN]` Are the Tegnar an Act-scale threat later in the saga (an invasion arc), or permanent dangerous frontier flavor?
 
-## Standing questions for Caleb (the [OPEN]s, gathered)
-1. Undead continent rulers — who exactly rules, and whose daughter is the rogue princess?
-2. Elf claimant subplot — Act I or post-cliffhanger? Names?
-3. Does this game reach the king's cave, or does Act I/this game end before it?
-4. What did the king do for the elves?
-5. Goblin king + soulstones + eating the dwarf king — what does it actually do?
-6. Where do the elven lands sit on the map (across the lake)?
-7. Tegnar: future invasion arc or permanent frontier?
+## Standing questions for Caleb
+*Answered 8/1: undead rulers (Viktor + wife, their daughter); claimant timing (sprinkled Act I, main side quest Act II); Kazan-Dun placement (live in Act I, world-reacts both ways).*
+1. `[OPEN — deliberately]` Does this game reach the king's cave? (Caleb wants to work this out in conversation.)
+2. `[OPEN]` What did the king do for the elves that earned the elixir secret?
+3. `[OPEN]` Goblin king + soulstones + eating the dwarf king — what does it actually do?
+4. `[OPEN]` Where do the elven lands sit on the map (across the lake)?
+5. `[OPEN]` Tegnar: future invasion arc or permanent frontier?
+6. `[OPEN]` Names: the elf claimant, her son, the dead dwarf king, the uncle, Viktor's wife, the rogue princess.
+7. `[OPEN]` The main kingdom/capital itself — name and place on the map (it doesn't exist in the world grid yet; the current grid tops out at towns).
