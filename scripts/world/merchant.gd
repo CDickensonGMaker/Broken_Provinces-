@@ -17,7 +17,6 @@ var sprite_pixel_size: float = 0.027  # (was 0.0384 - reduced 30%)
 
 ## Shop UI instance
 var shop_ui: Control = null
-var shop_ui_script = preload("res://scripts/ui/shop_ui.gd")
 
 ## Merchant configuration
 @export var merchant_name: String = "Merchant"
@@ -540,51 +539,8 @@ func get_interaction_prompt() -> String:
 	return "Talk to " + merchant_name
 
 func _open_shop_ui() -> void:
-	## Create and show the shop UI
-	if shop_ui and is_instance_valid(shop_ui):
-		shop_ui.queue_free()
-
-	# Create the UI
-	shop_ui = Control.new()
-	shop_ui.set_script(shop_ui_script)
-	shop_ui.name = "ShopUI"
-
-	# Pass merchant reference
-	shop_ui.set("merchant", self)
-
-	# Add to scene tree (as child of canvas layer)
-	var canvas := CanvasLayer.new()
-	canvas.name = "ShopUICanvas"
-	canvas.layer = 100
-	get_tree().current_scene.add_child(canvas)
-	canvas.add_child(shop_ui)
-
-	# Connect close signal
-	if shop_ui.has_signal("ui_closed"):
-		shop_ui.ui_closed.connect(_on_shop_ui_closed.bind(canvas))
-
-	# Enter menu mode and pause
-	GameManager.enter_menu()
-	get_tree().paused = true
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-
-	# Open the UI (pass self as merchant)
-	if shop_ui.has_method("open"):
-		shop_ui.open(self)
-
-func _on_shop_ui_closed(canvas: CanvasLayer) -> void:
-	## Handle shop UI close
-	GameManager.exit_menu()
-	get_tree().paused = false
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
-	if canvas and is_instance_valid(canvas):
-		canvas.queue_free()
-
-	shop_ui = null
-
-	# Sound effect hook for later
-	# AudioManager.play_ui_close()
+	## Show the shop UI - one instance, owned by ShopUI itself
+	shop_ui = ShopUI.open_for(self)
 
 ## Buy an item from the shop
 ## Returns true if purchase successful
@@ -962,10 +918,7 @@ func _die(killer: Node = null) -> void:
 
 	# Close any open shop UI
 	if shop_ui and is_instance_valid(shop_ui):
-		var canvas: Node = shop_ui.get_parent()
-		shop_ui.queue_free()
-		if canvas:
-			canvas.queue_free()
+		shop_ui.close()
 		shop_ui = null
 
 	# Spawn corpse with loot

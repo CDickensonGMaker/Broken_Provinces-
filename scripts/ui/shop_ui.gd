@@ -72,15 +72,6 @@ func _build_ui() -> void:
 	# Set root control to fill viewport
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 
-	# Click-outside overlay - clicking this closes the UI
-	var click_outside = Button.new()
-	click_outside.set_anchors_preset(Control.PRESET_FULL_RECT)
-	click_outside.flat = true
-	click_outside.focus_mode = Control.FOCUS_NONE
-	click_outside.mouse_filter = Control.MOUSE_FILTER_STOP
-	click_outside.pressed.connect(close)
-	add_child(click_outside)
-
 	# Dark overlay (visual only)
 	var overlay = ColorRect.new()
 	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -990,11 +981,49 @@ func _make_separator() -> Control:
 	sep.add_theme_constant_override("separation", 5)
 	return sep
 
+## One shop UI exists at a time, owned here. Every merchant, quest giver,
+## innkeeper and traveling merchant opens through this rather than building its
+## own Control, CanvasLayer and pause handling.
+static var _instance: ShopUI = null
+static var _canvas: CanvasLayer = null
+
+
+## Open the shop for a merchant-like node, creating the shared instance if needed
+static func open_for(merchant_node: Node) -> ShopUI:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return null
+
+	var host: Node = tree.current_scene
+	if host == null:
+		return null
+
+	if not is_instance_valid(_instance) or not is_instance_valid(_canvas) or _canvas.get_parent() != host:
+		if is_instance_valid(_canvas):
+			_canvas.queue_free()
+		_canvas = CanvasLayer.new()
+		_canvas.name = "ShopUICanvas"
+		_canvas.layer = 100
+		_canvas.process_mode = Node.PROCESS_MODE_ALWAYS
+		host.add_child(_canvas)
+
+		_instance = ShopUI.new()
+		_instance.name = "ShopUI"
+		_canvas.add_child(_instance)
+
+	_instance.open(merchant_node)
+	return _instance
+
+
 func open(p_merchant: Node = null) -> void:
 	merchant = p_merchant
 	visible = true
 	_clear_carts()
 	_refresh_display()
+
+	GameManager.enter_menu()
+	get_tree().paused = true
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 	# Update title if we have a merchant name
 	if merchant and merchant.get("merchant_name"):
@@ -1005,10 +1034,7 @@ func open(p_merchant: Node = null) -> void:
 ## Open shop UI specifically for a traveling merchant
 ## This is the method traveling_merchant.gd calls
 func open_traveling_merchant(p_merchant: Node) -> void:
-	merchant = p_merchant
-	visible = true
-	_clear_carts()
-	_refresh_display()
+	open(p_merchant)
 
 	# Update title with merchant's name
 	if title_label:
@@ -1019,8 +1045,17 @@ func open_traveling_merchant(p_merchant: Node) -> void:
 
 
 func close() -> void:
+	if not visible:
+		return
+
 	visible = false
+	merchant = null
 	_hide_hover_tooltip()
+
+	GameManager.exit_menu()
+	get_tree().paused = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
 	ui_closed.emit()
 
 # ==================== HOVER TOOLTIP SYSTEM ====================

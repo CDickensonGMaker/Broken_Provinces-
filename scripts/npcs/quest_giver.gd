@@ -4,7 +4,6 @@ class_name QuestGiver
 extends StaticBody3D
 
 ## Shop UI script for merchant functionality
-const ShopUIScript = preload("res://scripts/ui/shop_ui.gd")
 
 @export var npc_id: String = "quest_giver_01"
 @export var display_name: String = "Mysterious Stranger"
@@ -967,51 +966,7 @@ func _open_shop_ui() -> void:
 		push_warning("[QuestGiver] %s has no shop to open" % display_name)
 		return
 
-	# Clean up existing shop UI if any
-	if shop_ui and is_instance_valid(shop_ui):
-		shop_ui.queue_free()
-
-	# Create the UI
-	shop_ui = Control.new()
-	shop_ui.set_script(ShopUIScript)
-	shop_ui.name = "ShopUI"
-
-	# Pass merchant reference (shop_ui expects a 'merchant' property)
-	shop_ui.set("merchant", self)
-
-	# Add to scene tree via canvas layer
-	var canvas := CanvasLayer.new()
-	canvas.name = "ShopUICanvas"
-	canvas.layer = 100
-	get_tree().current_scene.add_child(canvas)
-	canvas.add_child(shop_ui)
-
-	# Connect close signal
-	if shop_ui.has_signal("ui_closed"):
-		shop_ui.ui_closed.connect(_on_shop_ui_closed.bind(canvas))
-
-	# Enter menu mode and pause
-	GameManager.enter_menu()
-	get_tree().paused = true
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-
-	# Open the UI
-	if shop_ui.has_method("open"):
-		shop_ui.open(self)
-
-
-## Called when shop UI is closed
-func _on_shop_ui_closed(canvas: CanvasLayer) -> void:
-	# Exit menu mode and unpause
-	GameManager.exit_menu()
-	get_tree().paused = false
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
-	# Clean up canvas
-	if canvas and is_instance_valid(canvas):
-		canvas.queue_free()
-
-	shop_ui = null
+	shop_ui = ShopUI.open_for(self)
 
 
 ## ============================================================================

@@ -302,13 +302,7 @@ func _get_or_create_profile() -> NPCKnowledgeProfile:
 
 ## Open the shop UI (called by ConversationSystem when TRADE topic is selected)
 func _open_shop_ui() -> void:
-	var shop_ui := get_tree().get_first_node_in_group("shop_ui")
-	if shop_ui and shop_ui.has_method("open_traveling_merchant"):
-		shop_ui.open_traveling_merchant(self)
-	elif shop_ui and shop_ui.has_method("open"):
-		# Fallback to general shop open with first available type
-		if available_shop_types.size() > 0:
-			shop_ui.open(available_shop_types[0])
+	ShopUI.open_for(self)
 
 
 ## Get interaction prompt for HUD
