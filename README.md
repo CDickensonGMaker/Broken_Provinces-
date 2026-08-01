@@ -1,10 +1,10 @@
-# Catacombs of Gore
+# Broken Provinces: The Empty Throne
 
-A PS1-style open world action RPG built in Godot 4.5, inspired by classic dark fantasy games.
+A PS1-style open world action RPG built in Godot 4.5, inspired by classic dark fantasy games. (Formerly developed under the working title *Catacombs of Gore*.)
 
 ## Game Overview
 
-**Catacombs of Gore** is a retro-styled action RPG that combines the exploration of Elder Scrolls games with the brutal combat of Souls-likes, wrapped in a nostalgic PS1 visual aesthetic.
+**Broken Provinces: The Empty Throne** is a retro-styled action RPG that combines the exploration of Elder Scrolls games with the brutal combat of Souls-likes, wrapped in a nostalgic PS1 visual aesthetic.
 
 ### Key Features
 
