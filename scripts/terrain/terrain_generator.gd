@@ -1,7 +1,6 @@
 ## terrain_generator.gd - Heightfield generator for wilderness cells.
 ##
-## Ported from the RECONgame terrain engine: domain warping, ridged multifractal,
-## cliff terracing, gaussian relief smoothing.
+## Domain warping, ridged multifractal, cliff terracing, gaussian relief smoothing.
 ##
 ## SEAM CONTRACT. Every stage is either pointwise in WORLD space or a symmetric
 ## neighbour stencil, and the tile is generated with a margin of `_pad()` samples on
