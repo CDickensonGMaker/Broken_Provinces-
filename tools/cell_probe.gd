@@ -33,9 +33,28 @@ func _ready() -> void:
 		room.queue_free()
 		await get_tree().process_frame
 
+	_report_world_biomes()
+
 	if _failures > 0:
 		print("FAIL: %d biome(s) generated no content" % _failures)
 		get_tree().quit(1)
 		return
 	print("OK: every biome generates a populated cell")
 	get_tree().quit(0)
+
+
+## Census of the assigned world map, so a climate model that quietly paints one biome
+## over everything is visible without opening the map.
+func _report_world_biomes() -> void:
+	var census: Dictionary = {}
+	for coords: Vector2i in WorldGrid.cells:
+		var cell: WorldGrid.CellInfo = WorldGrid.cells[coords]
+		var key: String = WorldGrid.Biome.keys()[cell.biome]
+		census[key] = int(census.get(key, 0)) + 1
+
+	print("")
+	print("world biome census (%d cells)" % WorldGrid.cells.size())
+	var names: Array = census.keys()
+	names.sort()
+	for key: String in names:
+		print("  %-18s %4d" % [key, census[key]])

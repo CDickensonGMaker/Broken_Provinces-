@@ -484,7 +484,7 @@ static func _load_from_forge_map() -> bool:
 				continue
 
 			var terrain: Terrain = FORGE_TERRAIN_MAP.get(terrain_val, Terrain.FOREST)
-			var biome: Biome = TERRAIN_TO_BIOME.get(terrain, Biome.FOREST)
+			var biome: Biome = biome_for_cell(world_coords, terrain)
 
 			var cell := CellInfo.new(terrain, biome)
 			cell.region_name = _get_region_for_coords(world_coords)
@@ -581,7 +581,7 @@ static func initialize() -> void:
 
 			var terrain_char: String = GRID_DATA[row][col]
 			var terrain: Terrain = TERRAIN_MAP.get(terrain_char, Terrain.FOREST)
-			var biome: Biome = TERRAIN_TO_BIOME.get(terrain, Biome.FOREST)
+			var biome: Biome = biome_for_cell(coords, terrain)
 
 			var cell := CellInfo.new(terrain, biome)
 			cell.is_road = (terrain == Terrain.ROAD)
@@ -932,6 +932,93 @@ static func get_discovered_cells() -> Array[Vector2i]:
 ## ============================================================================
 ## BIOME CONVERSION
 ## ============================================================================
+
+## Latitude band the climate model spans, covering the full World Forge map extent.
+## A cell outside it clamps, so widening the map later cannot produce an unclassified row.
+const CLIMATE_NORTH: int = -32
+const CLIMATE_SOUTH: int = 31
+
+## Fixed so the world map, its fog and its biomes stay the same world between sessions.
+## Per-playthrough variation lives in prop placement, not in the shape of the continent.
+const CLIMATE_SEED: int = 20260801
+
+const CLIMATE_FREQUENCY: float = 0.09
+const MOISTURE_FREQUENCY: float = 0.13
+const MOUNTAIN_FREQUENCY: float = 0.11
+
+## How much of the temperature range the noise owns; the rest is latitude. Above about
+## 0.2 the bands stop reading as latitudinal and the map turns to confetti.
+const CLIMATE_NOISE_WEIGHT: float = 0.15
+
+const WINTER_MAX_TEMP: float = 0.32
+const DESERT_MIN_TEMP: float = 0.72
+const DESERT_MAX_MOISTURE: float = 0.42
+const FOREST_MIN_MOISTURE: float = 0.55
+const MOUNTAIN_THRESHOLD: float = 0.45
+
+static var _climate_noise: FastNoiseLite = null
+static var _moisture_noise: FastNoiseLite = null
+static var _mountain_noise: FastNoiseLite = null
+
+
+## Pick the biome for a cell. Water, coast, swamp and impassable terrain keep their
+## terrain-driven biome; everything walkable is climate-driven, so the world varies
+## winter in the north through woodland and pasture to dry country in the south, with a
+## mountain mask flipping any of them to its rocky variant.
+static func biome_for_cell(coords: Vector2i, terrain: Terrain) -> Biome:
+	if terrain == Terrain.BLOCKED or terrain == Terrain.WATER \
+			or terrain == Terrain.COAST or terrain == Terrain.SWAMP:
+		var fixed: Biome = TERRAIN_TO_BIOME.get(terrain, Biome.FOREST)
+		return fixed
+
+	_build_climate_noise()
+
+	var span: float = float(CLIMATE_SOUTH - CLIMATE_NORTH)
+	var latitude: float = clampf((float(coords.y) - float(CLIMATE_NORTH)) / span, 0.0, 1.0)
+	var noise01: float = (_climate_noise.get_noise_2d(coords.x, coords.y) + 1.0) * 0.5
+	var temperature: float = latitude * (1.0 - CLIMATE_NOISE_WEIGHT) + noise01 * CLIMATE_NOISE_WEIGHT
+	var moisture: float = (_moisture_noise.get_noise_2d(coords.x, coords.y) + 1.0) * 0.5
+
+	var base: Biome = Biome.PLAINS
+	if temperature < WINTER_MAX_TEMP:
+		base = Biome.WINTER
+	elif temperature > DESERT_MIN_TEMP and moisture < DESERT_MAX_MOISTURE:
+		base = Biome.DESERT
+	elif moisture > FOREST_MIN_MOISTURE:
+		base = Biome.FOREST
+
+	var rocky: bool = terrain == Terrain.HIGHLANDS \
+		or _mountain_noise.get_noise_2d(coords.x, coords.y) > MOUNTAIN_THRESHOLD
+	if not rocky:
+		return base
+
+	match base:
+		Biome.WINTER:
+			return Biome.ROCKY_WINTER
+		Biome.DESERT:
+			return Biome.ROCKY_DESERT
+		Biome.FOREST:
+			return Biome.ROCKY_FOREST
+		_:
+			return Biome.ROCKY_PLAINS
+
+
+static func _build_climate_noise() -> void:
+	if _climate_noise != null:
+		return
+	_climate_noise = FastNoiseLite.new()
+	_climate_noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	_climate_noise.frequency = CLIMATE_FREQUENCY
+	_climate_noise.seed = CLIMATE_SEED
+	_moisture_noise = FastNoiseLite.new()
+	_moisture_noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	_moisture_noise.frequency = MOISTURE_FREQUENCY
+	_moisture_noise.seed = CLIMATE_SEED + 411
+	_mountain_noise = FastNoiseLite.new()
+	_mountain_noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	_mountain_noise.frequency = MOUNTAIN_FREQUENCY
+	_mountain_noise.seed = CLIMATE_SEED + 823
+
 
 ## Convert to WildernessRoom.Biome int value. The two enums share ordinals for the
 ## biomes that exist in both; the ones that do not - COAST, UNDEAD, HORDE - resolve to
