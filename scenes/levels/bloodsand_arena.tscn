@@ -1,11 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://cmdk8t6r1fh2e"]
+[gd_scene load_steps=5 format=3 uid="uid://cmdk8t6r1fh2e"]
 
 [ext_resource type="Script" uid="uid://c4hago05p0b6h" path="res://scripts/levels/bloodsand_arena.gd" id="1_arena"]
 [ext_resource type="PackedScene" uid="uid://3seie1hkjknr" path="res://assets/models/terrain/combat_arena.glb" id="2_terrain"]
 [ext_resource type="Script" uid="uid://cdweayrehk6mt" path="res://scripts/world/damage_zone.gd" id="3_damage_zone"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_barrier"]
-size = Vector3(14.692383, 10, 1)
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_00y7o"]
 height = 2.8735352
@@ -89,43 +86,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.675905, 0.3117385, 2.23041
 
 [node name="WaitingArea" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 35)
-
-[node name="ArenaBarrier" type="StaticBody3D" parent="."]
-transform = Transform3D(0.7147216, 0, 0, 0, 1, 0, 0, 0, 0.7432558, 0, 0, 0)
-collision_layer = 0
-collision_mask = 0
-
-[node name="NorthWall" type="CollisionShape3D" parent="ArenaBarrier"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -0.1300351, 5, -18)
-shape = SubResource("BoxShape3D_barrier")
-
-[node name="SouthWall" type="CollisionShape3D" parent="ArenaBarrier"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 18)
-shape = SubResource("BoxShape3D_barrier")
-
-[node name="EastWall" type="CollisionShape3D" parent="ArenaBarrier"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1.0000001, 0, 0, 18, 5.125332, 0)
-shape = SubResource("BoxShape3D_barrier")
-
-[node name="WestWall" type="CollisionShape3D" parent="ArenaBarrier"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1.0000001, 0, 0, -18, 1.8575835, 0)
-shape = SubResource("BoxShape3D_barrier")
-
-[node name="NorthWall" type="CollisionShape3D" parent="ArenaBarrier/WestWall"]
-transform = Transform3D(0.6908321, 0, -0.7230157, 0, 1, 0, 0.72301555, 0, 0.6908321, 11.981065, 2.9947052, 5.532448)
-shape = SubResource("BoxShape3D_barrier")
-
-[node name="SouthWall" type="CollisionShape3D" parent="ArenaBarrier/WestWall"]
-transform = Transform3D(0.6908321, 0, -0.7230157, 0, 1, 0, 0.72301555, 0, 0.69083196, -12.95841, 3.1200352, 31.251875)
-shape = SubResource("BoxShape3D_barrier")
-
-[node name="EastWall" type="CollisionShape3D" parent="ArenaBarrier/WestWall"]
-transform = Transform3D(0.7230157, 0, 0.6908321, 0, 1, 0, -0.69083196, 0, 0.72301555, 11.991228, 3.1200352, 30.84737)
-shape = SubResource("BoxShape3D_barrier")
-
-[node name="WestWall" type="CollisionShape3D" parent="ArenaBarrier/WestWall"]
-transform = Transform3D(0.7230157, 0, 0.6908321, 0, 1, 0, -0.69083196, 0, 0.72301555, -12.878736, 3.370697, 5.5837193)
-shape = SubResource("BoxShape3D_barrier")
 
 [node name="Terrain" type="Node3D" parent="."]
 

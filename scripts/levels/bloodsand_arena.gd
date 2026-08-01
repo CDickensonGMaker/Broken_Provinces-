@@ -43,6 +43,7 @@ func _ready() -> void:
 	_spawn_arena_master()
 	_spawn_shops()
 	_setup_arena_barrier()
+	_setup_kill_floor()
 
 	# Connect to TournamentManager signals
 	_connect_tournament_signals()
@@ -56,6 +57,12 @@ const SPIKE_PIT_RADIUS := 4.0
 
 ## Arena fighting area radius
 const ARENA_RADIUS := 18.0
+
+## Distance south of the arena centre the player is placed to fight from
+const COMBAT_START_OFFSET := 12.0
+
+## Depth of the kill floor that catches anything falling through the spike pit
+const KILL_FLOOR_DEPTH := 8.0
 
 ## Create arena floor with a hole in the center for the spike pit
 func _setup_ground_plane() -> void:
@@ -572,6 +579,11 @@ func get_waiting_area_position() -> Vector3:
 	return Vector3(5, 0, 40)
 
 
+## Get the position the player fights from (inside the barrier, clear of the pit)
+func get_player_combat_position() -> Vector3:
+	return get_arena_center() + Vector3(0, 0, COMBAT_START_OFFSET)
+
+
 ## Setup arena barrier (invisible wall during combat)
 func _setup_arena_barrier() -> void:
 	# Check if barrier exists in scene
@@ -590,13 +602,9 @@ func _create_arena_barrier() -> StaticBody3D:
 	var barrier := StaticBody3D.new()
 	barrier.name = "ArenaBarrier"
 
-	# Get arena center for positioning
-	var center: Vector3 = get_arena_center()
-	barrier.global_position = center
-
 	# Create invisible wall collision - a ring around the arena
 	# We'll use 4 box colliders to form a square boundary
-	var barrier_radius: float = 18.0  # Distance from center to barrier
+	var barrier_radius: float = ARENA_RADIUS  # Distance from center to barrier
 	var barrier_height: float = 10.0  # Tall enough to prevent jumping over
 	var barrier_thickness: float = 1.0
 
@@ -633,7 +641,21 @@ func _create_arena_barrier() -> StaticBody3D:
 	barrier.collision_mask = 0
 
 	add_child(barrier)
+	barrier.global_position = get_arena_center()
 	return barrier
+
+
+## Create a kill floor beneath the spike pit so nothing falls out of the world
+func _setup_kill_floor() -> void:
+	var extent: float = ARENA_RADIUS * 2.0
+	var zone := DamageZone.spawn_damage_zone(
+		self,
+		Vector3(0, -KILL_FLOOR_DEPTH, 0),
+		Vector3(extent, 4.0, extent),
+		9999,
+		0.25
+	)
+	zone.name = "PitKillFloor"
 
 
 ## Create a single barrier wall segment

@@ -148,6 +148,9 @@ func start_next_wave() -> void:
 		_complete_tournament()
 		return
 
+	# Put the player back on the sand before sealing it
+	_teleport_player_to_arena()
+
 	# Enable arena barrier
 	barrier_enabled.emit()
 
@@ -326,6 +329,21 @@ func _on_wave_complete() -> void:
 
 	# The arena master will handle showing the continue/leave dialogue
 	# via the wave_complete signal
+
+
+## Teleport player inside the arena barrier for the coming wave
+func _teleport_player_to_arena() -> void:
+	var arena := _get_arena()
+	if not arena:
+		return
+
+	if not arena.has_method("get_player_combat_position"):
+		push_warning("[TournamentManager] Arena missing get_player_combat_position method")
+		return
+
+	var player := get_tree().get_first_node_in_group("player")
+	if player:
+		player.global_position = arena.get_player_combat_position()
 
 
 ## Teleport player to the waiting area
