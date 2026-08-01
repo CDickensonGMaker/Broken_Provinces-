@@ -136,7 +136,7 @@ drop_table = {
 }
 xp_reward = 350
 scene_path = ""
-icon_path = "res://assets/sprites/enemies/human_bandit.png"
+icon_path = "res://assets/sprites/enemies/humanoid/human_bandit_alt.png"
 scale = 1.15
 sprite_path = "res://assets/sprites/enemies/humanoid/human_bandit_alt.png"
 attack_sprite_path = ""

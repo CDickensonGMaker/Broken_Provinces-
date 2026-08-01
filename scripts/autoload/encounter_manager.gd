@@ -67,57 +67,56 @@ const WEATHER_DANGER: Dictionary = {
 const ENCOUNTER_TABLES: Dictionary = {
 	"plains": [
 		{"enemy_type": "wolf", "weight": 30, "min": 3, "max": 6},
-		{"enemy_type": "human_bandit", "weight": 25, "min": 3, "max": 7},
-		{"enemy_type": "wild_boar", "weight": 20, "min": 2, "max": 4},
-		{"enemy_type": "goblin", "weight": 15, "min": 4, "max": 8},
-		{"enemy_type": "merchant_caravan", "weight": 10, "min": 1, "max": 1}  # Friendly
+		{"enemy_type": "human_bandit", "weight": 30, "min": 3, "max": 7},
+		{"enemy_type": "giant_rat", "weight": 25, "min": 2, "max": 4},
+		{"enemy_type": "goblin", "weight": 15, "min": 4, "max": 8}
 	],
 	"forest": [
 		{"enemy_type": "wolf", "weight": 35, "min": 4, "max": 7},
 		{"enemy_type": "giant_spider", "weight": 25, "min": 3, "max": 6},
 		{"enemy_type": "human_bandit", "weight": 20, "min": 4, "max": 8},
 		{"enemy_type": "goblin", "weight": 15, "min": 5, "max": 10},
-		{"enemy_type": "bear", "weight": 5, "min": 1, "max": 2}
+		{"enemy_type": "tree_ent", "weight": 5, "min": 1, "max": 2}
 	],
 	"swamp": [
 		{"enemy_type": "giant_spider", "weight": 30, "min": 4, "max": 7},
 		{"enemy_type": "skeleton", "weight": 25, "min": 4, "max": 8},
 		{"enemy_type": "zombie", "weight": 20, "min": 3, "max": 6},
 		{"enemy_type": "wolf", "weight": 15, "min": 2, "max": 4},
-		{"enemy_type": "will_o_wisp", "weight": 10, "min": 2, "max": 4}
+		{"enemy_type": "flaming_skull", "weight": 10, "min": 2, "max": 4}
 	],
 	"hills": [
 		{"enemy_type": "wolf", "weight": 30, "min": 4, "max": 7},
 		{"enemy_type": "human_bandit", "weight": 30, "min": 4, "max": 8},
 		{"enemy_type": "goblin", "weight": 25, "min": 5, "max": 10},
-		{"enemy_type": "orc", "weight": 15, "min": 2, "max": 5}
+		{"enemy_type": "tenger_warrior", "weight": 15, "min": 2, "max": 5}
 	],
 	"rocky": [
 		{"enemy_type": "human_bandit", "weight": 35, "min": 4, "max": 8},
-		{"enemy_type": "orc", "weight": 25, "min": 3, "max": 6},
+		{"enemy_type": "tenger_warrior", "weight": 25, "min": 3, "max": 6},
 		{"enemy_type": "goblin", "weight": 25, "min": 5, "max": 10},
 		{"enemy_type": "troll", "weight": 10, "min": 1, "max": 2},
-		{"enemy_type": "giant", "weight": 5, "min": 1, "max": 2}
+		{"enemy_type": "ogre", "weight": 5, "min": 1, "max": 2}
 	],
 	"mountains": [
-		{"enemy_type": "orc", "weight": 35, "min": 4, "max": 8},
+		{"enemy_type": "tenger_warrior", "weight": 35, "min": 4, "max": 8},
 		{"enemy_type": "troll", "weight": 25, "min": 2, "max": 4},
 		{"enemy_type": "goblin", "weight": 20, "min": 5, "max": 10},
-		{"enemy_type": "giant", "weight": 10, "min": 1, "max": 2},
-		{"enemy_type": "harpy", "weight": 10, "min": 3, "max": 6}
+		{"enemy_type": "ogre", "weight": 10, "min": 1, "max": 2},
+		{"enemy_type": "wyvern", "weight": 10, "min": 1, "max": 2}
 	],
 	"desert": [
 		{"enemy_type": "human_bandit", "weight": 40, "min": 4, "max": 10},
-		{"enemy_type": "giant_scorpion", "weight": 30, "min": 2, "max": 5},
-		{"enemy_type": "snake", "weight": 20, "min": 4, "max": 7},
-		{"enemy_type": "sand_wurm", "weight": 10, "min": 1, "max": 2}
+		{"enemy_type": "basilisk", "weight": 25, "min": 1, "max": 3},
+		{"enemy_type": "giant_spider", "weight": 20, "min": 3, "max": 6},
+		{"enemy_type": "bat", "weight": 15, "min": 4, "max": 7}
 	],
 	"undead": [
 		{"enemy_type": "skeleton", "weight": 35, "min": 5, "max": 10},
 		{"enemy_type": "zombie", "weight": 30, "min": 4, "max": 8},
-		{"enemy_type": "ghost", "weight": 20, "min": 2, "max": 5},
-		{"enemy_type": "vampire", "weight": 10, "min": 1, "max": 2},
-		{"enemy_type": "lich", "weight": 5, "min": 1, "max": 1}
+		{"enemy_type": "skeleton_shade", "weight": 20, "min": 2, "max": 5},
+		{"enemy_type": "abomination", "weight": 10, "min": 1, "max": 2},
+		{"enemy_type": "flaming_skull", "weight": 5, "min": 1, "max": 1}
 	]
 }
 
@@ -149,8 +148,8 @@ const ENEMY_SPAWN_CONFIG: Dictionary = {
 		"is_skeleton": false
 	},
 	"skeleton": {
-		"enemy_type": "skeleton",
-		"data_path": "res://data/enemies/skeleton.tres",
+		"enemy_type": "skeleton_warrior",
+		"data_path": "res://data/enemies/skeleton_warrior.tres",
 		"is_skeleton": true
 	},
 	"goblin": {
@@ -170,18 +169,10 @@ const ENEMY_SPAWN_CONFIG: Dictionary = {
 		"is_skeleton": false
 	},
 	"zombie": {
-		"enemy_type": "zombie",
-		"data_path": "res://data/enemies/zombie.tres",
+		"enemy_type": "drowned_dead",
+		"data_path": "res://data/enemies/drowned_dead.tres",
 		"sprite_path": "res://assets/sprites/enemies/undead/swampy_undead.png",
 		"h_frames": 4,
-		"v_frames": 4,
-		"is_skeleton": false
-	},
-	"orc": {
-		"enemy_type": "orc",
-		"data_path": "res://data/enemies/orc.tres",
-		"sprite_path": "res://assets/sprites/enemies/humanoid/human_bandit_alt.png",
-		"h_frames": 3,
 		"v_frames": 4,
 		"is_skeleton": false
 	},
@@ -251,6 +242,9 @@ var encounters_avoided: int = 0
 
 ## Special encounters that have been triggered (persisted across saves)
 var _triggered_special_encounters: Array[String] = []
+
+## Spawn configs derived from EnemyData for types absent from ENEMY_SPAWN_CONFIG
+var _derived_configs: Dictionary = {}
 
 
 func _ready() -> void:
@@ -742,7 +736,7 @@ func _spawn_encounter_enemies(encounter_data: Dictionary) -> Array[Node]:
 	var count: int = encounter_data.get("count", 1)
 
 	# Get spawn config for this enemy type
-	var config: Dictionary = ENEMY_SPAWN_CONFIG.get(enemy_type, {})
+	var config: Dictionary = _resolve_spawn_config(enemy_type)
 	if config.is_empty():
 		push_warning("[EncounterManager] No spawn config for enemy type: %s" % enemy_type)
 		return spawned
@@ -817,6 +811,37 @@ func _get_player_camera() -> Camera3D:
 	if viewport:
 		return viewport.get_camera_3d()
 	return null
+
+
+## Resolve the spawn config for an encounter table entry.
+## Falls back to building one from the enemy's own EnemyData resource so an
+## encounter table only needs a matching res://data/enemies/<id>.tres.
+func _resolve_spawn_config(enemy_type: String) -> Dictionary:
+	var config: Dictionary = ENEMY_SPAWN_CONFIG.get(enemy_type, {})
+	if not config.is_empty():
+		return config
+
+	if _derived_configs.has(enemy_type):
+		return _derived_configs[enemy_type]
+
+	var data_path: String = "res://data/enemies/%s.tres" % enemy_type
+	if not ResourceLoader.exists(data_path):
+		return {}
+
+	var data: EnemyData = load(data_path) as EnemyData
+	if not data or data.sprite_path.is_empty():
+		return {}
+
+	var derived: Dictionary = {
+		"enemy_type": enemy_type,
+		"data_path": data_path,
+		"sprite_path": data.sprite_path,
+		"h_frames": data.sprite_hframes,
+		"v_frames": data.sprite_vframes,
+		"is_skeleton": false
+	}
+	_derived_configs[enemy_type] = derived
+	return derived
 
 
 ## Spawn a single enemy

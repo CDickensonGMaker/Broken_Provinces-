@@ -184,7 +184,14 @@ static func _parse_action_type(type_str: String) -> DialogueData.ActionType:
 		"discover_lore": return DialogueData.ActionType.DISCOVER_LORE
 		"discover_recipe": return DialogueData.ActionType.DISCOVER_RECIPE
 		"discover_bestiary": return DialogueData.ActionType.DISCOVER_BESTIARY
-		_: return DialogueData.ActionType.NONE
+		"start_duel": return DialogueData.ActionType.START_DUEL
+		"apply_choice_consequence": return DialogueData.ActionType.APPLY_CHOICE_CONSEQUENCE
+		"recruit_follower": return DialogueData.ActionType.RECRUIT_FOLLOWER
+		"command_follower": return DialogueData.ActionType.COMMAND_FOLLOWER
+		"": return DialogueData.ActionType.NONE
+		_:
+			push_warning("[DialogueLoader] Unknown action type '%s' - treated as NONE" % type_str)
+			return DialogueData.ActionType.NONE
 
 
 ## Convenience method to load and cache dialogue from JSON

@@ -387,6 +387,33 @@ func _spawn_npcs() -> void:
 	keeper_profile.speech_style = "formal"
 	keeper_contact.npc_profile = keeper_profile
 
+	# === THORNFIELD GUARD CAPTAIN (at town centre) ===
+	# npc_id must be "thornfield_guard_captain" - it is the giver for the
+	# rescue_soldier and road_safety chains and the turn-in for their third legs
+	# plus the urgent_dispatch bounty.
+	var marek_marker: Marker3D = npc_spawn_points.get_node_or_null("QuestGiver_Marek")
+	var captain_position: Vector3 = marek_marker.global_position + Vector3(-4, 0, 2) if marek_marker else Vector3(-4, 0, 7)
+	var guard_captain := QuestGiver.spawn_quest_giver(
+		npcs,
+		captain_position,
+		"Guard Captain Halden",
+		"thornfield_guard_captain",
+		preload("res://assets/sprites/npcs/civilians/guard2_civilian.png"),
+		1, 1,
+		["rescue_soldier_1", "road_safety_1"],
+		true  # is_talk_target
+	)
+	guard_captain.region_id = ZONE_ID
+	guard_captain.faction_id = "human_empire"
+	guard_captain.no_quest_dialogue = "The roads east are not what they were. Keep your blade loose and your eyes open, traveller."
+	var captain_profile := NPCKnowledgeProfile.new()
+	captain_profile.archetype = NPCKnowledgeProfile.Archetype.GUARD
+	captain_profile.personality_traits = ["stern", "dutiful", "weary"]
+	captain_profile.knowledge_tags = ["thornfield", "roads", "local_area", "authority", "military"]
+	captain_profile.base_disposition = 45
+	captain_profile.speech_style = "military"
+	guard_captain.npc_profile = captain_profile
+
 	# Woodcutter 1 (green vest guy - fits woodcutter theme)
 	var woodcutter1_pos: Marker3D = npc_spawn_points.get_node_or_null("Civilian_Woodcutter1")
 	if woodcutter1_pos:

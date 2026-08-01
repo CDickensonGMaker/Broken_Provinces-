@@ -714,7 +714,45 @@ func execute_action(action: DialogueAction) -> String:
 			else:
 				push_warning("[DialogueManager] Cannot start duel - no valid NPC reference")
 
+		DialogueData.ActionType.APPLY_CHOICE_CONSEQUENCE:
+			# Apply a quest choice consequence - param_string is "quest_id:choice_id"
+			var parts := action.param_string.split(":")
+			if parts.size() >= 2:
+				QuestManager.apply_choice_consequence(parts[0], parts[1])
+			else:
+				push_warning("[DialogueManager] APPLY_CHOICE_CONSEQUENCE needs \"quest_id:choice_id\", got \"%s\"" % action.param_string)
+
+		DialogueData.ActionType.RECRUIT_FOLLOWER:
+			_recruit_follower(action.param_string)
+
+		DialogueData.ActionType.COMMAND_FOLLOWER:
+			if FollowerManager:
+				FollowerManager.issue_command_all(action.param_string)
+
 	return ""
+
+
+## Recruit a follower by id, spawning it beside the player if it is not already active
+func _recruit_follower(follower_id: String) -> void:
+	if follower_id.is_empty() or not FollowerManager:
+		return
+
+	FollowerManager.unlock_follower(follower_id)
+
+	if FollowerManager.get_follower(follower_id):
+		return
+
+	var player: Node3D = get_tree().get_first_node_in_group("player") as Node3D
+	if not player:
+		push_warning("[DialogueManager] Cannot spawn follower '%s' - no player in scene" % follower_id)
+		return
+
+	var spawn_pos: Vector3 = player.global_position - player.global_transform.basis.z * 2.0
+	var follower: FollowerNPC = FollowerManager.spawn_follower_by_id(
+		player.get_parent(), spawn_pos, follower_id
+	)
+	if follower:
+		FollowerManager.add_follower(follower)
 
 
 ## Helper to start duel after dialogue closes
