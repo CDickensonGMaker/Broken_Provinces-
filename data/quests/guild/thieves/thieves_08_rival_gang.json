@@ -38,6 +38,11 @@
   "turn_in_zone": "dalhurst",
   "next_quest": "thieves_09_informant",
   "flags_set": ["thieves_rival_gang_handled"],
+  "choice_consequences": {
+    "aggressive_elimination": {"flags_to_set": ["thieves_aggressive_reputation"]},
+    "sabotage_and_steal": {"flags_to_set": ["thieves_cunning_reputation"]},
+    "negotiate_truce": {"flags_to_set": ["thieves_diplomatic_reputation"]}
+  },
   "choice_paths": [
     {
       "id": "aggressive_elimination",

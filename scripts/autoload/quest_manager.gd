@@ -725,6 +725,9 @@ func start_quest(quest_id: String) -> bool:
 		new_obj.fail_quest_on_timeout = obj.fail_quest_on_timeout
 		quest.objectives.append(new_obj)
 
+	# Copy the authored branch consequences so choices can fire while active
+	quest.choice_consequences = template.choice_consequences.duplicate(true)
+
 	# Copy spawn_on_accept, quest_items, and faction
 	for spawn: Dictionary in template.spawn_on_accept:
 		quest.spawn_on_accept.append(spawn.duplicate())
@@ -1633,7 +1636,25 @@ func apply_choice_consequence(quest_id: String, choice_id: String) -> bool:
 
 	var consequence: Dictionary = quest.choice_consequences[choice_id]
 	_execute_choice_consequence(quest_id, choice_id, consequence)
+	_complete_choice_objectives(quest, choice_id)
 	return true
+
+
+## Settle a quest's "choice" objectives once the player has committed to a path
+func _complete_choice_objectives(quest: Quest, choice_id: String) -> void:
+	var settled: bool = false
+
+	for obj: Objective in quest.objectives:
+		if obj.type != "choice" or obj.is_completed:
+			continue
+		obj.current_count = obj.required_count
+		obj.is_completed = true
+		obj.completion_method = choice_id
+		settled = true
+		objective_completed.emit(quest.id, obj.id)
+
+	if settled:
+		_check_quest_completion(quest.id)
 
 
 ## Internal function to execute a choice consequence

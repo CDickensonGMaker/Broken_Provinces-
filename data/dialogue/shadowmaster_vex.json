@@ -367,20 +367,20 @@
         {
           "text": "I eliminated their leadership.",
           "next": "quest_08_complete_aggressive",
-          "conditions": [{"type": "flag", "param": "thieves_aggressive_reputation", "value": 0}],
-          "actions": []
+          "conditions": [],
+          "actions": [{"type": "apply_choice_consequence", "param": "thieves_08_rival_gang:aggressive_elimination", "value": 0}]
         },
         {
           "text": "I sabotaged and robbed them.",
           "next": "quest_08_complete_cunning",
-          "conditions": [{"type": "flag", "param": "thieves_cunning_reputation", "value": 0}],
-          "actions": []
+          "conditions": [],
+          "actions": [{"type": "apply_choice_consequence", "param": "thieves_08_rival_gang:sabotage_and_steal", "value": 0}]
         },
         {
           "text": "I negotiated a territory truce.",
           "next": "quest_08_complete_diplomatic",
-          "conditions": [{"type": "flag", "param": "thieves_diplomatic_reputation", "value": 0}],
-          "actions": []
+          "conditions": [],
+          "actions": [{"type": "apply_choice_consequence", "param": "thieves_08_rival_gang:negotiate_truce", "value": 0}]
         }
       ]
     },
