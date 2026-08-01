@@ -55,6 +55,7 @@ const LORE_ONLY_IDS: Array[String] = []
 ## choice_consequences entry is a note to the reader and never fires.
 const CONSEQUENCE_KEYS: Array[String] = [
 	"flags_to_set",
+	"world_flags_to_set",
 	"reputation_changes",
 	"unlock_follower",
 	"spawn_enemy",

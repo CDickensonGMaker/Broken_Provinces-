@@ -43,6 +43,56 @@ func _connect_room_doors() -> void:
 	connect_rooms("kd_ritual_chamber", "door_south", "kd_throne_room", "door_north")
 
 
+## The depths hold three answers to one problem: Skarrag himself in the throne
+## room, the gallery props that will bring the ritual chamber down, and the
+## stacked soulstone stash the goblins will trade a corpse for.
+func _initialize_level() -> void:
+	super._initialize_level()
+	call_deferred("_spawn_devourer")
+	_spawn_recovery_objects()
+
+
+func _spawn_devourer() -> void:
+	spawn_enemy_in_room(
+		"kd_throne_room",
+		"res://data/enemies/goblin_warboss.tres",
+		"res://assets/sprites/enemies/goblins/goblin_sword.png",
+		Vector3(0, 0, -4)
+	)
+
+
+func _spawn_recovery_objects() -> void:
+	var objects := Node3D.new()
+	objects.name = "QuestObjects"
+	add_child(objects)
+
+	var props := QuestInteractable.spawn(
+		objects,
+		Vector3(7, -7.8, -113),
+		"kd_gallery_props",
+		"the old props under the ritual gallery",
+		"Cut",
+		"The gallery comes down in one long breath, and the feast beneath it stops being a feast. You drag the king clear by one arm before the dust settles.",
+		"",
+		"kazan_dun_gallery_collapsed"
+	)
+	props.body_size = Vector3(0.8, 3.0, 0.8)
+	props.body_color = Color(0.34, 0.27, 0.18)
+
+	var parley := QuestInteractable.spawn(
+		objects,
+		Vector3(-7, -7.8, -117),
+		"kd_soulstone_parley",
+		"the stacked soulstone stash beside the table",
+		"Push toward Skarrag",
+		"You push the whole stack across the floor toward the table. The hall goes quiet, then greedy. Nobody stops you taking the body. Nobody in this room thinks you got the better half of the trade.",
+		"",
+		"kazan_dun_soulstones_traded"
+	)
+	parley.body_size = Vector3(1.4, 1.0, 1.4)
+	parley.body_color = Color(0.35, 0.45, 0.4)
+
+
 ## Setup level-specific environment - corrupted goblin atmosphere
 func _setup_environment() -> void:
 	super._setup_environment()

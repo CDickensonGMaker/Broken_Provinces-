@@ -70,7 +70,8 @@ enum ActionType {
 	START_DUEL,         ## Start a duel with an NPC (param_string = duel_id, param_float = yield_threshold)
 	APPLY_CHOICE_CONSEQUENCE, ## Apply a quest choice consequence (param_string = "quest_id:choice_id")
 	RECRUIT_FOLLOWER,   ## Recruit an NPC as a follower (param_string = follower_id)
-	COMMAND_FOLLOWER    ## Command active followers (param_string = "wait" or "follow")
+	COMMAND_FOLLOWER,   ## Command active followers (param_string = "wait" or "follow")
+	SET_WORLD_FLAG      ## Record a durable world fact (param_string = "flag" or "flag=value")
 }
 
 

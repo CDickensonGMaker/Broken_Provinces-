@@ -1,0 +1,202 @@
+{
+  "id": "kazan_dun_loremaster",
+  "display_name": "Loremaster Dwalki Runeglass",
+  "description": "Keeper of the funeral rites and the muster rolls of Kazan-Dun. Turn-in for the body recovery and for the succession. Carries the soulstone question and refuses to answer it.",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Loremaster Dwalki",
+      "text": "Mind the chalk. Every name that has held a hammer in this hold for six hundred years is on these shelves, and I am currently three columns behind, because they keep dying faster than I can rule the lines.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "The regent said to ask you about the rites.",
+          "next": "the_rites",
+          "conditions": [
+            { "type": "quest_state", "param": "kazan_dun_02_what_the_pits_held", "value": 2 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "He's on the pyre. I killed Skarrag and took him back.",
+          "next": "report_killed",
+          "conditions": [
+            { "type": "quest_state", "param": "kazan_dun_03_the_devourers_table", "value": 2 },
+            { "type": "flag_set", "param": "kazan_dun_gallery_collapsed", "value": 0, "invert": true },
+            { "type": "flag_set", "param": "kazan_dun_soulstones_traded", "value": 0, "invert": true }
+          ],
+          "actions": []
+        },
+        {
+          "text": "He's on the pyre. I brought the gallery down on the feast.",
+          "next": "report_collapse",
+          "conditions": [
+            { "type": "quest_state", "param": "kazan_dun_03_the_devourers_table", "value": 2 },
+            { "type": "flag_set", "param": "kazan_dun_gallery_collapsed", "value": 0 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "He's on the pyre. I gave Skarrag your soulstones for him.",
+          "next": "report_trade",
+          "conditions": [
+            { "type": "quest_state", "param": "kazan_dun_03_the_devourers_table", "value": 2 },
+            { "type": "flag_set", "param": "kazan_dun_soulstones_traded", "value": 0 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "It's settled. Kazan-Dun has an answer.",
+          "next": "succession_settled",
+          "conditions": [
+            { "type": "quest_state", "param": "kazan_dun_04_the_empty_chair", "value": 2 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "What do the goblins want with soulstones?",
+          "next": "the_stones",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Nothing. Back to your columns.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "the_rites",
+      "speaker": "Loremaster Dwalki",
+      "text": "Then he has accepted it, in his way. Listen: a dwarf king is not dead because he stopped breathing. He is dead when he has burned on his own hearthstone, in front of his own hold, and I have struck his name through in this book with my own hand. Until then the chair is not empty - it is occupied by a man who cannot be replaced. No heir. No regent. No rite. Nothing moves. Bring him up to me and I will make him dead properly.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "That's a lot of ceremony for a corpse.",
+          "next": "the_rites_hard",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Understood.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "the_rites_hard",
+      "speaker": "Loremaster Dwalki",
+      "text": "It is ceremony holding a hold together with the roof coming in. Take the ceremony away and by spring there are four claimants and three of them are on the wrong side of a barricade. I would rather rule lines in a book than bury a civil war.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Fair enough.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "the_stones",
+      "speaker": "Loremaster Dwalki",
+      "text": "I have three answers and I believe none of them. One: the stones hold something and a king's body is the vessel that lets a goblin swallow it. Two: it is a mockery of our rites, and it does nothing at all except break us. Three - and this is the one I do not repeat where the young ones can hear it - the stones do exactly what they were made to do, and we never knew what we made. Write down whichever you like. I have not written any of them.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "You made the soulstones?",
+          "next": "the_stones_2",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Comforting.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "the_stones_2",
+      "speaker": "Loremaster Dwalki",
+      "text": "We cut them. There is a difference between cutting a thing and making it, and six hundred years of my predecessors have been very careful to write only the first word. Do not ask me again. I like you and I would like to keep being able to answer you honestly.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Understood.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "report_killed",
+      "speaker": "Loremaster Dwalki",
+      "text": "Then it is done in the loudest way available and the hold will sing about it for two generations. Skarrag is off the board, the stones are back on our shelves, and Thurgan Ironvein burns tonight on his own hearthstone with his name struck through in my hand. Take the deep gate key - you have earned the right to come and go below the Span without fighting up the stair twice.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        { "type": "complete_quest", "param": "kazan_dun_03_the_devourers_table", "value": 0 },
+        { "type": "apply_choice_consequence", "param": "kazan_dun_03_the_devourers_table:killed_the_devourer", "value": 0 }
+      ]
+    },
+    {
+      "id": "report_collapse",
+      "speaker": "Loremaster Dwalki",
+      "text": "Half their host under a hundred feet of the ritual gallery, and Skarrag somewhere underneath it or somewhere behind it - nobody will ever know which, and I will write it down as 'unrecovered' and let the singers guess. The king is here. That is what the book needs. Take the deep gate key; the deep is quieter now, and you made it so.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        { "type": "complete_quest", "param": "kazan_dun_03_the_devourers_table", "value": 0 },
+        { "type": "apply_choice_consequence", "param": "kazan_dun_03_the_devourers_table:buried_the_feast", "value": 0 }
+      ]
+    },
+    {
+      "id": "report_trade",
+      "speaker": "Loremaster Dwalki",
+      "text": "...Yes. I heard. The hold heard before you were back up the stair. He is here and he can burn, and that is worth more than the stones, and I will say so in the hall tonight because Morgrim will need somebody to say it. But understand what you have done: Skarrag is alive, well fed, and holding everything he wanted except the body. Whatever he was building, he is still building it. Keep this one stone. I would rather it was in a stranger's pocket than in his pile.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        { "type": "complete_quest", "param": "kazan_dun_03_the_devourers_table", "value": 0 },
+        { "type": "apply_choice_consequence", "param": "kazan_dun_03_the_devourers_table:traded_the_soulstones", "value": 0 }
+      ]
+    },
+    {
+      "id": "succession_settled",
+      "speaker": "Loremaster Dwalki",
+      "text": "It is. I have the name, I have the witnesses, and I have ruled the line. Whichever way you pushed it, you pushed it, and this book will say so for six hundred years - which is the only revenge and the only reward a loremaster has to give. Take the hold-friend token. Every dwarf between here and the sea will know what it means, and a fair number of them will knock a quarter off their price without being asked.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        { "type": "complete_quest", "param": "kazan_dun_04_the_empty_chair", "value": 0 },
+        { "type": "set_world_flag", "param": "kazan_dun_helped", "value": 0 }
+      ]
+    },
+    {
+      "id": "farewell",
+      "speaker": "Loremaster Dwalki",
+      "text": "Mind the chalk.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
+    }
+  ]
+}

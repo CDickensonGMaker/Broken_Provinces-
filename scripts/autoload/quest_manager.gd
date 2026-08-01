@@ -1816,6 +1816,12 @@ func _complete_choice_objectives(quest: Quest, choice_id: String) -> void:
 	for obj: Objective in quest.objectives:
 		if obj.type != "choice" or obj.is_completed:
 			continue
+		# A lone choice objective is the quest's decision point whatever the
+		# branch is called. Choice objectives inside an OR group are rival
+		# answers, so only the one the player actually picked may complete -
+		# the rest are settled as roads not taken.
+		if not obj.group.is_empty() and obj.id != choice_id:
+			continue
 		obj.current_count = obj.required_count
 		obj.is_completed = true
 		obj.completion_method = choice_id
@@ -1833,6 +1839,17 @@ func _execute_choice_consequence(quest_id: String, choice_id: String, consequenc
 	for flag: Variant in flags_to_set:
 		if flag is String and DialogueManager:
 			DialogueManager.set_flag(flag as String)
+
+	# Record durable world facts - what the world remembers, not the player's paperwork
+	var world_flags: Variant = consequence.get("world_flags_to_set", [])
+	if world_flags is Array:
+		for flag: Variant in (world_flags as Array):
+			if flag is String and WorldState:
+				WorldState.set_flag(flag as String, true)
+	elif world_flags is Dictionary:
+		for flag: Variant in (world_flags as Dictionary).keys():
+			if flag is String and WorldState:
+				WorldState.set_flag(flag as String, (world_flags as Dictionary)[flag])
 
 	# Apply reputation changes
 	var rep_changes: Dictionary = consequence.get("reputation_changes", {})

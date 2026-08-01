@@ -1,0 +1,53 @@
+{
+	"id": "kazan_dun_01_the_stair_holds",
+	"title": "The Stair Holds",
+	"description": "Kazan-Dun has seven layers. The dwarves hold two. Goblins came up through the lower caves and never went back down, and every night the stair below the Great Hall is fought over again. Gate Warden Borik will not ask an outsider to save the hold - only to stand one watch on the stair, and see for himself what the dwarves are up against.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "dwarf_gate_warden",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "kazan_dun_entrance",
+	"objectives": [
+		{
+			"id": "descend_to_the_stair",
+			"description": "Go down past the Great Hall to the contested stair",
+			"type": "reach",
+			"target": "kazan_dun_level_2",
+			"required_count": 1
+		},
+		{
+			"id": "break_the_push",
+			"description": "Break the goblin push on the stair",
+			"type": "kill",
+			"target": "goblin_soldier",
+			"required_count": 6
+		},
+		{
+			"id": "silence_the_slingers",
+			"description": "Silence the goblin archers shooting down the stairwell",
+			"type": "kill",
+			"target": "goblin_archer",
+			"required_count": 3
+		},
+		{
+			"id": "report_to_borik",
+			"description": "Report to Gate Warden Borik at the gate",
+			"type": "talk",
+			"target": "dwarf_gate_warden",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "dwarf_gate_warden",
+	"turn_in_zone": "kazan_dun_entrance",
+	"rewards": {
+		"gold": 140,
+		"xp": 450,
+		"faction_reputation": {
+			"dwarves": 15
+		}
+	},
+	"prerequisites": [],
+	"next_quest": "kazan_dun_02_what_the_pits_held",
+	"notes": "Opening skirmish of the Kazan-Dun succession arc. Bible: seven layers, dwarves hold the top two. Gates nothing; the player may walk away after any link in the chain."
+}

@@ -1,0 +1,69 @@
+{
+	"id": "kazan_dun_02_what_the_pits_held",
+	"title": "What the Pits Held",
+	"description": "The king went down to the mine pits during the first assault and no dwarf has seen him since. Regent Morgrim will not say the word 'dead' aloud - he says 'unaccounted for', and the whole hold repeats it after him. He wants an outsider to walk the pit galleries, because an outsider can come back up and say the word.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "dwarf_regent",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "kazan_dun_level_1",
+	"objectives": [
+		{
+			"id": "cross_kazans_span",
+			"description": "Cross Kazan's Span to the mine workings",
+			"type": "reach",
+			"target": "kazan_dun_level_3",
+			"required_count": 1
+		},
+		{
+			"id": "descend_to_the_pits",
+			"description": "Descend into the mine pits",
+			"type": "reach",
+			"target": "kazan_dun_level_4",
+			"required_count": 1
+		},
+		{
+			"id": "find_the_king",
+			"description": "Find what the goblins dragged out of the pit floor",
+			"type": "interact",
+			"target": "kd_pit_floor_remains",
+			"required_count": 1
+		},
+		{
+			"id": "ask_the_loremaster",
+			"description": "Ask the Loremaster what the rites require",
+			"type": "talk",
+			"target": "dwarf_loremaster",
+			"required_count": 1
+		},
+		{
+			"id": "tell_morgrim",
+			"description": "Tell Regent Morgrim what you found",
+			"type": "talk",
+			"target": "dwarf_regent",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "dwarf_regent",
+	"turn_in_zone": "kazan_dun_level_1",
+	"rewards": {
+		"gold": 200,
+		"xp": 700,
+		"faction_reputation": {
+			"dwarves": 20
+		}
+	},
+	"choice_consequences": {
+		"king_confirmed_dead": {
+			"flags_to_set": ["kazan_dun_king_confirmed_dead"],
+			"world_flags_to_set": ["dwarf_king_found_dead"],
+			"reputation_changes": {
+				"dwarves": 10
+			}
+		}
+	},
+	"prerequisites": ["kazan_dun_01_the_stair_holds"],
+	"next_quest": "kazan_dun_03_the_devourers_table",
+	"notes": "Bible: the dwarf king is found dead at the bottom of the mine pits. The body is NOT recovered here - it is already in goblin hands by the time the player reaches it. Ids stay name-agnostic (dwarf_regent, not morgrim) so a rename is text-only."
+}

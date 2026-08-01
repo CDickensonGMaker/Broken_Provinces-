@@ -729,7 +729,37 @@ func execute_action(action: DialogueAction) -> String:
 			if FollowerManager:
 				FollowerManager.issue_command_all(action.param_string)
 
+		DialogueData.ActionType.SET_WORLD_FLAG:
+			_set_world_flag(action.param_string)
+
 	return ""
+
+
+## Record a durable world fact. param is "flag" (true) or "flag=value", where a
+## value of true/false/an integer is parsed, and anything else stays a String.
+func _set_world_flag(param: String) -> void:
+	if param.is_empty() or not WorldState:
+		return
+
+	var separator: int = param.find("=")
+	if separator == -1:
+		WorldState.set_flag(param, true)
+		return
+
+	var flag: String = param.substr(0, separator).strip_edges()
+	var raw: String = param.substr(separator + 1).strip_edges()
+	if flag.is_empty():
+		return
+
+	var value: Variant = raw
+	if raw.to_lower() == "true":
+		value = true
+	elif raw.to_lower() == "false":
+		value = false
+	elif raw.is_valid_int():
+		value = raw.to_int()
+
+	WorldState.set_flag(flag, value)
 
 
 ## Recruit a follower by id, spawning it beside the player if it is not already active

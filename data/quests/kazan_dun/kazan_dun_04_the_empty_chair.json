@@ -1,0 +1,100 @@
+{
+	"id": "kazan_dun_04_the_empty_chair",
+	"title": "The Empty Chair",
+	"description": "The king burned properly, which means the hold may name his successor - and the hold cannot agree who that is. Thurgan left an infant, Brann. His uncle Morgrim stands as caretaker-regent until the boy comes of age. Thane Vurka Stonebrand says a hold under siege cannot be ruled by a child, and demands the old trial by combat instead; she wanted to fight the boy for it, which is precisely why Morgrim put himself in the way. Both of them want an outsider's voice, because an outsider has no clan to answer to afterwards.",
+	"is_main_quest": false,
+	"quest_source": "npc",
+	"giver_npc_id": "dwarf_regent",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "kazan_dun_level_1",
+	"objective_groups": {
+		"settle_the_succession": {
+			"description": "Settle who rules Kazan-Dun",
+			"required": 1
+		}
+	},
+	"objectives": [
+		{
+			"id": "hear_the_regent",
+			"description": "Hear Regent Morgrim's case for the boy",
+			"type": "talk",
+			"target": "dwarf_regent",
+			"required_count": 1
+		},
+		{
+			"id": "hear_the_thane",
+			"description": "Hear Thane Vurka's case for the trial",
+			"type": "talk",
+			"target": "dwarf_thane_challenger",
+			"required_count": 1
+		},
+		{
+			"id": "crowned_the_boy",
+			"description": "Stand up for the regency and let Brann be crowned",
+			"type": "choice",
+			"required_count": 1,
+			"group": "settle_the_succession"
+		},
+		{
+			"id": "called_the_trial",
+			"description": "Stand up for the trial by combat and let the axe decide",
+			"type": "choice",
+			"required_count": 1,
+			"group": "settle_the_succession"
+		},
+		{
+			"id": "undercut_the_regent",
+			"description": "Take the Loremaster what Morgrim kept off the roll, and let the trial win by default",
+			"type": "interact",
+			"target": "kd_regents_roll",
+			"required_count": 1,
+			"group": "settle_the_succession"
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "dwarf_loremaster",
+	"turn_in_zone": "kazan_dun_level_1",
+	"rewards": {
+		"gold": 800,
+		"xp": 2500,
+		"items": ["hold_friend_token"],
+		"faction_reputation": {
+			"dwarves": 50
+		}
+	},
+	"choice_consequences": {
+		"crowned_the_boy": {
+			"flags_to_set": ["kazan_dun_regency_upheld"],
+			"world_flags_to_set": ["kazan_dun_helped", "kazan_dun_regency_upheld"],
+			"reputation_changes": {
+				"dwarves_birth": 60,
+				"dwarves_power": -35,
+				"dwarves": 25
+			},
+			"items_given": ["dwarven_grave_ale"]
+		},
+		"called_the_trial": {
+			"flags_to_set": ["kazan_dun_trial_called"],
+			"world_flags_to_set": ["kazan_dun_helped", "kazan_dun_trial_called"],
+			"reputation_changes": {
+				"dwarves_power": 60,
+				"dwarves_birth": -35,
+				"dwarves": 25
+			},
+			"items_given": ["dwarven_grave_ale"]
+		},
+		"undercut_the_regent": {
+			"flags_to_set": ["kazan_dun_regent_disgraced", "kazan_dun_trial_called"],
+			"world_flags_to_set": ["kazan_dun_helped", "kazan_dun_trial_called", "kazan_dun_regent_disgraced"],
+			"reputation_changes": {
+				"dwarves_power": 45,
+				"dwarves_birth": -60,
+				"dwarves": 5
+			},
+			"items_given": ["soulstone_greater_filled"]
+		}
+	},
+	"prerequisites": ["kazan_dun_03_the_devourers_table"],
+	"next_quest": "",
+	"notes": "Terminal link of the Kazan-Dun arc; sets kazan_dun_helped on every path and gates nothing else in the game. The third road is the bible's 'maybe weaken the uncle so the other side wins' - it is not a dialogue option, it is evidence carried to the Loremaster, and it costs the player the dwarves' warmth even as it wins the trial side the hold."
+}

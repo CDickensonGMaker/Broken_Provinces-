@@ -74,5 +74,33 @@ Not connected to the main story; a "huge flavor drop" the player can skip entire
 6. `[OPEN]` Names: the elf claimant, her son, the dead dwarf king, the uncle, Viktor's wife, the rogue princess.
 7. **RESOLVED 8/1: the capital is Falkenhaften** — already built: `scenes/levels/falkenhaften.tscn`, world grid entry `{"id": "falkenhaften", type: "capital"}` at (7, −9), far northeast. Approach lore already in data: a ruined fortress guards the way (mountain pass collapsed) and organized bandits ambush merchants on the road — natural Act I→II journey content. Falkenhaften is the Act II hub the player graduates to from Dalhurst.
 
-## Proposed names (Wyrm 8/1 — PROPOSED ONLY, await Caleb's picks)
-Missing king: Aldric / Osric / Valdemar · Elf claimant: Sylvaine / Ithriel / Maerwen · Her son: Corwin / Auren / Elandor · Dead dwarf king: Thurgan Ironvein / Dagmar Stonehall / Borvik · Infant heir: Brann / Korrin · Uncle-regent: Morgrim / Hadrik · Viktor's wife: Isolde / Morwenna / Elisabetta · Rogue princess: Vespera / Seraphine / Isabeau · Goblin king: Skarrag the Devourer / Grubmaw
+## Names — ADOPTED-BY-DEFAULT 8/1 (Caleb may overrule; renaming is text-only)
+The bolded defaults below are now **in the shipped content**, adopted by default
+so the writing could proceed. Caleb overrules any of them at any time: ids in
+data are deliberately name-agnostic (`dwarf_regent`, not `morgrim`;
+`dwarf_king_body_recovered`, not `thurgan_body`), so a rename touches display
+strings and dialogue prose only — never a quest id, flag, or NPC id.
+
+| Role | ADOPTED | Alternates still on the table |
+|---|---|---|
+| Missing king | **Aldric** | Osric, Valdemar |
+| Elf claimant | **Sylvaine** | Ithriel, Maerwen |
+| Her son | **Corwin** | Auren, Elandor |
+| Dead dwarf king | **Thurgan Ironvein** | Dagmar Stonehall, Borvik |
+| Infant heir | **Brann** | Korrin |
+| Uncle-regent | **Morgrim** | Hadrik |
+| Viktor's wife | **Isolde** | Morwenna, Elisabetta |
+| Rogue princess | **Vespera** | Seraphine, Isabeau |
+| Goblin king | **Skarrag the Devourer** | Grubmaw |
+
+**Name collision to rule on:** Dalhurst already has a `wizard_dalhurst` called
+**Master Aldric**, a Keeper contact called **Aldric Vane**, and a Crossroads
+merchant id `aldric_the_merchant`. Adopting Aldric for the missing king makes
+four. Nothing in the shipped content names the king yet, so this costs nothing
+until Act II — but it is his call whether the king takes a different name or the
+others do.
+
+Characters invented on top of this list (not from the bible, logged in
+`docs/audits/invention_manifest.md`): **Thane Vurka Stonebrand**, who leads the
+trial-by-combat side, and **Loremaster Dwalki Runeglass**, who keeps the funeral
+rites and the muster rolls.

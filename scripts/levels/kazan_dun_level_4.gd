@@ -62,6 +62,26 @@ func _setup_environment() -> void:
 
 	# Spawn fire bats in the forge area after rooms are initialized
 	call_deferred("_spawn_fire_bats")
+	call_deferred("_spawn_pit_remains")
+
+
+## What the goblins dragged out of the pit floor. Examining it is the moment the
+## player can go back up and say the word nobody in the hold will say.
+func _spawn_pit_remains() -> void:
+	var objects := Node3D.new()
+	objects.name = "QuestObjects"
+	add_child(objects)
+
+	var remains := QuestInteractable.spawn(
+		objects,
+		Vector3(40, 9.2, -33),
+		"kd_pit_floor_remains",
+		"the drag-marks at the bottom of the shaft",
+		"Follow",
+		"Mail worth more than the mine. A beard plaited in the old style. The drag-marks go down, not up - the goblins took him deeper, and they took him carefully."
+	)
+	remains.body_size = Vector3(1.6, 0.5, 2.2)
+	remains.body_color = Color(0.3, 0.26, 0.22)
 
 
 ## Spawn fire bats in the forge and mine areas (fire variant for volcanic/forge areas)

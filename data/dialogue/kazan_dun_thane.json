@@ -1,0 +1,190 @@
+{
+  "id": "kazan_dun_thane",
+  "display_name": "Thane Vurka Stonebrand",
+  "description": "Leader of the trial-by-combat side of the Kazan-Dun succession. Holds the third gate. Offers the player the second road in The Empty Chair.",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Thane Vurka",
+      "text": "You are the outsider everyone is being polite to. Vurka Stonebrand. I hold the third gate, which is the one that has not fallen, and I say the old rite out loud in a hall where saying it out loud is considered bad manners.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Say it to me, then.",
+          "next": "thanes_case",
+          "conditions": [
+            { "type": "quest_state", "param": "kazan_dun_04_the_empty_chair", "value": 2 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "You wanted to fight a baby for a chair.",
+          "next": "the_accusation",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "What do you make of Morgrim?",
+          "next": "on_morgrim",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "How long can the third gate hold?",
+          "next": "the_gate",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Later.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "thanes_case",
+      "speaker": "Thane Vurka",
+      "text": "A hold at war is a hold that must answer in one breath. Morgrim's arrangement answers in three: the regent decides, the council confirms, the boy is told about it in sixteen years. Meanwhile goblins are eating our dead. The rite is a day of blood and then it is over and someone is king. I am not asking you to like it. I am asking whether you have ever waited for a council while something was coming up a stair at you.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll back the trial. Let the axe decide.",
+          "next": "pledge_trial",
+          "conditions": [
+            { "type": "quest_state", "param": "kazan_dun_04_the_empty_chair", "value": 2 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "And when the trial kills your best fighter mid-siege?",
+          "next": "thanes_case_hard",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I've heard enough for now.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "thanes_case_hard",
+      "speaker": "Thane Vurka",
+      "text": "Then it kills me, and Morgrim is king outright instead of king-in-all-but-name, and the hold has an answer either way. That is the part he will not say and I will: I am not certain I win. I am certain that his way ends with an argument in sixteen years and mine ends this week.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Then I'll back the trial.",
+          "next": "pledge_trial",
+          "conditions": [
+            { "type": "quest_state", "param": "kazan_dun_04_the_empty_chair", "value": 2 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I'll think on it.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "the_accusation",
+      "speaker": "Thane Vurka",
+      "text": "I named every living claimant, because the rite names every living claimant, and the child is a living claimant. A champion would have stood for him. That is written into the rite, it has happened twice in our history, and both times the child grew up and was a fine king. Morgrim knows this. He put himself in the ring anyway, in front of witnesses, and let the whole hold believe I meant to swing at an infant. He is better at this than I am. That is my actual complaint.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "So you respect him.",
+          "next": "on_morgrim",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Understood.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "on_morgrim",
+      "speaker": "Thane Vurka",
+      "text": "He is a good administrator and an honest man and he has been quietly wrong about everything since the goblins came up. He kept a hundred axes back to guard the council chamber on the night his brother went down to the pits. He has never explained that. I have never asked in public, because asking it in public would end him, and I want the chair, not his corpse.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "A hundred axes. That's on a roll somewhere.",
+          "next": "the_roll",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Hm.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "the_roll",
+      "speaker": "Thane Vurka",
+      "text": "It is on the muster roll in the council chamber, in his own hand, and the Loremaster keeps the roll and would have to read it out if anyone put it in front of him. I will not be the one who does that. If somebody with no clan and no future in this mountain did it, the rite would be called by the end of the day and the hold would never have had to hear me accuse him. Do with that what you like.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        { "type": "set_flag", "param": "kazan_dun_knows_about_roll", "value": 0 }
+      ]
+    },
+    {
+      "id": "the_gate",
+      "speaker": "Thane Vurka",
+      "text": "Two more months if they keep coming the way they have been. Two more weeks if Skarrag finishes whatever he is building down there with our stones and our dead. Nobody can tell me what that is. Ask ten dwarves and you get ten answers and a lot of shrugging, which from a dwarf is a confession of ignorance so total it hurts him to make it.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Back to it.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "pledge_trial",
+      "speaker": "Thane Vurka",
+      "text": "Said in front of the gate and the men on it. That is enough witnesses for any rite. The axes go in the ring at the next dark, Morgrim will stand because he is too proud not to, and one of us will be king of a besieged mountain by morning. Go and tell the Loremaster to set the ring. And - outsider. If it is me, you drink at my table. If it is him, you drink at his. Either way you drink.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        { "type": "apply_choice_consequence", "param": "kazan_dun_04_the_empty_chair:called_the_trial", "value": 0 },
+        { "type": "set_world_flag", "param": "kazan_dun_helped", "value": 0 }
+      ]
+    },
+    {
+      "id": "farewell",
+      "speaker": "Thane Vurka",
+      "text": "The gate is that way if you want to be useful.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
+    }
+  ]
+}

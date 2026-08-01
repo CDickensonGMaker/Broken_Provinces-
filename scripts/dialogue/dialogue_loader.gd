@@ -188,6 +188,7 @@ static func _parse_action_type(type_str: String) -> DialogueData.ActionType:
 		"apply_choice_consequence": return DialogueData.ActionType.APPLY_CHOICE_CONSEQUENCE
 		"recruit_follower": return DialogueData.ActionType.RECRUIT_FOLLOWER
 		"command_follower": return DialogueData.ActionType.COMMAND_FOLLOWER
+		"set_world_flag": return DialogueData.ActionType.SET_WORLD_FLAG
 		"": return DialogueData.ActionType.NONE
 		_:
 			push_warning("[DialogueLoader] Unknown action type '%s' - treated as NONE" % type_str)

@@ -80,13 +80,14 @@ func _spawn_dwarf_npcs() -> void:
 
 	# === DWARF GATE WARDEN (at main gate entrance) ===
 	var warden_pos := Vector3(0, 0.5, 30)  # At the main entrance gate
+	var warden_quests: Array[String] = ["kazan_dun_01_the_stair_holds"]
 	var gate_warden := QuestGiver.spawn_quest_giver(
 		self,
 		warden_pos,
 		"Gate Warden Borik",
 		"dwarf_gate_warden",
 		null, 8, 2,
-		[],  # Quest IDs to be added later
+		warden_quests,
 		false
 	)
 	gate_warden.region_id = ZONE_ID
