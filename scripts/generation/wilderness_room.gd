@@ -1359,6 +1359,25 @@ func _create_stone_circle(parent: Node3D) -> void:
 	parent.add_child(altar)
 
 
+## Whether ground cover at a local position supports a tree. Clearings and bare stone
+## reject; woodland always accepts. Deterministic per world position, so the same patch
+## of ground stays open or wooded across reloads and across the cell boundary.
+func _zone_accepts_tree(local_pos: Vector3) -> bool:
+	var world_x: float = float(grid_coords.x) * room_size + local_pos.x
+	var world_z: float = float(grid_coords.y) * room_size + local_pos.z
+	var zone: int = TerrainZoning.classify(local_pos.y, world_x, world_z, biome, GameManager.world_seed)
+
+	match zone:
+		TerrainZoning.Zone.BARE:
+			return false
+		TerrainZoning.Zone.OPEN:
+			return rng.randf() < 0.15
+		TerrainZoning.Zone.SCRUB:
+			return rng.randf() < 0.55
+		_:
+			return true
+
+
 ## Spawn environmental props (trees, rocks, bushes, grass, mushrooms)
 func _spawn_environment() -> void:
 	var tree_count := 0
@@ -1408,6 +1427,48 @@ func _spawn_environment() -> void:
 			grass_count = rng.randi_range(5, 10)  # Very sparse grass
 			mushroom_count = rng.randi_range(1, 3)   # Very few mushrooms
 			hillcross_count = 1 if rng.randf() < 0.04 else 0  # 4% chance - rare mountain memorial (reduced)
+		Biome.DESERT:
+			tree_count = rng.randi_range(3, 7)    # Cacti stand alone
+			bush_count = rng.randi_range(4, 9)    # Dry scrub
+			rock_count = rng.randi_range(8, 16)   # Weathered stone
+			grass_count = rng.randi_range(3, 8)   # Almost bare sand
+			mushroom_count = 0                    # Nothing fruits out here
+			hillcross_count = 1 if rng.randf() < 0.05 else 0
+		Biome.WINTER:
+			tree_count = rng.randi_range(16, 26)  # Fir stands
+			bush_count = rng.randi_range(6, 12)   # Sparse under snow
+			rock_count = rng.randi_range(6, 12)
+			grass_count = rng.randi_range(2, 6)   # Snow buries the ground cover
+			mushroom_count = rng.randi_range(0, 2)
+			hillcross_count = 1 if rng.randf() < 0.07 else 0  # Wayside crosses read well in snow
+		Biome.ROCKY_FOREST:
+			tree_count = rng.randi_range(18, 28)
+			bush_count = rng.randi_range(8, 16)
+			rock_count = rng.randi_range(18, 30)
+			grass_count = rng.randi_range(8, 14)
+			mushroom_count = rng.randi_range(4, 9)
+			hillcross_count = 1 if rng.randf() < 0.05 else 0
+		Biome.ROCKY_PLAINS:
+			tree_count = rng.randi_range(4, 9)
+			bush_count = rng.randi_range(6, 12)
+			rock_count = rng.randi_range(20, 32)
+			grass_count = rng.randi_range(12, 20)
+			mushroom_count = rng.randi_range(1, 4)
+			hillcross_count = 1 if rng.randf() < 0.06 else 0
+		Biome.ROCKY_WINTER:
+			tree_count = rng.randi_range(6, 12)   # Treeline thins with altitude
+			bush_count = rng.randi_range(2, 6)
+			rock_count = rng.randi_range(24, 38)
+			grass_count = rng.randi_range(1, 4)
+			mushroom_count = 0
+			hillcross_count = 1 if rng.randf() < 0.05 else 0
+		Biome.ROCKY_DESERT:
+			tree_count = rng.randi_range(1, 4)
+			bush_count = rng.randi_range(2, 6)
+			rock_count = rng.randi_range(22, 36)
+			grass_count = rng.randi_range(1, 4)
+			mushroom_count = 0
+			hillcross_count = 1 if rng.randf() < 0.04 else 0
 
 	# Reduce prop density on road cells
 	if is_road_cell:
@@ -1422,8 +1483,11 @@ func _spawn_environment() -> void:
 
 	# Spawn trees
 	for i in range(tree_count):
+		var tree_pos: Vector3 = _get_random_prop_position()
+		if not _zone_accepts_tree(tree_pos):
+			continue
 		var tree := _create_tree()
-		tree.position = _get_random_prop_position()
+		tree.position = tree_pos
 		add_child(tree)
 		props.append(tree)
 
@@ -1481,6 +1545,8 @@ func _spawn_environment() -> void:
 	var decorative_tree_count: int = int(tree_count * rng.randf_range(0.5, 0.8))
 	for i in range(decorative_tree_count):
 		var pos: Vector3 = _get_random_prop_position()
+		if not _zone_accepts_tree(pos):
+			continue
 		var deco_tree: Node3D = _create_decorative_tree_3d(pos)
 		add_child(deco_tree)
 		props.append(deco_tree)
@@ -1562,8 +1628,11 @@ func _create_decorative_tree_3d(pos: Vector3) -> Node3D:
 	container.name = "DecorativeTree3D"
 	container.position = pos
 
-	# Pick a random tree model from the 36 tree_pack_1.1 models
-	var model_path: String = TREE_3D_MODELS[rng.randi() % TREE_3D_MODELS.size()]
+	# Winter and desert have their own species; every other biome draws from the pack
+	var species: Array[String] = BiomePalette.tree_models(biome)
+	if species.is_empty():
+		species = TREE_3D_MODELS
+	var model_path: String = species[rng.randi() % species.size()]
 
 	# Try to load the model
 	if ResourceLoader.exists(model_path):
