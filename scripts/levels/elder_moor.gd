@@ -754,3 +754,27 @@ func _spawn_priest_of_morthane() -> void:
 	priest_profile.knowledge_tags = ["elder_moor", "religion", "priest_morthane", "death", "rebirth", "undead"]
 	priest_profile.personality_traits = ["pious", "solemn", "wise"]
 	priest.npc_profile = priest_profile
+
+	# Borin Stonehammer - wounded dwarf courier resting in the camp, giver and
+	# talk target of dwarf_messenger (giver_region "elder_moor")
+	var borin := QuestGiver.spawn_quest_giver(
+		npcs_container,
+		Vector3(-4, 0, -28),  # By the camp fire, off his feet
+		"Borin Stonehammer",
+		"borin_stonehammer",
+		null,
+		8, 2,
+		["dwarf_messenger"]
+	)
+	if not borin:
+		push_error("[Elder Moor] Failed to spawn Borin Stonehammer")
+		return
+	borin.region_id = ZONE_ID
+	borin.faction_id = "dwarves"
+	borin.no_quest_dialogue = "My leg will mend. The message will not wait. Carry it well, and Kazan-Dun will remember you."
+	var borin_profile := NPCKnowledgeProfile.new()
+	borin_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	borin_profile.personality_traits = ["stoic", "urgent", "blunt"]
+	borin_profile.knowledge_tags = ["elder_moor", "dwarves", "kazan_dun", "mountain_pass"]
+	borin_profile.base_disposition = 50
+	borin.npc_profile = borin_profile

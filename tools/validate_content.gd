@@ -29,6 +29,21 @@ const DIALOGUE_LOADER_PATH := "res://scripts/dialogue/dialogue_loader.gd"
 ## static scan can see. Referencing quests are reported as warnings, not errors.
 const DYNAMIC_ID_PREFIXES: Array[String] = ["kd_", "kazan_dun_"]
 
+## Quest "npc" ids that are world objects, not people: boards, shrines and
+## triggers the player interacts with. They are spawned by their own classes
+## (BountyBoard, etc.), so an NPC scan can never see them and must not fail.
+## Add an id here only when a real interactable of that kind exists in-world.
+const INTERACTABLE_IDS: Array[String] = [
+	"bounty_board",
+	"guild_contract_board",
+	"temporal_echo_trigger",
+]
+
+## Ids that exist in quest text as narrative placeholders and are deliberately
+## never spawned - a rumour's subject, an off-screen authority. They are
+## reported as warnings so the list stays visible instead of silently rotting.
+const LORE_ONLY_IDS: Array[String] = []
+
 var errors: Array[Dictionary] = []
 var warnings: Array[Dictionary] = []
 
@@ -323,6 +338,11 @@ func _harvest_action_types(value: Variant, in_actions: bool = false) -> Array[St
 func _expect_npc(id: String, path: String, where: String) -> void:
 	if id.is_empty() or npc_ids.has(id):
 		return
+	if INTERACTABLE_IDS.has(id):
+		return
+	if LORE_ONLY_IDS.has(id):
+		_warn("QUEST_NPC", path, id, "%s is a lore-only reference with no spawned NPC" % where)
+		return
 	for prefix: String in DYNAMIC_ID_PREFIXES:
 		if id.begins_with(prefix):
 			_warn("QUEST_NPC", path, id, "%s may be a runtime-generated id (unverifiable statically)" % where)
@@ -366,6 +386,8 @@ func _write_report() -> bool:
 	lines.append("| NPC ids discovered | %d |" % npc_ids.size())
 	lines.append("| Item ids discovered | %d |" % item_ids.size())
 	lines.append("| Enemy ids discovered | %d |" % enemy_ids.size())
+	lines.append("| Interactable ids whitelisted | %d |" % INTERACTABLE_IDS.size())
+	lines.append("| Lore-only ids whitelisted | %d |" % LORE_ONLY_IDS.size())
 	lines.append("| Errors | %d |" % errors.size())
 	lines.append("| Warnings | %d |" % warnings.size())
 	lines.append("")

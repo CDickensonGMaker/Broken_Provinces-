@@ -118,6 +118,65 @@ func _spawn_npcs() -> void:
 	whalers_merchant_profile.speech_style = "casual"
 	whalers_merchant.npc_profile = whalers_merchant_profile
 
+	# === MIRIAM GOLDTONGUE - moneylender, giver and turn-in for whalers_debt ===
+	var miriam := QuestGiver.spawn_quest_giver(
+		self,
+		Vector3(14, MIDDLE_LEVEL, -2),  # Counting house on the market level
+		"Miriam Goldtongue",
+		"miriam_goldtongue",
+		null, 8, 2,
+		["whalers_debt"]
+	)
+	miriam.region_id = ZONE_ID
+	miriam.faction_id = "human_empire"
+	miriam.no_quest_dialogue = "Everyone in this canyon owes somebody. Most of them owe me."
+	var miriam_profile := NPCKnowledgeProfile.new()
+	miriam_profile.archetype = NPCKnowledgeProfile.Archetype.MERCHANT
+	miriam_profile.personality_traits = ["shrewd", "silver-tongued", "unsentimental"]
+	miriam_profile.knowledge_tags = ["whalers_abyss", "debts", "trade", "local_area"]
+	miriam_profile.base_disposition = 45
+	miriam_profile.speech_style = "formal"
+	miriam.npc_profile = miriam_profile
+
+	# Her two named debtors, both talk targets of whalers_debt
+	var garrett := QuestGiver.spawn_quest_giver(
+		self,
+		Vector3(-6, MIDDLE_LEVEL, -14),  # The canyon camps
+		"Garrett",
+		"debtor_garrett",
+		null, 8, 2,
+		[],
+		true  # is_talk_target
+	)
+	garrett.region_id = ZONE_ID
+	garrett.faction_id = "human_empire"
+	garrett.no_quest_dialogue = "One more hand and I'd have had it back. That is how it always goes."
+	var garrett_profile := NPCKnowledgeProfile.new()
+	garrett_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	garrett_profile.personality_traits = ["evasive", "hopeful", "broke"]
+	garrett_profile.knowledge_tags = ["whalers_abyss", "debts", "gambling"]
+	garrett_profile.base_disposition = 40
+	garrett.npc_profile = garrett_profile
+
+	var selene := QuestGiver.spawn_quest_giver(
+		self,
+		Vector3(18, MIDDLE_LEVEL, -12),
+		"Selene",
+		"debtor_selene",
+		null, 8, 2,
+		[],
+		true  # is_talk_target
+	)
+	selene.region_id = ZONE_ID
+	selene.faction_id = "human_empire"
+	selene.no_quest_dialogue = "I will pay Miriam. On my terms, and not a day before I can."
+	var selene_profile := NPCKnowledgeProfile.new()
+	selene_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	selene_profile.personality_traits = ["proud", "guarded", "practical"]
+	selene_profile.knowledge_tags = ["whalers_abyss", "debts", "local_area"]
+	selene_profile.base_disposition = 45
+	selene.npc_profile = selene_profile
+
 
 ## Spawn merchants from marker positions
 func _spawn_merchants() -> void:

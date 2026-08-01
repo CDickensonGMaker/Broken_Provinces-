@@ -12,7 +12,7 @@
 			"id": "meet_merchant",
 			"description": "Meet Halvard at the Dalhurst gate",
 			"type": "talk",
-			"target": "halvard_the_supplier",
+			"target": "halvard_supplier_dalhurst",
 			"required_count": 1,
 			"is_optional": false
 		},
@@ -20,7 +20,7 @@
 			"id": "escort_merchant",
 			"description": "Escort Halvard to Thornfield (keep him alive)",
 			"type": "escort",
-			"target": "halvard_the_supplier",
+			"target": "halvard_supplier_dalhurst",
 			"required_count": 1,
 			"is_optional": false
 		},

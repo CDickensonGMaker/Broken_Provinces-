@@ -186,6 +186,47 @@ func _spawn_npcs() -> void:
 	keeper_profile.speech_style = "casual"
 	millbrook_keeper.npc_profile = keeper_profile
 
+	# === MAGISTRATE THORNBURY (fish_fraud giver and turn-in) ===
+	var magistrate := QuestGiver.spawn_quest_giver(
+		self,
+		Vector3(8, 0, 4),  # Village centre, where disputes are heard
+		"Magistrate Thornbury",
+		"magistrate_millbrook",
+		null, 8, 2,
+		["fish_fraud"]
+	)
+	magistrate.region_id = ZONE_ID
+	magistrate.faction_id = "human_empire"
+	magistrate.no_quest_dialogue = "Millbrook is a small place. Small places still need the law kept straight."
+	var magistrate_profile := NPCKnowledgeProfile.new()
+	magistrate_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	magistrate_profile.personality_traits = ["exacting", "impartial", "weary"]
+	magistrate_profile.knowledge_tags = ["millbrook", "law", "trade", "local_area"]
+	magistrate_profile.base_disposition = 45
+	magistrate_profile.speech_style = "formal"
+	magistrate.npc_profile = magistrate_profile
+
+	# === HECTOR THE FISH MERCHANT (fish_fraud interview target) ===
+	var hector := QuestGiver.spawn_quest_giver(
+		self,
+		Vector3(-11, 0, -12),  # The fish stalls by the water
+		"Hector",
+		"merchant_hector",
+		null, 8, 2,
+		[],
+		true  # is_talk_target
+	)
+	hector.region_id = ZONE_ID
+	hector.faction_id = "human_empire"
+	hector.no_quest_dialogue = "The fishermen say I cheat them. The scales say otherwise. Weigh it yourself if you like."
+	var hector_profile := NPCKnowledgeProfile.new()
+	hector_profile.archetype = NPCKnowledgeProfile.Archetype.MERCHANT
+	hector_profile.personality_traits = ["defensive", "shrewd", "brusque"]
+	hector_profile.knowledge_tags = ["millbrook", "fishing", "trade", "local_area"]
+	hector_profile.base_disposition = 40
+	hector_profile.speech_style = "casual"
+	hector.npc_profile = hector_profile
+
 
 ## Spawn fast travel shrine at marker position
 func _spawn_fast_travel_shrine() -> void:

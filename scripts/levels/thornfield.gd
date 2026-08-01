@@ -364,6 +364,48 @@ func _spawn_npcs() -> void:
 	trader_profile.speech_style = "casual"
 	thornfield_trader.npc_profile = trader_profile
 
+	# === ALDWIN CRANE (merchant_protection giver and turn-in, trading post) ===
+	var crane_position: Vector3 = trader_position + Vector3(0, 0, 4)
+	var aldwin_crane := QuestGiver.spawn_quest_giver(
+		npcs,
+		crane_position,
+		"Aldwin Crane",
+		"merchant_aldwin",
+		null, 8, 2,
+		["merchant_protection"]
+	)
+	aldwin_crane.region_id = ZONE_ID
+	aldwin_crane.faction_id = "human_empire"
+	aldwin_crane.no_quest_dialogue = "Goods do not sell themselves in a warehouse. They sell in Dalhurst - if they ever reach it."
+	var crane_profile := NPCKnowledgeProfile.new()
+	crane_profile.archetype = NPCKnowledgeProfile.Archetype.MERCHANT
+	crane_profile.personality_traits = ["wealthy", "impatient", "particular"]
+	crane_profile.knowledge_tags = ["thornfield", "trade", "roads", "dalhurst", "bandits"]
+	crane_profile.base_disposition = 50
+	crane_profile.speech_style = "formal"
+	aldwin_crane.npc_profile = crane_profile
+
+	# === SILAS (the Guild's new Thornfield fence - thieves_03 delivery target) ===
+	var silas := QuestGiver.spawn_quest_giver(
+		npcs,
+		crane_position + Vector3(-9, 0, -6),  # Off the market, out of the light
+		"Silas",
+		"silas_fence",
+		null, 8, 2,
+		[],
+		true  # is_talk_target
+	)
+	silas.region_id = ZONE_ID
+	silas.faction_id = "thieves_guild"
+	silas.no_quest_dialogue = "If Raven sent you, put the package down and keep walking."
+	var silas_profile := NPCKnowledgeProfile.new()
+	silas_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
+	silas_profile.personality_traits = ["furtive", "terse", "watchful"]
+	silas_profile.knowledge_tags = ["thornfield", "thieves_guild", "smuggling", "local_area"]
+	silas_profile.base_disposition = 35
+	silas_profile.speech_style = "casual"
+	silas.npc_profile = silas_profile
+
 	# === THORNFIELD KEEPER CONTACT (in tavern back room - Keepers faction) ===
 	var lodge_pos_marker: Marker3D = npc_spawn_points.get_node_or_null("Merchant_HuntersLodge")
 	var keeper_position: Vector3 = lodge_pos_marker.global_position + Vector3(-2, 0, 3) if lodge_pos_marker else Vector3(-8, 0, 8)
