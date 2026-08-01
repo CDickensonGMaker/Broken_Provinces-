@@ -10,6 +10,10 @@ signal left_faction(faction_id: String)
 signal rank_changed(faction_id: String, old_rank: String, new_rank: String)
 signal daily_penalty_added(faction_id: String, reason: String, amount: int)
 signal daily_penalty_cleared(faction_id: String, reason: String)
+signal ongoing_effect_added(effect_id: String, config: Dictionary)
+signal ongoing_effect_cleared(effect_id: String)
+signal ongoing_effect_applied(effect_id: String, effect_type: String, amount: int)
+signal hostility_changed(faction_id: String, old_value: int, new_value: int)
 
 ## All loaded faction data (faction_id -> FactionData)
 var factions: Dictionary = {}
@@ -28,10 +32,35 @@ var last_crime_day: Dictionary = {}
 ## Tracks when decay was last applied to prevent double-counting
 var last_decay_day: Dictionary = {}
 
-## Daily penalties - accumulating reputation loss applied each day
-## Format: { faction_id: { reason_id: {amount: int, reason_display: String} } }
-## Example: { "merchant_guild": { "unpaid_debt": {amount: -5, reason_display: "Unpaid debt"} } }
-var daily_penalties: Dictionary = {}
+## Ongoing effects - everything the world does to the player once a day because
+## of a standing arrangement. Debts bleed reputation, a camp under the player's
+## thumb pays him, and a town that knows what he has become gets angrier.
+##
+## Format: { effect_id: {type, faction, amount, reason_display, source} }
+##   type:           "reputation" | "gold" | "hostility"
+##   faction:        which faction it concerns (unused by "gold")
+##   amount:         applied every day; sign is meaningful for all three types
+##   reason_display: human-readable, for notifications and UI
+##   source:         optional tag so one arrangement's effects clear together
+var ongoing_effects: Dictionary = {}
+
+## Standing hostility per faction (faction_id -> 0..100). Reputation is what a
+## faction thinks of the player; hostility is how hard it is currently looking
+## for him. A bandit chief can be respected by his crew and hunted by every
+## guard on the road at the same time.
+var faction_hostility: Dictionary = {}
+
+## Prefix under which the old daily-penalty API stores its effects, so the
+## penalty calls that already exist keep working unchanged.
+const PENALTY_EFFECT_PREFIX := "penalty:"
+
+## Hostility at which a faction is actively hunting the player. Crossing it
+## raises the world fact "<faction_id>_hunting_player".
+const HOSTILITY_HUNTING_THRESHOLD: int = 50
+
+## Hostility bounds
+const MIN_HOSTILITY: int = 0
+const MAX_HOSTILITY: int = 100
 
 ## Days required without crimes before reputation starts decaying toward 0
 const CRIME_COOLDOWN_DAYS: int = 7
@@ -96,10 +125,10 @@ func _initialize_player_reputations() -> void:
 		for faction_id: String in GameManager.player_data.faction_memberships:
 			faction_memberships[faction_id] = GameManager.player_data.faction_memberships[faction_id]
 
-## Handle day change - process reputation decay and daily penalties
+## Handle day change - process reputation decay and ongoing effects
 func _on_day_changed(new_day: int) -> void:
 	process_reputation_decay(new_day)
-	_process_daily_penalties(new_day)
+	process_ongoing_effects(new_day)
 
 
 ## Process time decay for negative reputation
@@ -143,8 +172,201 @@ func record_crime_against_faction(faction_id: String) -> void:
 
 
 # =============================================================================
-# DAILY PENALTY SYSTEM
+# ONGOING EFFECTS
 # =============================================================================
+# One ticker for everything a standing arrangement does to the player each day.
+# It began as accumulating reputation penalties for unpaid debts; it now also
+# pays - a camp the player runs sends him his share - and makes the people who
+# know what he did look harder for him.
+
+## Register a standing daily effect.
+## effect_id: unique; registering the same id again replaces the old effect
+## config:    {type, faction, amount, reason_display, source} - see ongoing_effects
+## Returns false if the effect is malformed and was not registered.
+func add_ongoing_effect(effect_id: String, config: Dictionary) -> bool:
+	if effect_id.is_empty():
+		push_warning("[FactionManager] Ongoing effect needs an id")
+		return false
+
+	var effect_type: String = str(config.get("type", ""))
+	if not effect_type in ["reputation", "gold", "hostility"]:
+		push_warning("[FactionManager] Unknown ongoing effect type: '%s'" % effect_type)
+		return false
+
+	var faction_id: String = str(config.get("faction", ""))
+	if effect_type != "gold":
+		if faction_id.is_empty() or not factions.has(faction_id):
+			push_warning("[FactionManager] Ongoing effect '%s' names no known faction: '%s'" % [effect_id, faction_id])
+			return false
+
+	var effect: Dictionary = {
+		"type": effect_type,
+		"faction": faction_id,
+		"amount": int(config.get("amount", 0)),
+		"reason_display": str(config.get("reason_display", effect_id)),
+		"source": str(config.get("source", ""))
+	}
+
+	ongoing_effects[effect_id] = effect
+	ongoing_effect_added.emit(effect_id, effect.duplicate())
+	return true
+
+
+## Stop a standing effect. Returns true if there was one to stop.
+func clear_ongoing_effect(effect_id: String) -> bool:
+	if not ongoing_effects.has(effect_id):
+		return false
+	ongoing_effects.erase(effect_id)
+	ongoing_effect_cleared.emit(effect_id)
+	return true
+
+
+## Stop every effect that came from the same arrangement. When the player is
+## thrown out of the camp he was running, the share, the guard heat and the
+## debts to the men he shorted all end together.
+## Returns how many were cleared.
+func clear_ongoing_effects_from_source(source: String) -> int:
+	if source.is_empty():
+		return 0
+
+	var doomed: Array[String] = []
+	for effect_id: String in ongoing_effects:
+		if str((ongoing_effects[effect_id] as Dictionary).get("source", "")) == source:
+			doomed.append(effect_id)
+
+	for effect_id: String in doomed:
+		clear_ongoing_effect(effect_id)
+
+	return doomed.size()
+
+
+## Is this effect running?
+func has_ongoing_effect(effect_id: String) -> bool:
+	return ongoing_effects.has(effect_id)
+
+
+## One effect's configuration, copied. Empty when there is none.
+func get_ongoing_effect(effect_id: String) -> Dictionary:
+	return (ongoing_effects.get(effect_id, {}) as Dictionary).duplicate()
+
+
+## Every running effect, copied.
+func get_ongoing_effects() -> Dictionary:
+	return ongoing_effects.duplicate(true)
+
+
+## What the player's standing arrangements pay (or cost) him per day.
+func get_daily_income() -> int:
+	var total: int = 0
+	for effect_id: String in ongoing_effects:
+		var effect: Dictionary = ongoing_effects[effect_id]
+		if str(effect.get("type", "")) == "gold":
+			total += int(effect.get("amount", 0))
+	return total
+
+
+## Apply one day of every standing effect. Called on day change; exposed so a
+## check or a debug command can advance a day without waiting for one.
+func process_ongoing_effects(_current_day: int = 0) -> void:
+	# Reputation effects are summed per faction first, so a man carrying three
+	# debts to the same town takes one reputation hit, not three.
+	var reputation_totals: Dictionary = {}
+	var gold_total: int = 0
+
+	for effect_id: String in ongoing_effects:
+		var effect: Dictionary = ongoing_effects[effect_id]
+		var amount: int = int(effect.get("amount", 0))
+		if amount == 0:
+			continue
+
+		var effect_type: String = str(effect.get("type", ""))
+		var faction_id: String = str(effect.get("faction", ""))
+
+		match effect_type:
+			"reputation":
+				reputation_totals[faction_id] = int(reputation_totals.get(faction_id, 0)) + amount
+			"gold":
+				gold_total += amount
+			"hostility":
+				add_hostility(faction_id, amount, str(effect.get("reason_display", "")))
+
+		ongoing_effect_applied.emit(effect_id, effect_type, amount)
+
+	for faction_id: String in reputation_totals:
+		var total: int = reputation_totals[faction_id]
+		if total != 0:
+			_apply_reputation_change(faction_id, total, "ongoing effects")
+
+	if gold_total != 0:
+		_pay_ongoing_gold(gold_total)
+
+
+## Hand over (or take) the day's coin from standing arrangements.
+func _pay_ongoing_gold(amount: int) -> void:
+	var inventory: Node = get_node_or_null("/root/InventoryManager")
+	if inventory == null:
+		return
+
+	if amount > 0:
+		inventory.add_gold(amount)
+	else:
+		inventory.remove_gold(-amount)
+
+
+# =============================================================================
+# HOSTILITY
+# =============================================================================
+
+## How hard a faction is currently looking for the player (0..100).
+func get_hostility(faction_id: String) -> int:
+	return int(faction_hostility.get(faction_id, 0))
+
+
+## Raise or lower how hard a faction is looking for the player.
+func add_hostility(faction_id: String, amount: int, _reason: String = "") -> void:
+	if amount == 0:
+		return
+	set_hostility(faction_id, get_hostility(faction_id) + amount)
+
+
+## Set hostility outright.
+func set_hostility(faction_id: String, value: int) -> void:
+	if faction_id.is_empty():
+		return
+
+	var old_value: int = get_hostility(faction_id)
+	var new_value: int = clampi(value, MIN_HOSTILITY, MAX_HOSTILITY)
+	if new_value == old_value:
+		return
+
+	faction_hostility[faction_id] = new_value
+	hostility_changed.emit(faction_id, old_value, new_value)
+
+	# Crossing the line either way is a fact about the world, not about a
+	# quest, so guards and rumours in other zones can read it.
+	var world_state: Node = get_node_or_null("/root/WorldState")
+	if world_state == null:
+		return
+
+	var was_hunting: bool = old_value >= HOSTILITY_HUNTING_THRESHOLD
+	var is_hunting: bool = new_value >= HOSTILITY_HUNTING_THRESHOLD
+	if was_hunting != is_hunting:
+		world_state.set_flag("%s_hunting_player" % faction_id, is_hunting)
+
+
+## Is this faction actively hunting the player?
+func is_hunting_player(faction_id: String) -> bool:
+	return get_hostility(faction_id) >= HOSTILITY_HUNTING_THRESHOLD
+
+
+# =============================================================================
+# DAILY PENALTIES (the original ticker, now a view onto ongoing effects)
+# =============================================================================
+
+## Effect id under which a faction's named penalty is stored.
+func _penalty_effect_id(faction_id: String, penalty_id: String) -> String:
+	return "%s%s:%s" % [PENALTY_EFFECT_PREFIX, faction_id, penalty_id]
+
 
 ## Add a daily reputation penalty to a faction
 ## penalty_id: Unique identifier for this penalty (allows clearing specific penalties)
@@ -152,83 +374,62 @@ func record_crime_against_faction(faction_id: String) -> void:
 ## amount: Reputation loss per day (should be negative)
 ## reason_display: Human-readable reason for UI/notifications
 func add_daily_penalty(faction_id: String, penalty_id: String, amount: int, reason_display: String = "") -> void:
-	if not factions.has(faction_id):
-		push_warning("[FactionManager] Unknown faction for penalty: %s" % faction_id)
-		return
-
-	if not daily_penalties.has(faction_id):
-		daily_penalties[faction_id] = {}
-
-	daily_penalties[faction_id][penalty_id] = {
+	var added: bool = add_ongoing_effect(_penalty_effect_id(faction_id, penalty_id), {
+		"type": "reputation",
+		"faction": faction_id,
 		"amount": amount,
-		"reason_display": reason_display if not reason_display.is_empty() else penalty_id
-	}
-
-	daily_penalty_added.emit(faction_id, penalty_id, amount)
+		"reason_display": reason_display if not reason_display.is_empty() else penalty_id,
+		"source": "daily_penalty"
+	})
+	if added:
+		daily_penalty_added.emit(faction_id, penalty_id, amount)
 
 
 ## Clear a specific daily penalty from a faction
 ## Returns true if the penalty was found and cleared
 func clear_daily_penalty(faction_id: String, penalty_id: String) -> bool:
-	if not daily_penalties.has(faction_id):
+	if not clear_ongoing_effect(_penalty_effect_id(faction_id, penalty_id)):
 		return false
-
-	if not daily_penalties[faction_id].has(penalty_id):
-		return false
-
-	daily_penalties[faction_id].erase(penalty_id)
-
-	# Clean up empty faction entries
-	if daily_penalties[faction_id].is_empty():
-		daily_penalties.erase(faction_id)
-
 	daily_penalty_cleared.emit(faction_id, penalty_id)
 	return true
 
 
 ## Clear all daily penalties for a faction
 func clear_all_penalties_for_faction(faction_id: String) -> void:
-	if not daily_penalties.has(faction_id):
-		return
-
-	var penalty_ids: Array = daily_penalties[faction_id].keys()
-	for penalty_id in penalty_ids:
-		daily_penalty_cleared.emit(faction_id, penalty_id)
-
-	daily_penalties.erase(faction_id)
+	for penalty_id: String in get_faction_penalties(faction_id):
+		clear_daily_penalty(faction_id, penalty_id)
 
 
 ## Get all active penalties for a faction
 ## Returns: Dictionary { penalty_id: {amount: int, reason_display: String} }
 func get_faction_penalties(faction_id: String) -> Dictionary:
-	return daily_penalties.get(faction_id, {}).duplicate()
+	var prefix: String = "%s%s:" % [PENALTY_EFFECT_PREFIX, faction_id]
+	var penalties: Dictionary = {}
+
+	for effect_id: String in ongoing_effects:
+		if not effect_id.begins_with(prefix):
+			continue
+		var effect: Dictionary = ongoing_effects[effect_id]
+		penalties[effect_id.substr(prefix.length())] = {
+			"amount": int(effect.get("amount", 0)),
+			"reason_display": str(effect.get("reason_display", ""))
+		}
+
+	return penalties
 
 
 ## Get total daily penalty amount for a faction
 func get_total_daily_penalty(faction_id: String) -> int:
-	if not daily_penalties.has(faction_id):
-		return 0
-
+	var penalties: Dictionary = get_faction_penalties(faction_id)
 	var total: int = 0
-	for penalty_id: String in daily_penalties[faction_id]:
-		total += daily_penalties[faction_id][penalty_id].get("amount", 0)
+	for penalty_id: String in penalties:
+		total += int((penalties[penalty_id] as Dictionary).get("amount", 0))
 	return total
 
 
 ## Check if a faction has a specific penalty
 func has_penalty(faction_id: String, penalty_id: String) -> bool:
-	if not daily_penalties.has(faction_id):
-		return false
-	return daily_penalties[faction_id].has(penalty_id)
-
-
-## Process daily penalties (called on day change)
-## Applies accumulated penalty amounts to faction reputation
-func _process_daily_penalties(_current_day: int) -> void:
-	for faction_id: String in daily_penalties:
-		var total_penalty: int = get_total_daily_penalty(faction_id)
-		if total_penalty != 0:
-			_apply_reputation_change(faction_id, total_penalty, "daily penalties")
+	return has_ongoing_effect(_penalty_effect_id(faction_id, penalty_id))
 
 
 ## Get a faction by ID
@@ -396,6 +597,60 @@ func join_faction(faction_id: String) -> bool:
 	_sync_to_player_data()
 	return true
 
+## Join a faction regardless of what it thinks of the player, at a named rank.
+##
+## join_faction() is the front door: earn the reputation, ask to be let in.
+## This is the other way in - the player who kills a camp's chief and stands
+## over the body is their chief now, and nobody is going to check his standing
+## first. Reputation is raised to the rank's floor so the promotion sticks and
+## does not immediately demote him again.
+##
+## rank_name empty means "whatever rank his reputation already earns".
+## Returns false only if the faction or the rank does not exist.
+func force_join_faction(faction_id: String, rank_name: String = "") -> bool:
+	var faction: FactionData = factions.get(faction_id)
+	if not faction:
+		push_warning("[FactionManager] Cannot join unknown faction: %s" % faction_id)
+		return false
+
+	var resolved_rank: String = rank_name
+	if not rank_name.is_empty():
+		var floor_rep: int = -101
+		for rank: Dictionary in faction.ranks:
+			if str(rank.get("name", "")) == rank_name:
+				floor_rep = int(rank.get("min_reputation", 0))
+				break
+
+		if floor_rep < -100:
+			push_warning("[FactionManager] Faction '%s' has no rank '%s'" % [faction_id, rank_name])
+			return false
+
+		if get_reputation(faction_id) < floor_rep:
+			modify_reputation(faction_id, floor_rep - get_reputation(faction_id), "took the rank of %s" % rank_name)
+	else:
+		resolved_rank = faction.get_rank_name(get_reputation(faction_id))
+
+	var was_member: bool = faction_memberships.has(faction_id)
+	var old_rank: String = get_rank(faction_id)
+
+	faction_memberships[faction_id] = {
+		"rank": resolved_rank,
+		"joined_time": faction_memberships.get(faction_id, {}).get("joined_time", Time.get_unix_time_from_system())
+	}
+
+	if was_member:
+		if old_rank != resolved_rank:
+			rank_changed.emit(faction_id, old_rank, resolved_rank)
+	else:
+		joined_faction.emit(faction_id, resolved_rank)
+		if CodexManager:
+			CodexManager.discover_lore(faction_id)
+			CodexManager.discover_lore("faction_" + faction_id)
+
+	_sync_to_player_data()
+	return true
+
+
 ## Leave a faction
 func leave_faction(faction_id: String) -> bool:
 	if not faction_memberships.has(faction_id):
@@ -476,8 +731,23 @@ func reset() -> void:
 	faction_memberships.clear()
 	last_crime_day.clear()
 	last_decay_day.clear()
-	daily_penalties.clear()
+	ongoing_effects.clear()
+	faction_hostility.clear()
 	_initialize_player_reputations()
+
+## Copy a dictionary of whole numbers back into ints after a JSON round trip.
+func _as_int_dict(source: Variant) -> Dictionary:
+	var result: Dictionary = {}
+	if not (source is Dictionary):
+		return result
+	for key: Variant in (source as Dictionary):
+		var value: Variant = (source as Dictionary)[key]
+		if value is int or value is float:
+			result[key] = int(value)
+		else:
+			result[key] = value
+	return result
+
 
 ## Save faction state to dictionary
 func to_dict() -> Dictionary:
@@ -486,16 +756,43 @@ func to_dict() -> Dictionary:
 		"memberships": faction_memberships.duplicate(true),
 		"last_crime_day": last_crime_day.duplicate(),
 		"last_decay_day": last_decay_day.duplicate(),
-		"daily_penalties": daily_penalties.duplicate(true)
+		"ongoing_effects": ongoing_effects.duplicate(true),
+		"hostility": faction_hostility.duplicate()
 	}
 
 ## Load faction state from dictionary
 func from_dict(data: Dictionary) -> void:
-	player_reputations = data.get("reputations", {})
+	# JSON has no integers, so everything numeric comes back as a float. These
+	# are whole numbers - reputation, hostility, day counts - and code that
+	# reads them expects ints, so they are put back the way they went in.
+	player_reputations = _as_int_dict(data.get("reputations", {}))
 	faction_memberships = data.get("memberships", {})
-	last_crime_day = data.get("last_crime_day", {})
-	last_decay_day = data.get("last_decay_day", {})
-	daily_penalties = data.get("daily_penalties", {})
+	last_crime_day = _as_int_dict(data.get("last_crime_day", {}))
+	last_decay_day = _as_int_dict(data.get("last_decay_day", {}))
+	faction_hostility = _as_int_dict(data.get("hostility", {}))
+
+	ongoing_effects = {}
+	var saved_effects: Dictionary = data.get("ongoing_effects", {})
+	for effect_id: String in saved_effects:
+		var effect: Dictionary = (saved_effects[effect_id] as Dictionary).duplicate()
+		effect["amount"] = int(effect.get("amount", 0))
+		ongoing_effects[effect_id] = effect
+
+	# Saves written before the ticker was generalized carry penalties in the
+	# old per-faction shape. Fold them in rather than dropping the player's
+	# debts on the floor.
+	var legacy_penalties: Dictionary = data.get("daily_penalties", {})
+	for faction_id: String in legacy_penalties:
+		var per_faction: Dictionary = legacy_penalties[faction_id]
+		for penalty_id: String in per_faction:
+			var penalty: Dictionary = per_faction[penalty_id]
+			ongoing_effects[_penalty_effect_id(faction_id, penalty_id)] = {
+				"type": "reputation",
+				"faction": faction_id,
+				"amount": int(penalty.get("amount", 0)),
+				"reason_display": str(penalty.get("reason_display", penalty_id)),
+				"source": "daily_penalty"
+			}
 
 	# Ensure all factions have a reputation entry
 	for faction_id: String in factions:

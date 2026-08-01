@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "bandits"
+display_name = "Bandits"
+description = "The road crews. Not one organisation but a scatter of camps, each run by whoever last won the argument, preying on the trade roads the empire no longer patrols. They have no code and no hall, only shares of the take and a short memory for men who cost them money. A crew that respects you will deal with you; a crew that fears you will follow you."
+parent_faction = ""
+allies = []
+enemies = ["town_guard", "human_empire"]
+neutrals = ["goblins", "thieves_guild", "tengers"]
+alignment = -60
+ranks = [{"name": "Mark", "min_reputation": -100, "benefits": []}, {"name": "Nobody", "min_reputation": -30, "benefits": []}, {"name": "Known Face", "min_reputation": 0, "benefits": ["camp_safe_passage"]}, {"name": "Hired Blade", "min_reputation": 20, "benefits": ["camp_safe_passage", "crew_jobs"]}, {"name": "Cutthroat", "min_reputation": 40, "benefits": ["camp_safe_passage", "crew_jobs", "camp_fence"]}, {"name": "Lieutenant", "min_reputation": 65, "benefits": ["camp_safe_passage", "crew_jobs", "camp_fence", "crew_share"]}, {"name": "Chief", "min_reputation": 85, "benefits": ["camp_safe_passage", "crew_jobs", "camp_fence", "crew_share", "extortion_income"]}]
+default_reputation = -10
+joinable = true
+join_threshold = 20
+is_hidden = false
+faction_color = Color(0.45, 0.2, 0.15, 1.0)

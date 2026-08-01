@@ -1730,6 +1730,8 @@ What EXISTS:
 - **NEW: Extended objective types** (deliver_soulstone, solve_puzzle, recruit_follower)
 - **NEW: Extended reward types** (follower, soulstone, unlock_area)
 - **NEW: Daily faction penalties** (accumulating rep loss with clear_penalty support)
+- **NEW: Ongoing-effects ticker** (the same daily pass also pays, and raises hostility)
+- **NEW: Bandit faction + force_join** (take a camp's chair, not just earn a badge)
 
 - **NEW: OR-objective groups** (`group` on an objective; any member settles it)
 - **NEW: WorldState autoload** (durable world facts + world modifications, saved)
@@ -1880,16 +1882,79 @@ enum QuestCompletionState {
 }
 ```
 
-**Daily Faction Penalties:**
+**Ongoing Effects (the daily ticker):**
+
+One ticker for everything a standing arrangement does to the player each day.
+It started as accumulating reputation penalties for unpaid debts; it now also
+pays him and makes the people who know what he did look harder for him.
+
 ```gdscript
-# Add ongoing rep penalty (e.g., unpaid debt)
+FactionManager.add_ongoing_effect("millbrook_extortion", {
+    "type": "gold",                        # "reputation" | "gold" | "hostility"
+    "faction": "millbrook",                # required except for "gold"
+    "amount": 25,                          # applied every day, sign matters
+    "reason_display": "The camp's share",  # for notifications and UI
+    "source": "bandit_boss"                # tag so one arrangement clears together
+}) -> bool                                 # false if malformed; nothing half-registers
+
+FactionManager.clear_ongoing_effect(effect_id) -> bool
+FactionManager.clear_ongoing_effects_from_source("bandit_boss") -> int
+FactionManager.has_ongoing_effect(effect_id) -> bool
+FactionManager.get_ongoing_effect(effect_id) -> Dictionary
+FactionManager.get_ongoing_effects() -> Dictionary
+FactionManager.get_daily_income() -> int          # net of every "gold" effect
+FactionManager.process_ongoing_effects(day)       # runs on day change; callable directly
+
+signal ongoing_effect_added(effect_id, config)
+signal ongoing_effect_cleared(effect_id)
+signal ongoing_effect_applied(effect_id, effect_type, amount)
+```
+
+Several reputation effects against the same faction are summed into one hit per
+day, so three debts to one town cost the player once, not three times.
+
+**Hostility** is separate from reputation. Reputation is what a faction thinks
+of the player; hostility is how hard it is currently looking for him - a bandit
+chief can be respected by his crew and hunted by every guard on the road.
+
+```gdscript
+FactionManager.get_hostility(faction_id) -> int        # 0..100
+FactionManager.add_hostility(faction_id, amount, reason)
+FactionManager.set_hostility(faction_id, value)
+FactionManager.is_hunting_player(faction_id) -> bool   # >= 50
+signal hostility_changed(faction_id, old_value, new_value)
+```
+
+Crossing the hunting line writes the world fact `<faction_id>_hunting_player`,
+so other zones and dialogue can read it without asking FactionManager.
+
+**Daily penalties** still work exactly as they did - the old API is now a view
+onto the ticker, and old saves' penalties are folded in on load:
+
+```gdscript
 FactionManager.add_daily_penalty("merchant_guild", "unpaid_debt", -5, "Unpaid debt to merchants")
-
-# Clear when resolved
 FactionManager.clear_daily_penalty("merchant_guild", "unpaid_debt")
-
-# Get current penalties
 var penalties: Dictionary = FactionManager.get_faction_penalties("merchant_guild")
+```
+
+**Joining a faction** has two doors:
+
+```gdscript
+FactionManager.join_faction(faction_id) -> bool
+    # the front door: joinable, and reputation >= join_threshold
+
+FactionManager.force_join_faction(faction_id, rank_name := "") -> bool
+    # the other door: the player who kills a camp's chief and stands over the
+    # body is their chief now, and nobody checks his standing first. Raises
+    # reputation to the rank's floor so the promotion sticks.
+```
+
+The **bandits** faction (`data/factions/bandits.tres`) is joinable and ladders
+Mark -> Nobody -> Known Face -> Hired Blade -> Cutthroat -> Lieutenant -> Chief.
+Every bandit enemy `.tres` already points at it via `political_faction`.
+
+```powershell
+& $godot45 --headless --path . res://tools/check_ongoing_effects.tscn
 ```
 
 **Gap Analysis:**

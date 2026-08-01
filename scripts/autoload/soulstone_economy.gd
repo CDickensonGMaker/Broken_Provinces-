@@ -516,7 +516,7 @@ func _update_quest_debt() -> void:
 
 ## Handle day change - check debt status
 func _on_day_changed(_new_day: int) -> void:
-	# Debt is automatically processed by FactionManager's _process_daily_penalties
+	# Debt is automatically processed by FactionManager's ongoing-effects ticker
 	# We just need to ensure our penalty is up to date
 	_update_quest_debt()
 
