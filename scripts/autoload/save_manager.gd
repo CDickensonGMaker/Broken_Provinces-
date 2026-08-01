@@ -637,7 +637,9 @@ func _collect_conversation_data(conversation_data) -> void:
 
 	var conversation_dict := ConversationSystem.to_dict()
 	conversation_data.npc_memory = conversation_dict.get("npc_memory", {})
+	conversation_data.npc_memory_heard_count = conversation_dict.get("npc_memory_heard_count", {})
 	conversation_data.conversation_flags = conversation_dict.get("conversation_flags", {})
+	conversation_data.player_known_topics = conversation_dict.get("player_known_topics", [])
 
 
 ## Collect bounty quest data
@@ -934,7 +936,9 @@ func _apply_conversation_data(conversation_data) -> void:
 
 	ConversationSystem.from_dict({
 		"npc_memory": conversation_data.npc_memory,
-		"conversation_flags": conversation_data.conversation_flags
+		"npc_memory_heard_count": conversation_data.npc_memory_heard_count,
+		"conversation_flags": conversation_data.conversation_flags,
+		"player_known_topics": conversation_data.player_known_topics
 	})
 
 
@@ -1871,10 +1875,12 @@ func reset_world_state() -> void:
 	if DialogueManager:
 		DialogueManager.dialogue_flags.clear()
 
-	# Reset conversation memory and flags
+	# Reset conversation memory, flags, heard-counts and discovered topics.
+	# Clearing the two dictionaries by hand used to leave the heard-counts and
+	# the player's unlocked topics behind, so a new game started with the last
+	# game's conversation history quietly still in place.
 	if ConversationSystem:
-		ConversationSystem.npc_memory.clear()
-		ConversationSystem.conversation_flags.clear()
+		ConversationSystem.reset_for_new_game()
 
 	# Reset bounty quests
 	if has_node("/root/BountyManager"):

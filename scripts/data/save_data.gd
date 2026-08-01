@@ -607,19 +607,35 @@ class ConversationSaveData:
 	## Tracks what each NPC has told the player
 	var npc_memory: Dictionary = {}
 
+	## How many times each line has been heard (npc_id:response_id -> int)
+	## npc_memory only records THAT a line was heard. Once an NPC has said
+	## everything he has, only this count can tell the least-repeated line from
+	## the most-repeated one, so without it a reload makes a talked-out NPC go
+	## back to repeating himself at random.
+	var npc_memory_heard_count: Dictionary = {}
+
 	## Conversation flags (flag_name -> value)
 	## Includes disposition values (disposition:npc_id -> int)
 	var conversation_flags: Dictionary = {}
 
+	## Topics the player has learned about and may raise with other NPCs
+	## (Morrowind-style topic discovery). Unsaved, these were forgotten on
+	## every load and the player silently lost every topic he had unlocked.
+	var player_known_topics: Array = []
+
 	func to_dict() -> Dictionary:
 		return {
 			"npc_memory": npc_memory,
-			"conversation_flags": conversation_flags
+			"npc_memory_heard_count": npc_memory_heard_count,
+			"conversation_flags": conversation_flags,
+			"player_known_topics": player_known_topics
 		}
 
 	func from_dict(data: Dictionary) -> void:
 		npc_memory = data.get("npc_memory", {})
+		npc_memory_heard_count = data.get("npc_memory_heard_count", {})
 		conversation_flags = data.get("conversation_flags", {})
+		player_known_topics = data.get("player_known_topics", [])
 
 
 ## Bounty quest save data structure (replaces old ErrandSaveData)

@@ -31,6 +31,8 @@ func _run() -> void:
 	_check_speaker_scoped_pools_are_gated()
 	_check_unique_tier_wins()
 	_check_unique_pool_directory_is_read()
+	_check_memory_survives_a_save()
+	_check_repeats_are_avoided()
 
 	print("")
 	if _failures.is_empty():
@@ -99,6 +101,86 @@ func _check_unique_tier_wins() -> void:
 
 	ConversationSystem.unique_responses.erase(TEST_NPC_ID)
 	npc.queue_free()
+
+
+## Anti-repeat is only as persistent as the save file. Every field the filter
+## reads has to survive the round trip through SaveData, or NPCs start repeating
+## themselves the moment the player reloads.
+func _check_memory_survives_a_save() -> void:
+	var kept_memory: Dictionary = ConversationSystem.npc_memory.duplicate()
+	var kept_counts: Dictionary = ConversationSystem.npc_memory_heard_count.duplicate()
+	var kept_topics: Array[String] = ConversationSystem.player_known_topics.duplicate()
+
+	ConversationSystem.npc_memory = {"_save_check_npc:_save_check_line": "said once"}
+	ConversationSystem.npc_memory_heard_count = {"_save_check_npc:_save_check_line": 4}
+	ConversationSystem.player_known_topics = ["_save_check_topic"]
+
+	var save_block := SaveData.ConversationSaveData.new()
+	var live: Dictionary = ConversationSystem.to_dict()
+	save_block.npc_memory = live.get("npc_memory", {})
+	save_block.npc_memory_heard_count = live.get("npc_memory_heard_count", {})
+	save_block.conversation_flags = live.get("conversation_flags", {})
+	save_block.player_known_topics = live.get("player_known_topics", [])
+
+	# Through the on-disk shape and back, the way a real save/load goes
+	var reloaded := SaveData.ConversationSaveData.new()
+	reloaded.from_dict(save_block.to_dict())
+
+	ConversationSystem.npc_memory = {}
+	ConversationSystem.npc_memory_heard_count = {}
+	ConversationSystem.player_known_topics = []
+	ConversationSystem.from_dict({
+		"npc_memory": reloaded.npc_memory,
+		"npc_memory_heard_count": reloaded.npc_memory_heard_count,
+		"conversation_flags": reloaded.conversation_flags,
+		"player_known_topics": reloaded.player_known_topics,
+	})
+
+	if not ConversationSystem.npc_memory.has("_save_check_npc:_save_check_line"):
+		_failures.append("npc_memory did not survive the save round trip")
+	if ConversationSystem.npc_memory_heard_count.get("_save_check_npc:_save_check_line", 0) != 4:
+		_failures.append("npc_memory_heard_count did not survive the save round trip")
+	if "_save_check_topic" not in ConversationSystem.player_known_topics:
+		_failures.append("player_known_topics did not survive the save round trip")
+
+	ConversationSystem.npc_memory = kept_memory
+	ConversationSystem.npc_memory_heard_count = kept_counts
+	ConversationSystem.player_known_topics = kept_topics
+
+
+## The point of all of it: ask the same NPC the same thing twice and get two
+## different answers, including across a reload.
+func _check_repeats_are_avoided() -> void:
+	const TEST_NPC_ID := "_repeat_check_npc"
+
+	var kept_memory: Dictionary = ConversationSystem.npc_memory.duplicate()
+	var kept_counts: Dictionary = ConversationSystem.npc_memory_heard_count.duplicate()
+
+	var npc := Node.new()
+	npc.name = TEST_NPC_ID
+	add_child(npc)
+
+	ConversationSystem.start_conversation(npc, NPCKnowledgeProfile.guard())
+	var first: ConversationResponse = ConversationSystem.select_response(ConversationTopic.TopicType.PERSONAL)
+	ConversationSystem.end_conversation()
+
+	if first == null:
+		_failures.append("no PERSONAL response at all for a guard")
+	else:
+		# Pretend a whole past session happened and he already said that line
+		ConversationSystem.npc_memory[TEST_NPC_ID + ":" + first.response_id] = first.text
+		ConversationSystem.npc_memory_heard_count[TEST_NPC_ID + ":" + first.response_id] = 1
+
+		ConversationSystem.start_conversation(npc, NPCKnowledgeProfile.guard())
+		var second: ConversationResponse = ConversationSystem.select_response(ConversationTopic.TopicType.PERSONAL)
+		ConversationSystem.end_conversation()
+
+		if second != null and second.response_id == first.response_id:
+			_failures.append("NPC repeated '%s' though npc_memory says he already said it" % first.response_id)
+
+	npc.queue_free()
+	ConversationSystem.npc_memory = kept_memory
+	ConversationSystem.npc_memory_heard_count = kept_counts
 
 
 ## Per-NPC pools are meant to be droppable into a folder, not listed in code.

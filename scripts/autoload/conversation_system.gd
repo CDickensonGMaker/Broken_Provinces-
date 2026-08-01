@@ -861,16 +861,7 @@ func select_topic(topic_type: ConversationTopic.TopicType) -> void:
 			memory_reminder.emit(response.response_id, original_text)
 			# Still deliver the response (UI may show both reminder and new text)
 
-		# Store in memory
-		var injected_text := current_context.inject_variables(response.text)
-		npc_memory[memory_key] = injected_text
-
-		# Bump heard-count (separate dict, does not alter npc_memory's saved shape)
-		var prior_heard_count: int = npc_memory_heard_count.get(memory_key, 0)
-		npc_memory_heard_count[memory_key] = prior_heard_count + 1
-
-		# Mark as discussed in context
-		current_context.mark_response_discussed(response.response_id)
+		_remember_response(response, current_context.inject_variables(response.text))
 
 	# Execute any actions attached to the response
 	for action in response.actions:
@@ -939,6 +930,30 @@ func select_response(topic_type: ConversationTopic.TopicType) -> ConversationRes
 	return fallback
 
 
+## Record that this NPC has now said this line.
+##
+## The anti-repeat filter reads npc_memory, so anything that is delivered without
+## passing through here is invisible to it - the line is filtered against a
+## history it was never written into, and repeats forever. Greetings and
+## farewells did exactly that: filtered, never recorded, so the same NPC opened
+## with the same sentence every time you walked up to him for the whole game.
+func _remember_response(response: ConversationResponse, injected_text: String) -> void:
+	if response == null or response.response_id.is_empty():
+		return
+	if not is_instance_valid(current_npc):
+		return
+
+	var memory_key: String = _get_memory_key(_get_npc_id(current_npc), response.response_id)
+	npc_memory[memory_key] = injected_text
+
+	# Heard-count lives in its own dictionary so npc_memory's saved shape is untouched
+	var prior_heard_count: int = npc_memory_heard_count.get(memory_key, 0)
+	npc_memory_heard_count[memory_key] = prior_heard_count + 1
+
+	if current_context:
+		current_context.mark_response_discussed(response.response_id)
+
+
 ## Get a greeting based on current context (disposition, personality, time)
 ## Called at conversation start to select an appropriate greeting from the pool
 func get_greeting() -> String:
@@ -957,8 +972,9 @@ func get_greeting() -> String:
 	# Select using weighted random with personality matching
 	var selected: ConversationResponse = _weighted_select(filtered, profile)
 	if selected:
-		# Inject context variables into greeting text
-		return current_context.inject_variables(selected.text)
+		var injected: String = current_context.inject_variables(selected.text)
+		_remember_response(selected, injected)
+		return injected
 
 	return _get_fallback_greeting(disposition)
 
@@ -993,8 +1009,9 @@ func get_farewell() -> String:
 	# Select using weighted random with personality matching
 	var selected: ConversationResponse = _weighted_select(filtered, profile)
 	if selected:
-		# Inject context variables into farewell text
-		return current_context.inject_variables(selected.text)
+		var injected: String = current_context.inject_variables(selected.text)
+		_remember_response(selected, injected)
+		return injected
 
 	return _get_fallback_farewell(disposition)
 
