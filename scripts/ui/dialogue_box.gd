@@ -591,7 +591,5 @@ func _get_skill_name(skill_enum: int) -> String:
 		Enums.Skill.FIRST_AID: return "First Aid"
 		Enums.Skill.HERBALISM: return "Herbalism"
 		Enums.Skill.SURVIVAL: return "Survival"
-		Enums.Skill.ALCHEMY: return "Alchemy"
-		Enums.Skill.SMITHING: return "Smithing"
 		Enums.Skill.LOCKPICKING: return "Lockpicking"
 	return "Unknown"

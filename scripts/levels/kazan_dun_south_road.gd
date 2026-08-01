@@ -53,6 +53,8 @@ func _setup_day_night_cycle() -> void:
 		is_main_scene = true
 	if is_main_scene:
 		DayNightCycle.add_to_level(self)
+		if WeatherManager:
+			WeatherManager.set_outdoor(true)
 
 
 ## Add metadata to spawn points for proper identification

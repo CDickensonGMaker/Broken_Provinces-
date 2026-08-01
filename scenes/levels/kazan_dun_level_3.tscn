@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_rune_ward_hall.tscn" id="8"]
 [ext_resource type="Material" path="res://assets/materials/dungeon/wooden_crate3_mat.tres" id="8_q5ooe"]
 [ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_corridor_straight.tscn" id="9"]
-[ext_resource type="Texture2D" uid="uid://dh326odj53nps" path="res://assets/textures/environment/walls/stonewall.png" id="9_8usxh"]
+[ext_resource type="Texture2D" uid="uid://dh326odj53nps" path="res://assets/sprites/environment/walls/stonewall.png" id="9_8usxh"]
 [ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_stairwell_down.tscn" id="10"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xotnb"]
@@ -28,6 +28,7 @@ uv1_scale = Vector3(2, 2, 1)
 texture_filter = 0
 
 [node name="KazanDunLevel3Modular" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27.486542, 56.41793)
 script = ExtResource("1")
 
 [node name="Rooms" type="Node3D" parent="."]

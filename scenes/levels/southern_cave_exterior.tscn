@@ -1,0 +1,107 @@
+[gd_scene load_steps=7 format=3 uid="uid://southern_cave_ext"]
+
+[ext_resource type="Script" path="res://scripts/levels/southern_cave_exterior.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3_hud"]
+[ext_resource type="PackedScene" uid="uid://d3d78k4w3fuit" path="res://assets/models/environment/cave_entrance.glb" id="4_cave_entrance"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
+albedo_color = Color(0.22, 0.28, 0.18, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_path"]
+albedo_color = Color(0.3, 0.25, 0.18, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rock"]
+albedo_color = Color(0.35, 0.32, 0.28, 1)
+roughness = 0.95
+
+[node name="SouthernCaveExterior" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 20)
+
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
+
+[node name="Terrain" type="Node3D" parent="."]
+
+[node name="Ground" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(50, 1, 60)
+material = SubResource("StandardMaterial3D_ground")
+
+[node name="Path" type="CSGBox3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 5)
+size = Vector3(3, 0.1, 40)
+material = SubResource("StandardMaterial3D_path")
+
+[node name="CaveEntranceModel" parent="Terrain" instance=ExtResource("4_cave_entrance")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15)
+
+[node name="RockCluster_Left" type="Node3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, -12)
+
+[node name="Rock1" type="CSGBox3D" parent="Terrain/RockCluster_Left"]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0, 0.5, 0)
+use_collision = true
+size = Vector3(2.5, 1.5, 2)
+material = SubResource("StandardMaterial3D_rock")
+
+[node name="Rock2" type="CSGBox3D" parent="Terrain/RockCluster_Left"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -2, 0.4, 1)
+use_collision = true
+size = Vector3(1.8, 1.2, 1.5)
+material = SubResource("StandardMaterial3D_rock")
+
+[node name="RockCluster_Right" type="Node3D" parent="Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -12)
+
+[node name="Rock1" type="CSGBox3D" parent="Terrain/RockCluster_Right"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 0, 0.6, 0)
+use_collision = true
+size = Vector3(2.2, 1.8, 2.2)
+material = SubResource("StandardMaterial3D_rock")
+
+[node name="Rock2" type="CSGBox3D" parent="Terrain/RockCluster_Right"]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, 2.5, 0.35, -0.5)
+use_collision = true
+size = Vector3(1.5, 1.0, 1.3)
+material = SubResource("StandardMaterial3D_rock")
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="SpawnPoint_default" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 20)
+metadata/spawn_id = "default"
+
+[node name="SpawnPoint_from_wilderness" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 20)
+metadata/spawn_id = "from_wilderness"
+
+[node name="SpawnPoint_from_cave" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -12)
+metadata/spawn_id = "from_cave"
+
+[node name="EnemySpawns" type="Node3D" parent="."]
+
+[node name="EnemySpawn_Wolf_1" type="Marker3D" parent="EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, 5)
+metadata/enemy_data = "res://data/enemies/wolf.tres"
+
+[node name="EnemySpawn_Wolf_2" type="Marker3D" parent="EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 1, 8)
+metadata/enemy_data = "res://data/enemies/wolf.tres"
+
+[node name="DoorPositions" type="Node3D" parent="."]
+
+[node name="DoorPos_CaveEntrance" type="Marker3D" parent="DoorPositions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15)
+metadata/target_scene = "res://scenes/dev/custom_cave_test.tscn"
+metadata/spawn_id = "from_exterior"
+metadata/door_label = "Enter Cave"
+metadata/show_frame = false
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]

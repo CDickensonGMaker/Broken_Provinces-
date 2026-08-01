@@ -303,6 +303,7 @@ func _get_current_game_day() -> int:
 ## Get current location name
 func get_current_location_name() -> String:
 	if PlayerGPS and PlayerGPS.current_location_id:
+		@warning_ignore("static_called_on_instance")
 		var cell_info = WorldGrid.get_cell(PlayerGPS.current_cell)
 		if cell_info and cell_info.location_name:
 			return cell_info.location_name

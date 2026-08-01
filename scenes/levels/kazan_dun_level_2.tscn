@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://3rj0y687w5o4" path="res://scripts/levels/kazan_dun_level_2.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
-[ext_resource type="Texture2D" uid="uid://dh326odj53nps" path="res://assets/textures/environment/walls/stonewall.png" id="3_bhg3w"]
+[ext_resource type="Texture2D" uid="uid://dh326odj53nps" path="res://assets/sprites/environment/walls/stonewall.png" id="3_bhg3w"]
 [ext_resource type="Material" path="res://assets/materials/dungeon/wooden_crate3_mat.tres" id="3_v4wpw"]
 [ext_resource type="PackedScene" path="res://scenes/world/zone_door_instance.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_noble_quarters.tscn" id="5"]
@@ -64,62 +64,62 @@ script = ExtResource("1")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8.116135, 1.1503706)
 
 [node name="FloorUpper" parent="Rooms/StairwellUp/Terrain" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.34051514, -19.181694)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 19.720634, 42.76461)
 size = Vector3(12, 1.3189697, 4.3563843)
 
 [node name="FloorLower" parent="Rooms/StairwellUp/Terrain" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.54076, -3.1440058)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 25.60191, 58.802296)
 
 [node name="CeilingUpper" parent="Rooms/StairwellUp/Terrain" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, -18.325045)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 28.06115, 43.621258)
 size = Vector3(12, 0.5, 3.8564453)
 
 [node name="CeilingLower" parent="Rooms/StairwellUp/Terrain" index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.148452, -9.859105)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 34.209602, 52.0872)
 size = Vector3(12, 0.5, 20.354202)
 
 [node name="CeilingMiddle" parent="Rooms/StairwellUp/Terrain" index="4"]
-transform = Transform3D(0.0007586323, -0.0071275276, -0.9999742, 0.41583368, 0.9094199, -0.006166634, 0.9094407, -0.4158186, 0.0036537803, 0.4211598, 2.3572628, -12.297308)
+transform = Transform3D(0.0007586323, -0.0071275276, -0.9999742, 0.41583368, 0.9094199, -0.006166634, 0.9094407, -0.4158186, 0.0036537803, 0.4211598, 22.418411, 49.648994)
 size = Vector3(14.252777, 1.5516815, 7.0683594)
 material = ExtResource("3_v4wpw")
 
 [node name="CeilingMiddle2" type="CSGBox3D" parent="Rooms/StairwellUp/Terrain" index="5"]
-transform = Transform3D(-0.8797027, 0.47018662, 0.07105089, 0.4707752, 0.8822044, -0.009265476, -0.06703794, 0.025298184, -0.9974293, 34.785778, -4.7127094, -114.540665)
+transform = Transform3D(-0.8797027, 0.47018662, 0.07105089, 0.4707752, 0.8822044, -0.009265476, -0.06703794, 0.025298184, -0.9974293, 34.785778, 15.34844, -52.594364)
 use_collision = true
 size = Vector3(18.35735, 1.0308456, 6.7070313)
 material = ExtResource("3_v4wpw")
 
 [node name="WallNorthL" parent="Rooms/StairwellUp/Terrain" index="6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 4, -20.144005)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 24.06115, 41.8023)
 
 [node name="WallNorthR" parent="Rooms/StairwellUp/Terrain" index="7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 4, -20.144005)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 24.06115, 41.8023)
 
 [node name="WallNorthTop" parent="Rooms/StairwellUp/Terrain" index="8"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, -20.144005)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27.06115, 41.8023)
 
 [node name="WallSouthL" parent="Rooms/StairwellUp/Terrain" index="9"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 10.04076, -0.14400578)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 30.10191, 61.802296)
 
 [node name="WallSouthR" parent="Rooms/StairwellUp/Terrain" index="10"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 8.258317, -0.14400578)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 28.319466, 61.802296)
 size = Vector3(4, 11.47998, 1)
 
 [node name="WallSouthTop" parent="Rooms/StairwellUp/Terrain" index="11"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.04076, -0.14400578)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 33.10191, 61.802296)
 
 [node name="WallEast" parent="Rooms/StairwellUp/Terrain" index="12"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 3.2253418, -10.144006)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 23.286491, 51.802296)
 size = Vector3(1, 22.450684, 20)
 
 [node name="WallEast2" type="CSGBox3D" parent="Rooms/StairwellUp/Terrain" index="13"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5215206, 3.2253418, -10.144006)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5215206, 23.286491, 51.802296)
 use_collision = true
 size = Vector3(1, 22.450684, 20)
 material = SubResource("mat_stone_wall")
 
 [node name="WallWest" parent="Rooms/StairwellUp/Terrain" index="14"]
-transform = Transform3D(-0.0015533324, 0, -0.9999989, 0, 1, 0, 0.9999989, 0, -0.0015533324, 0.32433963, 6.194622, -0.119771)
+transform = Transform3D(-0.0015533324, 0, -0.9999989, 0, 1, 0, 0.9999989, 0, -0.0015533324, 0.32433963, 26.255772, 61.826534)
 size = Vector3(1, 16, 12.60321)
 
 [node name="Stairs" parent="Rooms/StairwellUp/Props" index="0"]
@@ -204,11 +204,11 @@ size = Vector3(6, 0.5, 1)
 material = SubResource("mat_step")
 
 [node name="Railing1" parent="Rooms/StairwellUp/Props" index="2"]
-transform = Transform3D(0.0035430342, 0, -0.9999937, 0, 1, 0, 0.9999937, 0, 0.0035430342, 0.055851102, 10.507783, -20.12583)
+transform = Transform3D(0.0035430342, 0, -0.9999937, 0, 1, 0, 0.9999937, 0, 0.0035430342, 0.055851102, 30.568932, 41.820473)
 size = Vector3(0.15, 8.259644, 11.242676)
 
 [node name="Railing3" type="CSGBox3D" parent="Rooms/StairwellUp/Props" index="3"]
-transform = Transform3D(0.0035430342, 0, -0.9999937, 0, 1, 0, 0.9999937, 0, 0.0035430342, 0.055851102, -0.9778013, -39.604458)
+transform = Transform3D(0.0035430342, 0, -0.9999937, 0, 1, 0, 0.9999937, 0, 0.0035430342, 0.055851102, 19.083347, 22.341846)
 use_collision = true
 size = Vector3(0.15, 2.26997, 11.242676)
 material = SubResource("mat_stone_wall")
@@ -218,13 +218,13 @@ transform = Transform3D(1, 0, 0, 0, 0.97688913, 0.21374653, 0, -0.21374653, 0.97
 size = Vector3(0.15, 0.9526367, 10.165161)
 
 [node name="Bracket" parent="Rooms/StairwellUp/Lighting/WallTorchUpper" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10.144005)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20.06115, 51.8023)
 
 [node name="Flame" parent="Rooms/StairwellUp/Lighting/WallTorchUpper" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3499999, 0.20000005, -10.144005)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3499999, 20.26115, 51.8023)
 
 [node name="Light" parent="Rooms/StairwellUp/Lighting/WallTorchUpper" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3499999, 0.20000005, -10.144005)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3499999, 20.26115, 51.8023)
 
 [node name="StairsUnder" type="CSGBox3D" parent="Rooms/StairwellUp/Lighting/WallTorchUpper" index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46.13504, -18.933815, 39.68366)
@@ -233,193 +233,604 @@ size = Vector3(6, 4, 8)
 material = SubResource("mat_stone_wall")
 
 [node name="Bracket" parent="Rooms/StairwellUp/Lighting/WallTorchLower" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.04076, -10.144006)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 34.10191, 51.802296)
 
 [node name="Flame" parent="Rooms/StairwellUp/Lighting/WallTorchLower" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3499999, 14.24076, -10.144006)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3499999, 34.30191, 51.802296)
 
 [node name="Light" parent="Rooms/StairwellUp/Lighting/WallTorchLower" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3499999, 14.24076, -10.144006)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3499999, 34.30191, 51.802296)
 
 [node name="DoorNorth" parent="Rooms/StairwellUp/Connections/DoorPositions" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -16.73026)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20.06115, 45.21604)
 
 [node name="DoorSouth" parent="Rooms/StairwellUp/Connections/DoorPositions" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.04076, 2.2697392)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 26.10191, 64.21605)
 
 [node name="NobleQuarters" parent="Rooms" instance=ExtResource("5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8, -30)
 
+[node name="Floor" parent="Rooms/NobleQuarters/Terrain" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 19.56115, 61.946304)
+
+[node name="Ceiling" parent="Rooms/NobleQuarters/Terrain" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 28.06115, 61.946304)
+
 [node name="WallNorth" parent="Rooms/NobleQuarters/Terrain" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.874756, 4, -10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.874756, 24.06115, 51.946304)
 size = Vector3(11.250488, 8, 1)
 
 [node name="WallNorth2" type="CSGBox3D" parent="Rooms/NobleQuarters/Terrain" index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.764735, 4, -10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.764735, 24.06115, 51.946304)
 use_collision = true
 size = Vector3(11.250488, 8, 1)
 material = SubResource("StandardMaterial3D_v4wpw")
 
+[node name="WallSouthLeft" parent="Rooms/NobleQuarters/Terrain" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 24.06115, 71.946304)
+
+[node name="WallSouthRight" parent="Rooms/NobleQuarters/Terrain" index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 24.06115, 71.946304)
+
+[node name="WallSouthTop" parent="Rooms/NobleQuarters/Terrain" index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 26.56115, 71.946304)
+
+[node name="WallEast" parent="Rooms/NobleQuarters/Terrain" index="7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 24.06115, 61.946304)
+
+[node name="WallWest" parent="Rooms/NobleQuarters/Terrain" index="8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5, 24.06115, 61.946304)
+
+[node name="CenterRug" parent="Rooms/NobleQuarters/Props" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20.08115, 61.946304)
+
+[node name="Bed1" parent="Rooms/NobleQuarters/Props" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 20.06115, 55.946304)
+
+[node name="Bed2" parent="Rooms/NobleQuarters/Props" index="2"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 8, 20.06115, 55.946304)
+
+[node name="BookshelfW" parent="Rooms/NobleQuarters/Props" index="3"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -11, 20.06115, 61.946304)
+
+[node name="BookshelfE" parent="Rooms/NobleQuarters/Props" index="4"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 11, 20.06115, 61.946304)
+
+[node name="Desk" parent="Rooms/NobleQuarters/Props" index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20.06115, 66.946304)
+
 [node name="TapestryN1" parent="Rooms/NobleQuarters/Props" index="6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.027516, 3.2175665, -6.982502)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.027516, 23.278717, 54.963802)
 size = Vector3(2.1713867, 5, 0.1)
 
 [node name="TapestryN2" parent="Rooms/NobleQuarters/Props" index="7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3314366, 3.0331526, -7.22501)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3314366, 23.094303, 54.721294)
 size = Vector3(2.236206, 5.129364, 0.1)
 
+[node name="Stand" parent="Rooms/NobleQuarters/Lighting/Brazier1" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20.56115, 61.946304)
+
+[node name="Bowl" parent="Rooms/NobleQuarters/Lighting/Brazier1" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21.21115, 61.946304)
+
+[node name="Fire" parent="Rooms/NobleQuarters/Lighting/Brazier1" index="2"]
+transform = Transform3D(0.65, 0, 0, 0, 0.8, 0, 0, 0, 0.65, 0, 21.611149, 61.946304)
+
+[node name="Light" parent="Rooms/NobleQuarters/Lighting/Brazier1" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21.96115, 61.946304)
+
+[node name="Stand" parent="Rooms/NobleQuarters/Lighting/Brazier2" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20.56115, 61.946304)
+
+[node name="Bowl" parent="Rooms/NobleQuarters/Lighting/Brazier2" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21.21115, 61.946304)
+
+[node name="Fire" parent="Rooms/NobleQuarters/Lighting/Brazier2" index="2"]
+transform = Transform3D(0.65, 0, 0, 0, 0.8, 0, 0, 0, 0.65, 0, 21.611149, 61.946304)
+
+[node name="Light" parent="Rooms/NobleQuarters/Lighting/Brazier2" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21.96115, 61.946304)
+
+[node name="Noble1" parent="Rooms/NobleQuarters/Spawns/NPCSpawns" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 20.06115, 63.946304)
+
+[node name="Noble2" parent="Rooms/NobleQuarters/Spawns/NPCSpawns" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 20.06115, 64.946304)
+
+[node name="DoorSouth" parent="Rooms/NobleQuarters/Connections/DoorPositions" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20.06115, 71.446304)
+
 [node name="Corridor1" parent="Rooms" instance=ExtResource("9")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.2435036, 0.012216568, -7.93398, -56.47775)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.2435036, 0.012216568, 12.12717, 5.4685555)
 
 [node name="Corridor2" parent="Rooms" instance=ExtResource("9")]
-transform = Transform3D(-0.049944386, 0, 1.1915385, 0, 1, 0, -0.9889902, 0, -0.060173154, 30.270193, -8, -86.22866)
+transform = Transform3D(-0.049944386, 0, 1.1915385, 0, 1, 0, -0.9889902, 0, -0.060173154, 30.270193, 12.06115, -24.282356)
 
 [node name="Corridor3" parent="Rooms" instance=ExtResource("9")]
 transform = Transform3D(1.4049112, 0, -0.007070859, 0, 1.2494226, 0, 0.036936004, 0, 0.2689498, 55.34851, -7.8982167, -102.157776)
 
+[node name="Floor" parent="Rooms/Corridor3/Terrain" index="0"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, 1.1584244, 15.556337, 230.16757)
+
+[node name="Ceiling" parent="Rooms/Corridor3/Terrain" index="1"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, 1.1584244, 22.056337, 230.16757)
+
 [node name="WallNorthLeft" parent="Rooms/Corridor3/Terrain" index="2"]
-transform = Transform3D(1, 0, 2.3283064e-08, 0, 1, 0, 0, 0, 1, -4.128662, 3, -15.000061)
+transform = Transform3D(1, 0, 2.4214387e-08, 0, 1, 0, 0, 0, 1, -2.9702377, 19.056337, 215.16748)
 size = Vector3(1.7426758, 6, 1)
 
 [node name="WallNorthRight" parent="Rooms/Corridor3/Terrain" index="3"]
-transform = Transform3D(1, 0, 1.4901161e-08, 0, 1, 0, 0, 0, 1, 3.4248009, 3, -15)
+transform = Transform3D(1, 0, 1.5832484e-08, 0, 1, 0, 0, 0, 1, 4.5832176, 19.056337, 215.16756)
 size = Vector3(3.1503906, 6, 1)
 
 [node name="WallNorthTop" parent="Rooms/Corridor3/Terrain" index="4"]
-transform = Transform3D(1, 0, 1.3969839e-08, 0, 1, 0, 0, 0, 1, 0, 5, -14.500519)
+transform = Transform3D(1, 0, 1.4901161e-08, 0, 1, 0, 0, 0, 1, 1.1584244, 21.056337, 215.66702)
 size = Vector3(2, 2, 0.001)
+
+[node name="WallSouthLeft" parent="Rooms/Corridor3/Terrain" index="5"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, -1.8415833, 19.056337, 245.16751)
+
+[node name="WallSouthRight" parent="Rooms/Corridor3/Terrain" index="6"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, 4.1584206, 19.056337, 245.16756)
+
+[node name="WallSouthTop" parent="Rooms/Corridor3/Terrain" index="7"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, 1.1584244, 21.056337, 245.16756)
+
+[node name="WallEast" parent="Rooms/Corridor3/Terrain" index="8"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, 6.1584167, 19.056337, 230.16754)
+
+[node name="WallWest" parent="Rooms/Corridor3/Terrain" index="9"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, -3.8415756, 19.056337, 230.16756)
+
+[node name="Pillar1" parent="Rooms/Corridor3/Props" index="0"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, -2.3415756, 16.056337, 220.16756)
+
+[node name="Pillar2" parent="Rooms/Corridor3/Props" index="1"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, 4.6584244, 16.056337, 220.16756)
+
+[node name="Pillar3" parent="Rooms/Corridor3/Props" index="2"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, -2.3415833, 16.056337, 230.16756)
+
+[node name="Pillar4" parent="Rooms/Corridor3/Props" index="3"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, 4.6584244, 16.056337, 230.16751)
+
+[node name="Pillar5" parent="Rooms/Corridor3/Props" index="4"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, -2.3415794, 16.056337, 240.16757)
+
+[node name="Pillar6" parent="Rooms/Corridor3/Props" index="5"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, 4.6584244, 16.056337, 240.16757)
+
+[node name="Bracket" parent="Rooms/Corridor3/Lighting/WallTorch1" index="0"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, 1.1584167, 16.056337, 230.16756)
+
+[node name="Flame" parent="Rooms/Corridor3/Lighting/WallTorch1" index="1"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, 1.5084229, 16.256338, 230.16754)
+
+[node name="Light" parent="Rooms/Corridor3/Lighting/WallTorch1" index="2"]
+transform = Transform3D(0.711543, 0, -5.5879354e-09, 0, 0.80036974, 0, 7.450581e-09, 0, 3.716882, 1.5084229, 16.256338, 230.16754)
+
+[node name="Bracket" parent="Rooms/Corridor3/Lighting/WallTorch2" index="0"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, 1.1584167, 16.056337, 230.16756)
+
+[node name="Flame" parent="Rooms/Corridor3/Lighting/WallTorch2" index="1"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, 0.8084183, 16.256338, 230.16759)
+
+[node name="Light" parent="Rooms/Corridor3/Lighting/WallTorch2" index="2"]
+transform = Transform3D(0.711543, 0, -5.5879354e-09, 0, 0.80036974, 0, 7.450581e-09, 0, 3.716882, 0.8084183, 16.256338, 230.16759)
+
+[node name="DoorNorth" parent="Rooms/Corridor3/Connections/DoorPositions" index="0"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, 1.1584167, 16.056337, 215.66753)
+
+[node name="DoorSouth" parent="Rooms/Corridor3/Connections/DoorPositions" index="1"]
+transform = Transform3D(1, 0, 9.313226e-10, 0, 1, 0, 0, 0, 1, 1.1584167, 16.056337, 244.66754)
 
 [node name="CommonQuarters" parent="Rooms" instance=ExtResource("6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8, -85)
 
+[node name="Floor" parent="Rooms/CommonQuarters/Terrain" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 19.56115, 61.946304)
+
+[node name="Ceiling" parent="Rooms/CommonQuarters/Terrain" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 28.06115, 61.946304)
+
+[node name="WallNorth" parent="Rooms/CommonQuarters/Terrain" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 24.06115, 51.946304)
+
+[node name="WallSouthLeft" parent="Rooms/CommonQuarters/Terrain" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 24.06115, 71.946304)
+
+[node name="WallSouthRight" parent="Rooms/CommonQuarters/Terrain" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 24.06115, 71.946304)
+
+[node name="WallSouthTop" parent="Rooms/CommonQuarters/Terrain" index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 26.56115, 71.946304)
+
 [node name="WallEast" parent="Rooms/CommonQuarters/Terrain" index="6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 4, -5.778076)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 24.06115, 56.16823)
 size = Vector3(1, 8, 8.443848)
 
 [node name="WallEast2" type="CSGBox3D" parent="Rooms/CommonQuarters/Terrain" index="7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 4, 5.2879333)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 24.06115, 67.23424)
 use_collision = true
 size = Vector3(1, 8, 8.443848)
 material = SubResource("StandardMaterial3D_1iffy")
 
 [node name="WallEast3" type="CSGBox3D" parent="Rooms/CommonQuarters/Terrain" index="8"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 6.848633, 0.09811401)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 26.909782, 62.04442)
 use_collision = true
 size = Vector3(1, 2.3027344, 18.823486)
 material = SubResource("StandardMaterial3D_1iffy")
 
+[node name="WallWest" parent="Rooms/CommonQuarters/Terrain" index="9"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 24.06115, 61.946304)
+
+[node name="BedRow1_1" parent="Rooms/CommonQuarters/Props" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 20.06115, 55.946304)
+
+[node name="BedRow1_2" parent="Rooms/CommonQuarters/Props" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 20.06115, 55.946304)
+
+[node name="BedRow1_3" parent="Rooms/CommonQuarters/Props" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 20.06115, 55.946304)
+
+[node name="BedRow1_4" parent="Rooms/CommonQuarters/Props" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 20.06115, 55.946304)
+
+[node name="BedRow2_1" parent="Rooms/CommonQuarters/Props" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 20.06115, 67.946304)
+
+[node name="BedRow2_2" parent="Rooms/CommonQuarters/Props" index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 20.06115, 67.946304)
+
+[node name="BedRow2_3" parent="Rooms/CommonQuarters/Props" index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 20.06115, 67.946304)
+
+[node name="BedRow2_4" parent="Rooms/CommonQuarters/Props" index="7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 20.06115, 67.946304)
+
+[node name="WeaponRackW" parent="Rooms/CommonQuarters/Props" index="8"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -13, 20.06115, 61.946304)
+
 [node name="WeaponRackE" parent="Rooms/CommonQuarters/Props" index="9"]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 10.705123, 0, -3.2915955)
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 10.705123, 20.06115, 58.65471)
+
+[node name="Footlocker1" parent="Rooms/CommonQuarters/Props" index="10"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 20.06115, 58.446304)
+
+[node name="Footlocker2" parent="Rooms/CommonQuarters/Props" index="11"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 20.06115, 58.446304)
+
+[node name="Footlocker3" parent="Rooms/CommonQuarters/Props" index="12"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 20.06115, 58.446304)
+
+[node name="Footlocker4" parent="Rooms/CommonQuarters/Props" index="13"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 20.06115, 58.446304)
+
+[node name="Stand" parent="Rooms/CommonQuarters/Lighting/Brazier1" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20.56115, 61.946304)
+
+[node name="Bowl" parent="Rooms/CommonQuarters/Lighting/Brazier1" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21.21115, 61.946304)
+
+[node name="Fire" parent="Rooms/CommonQuarters/Lighting/Brazier1" index="2"]
+transform = Transform3D(0.65, 0, 0, 0, 0.8, 0, 0, 0, 0.65, 0, 21.611149, 61.946304)
+
+[node name="Light" parent="Rooms/CommonQuarters/Lighting/Brazier1" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21.96115, 61.946304)
+
+[node name="Stand" parent="Rooms/CommonQuarters/Lighting/Brazier2" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20.56115, 61.946304)
+
+[node name="Bowl" parent="Rooms/CommonQuarters/Lighting/Brazier2" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21.21115, 61.946304)
+
+[node name="Fire" parent="Rooms/CommonQuarters/Lighting/Brazier2" index="2"]
+transform = Transform3D(0.65, 0, 0, 0, 0.8, 0, 0, 0, 0.65, 0, 21.611149, 61.946304)
+
+[node name="Light" parent="Rooms/CommonQuarters/Lighting/Brazier2" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21.96115, 61.946304)
+
+[node name="Guard1" parent="Rooms/CommonQuarters/Spawns/NPCSpawns" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 20.06115, 61.946304)
+
+[node name="Guard2" parent="Rooms/CommonQuarters/Spawns/NPCSpawns" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20.06115, 64.946304)
+
+[node name="Guard3" parent="Rooms/CommonQuarters/Spawns/NPCSpawns" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 20.06115, 59.946304)
+
+[node name="DoorSouth" parent="Rooms/CommonQuarters/Connections/DoorPositions" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20.06115, 71.446304)
 
 [node name="Bathhouse" parent="Rooms" instance=ExtResource("7")]
 transform = Transform3D(-0.04349735, 0, -0.99905354, 0, 1, 0, 0.99905354, 0, -0.04349735, 56.371666, -8, -86.616486)
 
+[node name="Floor" parent="Rooms/Bathhouse/Terrain" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.887676, 19.56115, -2.6945)
+
+[node name="Ceiling" parent="Rooms/Bathhouse/Terrain" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.887676, 30.06115, -2.6945)
+
+[node name="WallNorth" parent="Rooms/Bathhouse/Terrain" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.88768, 25.06115, -12.694481)
+
+[node name="WallSouthLeft" parent="Rooms/Bathhouse/Terrain" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53.887684, 25.06115, 7.3055)
+
+[node name="WallSouthRight" parent="Rooms/Bathhouse/Terrain" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.88768, 25.06115, 7.305504)
+
+[node name="WallSouthTop" parent="Rooms/Bathhouse/Terrain" index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.887676, 28.06115, 7.3055077)
+
+[node name="WallEast" parent="Rooms/Bathhouse/Terrain" index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 74.38767, 25.06115, -2.6945)
+
 [node name="WallWest" parent="Rooms/Bathhouse/Terrain" index="7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.239769, 5, 9.887291)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.64791, 25.06115, 7.192791)
 size = Vector3(0.001, 10, 0.15924072)
 
 [node name="WallWest2" type="CSGBox3D" parent="Rooms/Bathhouse/Terrain" index="8"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.444595, 5, -3.1341133)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.443085, 25.06115, -5.8286057)
 use_collision = true
 size = Vector3(0.001, 10, 0.001)
 material = SubResource("StandardMaterial3D_mcpl1")
 
 [node name="WallWest3" type="CSGBox3D" parent="Rooms/Bathhouse/Terrain" index="9"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.069672, 8.939026, 0.7612381)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48.81801, 29.000175, -1.9332542)
 use_collision = true
 size = Vector3(1, 2.1219482, 20.714905)
 material = SubResource("StandardMaterial3D_mcpl1")
 
 [node name="WallWest4" type="CSGBox3D" parent="Rooms/Bathhouse/Terrain" index="10"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.069649, 4.7068176, -7.2117767)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48.818035, 24.767967, -9.906261)
 use_collision = true
 size = Vector3(1, 10.586365, 4.768814)
 material = SubResource("StandardMaterial3D_mcpl1")
 
 [node name="PoolEdge" parent="Rooms/Bathhouse/Props/MainPool" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.12442589, -0.5576782)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.88768, 19.936724, -3.2521782)
 size = Vector3(14, 0.3, 8.884644)
 
 [node name="PoolBasin" parent="Rooms/Bathhouse/Props/MainPool" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.6293945e-06, -1.0368271, 0.00074386597)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.887695, 19.024323, -2.6937485)
 size = Vector3(12, 1.5, 8.001465)
 
+[node name="Water" parent="Rooms/Bathhouse/Props/MainPool" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.887684, 19.76115, -2.6945)
+
+[node name="Steam1" parent="Rooms/Bathhouse/Props/MainPool" index="3"]
+transform = Transform3D(3, 0, 0, 0, 1.5, 0, 0, 0, 2, 58.88768, 21.06115, -4.694496)
+
 [node name="Steam2" parent="Rooms/Bathhouse/Props/MainPool" index="4"]
-transform = Transform3D(2.5, 0, 0, 0, 1.2, 0, 0, 0, 1.8, 1.8917847, 0.8000002, -1.4856987)
+transform = Transform3D(2.5, 0, 0, 0, 1.2, 0, 0, 0, 1.8, 63.779472, 20.861149, -4.180191)
+
+[node name="Steam3" parent="Rooms/Bathhouse/Props/MainPool" index="5"]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 1.5, 61.887684, 21.26115, -2.6945)
 
 [node name="PoolEdge" parent="Rooms/Bathhouse/Props/SmallPool" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.031470776, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.88766, 20.09262, -2.6945)
+
+[node name="Water" parent="Rooms/Bathhouse/Props/SmallPool" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.88766, 19.861149, -2.6945)
+
+[node name="BenchE1" parent="Rooms/Bathhouse/Props" index="2"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 71.88769, 20.06115, -7.6944923)
+
+[node name="BenchE2" parent="Rooms/Bathhouse/Props" index="3"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 71.88768, 20.06115, -0.6944847)
+
+[node name="BenchW" parent="Rooms/Bathhouse/Props" index="4"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 51.88768, 20.06115, -7.6944923)
+
+[node name="Pillar1" parent="Rooms/Bathhouse/Props" index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53.88768, 20.06115, -8.694492)
+
+[node name="Pillar2" parent="Rooms/Bathhouse/Props" index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.88767, 20.06115, -8.6945)
+
+[node name="Pillar3" parent="Rooms/Bathhouse/Props" index="7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.88768, 20.06115, 3.3055077)
+
+[node name="Stand" parent="Rooms/Bathhouse/Lighting/Brazier1" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.88767, 20.56115, -2.6945)
+
+[node name="Bowl" parent="Rooms/Bathhouse/Lighting/Brazier1" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.88767, 21.21115, -2.6945)
+
+[node name="Fire" parent="Rooms/Bathhouse/Lighting/Brazier1" index="2"]
+transform = Transform3D(0.65, 0, 0, 0, 0.8, 0, 0, 0, 0.65, 61.88767, 21.611149, -2.6945)
+
+[node name="Light" parent="Rooms/Bathhouse/Lighting/Brazier1" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.88767, 21.96115, -2.6945)
+
+[node name="Bracket" parent="Rooms/Bathhouse/Lighting/WallTorchN1" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.88767, 20.06115, -2.6945038)
+
+[node name="Flame" parent="Rooms/Bathhouse/Lighting/WallTorchN1" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.887665, 20.361149, -2.29451)
+
+[node name="Light" parent="Rooms/Bathhouse/Lighting/WallTorchN1" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.887665, 20.361149, -2.29451)
+
+[node name="Bracket" parent="Rooms/Bathhouse/Lighting/WallTorchN2" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.887676, 20.06115, -2.6945038)
+
+[node name="Flame" parent="Rooms/Bathhouse/Lighting/WallTorchN2" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.887672, 20.361149, -2.2945023)
+
+[node name="Light" parent="Rooms/Bathhouse/Lighting/WallTorchN2" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.887672, 20.361149, -2.2945023)
+
+[node name="DoorSouth" parent="Rooms/Bathhouse/Connections/DoorPositions" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.88768, 20.06115, 6.8055077)
 
 [node name="StorageCellar" parent="Rooms" instance=ExtResource("8")]
 transform = Transform3D(1, 0, 0, 0, 1.277443, 0, 0, 0, 1.5242611, 54.530235, -7.8893375, -120.629166)
 
+[node name="Floor" parent="Rooms/StorageCellar/Terrain" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 0, 15.2041445, 40.640224)
+
+[node name="Ceiling" parent="Rooms/StorageCellar/Terrain" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 0, 21.704145, 40.640224)
+
+[node name="WallNorth" parent="Rooms/StorageCellar/Terrain" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 0, 18.704147, 30.640217)
+
+[node name="WallSouthLeft" parent="Rooms/StorageCellar/Terrain" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, -8, 18.704147, 50.64023)
+
+[node name="WallSouthRight" parent="Rooms/StorageCellar/Terrain" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 8, 18.704147, 50.64023)
+
+[node name="WallSouthTop" parent="Rooms/StorageCellar/Terrain" index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 0, 20.204144, 50.64023)
+
+[node name="WallEast" parent="Rooms/StorageCellar/Terrain" index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 12.5, 18.704147, 40.640224)
+
 [node name="WallWest" parent="Rooms/StorageCellar/Terrain" index="7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000019, -12.5, 3.0000007, -4.6171875)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000019, -12.5, 18.704147, 36.02304)
 size = Vector3(1, 6, 10.765625)
 
 [node name="WallWest2" type="CSGBox3D" parent="Rooms/StorageCellar/Terrain" index="8"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000019, -12.5, 3.0000007, 9.32193)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000019, -12.5, 18.704147, 49.962154)
 use_collision = true
 size = Vector3(1, 6, 2.2455444)
 material = SubResource("StandardMaterial3D_4jdjn")
+
+[node name="BarrelClusterW" parent="Rooms/StorageCellar/Props" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, -9, 15.7041445, 35.64022)
+
+[node name="BarrelClusterE" parent="Rooms/StorageCellar/Props" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 9, 15.7041445, 45.64022)
+
+[node name="CratePileN" parent="Rooms/StorageCellar/Props" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 0, 15.7041445, 33.640217)
+
+[node name="SackPileW" parent="Rooms/StorageCellar/Props" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, -9, 15.7041445, 44.64022)
+
+[node name="SackPileE" parent="Rooms/StorageCellar/Props" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 9, 15.7041445, 35.64022)
+
+[node name="ShelfW" parent="Rooms/StorageCellar/Props" index="5"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1.0000002, 0, 0, -11, 15.7041445, 40.640224)
+
+[node name="Stand" parent="Rooms/StorageCellar/Lighting/Brazier1" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 0, 16.104145, 40.640224)
+
+[node name="Bowl" parent="Rooms/StorageCellar/Lighting/Brazier1" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 0, 16.654144, 40.640224)
+
+[node name="Fire" parent="Rooms/StorageCellar/Lighting/Brazier1" index="2"]
+transform = Transform3D(0.55, 0, 0, 0, 0.7, 0, 0, 0, 0.55000013, 0, 17.004145, 40.640224)
+
+[node name="Light" parent="Rooms/StorageCellar/Lighting/Brazier1" index="3"]
+transform = Transform3D(1, 0, 0, 0, 0.7828138, 0, 0, 0, 0.6560556, 0, 17.304146, 40.640224)
+
+[node name="Stand" parent="Rooms/StorageCellar/Lighting/Brazier2" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 0, 16.104145, 40.640224)
+
+[node name="Bowl" parent="Rooms/StorageCellar/Lighting/Brazier2" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 0, 16.654144, 40.640224)
+
+[node name="Fire" parent="Rooms/StorageCellar/Lighting/Brazier2" index="2"]
+transform = Transform3D(0.55, 0, 0, 0, 0.7, 0, 0, 0, 0.55000013, 0, 17.004145, 40.640224)
+
+[node name="Light" parent="Rooms/StorageCellar/Lighting/Brazier2" index="3"]
+transform = Transform3D(1, 0, 0, 0, 0.7828138, 0, 0, 0, 0.6560556, 0, 17.304146, 40.640224)
+
+[node name="SupplyChest1" parent="Rooms/StorageCellar/Spawns/ChestSpawns" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, -5, 15.7041445, 33.640217)
+
+[node name="SupplyChest2" parent="Rooms/StorageCellar/Spawns/ChestSpawns" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 5, 15.7041445, 43.64022)
+
+[node name="DoorSouth" parent="Rooms/StorageCellar/Connections/DoorPositions" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 0, 15.7041445, 50.14023)
 
 [node name="StairwellDown" parent="Rooms" instance=ExtResource("10")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8.431171, -140.0394)
 
 [node name="FloorUpper" parent="Rooms/StairwellDown/Terrain" index="0"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 25.210564, -0.22690964, 26.004463)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 25.210564, 19.83424, 87.95077)
 size = Vector3(12, 1.2423706, 3.7130127)
 
 [node name="FloorLower" parent="Rooms/StairwellDown/Terrain" index="1"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 33.92247, -8.052155, 26.186348)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 33.92247, 12.008995, 88.13265)
 size = Vector3(12, 1, 18.859375)
 
 [node name="CeilingUpper" parent="Rooms/StairwellDown/Terrain" index="2"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 26.353807, 8.447845, 26.028328)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 26.353807, 28.508995, 87.97463)
 
 [node name="CeilingLower" parent="Rooms/StairwellDown/Terrain" index="3"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 40.350758, 0.44784546, 26.320549)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 40.350758, 20.508995, 88.26685)
 
 [node name="CeilingMiddle" parent="Rooms/StairwellDown/Terrain" index="4"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 36.282856, 8.451773, 26.235634)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 36.282856, 28.512922, 88.18194)
 size = Vector3(12, 0.5, 13.862427)
 
 [node name="WallNorthL" parent="Rooms/StairwellDown/Terrain" index="5"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 23.812096, 4.4478455, 36.6998)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 23.812096, 24.508995, 98.6461)
 size = Vector3(0.001, 8, 0.001)
 
 [node name="WallNorthR" parent="Rooms/StairwellDown/Terrain" index="6"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 23.839302, 0.2034607, 26.110466)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 23.839302, 20.26461, 88.05677)
 size = Vector3(12.289551, 16.48877, 1)
 
 [node name="WallNorthTop" parent="Rooms/StairwellDown/Terrain" index="7"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 23.354462, 7.4478455, 25.965721)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 23.354462, 27.508995, 87.912025)
 
 [node name="WallSouthL" parent="Rooms/StairwellDown/Terrain" index="8"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 43.266617, -3.5521545, 30.382301)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 43.266617, 16.508995, 92.328606)
 
 [node name="WallSouthR" parent="Rooms/StairwellDown/Terrain" index="9"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 43.433594, -3.5521545, 22.38404)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 43.433594, 16.508995, 84.330345)
 
 [node name="WallSouthTop" parent="Rooms/StairwellDown/Terrain" index="10"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 43.350105, -0.55215454, 26.383171)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 43.350105, 19.508995, 88.329475)
 
 [node name="WallEast" parent="Rooms/StairwellDown/Terrain" index="11"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 33.190247, 0.44784546, 20.155113)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 33.190247, 20.508995, 82.10142)
 size = Vector3(1, 16, 18.594849)
 
 [node name="WallWest" parent="Rooms/StairwellDown/Terrain" index="12"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 32.52425, 0.44784546, 32.173134)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 32.52425, 20.508995, 94.11944)
 
 [node name="Stairs" parent="Rooms/StairwellDown/Props" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8595467, 0, -25.803299)
 
+[node name="Step1" parent="Rooms/StairwellDown/Props/Stairs" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.72319, 19.56115, 89.26587)
+
+[node name="Step2" parent="Rooms/StairwellDown/Props/Stairs" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.72319, 19.06115, 90.26587)
+
+[node name="Step3" parent="Rooms/StairwellDown/Props/Stairs" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.72319, 18.56115, 91.26587)
+
+[node name="Step4" parent="Rooms/StairwellDown/Props/Stairs" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.72319, 18.06115, 92.26587)
+
+[node name="Step5" parent="Rooms/StairwellDown/Props/Stairs" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.72319, 17.56115, 93.26587)
+
+[node name="Step6" parent="Rooms/StairwellDown/Props/Stairs" index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.72319, 17.06115, 94.26587)
+
+[node name="Step7" parent="Rooms/StairwellDown/Props/Stairs" index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.72319, 16.56115, 95.26587)
+
+[node name="Step8" parent="Rooms/StairwellDown/Props/Stairs" index="7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.72319, 16.06115, 96.26587)
+
 [node name="StairsUnder" parent="Rooms/StairwellDown/Props/Stairs" index="8"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9995, -12.712526, -3.9994965)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.72369, 7.3486233, 88.76637)
 size = Vector3(0.001, 4, 0.001)
 
 [node name="Railing1" parent="Rooms/StairwellDown/Props" index="1"]
-transform = Transform3D(0.00018141686, 0.020871792, 0.99978226, -0.9999622, 0.008691635, -2.9083059e-11, -0.00868974, -0.99974424, 0.020872597, 32.17191, 0.29511547, 29.974953)
+transform = Transform3D(0.00018141686, 0.020871792, 0.99978226, -0.9999622, 0.008691635, -2.9083059e-11, -0.00868974, -0.99974424, 0.020872597, 32.17191, 20.356266, 91.92126)
 size = Vector3(0.77200925, 3.9672852, 12.078735)
 
 [node name="Railing2" parent="Rooms/StairwellDown/Props" index="2"]
@@ -427,28 +838,28 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4840.8496, -4831.6826, 3.999
 size = Vector3(0.001, 4, 0.001)
 
 [node name="Bracket" parent="Rooms/StairwellDown/Lighting/WallTorchUpper" index="0"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 31.249445, 0.44784546, 38.027245)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 31.249445, 20.508995, 99.97355)
 
 [node name="Flame" parent="Rooms/StairwellDown/Lighting/WallTorchUpper" index="1"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 31.25675, 0.64784527, 37.978775)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 31.25675, 20.708996, 99.92508)
 
 [node name="Light" parent="Rooms/StairwellDown/Lighting/WallTorchUpper" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.997662, 0.19999981, 38.20584)
 
 [node name="Bracket" parent="Rooms/StairwellDown/Lighting/WallTorchLower" index="0"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 35.45512, 0.44784546, 14.321632)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 35.45512, 20.508995, 76.26794)
 
 [node name="Flame" parent="Rooms/StairwellDown/Lighting/WallTorchLower" index="1"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 35.447815, 0.64784527, 14.671577)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 35.447815, 20.708996, 76.61788)
 
 [node name="Light" parent="Rooms/StairwellDown/Lighting/WallTorchLower" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.32402, 0.19999981, 14.210312)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.32402, 20.26115, 76.15662)
 
 [node name="DoorNorth" parent="Rooms/StairwellDown/Connections/DoorPositions" index="0"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 23.854351, 0.44784546, 25.976158)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 23.854351, 20.508995, 87.92246)
 
 [node name="DoorSouth" parent="Rooms/StairwellDown/Connections/DoorPositions" index="1"]
-transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 42.850212, -7.5521545, 26.372734)
+transform = Transform3D(0.02087259, 0, 0.9997822, 0, 1, 0, -0.9997822, 0, 0.02087259, 42.850212, 12.508995, 88.31904)
 
 [node name="Doors" type="Node3D" parent="."]
 
@@ -467,18 +878,18 @@ door_name = "Descend to War Room"
 [node name="SpawnPoints" type="Node3D" parent="."]
 
 [node name="from_level_1" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.1791687, -1.5917406)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 26.240318, 60.354565)
 
 [node name="from_level_3" type="Marker3D" parent="SpawnPoints" groups=["spawn_points"]]
-transform = Transform3D(-0.02087259, 0, -0.9997822, 0, 1, 0, 0.9997822, 0, -0.02087259, 28.35337, -15.452154, -113.96931)
+transform = Transform3D(-0.02087259, 0, -0.9997822, 0, 1, 0, 0.9997822, 0, -0.02087259, 28.35337, 4.6089954, -52.023003)
 
 [node name="default" type="Marker3D" parent="SpawnPoints" groups=["default_spawn", "spawn_points"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.706167, -1.5865192)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 25.767317, 60.359787)
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
 
 [node name="Player" parent="." instance=ExtResource("2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.8141005, -1.8409646)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.24705, 60.10534)
 
 [node name="HUD" parent="." instance=ExtResource("3")]
 

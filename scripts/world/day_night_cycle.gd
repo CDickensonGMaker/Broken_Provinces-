@@ -43,8 +43,8 @@ const MORNING_ENERGY := 1.1    # Bright morning light
 const NOON_ENERGY := 1.5       # Strong midday sun
 const AFTERNOON_ENERGY := 1.4  # Still strong until ~5pm
 const DUSK_ENERGY := 0.6
-const NIGHT_ENERGY := 0.15     # Dark but visible at night
-const MIDNIGHT_ENERGY := 0.08  # Very dark at midnight but not pitch black
+const NIGHT_ENERGY := 0.22     # Dark but visible at night
+const MIDNIGHT_ENERGY := 0.15  # Dark at midnight but playable
 
 ## Ambient light colors - balanced for visibility
 const DAWN_AMBIENT := Color(0.4, 0.38, 0.35)
@@ -52,8 +52,8 @@ const MORNING_AMBIENT := Color(0.55, 0.52, 0.48)   # Brighter morning fill
 const NOON_AMBIENT := Color(0.7, 0.68, 0.62)       # Strong warm ambient
 const AFTERNOON_AMBIENT := Color(0.65, 0.6, 0.55)  # Strong afternoon fill
 const DUSK_AMBIENT := Color(0.35, 0.3, 0.32)
-const NIGHT_AMBIENT := Color(0.1, 0.1, 0.14)    # Visible blue-tinted night
-const MIDNIGHT_AMBIENT := Color(0.06, 0.06, 0.08)  # Very dark but not pitch black
+const NIGHT_AMBIENT := Color(0.12, 0.12, 0.18)     # Visible blue-tinted night
+const MIDNIGHT_AMBIENT := Color(0.08, 0.08, 0.12)  # Dark but playable ambient
 
 ## PS1-style fog colors - lighter during day for better visibility
 const DAWN_FOG := Color(0.35, 0.32, 0.3)        # Grey with slight warmth
@@ -82,8 +82,8 @@ const MORNING_AMBIENT_ENERGY := 0.75   # Strong morning ambient
 const NOON_AMBIENT_ENERGY := 1.0       # Full ambient at midday
 const AFTERNOON_AMBIENT_ENERGY := 0.95 # Strong afternoon ambient
 const DUSK_AMBIENT_ENERGY := 0.45
-const NIGHT_AMBIENT_ENERGY := 0.2    # Visible ambient at night
-const MIDNIGHT_AMBIENT_ENERGY := 0.1  # Low but not pitch black
+const NIGHT_AMBIENT_ENERGY := 0.28     # Visible ambient at night
+const MIDNIGHT_AMBIENT_ENERGY := 0.18  # Playable ambient at midnight
 
 ## Current target values
 var target_color: Color = MORNING_COLOR
@@ -94,6 +94,9 @@ var target_angle: float = MORNING_ANGLE
 var target_fog: Color = MORNING_FOG
 
 func _ready() -> void:
+	# Add to group for easy lookup by weather system
+	add_to_group("day_night_cycle")
+
 	_setup_lighting()
 
 	# Connect to time changes

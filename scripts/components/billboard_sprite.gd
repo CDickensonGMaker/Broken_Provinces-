@@ -234,7 +234,7 @@ func _update_directional_frame(camera: Camera3D) -> void:
 
 	# Convert to 8 directions (0 = front, 1 = front-right, etc.)
 	# Angle is -PI to PI, 0 is front
-	var direction_index := int(round((angle + PI) / (TAU / direction_count))) % direction_count
+	var direction_index := int(round((angle + PI) / (TAU / float(direction_count)))) % direction_count
 
 	# This would be used to select a different column in the sprite sheet
 	# For now, we use single-direction sprites

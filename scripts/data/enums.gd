@@ -44,8 +44,6 @@ enum Skill {
 	HERBALISM,      # Plant yields, potion strength
 	SURVIVAL,
 	# CRAFTING-related
-	ALCHEMY,
-	SMITHING,
 	LOCKPICKING
 }
 
@@ -169,15 +167,16 @@ enum AIBehavior {
 
 # Enemy Factions - determines hostility between enemy types
 enum Faction {
-	NEUTRAL,      # Won't fight other enemies
-	GOBLINOID,    # Goblins, hobgoblins, etc.
-	UNDEAD,       # Skeletons, zombies, etc.
-	ABOMINATION,  # Mutants, flesh horrors
-	BEAST,        # Wild animals
-	DEMON,        # Demons, imps
-	HUMAN_BANDIT, # Bandits, raiders
-	CULTIST,      # Dark cultists
-	TENGER        # Blood-thirsty desert marauders from the south
+	NEUTRAL,       # Won't fight other enemies
+	GOBLINOID,     # Goblins, hobgoblins, etc.
+	UNDEAD,        # Skeletons, zombies, etc.
+	ABOMINATION,   # Mutants, flesh horrors
+	BEAST,         # Wild animals
+	DEMON,         # Demons, imps
+	HUMAN_BANDIT,  # Bandits, raiders
+	CULTIST,       # Dark cultists
+	TENGER,        # Blood-thirsty desert marauders from the south
+	PLAYER_SUMMON  # Summoned creatures allied with the player
 }
 
 # Faction hostility matrix - which factions attack which
@@ -211,6 +210,15 @@ static func are_factions_hostile(faction_a: Faction, faction_b: Faction) -> bool
 		[Faction.TENGER, Faction.BEAST],
 		[Faction.TENGER, Faction.HUMAN_BANDIT],
 		[Faction.TENGER, Faction.CULTIST],
+		# Player summons are hostile to ALL enemy factions
+		[Faction.PLAYER_SUMMON, Faction.GOBLINOID],
+		[Faction.PLAYER_SUMMON, Faction.UNDEAD],
+		[Faction.PLAYER_SUMMON, Faction.ABOMINATION],
+		[Faction.PLAYER_SUMMON, Faction.BEAST],
+		[Faction.PLAYER_SUMMON, Faction.DEMON],
+		[Faction.PLAYER_SUMMON, Faction.HUMAN_BANDIT],
+		[Faction.PLAYER_SUMMON, Faction.CULTIST],
+		[Faction.PLAYER_SUMMON, Faction.TENGER],
 	]
 
 	for pair in hostile_pairs:
@@ -256,7 +264,8 @@ enum SpellTargetType {
 	AOE_SELF,
 	CONE,
 	BEAM,
-	PROJECTILE
+	PROJECTILE,
+	SUMMON  # Summons a creature
 }
 
 # Spell Schools

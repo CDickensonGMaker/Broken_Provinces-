@@ -7,7 +7,8 @@ extends Resource
 ## Version 3: Added MoralitySaveData, FactionSaveData, NPC disposition persistence
 ## Version 4: Added StatsSaveData, JournalSaveData (notes, bestiary, codex unlocks)
 ## Version 5: Added SoulstoneSaveData (soulstone economy system)
-const SAVE_VERSION := 5
+## Version 6: Added WeatherSaveData (visual weather system)
+const SAVE_VERSION := 6
 
 ## Metadata
 @export var version: int = SAVE_VERSION
@@ -78,6 +79,21 @@ var soulstone_data = null  # SoulstoneSaveData
 ## Follower system section
 var follower_data = null  # FollowerSaveData
 
+## Guild rank system section
+var guild_rank_data = null  # GuildRankSaveData
+
+## Duel manager section
+var duel_data = null  # DuelSaveData
+
+## Escort manager section
+var escort_data = null  # EscortSaveData
+
+## Companion manager section (separate from FollowerManager)
+var companion_data = null  # CompanionSaveData
+
+## Weather system section
+var weather_data = null  # WeatherSaveData
+
 ## Audio settings section
 @export_group("Settings")
 @export var audio_settings: Dictionary = {}
@@ -104,6 +120,11 @@ func _init() -> void:
 	journal_data = JournalSaveData.new()
 	soulstone_data = SoulstoneSaveData.new()
 	follower_data = FollowerSaveData.new()
+	guild_rank_data = GuildRankSaveData.new()
+	duel_data = DuelSaveData.new()
+	escort_data = EscortSaveData.new()
+	companion_data = CompanionSaveData.new()
+	weather_data = WeatherSaveData.new()
 
 ## Convert to dictionary for JSON serialization
 func to_dict() -> Dictionary:
@@ -133,6 +154,11 @@ func to_dict() -> Dictionary:
 		"journal": journal_data.to_dict() if journal_data else {},
 		"soulstones": soulstone_data.to_dict() if soulstone_data else {},
 		"followers": follower_data.to_dict() if follower_data else {},
+		"guild_ranks": guild_rank_data.to_dict() if guild_rank_data else {},
+		"duels": duel_data.to_dict() if duel_data else {},
+		"escorts": escort_data.to_dict() if escort_data else {},
+		"companions": companion_data.to_dict() if companion_data else {},
+		"weather": weather_data.to_dict() if weather_data else {},
 		"audio_settings": audio_settings
 	}
 
@@ -185,6 +211,16 @@ func from_dict(data: Dictionary) -> void:
 		soulstone_data.from_dict(data.get("soulstones", {}))
 	if follower_data:
 		follower_data.from_dict(data.get("followers", {}))
+	if guild_rank_data:
+		guild_rank_data.from_dict(data.get("guild_ranks", {}))
+	if duel_data:
+		duel_data.from_dict(data.get("duels", {}))
+	if escort_data:
+		escort_data.from_dict(data.get("escorts", {}))
+	if companion_data:
+		companion_data.from_dict(data.get("companions", {}))
+	if weather_data:
+		weather_data.from_dict(data.get("weather", {}))
 
 	audio_settings = data.get("audio_settings", {})
 
@@ -919,3 +955,123 @@ class FollowerSaveData:
 		active_follower_ids = data.get("active_follower_ids", [])
 		follower_states = data.get("follower_states", {})
 		available_followers = data.get("available_followers", [])
+
+
+## Guild rank system save data structure
+class GuildRankSaveData:
+	## Completed guild quests counter per guild (guild_id -> count)
+	var quest_counts: Dictionary = {}
+
+	## Current rank level per guild (guild_id -> int, -1 = not a member)
+	var rank_levels: Dictionary = {}
+
+	func to_dict() -> Dictionary:
+		return {
+			"quest_counts": quest_counts,
+			"rank_levels": rank_levels
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		quest_counts = data.get("quest_counts", {})
+		rank_levels = data.get("rank_levels", {})
+
+
+## Duel manager save data structure
+class DuelSaveData:
+	## Last duel ID (for quest tracking)
+	var last_duel_id: String = ""
+
+	## Last duel result ("victory", "defeat", "draw", "none")
+	var last_duel_result: String = "none"
+
+	func to_dict() -> Dictionary:
+		return {
+			"last_duel_id": last_duel_id,
+			"last_duel_result": last_duel_result
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		last_duel_id = data.get("last_duel_id", "")
+		last_duel_result = data.get("last_duel_result", "none")
+
+
+## Escort manager save data structure
+class EscortSaveData:
+	## Active escort states (escort_id -> state dict with health, position, quest info)
+	var escort_states: Dictionary = {}
+
+	## Primary escort ID (the one shown in HUD)
+	var primary_escort_id: String = ""
+
+	func to_dict() -> Dictionary:
+		return {
+			"escort_states": escort_states,
+			"primary_escort_id": primary_escort_id
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		escort_states = data.get("escort_states", {})
+		primary_escort_id = data.get("primary_escort_id", "")
+
+
+## Companion manager save data structure (separate from FollowerManager)
+class CompanionSaveData:
+	## IDs of companions the player has unlocked
+	var unlocked_companions: Array = []
+
+	## IDs of currently active companions
+	var active_companion_ids: Array = []
+
+	## Saved state for each companion (companion_id -> state dict)
+	var companion_states: Dictionary = {}
+
+	## Current positioning mode
+	var position_mode: int = 0
+
+	func to_dict() -> Dictionary:
+		return {
+			"unlocked_companions": unlocked_companions,
+			"active_companion_ids": active_companion_ids,
+			"companion_states": companion_states,
+			"position_mode": position_mode
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		unlocked_companions = data.get("unlocked_companions", [])
+		active_companion_ids = data.get("active_companion_ids", [])
+		companion_states = data.get("companion_states", {})
+		position_mode = data.get("position_mode", 0)
+
+
+## Weather system save data structure
+class WeatherSaveData:
+	## Current weather state (Enums.Weather value)
+	var current_weather: int = 0  # Enums.Weather.CLEAR
+
+	## Target weather during transition
+	var target_weather: int = 0
+
+	## Time until next weather change (seconds)
+	var time_until_change: float = 180.0
+
+	## Whether a transition is in progress
+	var transitioning: bool = false
+
+	## Transition progress (0.0 to 1.0)
+	var transition_progress: float = 0.0
+
+	func to_dict() -> Dictionary:
+		return {
+			"current_weather": current_weather,
+			"target_weather": target_weather,
+			"time_until_change": time_until_change,
+			"transitioning": transitioning,
+			"transition_progress": transition_progress
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		current_weather = data.get("current_weather", 0)
+		target_weather = data.get("target_weather", 0)
+		time_until_change = data.get("time_until_change", 180.0)
+		transitioning = data.get("transitioning", false)
+		transition_progress = data.get("transition_progress", 0.0)

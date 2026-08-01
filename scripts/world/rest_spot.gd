@@ -73,8 +73,6 @@ const SKILL_DESCRIPTIONS := {
 	Enums.Skill.HERBALISM: "+5% potion brewing success. +3% foraging yield.",
 	Enums.Skill.SURVIVAL: "+3% weather resistance per level. Better camping rest.",
 	# CRAFTING-related
-	Enums.Skill.ALCHEMY: "+5% potion strength per level. +3% crafting success.",
-	Enums.Skill.SMITHING: "+5% crafted item quality per level. Repair efficiency.",
 	Enums.Skill.LOCKPICKING: "+1 lock difficulty per level. Silent lock attempts.",
 }
 
@@ -1224,8 +1222,6 @@ func _get_skill_name(skill: Enums.Skill) -> String:
 		Enums.Skill.HERBALISM: return "Herbalism"
 		Enums.Skill.SURVIVAL: return "Survival"
 		# CRAFTING-related
-		Enums.Skill.ALCHEMY: return "Alchemy"
-		Enums.Skill.SMITHING: return "Smithing"
 		Enums.Skill.LOCKPICKING: return "Lockpicking"
 		_: return "Unknown"
 

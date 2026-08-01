@@ -156,6 +156,11 @@ const OCEAN_DUSK_COLOR := Color(0.06, 0.10, 0.20, 0.96)
 const OCEAN_DAWN_COLOR := Color(0.08, 0.14, 0.25, 0.96)
 
 
+## Static flag for tracking if early access warning was shown this session
+## (Static vars reset when the game restarts, perfect for session-only behavior)
+static var _sea_travel_warning_shown: bool = false
+
+
 func _ready() -> void:
 	# Add to group so HUD can find us during encounters
 	add_to_group("boat_voyage")
@@ -170,6 +175,9 @@ func _ready() -> void:
 
 	# Ensure player exists on the boat deck
 	_ensure_player_exists()
+
+	# Show early access warning (once per session)
+	_show_early_access_warning()
 
 	# Connect to BoatTravelManager signals
 	if BoatTravelManager:
@@ -241,6 +249,29 @@ func _ensure_hud_exists() -> void:
 		if hud_scene:
 			var hud_instance: Node = hud_scene.instantiate()
 			add_child(hud_instance)
+
+
+## Show early access warning for sea travel (once per session)
+func _show_early_access_warning() -> void:
+	# Check if warning was already shown this session
+	if _sea_travel_warning_shown:
+		return  # Already shown this session
+
+	# Mark as shown for this session
+	_sea_travel_warning_shown = true
+
+	# Wait a moment for the scene to fully load before showing warning
+	await get_tree().create_timer(0.5).timeout
+
+	# Show warning via HUD notification system (longer duration)
+	var hud: Node = get_tree().get_first_node_in_group("hud")
+	if hud and hud.has_method("show_notification"):
+		# Show multi-part warning for visibility
+		hud.show_notification("EARLY ACCESS WARNING", Color(1.0, 0.8, 0.2), 3.0)
+		await get_tree().create_timer(3.5).timeout
+		hud.show_notification("Sea travel and southern regions are in development.", Color(1.0, 0.9, 0.6), 4.0)
+		await get_tree().create_timer(4.5).timeout
+		hud.show_notification("You may encounter unfinished content. Progress is saved.", Color(0.9, 0.85, 0.7), 3.5)
 
 
 func _exit_tree() -> void:

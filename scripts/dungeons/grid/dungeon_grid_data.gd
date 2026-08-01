@@ -54,7 +54,8 @@ enum RoomType {
 	CAVE_T_JUNCTION = 34,      ## Cave three-way (N, E, W doors)
 	CAVE_CROSSROADS = 35,      ## Cave four-way hub
 	CAVE_DEAD_END = 36,        ## Cave dead end (south door only)
-	CAVE_CHAMBER = 37          ## Large cave chamber (32x32, all doors)
+	CAVE_CHAMBER = 37,         ## Large cave chamber (32x32, all doors)
+	ROOM_SMALL_SECRET = 38     ## Small room with hidden secret chamber (all doors)
 }
 
 
@@ -99,7 +100,8 @@ const ROOM_DOORS: Dictionary = {
 	RoomType.CAVE_T_JUNCTION: [Direction.NORTH, Direction.EAST, Direction.WEST],
 	RoomType.CAVE_CROSSROADS: [Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
 	RoomType.CAVE_DEAD_END: [Direction.SOUTH],
-	RoomType.CAVE_CHAMBER: [Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST]
+	RoomType.CAVE_CHAMBER: [Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+	RoomType.ROOM_SMALL_SECRET: [Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST]
 }
 
 
@@ -202,6 +204,7 @@ static func get_room_type_name(room_type: RoomType) -> String:
 		RoomType.CAVE_CROSSROADS: return "cave_crossroads"
 		RoomType.CAVE_DEAD_END: return "cave_dead_end"
 		RoomType.CAVE_CHAMBER: return "cave_chamber"
+		RoomType.ROOM_SMALL_SECRET: return "room_small_secret"
 	return "unknown"
 
 
@@ -246,6 +249,7 @@ static func get_room_type_from_name(type_name: String) -> RoomType:
 		"cave_crossroads": return RoomType.CAVE_CROSSROADS
 		"cave_dead_end": return RoomType.CAVE_DEAD_END
 		"cave_chamber": return RoomType.CAVE_CHAMBER
+		"room_small_secret": return RoomType.ROOM_SMALL_SECRET
 	return RoomType.EMPTY
 
 
@@ -328,6 +332,7 @@ static func is_special_room(room_type: RoomType) -> bool:
 	return room_type in [
 		RoomType.START,
 		RoomType.ROOM_SMALL,
+		RoomType.ROOM_SMALL_SECRET,
 		RoomType.ROOM_MEDIUM,
 		RoomType.ROOM_LARGE,
 		RoomType.ROOM_BOSS,

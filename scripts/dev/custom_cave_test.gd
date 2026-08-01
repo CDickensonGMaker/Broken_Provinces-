@@ -3,7 +3,7 @@
 extends Node3D
 
 const HUD_SCENE_PATH := "res://scenes/ui/hud.tscn"
-const EXTERIOR_SCENE := "res://scenes/dev/cave_door_test.tscn"
+const EXTERIOR_SCENE := "res://scenes/levels/southern_cave_exterior.tscn"
 
 ## Cave configuration
 @export var cave_id: String = "custom_cave_1"
@@ -17,6 +17,10 @@ var _content_spawned: bool = false
 
 
 func _ready() -> void:
+	# Disable weather for cave interior
+	if WeatherManager:
+		WeatherManager.set_outdoor(false)
+
 	_initialize_game_state()
 	_setup_hud()
 	_setup_environment()

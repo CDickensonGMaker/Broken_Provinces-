@@ -32,6 +32,10 @@ signal level_cleared
 
 
 func _ready() -> void:
+	# Disable weather for interior dungeon
+	if WeatherManager:
+		WeatherManager.set_outdoor(false)
+
 	add_to_group("level_managers")
 	_initialize_level()
 

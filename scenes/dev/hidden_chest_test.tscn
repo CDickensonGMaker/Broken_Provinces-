@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://hidden_chest_test_scene"]
+
+[ext_resource type="Script" path="res://scripts/dev/hidden_chest_test.gd" id="1_hidden_chest_test"]
+
+[node name="HiddenChestTest" type="Node3D"]
+script = ExtResource("1_hidden_chest_test")
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]

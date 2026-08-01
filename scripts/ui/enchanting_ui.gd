@@ -51,17 +51,14 @@ func _create_ui() -> void:
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(overlay)
 
-	# Main panel
+	# Main panel (matching shop_ui.gd/crafting_ui.gd pattern)
 	root_panel = PanelContainer.new()
-	root_panel.anchors_preset = Control.PRESET_CENTER
-	root_panel.anchor_left = 0.5
-	root_panel.anchor_right = 0.5
-	root_panel.anchor_top = 0.5
-	root_panel.anchor_bottom = 0.5
-	root_panel.offset_left = -350
-	root_panel.offset_right = 350
-	root_panel.offset_top = -250
-	root_panel.offset_bottom = 250
+	root_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	root_panel.offset_left = 60
+	root_panel.offset_top = 80
+	root_panel.offset_right = -60
+	root_panel.offset_bottom = -40
 	add_child(root_panel)
 
 	var style := StyleBoxFlat.new()
@@ -78,8 +75,13 @@ func _create_ui() -> void:
 	style.content_margin_bottom = 16
 	root_panel.add_theme_stylebox_override("panel", style)
 
-	# Main VBox
+	# Main VBox (matching shop_ui.gd pattern)
 	var vbox := VBoxContainer.new()
+	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+	vbox.offset_left = 10
+	vbox.offset_top = 10
+	vbox.offset_right = -10
+	vbox.offset_bottom = -10
 	vbox.add_theme_constant_override("separation", 12)
 	root_panel.add_child(vbox)
 

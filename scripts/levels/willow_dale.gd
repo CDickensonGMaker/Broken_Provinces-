@@ -26,6 +26,10 @@ var nav_region: NavigationRegion3D
 
 
 func _ready() -> void:
+	# Disable weather for dungeon interior
+	if WeatherManager:
+		WeatherManager.set_outdoor(false)
+
 	# Check if we're the main scene (have Player) or a streamed cell
 	var is_main_scene: bool = false
 	var _player_check: Node = get_node_or_null("Player")
@@ -49,9 +53,10 @@ func _ready() -> void:
 	_setup_navigation()
 	_spawn_spawn_points()
 
-	# Only spawn exit portal if this is the main scene, not a streamed cell
+	# Only spawn exit portal and cave entrance if this is the main scene, not a streamed cell
 	if is_main_scene:
 		_spawn_exit_portal()
+		_spawn_cave_entrance()
 
 	_spawn_undead()
 	_spawn_cultists()
@@ -254,6 +259,28 @@ func _spawn_exit_portal() -> void:
 	if portal:
 		portal.rotation.y = PI  # Face into the dungeon
 		portal.show_frame = false  # No door frame for outdoor exit
+
+
+## Spawn cave entrance leading to the Ancient Depths dungeon
+func _spawn_cave_entrance() -> void:
+	# Position the cave entrance inside the tower area (near the back wall)
+	# The tower interior is roughly around Vector3(0, 0, -5) to Vector3(0, 0, -12)
+	var entrance_pos := Vector3(-10, 0, -8)
+
+	# Use the CaveEntrancePortal system for proper collision and triggers
+	var cave_entrance := CaveEntrancePortal.spawn_cave_entrance(
+		self,
+		entrance_pos,
+		"ancient_depths",  # cave_system_id
+		"from_willow_dale",  # destination spawn_id in target scene
+		"res://scenes/dungeons/new_dungeon.tscn",  # link_to_scene
+		"The Ancient Depths"  # entrance_name
+	)
+
+	if cave_entrance:
+		# Rotate to face the player approaching from the south
+		cave_entrance.rotation_degrees.y = 180.0
+		print("[WillowDale] Cave entrance spawned at %s" % str(entrance_pos))
 
 
 ## ============================================================================

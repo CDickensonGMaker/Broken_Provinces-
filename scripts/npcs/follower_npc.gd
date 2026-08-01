@@ -634,8 +634,10 @@ func _execute_distract(ability: Dictionary) -> void:
 
 
 ## Heal this follower
-func heal(amount: int) -> void:
-	current_health = mini(current_health + amount, max_health)
+func heal(amount: int) -> int:
+	var actual_heal: int = mini(amount, max_health - current_health)
+	current_health += actual_heal
+	return actual_heal
 
 
 ## Process idle lines - speak occasionally while not in combat

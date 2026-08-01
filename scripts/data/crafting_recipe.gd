@@ -78,6 +78,7 @@ func get_crafted_quality() -> Enums.ItemQuality:
 		return _quality_up(base_quality, 2)
 
 	# Engineering bonus
+	@warning_ignore("integer_division")
 	var bonus := eng / 3  # Every 3 Engineering = +1 quality chance
 
 	# Total check

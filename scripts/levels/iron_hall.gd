@@ -101,10 +101,10 @@ func _spawn_npcs() -> void:
 		npc_container,
 		captain_pos,
 		"Captain Roderick Steele",
-		"captain_steele",
+		"captain_roderick_steele",
 		preload("res://assets/sprites/npcs/civilians/man_noble1.png"),
 		1, 1,
-		[],  # Quest IDs to be added when guild quests are implemented
+		["mercenary_01_enlistment", "mercenary_02_drill", "mercenary_03_escort", "mercenary_04_caravan_guard", "mercenary_05_siege_support", "mercenary_06_monster_hunt", "mercenary_07_border_patrol", "mercenary_08_rival_company", "mercenary_09_war_council", "mercenary_10_fortress_assault", "mercenary_11_elite_contract", "mercenary_12_legendary_bounty", "mercenary_13_company_captain"],
 		false
 	)
 	captain.region_id = ZONE_ID

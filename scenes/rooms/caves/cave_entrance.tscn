@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://b3cave_entrance"]
 
 [ext_resource type="Script" path="res://scripts/rooms/modular_room.gd" id="1_modular"]
-[ext_resource type="PackedScene" path="res://assets/models/caves/cave_entrance.glb" id="2_mesh"]
+[ext_resource type="PackedScene" path="res://assets/models/environment/cave_entrance.glb" id="2_mesh"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(14.0, 0.5, 14.0)

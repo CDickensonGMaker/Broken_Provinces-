@@ -73,8 +73,8 @@ static func get_awareness_build_rate(player_visibility: float) -> float:
 	return AWARENESS_BUILD_RATE_BASE * player_visibility
 
 ## Calculate backstab damage multiplier for stealth attacks
-static func get_stealth_backstab_multiplier(stealth_skill: int, is_hidden: bool) -> float:
-	if not is_hidden:
+static func get_stealth_backstab_multiplier(stealth_skill: int, player_hidden: bool) -> float:
+	if not player_hidden:
 		return 1.0  # No bonus if not hidden
 	return STEALTH_BACKSTAB_BASE_MULT + (stealth_skill * STEALTH_BACKSTAB_PER_SKILL)
 

@@ -41,6 +41,8 @@ func _setup_day_night_cycle() -> void:
 		is_main_scene = true
 	if is_main_scene:
 		DayNightCycle.add_to_level(self)
+		if WeatherManager:
+			WeatherManager.set_outdoor(true)
 
 
 ## Create the canyon terrain - two cliff sides with an abyss between

@@ -157,27 +157,41 @@ func interact(_interactor: Node) -> void:
 	var final_yield := int(ceil(base_yield * yield_multiplier))
 	final_yield = maxi(1, final_yield)  # Always give at least 1
 
+	# NATURE skill bonus: chance to find extra herbs
+	var bonus_herbs := 0
+	if GameManager.player_data:
+		var nature_bonus_chance: float = GameManager.player_data.get_nature_bonus_chance()
+		if randf() < nature_bonus_chance:
+			bonus_herbs = 1
+			# High nature skill gives chance for even more
+			if randf() < nature_bonus_chance * 0.5:
+				bonus_herbs += 1
+
 	# Add items to inventory
-	if InventoryManager.add_item(plant_type, final_yield):
+	if InventoryManager.add_item(plant_type, final_yield + bonus_herbs):
 		has_been_harvested = true
 
 		# Play pickup sound
 		AudioManager.play_item_pickup()
 
 		# Notify quest system
-		QuestManager.on_item_collected(plant_type, final_yield)
+		var total_yield := final_yield + bonus_herbs
+		QuestManager.on_item_collected(plant_type, total_yield)
 
 		# Emit signal
-		harvested.emit(plant_type, final_yield)
+		harvested.emit(plant_type, total_yield)
 
 		# Show notification
 		var hud := _interactor.get_tree().get_first_node_in_group("hud") if _interactor else null
 		if hud and hud.has_method("show_notification"):
 			var herb_name := display_name
-			if final_yield > 1:
-				hud.show_notification("Harvested %d %s" % [final_yield, herb_name])
+			if total_yield > 1:
+				hud.show_notification("Harvested %d %s" % [total_yield, herb_name])
 			else:
 				hud.show_notification("Harvested %s" % herb_name)
+			# Nature skill bonus notification
+			if bonus_herbs > 0:
+				hud.show_notification("Nature skill: +%d bonus herb%s!" % [bonus_herbs, "s" if bonus_herbs > 1 else ""])
 
 		# Visual feedback - hide the plant
 		_on_harvested()

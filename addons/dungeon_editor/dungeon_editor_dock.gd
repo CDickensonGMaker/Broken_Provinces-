@@ -182,6 +182,7 @@ func _setup_palette() -> void:
 		[DungeonGridData.RoomType.T_WEST, "T-Junction W", Color(0.6, 0.55, 0.5)],
 		[DungeonGridData.RoomType.CROSS, "Crossroads", Color(0.65, 0.6, 0.55)],
 		[DungeonGridData.RoomType.ROOM_SMALL, "Small Room", Color(0.4, 0.4, 0.55)],
+		[DungeonGridData.RoomType.ROOM_SMALL_SECRET, "Small Secret Room", Color(0.5, 0.4, 0.6)],
 		[DungeonGridData.RoomType.ROOM_MEDIUM, "Medium Room", Color(0.4, 0.45, 0.55)],
 		[DungeonGridData.RoomType.ROOM_LARGE, "Large Room", Color(0.45, 0.45, 0.6)],
 		[DungeonGridData.RoomType.ROOM_BOSS, "Boss Room", Color(0.6, 0.35, 0.35)],
@@ -326,6 +327,8 @@ func _get_room_color(room_type: int) -> Color:
 			return Color(0.65, 0.6, 0.55)
 		DungeonGridData.RoomType.ROOM_SMALL:
 			return Color(0.4, 0.4, 0.55)
+		DungeonGridData.RoomType.ROOM_SMALL_SECRET:
+			return Color(0.5, 0.4, 0.6)
 		DungeonGridData.RoomType.ROOM_MEDIUM:
 			return Color(0.4, 0.45, 0.55)
 		DungeonGridData.RoomType.ROOM_LARGE:

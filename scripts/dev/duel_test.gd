@@ -246,9 +246,12 @@ func _on_duel_started(opponent: Node, id: String) -> void:
 	print("  Duel ID: %s" % id)
 
 
-func _on_duel_ended(result: DuelManager.DuelResult, opponent: Node, id: String) -> void:
+func _on_duel_ended(result: int, opponent: Node, id: String) -> void:
 	print("[DuelTest] === DUEL ENDED ===")
-	print("  Result: %s" % DuelManager.DuelResult.keys()[result])
+	var result_name: String = "UNKNOWN"
+	if DuelManager:
+		result_name = DuelManager.DuelResult.keys()[result]
+	print("  Result: %s" % result_name)
 	print("  Opponent: %s" % (opponent.name if opponent else "null"))
 	print("  Duel ID: %s" % id)
 

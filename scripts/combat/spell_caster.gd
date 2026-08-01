@@ -32,6 +32,18 @@ var spell_database: Dictionary = {}
 ## Summons tracking
 var active_summons: Array[Node] = []
 
+
+## Helper: Safely add a node to the current scene (prevents crash during scene transitions)
+func _add_to_scene(node: Node) -> bool:
+	var scene := get_tree().current_scene if get_tree() else null
+	if scene:
+		scene.add_child(node)
+		return true
+	else:
+		node.queue_free()
+		return false
+
+
 func _ready() -> void:
 	_load_spell_database()
 	# Auto-set owner_entity to parent if not configured
@@ -167,6 +179,8 @@ func _complete_cast() -> void:
 			_cast_cone_spell(spell)
 		Enums.SpellTargetType.BEAM:
 			_cast_beam_spell(spell)
+		Enums.SpellTargetType.SUMMON:
+			cast_summon_spell(spell)
 
 	cast_completed.emit(spell)
 
@@ -234,7 +248,11 @@ func _spawn_detection_pulse(center: Vector3, radius: float) -> void:
 	material.emission_energy_multiplier = 2.0
 	effect.material_override = material
 
-	get_tree().current_scene.add_child(effect)
+	if get_tree().current_scene:
+		_add_to_scene(effect)
+	else:
+		effect.queue_free()
+		return
 	effect.global_position = center + Vector3(0, 0.5, 0)
 
 	# Animate and remove
@@ -260,7 +278,7 @@ func _spawn_detection_effect(pos: Vector3) -> void:
 	material.emission_energy_multiplier = 3.0
 	effect.material_override = material
 
-	get_tree().current_scene.add_child(effect)
+	_add_to_scene(effect)
 	effect.global_position = pos + Vector3(0, 1.5, 0)
 
 	# Animate upward and fade
@@ -309,7 +327,7 @@ func _cast_projectile_spell(spell: SpellData) -> void:
 
 	var direction := _get_aim_direction()
 
-	get_tree().current_scene.add_child(projectile)
+	_add_to_scene(projectile)
 	projectile.global_position = spawn_pos
 	(projectile as SpellProjectile).initialize(
 		spell,
@@ -494,7 +512,8 @@ func cast_summon_spell(spell: SpellData) -> void:
 	var summon := summon_scene.instantiate()
 	var spawn_pos := owner_entity.global_position + _get_aim_direction() * 2.0
 
-	owner_entity.get_tree().current_scene.add_child(summon)
+	if not _add_to_scene(summon):
+		return
 	if summon is Node3D:
 		(summon as Node3D).global_position = spawn_pos
 
@@ -536,7 +555,7 @@ func _find_target(max_range: float, allies: bool) -> Node:
 ## Helper: Get aim direction (uses camera-based aiming like ranged weapons)
 func _get_aim_direction() -> Vector3:
 	# Use camera-based aiming for accurate shooting toward crosshair
-	var camera := owner_entity.get_viewport().get_camera_3d() if owner_entity else null
+	var camera: Camera3D = owner_entity.get_viewport().get_camera_3d() if owner_entity else null
 	if camera:
 		var screen_center := owner_entity.get_viewport().get_visible_rect().size / 2
 		var ray_origin := camera.project_ray_origin(screen_center)
@@ -574,7 +593,7 @@ func _get_aim_direction() -> Vector3:
 ## Helper: Get aim point
 func _get_aim_point() -> Vector3:
 	# Raycast from camera through crosshair
-	var camera := owner_entity.get_viewport().get_camera_3d() if owner_entity else null
+	var camera: Camera3D = owner_entity.get_viewport().get_camera_3d() if owner_entity else null
 	if camera:
 		var screen_center := owner_entity.get_viewport().get_visible_rect().size / 2
 		var from := camera.project_ray_origin(screen_center)
@@ -626,7 +645,7 @@ func _spawn_aoe_effect(spell: SpellData, center: Vector3) -> void:
 	mat.albedo_color.a = 0.7
 	ring.material_override = mat
 
-	get_tree().current_scene.add_child(ring)
+	_add_to_scene(ring)
 	ring.global_position = center
 	ring.rotation_degrees.x = 90  # Lay flat
 
@@ -681,7 +700,7 @@ func _spawn_cone_effect(spell: SpellData, origin: Vector3, direction: Vector3) -
 	draw_pass.material = mesh_mat
 
 	# Position and orient the particles
-	get_tree().current_scene.add_child(particles)
+	_add_to_scene(particles)
 	particles.global_position = origin
 	particles.look_at(origin + direction, Vector3.UP)
 
@@ -698,7 +717,7 @@ func _spawn_sustained_beam_effect(spell: SpellData, origin: Vector3, end: Vector
 
 	# Create container for all beam segments
 	var beam_container := Node3D.new()
-	get_tree().current_scene.add_child(beam_container)
+	_add_to_scene(beam_container)
 
 	# Create main beam with jagged segments
 	var segment_count := randi_range(8, 12)
@@ -919,8 +938,8 @@ func _spawn_beam_effect(spell: SpellData, origin: Vector3, end: Vector3) -> void
 	glow.material_override = glow_mat
 
 	# Add to scene
-	get_tree().current_scene.add_child(beam)
-	get_tree().current_scene.add_child(glow)
+	_add_to_scene(beam)
+	_add_to_scene(glow)
 
 	# Position at midpoint and rotate to face end
 	var midpoint: Vector3 = (origin + end) / 2.0
@@ -1001,7 +1020,7 @@ func _spawn_healing_effect(target_pos: Vector3) -> void:
 	mesh_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	draw_pass.material = mesh_mat
 
-	get_tree().current_scene.add_child(particles)
+	_add_to_scene(particles)
 	particles.global_position = target_pos
 
 	# Cleanup after effect finishes
@@ -1043,7 +1062,7 @@ func _spawn_blind_flash(pos: Vector3) -> void:
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	flash.material_override = mat
 
-	get_tree().current_scene.add_child(flash)
+	_add_to_scene(flash)
 	flash.global_position = pos
 
 	# Expand and fade
@@ -1135,7 +1154,7 @@ func _spawn_generic_debuff_burst(pos: Vector3) -> void:
 	draw_pass.height = 0.16
 	particles.draw_pass_1 = draw_pass
 
-	get_tree().current_scene.add_child(particles)
+	_add_to_scene(particles)
 	particles.global_position = pos
 
 	get_tree().create_timer(1.0).timeout.connect(particles.queue_free)

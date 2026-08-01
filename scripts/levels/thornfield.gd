@@ -34,6 +34,10 @@ func _ready() -> void:
 		# Day/night only needed when we're the main scene
 		DayNightCycle.add_to_level(self)
 
+		# Enable weather effects for this outdoor area
+		if WeatherManager:
+			WeatherManager.set_outdoor(true)
+
 		# Play town ambient sound and village music
 		AudioManager.play_ambient(TOWN_AMBIENT_PATH)
 		AudioManager.play_zone_music("village")

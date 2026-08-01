@@ -14,6 +14,12 @@ const ZONE_ID := "outpost_tenger_camp"
 
 func _ready() -> void:
 	SaveManager.set_current_zone(ZONE_ID, "Tenger War Camp")
+	# Enable weather for outdoor area
+	var is_main_scene: bool = get_node_or_null("Player") != null
+	if is_main_scene:
+		if WeatherManager:
+			WeatherManager.set_outdoor(true)
+
 	_setup_spawn_point_metadata()
 	_setup_navigation()
 	_spawn_zone_exits()

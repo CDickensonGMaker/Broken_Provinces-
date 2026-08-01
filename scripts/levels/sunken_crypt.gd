@@ -21,6 +21,10 @@ var nav_region: NavigationRegion3D
 
 
 func _ready() -> void:
+	# Disable weather for interior dungeon
+	if WeatherManager:
+		WeatherManager.set_outdoor(false)
+
 	# Register zone with SaveManager
 	SaveManager.set_current_zone(ZONE_ID, ZONE_DISPLAY_NAME)
 

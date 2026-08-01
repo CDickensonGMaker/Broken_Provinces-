@@ -1,21 +1,11 @@
 [gd_scene load_steps=10 format=3 uid="uid://roomsmall001"]
 
-[ext_resource type="Texture2D" uid="uid://dta0hblwspyt5" path="res://assets/textures/environment/dungeon/stonefloor.png" id="1_floor"]
-[ext_resource type="Texture2D" uid="uid://ca8q0o7n04x0e" path="res://assets/textures/environment/dungeon/stonewall.png" id="2_wall"]
-[ext_resource type="Texture2D" uid="uid://bm3kw5y1lgwkq" path="res://assets/textures/environment/dungeon/stonefloor_2.png" id="3_ceiling"]
+[ext_resource type="Texture2D" uid="uid://b7hgh6vrm8vi2" path="res://assets/textures/environment/dungeon/stonefloor.png" id="1_floor"]
+[ext_resource type="Texture2D" uid="uid://b6ii70bh4emrd" path="res://assets/textures/environment/dungeon/stonewall.png" id="2_wall"]
+[ext_resource type="Texture2D" uid="uid://bii4tt4ocfyui" path="res://assets/textures/environment/dungeon/stonefloor_2.png" id="3_ceiling"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
 albedo_texture = ExtResource("1_floor")
-uv1_scale = Vector3(4, 4, 4)
-texture_filter = 0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wall"]
-albedo_texture = ExtResource("2_wall")
-uv1_scale = Vector3(2, 1, 2)
-texture_filter = 0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ceiling"]
-albedo_texture = ExtResource("3_ceiling")
 uv1_scale = Vector3(4, 4, 4)
 texture_filter = 0
 
@@ -26,9 +16,19 @@ size = Vector3(16, 0.2, 16)
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(16, 0.2, 16)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ceiling"]
+albedo_texture = ExtResource("3_ceiling")
+uv1_scale = Vector3(4, 4, 4)
+texture_filter = 0
+
 [sub_resource type="BoxMesh" id="BoxMesh_ceiling"]
 material = SubResource("StandardMaterial3D_ceiling")
 size = Vector3(16, 0.2, 16)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wall"]
+albedo_texture = ExtResource("2_wall")
+uv1_scale = Vector3(2, 1, 2)
+texture_filter = 0
 
 [node name="RoomSmall" type="Node3D"]
 

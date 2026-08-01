@@ -12,6 +12,10 @@ var chest_positions: Node3D
 
 
 func _ready() -> void:
+	# Disable weather for interior
+	if WeatherManager:
+		WeatherManager.set_outdoor(false)
+
 	# Get optional nodes (may not exist in scene)
 	# Note: Scene uses EnemySpawns, DoorPositions, ChestPositions naming convention
 	spawn_points = get_node_or_null("SpawnPoints")

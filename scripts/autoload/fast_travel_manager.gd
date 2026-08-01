@@ -47,8 +47,8 @@ const CARAVAN_COSTS: Dictionary = {
 }
 
 ## Caravan route data - maps route_id to {from, to, road_id, danger_level}
-## Note: Caravan routes not yet implemented for square grid system
-var caravan_routes: Dictionary = {}  # Dead variable - caravan system disabled
+## STATUS: NOT IMPLEMENTED - Always empty, caravan methods will return early
+var caravan_routes: Dictionary = {}
 
 ## Current travel state
 var is_traveling: bool = false
@@ -64,6 +64,10 @@ var caravan_current_segment: int = 0
 
 ## Check if fast travel is allowed to a destination
 func can_fast_travel_to(destination_id: String) -> Dictionary:
+	# Check if location is WIP (work in progress) - never allow travel to these
+	if WorldGrid.is_location_wip(destination_id):
+		return {"allowed": false, "reason": "Location not yet accessible"}
+
 	# In dev mode, skip discovery check (auto-discovered for testing)
 	var is_dev_mode: bool = SceneManager.dev_mode if SceneManager else false
 
@@ -312,20 +316,37 @@ func from_dict(data: Dictionary) -> void:
 # =============================================================================
 # CARAVAN TRAVEL SYSTEM
 # =============================================================================
+# STATUS: NOT IMPLEMENTED (Dead code - preserved for future development)
+#
+# The caravan system was designed to provide paid travel between towns via
+# NPC-operated caravan routes. Players would pay gold based on distance and
+# danger level, with random encounter chances along the way.
+#
+# Current state:
+# - All infrastructure exists (signals, state vars, methods)
+# - _load_caravan_routes() is a stub - never populates caravan_routes
+# - All caravan methods return empty/false because caravan_routes is always {}
+#
+# To implement:
+# 1. Parse WorldGrid.GRID_DATA to find road connections between towns
+# 2. Build caravan_routes dictionary with route metadata
+# 3. Add caravan NPC dialogues that call travel_by_caravan()
+# 4. Wire up UI for selecting caravan destinations
+#
+# See ADR-004 for travel system architecture decisions.
+# =============================================================================
 
 func _ready() -> void:
-	# Caravan routes loaded from WorldData when available
+	# Caravan routes would be loaded here from WorldGrid when implemented
 	_load_caravan_routes()
 
 
 ## Load caravan routes from WorldData road registry
+## STATUS: STUB - Returns immediately without loading any routes
 func _load_caravan_routes() -> void:
-	# TODO: Implement caravan route loading from new WorldGrid system
-	# Implementation: Use WorldGrid.LOCATIONS to build caravan routes between towns.
-	# Roads are now stored in WorldGrid.GRID_DATA with 'R' terrain type.
-	# Create route for each town-to-town road connection found in grid.
-	# Caravan cost based on WorldGrid.grid_distance(from, to).
-	pass  # Caravan routes disabled until WorldGrid integration complete
+	# NOT IMPLEMENTED - caravan_routes remains empty
+	# See header comment for implementation roadmap
+	pass
 
 
 ## Get available caravan destinations from a location

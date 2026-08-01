@@ -66,7 +66,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func _show_preset_notification() -> void:
 	var preset_names: Array[String] = ["Grim Dark", "Retro PS1", "Bright"]
 	var preset_name: String = preset_names[current_preset]
-	var hud := Engine.get_main_loop().get_first_node_in_group("hud") if Engine.get_main_loop() else null
+	var hud: Node = null
+	if Engine.get_main_loop():
+		hud = Engine.get_main_loop().get_first_node_in_group("hud")
 	if hud and hud.has_method("show_notification"):
 		hud.show_notification("Visual: %s" % preset_name)
 	else:
@@ -76,7 +78,9 @@ func _show_preset_notification() -> void:
 ## Show notification when toggled
 func _show_toggle_notification() -> void:
 	var state: String = "ON" if enabled else "OFF"
-	var hud := Engine.get_main_loop().get_first_node_in_group("hud") if Engine.get_main_loop() else null
+	var hud: Node = null
+	if Engine.get_main_loop():
+		hud = Engine.get_main_loop().get_first_node_in_group("hud")
 	if hud and hud.has_method("show_notification"):
 		hud.show_notification("Post-Processing: %s" % state)
 	else:

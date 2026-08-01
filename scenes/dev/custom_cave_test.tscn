@@ -32,7 +32,7 @@ metadata/spawn_id = "from_exterior"
 
 [node name="ExitDoor" type="Marker3D" parent="DoorPositions"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -4)
-metadata/target_scene = "res://scenes/dev/cave_door_test.tscn"
+metadata/target_scene = "res://scenes/levels/southern_cave_exterior.tscn"
 metadata/spawn_id = "from_cave"
 metadata/door_label = "Exit Cave"
 metadata/show_frame = false

@@ -99,9 +99,9 @@ func _build_ui() -> void:
 
 	var vbox = VBoxContainer.new()
 	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-	vbox.offset_left = 15
+	vbox.offset_left = 10
 	vbox.offset_top = 10
-	vbox.offset_right = -15
+	vbox.offset_right = -10
 	vbox.offset_bottom = -10
 	vbox.add_theme_constant_override("separation", 8)
 	main.add_child(vbox)

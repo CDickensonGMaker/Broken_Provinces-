@@ -100,7 +100,7 @@ func _physics_process(delta: float) -> void:
 
 
 ## Combat AI - move to and attack enemies
-func _combat_behavior(delta: float) -> void:
+func _combat_behavior(_delta: float) -> void:
 	# Find a target if we don't have one
 	if not is_instance_valid(current_target) or _target_is_dead():
 		current_target = _find_nearest_enemy()

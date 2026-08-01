@@ -15,6 +15,7 @@ var _total_spawned: int = 0
 var _total_recycled: int = 0
 
 ## Preloaded projectile scene (or we create them dynamically)
+@warning_ignore("unused_private_class_variable")
 var _projectile_scene: PackedScene = null
 
 func _ready() -> void:

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://hu0sxmv4la6q" path="res://scripts/levels/bandit_hideout_exterior.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://d3d78k4w3fuit" path="res://assets/models/environment/cave_entrance.glb" id="4_cave_entrance"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
 albedo_color = Color(0.25, 0.3, 0.2, 1)
@@ -54,6 +55,9 @@ material = SubResource("StandardMaterial3D_path")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, -15)
 size = Vector3(5, 0.1, 10)
 material = SubResource("StandardMaterial3D_path")
+
+[node name="CaveEntranceModel" parent="Terrain" instance=ExtResource("4_cave_entrance")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.024794579, -20)
 
 [node name="Structures" type="Node3D" parent="."]
 
@@ -496,6 +500,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20)
 metadata/target_scene = "res://scenes/levels/bandit_hideout_level_1.tscn"
 metadata/spawn_id = "from_exterior"
 metadata/door_label = "Enter Cave"
-metadata/show_frame = true
+metadata/show_frame = false
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]

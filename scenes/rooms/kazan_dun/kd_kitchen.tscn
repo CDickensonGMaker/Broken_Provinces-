@@ -5,7 +5,7 @@
 [ext_resource type="ArrayMesh" path="res://assets/models/dwarven/residential/hearth_cooking.obj" id="mesh_hearth"]
 [ext_resource type="ArrayMesh" path="res://assets/models/dwarven/residential/barrel_stack.obj" id="mesh_barrel_stack"]
 [ext_resource type="ArrayMesh" path="res://assets/models/dwarven/market/sack_pile.obj" id="mesh_sack_pile"]
-[ext_resource type="ArrayMesh" path="res://assets/models/dwarven/residential/counter_prep.obj" id="mesh_counter"]
+[ext_resource type="ArrayMesh" path="res://assets/models/dwarven/residential/table_work.obj" id="mesh_counter"]
 
 [sub_resource type="StandardMaterial3D" id="mat_stone_floor"]
 albedo_color = Color(0.36, 0.34, 0.32, 1)

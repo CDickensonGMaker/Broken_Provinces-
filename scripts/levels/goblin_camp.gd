@@ -46,6 +46,10 @@ func _ready() -> void:
 		QuestManager.on_location_reached("goblin_camp")
 		DayNightCycle.add_to_level(self)
 
+		# Enable weather effects for this outdoor area
+		if WeatherManager:
+			WeatherManager.set_outdoor(true)
+
 
 func _create_materials() -> void:
 	ground_mat = StandardMaterial3D.new()

@@ -201,8 +201,8 @@ func _on_quest_completed(quest_id: String) -> void:
 
 	# Check for faction reputation rewards in quest rewards
 	var rewards: Dictionary = quest.rewards
-	if rewards.has("faction_rep"):
-		var faction_rep: Dictionary = rewards["faction_rep"]
+	if rewards.has("faction_reputation"):
+		var faction_rep: Dictionary = rewards["faction_reputation"]
 		for faction_id: String in faction_rep:
 			var amount: int = faction_rep[faction_id]
 			if FactionManager:
@@ -544,7 +544,8 @@ func attempt_persuasion(npc: Node, action_type: String) -> Dictionary:
 
 		"bribe":
 			# Bribe requires gold and disposition check
-			var bribe_cost: int = 50 - int(disposition / 2)  # 50 gold at 0 disp, 25 at 50, etc.
+			@warning_ignore("integer_division")
+			var bribe_cost: int = 50 - disposition / 2  # 50 gold at 0 disp, 25 at 50, etc.
 			bribe_cost = maxi(10, bribe_cost)
 
 			if InventoryManager.get_gold() < bribe_cost:

@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://dlgkdqfa7fi3y"]
 
-[ext_resource type="Script" uid="uid://fdd4ags3s30d" path="res://scripts/dungeons/hand_crafted_dungeon.gd" id="1_w0d0y"]
+[ext_resource type="Script" path="res://scripts/dungeons/new_dungeon_floor_2.gd" id="1_w0d0y"]
 [ext_resource type="PackedScene" uid="uid://bxstart001" path="res://scenes/dungeons/rooms/room_start.tscn" id="2_i8f5c"]
 [ext_resource type="Texture2D" uid="uid://b6ii70bh4emrd" path="res://assets/textures/environment/dungeon/stonewall.png" id="3_xsf6c"]
 [ext_resource type="PackedScene" path="res://scenes/dungeons/rooms/hallway_ns.tscn" id="4_epqd6"]

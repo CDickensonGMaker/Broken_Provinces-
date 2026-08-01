@@ -80,10 +80,10 @@ var ammo_pools: Dictionary = {
 }
 
 var scroll_pools: Dictionary = {
-	LootTier.UNCOMMON: ["scroll_healing_light", "scroll_armor"],
+	LootTier.UNCOMMON: ["scroll_healing_light", "scroll_armor", "scroll_detect_secrets"],
 	LootTier.RARE: ["scroll_magic_missile", "scroll_blind"],
 	LootTier.EPIC: ["scroll_lightning_bolt", "scroll_soul_drain", "scroll_dispel_magic", "scroll_fireball", "scroll_haste", "scroll_slow", "scroll_ice_storm", "scroll_fire_gate"],
-	LootTier.LEGENDARY: ["scroll_cone_of_cold", "scroll_iron_guard", "scroll_chain_lightning"],
+	LootTier.LEGENDARY: ["scroll_cone_of_cold", "scroll_iron_guard", "scroll_chain_lightning", "scroll_summon_flaming_skulls"],
 }
 
 ## Book pools - bestiary volumes and lore books found in dungeons/loot

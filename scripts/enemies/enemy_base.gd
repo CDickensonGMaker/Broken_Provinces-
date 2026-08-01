@@ -1608,8 +1608,9 @@ func _change_alert_state(new_alert_state: AlertState) -> void:
 			_return_to_normal_behavior()
 		AlertState.COMBAT:
 			# Play aggro sound (use attack sounds for war cry effect)
+			# Use stagger delay to prevent packs of enemies all roaring at the same millisecond
 			if enemy_data and not enemy_data.attack_sounds.is_empty() and _can_play_sound():
-				AudioManager.play_enemy_sound(enemy_data.attack_sounds, global_position, 2.0)
+				AudioManager.play_enemy_sound(enemy_data.attack_sounds, global_position, 2.0, true)
 			# Clear any search/alert timers
 			alert_timer = 0.0
 			search_timer = 0.0
@@ -2306,6 +2307,13 @@ func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> 
 		amount = int(amount * (100.0 / (100.0 + effective_armor)))
 
 	amount = max(1, amount)
+
+	# Check if in a duel - DuelManager may clamp damage to prevent lethal blow
+	if DuelManager and DuelManager.is_in_duel(self):
+		amount = DuelManager.process_duel_damage(self, amount, damage_type, attacker)
+		if amount == 0:
+			return 0  # Duel ended, no damage applied
+
 	current_hp -= amount
 
 	# Play hurt sound from enemy data
@@ -2324,8 +2332,8 @@ func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> 
 		if current_state == AIState.IDLE or current_state == AIState.PATROL:
 			_change_state(AIState.CHASE)
 
-	# Check death
-	if current_hp <= 0:
+	# Check death (skip if in duel - duel handles non-lethal combat)
+	if current_hp <= 0 and not (DuelManager and DuelManager.is_in_duel(self)):
 		_change_state(AIState.DEAD)
 		died.emit(attacker)
 
@@ -2497,6 +2505,7 @@ func _apply_faction_reputation_changes() -> void:
 	if not political_faction.is_empty():
 		# Reputation loss for killing faction members
 		# Amount scales with enemy level: base -5, +1 per 5 levels
+		@warning_ignore("integer_division")
 		var rep_loss: int = -5 - (enemy_data.level / 5)
 		FactionManager.modify_reputation(political_faction, rep_loss, "Killed %s" % enemy_data.display_name, true)
 

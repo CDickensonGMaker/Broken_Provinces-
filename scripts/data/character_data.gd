@@ -254,9 +254,11 @@ func recalculate_derived_stats() -> void:
 	# Max HP = 50 + (Vitality * 10) + (Grit * 5)
 	max_hp = 50 + (eff_vitality * 10) + (eff_grit * 5)
 
-	# Max Stamina = 50 + (Agility * 5) + (Vitality * 5) + (Endurance * 10)
+	# Max Stamina = 50 + (Agility * 5) + (Vitality * 5) + (Endurance * 10) + (Athletics * 5)
 	# ENDURANCE: +10 max stamina per level
-	max_stamina = 50 + (eff_agility * 5) + (eff_vitality * 5) + (endurance_skill * 10)
+	# ATHLETICS: +5 max stamina per level
+	var athletics_skill := get_skill(Enums.Skill.ATHLETICS)
+	max_stamina = 50 + (eff_agility * 5) + (eff_vitality * 5) + (endurance_skill * 10) + (athletics_skill * 5)
 
 	# Max Mana = 20 + (Will * 10) + (Knowledge * 5) + (Concentration * 8)
 	# CONCENTRATION: +8 max mana per level
@@ -340,24 +342,39 @@ func get_magic_resistance() -> float:
 	var skill_resist := get_skill(Enums.Skill.RESIST) * 0.03
 	return minf(will_resist + skill_resist, 0.75)  # Cap at 75% resistance
 
-## Get stamina drain multiplier based on ENDURANCE skill
-## ENDURANCE: -5% stamina consumption per level (up to 50% reduction at level 10)
+## Get stamina drain multiplier based on ENDURANCE and ATHLETICS skills
+## ENDURANCE: -5% stamina consumption per level
+## ATHLETICS: -3% stamina consumption per level
+## Combined cap at 50% reduction
 func get_stamina_drain_multiplier() -> float:
 	var endurance_skill := get_skill(Enums.Skill.ENDURANCE)
-	return maxf(0.5, 1.0 - (endurance_skill * 0.05))
+	var athletics_skill := get_skill(Enums.Skill.ATHLETICS)
+	var reduction := (endurance_skill * 0.05) + (athletics_skill * 0.03)
+	return maxf(0.5, 1.0 - reduction)
 
 ## Get HP regen per second (zero - recover via potions/rest only)
 func get_hp_regen() -> float:
 	return 0.0
 
 ## Get stamina regen per second (slow passive regen for movement) (uses effective stat)
+## ATHLETICS: +0.3 stamina regen per level
 func get_stamina_regen() -> float:
-	return 2.0 + (get_effective_stat(Enums.Stat.AGILITY) * 0.2)
+	var athletics_skill := get_skill(Enums.Skill.ATHLETICS)
+	return 2.0 + (get_effective_stat(Enums.Stat.AGILITY) * 0.2) + (athletics_skill * 0.3)
 
 ## Get mana regen per second (uses effective stats)
 ## Same rate as stamina regen, but scales with Will instead of Agility
 func get_mana_regen() -> float:
 	return 2.0 + (get_effective_stat(Enums.Stat.WILL) * 0.2)
+
+## Get movement speed multiplier based on Agility and Athletics
+## Agility: +2% per point
+## ATHLETICS: +3% per level
+## Returns multiplier (1.0 = normal speed)
+func get_movement_speed_multiplier() -> float:
+	var eff_agility := get_effective_stat(Enums.Stat.AGILITY)
+	var athletics_skill := get_skill(Enums.Skill.ATHLETICS)
+	return 1.0 + (eff_agility * 0.02) + (athletics_skill * 0.03)
 
 ## Apply a condition with duration
 func apply_condition(condition: Enums.Condition, duration: float) -> void:
@@ -507,6 +524,7 @@ func get_pickpocket_bonus() -> int:
 	var eff_agility := get_effective_stat(Enums.Stat.AGILITY)
 	var thievery_skill := get_skill(Enums.Skill.THIEVERY)
 	var stealth_skill := get_skill(Enums.Skill.STEALTH)
+	@warning_ignore("integer_division")
 	return eff_agility + thievery_skill + (stealth_skill / 2)
 
 ## Get stealth effectiveness multiplier
@@ -540,6 +558,30 @@ func get_horror_check_bonus() -> int:
 	var eff_will := get_effective_stat(Enums.Stat.WILL)
 	var bravery_skill := get_skill(Enums.Skill.BRAVERY)
 	return eff_will + bravery_skill
+
+## Get holy damage multiplier against undead
+## RELIGION: +10% holy damage per level (up to +100% at level 10)
+func get_holy_damage_multiplier() -> float:
+	var religion_skill := get_skill(Enums.Skill.RELIGION)
+	return 1.0 + (religion_skill * 0.1)
+
+## Get undead resistance bonus (damage reduction from undead attackers)
+## RELIGION: +5% damage reduction from undead per level
+func get_undead_resistance() -> float:
+	var religion_skill := get_skill(Enums.Skill.RELIGION)
+	return minf(0.5, religion_skill * 0.05)  # Cap at 50% reduction
+
+## Get plant identification bonus (chance to find extra herbs)
+## NATURE: +10% chance to find bonus herbs per level
+func get_nature_bonus_chance() -> float:
+	var nature_skill := get_skill(Enums.Skill.NATURE)
+	return minf(1.0, nature_skill * 0.1)  # Cap at 100%
+
+## Get first aid healing bonus (healing done to self and others)
+## FIRST_AID: +8% healing effectiveness per level
+func get_first_aid_multiplier() -> float:
+	var first_aid_skill := get_skill(Enums.Skill.FIRST_AID)
+	return 1.0 + (first_aid_skill * 0.08)
 
 ## Get trap detection bonus (Knowledge + Intuition)
 ## INTUITION: General awareness, helps detect traps and hidden objects

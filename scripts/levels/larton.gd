@@ -33,6 +33,8 @@ func _ready() -> void:
 			PlayerGPS.discover_location(ZONE_ID)
 		_setup_day_night_cycle()
 		DayNightCycle.add_to_level(self)
+		if WeatherManager:
+			WeatherManager.set_outdoor(true)
 		# Quieter ambient - town is nearly deserted
 		AudioManager.play_ambient(TOWN_AMBIENT_PATH)
 		AudioManager.play_zone_music("village")

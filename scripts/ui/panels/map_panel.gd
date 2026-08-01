@@ -1,11 +1,12 @@
-## map_panel.gd - Map display panel that switches between local and world maps
-## WORLD_PAINTED mode displays the OpenMW-inspired hand-painted world map
+## map_panel.gd - Map display panel that switches between local, cave, and world maps
 ## WORLD_GRID mode displays the square grid-based world map
+## CAVE_LOCAL mode displays cave minimap with fog of war
+## LOCAL_AREA mode displays simple local dungeon/interior map
 class_name MapPanel
 extends Control
 
 ## Map display modes
-enum MapMode { LOCAL_AREA, WORLD_GRID }
+enum MapMode { LOCAL_AREA, WORLD_GRID, CAVE_LOCAL }
 
 ## Current map mode
 var current_mode: MapMode = MapMode.LOCAL_AREA
@@ -13,6 +14,7 @@ var current_mode: MapMode = MapMode.LOCAL_AREA
 ## Map containers
 var grid_world_map: WorldMap = null
 var local_map_container: Control = null
+var cave_minimap: CaveMinimap = null
 
 ## Local map components (for dungeons/interiors)
 var map_container: Control
@@ -28,6 +30,14 @@ const PLAYER_COLOR := Color(0.2, 0.8, 0.2)
 const ENEMY_COLOR := Color(0.8, 0.2, 0.2)
 const ITEM_COLOR := Color(0.8, 0.8, 0.2)
 const NPC_COLOR := Color(0.2, 0.5, 0.8)
+
+## CaveAreaType enum values (mirror of CaveManager.CaveAreaType)
+const CAVE_AREA_TYPE_ENTRANCE: int = 0
+const CAVE_AREA_TYPE_PASSAGE: int = 1
+const CAVE_AREA_TYPE_JUNCTION: int = 2
+const CAVE_AREA_TYPE_CHAMBER: int = 3
+const CAVE_AREA_TYPE_TREASURE_ROOM: int = 4
+const CAVE_AREA_TYPE_EXIT: int = 5
 
 ## Tracked markers
 var enemy_markers: Array[Control] = []
@@ -73,6 +83,14 @@ func _setup_ui() -> void:
 	player_marker = _create_marker(PLAYER_COLOR, 8)
 	map_container.add_child(player_marker)
 
+	# Create cave minimap (hidden by default)
+	cave_minimap = CaveMinimap.new()
+	cave_minimap.name = "CaveMinimap"
+	cave_minimap.set_anchors_preset(PRESET_FULL_RECT)
+	cave_minimap.offset_top = 30
+	cave_minimap.visible = false
+	add_child(cave_minimap)
+
 	# Create grid world map (hidden by default)
 	grid_world_map = WorldMap.new()
 	grid_world_map.name = "GridWorldMap"
@@ -95,6 +113,12 @@ func _setup_ui() -> void:
 
 
 func _determine_map_mode() -> void:
+	# Check if CaveManager has an active cave first (use safe access to avoid class_name collision)
+	var cave_mgr: Node = get_node_or_null("/root/CaveManager")
+	if cave_mgr and cave_mgr.has_method("is_in_cave") and cave_mgr.is_in_cave():
+		_set_mode(MapMode.CAVE_LOCAL)
+		return
+
 	# Determine which map to show based on context
 	# In region-based system, show world map for outdoor regions, local map for dungeons
 	var zone_id: String = ""
@@ -141,6 +165,8 @@ func _set_mode(mode: MapMode) -> void:
 	# Hide all maps
 	local_map_container.visible = false
 	grid_world_map.visible = false
+	if cave_minimap:
+		cave_minimap.visible = false
 
 	# Show the appropriate map
 	match mode:
@@ -151,31 +177,54 @@ func _set_mode(mode: MapMode) -> void:
 			grid_world_map.visible = true
 			grid_world_map.refresh()
 			mode_toggle_btn.text = "Local Map"
+		MapMode.CAVE_LOCAL:
+			if cave_minimap:
+				cave_minimap.visible = true
+				cave_minimap.recalculate_bounds()
+			mode_toggle_btn.text = "World Map"
 
 
 func _on_mode_toggle_pressed() -> void:
-	# Toggle between local and world map (uses grid WorldMap)
-	if current_mode == MapMode.LOCAL_AREA:
-		# Switch to grid world map
-		_set_mode(MapMode.WORLD_GRID)
-	else:
-		# Switch to local map
-		_set_mode(MapMode.LOCAL_AREA)
+	# Toggle between modes
+	match current_mode:
+		MapMode.LOCAL_AREA, MapMode.CAVE_LOCAL:
+			# Switch to grid world map
+			_set_mode(MapMode.WORLD_GRID)
+		MapMode.WORLD_GRID:
+			# Switch back to appropriate local map (use safe access for CaveManager)
+			var cave_mgr: Node = get_node_or_null("/root/CaveManager")
+			if cave_mgr and cave_mgr.has_method("is_in_cave") and cave_mgr.is_in_cave():
+				_set_mode(MapMode.CAVE_LOCAL)
+			else:
+				_set_mode(MapMode.LOCAL_AREA)
 
 
 func _process(_delta: float) -> void:
-	if visible and current_mode == MapMode.LOCAL_AREA:
-		_update_player_position()
+	if not visible:
+		return
+
+	match current_mode:
+		MapMode.LOCAL_AREA:
+			_update_player_position()
+		MapMode.CAVE_LOCAL:
+			# CaveMinimap handles its own updates
+			pass
 
 
 func refresh() -> void:
 	_determine_map_mode()
 
-	if current_mode == MapMode.LOCAL_AREA:
-		_update_area_name()
-		_refresh_markers()
-	elif current_mode == MapMode.WORLD_GRID and grid_world_map:
-		grid_world_map.refresh()
+	match current_mode:
+		MapMode.LOCAL_AREA:
+			_update_area_name()
+			_refresh_markers()
+		MapMode.WORLD_GRID:
+			if grid_world_map:
+				grid_world_map.refresh()
+		MapMode.CAVE_LOCAL:
+			if cave_minimap:
+				cave_minimap.recalculate_bounds()
+				_update_cave_area_name()
 
 
 func _update_area_name() -> void:
@@ -194,11 +243,57 @@ func _update_area_name() -> void:
 	area_name_label.text = area_name
 
 
+func _update_cave_area_name() -> void:
+	## Update area name for cave mode
+	if not area_name_label:
+		return
+
+	var area_name := "Cave"
+
+	# Get cave name from CaveManager (use safe access to avoid class_name collision)
+	var cave_mgr: Node = get_node_or_null("/root/CaveManager")
+	if cave_mgr and cave_mgr.has_method("is_in_cave") and cave_mgr.is_in_cave():
+		# Get current area name
+		if cave_mgr.has_method("get_current_area"):
+			var current_area: RefCounted = cave_mgr.get_current_area()
+			if current_area and "area_id" in current_area and "area_type" in current_area:
+				area_name = _format_area_name(current_area.area_id, current_area.area_type)
+			elif "active_cave_id" in cave_mgr:
+				area_name = cave_mgr.active_cave_id.replace("_", " ").capitalize()
+
+	area_name_label.text = area_name
+
+
+func _format_area_name(area_id: String, area_type: int) -> String:
+	## Format area ID into display name
+	var type_prefix: String = ""
+	match area_type:
+		CAVE_AREA_TYPE_ENTRANCE:
+			type_prefix = "Entrance"
+		CAVE_AREA_TYPE_PASSAGE:
+			type_prefix = "Passage"
+		CAVE_AREA_TYPE_JUNCTION:
+			type_prefix = "Junction"
+		CAVE_AREA_TYPE_CHAMBER:
+			type_prefix = "Chamber"
+		CAVE_AREA_TYPE_TREASURE_ROOM:
+			type_prefix = "Treasure Room"
+		CAVE_AREA_TYPE_EXIT:
+			type_prefix = "Exit"
+
+	# Clean up area_id
+	var name_part: String = area_id.replace("_", " ").capitalize()
+
+	if type_prefix.is_empty():
+		return name_part
+	return "%s - %s" % [type_prefix, name_part]
+
+
 func _update_player_position() -> void:
 	if not player_marker or not map_container:
 		return
 
-	var player := get_tree().get_first_node_in_group("player")
+	var player: Node = get_tree().get_first_node_in_group("player")
 	if not player or not player is Node3D:
 		return
 
@@ -245,25 +340,25 @@ func _refresh_markers() -> void:
 		return
 
 	# Add enemy markers
-	for enemy in get_tree().get_nodes_in_group("enemies"):
+	for enemy: Node in get_tree().get_nodes_in_group("enemies"):
 		if enemy is Node3D and enemy.has_method("is_alive") and enemy.is_alive():
-			var marker := _create_marker(ENEMY_COLOR, 4)
+			var marker: Control = _create_marker(ENEMY_COLOR, 4)
 			map_container.add_child(marker)
 			marker.position = _world_to_map((enemy as Node3D).global_position)
 			enemy_markers.append(marker)
 
 	# Add item markers
-	for item in get_tree().get_nodes_in_group("world_items"):
+	for item: Node in get_tree().get_nodes_in_group("world_items"):
 		if item is Node3D:
-			var marker := _create_marker(ITEM_COLOR, 3)
+			var marker: Control = _create_marker(ITEM_COLOR, 3)
 			map_container.add_child(marker)
 			marker.position = _world_to_map((item as Node3D).global_position)
 			item_markers.append(marker)
 
 	# Add NPC markers
-	for npc in get_tree().get_nodes_in_group("npcs"):
+	for npc: Node in get_tree().get_nodes_in_group("npcs"):
 		if npc is Node3D:
-			var marker := _create_marker(NPC_COLOR, 5)
+			var marker: Control = _create_marker(NPC_COLOR, 5)
 			map_container.add_child(marker)
 			marker.position = _world_to_map((npc as Node3D).global_position)
 			npc_markers.append(marker)

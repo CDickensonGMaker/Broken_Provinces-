@@ -8,6 +8,12 @@ var nav_region: NavigationRegion3D
 
 
 func _ready() -> void:
+	# Enable weather for outdoor area
+	var is_main_scene: bool = get_node_or_null("Player") != null
+	if is_main_scene:
+		if WeatherManager:
+			WeatherManager.set_outdoor(true)
+
 	_create_terrain()
 	_spawn_fast_travel_shrine()
 	_create_spawn_points()

@@ -1,0 +1,49 @@
+[gd_scene load_steps=6 format=3 uid="uid://summon_flaming_skull"]
+
+[ext_resource type="Script" path="res://scripts/summons/summoned_creature.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/enemies/flaming_skull.tres" id="2_enemy_data"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/undead/flaming_skull_enemy.png" id="3_sprite"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
+radius = 0.4
+height = 0.8
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_aggro"]
+radius = 18.0
+
+[node name="FlamingSkullSummon" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 5
+script = ExtResource("1_script")
+enemy_data = ExtResource("2_enemy_data")
+behavior_mode = 2
+wander_radius = 8.0
+leash_radius = 12.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("CapsuleShape3D_body")
+
+[node name="MeshRoot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+
+[node name="Sprite3D" type="Sprite3D" parent="MeshRoot"]
+pixel_size = 0.018
+billboard = 1
+texture = ExtResource("3_sprite")
+
+[node name="FireGlow" type="OmniLight3D" parent="MeshRoot"]
+light_color = Color(1, 0.5, 0.1, 1)
+light_energy = 2.0
+omni_range = 4.0
+
+[node name="AggroArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="AggroShape" type="CollisionShape3D" parent="AggroArea"]
+shape = SubResource("SphereShape3D_aggro")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 1.0
+target_desired_distance = 2.0

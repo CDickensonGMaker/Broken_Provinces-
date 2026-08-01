@@ -170,8 +170,8 @@ static func spawn_item(parent: Node, pos: Vector3, p_item_id: String, p_quality:
 ## Static factory method for spawning items with random quality
 ## Uses weighted distribution: Poor 10%, Below Average 25%, Average 40%, Above Average 20%, Perfect 5%
 static func spawn_item_random_quality(parent: Node, pos: Vector3, p_item_id: String, p_quantity: int = 1) -> WorldItem:
-	var quality := _roll_random_quality()
-	return spawn_item(parent, pos, p_item_id, quality, p_quantity)
+	var rolled_quality := _roll_random_quality()
+	return spawn_item(parent, pos, p_item_id, rolled_quality, p_quantity)
 
 ## Roll random quality with weighted distribution
 static func _roll_random_quality() -> Enums.ItemQuality:

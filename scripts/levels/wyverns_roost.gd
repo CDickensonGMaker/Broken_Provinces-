@@ -31,6 +31,10 @@ func _ready() -> void:
 	# Quest trigger for reaching the roost
 	QuestManager.on_location_reached("wyverns_roost")
 
+	# Enable weather effects for this outdoor area
+	if WeatherManager:
+		WeatherManager.set_outdoor(true)
+
 
 func _create_materials() -> void:
 	# Highland rock - gray/brown

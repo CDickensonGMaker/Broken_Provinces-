@@ -1,4 +1,5 @@
 ## custom_spell_data.gd - Player-created spell data (extends SpellData)
+@tool
 class_name CustomSpellData
 extends SpellData
 
@@ -20,7 +21,7 @@ static func create_custom_spell(
 ) -> CustomSpellData:
 	var spell := CustomSpellData.new()
 	spell.is_custom = true
-	spell.created_at = Time.get_unix_time_from_system()
+	spell.created_at = int(Time.get_unix_time_from_system())
 
 	# Generate unique ID
 	spell.id = "custom_%s_%d" % [spell_name.to_snake_case(), spell.created_at]
@@ -51,7 +52,7 @@ static func create_custom_spell(
 	# Calculate total mana cost
 	var total_cost: int = 0
 	for config in effect_configs:
-		var effect: SpellEffectData = SpellCreator.get_effect(config.effect_id)
+		var effect: SpellEffectData = SpellCreator.get_effect_by_id(config.effect_id)
 		if effect:
 			total_cost += effect.calculate_cost(
 				config.get("magnitude", effect.base_magnitude),
@@ -73,7 +74,7 @@ static func create_custom_spell(
 func _generate_description() -> String:
 	var parts: Array[String] = []
 	for config in effects_config:
-		var effect: SpellEffectData = SpellCreator.get_effect(config.effect_id)
+		var effect: SpellEffectData = SpellCreator.get_effect_by_id(config.effect_id)
 		if effect:
 			parts.append(effect.get_effect_string(
 				config.get("magnitude", effect.base_magnitude),
@@ -84,7 +85,7 @@ func _generate_description() -> String:
 ## Set primary effect values for spell casting
 func _set_primary_effect_values() -> void:
 	for config in effects_config:
-		var effect: SpellEffectData = SpellCreator.get_effect(config.effect_id)
+		var effect: SpellEffectData = SpellCreator.get_effect_by_id(config.effect_id)
 		if not effect:
 			continue
 
@@ -123,7 +124,7 @@ func roll_custom_effect(_caster_knowledge: int = 0, _caster_arcana: int = 0) -> 
 	}
 
 	for config in effects_config:
-		var effect: SpellEffectData = SpellCreator.get_effect(config.effect_id)
+		var effect: SpellEffectData = SpellCreator.get_effect_by_id(config.effect_id)
 		if not effect:
 			continue
 

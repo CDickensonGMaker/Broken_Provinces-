@@ -18,7 +18,7 @@ var seamless_mode: bool = false
 @export var room_seed: int = 0  # 0 = random
 
 ## Biome types
-enum Biome { FOREST, PLAINS, SWAMP, HILLS, ROCKY }
+enum Biome { FOREST, PLAINS, SWAMP, HILLS, ROCKY, DESERT }
 @export var biome: Biome = Biome.FOREST
 
 ## Static texture cache - loaded once, reused across all instances
@@ -59,11 +59,57 @@ const TILE_TEMPLATES: Dictionary = {
 }
 
 ## 3D tree models for decorative (non-harvestable) trees
+## Uses tree_pack_1.1 models - 36 different tree variants for visual variety
+const TREE_PACK_BASE := "res://assets/sprites/environment/trees/tree_pack_1.1/tree_pack_1.1/models/"
 const TREE_3D_MODELS: Array[String] = [
-	"res://assets/models/trees/big_fabulous_tree_001.fbx",
-	"res://assets/models/trees/fabulous_tree_001.fbx",
-	"res://assets/models/trees/fir_001.fbx",
-	"res://assets/models/trees/tree_001.fbx"
+	TREE_PACK_BASE + "tree01.fbx",
+	TREE_PACK_BASE + "tree02.fbx",
+	TREE_PACK_BASE + "tree03.fbx",
+	TREE_PACK_BASE + "tree04.fbx",
+	TREE_PACK_BASE + "tree05.fbx",
+	TREE_PACK_BASE + "tree06.fbx",
+	TREE_PACK_BASE + "tree07.fbx",
+	TREE_PACK_BASE + "tree08.fbx",
+	TREE_PACK_BASE + "tree09.fbx",
+	TREE_PACK_BASE + "tree10.fbx",
+	TREE_PACK_BASE + "tree11.fbx",
+	TREE_PACK_BASE + "tree12.fbx",
+	TREE_PACK_BASE + "tree13.fbx",
+	TREE_PACK_BASE + "tree14.fbx",
+	TREE_PACK_BASE + "tree15.fbx",
+	TREE_PACK_BASE + "tree16.fbx",
+	TREE_PACK_BASE + "tree17.fbx",
+	TREE_PACK_BASE + "tree18.fbx",
+	TREE_PACK_BASE + "tree19.fbx",
+	TREE_PACK_BASE + "tree20.fbx",
+	TREE_PACK_BASE + "tree21.fbx",
+	TREE_PACK_BASE + "tree22.fbx",
+	TREE_PACK_BASE + "tree23.fbx",
+	TREE_PACK_BASE + "tree24.fbx",
+	TREE_PACK_BASE + "tree25.fbx",
+	TREE_PACK_BASE + "tree26.fbx",
+	TREE_PACK_BASE + "tree27.fbx",
+	TREE_PACK_BASE + "tree28.fbx",
+	TREE_PACK_BASE + "tree29.fbx",
+	TREE_PACK_BASE + "tree30.fbx",
+	TREE_PACK_BASE + "tree31.fbx",
+	TREE_PACK_BASE + "tree32.fbx",
+	TREE_PACK_BASE + "tree33.fbx",
+	TREE_PACK_BASE + "tree34.fbx",
+	TREE_PACK_BASE + "tree35.fbx",
+	TREE_PACK_BASE + "tree36.fbx",
+]
+
+## 3D bush models for decorative bushes - uses tree_pack_1.1 bushes
+const BUSH_3D_MODELS: Array[String] = [
+	TREE_PACK_BASE + "bush01.fbx",
+	TREE_PACK_BASE + "bush02.fbx",
+	TREE_PACK_BASE + "bush03.fbx",
+	TREE_PACK_BASE + "bush04.fbx",
+	TREE_PACK_BASE + "bush05.fbx",
+	TREE_PACK_BASE + "bush06.fbx",
+	TREE_PACK_BASE + "bush07.fbx",
+	TREE_PACK_BASE + "bush08.fbx",
 ]
 
 ## 3D mushroom models for decorative (non-harvestable) mushrooms
@@ -299,7 +345,8 @@ func _setup_materials() -> void:
 
 ## Create ground plane with simple solid color (PS1 style - no complex textures)
 ## When use_heightmap is true, creates terrain with noise-based height variation
-## Cells adjacent to towns/hand-crafted scenes use flat ground as a buffer zone
+## Cells inside or adjacent to towns/hand-crafted scenes use flat ground (exclusion zone)
+## This prevents terrain from spawning inside POIs and creates buffer zones around them
 func _create_ground() -> void:
 	var use_terrain: bool = use_heightmap and not is_road_cell and not _is_adjacent_to_scene()
 
@@ -312,9 +359,16 @@ func _create_ground() -> void:
 	_spawn_ground_props()
 
 
-## Check if this cell is adjacent to a hand-crafted scene (town, dungeon, etc.)
-## Used to create flat buffer zones around towns
+## Check if this cell is inside or adjacent to a hand-crafted scene (town, dungeon, etc.)
+## Used to create flat buffer zones around towns and prevent terrain inside POIs
 func _is_adjacent_to_scene() -> bool:
+	# First check if THIS cell is covered by another scene's physical bounds
+	# (e.g., cell (1,0) falls within Elder Moor's 242x219 scene centered at (0,0))
+	var coverage: Dictionary = WorldGrid.is_covered_by_scene(grid_coords)
+	if coverage.get("covered", false):
+		return true
+
+	# Then check if any adjacent cell has a hand-crafted scene
 	var neighbors: Array[Vector2i] = [
 		grid_coords + Vector2i(0, -1),   # North
 		grid_coords + Vector2i(0, 1),    # South
@@ -507,8 +561,9 @@ func _create_heightmap_terrain() -> void:
 		"west": _neighbor_is_flat(grid_coords + Vector2i(-1, 0)),
 	}
 
-	# Generate Daggerfall-style terrain with edge blending
-	var result: Dictionary = DaggerfallTerrain.generate(
+	# Generate terrain with edge blending
+	# Uses EnhancedTerrain for better terrain shapes (domain warping, ridged multifractal)
+	var result: Dictionary = EnhancedTerrain.generate(
 		grid_coords.x,
 		grid_coords.y,
 		biome,
@@ -551,7 +606,7 @@ func get_terrain_height_at(local_x: float, local_z: float) -> float:
 	if _terrain_heights.is_empty():
 		return 0.0
 
-	return DaggerfallTerrain.get_height_at(_terrain_heights, local_x, local_z)
+	return EnhancedTerrain.get_height_at(_terrain_heights, local_x, local_z)
 
 
 ## Create dirt road mesh if this is a road cell
@@ -1434,8 +1489,9 @@ func _spawn_environment() -> void:
 		add_child(mushroom)
 		props.append(mushroom)
 
-	# Spawn decorative 3D trees (non-harvestable, 30-50% of harvestable tree count)
-	var decorative_tree_count: int = int(tree_count * rng.randf_range(0.3, 0.5))
+	# Spawn decorative 3D trees (non-harvestable, 50-80% of harvestable tree count)
+	# Using tree_pack_1.1 models (36 unique trees) for visual variety
+	var decorative_tree_count: int = int(tree_count * rng.randf_range(0.5, 0.8))
 	for i in range(decorative_tree_count):
 		var pos: Vector3 = _get_random_prop_position()
 		var deco_tree: Node3D = _create_decorative_tree_3d(pos)
@@ -1472,13 +1528,54 @@ func _create_tree() -> Node3D:
 	return tree
 
 
-## Create a decorative 3D tree (non-harvestable, uses FBX models)
+## Adjust model Y position so its bottom sits at Y=0 (ground level)
+## This handles models with pivot points not at the bottom (common with FBX imports)
+func _ground_model(model: Node3D) -> void:
+	# Calculate combined AABB of all mesh children
+	var aabb := AABB()
+	var has_aabb := false
+
+	for child in model.get_children():
+		if child is MeshInstance3D:
+			var mesh_inst: MeshInstance3D = child
+			var child_aabb: AABB = mesh_inst.get_aabb()
+			# Transform to model space (accounting for scale)
+			child_aabb.position = child_aabb.position * mesh_inst.scale + mesh_inst.position
+			child_aabb.size = child_aabb.size * mesh_inst.scale
+			if not has_aabb:
+				aabb = child_aabb
+				has_aabb = true
+			else:
+				aabb = aabb.merge(child_aabb)
+		# Check nested children (GLB/FBX models often have nested structure)
+		for grandchild in child.get_children():
+			if grandchild is MeshInstance3D:
+				var mesh_inst: MeshInstance3D = grandchild
+				var child_aabb: AABB = mesh_inst.get_aabb()
+				# Transform accounting for scale and parent transforms
+				child_aabb.position = child_aabb.position * mesh_inst.scale + grandchild.position + child.position
+				child_aabb.size = child_aabb.size * mesh_inst.scale
+				if not has_aabb:
+					aabb = child_aabb
+					has_aabb = true
+				else:
+					aabb = aabb.merge(child_aabb)
+
+	if has_aabb:
+		# Move model up so its bottom is at Y=0
+		# Account for the model's scale when calculating the offset
+		var bottom_y: float = aabb.position.y * model.scale.y
+		if bottom_y < -0.01:  # Only adjust if noticeably below ground
+			model.position.y = -bottom_y
+
+
+## Create a decorative 3D tree (non-harvestable, uses FBX models from tree_pack_1.1)
 func _create_decorative_tree_3d(pos: Vector3) -> Node3D:
 	var container := Node3D.new()
 	container.name = "DecorativeTree3D"
 	container.position = pos
 
-	# Pick a random tree model
+	# Pick a random tree model from the 36 tree_pack_1.1 models
 	var model_path: String = TREE_3D_MODELS[rng.randi() % TREE_3D_MODELS.size()]
 
 	# Try to load the model
@@ -1490,10 +1587,14 @@ func _create_decorative_tree_3d(pos: Vector3) -> Node3D:
 			# Apply random Y rotation
 			tree_instance.rotation.y = rng.randf() * TAU
 
-			# Scale appropriately
-			tree_instance.scale = Vector3(0.5, 0.5, 0.5)
+			# Scale with random variation for natural variety (0.35 to 0.65)
+			var scale_var: float = rng.randf_range(0.35, 0.65)
+			tree_instance.scale = Vector3(scale_var, scale_var, scale_var)
 
 			container.add_child(tree_instance)
+
+			# Ground the model so its base sits at Y=0
+			_ground_model(tree_instance)
 
 			# Add collision for trunk (StaticBody3D with cylinder shape)
 			var static_body := StaticBody3D.new()
@@ -1546,6 +1647,9 @@ func _create_decorative_mushroom_3d(pos: Vector3) -> Node3D:
 			mushroom_instance.scale = Vector3(0.3, 0.3, 0.3)
 
 			container.add_child(mushroom_instance)
+
+			# Ground the model so its base sits at Y=0
+			_ground_model(mushroom_instance)
 	else:
 		# Fallback: create a simple placeholder if model not found
 		var cap := CSGSphere3D.new()
@@ -1567,6 +1671,47 @@ func _create_decorative_mushroom_3d(pos: Vector3) -> Node3D:
 
 		container.add_child(cap)
 		container.add_child(stem)
+
+	return container
+
+
+## Create a decorative 3D bush (non-harvestable, uses FBX models from tree_pack_1.1)
+func _create_decorative_bush_3d(pos: Vector3) -> Node3D:
+	var container := Node3D.new()
+	container.name = "DecorativeBush3D"
+	container.position = pos
+
+	# Pick a random bush model from tree_pack_1.1
+	var model_path: String = BUSH_3D_MODELS[rng.randi() % BUSH_3D_MODELS.size()]
+
+	# Try to load the model
+	if ResourceLoader.exists(model_path):
+		var scene: PackedScene = load(model_path)
+		if scene:
+			var bush_instance: Node3D = scene.instantiate()
+
+			# Apply random Y rotation
+			bush_instance.rotation.y = rng.randf() * TAU
+
+			# Scale appropriately for bushes (smaller than trees)
+			var scale_var: float = rng.randf_range(0.3, 0.5)
+			bush_instance.scale = Vector3(scale_var, scale_var, scale_var)
+
+			container.add_child(bush_instance)
+
+			# Ground the model so its base sits at Y=0
+			_ground_model(bush_instance)
+	else:
+		# Fallback: create a simple placeholder if model not found
+		var placeholder := CSGSphere3D.new()
+		placeholder.radius = 0.4
+		placeholder.position = Vector3(0, 0.4, 0)
+
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color(0.3, 0.5, 0.25)  # Green bush color
+		placeholder.material = mat
+
+		container.add_child(placeholder)
 
 	return container
 
@@ -1637,7 +1782,13 @@ func _create_bush() -> Node3D:
 
 
 ## Create a decorative bush (no interaction, just visual)
+## 60% chance to use 3D FBX models from tree_pack_1.1, 40% chance to use 2D sprites
 func _create_decorative_bush() -> Node3D:
+	# 60% chance to use 3D bush model for more visual variety
+	if rng.randf() < 0.6:
+		return _create_decorative_bush_3d(Vector3.ZERO)
+
+	# 40% chance to use 2D sprite bush (PS1 aesthetic)
 	var bush := Node3D.new()
 	bush.name = "DecorativeBush"
 
@@ -1935,10 +2086,11 @@ func _spawn_enemies() -> void:
 		danger = cell_info.danger_level
 
 	# Scale enemy count with danger: base count + danger bonus
+	# Capped at 6 to prevent performance issues in high-danger zones
 	# At danger 1: 4-10 enemies
 	# At danger 5: 8-14 enemies (4 bonus)
-	# At danger 10: 13-19 enemies (9 bonus)
-	var danger_bonus: int = (danger - 1)
+	# At danger 7+: 10-16 enemies (6 bonus max)
+	var danger_bonus: int = mini(danger - 1, 6)  # Cap at 6 bonus
 	var scaled_min: int = enemy_count_min + danger_bonus
 	var scaled_max: int = enemy_count_max + danger_bonus
 

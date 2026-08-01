@@ -60,6 +60,16 @@ func _ready() -> void:
 		else:
 			push_error("DialogueManager: Could not load DialogueBox")
 
+	# Connect to scene load to clear node references (prevents freed object crashes)
+	if SceneManager:
+		SceneManager.scene_load_started.connect(_on_scene_load_started)
+
+
+## Clear node references before scene changes to prevent freed object crashes
+func _on_scene_load_started(_scene_path: String) -> void:
+	current_npc = null
+	current_dialogue = null
+
 
 # =============================================================================
 # DIALOGUE LIFECYCLE
@@ -809,9 +819,6 @@ func _get_skill_governing_stat(skill_enum: int) -> int:
 		# VITALITY-based
 		Enums.Skill.FIRST_AID, Enums.Skill.HERBALISM, Enums.Skill.SURVIVAL:
 			return Enums.Stat.VITALITY
-		# CRAFTING (mixed - default to Knowledge)
-		Enums.Skill.ALCHEMY, Enums.Skill.SMITHING:
-			return Enums.Stat.KNOWLEDGE
 		# LOCKPICKING - Agility
 		Enums.Skill.LOCKPICKING:
 			return Enums.Stat.AGILITY
@@ -856,8 +863,6 @@ func _get_skill_name(skill_enum: int) -> String:
 		Enums.Skill.FIRST_AID: return "First Aid"
 		Enums.Skill.HERBALISM: return "Herbalism"
 		Enums.Skill.SURVIVAL: return "Survival"
-		Enums.Skill.ALCHEMY: return "Alchemy"
-		Enums.Skill.SMITHING: return "Smithing"
 		Enums.Skill.LOCKPICKING: return "Lockpicking"
 	return "Unknown"
 

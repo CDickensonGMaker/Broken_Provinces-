@@ -40,6 +40,7 @@ class CellInfo:
 	var scene_size: Vector2 = Vector2(100.0, 100.0)  # Scene dimensions (X = width, Y = depth)
 	var danger_level: int = 1
 	var description: String = ""
+	var wip: bool = false  # WIP locations - hidden from map and fast travel
 
 	func _init(t: Terrain = Terrain.FOREST, b: Biome = Biome.FOREST) -> void:
 		terrain = t
@@ -132,13 +133,14 @@ const LOCATION_SCENES: Dictionary = {
 	"east_hollow": "res://scenes/levels/dusty_hollow.tscn",
 	"whalers_abyss": "res://scenes/levels/whalers_abyss.tscn",
 	"tenger_camp": "res://scenes/levels/tenger_camp.tscn",
-	"border_wars_graveyard": "",  # Future dungeon
-	"pirate_stronghold": "",  # Future dungeon
+	# WIP - No scene implemented yet: "border_wars_graveyard": "",
+	# WIP - No scene implemented yet: "pirate_stronghold": "",
 	"elven_city": "res://scenes/levels/elven_outpost.tscn",
 	"kazer_dun_south": "res://scenes/levels/kazan_dun_exit.tscn",
 	# === KAZER-DUN CONNECTIONS ===
 	"kazer_dun_road": "res://scenes/levels/kazan_dun_road_leading_up.tscn",
 	"kazer_dun_south_road": "res://scenes/levels/kazan_dun_south_road.tscn",
+	"southern_cave": "res://scenes/levels/southern_cave_exterior.tscn",
 }
 
 ## The canonical 40-row terrain grid (row 0 = North, row 39 = South)
@@ -265,12 +267,14 @@ const LOCATIONS: Array = [
 	{"id": "east_hollow", "name": "East Hollow", "x": 0, "y": 26, "type": "village",
 	 "description": "A dusty frontier settlement where humans and Tregar hybrids maintain an uneasy coexistence."},
 	{"id": "border_wars_graveyard", "name": "Border Wars Graveyard", "x": 4, "y": 23, "type": "dungeon",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "A valley cemetery where soldiers from ancient border conflicts were buried. The dead do not rest easy."},
 	{"id": "whalers_abyss", "name": "Whaler's Abyss", "x": 7, "y": 13, "type": "town",
 	 "description": "A canyon town built on bridges spanning a deep chasm. Whalers hunt the great beasts of the eastern seas."},
 	{"id": "tenger_camp", "name": "Tenger Camp", "x": 0, "y": 29, "type": "outpost",
 	 "description": "A nomadic desert encampment of the fierce Tenger people. Outsiders are viewed with suspicion."},
 	{"id": "pirate_stronghold", "name": "Pirate Stronghold", "x": -10, "y": 18, "type": "dungeon",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "A fortified island base where the ghost pirate captain commands his undead fleet."},
 	{"id": "elven_city", "name": "Silvanost", "x": -11, "y": 14, "type": "city",
 	 "description": "The ancient elven city on the western coast. Few humans are welcomed within its silver gates."},
@@ -282,28 +286,38 @@ const LOCATIONS: Array = [
 	 "scene_size": [100, 100],
 	 "description": "An ancient fortress guarding the approach to Falkenhaften. Now in ruins after the mountain pass collapsed."},
 	{"id": "pola_perron", "name": "Pola Perron", "x": 3, "y": -5, "type": "town",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "A mountain town at the base of the eastern pass. Cut off from the capital by the collapse."},
 	{"id": "rotherhine", "name": "Rotherhine", "x": 6, "y": -4, "type": "town",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "A prosperous trade town on the eastern plains. Known for its horse markets."},
 	{"id": "keerzhar_bridge", "name": "Keerzhar Bridge", "x": 4, "y": 10, "type": "landmark",
 	 "description": "A massive dwarf-built bridge spanning a deep canyon. The only crossing to the southern territories."},
 	# === NORTHERN TUNDRA CAMPS ===
 	{"id": "bandit_camp_tundra_west", "name": "Frostbitten Camp", "x": -10, "y": -12, "type": "dungeon",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "A hardy band of northern bandits who prey on fur traders. They've adapted to the frozen wastes."},
 	{"id": "bandit_camp_tundra_east", "name": "Snowbound Outpost", "x": 5, "y": -14, "type": "dungeon",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "Bandits who raid the northern trade routes. Their camp is hidden among the snow drifts."},
 	{"id": "goblin_camp_tundra", "name": "Frost Goblin Warren", "x": -3, "y": -10, "type": "dungeon",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "Ice goblins have dug into the frozen earth. They emerge at night to raid nearby settlements."},
 	{"id": "ruined_temple_frost", "name": "Frozen Temple", "x": 0, "y": -15, "type": "ruins",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "An ancient temple to a forgotten frost god. Ice has claimed most of its halls."},
 	{"id": "ruined_temple_north", "name": "Northern Sanctum", "x": -8, "y": -8, "type": "ruins",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "Crumbling ruins where cultists once gathered. Dark rituals still echo in the stones."},
 	# === EASTERN CAMPS ===
 	{"id": "bandit_camp_eastern_road", "name": "Highwayman's Rest", "x": 8, "y": -6, "type": "dungeon",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "Bandits who ambush merchants traveling to Falkenhaften. Well-organized and dangerous."},
 	{"id": "goblin_camp_eastern_hills", "name": "Hillside Goblin Den", "x": 10, "y": -3, "type": "dungeon",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "Goblins have infested the eastern hills, raiding farms and caravans."},
 	{"id": "ruined_temple_eastern", "name": "Overgrown Shrine", "x": 12, "y": 0, "type": "ruins",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "A temple swallowed by the forest. Cultists have recently returned to its altars."},
 	# === SOUTHERN DESERT CAMPS ===
 	{"id": "bandit_camp_desert", "name": "Sand Raider Camp", "x": 8, "y": 25, "type": "dungeon",
@@ -313,15 +327,20 @@ const LOCATIONS: Array = [
 	{"id": "goblin_camp_desert", "name": "Desert Goblin Burrow", "x": -3, "y": 24, "type": "dungeon",
 	 "description": "Goblins adapted to desert life. They raid at dusk when the heat fades."},
 	{"id": "ruined_temple_desert", "name": "Sand-Buried Temple", "x": 5, "y": 30, "type": "ruins",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "Half-buried by centuries of sand, this temple still draws dark worshippers."},
 	{"id": "ruined_temple_tenger", "name": "Tenger Ancestral Ruins", "x": -2, "y": 27, "type": "ruins",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "Ancient Tenger burial grounds. The nomads say spirits still walk here."},
 	# === ISLAND CAMPS ===
 	{"id": "smuggler_cove", "name": "Smuggler's Cove", "x": -15, "y": 8, "type": "dungeon",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "A hidden cove where smugglers cache their goods. Pirates use it as a waypoint."},
 	{"id": "pirate_camp_island", "name": "Corsair Island", "x": -18, "y": 12, "type": "dungeon",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "A lawless island where pirates rest between raids. Danger awaits the unwary."},
 	{"id": "ruined_temple_island", "name": "Sea God's Shrine", "x": -14, "y": 16, "type": "ruins",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "An island temple once dedicated to the sea god. Now home to dark creatures."},
 	# === SWAMP CAMPS ===
 	{"id": "goblin_camp_swamp", "name": "Mire Goblin Nest", "x": -6, "y": 6, "type": "dungeon",
@@ -329,6 +348,7 @@ const LOCATIONS: Array = [
 	{"id": "bandit_camp_swamp", "name": "Marsh Marauders", "x": -4, "y": 8, "type": "dungeon",
 	 "description": "Desperate outlaws hiding in the swamp. They've made dark pacts to survive."},
 	{"id": "ruined_temple_swamp", "name": "Sunken Shrine", "x": -8, "y": 5, "type": "ruins",
+	 "wip": true,  # WIP - No scene implemented yet
 	 "description": "A temple slowly sinking into the bog. Strange lights flicker within at night."},
 	# === FOREST CAMPS (filling gaps) ===
 	{"id": "goblin_camp_forest_north", "name": "Forest Goblin Tribe", "x": 2, "y": -6, "type": "dungeon",
@@ -337,6 +357,9 @@ const LOCATIONS: Array = [
 	 "description": "Forest bandits who style themselves as rebels. They rob the rich, keep everything."},
 	{"id": "ruined_temple_forest", "name": "Vine-Choked Ruins", "x": 1, "y": 4, "type": "ruins",
 	 "description": "Nature has reclaimed this temple, but something still lurks in its depths."},
+	# === CAVES ===
+	{"id": "southern_cave", "name": "Southern Cave", "x": -3, "y": 6, "type": "dungeon",
+	 "description": "A dark cave entrance hidden in the forest southwest of Elder Moor. Strange sounds echo from within."},
 ]
 
 ## Road connections (Elder Moor-relative coordinates)
@@ -573,6 +596,7 @@ static func initialize() -> void:
 		cell.location_name = loc.get("name", "")
 		cell.description = loc.get("description", "")
 		cell.scene_path = LOCATION_SCENES.get(cell.location_id, "")
+		cell.wip = loc.get("wip", false)  # Mark WIP locations
 
 		# Set custom scene size if specified (default is 100x100)
 		var size_arr: Array = loc.get("scene_size", [])
@@ -828,8 +852,8 @@ static func get_location_name(location_id: String) -> String:
 	return "Unknown Location"
 
 
-## Get all locations of a specific type
-static func get_locations_by_type(loc_type: LocationType) -> Array[Dictionary]:
+## Get all locations of a specific type (excludes WIP locations by default)
+static func get_locations_by_type(loc_type: LocationType, include_wip: bool = false) -> Array[Dictionary]:
 	if cells.is_empty():
 		initialize()
 
@@ -837,12 +861,22 @@ static func get_locations_by_type(loc_type: LocationType) -> Array[Dictionary]:
 	for coords: Vector2i in cells:
 		var cell: CellInfo = cells[coords]
 		if cell.location_type == loc_type:
+			# Skip WIP locations unless explicitly requested
+			if cell.wip and not include_wip:
+				continue
 			result.append({
 				"id": cell.location_id,
 				"name": cell.location_name,
 				"coords": coords
 			})
 	return result
+
+
+## Check if a location is marked as WIP (work in progress)
+static func is_location_wip(location_id: String) -> bool:
+	var coords := get_location_coords(location_id)
+	var cell := get_cell(coords)
+	return cell != null and cell.wip
 
 
 ## Get terrain color for map rendering

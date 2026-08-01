@@ -737,6 +737,7 @@ func _check_sea_encounter(waypoint: Vector2i) -> String:
 
 ## Calculate hex distance (axial coordinates)
 func _hex_distance(a: Vector2i, b: Vector2i) -> int:
+	@warning_ignore("integer_division")
 	return (absi(a.x - b.x) + absi(a.x + a.y - b.x - b.y) + absi(a.y - b.y)) / 2
 
 

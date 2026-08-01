@@ -472,6 +472,10 @@ func _collect_save_data():
 	if save_data.companion_data:
 		_collect_companion_data(save_data.companion_data)
 
+	# Weather system data
+	if save_data.weather_data:
+		_collect_weather_data(save_data.weather_data)
+
 	return save_data
 
 ## Collect player data
@@ -787,6 +791,10 @@ func _apply_save_data(save_data) -> void:
 	# Restore companion manager data
 	if save_data.companion_data:
 		_apply_companion_data(save_data.companion_data)
+
+	# Restore weather system data
+	if save_data.weather_data:
+		_apply_weather_data(save_data.weather_data)
 
 ## Apply player data
 func _apply_player_data(player_data) -> void:
@@ -1377,6 +1385,35 @@ func _apply_companion_data(companion_save_data) -> void:
 	})
 
 
+## Collect weather system data
+func _collect_weather_data(weather_save_data) -> void:
+	if not has_node("/root/WeatherManager"):
+		return
+
+	var weather_manager := get_node("/root/WeatherManager")
+	var weather_dict: Dictionary = weather_manager.get_save_data()
+	weather_save_data.current_weather = weather_dict.get("current_weather", 0)
+	weather_save_data.target_weather = weather_dict.get("target_weather", 0)
+	weather_save_data.time_until_change = weather_dict.get("time_until_change", 180.0)
+	weather_save_data.transitioning = weather_dict.get("transitioning", false)
+	weather_save_data.transition_progress = weather_dict.get("transition_progress", 0.0)
+
+
+## Apply weather system data
+func _apply_weather_data(weather_save_data) -> void:
+	if not has_node("/root/WeatherManager"):
+		return
+
+	var weather_manager := get_node("/root/WeatherManager")
+	weather_manager.load_save_data({
+		"current_weather": weather_save_data.current_weather,
+		"target_weather": weather_save_data.target_weather,
+		"time_until_change": weather_save_data.time_until_change,
+		"transitioning": weather_save_data.transitioning,
+		"transition_progress": weather_save_data.transition_progress
+	})
+
+
 ## Migrate old save data to current version
 func _migrate_save_data(data: Dictionary, from_version: int) -> Dictionary:
 	var migrated := data.duplicate(true)
@@ -1492,6 +1529,19 @@ func _migrate_save_data(data: Dictionary, from_version: int) -> Dictionary:
 		}
 
 		migrated["version"] = 5
+
+	# Version 5 -> 6: Add WeatherManager data
+	if from_version < 6:
+		# Initialize with default weather state
+		migrated["weather"] = {
+			"current_weather": 0,  # Enums.Weather.CLEAR
+			"target_weather": 0,
+			"time_until_change": 180.0,
+			"transitioning": false,
+			"transition_progress": 0.0
+		}
+
+		migrated["version"] = 6
 
 	return migrated
 
@@ -1871,3 +1921,8 @@ func reset_world_state() -> void:
 	if has_node("/root/FollowerManager"):
 		var follower_manager := get_node("/root/FollowerManager")
 		follower_manager.reset_for_new_game()
+
+	# Reset weather system
+	if has_node("/root/WeatherManager"):
+		var weather_manager := get_node("/root/WeatherManager")
+		weather_manager.reset_for_new_game()

@@ -23,6 +23,7 @@ const ROOM_SCENES: Dictionary = {
 	DungeonGridData.RoomType.T_WEST: "res://scenes/dungeons/rooms/t_west.tscn",
 	DungeonGridData.RoomType.CROSS: "res://scenes/dungeons/rooms/cross.tscn",
 	DungeonGridData.RoomType.ROOM_SMALL: "res://scenes/dungeons/rooms/room_small.tscn",
+	DungeonGridData.RoomType.ROOM_SMALL_SECRET: "res://scenes/dungeons/rooms/room_small_secret.tscn",
 	DungeonGridData.RoomType.ROOM_MEDIUM: "res://scenes/dungeons/rooms/room_medium.tscn",
 	DungeonGridData.RoomType.ROOM_LARGE: "res://scenes/dungeons/rooms/room_large.tscn",
 	DungeonGridData.RoomType.ROOM_BOSS: "res://scenes/dungeons/rooms/room_boss.tscn",

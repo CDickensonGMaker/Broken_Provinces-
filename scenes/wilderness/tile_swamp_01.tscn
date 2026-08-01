@@ -11,7 +11,7 @@ albedo_color = Color(0.2, 0.18, 0.12, 1)
 roughness = 1.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_water"]
-transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+transparency = 1
 albedo_color = Color(0.15, 0.22, 0.18, 0.7)
 roughness = 0.1
 refraction_enabled = true
@@ -34,8 +34,8 @@ albedo_color = Color(0.3, 0.32, 0.28, 1)
 roughness = 0.92
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fog_plane"]
-transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+transparency = 1
+shading_mode = 0
 albedo_color = Color(0.4, 0.45, 0.38, 0.3)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]

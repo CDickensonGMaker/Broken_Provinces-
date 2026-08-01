@@ -289,7 +289,7 @@ func modify_reputation(faction_id: String, amount: int, reason: String = "", cas
 	_sync_to_player_data()
 
 ## Apply a reputation change to a single faction (no cascade)
-func _apply_reputation_change(faction_id: String, amount: int, reason: String = "") -> void:
+func _apply_reputation_change(faction_id: String, amount: int, _reason: String = "") -> void:
 	var old_rep: int = player_reputations.get(faction_id, 0)
 	var old_status: int = FactionData.get_reputation_status(old_rep)
 

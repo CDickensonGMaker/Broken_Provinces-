@@ -72,6 +72,11 @@ func _create_ui() -> void:
 	add_child(main_panel)
 
 	var main_vbox := VBoxContainer.new()
+	main_vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+	main_vbox.offset_left = 10
+	main_vbox.offset_top = 10
+	main_vbox.offset_right = -10
+	main_vbox.offset_bottom = -10
 	main_vbox.add_theme_constant_override("separation", 10)
 	main_panel.add_child(main_vbox)
 
@@ -158,13 +163,13 @@ func _style_button(btn: Button) -> void:
 	normal.bg_color = Color(0.12, 0.12, 0.15)
 	normal.border_color = Color(0.3, 0.25, 0.2)
 	normal.set_border_width_all(1)
-	normal.set_corner_radius_all(4)
+	# No corner radius - match other UIs
 
 	var hover := StyleBoxFlat.new()
 	hover.bg_color = Color(0.25, 0.2, 0.15)
 	hover.border_color = Color(0.8, 0.6, 0.2)
 	hover.set_border_width_all(1)
-	hover.set_corner_radius_all(4)
+	# No corner radius - match other UIs
 
 	btn.add_theme_stylebox_override("normal", normal)
 	btn.add_theme_stylebox_override("hover", hover)

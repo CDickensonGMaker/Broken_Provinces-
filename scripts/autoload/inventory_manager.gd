@@ -118,6 +118,7 @@ func _load_item_databases() -> void:
 		"scroll_fireball", "scroll_haste", "scroll_slow",
 		"scroll_ice_storm", "scroll_fire_gate",
 		"scroll_cone_of_cold", "scroll_iron_guard", "scroll_chain_lightning",
+		"scroll_detect_secrets", "scroll_summon_flaming_skulls",
 		# Quest items
 		"corrupted_totem_shard", "goblin_war_horn", "bandit_bounty_note",
 		"mysterious_contract",
@@ -223,7 +224,9 @@ func _load_item_databases() -> void:
 		"magic_missile", "lightning_bolt", "healing_light", "soul_drain",
 		# New spells
 		"armor", "blind", "dispel_magic", "fireball", "haste", "slow",
-		"ice_storm", "fire_gate", "cone_of_cold", "iron_guard", "chain_lightning"
+		"ice_storm", "fire_gate", "cone_of_cold", "iron_guard", "chain_lightning",
+		# Utility and conjuration spells
+		"detect_secrets", "summon_flaming_skulls"
 	]
 	for spell_id in spell_files:
 		var path := "res://data/spells/%s.tres" % spell_id

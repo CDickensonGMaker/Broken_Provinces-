@@ -250,6 +250,10 @@ func _bake_navigation() -> void:
 func _setup_day_night_cycle() -> void:
 	DayNightCycle.add_to_level(self)
 
+	# Enable weather effects for this outdoor area
+	if WeatherManager:
+		WeatherManager.set_outdoor(true)
+
 
 ## Add metadata to spawn points for proper identification
 func _setup_spawn_point_metadata() -> void:
