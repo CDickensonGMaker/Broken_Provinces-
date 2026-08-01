@@ -319,6 +319,11 @@ func _on_wave_complete() -> void:
 	# Move player to waiting area
 	_teleport_player_to_waiting_area()
 
+	# Final wave cleared - the tournament is won
+	if current_wave >= TOTAL_WAVES:
+		_complete_tournament()
+		return
+
 	# The arena master will handle showing the continue/leave dialogue
 	# via the wave_complete signal
 
