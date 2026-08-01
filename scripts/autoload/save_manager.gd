@@ -1786,7 +1786,7 @@ func get_or_create_dungeon_seed(dungeon_id: String) -> int:
 	dungeon_seeds[dungeon_id] = new_seed
 	_save_dungeon_seeds_cache()
 
-	print("[SaveManager] Generated new seed for dungeon '%s': %d" % [dungeon_id, new_seed])
+	Log.d("[SaveManager] Generated new seed for dungeon '%s': %d" % [dungeon_id, new_seed])
 	return new_seed
 
 

@@ -471,7 +471,7 @@ func _show_rank_notification(guild_id: String, rank_name: String, is_join: bool)
 	if hud and hud.has_method("show_notification"):
 		hud.show_notification(message)
 	else:
-		print("[GuildRankManager] %s" % message)
+		Log.d("[GuildRankManager] %s" % message)
 
 
 # =============================================================================
@@ -535,7 +535,7 @@ func reset_for_new_game() -> void:
 
 ## Print current guild status
 func debug_print_status() -> void:
-	print("[GuildRankManager] Current Guild Status:")
+	Log.d("[GuildRankManager] Current Guild Status:")
 	var faction_mgr: Node = get_node_or_null("/root/FactionManager")
 	for guild_id: String in GUILD_RANKS:
 		var rank_level: int = guild_rank_levels.get(guild_id, -1)
@@ -546,7 +546,7 @@ func debug_print_status() -> void:
 		if faction_mgr and faction_mgr.has_method("get_reputation"):
 			rep = faction_mgr.get_reputation(guild_id)
 
-		print("  %s: Member=%s, Rank=%s (level %d), Rep=%d, Quests=%d" % [
+		Log.d("  %s: Member=%s, Rank=%s (level %d), Rep=%d, Quests=%d" % [
 			guild_id, is_member, rank_name if not rank_name.is_empty() else "N/A",
 			rank_level, rep, quest_count
 		])

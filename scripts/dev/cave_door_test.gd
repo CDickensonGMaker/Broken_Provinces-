@@ -38,14 +38,14 @@ func _spawn_player() -> void:
 	var player: Node3D = get_tree().get_first_node_in_group("player") as Node3D
 	if player:
 		player.global_position = spawn_pos
-		print("[CaveDoorTest] Teleported player to %s (spawn_id: %s)" % [str(spawn_pos), spawn_id])
+		Log.d("[CaveDoorTest] Teleported player to %s (spawn_id: %s)" % [str(spawn_pos), spawn_id])
 	else:
 		var player_scene: PackedScene = load("res://scenes/player/player.tscn")
 		if player_scene:
 			var new_player: Node3D = player_scene.instantiate()
 			add_child(new_player)
 			new_player.global_position = spawn_pos
-			print("[CaveDoorTest] Spawned player at %s" % str(spawn_pos))
+			Log.d("[CaveDoorTest] Spawned player at %s" % str(spawn_pos))
 
 	_player_spawned = true
 
@@ -78,7 +78,7 @@ func _setup_doors() -> void:
 
 		if door:
 			door.rotation = marker.rotation
-			print("[CaveDoorTest] Spawned door '%s' -> %s" % [door_label, target_scene])
+			Log.d("[CaveDoorTest] Spawned door '%s' -> %s" % [door_label, target_scene])
 
 
 func _setup_environment() -> void:
@@ -102,7 +102,7 @@ func _setup_environment() -> void:
 		env.ambient_light_energy = 0.5
 
 		world_env.environment = env
-		print("[CaveDoorTest] Created sky environment")
+		Log.d("[CaveDoorTest] Created sky environment")
 
 
 func _initialize_game_state() -> void:
@@ -112,7 +112,7 @@ func _initialize_game_state() -> void:
 		_give_test_items()
 		return
 
-	print("[CaveDoorTest] Initializing game state...")
+	Log.d("[CaveDoorTest] Initializing game state...")
 	GameManager.reset_for_new_game()
 	InventoryManager.clear_inventory_state()
 	QuestManager.reset_for_new_game()

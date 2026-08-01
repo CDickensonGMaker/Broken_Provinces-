@@ -39,7 +39,7 @@ func _ready() -> void:
 	if auto_spawn_content:
 		call_deferred("_spawn_cave_content")
 
-	print("[CustomCave] Cave loaded successfully")
+	Log.d("[CustomCave] Cave loaded successfully")
 
 
 func _exit_tree() -> void:
@@ -71,12 +71,12 @@ func _register_with_cave_manager() -> void:
 	if cave_mgr.has_signal("area_discovered") and not cave_mgr.area_discovered.is_connected(_on_area_discovered):
 		cave_mgr.area_discovered.connect(_on_area_discovered)
 
-	print("[CustomCave] Registered with CaveManager: %s" % cave_id)
+	Log.d("[CustomCave] Registered with CaveManager: %s" % cave_id)
 
 
 func _on_area_changed(old_area: String, new_area: String) -> void:
 	if not new_area.is_empty():
-		print("[CustomCave] Player moved to area: %s" % new_area)
+		Log.d("[CustomCave] Player moved to area: %s" % new_area)
 
 		# Spawn content for newly entered areas if not already done
 		if auto_spawn_content and not _content_spawned:
@@ -84,7 +84,7 @@ func _on_area_changed(old_area: String, new_area: String) -> void:
 
 
 func _on_area_discovered(area_id: String) -> void:
-	print("[CustomCave] Discovered area: %s" % area_id)
+	Log.d("[CustomCave] Discovered area: %s" % area_id)
 
 	# Notify player
 	var hud: Node = get_tree().get_first_node_in_group("hud")
@@ -136,7 +136,7 @@ func _spawn_cave_content() -> void:
 	var enemy_count: int = 0
 	if cave_mgr and cave_mgr.has_method("get_enemy_count"):
 		enemy_count = cave_mgr.get_enemy_count()
-	print("[CustomCave] Content spawning complete. Enemies: %d" % enemy_count)
+	Log.d("[CustomCave] Content spawning complete. Enemies: %d" % enemy_count)
 
 
 ## Spawn content from Blender markers (EnemySpawn_*, ChestPos_*, etc.)
@@ -151,13 +151,13 @@ func _spawn_content_from_markers() -> bool:
 	var enemies: Array = CaveSpawner.spawn_enemies_at_markers(self, cave_faction, cave_danger_level)
 	if not enemies.is_empty():
 		had_markers = true
-		print("[CustomCave] Spawned %d enemies from markers" % enemies.size())
+		Log.d("[CustomCave] Spawned %d enemies from markers" % enemies.size())
 
 	# Spawn chests at markers
 	var chests: Array = CaveSpawner.spawn_chests_at_markers(self)
 	if not chests.is_empty():
 		had_markers = true
-		print("[CustomCave] Spawned %d chests from markers" % chests.size())
+		Log.d("[CustomCave] Spawned %d chests from markers" % chests.size())
 
 	return had_markers
 
@@ -166,12 +166,12 @@ func _spawn_content_from_markers() -> bool:
 func _spawn_content_from_areas() -> void:
 	var cave_mgr: Node = get_node_or_null("/root/CaveManager")
 	if not cave_mgr or not "area_data" in cave_mgr:
-		print("[CustomCave] No areas defined, skipping area-based spawning")
+		Log.d("[CustomCave] No areas defined, skipping area-based spawning")
 		return
 
 	var area_data: Dictionary = cave_mgr.area_data
 	if area_data.is_empty():
-		print("[CustomCave] No areas defined, skipping area-based spawning")
+		Log.d("[CustomCave] No areas defined, skipping area-based spawning")
 		return
 
 	for area_id: String in area_data:
@@ -207,7 +207,7 @@ func _spawn_area_content(area_id: String) -> void:
 	var props: Array = result.get("props", []) as Array
 
 	if not enemies.is_empty() or not chests.is_empty() or not props.is_empty():
-		print("[CustomCave] Area %s: %d enemies, %d chests, %d props" % [
+		Log.d("[CustomCave] Area %s: %d enemies, %d chests, %d props" % [
 			area_id, enemies.size(), chests.size(), props.size()
 		])
 
@@ -222,7 +222,7 @@ func _setup_navigation_markers() -> void:
 	var markers: Array[CaveNavigationMarker] = CaveNavigationMarker.find_and_convert_markers(cave_model)
 
 	if not markers.is_empty():
-		print("[CustomCave] Created %d navigation markers" % markers.size())
+		Log.d("[CustomCave] Created %d navigation markers" % markers.size())
 
 
 func _spawn_player() -> void:
@@ -234,7 +234,7 @@ func _spawn_player() -> void:
 		var model_spawn: Node3D = _find_node_recursive(cave_model, "SpawnPoint_Entrance")
 		if model_spawn:
 			spawn_pos = model_spawn.global_position
-			print("[CustomCave] Found spawn point in model at %s" % str(spawn_pos))
+			Log.d("[CustomCave] Found spawn point in model at %s" % str(spawn_pos))
 
 	# Fallback to scene markers if model spawn not found
 	if spawn_pos == Vector3(0, 5, 0):
@@ -245,14 +245,14 @@ func _spawn_player() -> void:
 	var player: Node3D = get_tree().get_first_node_in_group("player") as Node3D
 	if player:
 		player.global_position = spawn_pos
-		print("[CustomCave] Teleported player to %s" % str(spawn_pos))
+		Log.d("[CustomCave] Teleported player to %s" % str(spawn_pos))
 	else:
 		var player_scene: PackedScene = load("res://scenes/player/player.tscn")
 		if player_scene:
 			var new_player: Node3D = player_scene.instantiate()
 			add_child(new_player)
 			new_player.global_position = spawn_pos
-			print("[CustomCave] Spawned player at %s" % str(spawn_pos))
+			Log.d("[CustomCave] Spawned player at %s" % str(spawn_pos))
 
 	_player_spawned = true
 
@@ -276,18 +276,18 @@ func _generate_cave_collision() -> void:
 		return
 
 	# Debug: print the node hierarchy to understand structure
-	print("[CustomCave] Analyzing model structure...")
+	Log.d("[CustomCave] Analyzing model structure...")
 	_debug_print_hierarchy(cave_model, 0)
 
 	var collision_count: int = _add_collision_recursive(cave_model)
-	print("[CustomCave] Generated collision for %d meshes" % collision_count)
+	Log.d("[CustomCave] Generated collision for %d meshes" % collision_count)
 
 
 ## Debug print the node hierarchy
 func _debug_print_hierarchy(node: Node, depth: int) -> void:
 	var indent: String = "  ".repeat(depth)
 	var class_name_str: String = node.get_class()
-	print("%s- %s (%s)" % [indent, node.name, class_name_str])
+	Log.d("%s- %s (%s)" % [indent, node.name, class_name_str])
 
 	# Only go 4 levels deep to avoid spam
 	if depth < 4:
@@ -314,7 +314,7 @@ func _add_collision_recursive(parent: Node) -> int:
 			if not has_collision and mesh_instance.mesh:
 				mesh_instance.create_trimesh_collision()
 				count += 1
-				print("[CustomCave] Added collision to: %s" % mesh_instance.name)
+				Log.d("[CustomCave] Added collision to: %s" % mesh_instance.name)
 
 		# Recurse into children
 		count += _add_collision_recursive(child)
@@ -344,7 +344,7 @@ func _setup_exit_door() -> void:
 
 	if door:
 		door.rotation = door_marker.rotation
-		print("[CustomCave] Exit door placed -> %s" % target)
+		Log.d("[CustomCave] Exit door placed -> %s" % target)
 	else:
 		push_error("[CustomCave] Failed to spawn exit door")
 
@@ -364,7 +364,7 @@ func _setup_environment() -> void:
 		env.volumetric_fog_enabled = false
 
 		world_env.environment = env
-		print("[CustomCave] Created cave environment")
+		Log.d("[CustomCave] Created cave environment")
 
 	# Also boost the directional light
 	var cave_light: DirectionalLight3D = get_node_or_null("Lighting/CaveLight") as DirectionalLight3D
@@ -376,7 +376,7 @@ func _initialize_game_state() -> void:
 	if GameManager.player_data and GameManager.player_data.character_name != "":
 		return
 
-	print("[CustomCave] Initializing game state...")
+	Log.d("[CustomCave] Initializing game state...")
 	GameManager.reset_for_new_game()
 	InventoryManager.clear_inventory_state()
 	QuestManager.reset_for_new_game()

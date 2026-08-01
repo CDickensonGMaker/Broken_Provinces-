@@ -18,18 +18,18 @@ var test_bonus: int = 0
 
 
 func _ready() -> void:
-	print("[SecretWallTest] Dev test scene loaded")
-	print("[SecretWallTest] Controls:")
-	print("  F5 = Set detection bonus to 5 (early game)")
-	print("  F6 = Set detection bonus to 10 (some investment)")
-	print("  F7 = Set detection bonus to 15 (focused build)")
-	print("  F8 = Set detection bonus to 20 (high investment)")
-	print("  F9 = Set detection bonus to 25 (dedicated build)")
-	print("  F10 = Reset all walls (respawn)")
-	print("  F11 = Show wall states")
-	print("")
-	print("[SecretWallTest] Walk near walls to trigger detection checks")
-	print("[SecretWallTest] Detection radius = 6 units (shown as circles)")
+	Log.d("[SecretWallTest] Dev test scene loaded")
+	Log.d("[SecretWallTest] Controls:")
+	Log.d("  F5 = Set detection bonus to 5 (early game)")
+	Log.d("  F6 = Set detection bonus to 10 (some investment)")
+	Log.d("  F7 = Set detection bonus to 15 (focused build)")
+	Log.d("  F8 = Set detection bonus to 20 (high investment)")
+	Log.d("  F9 = Set detection bonus to 25 (dedicated build)")
+	Log.d("  F10 = Reset all walls (respawn)")
+	Log.d("  F11 = Show wall states")
+	Log.d("")
+	Log.d("[SecretWallTest] Walk near walls to trigger detection checks")
+	Log.d("[SecretWallTest] Detection radius = 6 units (shown as circles)")
 
 	_setup_room()
 	_setup_test_player()
@@ -78,7 +78,7 @@ func _setup_test_player() -> void:
 	pd.current_mana = pd.max_mana
 
 	_update_detection_bonus_display()
-	print("[SecretWallTest] Player set to level 5, detection bonus = %d" % pd.get_hidden_detection_bonus())
+	Log.d("[SecretWallTest] Player set to level 5, detection bonus = %d" % pd.get_hidden_detection_bonus())
 
 
 ## Update detection bonus to target value by adjusting skills
@@ -101,7 +101,7 @@ func _set_detection_bonus(target_bonus: int) -> void:
 
 	test_bonus = pd.get_hidden_detection_bonus()
 	_update_detection_bonus_display()
-	print("[SecretWallTest] Detection bonus set to %d (target was %d)" % [test_bonus, target_bonus])
+	Log.d("[SecretWallTest] Detection bonus set to %d (target was %d)" % [test_bonus, target_bonus])
 
 
 func _update_detection_bonus_display() -> void:
@@ -121,7 +121,7 @@ func _spawn_player() -> void:
 	add_child(player)
 	player.global_position = spawn_pos
 
-	print("[SecretWallTest] Player spawned at %s" % spawn_pos)
+	Log.d("[SecretWallTest] Player spawned at %s" % spawn_pos)
 
 
 ## Create the room floor and outer walls
@@ -147,7 +147,7 @@ func _setup_room() -> void:
 	# Create divider walls (with gaps for secret walls)
 	_create_divider_walls()
 
-	print("[SecretWallTest] Room created (%.0f x %.0f)" % [ROOM_SIZE, ROOM_SIZE])
+	Log.d("[SecretWallTest] Room created (%.0f x %.0f)" % [ROOM_SIZE, ROOM_SIZE])
 
 
 func _create_wall(wall_name: String, pos: Vector3, size: Vector3) -> void:
@@ -241,7 +241,7 @@ func _spawn_secret_walls() -> void:
 			# Create a label above the wall position
 			_create_wall_label(pos, wall_name)
 
-	print("[SecretWallTest] Spawned %d secret walls" % secret_walls.size())
+	Log.d("[SecretWallTest] Spawned %d secret walls" % secret_walls.size())
 
 
 ## Create a 3D label above wall position to show DC
@@ -331,7 +331,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _reset_all_walls() -> void:
-	print("[SecretWallTest] Resetting all walls...")
+	Log.d("[SecretWallTest] Resetting all walls...")
 
 	# Remove old walls
 	for wall in secret_walls:
@@ -353,19 +353,19 @@ func _reset_all_walls() -> void:
 
 
 func _show_wall_states() -> void:
-	print("[SecretWallTest] === WALL STATES ===")
-	print("  Current detection bonus: %d" % test_bonus)
-	print("")
+	Log.d("[SecretWallTest] === WALL STATES ===")
+	Log.d("  Current detection bonus: %d" % test_bonus)
+	Log.d("")
 
 	for wall in secret_walls:
 		if is_instance_valid(wall):
 			var status: String = "REVEALED" if wall.is_revealed else "HIDDEN"
 			var checked_str: String = " (checked at bonus %d)" % wall.check_at_bonus if wall.has_checked else " (not checked yet)"
-			print("  %s [DC %d] - %s%s" % [wall.wall_name, wall.detection_dc, status, checked_str])
+			Log.d("  %s [DC %d] - %s%s" % [wall.wall_name, wall.detection_dc, status, checked_str])
 
 
 func _on_wall_revealed(wall: Node) -> void:  # SecretWall type
-	print("[SecretWallTest] === WALL REVEALED ===")
-	print("  Name: %s" % wall.wall_name)
-	print("  DC: %d" % wall.detection_dc)
-	print("  Player bonus at check: %d" % wall.check_at_bonus)
+	Log.d("[SecretWallTest] === WALL REVEALED ===")
+	Log.d("  Name: %s" % wall.wall_name)
+	Log.d("  DC: %d" % wall.detection_dc)
+	Log.d("  Player bonus at check: %d" % wall.check_at_bonus)

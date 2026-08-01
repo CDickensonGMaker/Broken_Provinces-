@@ -210,7 +210,7 @@ func is_companion(node: Node) -> bool:
 func unlock_companion(companion_id: String) -> void:
 	if companion_id not in _unlocked_companions:
 		_unlocked_companions.append(companion_id)
-		print("[CompanionManager] Unlocked companion: %s" % companion_id)
+		Log.d("[CompanionManager] Unlocked companion: %s" % companion_id)
 
 
 ## Check if a companion is unlocked
@@ -476,7 +476,7 @@ func _respawn_saved_companions(companion_ids: Array) -> void:
 		if comp_id is String and not is_companion_active(comp_id):
 			var spawned: CompanionNPC = add_companion(comp_id)
 			if spawned:
-				print("[CompanionManager] Respawned companion: %s" % comp_id)
+				Log.d("[CompanionManager] Respawned companion: %s" % comp_id)
 
 
 # =============================================================================

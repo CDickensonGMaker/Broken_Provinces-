@@ -72,7 +72,7 @@ func _show_preset_notification() -> void:
 	if hud and hud.has_method("show_notification"):
 		hud.show_notification("Visual: %s" % preset_name)
 	else:
-		print("[PostProcess] Visual preset: %s" % preset_name)
+		Log.d("[PostProcess] Visual preset: %s" % preset_name)
 
 
 ## Show notification when toggled
@@ -84,7 +84,7 @@ func _show_toggle_notification() -> void:
 	if hud and hud.has_method("show_notification"):
 		hud.show_notification("Post-Processing: %s" % state)
 	else:
-		print("[PostProcess] Post-processing: %s" % state)
+		Log.d("[PostProcess] Post-processing: %s" % state)
 
 
 ## Apply a preset configuration

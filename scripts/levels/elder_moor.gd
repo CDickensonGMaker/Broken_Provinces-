@@ -72,7 +72,7 @@ func _ready() -> void:
 #	# Only start if not already active or completed
 #	if not QuestManager.quests.has("road_to_thornfield"):
 #		if QuestManager.start_quest("road_to_thornfield"):
-#			print("[Elder Moor] Started starter quest: Road to Thornfield")
+#			Log.d("[Elder Moor] Started starter quest: Road to Thornfield")
 
 
 ## Register this scene with CellStreamer and start streaming

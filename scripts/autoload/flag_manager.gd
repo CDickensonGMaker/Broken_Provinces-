@@ -467,6 +467,6 @@ func get_all_flags() -> Dictionary:
 
 ## Print all flags to console (for debugging)
 func debug_print_flags() -> void:
-	print("[FlagManager] Current flags:")
+	Log.d("[FlagManager] Current flags:")
 	for flag_name: String in flags:
-		print("  %s = %s" % [flag_name, flags[flag_name]])
+		Log.d("  %s = %s" % [flag_name, flags[flag_name]])

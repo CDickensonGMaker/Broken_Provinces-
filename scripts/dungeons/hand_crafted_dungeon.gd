@@ -31,16 +31,16 @@ var _room_check_timer: float = 0.0
 
 
 func _ready() -> void:
-	print("[HandCraftedDungeon] _ready() called")
-	print("[HandCraftedDungeon] Children: %s" % str(get_children().map(func(c): return c.name)))
+	Log.d("[HandCraftedDungeon] _ready() called")
+	Log.d("[HandCraftedDungeon] Children: %s" % str(get_children().map(func(c): return c.name)))
 
 	var rooms_node: Node3D = get_node_or_null("Rooms") as Node3D
 	if rooms_node:
-		print("[HandCraftedDungeon] Rooms node found with %d children" % rooms_node.get_child_count())
+		Log.d("[HandCraftedDungeon] Rooms node found with %d children" % rooms_node.get_child_count())
 		for room: Node in rooms_node.get_children():
-			print("[HandCraftedDungeon]   - Room: %s at %s" % [room.name, str((room as Node3D).position) if room is Node3D else "N/A"])
+			Log.d("[HandCraftedDungeon]   - Room: %s at %s" % [room.name, str((room as Node3D).position) if room is Node3D else "N/A"])
 	else:
-		print("[HandCraftedDungeon] ERROR: No 'Rooms' node found!")
+		Log.d("[HandCraftedDungeon] ERROR: No 'Rooms' node found!")
 
 	# Initialize game state if needed (for standalone testing)
 	_initialize_game_state()
@@ -76,34 +76,34 @@ func _spawn_player() -> void:
 	var target_spawn_id: String = spawn_id
 	if SceneManager and not SceneManager.spawn_point_id.is_empty():
 		target_spawn_id = SceneManager.spawn_point_id
-		print("[HandCraftedDungeon] Using SceneManager.spawn_point_id: %s" % target_spawn_id)
+		Log.d("[HandCraftedDungeon] Using SceneManager.spawn_point_id: %s" % target_spawn_id)
 
-	print("[HandCraftedDungeon] _spawn_player() called, target_spawn_id=%s" % target_spawn_id)
+	Log.d("[HandCraftedDungeon] _spawn_player() called, target_spawn_id=%s" % target_spawn_id)
 	if _player_spawned:
-		print("[HandCraftedDungeon] Player already spawned, skipping")
+		Log.d("[HandCraftedDungeon] Player already spawned, skipping")
 		return
 
 	var spawn_point: Marker3D = _find_spawn_point(target_spawn_id)
-	print("[HandCraftedDungeon] _find_spawn_point('%s') returned: %s" % [target_spawn_id, spawn_point])
+	Log.d("[HandCraftedDungeon] _find_spawn_point('%s') returned: %s" % [target_spawn_id, spawn_point])
 	if not spawn_point:
 		# Try finding any spawn point
 		spawn_point = _find_any_spawn_point()
-		print("[HandCraftedDungeon] _find_any_spawn_point() returned: %s" % spawn_point)
+		Log.d("[HandCraftedDungeon] _find_any_spawn_point() returned: %s" % spawn_point)
 
 	if not spawn_point:
 		push_error("[HandCraftedDungeon] No spawn point found!")
-		print("[HandCraftedDungeon] ERROR: No spawn point found anywhere!")
+		Log.d("[HandCraftedDungeon] ERROR: No spawn point found anywhere!")
 		return
 
 	var spawn_pos: Vector3 = spawn_point.global_position
-	print("[HandCraftedDungeon] Spawning player at %s" % str(spawn_pos))
+	Log.d("[HandCraftedDungeon] Spawning player at %s" % str(spawn_pos))
 
 	# Try to find existing player
 	var player: Node = get_tree().get_first_node_in_group("player")
 	if player and player is Node3D:
 		player.global_position = spawn_pos + Vector3(0, 0.5, 0)
 		_player_spawned = true
-		print("[HandCraftedDungeon] Player teleported to spawn point")
+		Log.d("[HandCraftedDungeon] Player teleported to spawn point")
 	else:
 		# Player doesn't exist yet - instantiate it
 		var player_scene: PackedScene = load("res://scenes/player/player.tscn")
@@ -112,7 +112,7 @@ func _spawn_player() -> void:
 			add_child(new_player)
 			new_player.global_position = spawn_pos + Vector3(0, 0.5, 0)
 			_player_spawned = true
-			print("[HandCraftedDungeon] Player instantiated at spawn point")
+			Log.d("[HandCraftedDungeon] Player instantiated at spawn point")
 
 
 func _find_spawn_point(target_spawn_id: String) -> Marker3D:
@@ -164,15 +164,15 @@ func _initialize_game_state() -> void:
 	# Check if already initialized with items
 	if GameManager.player_data and GameManager.player_data.character_name != "":
 		if InventoryManager.inventory.size() > 0:
-			print("[HandCraftedDungeon] Game state already initialized with %d items" % InventoryManager.inventory.size())
+			Log.d("[HandCraftedDungeon] Game state already initialized with %d items" % InventoryManager.inventory.size())
 			return
 		# Character exists but no items - just give items without resetting
-		print("[HandCraftedDungeon] Character exists but inventory empty - giving items")
+		Log.d("[HandCraftedDungeon] Character exists but inventory empty - giving items")
 		_give_test_items()
 		return
 
 	# Full initialization - no character exists
-	print("[HandCraftedDungeon] Initializing game state for standalone testing...")
+	Log.d("[HandCraftedDungeon] Initializing game state for standalone testing...")
 
 	# Reset game state
 	GameManager.reset_for_new_game()
@@ -191,7 +191,7 @@ func _initialize_game_state() -> void:
 	GameManager.player_data = char_data
 
 	_give_test_items()
-	print("[HandCraftedDungeon] Test character created with basic gear")
+	Log.d("[HandCraftedDungeon] Test character created with basic gear")
 
 
 func _give_test_items() -> void:
@@ -201,8 +201,8 @@ func _give_test_items() -> void:
 	var torch_added: bool = InventoryManager.add_item("torch", 3)
 	InventoryManager.add_gold(500)
 
-	print("[HandCraftedDungeon] Test gear added - sword:%s armor:%s potions:%s torch:%s" % [sword_added, armor_added, potions_added, torch_added])
-	print("[HandCraftedDungeon] Inventory count: %d items" % InventoryManager.inventory.size())
+	Log.d("[HandCraftedDungeon] Test gear added - sword:%s armor:%s potions:%s torch:%s" % [sword_added, armor_added, potions_added, torch_added])
+	Log.d("[HandCraftedDungeon] Inventory count: %d items" % InventoryManager.inventory.size())
 
 
 ## Setup HUD for interaction prompts and player UI
@@ -210,7 +210,7 @@ func _setup_hud() -> void:
 	# Check if HUD already exists
 	var existing_hud := get_tree().get_first_node_in_group("hud")
 	if existing_hud:
-		print("[HandCraftedDungeon] HUD already exists")
+		Log.d("[HandCraftedDungeon] HUD already exists")
 		return
 
 	# Load and add HUD
@@ -218,7 +218,7 @@ func _setup_hud() -> void:
 	if hud_scene:
 		_hud = hud_scene.instantiate()
 		add_child(_hud)
-		print("[HandCraftedDungeon] HUD added to scene")
+		Log.d("[HandCraftedDungeon] HUD added to scene")
 	else:
 		push_warning("[HandCraftedDungeon] Failed to load HUD scene")
 
@@ -268,7 +268,7 @@ func _add_default_dungeon_lighting() -> void:
 	world_env.environment = env
 	add_child(world_env)
 
-	print("[HandCraftedDungeon] Added default dungeon lighting with fog")
+	Log.d("[HandCraftedDungeon] Added default dungeon lighting with fog")
 
 
 ## Setup exit portal in the START room for returning to overworld
@@ -308,7 +308,7 @@ func _place_exit_portal(start_room: Node3D) -> void:
 		portal.return_to_previous = true  # Return to previous scene (test area)
 		# Make portal face north (toward player spawn)
 		portal.rotation_degrees.y = 180.0
-		print("[HandCraftedDungeon] Exit portal placed at local %s (room: %s)" % [str(portal_local_pos), start_room.name])
+		Log.d("[HandCraftedDungeon] Exit portal placed at local %s (room: %s)" % [str(portal_local_pos), start_room.name])
 
 
 ## Block unused doorways in rooms based on which neighbors exist
@@ -381,7 +381,7 @@ func _create_door_blocker(room: Node3D, dir: DungeonGridData.Direction) -> void:
 	blocker.material = mat
 
 	room.add_child(blocker)
-	print("[HandCraftedDungeon] Added door blocker at %s direction %d" % [room.name, dir])
+	Log.d("[HandCraftedDungeon] Added door blocker at %s direction %d" % [room.name, dir])
 
 
 ## Setup spawns for all rooms based on room type
@@ -392,10 +392,10 @@ func _setup_all_room_spawns() -> void:
 
 	var rooms_node: Node3D = get_node_or_null("Rooms")
 	if not rooms_node:
-		print("[HandCraftedDungeon] No Rooms node found, skipping spawn setup")
+		Log.d("[HandCraftedDungeon] No Rooms node found, skipping spawn setup")
 		return
 
-	print("[HandCraftedDungeon] Setting up room spawns for %d rooms (faction: %s, danger: %d)" % [
+	Log.d("[HandCraftedDungeon] Setting up room spawns for %d rooms (faction: %s, danger: %d)" % [
 		rooms_node.get_child_count(),
 		dungeon_faction,
 		zone_danger
@@ -413,7 +413,7 @@ func _setup_all_room_spawns() -> void:
 
 		# Skip START room (safe zone)
 		if room_type == DungeonGridData.RoomType.START:
-			print("[HandCraftedDungeon]   - %s: START room (no spawns)" % room.name)
+			Log.d("[HandCraftedDungeon]   - %s: START room (no spawns)" % room.name)
 			continue
 
 		# Skip EMPTY rooms
@@ -435,7 +435,7 @@ func _setup_all_room_spawns() -> void:
 		_register_room_enemies(room.name, new_enemies)
 
 		var config: Dictionary = DungeonLootConfig.get_room_config(room_type)
-		print("[HandCraftedDungeon]   - %s: type=%d, enemies=%d spawned" % [
+		Log.d("[HandCraftedDungeon]   - %s: type=%d, enemies=%d spawned" % [
 			room.name,
 			room_type,
 			new_enemies.size()
@@ -444,7 +444,7 @@ func _setup_all_room_spawns() -> void:
 	# Apply enemy cap - disable excess enemies initially
 	_apply_enemy_cap()
 
-	print("[HandCraftedDungeon] Room spawn setup complete. Total tracked: %d enemies across %d rooms" % [
+	Log.d("[HandCraftedDungeon] Room spawn setup complete. Total tracked: %d enemies across %d rooms" % [
 		_active_enemy_count,
 		_room_enemies.size()
 	])
@@ -550,7 +550,7 @@ func _on_player_room_changed(new_room: String) -> void:
 	var old_room: String = _current_player_room
 	_current_player_room = new_room
 
-	print("[HandCraftedDungeon] Player room changed: %s -> %s" % [old_room, new_room])
+	Log.d("[HandCraftedDungeon] Player room changed: %s -> %s" % [old_room, new_room])
 
 	var rooms_node: Node3D = get_node_or_null("Rooms") as Node3D
 	if not rooms_node:
@@ -596,7 +596,7 @@ func _update_enemy_processing(active_rooms: Array[String]) -> void:
 				_set_enemy_active(enemy, false)
 
 	_active_enemy_count = enabled_count
-	print("[HandCraftedDungeon] Enemy processing updated: %d active (max %d)" % [_active_enemy_count, MAX_DUNGEON_ENEMIES])
+	Log.d("[HandCraftedDungeon] Enemy processing updated: %d active (max %d)" % [_active_enemy_count, MAX_DUNGEON_ENEMIES])
 
 
 ## Set an enemy's active state (enable/disable processing)
@@ -623,7 +623,7 @@ func _on_enemy_died(enemy: Node, room_name: String) -> void:
 		var enemies: Array = _room_enemies[room_name]
 		enemies.erase(enemy)
 
-	print("[HandCraftedDungeon] Enemy died in %s. Active count: %d" % [room_name, _active_enemy_count])
+	Log.d("[HandCraftedDungeon] Enemy died in %s. Active count: %d" % [room_name, _active_enemy_count])
 
 
 ## Try to spawn enemies from queue if under cap

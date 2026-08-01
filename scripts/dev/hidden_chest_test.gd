@@ -18,18 +18,18 @@ var test_bonus: int = 0
 
 
 func _ready() -> void:
-	print("[HiddenChestTest] Dev test scene loaded")
-	print("[HiddenChestTest] Controls:")
-	print("  F5 = Set detection bonus to 5 (early game)")
-	print("  F6 = Set detection bonus to 10 (some investment)")
-	print("  F7 = Set detection bonus to 15 (focused build)")
-	print("  F8 = Set detection bonus to 20 (high investment)")
-	print("  F9 = Set detection bonus to 25 (dedicated build)")
-	print("  F10 = Reset all chests (respawn)")
-	print("  F11 = Show chest states")
-	print("")
-	print("[HiddenChestTest] Walk near chests to trigger detection checks")
-	print("[HiddenChestTest] Detection radius = 6 units (shown as circles)")
+	Log.d("[HiddenChestTest] Dev test scene loaded")
+	Log.d("[HiddenChestTest] Controls:")
+	Log.d("  F5 = Set detection bonus to 5 (early game)")
+	Log.d("  F6 = Set detection bonus to 10 (some investment)")
+	Log.d("  F7 = Set detection bonus to 15 (focused build)")
+	Log.d("  F8 = Set detection bonus to 20 (high investment)")
+	Log.d("  F9 = Set detection bonus to 25 (dedicated build)")
+	Log.d("  F10 = Reset all chests (respawn)")
+	Log.d("  F11 = Show chest states")
+	Log.d("")
+	Log.d("[HiddenChestTest] Walk near chests to trigger detection checks")
+	Log.d("[HiddenChestTest] Detection radius = 6 units (shown as circles)")
 
 	_setup_room()
 	_setup_test_player()
@@ -78,7 +78,7 @@ func _setup_test_player() -> void:
 	pd.current_mana = pd.max_mana
 
 	_update_detection_bonus_display()
-	print("[HiddenChestTest] Player set to level 5, detection bonus = %d" % pd.get_hidden_detection_bonus())
+	Log.d("[HiddenChestTest] Player set to level 5, detection bonus = %d" % pd.get_hidden_detection_bonus())
 
 
 ## Update detection bonus to target value by adjusting skills
@@ -101,7 +101,7 @@ func _set_detection_bonus(target_bonus: int) -> void:
 
 	test_bonus = pd.get_hidden_detection_bonus()
 	_update_detection_bonus_display()
-	print("[HiddenChestTest] Detection bonus set to %d (target was %d)" % [test_bonus, target_bonus])
+	Log.d("[HiddenChestTest] Detection bonus set to %d (target was %d)" % [test_bonus, target_bonus])
 
 
 func _update_detection_bonus_display() -> void:
@@ -121,7 +121,7 @@ func _spawn_player() -> void:
 	add_child(player)
 	player.global_position = spawn_pos
 
-	print("[HiddenChestTest] Player spawned at %s" % spawn_pos)
+	Log.d("[HiddenChestTest] Player spawned at %s" % spawn_pos)
 
 
 ## Create the room floor and walls
@@ -144,7 +144,7 @@ func _setup_room() -> void:
 	_create_wall("WallEast", Vector3(ROOM_SIZE / 2, WALL_HEIGHT / 2, 0), Vector3(1, WALL_HEIGHT, ROOM_SIZE + 1))
 	_create_wall("WallWest", Vector3(-ROOM_SIZE / 2, WALL_HEIGHT / 2, 0), Vector3(1, WALL_HEIGHT, ROOM_SIZE + 1))
 
-	print("[HiddenChestTest] Room created (%.0f x %.0f)" % [ROOM_SIZE, ROOM_SIZE])
+	Log.d("[HiddenChestTest] Room created (%.0f x %.0f)" % [ROOM_SIZE, ROOM_SIZE])
 
 
 func _create_wall(wall_name: String, pos: Vector3, size: Vector3) -> void:
@@ -206,7 +206,7 @@ func _spawn_hidden_chests() -> void:
 			# Create a label above the chest position
 			_create_chest_label(pos, chest_name)
 
-	print("[HiddenChestTest] Spawned %d hidden chests" % hidden_chests.size())
+	Log.d("[HiddenChestTest] Spawned %d hidden chests" % hidden_chests.size())
 
 
 ## Create a 3D label above chest position to show DC
@@ -296,7 +296,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _reset_all_chests() -> void:
-	print("[HiddenChestTest] Resetting all chests...")
+	Log.d("[HiddenChestTest] Resetting all chests...")
 
 	# Remove old chests
 	for chest in hidden_chests:
@@ -318,19 +318,19 @@ func _reset_all_chests() -> void:
 
 
 func _show_chest_states() -> void:
-	print("[HiddenChestTest] === CHEST STATES ===")
-	print("  Current detection bonus: %d" % test_bonus)
-	print("")
+	Log.d("[HiddenChestTest] === CHEST STATES ===")
+	Log.d("  Current detection bonus: %d" % test_bonus)
+	Log.d("")
 
 	for chest in hidden_chests:
 		if is_instance_valid(chest):
 			var status: String = "REVEALED" if chest.is_revealed else "HIDDEN"
 			var checked_str: String = " (checked at bonus %d)" % chest.check_at_bonus if chest.has_checked else " (not checked yet)"
-			print("  %s [DC %d] - %s%s" % [chest.chest_name, chest.detection_dc, status, checked_str])
+			Log.d("  %s [DC %d] - %s%s" % [chest.chest_name, chest.detection_dc, status, checked_str])
 
 
 func _on_chest_revealed(chest: Node) -> void:  # HiddenChest type
-	print("[HiddenChestTest] === CHEST REVEALED ===")
-	print("  Name: %s" % chest.chest_name)
-	print("  DC: %d" % chest.detection_dc)
-	print("  Player bonus at check: %d" % chest.check_at_bonus)
+	Log.d("[HiddenChestTest] === CHEST REVEALED ===")
+	Log.d("  Name: %s" % chest.chest_name)
+	Log.d("  DC: %d" % chest.detection_dc)
+	Log.d("  Player bonus at check: %d" % chest.check_at_bonus)

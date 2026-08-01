@@ -55,7 +55,7 @@ func _setup_floor_spawn_points() -> void:
 		from_floor1.set_meta("spawn_id", "from_floor_1")
 		from_floor1.add_to_group("spawn_points")
 		spawn_points_container.add_child(from_floor1)
-		print("[Floor2] Spawn point 'from_floor_1' created in start room")
+		Log.d("[Floor2] Spawn point 'from_floor_1' created in start room")
 
 
 ## Setup portal to return to Floor 1
@@ -84,4 +84,4 @@ func _setup_floor_portals() -> void:
 		)
 		if return_portal:
 			return_portal.rotation_degrees.y = 180.0  # Face north (toward player)
-			print("[Floor2] Return portal placed in start room")
+			Log.d("[Floor2] Return portal placed in start room")

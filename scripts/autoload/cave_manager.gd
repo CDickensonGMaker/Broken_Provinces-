@@ -145,7 +145,7 @@ func register_cave(root: Node3D, cave_id: String, faction: String = "natural", d
 	# Detect areas from Blender markers in the cave model
 	_detect_areas_from_markers(root)
 
-	print("[CaveManager] Registered cave: %s with %d areas" % [cave_id, area_data.size()])
+	Log.d("[CaveManager] Registered cave: %s with %d areas" % [cave_id, area_data.size()])
 
 
 ## Enter a cave (call after register_cave)
@@ -155,7 +155,7 @@ func enter_cave(cave_id: String) -> void:
 		return
 
 	cave_entered.emit(cave_id)
-	print("[CaveManager] Entered cave: %s" % cave_id)
+	Log.d("[CaveManager] Entered cave: %s" % cave_id)
 
 	# Check initial area
 	_check_player_area()
@@ -175,7 +175,7 @@ func exit_cave() -> void:
 	current_area_id = ""
 	_clear_node_references()
 
-	print("[CaveManager] Exited cave: %s" % exited_id)
+	Log.d("[CaveManager] Exited cave: %s" % exited_id)
 
 
 ## Check if player is in a cave
@@ -283,7 +283,7 @@ func _detect_areas_from_markers(root: Node3D) -> void:
 	if area_data.is_empty():
 		var default_area := CaveArea.new("entrance_default", Vector3.ZERO, CaveAreaType.ENTRANCE)
 		area_data["entrance_default"] = default_area
-		print("[CaveManager] No area markers found, created default entrance area")
+		Log.d("[CaveManager] No area markers found, created default entrance area")
 
 
 func _find_area_markers_recursive(node: Node) -> void:

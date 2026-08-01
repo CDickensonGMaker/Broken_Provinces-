@@ -55,7 +55,7 @@ func _setup_floor_spawn_points() -> void:
 		from_willow.set_meta("spawn_id", "from_willow_dale")
 		from_willow.add_to_group("spawn_points")
 		spawn_points_container.add_child(from_willow)
-		print("[Floor1] Spawn point 'from_willow_dale' created in start room")
+		Log.d("[Floor1] Spawn point 'from_willow_dale' created in start room")
 
 	# Find the boss/end room for floor 2 return spawn
 	var end_room: Node3D = null
@@ -80,7 +80,7 @@ func _setup_floor_spawn_points() -> void:
 		from_floor2.set_meta("spawn_id", "from_floor_2")
 		from_floor2.add_to_group("spawn_points")
 		spawn_points_container.add_child(from_floor2)
-		print("[Floor1] Spawn point 'from_floor_2' created in boss room")
+		Log.d("[Floor1] Spawn point 'from_floor_2' created in boss room")
 
 
 ## Setup portals for exit to wilderness and descend to Floor 2
@@ -113,7 +113,7 @@ func _setup_floor_portals() -> void:
 		if exit_portal:
 			exit_portal.return_to_previous = true
 			exit_portal.rotation_degrees.y = 180.0
-			print("[Floor1] Exit portal placed in start room")
+			Log.d("[Floor1] Exit portal placed in start room")
 
 	# Descend portal in boss room - goes to Floor 2
 	if boss_room:
@@ -126,4 +126,4 @@ func _setup_floor_portals() -> void:
 		)
 		if descend_portal:
 			descend_portal.rotation_degrees.y = 0.0  # Face south (toward player)
-			print("[Floor1] Descend portal placed in boss room")
+			Log.d("[Floor1] Descend portal placed in boss room")

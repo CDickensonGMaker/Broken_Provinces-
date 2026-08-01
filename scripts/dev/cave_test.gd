@@ -26,10 +26,10 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_F5:
-			print("[CaveTest] F5 pressed - regenerating cave...")
+			Log.d("[CaveTest] F5 pressed - regenerating cave...")
 			_regenerate_cave()
 		elif event.keycode == KEY_F6:
-			print("[CaveTest] F6 pressed - regenerating with new seed...")
+			Log.d("[CaveTest] F6 pressed - regenerating with new seed...")
 			_current_seed = -1
 			_regenerate_cave()
 
@@ -51,18 +51,18 @@ func _regenerate_cave() -> void:
 
 
 func _generate_cave() -> void:
-	print("[CaveTest] Generating cave (length=%d, branches=%d)" % [cave_length, cave_branches])
+	Log.d("[CaveTest] Generating cave (length=%d, branches=%d)" % [cave_length, cave_branches])
 
 	# Generate cave grid
 	var grid: Dictionary = CaveGeneratorScript.generate(cave_length, cave_branches, _current_seed)
 	if _current_seed == -1:
 		_current_seed = randi()  # Store the seed for potential regeneration
 
-	print("[CaveTest] Generated grid with %d rooms" % grid.size())
+	Log.d("[CaveTest] Generated grid with %d rooms" % grid.size())
 	for pos: Vector2i in grid.keys():
 		var room_type: int = grid[pos]
 		var type_name: String = DungeonGridData.get_room_type_name(room_type)
-		print("[CaveTest]   %s: %s" % [str(pos), type_name])
+		Log.d("[CaveTest]   %s: %s" % [str(pos), type_name])
 
 	# Build dungeon from grid
 	var result: DungeonBuilder.BuildResult = DungeonBuilder.build(grid, self, false)
@@ -74,7 +74,7 @@ func _generate_cave() -> void:
 		return
 
 	_dungeon_root = result.dungeon_root
-	print("[CaveTest] Cave built with %d rooms" % result.rooms.size())
+	Log.d("[CaveTest] Cave built with %d rooms" % result.rooms.size())
 
 	# Ensure lighting
 	_ensure_lighting()
@@ -120,14 +120,14 @@ func _spawn_player_at_entrance() -> void:
 	var player: Node3D = get_tree().get_first_node_in_group("player") as Node3D
 	if player:
 		player.global_position = spawn_pos
-		print("[CaveTest] Teleported player to %s" % str(spawn_pos))
+		Log.d("[CaveTest] Teleported player to %s" % str(spawn_pos))
 	else:
 		var player_scene: PackedScene = load("res://scenes/player/player.tscn")
 		if player_scene:
 			var new_player: Node3D = player_scene.instantiate()
 			add_child(new_player)
 			new_player.global_position = spawn_pos
-			print("[CaveTest] Spawned player at %s" % str(spawn_pos))
+			Log.d("[CaveTest] Spawned player at %s" % str(spawn_pos))
 
 	_player_spawned = true
 
@@ -166,13 +166,13 @@ func _place_exit_portal(entrance_room: Node3D) -> void:
 		portal.rotation_degrees.y = 0.0
 		# Connect to interaction to handle locally (regenerate cave for testing)
 		portal.player_interacted.connect(_on_exit_portal_used)
-		print("[CaveTest] Exit portal placed at local %s (room: %s)" % [str(portal_local_pos), entrance_room.name])
+		Log.d("[CaveTest] Exit portal placed at local %s (room: %s)" % [str(portal_local_pos), entrance_room.name])
 	else:
 		push_error("[CaveTest] Failed to spawn exit portal in room: %s" % entrance_room.name)
 
 
 func _on_exit_portal_used() -> void:
-	print("[CaveTest] Exit portal used - regenerating cave with new seed...")
+	Log.d("[CaveTest] Exit portal used - regenerating cave with new seed...")
 	_current_seed = -1  # New random seed
 	_regenerate_cave()
 
@@ -182,7 +182,7 @@ func _setup_room_spawns() -> void:
 	if not rooms_node:
 		return
 
-	print("[CaveTest] Setting up room spawns (faction: %s, danger: %d)" % [cave_faction, zone_danger])
+	Log.d("[CaveTest] Setting up room spawns (faction: %s, danger: %d)" % [cave_faction, zone_danger])
 
 	for room: Node in rooms_node.get_children():
 		if not room is Node3D:
@@ -206,7 +206,7 @@ func _initialize_game_state() -> void:
 		_give_test_items()
 		return
 
-	print("[CaveTest] Initializing game state...")
+	Log.d("[CaveTest] Initializing game state...")
 	GameManager.reset_for_new_game()
 	InventoryManager.clear_inventory_state()
 	QuestManager.reset_for_new_game()
@@ -283,4 +283,4 @@ func _add_cave_lighting() -> void:
 	world_env.environment = env
 	add_child(world_env)
 
-	print("[CaveTest] Added cave lighting and fog")
+	Log.d("[CaveTest] Added cave lighting and fog")

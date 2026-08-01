@@ -25,18 +25,18 @@ var level_data: LevelEditorData.LevelData = null
 
 
 func _ready() -> void:
-	print("[TownSwitcher] === TOWN SWITCHER READY ===")
-	print("[TownSwitcher] Available towns: %s" % str(TOWN_FILES.keys()))
+	Log.d("[TownSwitcher] === TOWN SWITCHER READY ===")
+	Log.d("[TownSwitcher] Available towns: %s" % str(TOWN_FILES.keys()))
 
 	# Populate dropdown
 	var idx: int = 0
 	for town_name: String in TOWN_FILES.keys():
 		town_dropdown.add_item(town_name, idx)
 		idx += 1
-	print("[TownSwitcher] Dropdown populated with %d towns" % idx)
+	Log.d("[TownSwitcher] Dropdown populated with %d towns" % idx)
 
 	town_dropdown.item_selected.connect(_on_town_selected)
-	print("[TownSwitcher] Signal connected: item_selected -> _on_town_selected")
+	Log.d("[TownSwitcher] Signal connected: item_selected -> _on_town_selected")
 
 	# Add refresh button dynamically
 	var vbox: VBoxContainer = $UI/Panel/VBoxContainer
@@ -47,7 +47,7 @@ func _ready() -> void:
 
 	# Load first town by default
 	if TOWN_FILES.size() > 0:
-		print("[TownSwitcher] Loading first town: %s" % TOWN_FILES.keys()[0])
+		Log.d("[TownSwitcher] Loading first town: %s" % TOWN_FILES.keys()[0])
 		_load_town(TOWN_FILES.keys()[0])
 
 
@@ -62,56 +62,56 @@ func _on_refresh_pressed() -> void:
 
 func _on_town_selected(index: int) -> void:
 	var town_name: String = town_dropdown.get_item_text(index)
-	print("[TownSwitcher] Dropdown selected index: %d, town: %s" % [index, town_name])
+	Log.d("[TownSwitcher] Dropdown selected index: %d, town: %s" % [index, town_name])
 	_load_town(town_name)
 
 
 func _load_town(town_name: String) -> void:
-	print("[TownSwitcher] _load_town() called with: '%s'" % town_name)
+	Log.d("[TownSwitcher] _load_town() called with: '%s'" % town_name)
 
 	if not TOWN_FILES.has(town_name):
-		print("[TownSwitcher] ERROR: Unknown town '%s'" % town_name)
+		Log.d("[TownSwitcher] ERROR: Unknown town '%s'" % town_name)
 		status_label.text = "ERROR: Unknown town: " + town_name
 		return
 
 	var file_path: String = TOWN_FILES[town_name]
-	print("[TownSwitcher] File path: %s" % file_path)
+	Log.d("[TownSwitcher] File path: %s" % file_path)
 	status_label.text = "Loading " + town_name + "..."
 
 	# Clear existing town immediately (not queue_free which delays removal)
 	if current_town_container:
-		print("[TownSwitcher] Clearing existing container: %s" % current_town_container.name)
+		Log.d("[TownSwitcher] Clearing existing container: %s" % current_town_container.name)
 		current_town_container.free()
 		current_town_container = null
 	else:
-		print("[TownSwitcher] No existing container to clear")
+		Log.d("[TownSwitcher] No existing container to clear")
 
 	# Load JSON
-	print("[TownSwitcher] Opening file: %s" % file_path)
+	Log.d("[TownSwitcher] Opening file: %s" % file_path)
 	var file := FileAccess.open(file_path, FileAccess.READ)
 	if not file:
 		var err: int = FileAccess.get_open_error()
-		print("[TownSwitcher] ERROR: Cannot open file. Error code: %d" % err)
+		Log.d("[TownSwitcher] ERROR: Cannot open file. Error code: %d" % err)
 		status_label.text = "ERROR: Cannot open " + file_path
 		return
 
 	var json_str: String = file.get_as_text()
 	file.close()
-	print("[TownSwitcher] JSON loaded, length: %d chars" % json_str.length())
+	Log.d("[TownSwitcher] JSON loaded, length: %d chars" % json_str.length())
 
 	level_data = LevelEditorData.LevelData.from_json(json_str)
 	if not level_data:
-		print("[TownSwitcher] ERROR: Failed to parse JSON")
+		Log.d("[TownSwitcher] ERROR: Failed to parse JSON")
 		status_label.text = "ERROR: Invalid JSON in " + file_path
 		return
 
-	print("[TownSwitcher] LevelData parsed. Elements count: %d" % level_data.elements.size())
+	Log.d("[TownSwitcher] LevelData parsed. Elements count: %d" % level_data.elements.size())
 
 	# Create container for town elements
 	current_town_container = Node3D.new()
 	current_town_container.name = town_name + "_Container"
 	add_child(current_town_container)
-	print("[TownSwitcher] Created container: %s" % current_town_container.name)
+	Log.d("[TownSwitcher] Created container: %s" % current_town_container.name)
 
 	# Spawn all elements
 	var building_count: int = 0
@@ -119,7 +119,7 @@ func _load_town(town_name: String) -> void:
 	var prop_count: int = 0
 	var failed_count: int = 0
 
-	print("[TownSwitcher] Spawning %d elements..." % level_data.elements.size())
+	Log.d("[TownSwitcher] Spawning %d elements..." % level_data.elements.size())
 	for elem: LevelEditorData.PlacedElement in level_data.elements:
 		var node: Node3D = null
 
@@ -150,12 +150,12 @@ func _load_town(town_name: String) -> void:
 		else:
 			failed_count += 1
 
-	print("[TownSwitcher] Spawning complete:")
-	print("  - Buildings: %d" % building_count)
-	print("  - NPCs: %d" % npc_count)
-	print("  - Props: %d" % prop_count)
-	print("  - Failed: %d" % failed_count)
-	print("  - Container children: %d" % current_town_container.get_child_count())
+	Log.d("[TownSwitcher] Spawning complete:")
+	Log.d("  - Buildings: %d" % building_count)
+	Log.d("  - NPCs: %d" % npc_count)
+	Log.d("  - Props: %d" % prop_count)
+	Log.d("  - Failed: %d" % failed_count)
+	Log.d("  - Container children: %d" % current_town_container.get_child_count())
 
 	status_label.text = "Loaded: " + town_name
 	element_count_label.text = "Buildings: %d | NPCs: %d | Props: %d" % [building_count, npc_count, prop_count]
@@ -163,7 +163,7 @@ func _load_town(town_name: String) -> void:
 	# Reset camera position
 	camera.position = Vector3(0, 15, 25)
 	camera.rotation = Vector3(-0.5, 0, 0)
-	print("[TownSwitcher] Camera reset. Town '%s' load complete." % town_name)
+	Log.d("[TownSwitcher] Camera reset. Town '%s' load complete." % town_name)
 
 
 ## ============================================================================

@@ -40,9 +40,9 @@ func _ready() -> void:
 	_spawn_chests()
 
 	if use_legendary_chest:
-		print("[RoomSmallSecret] Secret room initialized (LEGENDARY chest)")
+		Log.d("[RoomSmallSecret] Secret room initialized (LEGENDARY chest)")
 	else:
-		print("[RoomSmallSecret] Secret room initialized (3x UNCOMMON chests)")
+		Log.d("[RoomSmallSecret] Secret room initialized (3x UNCOMMON chests)")
 
 
 func _spawn_secret_walls() -> void:
@@ -81,7 +81,7 @@ func _spawn_secret_walls() -> void:
 		if wall:
 			wall.wall_revealed.connect(_on_secret_wall_revealed)
 			secret_walls.append(wall)
-			print("[RoomSmallSecret] Spawned secret wall: %s (DC %d)" % [wall_name, detection_dc])
+			Log.d("[RoomSmallSecret] Spawned secret wall: %s (DC %d)" % [wall_name, detection_dc])
 
 
 func _spawn_chests() -> void:
@@ -124,7 +124,7 @@ func _spawn_chest_by_id(marker_name: String) -> void:
 		chest.setup_with_loot(tier)
 		chest.rotation = marker.rotation
 		chests.append(chest)
-		print("[RoomSmallSecret] Spawned chest: %s (locked=%s, tier=%s)" % [chest_name, is_locked, loot_tier_str])
+		Log.d("[RoomSmallSecret] Spawned chest: %s (locked=%s, tier=%s)" % [chest_name, is_locked, loot_tier_str])
 
 
 func _parse_loot_tier(tier_str: String) -> int:
@@ -146,7 +146,7 @@ func _parse_loot_tier(tier_str: String) -> int:
 
 
 func _on_secret_wall_revealed(wall: Node) -> void:
-	print("[RoomSmallSecret] Secret wall revealed: %s" % wall.wall_name)
+	Log.d("[RoomSmallSecret] Secret wall revealed: %s" % wall.wall_name)
 
 
 func _exit_tree() -> void:

@@ -40,14 +40,14 @@ func _spawn_player() -> void:
 	var player: Node3D = get_tree().get_first_node_in_group("player") as Node3D
 	if player:
 		player.global_position = spawn_pos
-		print("[CaveInterior] Teleported player to %s (spawn_id: %s)" % [str(spawn_pos), spawn_id])
+		Log.d("[CaveInterior] Teleported player to %s (spawn_id: %s)" % [str(spawn_pos), spawn_id])
 	else:
 		var player_scene: PackedScene = load("res://scenes/player/player.tscn")
 		if player_scene:
 			var new_player: Node3D = player_scene.instantiate()
 			add_child(new_player)
 			new_player.global_position = spawn_pos
-			print("[CaveInterior] Spawned player at %s" % str(spawn_pos))
+			Log.d("[CaveInterior] Spawned player at %s" % str(spawn_pos))
 
 	_player_spawned = true
 
@@ -80,7 +80,7 @@ func _setup_doors() -> void:
 
 		if door:
 			door.rotation = marker.rotation
-			print("[CaveInterior] Spawned door '%s' -> %s" % [door_label, target_scene])
+			Log.d("[CaveInterior] Spawned door '%s' -> %s" % [door_label, target_scene])
 
 
 func _setup_enemies() -> void:
@@ -117,7 +117,7 @@ func _setup_enemies() -> void:
 
 		if enemy:
 			enemy.add_to_group("enemies")
-			print("[CaveInterior] Spawned enemy at %s" % str(marker.global_position))
+			Log.d("[CaveInterior] Spawned enemy at %s" % str(marker.global_position))
 
 
 func _setup_chests() -> void:
@@ -156,7 +156,7 @@ func _setup_chests() -> void:
 
 		if chest:
 			chest.setup_with_loot(loot_tier, 0)
-			print("[CaveInterior] Spawned chest '%s' at %s" % [chest_name, str(marker.global_position)])
+			Log.d("[CaveInterior] Spawned chest '%s' at %s" % [chest_name, str(marker.global_position)])
 
 
 func _setup_cave_environment() -> void:
@@ -183,14 +183,14 @@ func _setup_cave_environment() -> void:
 	env.volumetric_fog_length = 30.0
 
 	world_env.environment = env
-	print("[CaveInterior] Cave environment setup complete")
+	Log.d("[CaveInterior] Cave environment setup complete")
 
 
 func _initialize_game_state() -> void:
 	if GameManager.player_data and GameManager.player_data.character_name != "":
 		return
 
-	print("[CaveInterior] Initializing game state...")
+	Log.d("[CaveInterior] Initializing game state...")
 	GameManager.reset_for_new_game()
 	InventoryManager.clear_inventory_state()
 	QuestManager.reset_for_new_game()

@@ -10,14 +10,14 @@ var _hud: CanvasLayer
 
 
 func _ready() -> void:
-	print("[DungeonEntranceTest] Setting up test scene")
+	Log.d("[DungeonEntranceTest] Setting up test scene")
 
 	# CRITICAL: Set this scene as the "previous" scene for dungeon exits
 	# This is needed because we're running directly (F6) without going through SceneManager
 	if SceneManager:
 		SceneManager.previous_scene_path = scene_file_path
 		SceneManager.previous_spawn_id = "default"
-		print("[DungeonEntranceTest] Registered as previous scene for dungeon exits: %s" % scene_file_path)
+		Log.d("[DungeonEntranceTest] Registered as previous scene for dungeon exits: %s" % scene_file_path)
 
 	# Initialize game state for testing
 	_initialize_game_state()
@@ -35,7 +35,7 @@ func _ready() -> void:
 	)
 
 	if entrance_door:
-		print("[DungeonEntranceTest] Dungeon entrance portal created at (5, 0, 5)")
+		Log.d("[DungeonEntranceTest] Dungeon entrance portal created at (5, 0, 5)")
 
 	# Also create a wooden door variant
 	var wooden_door: ZoneDoor = ZoneDoor.spawn_door(
@@ -49,13 +49,13 @@ func _ready() -> void:
 	)
 
 	if wooden_door:
-		print("[DungeonEntranceTest] Dungeon door created at (-5, 0, 5)")
+		Log.d("[DungeonEntranceTest] Dungeon door created at (-5, 0, 5)")
 
 	# Add some visual markers
 	_add_markers()
 
-	print("[DungeonEntranceTest] Setup complete - Walk to a door and press E to enter dungeon")
-	print("[DungeonEntranceTest] Player starts at (0, 0.5, 0), doors are at X=5 and X=-5")
+	Log.d("[DungeonEntranceTest] Setup complete - Walk to a door and press E to enter dungeon")
+	Log.d("[DungeonEntranceTest] Player starts at (0, 0.5, 0), doors are at X=5 and X=-5")
 
 
 ## Initialize game state for standalone testing
@@ -63,15 +63,15 @@ func _initialize_game_state() -> void:
 	# Check if already initialized with items
 	if GameManager.player_data and GameManager.player_data.character_name != "":
 		if InventoryManager.inventory.size() > 0:
-			print("[DungeonEntranceTest] Game state already initialized with %d items" % InventoryManager.inventory.size())
+			Log.d("[DungeonEntranceTest] Game state already initialized with %d items" % InventoryManager.inventory.size())
 			return
 		# Character exists but no items - just give items without resetting
-		print("[DungeonEntranceTest] Character exists but inventory empty - giving items")
+		Log.d("[DungeonEntranceTest] Character exists but inventory empty - giving items")
 		_give_test_items()
 		return
 
 	# Full initialization - no character exists
-	print("[DungeonEntranceTest] Initializing game state for testing...")
+	Log.d("[DungeonEntranceTest] Initializing game state for testing...")
 
 	# Reset game state
 	GameManager.reset_for_new_game()
@@ -90,7 +90,7 @@ func _initialize_game_state() -> void:
 	GameManager.player_data = char_data
 
 	_give_test_items()
-	print("[DungeonEntranceTest] Test character created with basic gear")
+	Log.d("[DungeonEntranceTest] Test character created with basic gear")
 
 
 func _give_test_items() -> void:
@@ -100,8 +100,8 @@ func _give_test_items() -> void:
 	var torch_added: bool = InventoryManager.add_item("torch", 3)
 	InventoryManager.add_gold(500)
 
-	print("[DungeonEntranceTest] Test gear added - sword:%s armor:%s potions:%s torch:%s" % [sword_added, armor_added, potions_added, torch_added])
-	print("[DungeonEntranceTest] Inventory count: %d items" % InventoryManager.inventory.size())
+	Log.d("[DungeonEntranceTest] Test gear added - sword:%s armor:%s potions:%s torch:%s" % [sword_added, armor_added, potions_added, torch_added])
+	Log.d("[DungeonEntranceTest] Inventory count: %d items" % InventoryManager.inventory.size())
 
 
 ## Setup HUD for interaction prompts
@@ -109,7 +109,7 @@ func _setup_hud() -> void:
 	# Check if HUD already exists
 	var existing_hud := get_tree().get_first_node_in_group("hud")
 	if existing_hud:
-		print("[DungeonEntranceTest] HUD already exists")
+		Log.d("[DungeonEntranceTest] HUD already exists")
 		return
 
 	# Load and add HUD
@@ -117,7 +117,7 @@ func _setup_hud() -> void:
 	if hud_scene:
 		_hud = hud_scene.instantiate()
 		add_child(_hud)
-		print("[DungeonEntranceTest] HUD added to scene")
+		Log.d("[DungeonEntranceTest] HUD added to scene")
 	else:
 		push_warning("[DungeonEntranceTest] Failed to load HUD scene")
 

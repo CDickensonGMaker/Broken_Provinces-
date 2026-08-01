@@ -679,7 +679,7 @@ func _display_speech_bubble(text: String) -> void:
 	elif hud and hud.has_method("show_notification"):
 		hud.show_notification("%s: \"%s\"" % [follower_name, text])
 	else:
-		print("[%s] %s" % [follower_name, text])
+		Log.d("[%s] %s" % [follower_name, text])
 
 
 ## Change follower state with signal emission

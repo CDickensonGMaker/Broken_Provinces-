@@ -13,7 +13,7 @@ var ladder_top: Node3D = null
 func _ready() -> void:
 	_find_markers()
 	_setup_trigger()
-	print("[Ladder] %s ready - bottom_y=%.1f, top_y=%.1f" % [name, get_bottom_y(), get_top_y()])
+	Log.d("[Ladder] %s ready - bottom_y=%.1f, top_y=%.1f" % [name, get_bottom_y(), get_top_y()])
 
 func _find_markers() -> void:
 	# Recursive search for markers
@@ -69,7 +69,7 @@ func _create_trigger_from_mesh(mesh_node: Node3D) -> void:
 	climb_area.body_entered.connect(_on_body_entered)
 	climb_area.body_exited.connect(_on_body_exited)
 
-	print("[Ladder] Trigger created at %s" % climb_area.global_position)
+	Log.d("[Ladder] Trigger created at %s" % climb_area.global_position)
 
 func _setup_trigger() -> void:
 	# If no trigger zone mesh found, create one between bottom and top
@@ -103,12 +103,12 @@ func _on_body_entered(body: Node3D) -> void:
 	if current_climber:
 		return
 
-	print("")
-	print("[Ladder] ===== PLAYER ENTERED TRIGGER =====")
-	print("[Ladder] Trigger position: %s" % climb_area.global_position)
-	print("[Ladder] Player position: %s" % body.global_position)
-	print("[Ladder] Ladder bottom: %s" % (ladder_bottom.global_position if ladder_bottom else "null"))
-	print("[Ladder] Ladder top: %s" % (ladder_top.global_position if ladder_top else "null"))
+	Log.d("")
+	Log.d("[Ladder] ===== PLAYER ENTERED TRIGGER =====")
+	Log.d("[Ladder] Trigger position: %s" % climb_area.global_position)
+	Log.d("[Ladder] Player position: %s" % body.global_position)
+	Log.d("[Ladder] Ladder bottom: %s" % (ladder_bottom.global_position if ladder_bottom else "null"))
+	Log.d("[Ladder] Ladder top: %s" % (ladder_top.global_position if ladder_top else "null"))
 
 	if body.has_method("start_climbing"):
 		body.start_climbing(self)

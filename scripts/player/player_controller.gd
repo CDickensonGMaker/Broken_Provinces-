@@ -1095,17 +1095,17 @@ func start_climbing(ladder: Node3D) -> void:
 	# DEBUG: Print ladder bounds and player position
 	var bottom_y: float = ladder.get_bottom_y() if ladder.has_method("get_bottom_y") else 0.0
 	var top_y: float = ladder.get_top_y() if ladder.has_method("get_top_y") else 10.0
-	print("")
-	print("========== LADDER CLIMB START ==========")
-	print("[Ladder] Bottom Y: %.2f, Top Y: %.2f" % [bottom_y, top_y])
-	print("[Player] Position: %s" % global_position)
-	print("[Ladder] Global Position: %s" % ladder.global_position)
-	print("")
-	print("CONTROLS:")
-	print("  W (move_forward)  -> climb UP   (+Y)")
-	print("  S (move_backward) -> climb DOWN (-Y)")
-	print("=========================================")
-	print("")
+	Log.d("")
+	Log.d("========== LADDER CLIMB START ==========")
+	Log.d("[Ladder] Bottom Y: %.2f, Top Y: %.2f" % [bottom_y, top_y])
+	Log.d("[Player] Position: %s" % global_position)
+	Log.d("[Ladder] Global Position: %s" % ladder.global_position)
+	Log.d("")
+	Log.d("CONTROLS:")
+	Log.d("  W (move_forward)  -> climb UP   (+Y)")
+	Log.d("  S (move_backward) -> climb DOWN (-Y)")
+	Log.d("=========================================")
+	Log.d("")
 
 ## Called by Ladder when player exits the climb area
 func stop_climbing() -> void:
@@ -1119,7 +1119,7 @@ func stop_climbing() -> void:
 
 	current_ladder = null
 	velocity = Vector3.ZERO
-	print("[Player] Stopped climbing")
+	Log.d("[Player] Stopped climbing")
 
 ## Process climbing movement - SIMPLE: W = UP, S = DOWN
 ## NOTE: We directly modify position, NOT velocity+move_and_slide
@@ -1157,13 +1157,13 @@ func _process_climbing(delta: float) -> void:
 	# Debug output - show raw input
 	if abs(climb_input) > 0.1:
 		var direction: String = "UP" if climb_input > 0 else "DOWN"
-		print("[Climb] W=%.1f S=%.1f -> input=%.2f (%s) | Y: %.2f -> %.2f | bounds[%.1f, %.1f]" % [
+		Log.d("[Climb] W=%.1f S=%.1f -> input=%.2f (%s) | Y: %.2f -> %.2f | bounds[%.1f, %.1f]" % [
 			w_pressed, s_pressed, climb_input, direction, global_position.y, new_y, bottom_y, top_y
 		])
 
 	# Dismount at bottom when pressing S
 	if climb_input < -0.1 and new_y <= bottom_y + 0.1:
-		print("[Player] Dismount at bottom")
+		Log.d("[Player] Dismount at bottom")
 		global_position.y = bottom_y
 		stop_climbing()
 		return
@@ -1171,7 +1171,7 @@ func _process_climbing(delta: float) -> void:
 	# Dismount at top when pressing W
 	if climb_input > 0.1 and new_y >= top_y - 0.1:
 		global_position.y = top_y + 0.2  # Step onto platform
-		print("[Player] Dismount at top")
+		Log.d("[Player] Dismount at top")
 		stop_climbing()
 		return
 

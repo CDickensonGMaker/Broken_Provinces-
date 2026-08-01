@@ -521,7 +521,7 @@ func _physics_process(delta: float) -> void:
 		var dist_to_spawn: float = global_position.distance_to(spawn_position)
 		if dist_to_spawn > 150.0:  # Way beyond any reasonable leash
 			var enemy_name: String = enemy_data.display_name if enemy_data else name
-			print("[AI] ", enemy_name, " RECOVERY: spawn_position was broken (dist=", snapped(dist_to_spawn, 0.1), "). Resetting to current position.")
+			Log.d("[AI] %s RECOVERY: spawn_position was broken (dist=%s). Resetting to current position." % [enemy_name, snapped(dist_to_spawn, 0.1)])
 			spawn_position = global_position
 			_change_state(AIState.IDLE)
 			return
@@ -1082,8 +1082,8 @@ func _update_state_machine(delta: float) -> void:
 	if current_state not in [AIState.DISENGAGE, AIState.DEAD, AIState.STAGGERED]:
 		if _is_beyond_leash():
 			var enemy_name: String = enemy_data.display_name if enemy_data else name
-			print("[AI] ", enemy_name, " LEASH TRIGGERED! dist_to_spawn=", snapped(global_position.distance_to(spawn_position), 0.1), " > leash_radius=", leash_radius)
-			print("[AI]   Current position: ", global_position, " | Spawn position: ", spawn_position)
+			Log.d("[AI] %s LEASH TRIGGERED! dist_to_spawn=%s > leash_radius=%s" % [enemy_name, snapped(global_position.distance_to(spawn_position), 0.1), leash_radius])
+			Log.d("[AI]   Current position: %s | Spawn position: %s" % [global_position, spawn_position])
 			_change_state(AIState.DISENGAGE)
 			return
 
@@ -1556,7 +1556,7 @@ func _change_state(new_state: AIState) -> void:
 			# Entering chase means we have a target - ensure combat alert state
 			chase_timer = 0.0  # Reset chase timeout
 			var enemy_name: String = enemy_data.display_name if enemy_data else name
-			print("[AI] ", enemy_name, " ENTERING CHASE! Target=", current_target.name if current_target else "NONE")
+			Log.d("[AI] %s ENTERING CHASE! Target=%s" % [enemy_name, current_target.name if current_target else "NONE"])
 			if current_alert_state != AlertState.COMBAT:
 				_change_alert_state(AlertState.COMBAT)
 		AIState.DEAD:

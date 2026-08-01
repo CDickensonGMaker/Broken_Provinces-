@@ -27,10 +27,10 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_F5:
-			print("[CaveInstance] F5 pressed - regenerating cave...")
+			Log.d("[CaveInstance] F5 pressed - regenerating cave...")
 			_regenerate_cave()
 		elif event.keycode == KEY_F6:
-			print("[CaveInstance] F6 pressed - regenerating with new seed...")
+			Log.d("[CaveInstance] F6 pressed - regenerating with new seed...")
 			_current_seed = -1
 			_regenerate_cave()
 
@@ -49,17 +49,17 @@ func _regenerate_cave() -> void:
 
 
 func _generate_cave() -> void:
-	print("[CaveInstance] Generating cave (length=%d, branches=%d)" % [cave_length, cave_branches])
+	Log.d("[CaveInstance] Generating cave (length=%d, branches=%d)" % [cave_length, cave_branches])
 
 	var grid: Dictionary = CaveGeneratorScript.generate(cave_length, cave_branches, _current_seed)
 	if _current_seed == -1:
 		_current_seed = randi()
 
-	print("[CaveInstance] Generated grid with %d rooms" % grid.size())
+	Log.d("[CaveInstance] Generated grid with %d rooms" % grid.size())
 	for pos: Vector2i in grid.keys():
 		var room_type: int = grid[pos]
 		var type_name: String = DungeonGridData.get_room_type_name(room_type)
-		print("[CaveInstance]   %s: %s" % [str(pos), type_name])
+		Log.d("[CaveInstance]   %s: %s" % [str(pos), type_name])
 
 	var result: DungeonBuilder.BuildResult = DungeonBuilder.build(grid, self, false)
 
@@ -70,7 +70,7 @@ func _generate_cave() -> void:
 		return
 
 	_dungeon_root = result.dungeon_root
-	print("[CaveInstance] Cave built with %d rooms" % result.rooms.size())
+	Log.d("[CaveInstance] Cave built with %d rooms" % result.rooms.size())
 
 	_ensure_lighting()
 	_setup_exit_door()
@@ -105,12 +105,12 @@ func _spawn_player_at_entrance() -> void:
 					marker.set_meta("spawn_id", "default")
 					spawn_pos = marker.global_position
 					found_spawn = true
-					print("[CaveInstance] Found spawn in CAVE_ENTRANCE room, added to spawn_points group")
+					Log.d("[CaveInstance] Found spawn in CAVE_ENTRANCE room, added to spawn_points group")
 					break
 			else:
 				spawn_pos = room.global_position + Vector3(8, 0.5, 8)
 				found_spawn = true
-				print("[CaveInstance] Using CAVE_ENTRANCE room center as spawn")
+				Log.d("[CaveInstance] Using CAVE_ENTRANCE room center as spawn")
 				break
 
 	# Fallback: find any spawn point if entrance wasn't found
@@ -122,14 +122,14 @@ func _spawn_player_at_entrance() -> void:
 			fallback_marker.set_meta("spawn_id", "default")
 			spawn_pos = fallback_marker.global_position
 			found_spawn = true
-			print("[CaveInstance] Using fallback spawn point from another room, added to spawn_points group")
+			Log.d("[CaveInstance] Using fallback spawn point from another room, added to spawn_points group")
 		else:
 			# Last resort: use first room's center
 			if rooms_node.get_child_count() > 0:
 				var first_room: Node3D = rooms_node.get_child(0) as Node3D
 				if first_room:
 					spawn_pos = first_room.global_position + Vector3(8, 0.5, 8)
-					print("[CaveInstance] WARNING: Using first room center as last-resort spawn")
+					Log.d("[CaveInstance] WARNING: Using first room center as last-resort spawn")
 
 	# Always add Y offset to ensure player spawns above floor collision
 	var final_spawn_pos: Vector3 = spawn_pos + Vector3(0, 0.5, 0)
@@ -137,14 +137,14 @@ func _spawn_player_at_entrance() -> void:
 	var player: Node3D = get_tree().get_first_node_in_group("player") as Node3D
 	if player:
 		player.global_position = final_spawn_pos
-		print("[CaveInstance] Teleported player to %s (spawn_id: %s)" % [str(final_spawn_pos), spawn_id])
+		Log.d("[CaveInstance] Teleported player to %s (spawn_id: %s)" % [str(final_spawn_pos), spawn_id])
 	else:
 		var player_scene: PackedScene = load("res://scenes/player/player.tscn")
 		if player_scene:
 			var new_player: Node3D = player_scene.instantiate()
 			add_child(new_player)
 			new_player.global_position = final_spawn_pos
-			print("[CaveInstance] Spawned player at %s" % str(final_spawn_pos))
+			Log.d("[CaveInstance] Spawned player at %s" % str(final_spawn_pos))
 
 	_player_spawned = true
 
@@ -209,7 +209,7 @@ func _place_exit_door(entrance_room: Node3D) -> void:
 
 	if door:
 		door.rotation_degrees.y = 0.0
-		print("[CaveInstance] Exit door placed -> %s" % EXTERIOR_SCENE)
+		Log.d("[CaveInstance] Exit door placed -> %s" % EXTERIOR_SCENE)
 	else:
 		push_error("[CaveInstance] Failed to spawn exit door")
 
@@ -219,7 +219,7 @@ func _setup_room_spawns() -> void:
 	if not rooms_node:
 		return
 
-	print("[CaveInstance] Setting up room spawns (faction: %s, danger: %d)" % [cave_faction, zone_danger])
+	Log.d("[CaveInstance] Setting up room spawns (faction: %s, danger: %d)" % [cave_faction, zone_danger])
 
 	for room: Node in rooms_node.get_children():
 		if not room is Node3D:
@@ -238,7 +238,7 @@ func _initialize_game_state() -> void:
 	if GameManager.player_data and GameManager.player_data.character_name != "":
 		return
 
-	print("[CaveInstance] Initializing game state...")
+	Log.d("[CaveInstance] Initializing game state...")
 	GameManager.reset_for_new_game()
 	InventoryManager.clear_inventory_state()
 	QuestManager.reset_for_new_game()
@@ -306,4 +306,4 @@ func _add_cave_lighting() -> void:
 	world_env.environment = env
 	add_child(world_env)
 
-	print("[CaveInstance] Added cave lighting and fog")
+	Log.d("[CaveInstance] Added cave lighting and fog")

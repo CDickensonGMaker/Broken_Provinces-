@@ -19,17 +19,17 @@ var hud: CanvasLayer = null
 
 
 func _ready() -> void:
-	print("[BoatTravelTest] ========================================")
-	print("[BoatTravelTest] BOAT TRAVEL TEST SCENE LOADED")
-	print("[BoatTravelTest] ========================================")
-	print("[BoatTravelTest] Talk to the Harbor Master to test boat travel")
-	print("[BoatTravelTest] ")
-	print("[BoatTravelTest] CONTROLS:")
-	print("[BoatTravelTest]   F5  - Add 100 gold")
-	print("[BoatTravelTest]   F6  - Force start voyage (skip dialogue)")
-	print("[BoatTravelTest]   F7  - Check voyage state")
-	print("[BoatTravelTest]   F8  - Load into REAL Dalhurst at harbor dock")
-	print("[BoatTravelTest] ========================================")
+	Log.d("[BoatTravelTest] ========================================")
+	Log.d("[BoatTravelTest] BOAT TRAVEL TEST SCENE LOADED")
+	Log.d("[BoatTravelTest] ========================================")
+	Log.d("[BoatTravelTest] Talk to the Harbor Master to test boat travel")
+	Log.d("[BoatTravelTest] ")
+	Log.d("[BoatTravelTest] CONTROLS:")
+	Log.d("[BoatTravelTest]   F5  - Add 100 gold")
+	Log.d("[BoatTravelTest]   F6  - Force start voyage (skip dialogue)")
+	Log.d("[BoatTravelTest]   F7  - Check voyage state")
+	Log.d("[BoatTravelTest]   F8  - Load into REAL Dalhurst at harbor dock")
+	Log.d("[BoatTravelTest] ========================================")
 
 	_setup_environment()
 	_setup_test_player()
@@ -186,7 +186,7 @@ func _setup_test_player() -> void:
 		InventoryManager.add_item("health_potion", 5)
 		InventoryManager.add_item("stamina_potion", 3)
 
-	print("[BoatTravelTest] Player set to level 10 with 500 gold")
+	Log.d("[BoatTravelTest] Player set to level 10 with 500 gold")
 
 
 ## Spawn the player
@@ -205,7 +205,7 @@ func _spawn_player() -> void:
 	add_child(player)
 	player.global_position = spawn_pos
 
-	print("[BoatTravelTest] Player spawned at %s" % spawn_pos)
+	Log.d("[BoatTravelTest] Player spawned at %s" % spawn_pos)
 
 
 ## Spawn the HUD
@@ -214,7 +214,7 @@ func _spawn_hud() -> void:
 	if hud_scene:
 		hud = hud_scene.instantiate()
 		add_child(hud)
-		print("[BoatTravelTest] HUD spawned")
+		Log.d("[BoatTravelTest] HUD spawned")
 	else:
 		push_error("[BoatTravelTest] Failed to load HUD scene!")
 
@@ -244,14 +244,14 @@ func _spawn_harbor_master() -> void:
 	if harbor_dialogue:
 		harbor_master.dialogue_data = harbor_dialogue
 		harbor_master.use_legacy_dialogue = false
-		print("[BoatTravelTest] Loaded Dalhurst harbor master dialogue")
+		Log.d("[BoatTravelTest] Loaded Dalhurst harbor master dialogue")
 	else:
 		push_error("[BoatTravelTest] Failed to load dialogue!")
 
 	# Face the player spawn
 	harbor_master.rotation.y = PI  # Face south (toward spawn)
 
-	print("[BoatTravelTest] Harbor Master spawned at (0, 0, 5)")
+	Log.d("[BoatTravelTest] Harbor Master spawned at (0, 0, 5)")
 
 
 ## Setup basic navigation for NPC movement
@@ -277,7 +277,7 @@ func _setup_navigation() -> void:
 func _bake_navigation(nav_region: NavigationRegion3D) -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
-		print("[BoatTravelTest] Navigation mesh baked")
+		Log.d("[BoatTravelTest] Navigation mesh baked")
 
 
 func _input(event: InputEvent) -> void:
@@ -289,25 +289,25 @@ func _input(event: InputEvent) -> void:
 			# Add gold
 			if InventoryManager:
 				InventoryManager.gold += 100
-				print("[BoatTravelTest] Added 100 gold (now: %d)" % InventoryManager.gold)
+				Log.d("[BoatTravelTest] Added 100 gold (now: %d)" % InventoryManager.gold)
 
 		KEY_F6:
 			# Force start voyage (skip dialogue)
-			print("[BoatTravelTest] Force starting voyage to Larton...")
+			Log.d("[BoatTravelTest] Force starting voyage to Larton...")
 			if BoatTravelManager:
 				BoatTravelManager.start_journey("dalhurst_to_larton", true)
 
 		KEY_F7:
 			# Check voyage state
 			if BoatTravelManager:
-				print("[BoatTravelTest] Voyage state: %s" % BoatTravelManager.JourneyState.keys()[BoatTravelManager.current_state])
+				Log.d("[BoatTravelTest] Voyage state: %s" % BoatTravelManager.JourneyState.keys()[BoatTravelManager.current_state])
 				if BoatTravelManager.current_route:
-					print("[BoatTravelTest] Route: %s" % BoatTravelManager.current_route.display_name)
-					print("[BoatTravelTest] Progress: %d%%" % int(BoatTravelManager.get_journey_progress() * 100))
+					Log.d("[BoatTravelTest] Route: %s" % BoatTravelManager.current_route.display_name)
+					Log.d("[BoatTravelTest] Progress: %d%%" % int(BoatTravelManager.get_journey_progress() * 100))
 
 		KEY_F8:
 			# Load into real Dalhurst at harbor dock
-			print("[BoatTravelTest] Loading into Dalhurst at harbor dock...")
+			Log.d("[BoatTravelTest] Loading into Dalhurst at harbor dock...")
 			_load_dalhurst_harbor()
 
 
@@ -320,5 +320,5 @@ func _load_dalhurst_harbor() -> void:
 	# Setup player first if not already done
 	_setup_test_player()
 
-	print("[BoatTravelTest] Transitioning to Dalhurst (harbor_spawn)...")
+	Log.d("[BoatTravelTest] Transitioning to Dalhurst (harbor_spawn)...")
 	SceneManager.change_scene(DALHURST_SCENE, HARBOR_SPAWN_ID, true)

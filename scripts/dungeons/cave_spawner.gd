@@ -210,7 +210,7 @@ static func spawn_enemies(
 			if cave_mgr and cave_mgr.has_method("register_enemy"):
 				cave_mgr.register_enemy(enemy, area.area_id)
 
-			print("[CaveSpawner] Spawned %s at %s in area %s" % [enemy_data.display_name, spawn_pos, area.area_id])
+			Log.d("[CaveSpawner] Spawned %s at %s in area %s" % [enemy_data.display_name, spawn_pos, area.area_id])
 
 	return enemies
 
@@ -234,7 +234,7 @@ static func spawn_chest(parent: Node3D, pos: Vector3, tier: LootTables.LootTier)
 	if chest:
 		chest.setup_with_loot(tier, 0)
 		chest.add_to_group("cave_chests")
-		print("[CaveSpawner] Spawned chest at %s with tier %d" % [pos, tier])
+		Log.d("[CaveSpawner] Spawned chest at %s with tier %d" % [pos, tier])
 
 	return chest
 

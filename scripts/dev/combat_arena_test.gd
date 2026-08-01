@@ -13,9 +13,9 @@ var player: Node3D = null
 
 
 func _ready() -> void:
-	print("[CombatArenaTest] Dev test scene loaded")
-	print("[CombatArenaTest] Talk to the Pit Master to start a tournament")
-	print("[CombatArenaTest] F5 = Force start tournament, F6 = Spawn test enemy, F7 = Check state")
+	Log.d("[CombatArenaTest] Dev test scene loaded")
+	Log.d("[CombatArenaTest] Talk to the Pit Master to start a tournament")
+	Log.d("[CombatArenaTest] F5 = Force start tournament, F6 = Spawn test enemy, F7 = Check state")
 
 	_setup_arena()
 	_setup_test_player()
@@ -83,7 +83,7 @@ func _setup_test_player() -> void:
 		InventoryManager.add_item("health_potion", 10)
 		InventoryManager.add_item("stamina_potion", 5)
 
-	print("[CombatArenaTest] Player set to level 10 with gear in inventory")
+	Log.d("[CombatArenaTest] Player set to level 10 with gear in inventory")
 
 
 ## Spawn the player at the default spawn point
@@ -102,7 +102,7 @@ func _spawn_player() -> void:
 	add_child(player)
 	player.global_position = spawn_pos
 
-	print("[CombatArenaTest] Player spawned at %s" % spawn_pos)
+	Log.d("[CombatArenaTest] Player spawned at %s" % spawn_pos)
 
 
 ## Create the arena floor and walls
@@ -193,7 +193,7 @@ func _spawn_pit_master() -> void:
 	# Make them face the center of the arena
 	pit_master.rotation.y = 0  # Face north
 
-	print("[CombatArenaTest] Pit Master spawned")
+	Log.d("[CombatArenaTest] Pit Master spawned")
 
 
 func _setup_lighting() -> void:
@@ -220,7 +220,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
 		# F5 = Force start tournament
 		if event.keycode == KEY_F5:
-			print("[CombatArenaTest] Force starting tournament...")
+			Log.d("[CombatArenaTest] Force starting tournament...")
 			if TournamentManager:
 				# Reset any previous state
 				TournamentManager.end_tournament(false)
@@ -229,23 +229,23 @@ func _input(event: InputEvent) -> void:
 
 		# F6 = Spawn a single test enemy
 		if event.keycode == KEY_F6:
-			print("[CombatArenaTest] Spawning test enemy...")
+			Log.d("[CombatArenaTest] Spawning test enemy...")
 			_spawn_test_enemy()
 
 		# F7 = Check tournament state
 		if event.keycode == KEY_F7:
 			if TournamentManager:
-				print("[CombatArenaTest] Tournament active: %s" % TournamentManager.is_tournament_active)
-				print("[CombatArenaTest] Current wave: %d / %d" % [TournamentManager.current_wave, TournamentManager.TOTAL_WAVES])
-				print("[CombatArenaTest] Enemies remaining: %d" % TournamentManager.current_wave_enemies.size())
-				print("[CombatArenaTest] Gold earned: %d" % TournamentManager.total_gold_earned)
+				Log.d("[CombatArenaTest] Tournament active: %s" % TournamentManager.is_tournament_active)
+				Log.d("[CombatArenaTest] Current wave: %d / %d" % [TournamentManager.current_wave, TournamentManager.TOTAL_WAVES])
+				Log.d("[CombatArenaTest] Enemies remaining: %d" % TournamentManager.current_wave_enemies.size())
+				Log.d("[CombatArenaTest] Gold earned: %d" % TournamentManager.total_gold_earned)
 
 		# F8 = Give health potion and heal
 		if event.keycode == KEY_F8:
 			if GameManager and GameManager.player_data:
 				GameManager.player_data.current_hp = GameManager.player_data.max_hp
 				GameManager.player_data.current_stamina = GameManager.player_data.max_stamina
-				print("[CombatArenaTest] Player fully healed!")
+				Log.d("[CombatArenaTest] Player fully healed!")
 
 
 func _spawn_test_enemy() -> void:
@@ -277,7 +277,7 @@ func _spawn_test_enemy() -> void:
 		)
 		if enemy:
 			enemy.add_to_group("enemies")
-			print("[CombatArenaTest] Spawned test enemy at %s" % pos)
+			Log.d("[CombatArenaTest] Spawned test enemy at %s" % pos)
 
 
 # =============================================================================
@@ -285,29 +285,29 @@ func _spawn_test_enemy() -> void:
 # =============================================================================
 
 func _on_tournament_started() -> void:
-	print("[CombatArenaTest] === TOURNAMENT STARTED ===")
+	Log.d("[CombatArenaTest] === TOURNAMENT STARTED ===")
 	# Hide the pit master during combat (optional)
 	if pit_master:
 		pit_master.visible = false
 
 
 func _on_wave_started(wave_number: int, total_waves: int) -> void:
-	print("[CombatArenaTest] === WAVE %d of %d STARTED ===" % [wave_number, total_waves])
+	Log.d("[CombatArenaTest] === WAVE %d of %d STARTED ===" % [wave_number, total_waves])
 
 
 func _on_wave_complete(wave_number: int, gold_earned: int) -> void:
-	print("[CombatArenaTest] === WAVE %d COMPLETE - Earned %d gold ===" % [wave_number, gold_earned])
+	Log.d("[CombatArenaTest] === WAVE %d COMPLETE - Earned %d gold ===" % [wave_number, gold_earned])
 
 
 func _on_tournament_won(total_gold: int) -> void:
-	print("[CombatArenaTest] === TOURNAMENT WON! Total gold: %d ===" % total_gold)
+	Log.d("[CombatArenaTest] === TOURNAMENT WON! Total gold: %d ===" % total_gold)
 	# Show the pit master again
 	if pit_master:
 		pit_master.visible = true
 
 
 func _on_tournament_lost() -> void:
-	print("[CombatArenaTest] === TOURNAMENT LOST ===")
+	Log.d("[CombatArenaTest] === TOURNAMENT LOST ===")
 	# Show the pit master again
 	if pit_master:
 		pit_master.visible = true

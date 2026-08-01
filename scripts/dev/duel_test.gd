@@ -13,13 +13,13 @@ var duel_opponent: Node = null
 
 
 func _ready() -> void:
-	print("[DuelTest] Dev test scene loaded")
-	print("[DuelTest] Controls:")
-	print("  F5 = Start duel with opponent")
-	print("  F6 = Player surrender")
-	print("  F7 = Check duel state")
-	print("  F8 = Heal player")
-	print("  F9 = Spawn new opponent")
+	Log.d("[DuelTest] Dev test scene loaded")
+	Log.d("[DuelTest] Controls:")
+	Log.d("  F5 = Start duel with opponent")
+	Log.d("  F6 = Player surrender")
+	Log.d("  F7 = Check duel state")
+	Log.d("  F8 = Heal player")
+	Log.d("  F9 = Spawn new opponent")
 
 	_setup_arena()
 	_setup_test_player()
@@ -79,7 +79,7 @@ func _setup_test_player() -> void:
 		InventoryManager.add_item("longsword", 1)
 		InventoryManager.add_item("health_potion", 10)
 
-	print("[DuelTest] Player set to level 10 with gear")
+	Log.d("[DuelTest] Player set to level 10 with gear")
 
 
 func _spawn_player() -> void:
@@ -94,7 +94,7 @@ func _spawn_player() -> void:
 	add_child(player)
 	player.global_position = spawn_pos
 
-	print("[DuelTest] Player spawned at %s" % spawn_pos)
+	Log.d("[DuelTest] Player spawned at %s" % spawn_pos)
 
 
 ## Create the arena floor and walls
@@ -117,7 +117,7 @@ func _setup_arena() -> void:
 	_create_wall("WallEast", Vector3(ARENA_SIZE / 2, WALL_HEIGHT / 2, 0), Vector3(1, WALL_HEIGHT, ARENA_SIZE + 1))
 	_create_wall("WallWest", Vector3(-ARENA_SIZE / 2, WALL_HEIGHT / 2, 0), Vector3(1, WALL_HEIGHT, ARENA_SIZE + 1))
 
-	print("[DuelTest] Arena created (%.0f x %.0f)" % [ARENA_SIZE, ARENA_SIZE])
+	Log.d("[DuelTest] Arena created (%.0f x %.0f)" % [ARENA_SIZE, ARENA_SIZE])
 
 
 func _create_wall(wall_name: String, pos: Vector3, size: Vector3) -> void:
@@ -160,7 +160,7 @@ func _spawn_duel_opponent() -> void:
 		# Give opponent lower HP for faster testing
 		duel_opponent.max_hp = 50
 		duel_opponent.current_hp = 50
-		print("[DuelTest] Duel opponent spawned at %s (HP: %d)" % [spawn_pos, duel_opponent.max_hp])
+		Log.d("[DuelTest] Duel opponent spawned at %s (HP: %d)" % [spawn_pos, duel_opponent.max_hp])
 	else:
 		push_error("[DuelTest] Failed to spawn duel opponent!")
 
@@ -189,7 +189,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
 		# F5 = Start duel
 		if event.keycode == KEY_F5:
-			print("[DuelTest] Starting duel...")
+			Log.d("[DuelTest] Starting duel...")
 			if duel_opponent and is_instance_valid(duel_opponent):
 				var success: bool = DuelManager.start_duel(
 					duel_opponent,
@@ -199,35 +199,35 @@ func _input(event: InputEvent) -> void:
 					ARENA_SIZE / 2.0 - 2.0,  # Barrier radius
 					true  # Create barrier
 				)
-				print("[DuelTest] Duel start result: %s" % success)
+				Log.d("[DuelTest] Duel start result: %s" % success)
 			else:
-				print("[DuelTest] No valid opponent! Spawn one first (F9)")
+				Log.d("[DuelTest] No valid opponent! Spawn one first (F9)")
 
 		# F6 = Player surrender
 		if event.keycode == KEY_F6:
-			print("[DuelTest] Player surrendering...")
+			Log.d("[DuelTest] Player surrendering...")
 			DuelManager.player_surrender()
 
 		# F7 = Check duel state
 		if event.keycode == KEY_F7:
-			print("[DuelTest] === DUEL STATE ===")
-			print("  Active: %s" % DuelManager.is_duel_active())
-			print("  State: %s" % DuelManager.DuelState.keys()[DuelManager.current_state])
-			print("  Duel ID: %s" % DuelManager.duel_id)
+			Log.d("[DuelTest] === DUEL STATE ===")
+			Log.d("  Active: %s" % DuelManager.is_duel_active())
+			Log.d("  State: %s" % DuelManager.DuelState.keys()[DuelManager.current_state])
+			Log.d("  Duel ID: %s" % DuelManager.duel_id)
 			if duel_opponent and is_instance_valid(duel_opponent):
 				var hp_pct: float = float(duel_opponent.current_hp) / float(duel_opponent.max_hp) * 100.0
-				print("  Opponent HP: %d / %d (%.1f%%)" % [duel_opponent.current_hp, duel_opponent.max_hp, hp_pct])
+				Log.d("  Opponent HP: %d / %d (%.1f%%)" % [duel_opponent.current_hp, duel_opponent.max_hp, hp_pct])
 			if GameManager and GameManager.player_data:
 				var pd: CharacterData = GameManager.player_data
 				var player_hp_pct: float = float(pd.current_hp) / float(pd.max_hp) * 100.0
-				print("  Player HP: %d / %d (%.1f%%)" % [pd.current_hp, pd.max_hp, player_hp_pct])
+				Log.d("  Player HP: %d / %d (%.1f%%)" % [pd.current_hp, pd.max_hp, player_hp_pct])
 
 		# F8 = Heal player
 		if event.keycode == KEY_F8:
 			if GameManager and GameManager.player_data:
 				GameManager.player_data.current_hp = GameManager.player_data.max_hp
 				GameManager.player_data.current_stamina = GameManager.player_data.max_stamina
-				print("[DuelTest] Player fully healed!")
+				Log.d("[DuelTest] Player fully healed!")
 
 		# F9 = Spawn new opponent
 		if event.keycode == KEY_F9:
@@ -241,27 +241,27 @@ func _input(event: InputEvent) -> void:
 # =============================================================================
 
 func _on_duel_started(opponent: Node, id: String) -> void:
-	print("[DuelTest] === DUEL STARTED ===")
-	print("  Opponent: %s" % (opponent.name if opponent else "null"))
-	print("  Duel ID: %s" % id)
+	Log.d("[DuelTest] === DUEL STARTED ===")
+	Log.d("  Opponent: %s" % (opponent.name if opponent else "null"))
+	Log.d("  Duel ID: %s" % id)
 
 
 func _on_duel_ended(result: int, opponent: Node, id: String) -> void:
-	print("[DuelTest] === DUEL ENDED ===")
+	Log.d("[DuelTest] === DUEL ENDED ===")
 	var result_name: String = "UNKNOWN"
 	if DuelManager:
 		result_name = DuelManager.DuelResult.keys()[result]
-	print("  Result: %s" % result_name)
-	print("  Opponent: %s" % (opponent.name if opponent else "null"))
-	print("  Duel ID: %s" % id)
+	Log.d("  Result: %s" % result_name)
+	Log.d("  Opponent: %s" % (opponent.name if opponent else "null"))
+	Log.d("  Duel ID: %s" % id)
 
 
 func _on_opponent_yielded(opponent: Node, id: String) -> void:
-	print("[DuelTest] === OPPONENT YIELDED ===")
-	print("  Opponent: %s" % (opponent.name if opponent else "null"))
-	print("  Duel ID: %s" % id)
+	Log.d("[DuelTest] === OPPONENT YIELDED ===")
+	Log.d("  Opponent: %s" % (opponent.name if opponent else "null"))
+	Log.d("  Duel ID: %s" % id)
 
 
 func _on_player_yielded(id: String) -> void:
-	print("[DuelTest] === PLAYER YIELDED ===")
-	print("  Duel ID: %s" % id)
+	Log.d("[DuelTest] === PLAYER YIELDED ===")
+	Log.d("  Duel ID: %s" % id)

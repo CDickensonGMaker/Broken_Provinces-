@@ -280,7 +280,7 @@ func _spawn_cave_entrance() -> void:
 	if cave_entrance:
 		# Rotate to face the player approaching from the south
 		cave_entrance.rotation_degrees.y = 180.0
-		print("[WillowDale] Cave entrance spawned at %s" % str(entrance_pos))
+		Log.d("[WillowDale] Cave entrance spawned at %s" % str(entrance_pos))
 
 
 ## ============================================================================

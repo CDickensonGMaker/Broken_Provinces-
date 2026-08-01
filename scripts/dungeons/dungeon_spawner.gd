@@ -46,7 +46,7 @@ static func spawn_room_content(room: Node3D, room_type: DungeonGridData.RoomType
 
 ## Spawn regular enemies in a room
 static func _spawn_regular_enemies(room: Node3D, count: int, faction: String, zone_danger: int) -> void:
-	print("[DungeonSpawner] _spawn_regular_enemies: room=%s, count=%d, faction=%s" % [room.name, count, faction])
+	Log.d("[DungeonSpawner] _spawn_regular_enemies: room=%s, count=%d, faction=%s" % [room.name, count, faction])
 	var spawn_positions: Array[Vector3] = _generate_spread_positions(room, count)
 
 	for i in range(count):
@@ -80,7 +80,7 @@ static func _spawn_regular_enemies(room: Node3D, count: int, faction: String, zo
 
 		var spawn_pos: Vector3 = spawn_positions[i] if i < spawn_positions.size() else _get_random_spawn_position(room)
 
-		print("[DungeonSpawner]   Spawning %s at %s with sprite %s (%dx%d)" % [enemy_data.display_name, spawn_pos, sprite_path, h_frames, v_frames])
+		Log.d("[DungeonSpawner]   Spawning %s at %s with sprite %s (%dx%d)" % [enemy_data.display_name, spawn_pos, sprite_path, h_frames, v_frames])
 
 		var enemy: Node3D = EnemyBase.spawn_billboard_enemy(
 			room,
@@ -95,9 +95,9 @@ static func _spawn_regular_enemies(room: Node3D, count: int, faction: String, zo
 		if enemy:
 			enemy.add_to_group("enemies")
 			enemy.add_to_group("dungeon_enemies")
-			print("[DungeonSpawner]   -> Enemy spawned successfully: %s" % enemy.name)
+			Log.d("[DungeonSpawner]   -> Enemy spawned successfully: %s" % enemy.name)
 		else:
-			print("[DungeonSpawner]   -> ERROR: Enemy spawn returned null!")
+			Log.d("[DungeonSpawner]   -> ERROR: Enemy spawn returned null!")
 
 
 ## Spawn boss room enemies (1 boss + adds)

@@ -318,7 +318,7 @@ func _respawn_saved_escorts(escort_states: Dictionary, primary_id: String) -> vo
 			if escort_id == primary_id:
 				primary_escort = escort
 
-			print("[EscortManager] Respawned escort: %s" % escort_id)
+			Log.d("[EscortManager] Respawned escort: %s" % escort_id)
 
 
 ## Set destination marker for escort

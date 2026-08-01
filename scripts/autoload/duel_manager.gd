@@ -148,7 +148,7 @@ func start_duel(
 		var opponent_name: String = _get_opponent_name()
 		hud.show_notification("DUEL STARTED: %s" % opponent_name)
 
-	print("[DuelManager] Duel started with %s (ID: %s)" % [_get_opponent_name(), duel_id])
+	Log.d("[DuelManager] Duel started with %s (ID: %s)" % [_get_opponent_name(), duel_id])
 	return true
 
 
@@ -297,7 +297,7 @@ func _on_opponent_yields() -> void:
 	if current_state != DuelState.ACTIVE:
 		return
 
-	print("[DuelManager] Opponent %s yields!" % _get_opponent_name())
+	Log.d("[DuelManager] Opponent %s yields!" % _get_opponent_name())
 
 	# Emit yield signal
 	opponent_yielded.emit(opponent, duel_id)
@@ -316,7 +316,7 @@ func _on_player_yields() -> void:
 	if current_state != DuelState.ACTIVE:
 		return
 
-	print("[DuelManager] Player yields!")
+	Log.d("[DuelManager] Player yields!")
 
 	# Emit yield signal
 	player_yielded.emit(duel_id)
@@ -389,7 +389,7 @@ func _end_duel(result: DuelResult) -> void:
 			DuelResult.DRAW:
 				hud.show_notification("DUEL - DRAW!")
 
-	print("[DuelManager] Duel ended: %s (ID: %s)" % [DuelResult.keys()[result], duel_id])
+	Log.d("[DuelManager] Duel ended: %s (ID: %s)" % [DuelResult.keys()[result], duel_id])
 
 
 ## Update quest progress based on duel result

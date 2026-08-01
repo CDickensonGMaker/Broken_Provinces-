@@ -32,13 +32,13 @@ func _ready() -> void:
 func refresh() -> void:
 	# DEBUG: Print what we're reading
 	#if GameManager.player_data:
-	#	print("STATS PANEL REFRESH - Will: %d, Knowledge: %d, Arcana Lore: %d" % [
+	#	Log.d("STATS PANEL REFRESH - Will: %d, Knowledge: %d, Arcana Lore: %d" % [
 	#		GameManager.player_data.will,
 	#		GameManager.player_data.knowledge,
 	#		GameManager.player_data.get_skill(Enums.Skill.ARCANA_LORE)
 	#	])
 	#else:
-	#	print("STATS PANEL REFRESH - No player_data!")
+	#	Log.d("STATS PANEL REFRESH - No player_data!")
 
 	_update_character_info()
 	_update_core_stats()

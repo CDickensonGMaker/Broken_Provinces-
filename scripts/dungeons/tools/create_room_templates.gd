@@ -53,7 +53,7 @@ const TEMPLATES: Array = [
 
 
 func _run() -> void:
-	print("[CreateRoomTemplates] Starting room template generation...")
+	Log.d("[CreateRoomTemplates] Starting room template generation...")
 
 	# Ensure output directory exists
 	var dir := DirAccess.open("res://")
@@ -78,7 +78,7 @@ func _run() -> void:
 
 		# Check if scene already exists
 		if ResourceLoader.exists(scene_path):
-			print("[CreateRoomTemplates] Skipping existing: %s" % room_name)
+			Log.d("[CreateRoomTemplates] Skipping existing: %s" % room_name)
 			skipped_count += 1
 			continue
 
@@ -87,14 +87,14 @@ func _run() -> void:
 		if room_scene:
 			var error: int = ResourceSaver.save(room_scene, scene_path)
 			if error == OK:
-				print("[CreateRoomTemplates] Created: %s" % scene_path)
+				Log.d("[CreateRoomTemplates] Created: %s" % scene_path)
 				created_count += 1
 			else:
 				push_error("[CreateRoomTemplates] Failed to save: %s (error %d)" % [scene_path, error])
 		else:
 			push_error("[CreateRoomTemplates] Failed to create scene: %s" % room_name)
 
-	print("[CreateRoomTemplates] Done! Created: %d, Skipped: %d" % [created_count, skipped_count])
+	Log.d("[CreateRoomTemplates] Done! Created: %d, Skipped: %d" % [created_count, skipped_count])
 
 
 func _create_room_scene(room_name: String, doors: Array, floor_color: Color) -> PackedScene:
