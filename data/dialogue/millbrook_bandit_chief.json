@@ -1,0 +1,300 @@
+{
+  "id": "millbrook_bandit_chief",
+  "display_name": "Chief Corla Vane",
+  "description": "Chief of the crew camped east of Mill Brook. Carries four of the five roads through the flagship quest: pay her off, talk her into terms, take her oath, or say the words that end the conversation.",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Corla Vane",
+      "text": "You walked into a camp of eleven armed people and nobody has hit you yet, so somebody decided you were worth listening to. That was me. Corla Vane. Sit down or don't.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Mill Brook wants you gone.",
+          "next": "the_ask",
+          "conditions": [
+            { "type": "quest_state", "param": "millbrook_bandits", "value": 2 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "What is this camp?",
+          "next": "what_this_is",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Name a price to take the road somewhere else.",
+          "next": "the_price",
+          "conditions": [
+            { "type": "quest_state", "param": "millbrook_bandits", "value": 2 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "There's a version of this where nobody has to leave.",
+          "next": "terms_open",
+          "conditions": [
+            { "type": "quest_state", "param": "millbrook_bandits", "value": 2 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I'm not here for Mill Brook. I want in.",
+          "next": "the_oath",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Draw] This is as far as your road goes.",
+          "next": "blood",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll come back.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "what_this_is",
+      "speaker": "Corla Vane",
+      "text": "Eleven people who used to have other jobs, camped on the only road between a hamlet with no guard and a town that has forgotten it exists. We take a share. We do not burn anything, we have not killed anybody yet, and I have a standing rule about the mill because a hamlet with no flour has nothing worth taking next month either. I am not a monster. I am an overhead.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "You've killed nobody yet.",
+          "next": "the_yet",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Back up.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "the_yet",
+      "speaker": "Corla Vane",
+      "text": "Yet is doing a lot of work in that sentence and we both heard it. If somebody puts a spear in one of mine, that changes, and then it keeps changing, and in a year this is a burned-out hamlet and a crew that has forgotten how to do anything else. That is why I would rather talk to you than fight you. Not virtue. Arithmetic.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Back up.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "the_ask",
+      "speaker": "Corla Vane",
+      "text": "Of course they do. Did the old man tell you how? No - he told you to make the road safe and then looked at the floor, because he wants it done and does not want to have asked for it done. Fine. There are four ways this ends and only one of them has me dying in it. Pick.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Name a price.",
+          "next": "the_price",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Terms, then. Something the hamlet can live with.",
+          "next": "terms_open",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Or I take the oath and the hamlet pays us both.",
+          "next": "the_oath",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Draw] Only one of them, then.",
+          "next": "blood",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "the_price",
+      "speaker": "Corla Vane",
+      "text": "Three hundred and we are on the western road before the week is out. That is not greed, that is eleven people and a winter. Less than that and I would be asking my crew to starve politely for a stranger, and they would kill me for it and then kill you for watching.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "[300 gold] Take it and go.",
+          "next": "bought",
+          "conditions": [
+            { "type": "has_gold", "param": "", "value": 300 }
+          ],
+          "actions": [
+            { "type": "take_gold", "param": "", "value": 300 },
+            { "type": "complete_quest_objective", "param": "millbrook_bandits:bought_them_off", "value": 0 },
+            { "type": "apply_choice_consequence", "param": "millbrook_bandits:bought_them_off", "value": 0 },
+            { "type": "set_world_flag", "param": "millbrook_camp_moved_on", "value": 0 },
+            { "type": "set_world_flag", "param": "millbrook_road_safe", "value": 0 }
+          ]
+        },
+        {
+          "text": "I don't have three hundred.",
+          "next": "the_ask",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "bought",
+      "speaker": "Corla Vane",
+      "text": "Counted twice by Pell before we move a tent, but yes. Tell the old man the road is his again and do not tell him what it cost him, because it did not cost him anything, and men who get things free start believing they were owed. We will be somebody else's problem by Sunday. Try not to be on the western road.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
+    },
+    {
+      "id": "terms_open",
+      "speaker": "Corla Vane",
+      "text": "Terms. Go on. Understand what you are actually selling me: less money, in exchange for nobody hunting us. It is a worse deal than what I have now and a better deal than what I have next year. Make me hear the second half.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "[Persuasion] A tenth of the mill's take, taken openly, and Mill Brook stops calling it robbery.",
+          "next": "terms_kept",
+          "conditions": [],
+          "actions": [
+            { "type": "skill_check", "param": "", "value": 12, "dc": 14.0, "success_node": "terms_kept", "failure_node": "terms_refused" }
+          ]
+        },
+        {
+          "text": "[Intimidation] Take the terms, or the next people through here won't be talking.",
+          "next": "terms_kept",
+          "conditions": [],
+          "actions": [
+            { "type": "skill_check", "param": "", "value": 1, "dc": 16.0, "success_node": "terms_kept", "failure_node": "terms_refused" }
+          ]
+        },
+        {
+          "text": "Forget it.",
+          "next": "the_ask",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "terms_kept",
+      "speaker": "Corla Vane",
+      "text": "A tenth, taken in daylight, from a table by the mill, with Pell writing down every coin so nobody can claim we took more. And when a real crew comes up that road looking for an easy hamlet, they find eleven people who already live there. ... Say it to the old man exactly like that, and do not let him call it a tax. He will want to. It works better if nobody names it.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        { "type": "complete_quest_objective", "param": "millbrook_bandits:brokered_terms", "value": 0 },
+        { "type": "apply_choice_consequence", "param": "millbrook_bandits:brokered_terms", "value": 0 },
+        { "type": "set_world_flag", "param": "millbrook_camp_under_terms", "value": 0 },
+        { "type": "set_world_flag", "param": "millbrook_road_safe", "value": 0 }
+      ]
+    },
+    {
+      "id": "terms_refused",
+      "speaker": "Corla Vane",
+      "text": "No. You are selling me a rope and telling me it is a belt. When a hamlet knows exactly where you sleep and exactly what you take, a hamlet gets brave in about eighteen months. I have watched it happen to better crews than mine. Come back with money or come back with a weapon.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Money, then.",
+          "next": "the_price",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "[Draw] Weapon, then.",
+          "next": "blood",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Neither, today.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "the_oath",
+      "speaker": "Corla Vane",
+      "text": "In. Just like that. ... You know what convinces me? You did not ask what the share was first. Somebody who wanted money would have asked. Fine. Nobody swears anything here - there is no oath, that is a story townsfolk tell. You take a share, you take a post, and if you cost us money you are gone. Pell will write you down.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Write me down.",
+          "next": "sworn",
+          "conditions": [],
+          "actions": [
+            { "type": "join_faction", "param": "bandits", "value": 0 },
+            { "type": "complete_quest_objective", "param": "millbrook_bandits:joined_the_crew", "value": 0 },
+            { "type": "apply_choice_consequence", "param": "millbrook_bandits:joined_the_crew", "value": 0 },
+            { "type": "set_world_flag", "param": "bandit_camp_joined", "value": 0 }
+          ]
+        },
+        {
+          "text": "On second thought.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "sworn",
+      "speaker": "Corla Vane",
+      "text": "Then you are one of eleven and the road is partly yours. Two things. One: the mill stays standing, and I will not explain that twice. Two: whatever you told the old man in the hamlet, he is going to find out, and he is going to look at you the way he looks at me. Get used to that faster than I did.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
+    },
+    {
+      "id": "blood",
+      "speaker": "Corla Vane",
+      "text": "There it is. I had you at about even odds. ... Well. Nobody is going to say I did not offer you three other doors. UP! ALL OF YOU - UP!",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        { "type": "set_flag", "param": "millbrook_blood_called", "value": 0 },
+        { "type": "set_world_flag", "param": "millbrook_blood_called", "value": 0 }
+      ]
+    },
+    {
+      "id": "farewell",
+      "speaker": "Corla Vane",
+      "text": "The road out is the way you came. Walk it slowly and nobody will misunderstand you.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
+    }
+  ]
+}

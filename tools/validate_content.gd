@@ -118,11 +118,18 @@ func _collect_invoked_choices() -> void:
 
 	var call_re := RegEx.new()
 	call_re.compile("apply_choice_consequence\\(\\s*\"([^\"]+)\"\\s*,\\s*\"([^\"]+)\"")
+	# World objects carry their branch as one "quest_id:choice_id" string and
+	# split it at runtime - QuestInteractable.choice_consequence. A branch a
+	# lever fires is every bit as reachable as one a dialogue choice fires.
+	var field_re := RegEx.new()
+	field_re.compile("choice_consequence\\s*(?::\\s*String)?\\s*=\\s*\"([^\"]+)\"")
 	for dir: String in SCRIPT_DIRS:
 		for path: String in _walk(dir, ".gd"):
 			var text: String = _read_text(path)
 			for m: RegExMatch in call_re.search_all(text):
 				invoked_choices["%s:%s" % [m.get_string(1), m.get_string(2)]] = path
+			for m: RegExMatch in field_re.search_all(text):
+				invoked_choices[m.get_string(1)] = path
 
 
 func _collect_enemy_ids() -> void:

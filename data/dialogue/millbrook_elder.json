@@ -1,0 +1,224 @@
+{
+  "id": "millbrook_elder",
+  "display_name": "Elder Bram",
+  "description": "Mill Brook's elder. Offers the flagship quest and takes it back five different ways - including the two where the answer is that the player now owns the problem.",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Elder Bram",
+      "text": "Mill Brook. Forty-one of us, one mill, and a road that used to be the best thing about living here.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Used to be?",
+          "next": "the_problem",
+          "conditions": [
+            { "type": "quest_state", "param": "millbrook_bandits", "value": 0 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "The camp is finished. Nobody's left standing.",
+          "next": "turnin_razed",
+          "conditions": [
+            { "type": "quest_state", "param": "millbrook_bandits", "value": 2 },
+            { "type": "flag_set", "param": "millbrook_camp_razed", "value": 0 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "They've taken money and gone west.",
+          "next": "turnin_bought",
+          "conditions": [
+            { "type": "quest_state", "param": "millbrook_bandits", "value": 2 },
+            { "type": "flag_set", "param": "millbrook_camp_bought", "value": 0 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "They're staying. But on terms you can live with.",
+          "next": "turnin_terms",
+          "conditions": [
+            { "type": "quest_state", "param": "millbrook_bandits", "value": 2 },
+            { "type": "flag_set", "param": "millbrook_camp_terms", "value": 0 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I'm one of them now.",
+          "next": "turnin_joined",
+          "conditions": [
+            { "type": "quest_state", "param": "millbrook_bandits", "value": 2 },
+            { "type": "flag_set", "param": "millbrook_joined_the_crew", "value": 0 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I run them now.",
+          "next": "turnin_chair",
+          "conditions": [
+            { "type": "quest_state", "param": "millbrook_bandits", "value": 2 },
+            { "type": "flag_set", "param": "millbrook_took_the_chair", "value": 0 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Nothing, elder.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "the_problem",
+      "speaker": "Elder Bram",
+      "text": "There's a crew camped in the eastern woods. Eleven of them, we think. They stop the carts, they take a share, and they let people through - which is worse, in a way, because nobody's died and so nobody in Dalhurst will send anyone. We have no guard. We have a militia of nine men who are all also the harvest. I am asking a stranger, and I am ashamed of it.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "What do you want done to them?",
+          "next": "the_careful_answer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'll make the road safe.",
+          "next": "accepted",
+          "conditions": [],
+          "actions": [
+            { "type": "start_quest", "param": "millbrook_bandits", "value": 0 }
+          ]
+        },
+        {
+          "text": "Not my hamlet.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "the_careful_answer",
+      "speaker": "Elder Bram",
+      "text": "I want the road safe. ... You noticed I didn't answer. I'm seventy-one and I've been the elder here for thirty of it, and I have learned to be careful about what I ask for out loud, because whatever I say tonight is what Mill Brook will have decided in the morning. Make the road safe. How you do it is between you and whatever you answer to.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Understood. I'll make the road safe.",
+          "next": "accepted",
+          "conditions": [],
+          "actions": [
+            { "type": "start_quest", "param": "millbrook_bandits", "value": 0 }
+          ]
+        },
+        {
+          "text": "Say it plainly or find someone else.",
+          "next": "the_plain_answer",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "the_plain_answer",
+      "speaker": "Elder Bram",
+      "text": "...Then plainly. I do not want them killed. I want them gone, and I know those are not the same sentence, and I know which one is cheaper. If they can be bought, buy them - come to me and I'll find the coin somehow. If they can be reasoned with, reason with them. And if they cannot, do what you have to and let me pretend afterwards that I didn't know. There. Now we've both said it.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll make the road safe.",
+          "next": "accepted",
+          "conditions": [],
+          "actions": [
+            { "type": "start_quest", "param": "millbrook_bandits", "value": 0 }
+          ]
+        },
+        {
+          "text": "No.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "accepted",
+      "speaker": "Elder Bram",
+      "text": "East, past the last fence, and follow where the cart ruts stop being cart ruts. Talk to Sena and to the Alder boy first - they've both been stopped, and they saw different things, and I'd rather you heard both before you go and made up your own mind. That's all I'll say.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
+    },
+    {
+      "id": "turnin_razed",
+      "speaker": "Elder Bram",
+      "text": "All of them. ... Yes. Thank you. I'm going to say thank you again in front of everyone tomorrow and mean it slightly less, because tonight I keep thinking that eleven people are lying in a wood two miles from my mill and that I am the reason. Take the coin. Take it, please - it's easier for me if you take it.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        { "type": "complete_quest", "param": "millbrook_bandits", "value": 0 }
+      ]
+    },
+    {
+      "id": "turnin_bought",
+      "speaker": "Elder Bram",
+      "text": "Gone. Bought. Well - I said if they could be bought, buy them, and I did not ask where the money came from and I am not going to start now. Somebody else's road has a crew on it tonight because of what we did, and I will carry that, and it is a great deal lighter than the other thing. The reward stands.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        { "type": "complete_quest", "param": "millbrook_bandits", "value": 0 }
+      ]
+    },
+    {
+      "id": "turnin_terms",
+      "speaker": "Elder Bram",
+      "text": "A tenth, in daylight, at a table by the mill, and they stand between us and whoever comes next. ... The mill will hate it. Sena will hate it. In two years half of them will have forgotten there was ever an argument and the other half will be selling that crew bread. It's the answer I'd have wanted and would never have dared say out loud. Take the coin, and don't ever call it a tax where I can hear you.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        { "type": "complete_quest", "param": "millbrook_bandits", "value": 0 }
+      ]
+    },
+    {
+      "id": "turnin_joined",
+      "speaker": "Elder Bram",
+      "text": "...Say that again. No - don't. I heard it. You'll want the coin as well, I expect, since you came all this way to tell me. There it is. Count it in front of me. Then walk out past the mill, and understand that every single person you pass has already been told, because forty-one people is not enough people for a secret.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        { "type": "complete_quest", "param": "millbrook_bandits", "value": 0 }
+      ]
+    },
+    {
+      "id": "turnin_chair",
+      "speaker": "Elder Bram",
+      "text": "You run them. So the crew on my road answers to the person I asked to take it off my road. ... I want you to know I understand exactly what happened here, so you don't have to work out later whether I did. You'll take your tenth, or your quarter, or whatever you've decided, and Mill Brook will pay it, because Mill Brook always pays it. Here's your money. This is the last of it you'll ever get from me that isn't owed.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        { "type": "complete_quest", "param": "millbrook_bandits", "value": 0 }
+      ]
+    },
+    {
+      "id": "farewell",
+      "speaker": "Elder Bram",
+      "text": "Gaela keep your road, stranger. Ours is the one I'm worried about.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
+    }
+  ]
+}

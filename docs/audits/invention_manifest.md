@@ -69,7 +69,30 @@ The rumour lines are the entire Act I surface of that plot, exactly as ruled.
 
 ## Step 23 — Millbrook bandit takeover
 
-*(filled in as step 23 lands)*
+Built on established Millbrook lore only: an existing hamlet, an existing elder
+(`millbrook_elder`, "Elder Bram"), two existing victims, an existing quest id
+(`millbrook_bandits`) and an existing but **empty and script-less** camp scene.
+
+| What | Where | Why it was needed | Basis |
+|---|---|---|---|
+| **Chief Corla Vane** — runs the crew, has a standing rule about the mill, argues in arithmetic rather than menace | `data/dialogue/millbrook_bandit_chief.json` | Four of the five roads are things you say to a person. The old quest had a nameless "bandit captain" who existed only as a kill count | Existing quest text: "I saw the bandit captain - scarred face, black cloak"; `bandit_boss.tres` |
+| **Quartermaster Pell** — keeps the ledger, has written down four chiefs, none of them elected | `data/dialogue/millbrook_bandit_quartermaster.json` | The usurp road needs somebody to *say* the player is chief. A crew that keeps books is also why the takeover has an income to inherit | `bandits.tres` faction description: "shares of the take and a short memory for men who cost them money" |
+| Elder Bram's careful non-answer, and the plain answer if you push him | `data/dialogue/millbrook_elder.json` | The quest's premise is a man who wants a thing done and does not want to have asked. It also makes all five turn-ins land differently on the same character | Existing NPC; existing quest premise |
+| Five turn-in scenes including the two where the player is now the problem | `millbrook_elder.json` | "Join" and "usurp" are quest completions from the player's side and betrayals from the hamlet's. The elder counting the reward out in front of a man who now runs the crew is the whole design statement | Design law #1 |
+| **The camp itself** — clearing, treeline, fire ring, four tents, the crew's six posts, a road east from the hamlet and back | `scripts/levels/millbrook_bandit_camp.gd`, `_spawn_road_east` in `scripts/levels/millbrook.gd` | `scenes/levels/millbrook_bandit_camp.tscn` existed with a broken script reference, no geometry and nothing reachable pointing at it. The quest's "find the camp in the eastern woods" objective had never been completable | Existing scene stub; every victim line says "the eastern woods" |
+| Camp reads its own outcome on every visit: razed and bought camps are empty, a camp under terms or under the player's oath does not attack him, a camp he runs pays him | `millbrook_bandit_camp.gd` | Design law #1 again, at the scale of one clearing | — |
+| The standing arrangement: 25g/day crew share, +4/day town-guard hostility, −2/day Mill Brook reputation, all tagged `bandit_boss` | `_apply_boss_arrangement` in `millbrook_bandit_camp.gd` | Step 23 asks the ongoing-effects ticker to be exercised. Pell states all three consequences out loud before the player commits | `bandits.tres` Chief rank benefit `extortion_income` |
+| Corla's price is 300 gold; her terms are a tenth of the mill's take, taken openly, in exchange for the crew standing between the hamlet and the next crew | chief dialogue | Bribe and negotiate must be *different* answers, not two buttons with the same result. Terms leaves the crew in the world; the bribe removes it and puts it on somebody else's road | — |
+
+**Engine, for this step:** `join_faction` dialogue action (front door and the
+`force`/`force:Rank` door), so the join and usurp roads are data rather than
+special-case code. Validator taught to see a branch fired by a world object's
+`choice_consequence`, not only by a dialogue action.
+
+**Deliberately NOT invented:** who the crew were before; any connection between
+this camp and the organised bandits on the Falkenhaften road (the bible has
+those and they are a different, larger thing); anything about Mill Brook's
+shrine or priest, which `wave_b_dispositions.md` still holds for Caleb.
 
 ---
 

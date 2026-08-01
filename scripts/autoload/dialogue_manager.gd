@@ -732,7 +732,32 @@ func execute_action(action: DialogueAction) -> String:
 		DialogueData.ActionType.SET_WORLD_FLAG:
 			_set_world_flag(action.param_string)
 
+		DialogueData.ActionType.JOIN_FACTION:
+			_join_faction(action.param_string)
+
 	return ""
+
+
+## Join a faction from dialogue. "faction_id" uses the front door (joinable and
+## reputation high enough); "faction_id:force" and "faction_id:force:Rank Name"
+## use the other one - the player who stood over the last chief is the chief now
+## and nobody checks his standing first.
+func _join_faction(param: String) -> void:
+	if param.is_empty() or not FactionManager:
+		return
+
+	var parts: PackedStringArray = param.split(":")
+	var faction_id: String = parts[0].strip_edges()
+	if faction_id.is_empty():
+		return
+
+	var forced: bool = parts.size() >= 2 and parts[1].strip_edges().to_lower() == "force"
+	if not forced:
+		FactionManager.join_faction(faction_id)
+		return
+
+	var rank_name: String = parts[2].strip_edges() if parts.size() >= 3 else ""
+	FactionManager.force_join_faction(faction_id, rank_name)
 
 
 ## Record a durable world fact. param is "flag" (true) or "flag=value", where a

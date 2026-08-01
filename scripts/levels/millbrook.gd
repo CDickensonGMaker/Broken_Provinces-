@@ -34,6 +34,7 @@ func _ready() -> void:
 	_spawn_fast_travel_shrine()
 	_spawn_rest_spot()
 	_spawn_locked_doors()
+	_spawn_road_east()
 	_setup_navigation()
 	_setup_cell_streaming()
 
@@ -110,8 +111,16 @@ func _spawn_npcs() -> void:
 		elder_quests
 	)
 	elder.region_id = ZONE_ID
-	elder.faction_id = "human_empire"
+	elder.faction_id = "millbrook"
 	elder.no_quest_dialogue = "You've done a great service for our hamlet.\nMay Gaela bless your travels, stranger."
+	# The elder offers and takes back the flagship five different ways, so he
+	# needs a real tree rather than the generic offer/turn-in cards.
+	var elder_dialogue: DialogueData = DialogueLoader.get_dialogue("res://data/dialogue/millbrook_elder.json")
+	if elder_dialogue:
+		elder.dialogue_data = elder_dialogue
+		elder.use_legacy_dialogue = false
+	else:
+		push_warning("[Millbrook] Failed to load the elder's dialogue")
 
 	# Victim NPCs for millbrook_bandits quest (speak_victims objective)
 	# Victim 1 - near the farmhouses
@@ -276,6 +285,31 @@ func _spawn_locked_doors() -> void:
 
 	if doors_spawned > 0:
 		pass
+
+
+## The way to the crew's camp. Every victim in the hamlet says "the eastern
+## woods" and until now there was nothing east to walk to.
+func _spawn_road_east() -> void:
+	var doors := Node3D.new()
+	doors.name = "RoadEast"
+	add_child(doors)
+
+	ZoneDoor.spawn_door(
+		doors,
+		Vector3(26, 0, 4),
+		"res://scenes/levels/millbrook_bandit_camp.tscn",
+		"from_millbrook",
+		"The cart track east",
+		false
+	)
+
+	# The camp sends the player back here; give that arrival somewhere to land.
+	var arrival := Marker3D.new()
+	arrival.name = "SpawnPoint_from_bandit_camp"
+	arrival.position = Vector3(23, 0, 4)
+	arrival.add_to_group("spawn_points")
+	arrival.set_meta("spawn_id", "from_bandit_camp")
+	add_child(arrival)
 
 
 ## Setup navigation mesh

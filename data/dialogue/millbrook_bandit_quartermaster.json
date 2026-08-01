@@ -1,0 +1,131 @@
+{
+  "id": "millbrook_bandit_quartermaster",
+  "display_name": "Quartermaster Pell",
+  "description": "Counts the shares for the Mill Brook crew. Carries the fifth road: with Corla dead, the man who keeps the ledger is the man who decides whose name goes at the top of it.",
+  "start_node": "greeting",
+  "nodes": [
+    {
+      "id": "greeting",
+      "speaker": "Pell",
+      "text": "Pell. I hold the ledger. Everything that comes into this camp is written down twice, once by me and once by whoever brought it, and if the two columns disagree we find out why before anyone eats. That is the entire reason this crew still exists.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Corla's dead. Who runs this camp now?",
+          "next": "the_chair",
+          "conditions": [
+            { "type": "flag_set", "param": "millbrook_chief_killed", "value": 0 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "How's the ledger looking, then?",
+          "next": "the_ledger",
+          "conditions": [
+            { "type": "flag_set", "param": "player_is_bandit_boss", "value": 0 }
+          ],
+          "actions": []
+        },
+        {
+          "text": "What's your read on Corla?",
+          "next": "on_corla",
+          "conditions": [
+            { "type": "flag_set", "param": "millbrook_chief_killed", "value": 0, "invert": true }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Nothing.",
+          "next": "farewell",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "on_corla",
+      "speaker": "Pell",
+      "text": "Best chief I have written down, and I have written down four. She does the arithmetic. The last one burned a farm because someone spat at him, and we spent a year eating what we could catch. Corla has never once done anything for the feeling of it. If you are here to argue with her, argue about numbers. She loses arguments about numbers gracefully and she does not lose the other kind at all.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Noted.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "the_chair",
+      "speaker": "Pell",
+      "text": "Whoever is standing over her, historically. I have written down four chiefs and not one of them was elected. ... You are standing over her. Nine of us are looking at you and I am the one who has to say something out loud, so: is it you? Because if nobody says it in the next minute this becomes eleven people robbing each other in a wood, and I have seen that too.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "It's me. Write it down.",
+          "next": "took_the_chair",
+          "conditions": [],
+          "actions": [
+            { "type": "join_faction", "param": "bandits:force:Chief", "value": 0 },
+            { "type": "complete_quest_objective", "param": "millbrook_bandits:took_the_chair", "value": 0 },
+            { "type": "apply_choice_consequence", "param": "millbrook_bandits:took_the_chair", "value": 0 },
+            { "type": "set_world_flag", "param": "bandit_camp_joined", "value": 0 },
+            { "type": "set_world_flag", "param": "player_is_bandit_boss", "value": 0 }
+          ]
+        },
+        {
+          "text": "It's nobody. I'm finishing this.",
+          "next": "no_chair",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "took_the_chair",
+      "speaker": "Pell",
+      "text": "Written down. Top of the column, and Corla struck through underneath, which is how it has always been done and I have always hated. Three things you now own. The crew's share comes to you every day whether you are here or not - I will find you, I always find people. The mill stays standing, because that was Corla's rule and it was correct. And every guard between here and Dalhurst is about to start hearing a name attached to this camp. Yours. That one gets worse the longer you keep the chair.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
+    },
+    {
+      "id": "no_chair",
+      "speaker": "Pell",
+      "text": "Then I am going to take the ledger and walk south, and the nine people behind you are going to make their own decisions about you in the next few seconds. For what it is worth: she offered you three doors. I wrote all three down.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
+    },
+    {
+      "id": "the_ledger",
+      "speaker": "Pell",
+      "text": "Better than it was, worse than it looks. The share is coming in. So is a great deal of attention. Two of the road wardens have started riding in pairs, which they do not do for weather. You can have the money or you can have the quiet, chief. Nobody has ever had both, and I have written down four chiefs who thought they would be the first.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll take the money.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "farewell",
+      "speaker": "Pell",
+      "text": "Then I will write down that you wanted nothing. It goes in a column too.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
+    }
+  ]
+}

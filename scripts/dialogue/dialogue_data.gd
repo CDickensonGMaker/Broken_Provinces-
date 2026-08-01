@@ -71,7 +71,8 @@ enum ActionType {
 	APPLY_CHOICE_CONSEQUENCE, ## Apply a quest choice consequence (param_string = "quest_id:choice_id")
 	RECRUIT_FOLLOWER,   ## Recruit an NPC as a follower (param_string = follower_id)
 	COMMAND_FOLLOWER,   ## Command active followers (param_string = "wait" or "follow")
-	SET_WORLD_FLAG      ## Record a durable world fact (param_string = "flag" or "flag=value")
+	SET_WORLD_FLAG,     ## Record a durable world fact (param_string = "flag" or "flag=value")
+	JOIN_FACTION        ## Join a faction (param_string = "faction_id", or "faction_id:force" / "faction_id:force:Rank Name")
 }
 
 

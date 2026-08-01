@@ -150,9 +150,10 @@ func _spawn_succession_objects() -> void:
 		"the muster roll for the night of the assault",
 		"Read out",
 		"You read the night's muster aloud. A hundred axes held back at the council chamber, in Morgrim's own hand. The Loremaster does not stop you. He has been waiting for someone with no clan to do this.",
-		"kazan_dun_04_the_empty_chair:undercut_the_regent",
+		"",
 		"kazan_dun_regent_disgraced"
 	)
+	roll.choice_consequence = "kazan_dun_04_the_empty_chair:undercut_the_regent"
 	roll.required_flag = "kazan_dun_knows_about_roll"
 	roll.locked_message = "A muster roll. Columns of names in a dwarf's neat hand. It means nothing to you yet."
 	roll.body_size = Vector3(1.0, 0.9, 0.6)

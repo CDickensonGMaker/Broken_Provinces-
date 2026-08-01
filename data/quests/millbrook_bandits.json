@@ -1,47 +1,76 @@
 {
 	"id": "millbrook_bandits",
 	"title": "Trouble in Millbrook",
-	"description": "The town of Millbrook is being extorted by a gang of bandits who've taken up residence in the surrounding woods. The townsfolk are too frightened to travel the roads, and the local militia is spread too thin. Someone needs to deal with these brigands.",
+	"description": "A crew has camped in the woods east of Mill Brook and started taking a cut of everything that moves on the road. The hamlet has no guard, no militia it can spare and no idea what to do, so the elder is asking a stranger. She wants the road safe. She has not said how, and if you listen carefully she is being careful not to ask.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "millbrook_elder",
 	"giver_npc_type": "quest_giver",
 	"giver_region": "millbrook",
+	"objective_groups": {
+		"settle_the_camp": {
+			"description": "Settle the camp, however you like",
+			"required": 1
+		}
+	},
 	"objectives": [
 		{
 			"id": "speak_victims",
-			"description": "Speak with the victims of the bandit attacks",
+			"description": "Hear it from the people the crew has been taking from",
 			"type": "talk",
 			"target": "millbrook_victim",
-			"required_count": 2
+			"required_count": 2,
+			"world_condition": { "flag": "bandit_camp_cleared" }
 		},
 		{
 			"id": "find_camp",
-			"description": "Track down the bandit camp in the woods",
+			"description": "Find the camp in the eastern woods",
 			"type": "reach",
 			"target": "millbrook_bandit_camp",
-			"required_count": 1
+			"required_count": 1,
+			"world_condition": {
+				"any": [
+					{ "flag": "bandit_camp_cleared" },
+					{ "flag": "millbrook_camp_found" }
+				]
+			}
 		},
 		{
-			"id": "kill_bandits",
-			"description": "Clear out the bandits",
+			"id": "killed_the_crew",
+			"description": "Kill Chief Corla Vane and break the crew",
 			"type": "kill",
-			"target": "human_bandit",
-			"required_count": 6
+			"target": "bandit_boss",
+			"required_count": 1,
+			"group": "settle_the_camp",
+			"world_condition": { "flag": "bandit_camp_cleared" }
 		},
 		{
-			"id": "kill_leader",
-			"description": "Defeat the bandit captain",
-			"type": "kill",
-			"target": "bandit_captain",
-			"required_count": 1
+			"id": "bought_them_off",
+			"description": "Pay the crew to take the road somewhere else",
+			"type": "choice",
+			"required_count": 1,
+			"group": "settle_the_camp"
 		},
 		{
-			"id": "recover_goods",
-			"description": "Recover the stolen goods",
-			"type": "collect",
-			"target": "stolen_goods",
-			"required_count": 1
+			"id": "brokered_terms",
+			"description": "Talk Corla into terms Mill Brook can live with",
+			"type": "choice",
+			"required_count": 1,
+			"group": "settle_the_camp"
+		},
+		{
+			"id": "joined_the_crew",
+			"description": "Take the crew's oath, and Mill Brook's cut with it",
+			"type": "choice",
+			"required_count": 1,
+			"group": "settle_the_camp"
+		},
+		{
+			"id": "took_the_chair",
+			"description": "Stand over Corla's body and let Pell call you chief",
+			"type": "choice",
+			"required_count": 1,
+			"group": "settle_the_camp"
 		}
 	],
 	"turn_in_type": "npc_specific",
@@ -50,8 +79,59 @@
 	"rewards": {
 		"gold": 150,
 		"xp": 400,
-		"items": []
+		"faction_reputation": {
+			"millbrook": 25
+		}
+	},
+	"choice_consequences": {
+		"killed_the_crew": {
+			"flags_to_set": ["millbrook_camp_razed"],
+			"world_flags_to_set": ["bandit_camp_cleared", "millbrook_road_safe"],
+			"reputation_changes": {
+				"millbrook": 30,
+				"town_guard": 15,
+				"bandits": -40
+			}
+		},
+		"bought_them_off": {
+			"flags_to_set": ["millbrook_camp_bought"],
+			"world_flags_to_set": ["millbrook_camp_moved_on", "millbrook_road_safe"],
+			"reputation_changes": {
+				"millbrook": 10,
+				"bandits": 15
+			}
+		},
+		"brokered_terms": {
+			"flags_to_set": ["millbrook_camp_terms"],
+			"world_flags_to_set": ["millbrook_camp_under_terms", "millbrook_road_safe"],
+			"reputation_changes": {
+				"millbrook": 20,
+				"bandits": 20,
+				"town_guard": -5
+			}
+		},
+		"joined_the_crew": {
+			"flags_to_set": ["millbrook_joined_the_crew"],
+			"world_flags_to_set": ["bandit_camp_joined"],
+			"reputation_changes": {
+				"bandits": 35,
+				"millbrook": -40,
+				"town_guard": -30
+			},
+			"items_given": ["bandit_bounty_note"]
+		},
+		"took_the_chair": {
+			"flags_to_set": ["millbrook_took_the_chair"],
+			"world_flags_to_set": ["bandit_camp_joined", "player_is_bandit_boss"],
+			"reputation_changes": {
+				"bandits": 60,
+				"millbrook": -50,
+				"town_guard": -45
+			},
+			"items_given": ["bandit_bounty_note"]
+		}
 	},
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "The flagship. Five roads through one problem, all inside one OR group, so the journal reads 'settled another way' for the four the player did not walk. speak_victims, find_camp and killed_the_crew all pre-complete against the world, so a player who cleared the camp before anyone asked gets the whole quest handed back finished the moment the elder offers it. joined_the_crew and took_the_chair are failures from Mill Brook's point of view and completions from the player's - the turn-in dialogue carries the difference, and taking the chair starts the ongoing-effects ticker."
 }
