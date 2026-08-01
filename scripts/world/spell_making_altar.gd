@@ -112,11 +112,12 @@ func open() -> void:
 	get_tree().paused = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
-	# The UI builds itself in code; there is no scene file for it
+	# The UI builds itself in code; there is no scene file for it. It goes on
+	# the shared popup canvas, not on this 3D altar: an altar that streams out
+	# while its menu is open used to take the menu with it.
 	spell_maker_ui = SpellMakerUI.new()
-	spell_maker_ui.name = "SpellMakerUI"
 	spell_maker_ui.altar = self
-	get_tree().current_scene.add_child(spell_maker_ui)
+	UIManager.host(spell_maker_ui, "SpellMakerUI")
 	spell_maker_ui.open()
 
 	altar_opened.emit()

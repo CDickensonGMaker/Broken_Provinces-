@@ -10,10 +10,9 @@ var anvil_top: MeshInstance3D
 var interaction_area: Area3D
 
 ## UI instances
-var repair_ui: Control = null
+var repair_ui: RepairStationUI = null
 var crafting_ui: CraftingUI = null
 var choice_ui: Control = null
-var repair_ui_script = preload("res://scripts/ui/repair_station_ui.gd")
 var crafting_ui_script = preload("res://scripts/ui/crafting_ui.gd")
 
 ## PS1-style material
@@ -223,25 +222,14 @@ func _open_repair_ui() -> void:
 	if repair_ui and is_instance_valid(repair_ui):
 		repair_ui.queue_free()
 
-	# Create the UI
-	repair_ui = Control.new()
-	repair_ui.set_script(repair_ui_script)
-	repair_ui.name = "RepairStationUI"
+	# Create the UI on the shared popup canvas, above the HUD
+	repair_ui = RepairStationUI.new()
+	UIManager.host(repair_ui, "RepairStationUI")
 
-	# Add to scene tree (as child of canvas layer or root)
-	var canvas := CanvasLayer.new()
-	canvas.name = "RepairUICanvas"
-	canvas.layer = 100
-	get_tree().current_scene.add_child(canvas)
-	canvas.add_child(repair_ui)
-
-	# Connect close signal
-	if repair_ui.has_signal("ui_closed"):
-		repair_ui.ui_closed.connect(_on_repair_ui_closed.bind(canvas))
+	repair_ui.ui_closed.connect(_on_repair_ui_closed)
 
 	# Open the UI (already in menu mode from choice dialog)
-	if repair_ui.has_method("open"):
-		repair_ui.open()
+	repair_ui.open()
 
 
 func _open_crafting_ui() -> void:
@@ -265,13 +253,13 @@ func _open_crafting_ui() -> void:
 	crafting_ui.open()
 
 
-func _on_repair_ui_closed(canvas: CanvasLayer) -> void:
+func _on_repair_ui_closed() -> void:
 	## Handle repair UI close
 	GameManager.exit_menu()
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-	if crafting_ui and is_instance_valid(crafting_ui):
-		crafting_ui.queue_free()
+	if repair_ui and is_instance_valid(repair_ui):
+		repair_ui.queue_free()
 
 	repair_ui = null
 

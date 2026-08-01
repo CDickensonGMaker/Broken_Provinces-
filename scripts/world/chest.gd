@@ -31,7 +31,7 @@ var contents: Array[Dictionary] = []
 var has_been_opened: bool = false
 
 ## Reference to open UI canvas (for cleanup on disappear)
-var _active_ui_canvas: CanvasLayer = null
+var _active_ui: ChestUI = null
 
 ## PS1-style materials
 var chest_material: StandardMaterial3D
@@ -258,28 +258,14 @@ func _open_chest_ui() -> void:
 		has_been_opened = true
 		opened.emit()
 
-	# Load and instantiate chest UI
-	var chest_ui_script := preload("res://scripts/ui/chest_ui.gd")
-	var chest_ui := Control.new()
-	chest_ui.set_script(chest_ui_script)
-	chest_ui.name = "ChestUI"
+	var chest_ui := ChestUI.new()
+	chest_ui.chest = self
 
-	# Pass chest reference
-	chest_ui.set("chest", self)
+	# On the shared popup canvas, above the HUD and outliving this node
+	UIManager.host(chest_ui, "ChestUI")
+	_active_ui = chest_ui
 
-	# Add to CanvasLayer
-	var canvas := CanvasLayer.new()
-	canvas.name = "ChestUICanvas"
-	canvas.layer = 100
-	get_tree().current_scene.add_child(canvas)
-	canvas.add_child(chest_ui)
-
-	# Store reference for cleanup
-	_active_ui_canvas = canvas
-
-	# Connect close signal
-	if chest_ui.has_signal("ui_closed"):
-		chest_ui.ui_closed.connect(_on_chest_ui_closed.bind(canvas))
+	chest_ui.ui_closed.connect(_on_chest_ui_closed.bind(chest_ui))
 
 	# Enter menu mode
 	GameManager.enter_menu()
@@ -287,20 +273,19 @@ func _open_chest_ui() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 	# Open the UI
-	if chest_ui.has_method("open"):
-		chest_ui.open()
+	chest_ui.open()
 
 
-func _on_chest_ui_closed(canvas: CanvasLayer) -> void:
+func _on_chest_ui_closed(ui: ChestUI) -> void:
 	## Handle chest UI close
 	GameManager.exit_menu()
 	get_tree().paused = false
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-	if canvas and is_instance_valid(canvas):
-		canvas.queue_free()
+	if ui and is_instance_valid(ui):
+		ui.queue_free()
 
-	_active_ui_canvas = null
+	_active_ui = null
 
 	# AudioManager.play_ui_close()  # Hook for future audio
 
@@ -352,13 +337,13 @@ func _check_if_should_disappear() -> void:
 		return  # Persistent chests never disappear
 	if contents.is_empty() and has_been_opened:
 		# Close UI first if open (prevents game freeze)
-		if _active_ui_canvas and is_instance_valid(_active_ui_canvas):
+		if _active_ui and is_instance_valid(_active_ui):
 			# Manually handle UI close before freeing
 			GameManager.exit_menu()
 			get_tree().paused = false
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-			_active_ui_canvas.queue_free()
-			_active_ui_canvas = null
+			_active_ui.queue_free()
+			_active_ui = null
 
 		# Delay slightly so UI cleanup can complete
 		call_deferred("queue_free")

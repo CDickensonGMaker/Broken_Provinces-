@@ -1,20 +1,12 @@
 ## chest_ui.gd - UI for interacting with containers (chests, crates, etc.)
 ## Left side: Player inventory, Right side: Chest contents
 ## Click items to transfer between the two
-extends Control
-
-signal ui_closed
+class_name ChestUI
+extends BasePopupUI
 
 ## Reference to the chest we're interacting with
 var chest: Node = null
 
-## UI colors (matching game_menu style)
-const COL_BG = Color(0.08, 0.08, 0.1)
-const COL_PANEL = Color(0.12, 0.12, 0.15)
-const COL_BORDER = Color(0.3, 0.25, 0.2)
-const COL_TEXT = Color(0.9, 0.85, 0.75)
-const COL_DIM = Color(0.5, 0.5, 0.5)
-const COL_GOLD = Color(0.8, 0.6, 0.2)
 const COL_HOVER = Color(0.2, 0.18, 0.15)
 
 ## UI elements
@@ -23,73 +15,20 @@ var chest_list: VBoxContainer
 var title_label: Label
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
-	_build_ui()
-
-
-func _input(event: InputEvent) -> void:
-	if not visible:
-		return
-
-	# Close on escape, pause, or tab menu key
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("pause") or event.is_action_pressed("menu"):
-		close()
-		get_viewport().set_input_as_handled()
+func _configure() -> void:
+	popup_tier = Tier.FULLSCREEN
+	# The chest owns the pause; it undoes it when it hears ui_closed.
+	pauses_game = false
 
 
 func open() -> void:
+	show_popup()
 	visible = true
 	_refresh_lists()
 
 
-func close() -> void:
-	visible = false
-	ui_closed.emit()
-
-
-func _build_ui() -> void:
-	# Click-outside overlay - clicking this closes the UI
-	var click_outside := Button.new()
-	click_outside.set_anchors_preset(Control.PRESET_FULL_RECT)
-	click_outside.flat = true
-	click_outside.focus_mode = Control.FOCUS_NONE
-	click_outside.mouse_filter = Control.MOUSE_FILTER_STOP
-	click_outside.pressed.connect(close)
-	add_child(click_outside)
-
-	# Dark overlay (visual only)
-	var overlay := ColorRect.new()
-	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
-	overlay.color = Color(0, 0, 0, 0.75)
-	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(overlay)
-
-	# Main panel - full screen with margins (matching shop UI)
-	var main_panel := PanelContainer.new()
-	main_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	main_panel.mouse_filter = Control.MOUSE_FILTER_STOP  # Block clicks from reaching overlay
-	main_panel.offset_left = 20
-	main_panel.offset_right = -20
-	main_panel.offset_top = 20
-	main_panel.offset_bottom = -20
-
-	var main_style := StyleBoxFlat.new()
-	main_style.bg_color = COL_BG
-	main_style.border_color = COL_BORDER
-	main_style.set_border_width_all(2)
-	main_panel.add_theme_stylebox_override("panel", main_style)
-	add_child(main_panel)
-
-	# Main vertical layout
-	var main_vbox := VBoxContainer.new()
-	main_vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-	main_vbox.offset_left = 10
-	main_vbox.offset_top = 10
-	main_vbox.offset_right = -10
-	main_vbox.offset_bottom = -10
+func _build_popup(main_vbox: VBoxContainer) -> void:
 	main_vbox.add_theme_constant_override("separation", 10)
-	main_panel.add_child(main_vbox)
 
 	# Title
 	title_label = Label.new()

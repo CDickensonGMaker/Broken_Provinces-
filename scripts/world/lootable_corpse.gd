@@ -26,7 +26,7 @@ var gold: int = 0
 var has_been_looted: bool = false
 
 ## Reference to open UI canvas
-var _active_ui_canvas: CanvasLayer = null
+var _active_ui: CorpseLootUI = null
 
 ## Despawn timer (corpses disappear after being fully looted or after timeout)
 var despawn_timer: float = 300.0  # 5 minutes if not looted
@@ -174,47 +174,34 @@ func _open_loot_ui() -> void:
 	for corpse in nearby_corpses:
 		corpse.has_been_looted = true
 
-	# Load and instantiate corpse loot UI
-	var loot_ui_script := preload("res://scripts/ui/corpse_loot_ui.gd")
-	var loot_ui := Control.new()
-	loot_ui.set_script(loot_ui_script)
-	loot_ui.name = "CorpseLootUI"
+	var loot_ui := CorpseLootUI.new()
+	# Primary corpse for older callers, plus everything within reach
+	loot_ui.corpse = self
+	loot_ui.corpses = nearby_corpses
 
-	# Pass corpse references (primary corpse for backward compatibility, and all corpses)
-	loot_ui.set("corpse", self)
-	loot_ui.set("corpses", nearby_corpses)
+	# On the shared popup canvas, above the HUD and outliving this node
+	UIManager.host(loot_ui, "CorpseLootUI")
+	_active_ui = loot_ui
 
-	# Add to CanvasLayer
-	var canvas := CanvasLayer.new()
-	canvas.name = "CorpseLootUICanvas"
-	canvas.layer = 100
-	get_tree().current_scene.add_child(canvas)
-	canvas.add_child(loot_ui)
-
-	_active_ui_canvas = canvas
-
-	# Connect close signal
-	if loot_ui.has_signal("ui_closed"):
-		loot_ui.ui_closed.connect(_on_loot_ui_closed.bind(canvas))
+	loot_ui.ui_closed.connect(_on_loot_ui_closed.bind(loot_ui))
 
 	# Enter menu mode
 	GameManager.enter_menu()
 	get_tree().paused = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
-	if loot_ui.has_method("open"):
-		loot_ui.open()
+	loot_ui.open()
 
 
-func _on_loot_ui_closed(canvas: CanvasLayer) -> void:
+func _on_loot_ui_closed(ui: CorpseLootUI) -> void:
 	GameManager.exit_menu()
 	get_tree().paused = false
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-	if canvas and is_instance_valid(canvas):
-		canvas.queue_free()
+	if ui and is_instance_valid(ui):
+		ui.queue_free()
 
-	_active_ui_canvas = null
+	_active_ui = null
 
 	# Check if corpse should despawn (empty)
 	_check_if_should_despawn()

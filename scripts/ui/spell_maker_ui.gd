@@ -1,7 +1,9 @@
 ## spell_maker_ui.gd - UI for creating custom spells at spell making altars
 class_name SpellMakerUI
-extends CanvasLayer
+extends BasePopupUI
 
+## Kept for callers that listened before this UI joined BasePopupUI; it fires
+## alongside the inherited ui_closed.
 signal closed
 
 ## Reference to the altar that opened this UI
@@ -35,56 +37,27 @@ var current_delivery: SpellEffectData.DeliveryType = SpellEffectData.DeliveryTyp
 ## Style colors
 const COL_PURPLE := Color(0.5, 0.3, 0.8)
 const COL_DARK_PURPLE := Color(0.15, 0.1, 0.2, 0.95)
-const COL_GOLD := Color(1.0, 0.85, 0.3)
-const COL_RED := Color(0.8, 0.4, 0.4)
-const COL_GREEN := Color(0.4, 0.8, 0.4)
+const COL_ARCANE_GOLD := Color(1.0, 0.85, 0.3)
 
-func _ready() -> void:
-	layer = 100
-	process_mode = Node.PROCESS_MODE_ALWAYS
-	_create_ui()
+func _configure() -> void:
+	popup_tier = Tier.FULLSCREEN
+	# The altar owns the pause and the mouse; close() hands control back to it.
+	pauses_game = false
+	starts_visible = true
+	# A half-built spell is too much work to lose to a stray click.
+	closes_on_click_outside = false
+
+func _post_build() -> void:
 	_populate_effects_library()
 	_update_preview()
 
-func _create_ui() -> void:
-	# Dark overlay
-	var overlay := ColorRect.new()
-	overlay.color = Color(0, 0, 0, 0.7)
-	overlay.anchors_preset = Control.PRESET_FULL_RECT
-	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(overlay)
-
-	# Main panel
-	root_panel = PanelContainer.new()
-	root_panel.anchors_preset = Control.PRESET_CENTER
-	root_panel.anchor_left = 0.5
-	root_panel.anchor_right = 0.5
-	root_panel.anchor_top = 0.5
-	root_panel.anchor_bottom = 0.5
-	root_panel.offset_left = -400
-	root_panel.offset_right = 400
-	root_panel.offset_top = -300
-	root_panel.offset_bottom = 300
-	add_child(root_panel)
-
-	var style := StyleBoxFlat.new()
-	style.bg_color = COL_DARK_PURPLE
-	style.border_color = COL_PURPLE
-	style.set_border_width_all(2)
-	style.corner_radius_top_left = 8
-	style.corner_radius_top_right = 8
-	style.corner_radius_bottom_left = 8
-	style.corner_radius_bottom_right = 8
-	style.content_margin_left = 16
-	style.content_margin_right = 16
-	style.content_margin_top = 16
-	style.content_margin_bottom = 16
-	root_panel.add_theme_stylebox_override("panel", style)
-
-	# Main VBox
-	var vbox := VBoxContainer.new()
+func _build_popup(vbox: VBoxContainer) -> void:
+	root_panel = panel
+	# The arcane variant of the standard panel: same border weight, violet
+	var style := UITheme.make_panel_style(COL_DARK_PURPLE, COL_PURPLE)
+	style.set_content_margin_all(16)
+	panel.add_theme_stylebox_override("panel", style)
 	vbox.add_theme_constant_override("separation", 10)
-	root_panel.add_child(vbox)
 
 	# Title
 	title_label = Label.new()
@@ -240,7 +213,7 @@ func _create_ui() -> void:
 
 	cost_label = Label.new()
 	cost_label.text = "Mana Cost: 0"
-	cost_label.add_theme_color_override("font_color", COL_GOLD)
+	cost_label.add_theme_color_override("font_color", COL_ARCANE_GOLD)
 	preview_vbox.add_child(cost_label)
 
 	requirements_label = Label.new()
@@ -517,19 +490,19 @@ func _on_create_pressed() -> void:
 func _on_close_pressed() -> void:
 	close()
 
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
-		close()
-		get_viewport().set_input_as_handled()
-
 func open() -> void:
+	show_popup()
 	visible = true
 	_populate_effects_library()
 	_update_preview()
 
 func close() -> void:
+	# The altar unpauses the game and frees this node. Without an altar
+	# (dev scenes, the popup check) we do both jobs ourselves.
 	if altar and altar.has_method("close"):
 		altar.close()
-	else:
-		closed.emit()
-		queue_free()
+		return
+
+	super.close()
+	closed.emit()
+	queue_free()

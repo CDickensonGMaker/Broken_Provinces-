@@ -1,9 +1,8 @@
 ## corpse_loot_ui.gd - UI for searching corpses (Fallout-style loot interface)
 ## Shows corpse contents with gold display, take all button, and close button
 ## Supports radius-based combined looting of multiple nearby corpses
-extends Control
-
-signal ui_closed
+class_name CorpseLootUI
+extends BasePopupUI
 
 ## Reference to the primary corpse we're looting (for backward compatibility)
 var corpse: Node = null
@@ -11,13 +10,13 @@ var corpse: Node = null
 ## Array of all corpses being looted (within radius)
 var corpses: Array = []
 
-## UI colors (matching game_menu style)
-const COL_BG = Color(0.08, 0.06, 0.05)  # Darker, more gore-ish
-const COL_PANEL = Color(0.12, 0.10, 0.08)
-const COL_BORDER = Color(0.4, 0.2, 0.15)  # Reddish-brown border
-const COL_TEXT = Color(0.9, 0.85, 0.75)
-const COL_DIM = Color(0.5, 0.45, 0.4)
-const COL_GOLD = Color(0.85, 0.7, 0.3)
+## Gore palette: this menu is a body, not a shop counter, so it runs darker and
+## redder than UITheme. The shared names still mean the shared colours.
+const GORE_BG = Color(0.08, 0.06, 0.05)
+const GORE_PANEL = Color(0.12, 0.10, 0.08)
+const GORE_BORDER = Color(0.4, 0.2, 0.15)  # Reddish-brown border
+const GORE_DIM = Color(0.5, 0.45, 0.4)
+const GORE_GOLD = Color(0.85, 0.7, 0.3)
 const COL_HOVER = Color(0.25, 0.15, 0.12)
 const COL_BLOOD = Color(0.5, 0.15, 0.1)  # Blood red accent
 const COL_SOURCE = Color(0.6, 0.55, 0.5)  # Dimmer color for source labels
@@ -28,74 +27,33 @@ var gold_label: Label
 var title_label: Label
 
 
-func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
-	_build_ui()
-
-
-func _input(event: InputEvent) -> void:
-	if not visible:
-		return
-
-	# Close on escape, pause, or tab menu key
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("pause") or event.is_action_pressed("menu"):
-		close()
-		get_viewport().set_input_as_handled()
+func _configure() -> void:
+	popup_tier = Tier.FULLSCREEN
+	# The corpse owns the pause; it undoes it when it hears ui_closed.
+	pauses_game = false
 
 
 func open() -> void:
+	show_popup()
 	visible = true
 	_refresh_contents()
 
 
-func close() -> void:
-	visible = false
-	ui_closed.emit()
-
-
-func _build_ui() -> void:
-	# Click-outside overlay - clicking this closes the UI
-	var click_outside := Button.new()
-	click_outside.set_anchors_preset(Control.PRESET_FULL_RECT)
-	click_outside.flat = true
-	click_outside.focus_mode = Control.FOCUS_NONE
-	click_outside.mouse_filter = Control.MOUSE_FILTER_STOP
-	click_outside.pressed.connect(close)
-	add_child(click_outside)
-
-	# Dark overlay (visual only)
-	var overlay := ColorRect.new()
-	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
-	overlay.color = Color(0, 0, 0, 0.8)
-	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(overlay)
-
-	# Main panel - centered, smaller than full screen
-	var main_panel := PanelContainer.new()
-	main_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	main_panel.mouse_filter = Control.MOUSE_FILTER_STOP  # Block clicks from reaching overlay
-	main_panel.offset_left = 150
-	main_panel.offset_right = -150
-	main_panel.offset_top = 100
-	main_panel.offset_bottom = -100
-
-	var main_style := StyleBoxFlat.new()
-	main_style.bg_color = COL_BG
-	main_style.border_color = COL_BORDER
+func _build_popup(main_vbox: VBoxContainer) -> void:
+	# Tighter than a full menu - a body holds less than a shop does
+	panel.offset_left = 150
+	panel.offset_right = -150
+	panel.offset_top = 100
+	panel.offset_bottom = -100
+	var main_style := UITheme.make_panel_style(GORE_BG, GORE_BORDER)
 	main_style.set_border_width_all(3)
-	main_style.set_corner_radius_all(4)
-	main_panel.add_theme_stylebox_override("panel", main_style)
-	add_child(main_panel)
+	panel.add_theme_stylebox_override("panel", main_style)
 
-	# Main vertical layout
-	var main_vbox := VBoxContainer.new()
-	main_vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
 	main_vbox.offset_left = 15
 	main_vbox.offset_top = 15
 	main_vbox.offset_right = -15
 	main_vbox.offset_bottom = -15
 	main_vbox.add_theme_constant_override("separation", 12)
-	main_panel.add_child(main_vbox)
 
 	# Title with blood red accent
 	title_label = Label.new()
@@ -108,7 +66,7 @@ func _build_ui() -> void:
 	# Separator line
 	var sep := ColorRect.new()
 	sep.custom_minimum_size = Vector2(0, 2)
-	sep.color = COL_BORDER
+	sep.color = GORE_BORDER
 	main_vbox.add_child(sep)
 
 	# Gold display row
@@ -118,13 +76,13 @@ func _build_ui() -> void:
 
 	var gold_icon := Label.new()
 	gold_icon.text = "GOLD:"
-	gold_icon.add_theme_color_override("font_color", COL_GOLD)
+	gold_icon.add_theme_color_override("font_color", GORE_GOLD)
 	gold_icon.add_theme_font_size_override("font_size", 14)
 	gold_row.add_child(gold_icon)
 
 	gold_label = Label.new()
 	gold_label.text = "0"
-	gold_label.add_theme_color_override("font_color", COL_GOLD)
+	gold_label.add_theme_color_override("font_color", GORE_GOLD)
 	gold_label.add_theme_font_size_override("font_size", 14)
 	gold_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	gold_row.add_child(gold_label)
@@ -150,8 +108,8 @@ func _build_ui() -> void:
 	scroll_panel.custom_minimum_size = Vector2(360, 280)
 
 	var panel_style := StyleBoxFlat.new()
-	panel_style.bg_color = COL_PANEL
-	panel_style.border_color = COL_BORDER
+	panel_style.bg_color = GORE_PANEL
+	panel_style.border_color = GORE_BORDER
 	panel_style.set_border_width_all(1)
 	scroll_panel.add_theme_stylebox_override("panel", panel_style)
 	main_vbox.add_child(scroll_panel)
@@ -224,7 +182,7 @@ func _refresh_contents() -> void:
 	if not has_any_contents:
 		var empty_label := Label.new()
 		empty_label.text = "Nothing else of value..."
-		empty_label.add_theme_color_override("font_color", COL_DIM)
+		empty_label.add_theme_color_override("font_color", GORE_DIM)
 		empty_label.add_theme_font_size_override("font_size", 12)
 		contents_list.add_child(empty_label)
 		return
@@ -293,7 +251,7 @@ func _create_item_row_multi(corpse_idx: int, slot_idx: int, slot: Dictionary, so
 	row_btn.process_mode = Node.PROCESS_MODE_ALWAYS
 
 	row_btn.add_theme_color_override("font_color", quality_color)
-	row_btn.add_theme_color_override("font_hover_color", COL_GOLD)
+	row_btn.add_theme_color_override("font_hover_color", GORE_GOLD)
 	row_btn.add_theme_font_size_override("font_size", 12)
 
 	# Hover style
@@ -425,20 +383,20 @@ func _on_take_all() -> void:
 
 func _style_button(btn: Button) -> void:
 	var normal := StyleBoxFlat.new()
-	normal.bg_color = COL_PANEL
-	normal.border_color = COL_BORDER
+	normal.bg_color = GORE_PANEL
+	normal.border_color = GORE_BORDER
 	normal.set_border_width_all(1)
 	normal.set_corner_radius_all(2)
 
 	var hover := StyleBoxFlat.new()
 	hover.bg_color = COL_HOVER
-	hover.border_color = COL_GOLD
+	hover.border_color = GORE_GOLD
 	hover.set_border_width_all(1)
 	hover.set_corner_radius_all(2)
 
 	var pressed := StyleBoxFlat.new()
 	pressed.bg_color = COL_BLOOD
-	pressed.border_color = COL_GOLD
+	pressed.border_color = GORE_GOLD
 	pressed.set_border_width_all(1)
 	pressed.set_corner_radius_all(2)
 
@@ -446,7 +404,7 @@ func _style_button(btn: Button) -> void:
 	btn.add_theme_stylebox_override("hover", hover)
 	btn.add_theme_stylebox_override("pressed", pressed)
 	btn.add_theme_color_override("font_color", COL_TEXT)
-	btn.add_theme_color_override("font_hover_color", COL_GOLD)
+	btn.add_theme_color_override("font_hover_color", GORE_GOLD)
 
 
 func _show_notification(text: String) -> void:
