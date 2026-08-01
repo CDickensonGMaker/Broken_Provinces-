@@ -23,6 +23,9 @@ signal origin_shifted(shift: Vector3)
 const LOAD_RADIUS := 1       ## Load cells within this radius of player
 const UNLOAD_RADIUS := 2     ## Unload cells beyond this radius
 const CELL_SIZE := 100.0     ## World units per cell (matches WorldGrid)
+## Coastal water sits just under a water cell's own surface at -0.5 so the two
+## never share a plane and z-fight where they overlap
+const COASTAL_WATER_Y := -0.55
 
 ## Floating origin configuration
 const ORIGIN_SHIFT_THRESHOLD := 2000.0  ## Shift origin when player exceeds this distance (increased for stability)
@@ -554,10 +557,7 @@ func _create_boundary_wall(cell_node: Node3D, direction: Vector2i, coords: Vecto
 		var num_rocks: int = 6
 		var segment_length: float = CELL_SIZE / float(num_rocks)
 
-		# Rock material - brown/gray beach rocks
-		var rock_mat: StandardMaterial3D = StandardMaterial3D.new()
-		rock_mat.albedo_color = Color(0.45, 0.40, 0.35)  # Brown-gray beach rocks
-		rock_mat.roughness = 0.95
+		var rock_mat: StandardMaterial3D = _get_beach_rock_material()
 
 		for i in range(num_rocks):
 			var rock: CSGBox3D = CSGBox3D.new()
@@ -625,11 +625,7 @@ func _create_boundary_wall(cell_node: Node3D, direction: Vector2i, coords: Vecto
 			var seg_height: float = wall_height * randf_range(0.7, 1.3)
 			var seg_thickness: float = wall_thickness * randf_range(0.8, 1.2)
 
-			# Create rock material - gray mountain rocks
-			var rock_mat: StandardMaterial3D = StandardMaterial3D.new()
-			rock_mat.albedo_color = Color(0.35, 0.33, 0.30)
-			rock_mat.roughness = 0.95
-			rock.material = rock_mat
+			rock.material = _get_cliff_material()
 			rock.use_collision = true
 
 			# Position based on direction
@@ -666,17 +662,8 @@ func _add_coastal_decoration(cell_node: Node3D, direction: Vector2i, coords: Vec
 	coast_container.name = "CoastalDecoration_%s" % _dir_name(direction)
 	cell_node.add_child(coast_container)
 
-	# Sand strip material
-	var sand_mat: StandardMaterial3D = StandardMaterial3D.new()
-	sand_mat.albedo_color = Color(0.76, 0.70, 0.50)  # Sandy tan
-	sand_mat.roughness = 0.95
-
-	# Water plane material - flat horizontal surface
-	var water_mat: StandardMaterial3D = StandardMaterial3D.new()
-	water_mat.albedo_color = Color(0.12, 0.30, 0.40, 0.90)  # Deeper blue-green
-	water_mat.roughness = 0.15
-	water_mat.metallic = 0.4
-	water_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	var sand_mat: StandardMaterial3D = _get_sand_material()
+	var water_mat: StandardMaterial3D = _get_water_material()
 
 	# Create sand strip along the edge
 	var sand: CSGBox3D = CSGBox3D.new()
@@ -706,7 +693,7 @@ func _add_coastal_decoration(cell_node: Node3D, direction: Vector2i, coords: Vec
 		water.size = Vector3(water_extent, 0.1, water_length)
 		water.position = Vector3(
 			direction.x * (half_size + water_extent / 2.0),
-			-0.5,  # Below ground level
+			COASTAL_WATER_Y,
 			0
 		)
 	else:
@@ -721,12 +708,58 @@ func _add_coastal_decoration(cell_node: Node3D, direction: Vector2i, coords: Vec
 		water.size = Vector3(water_length, 0.1, water_extent)
 		water.position = Vector3(
 			0,
-			-0.5,  # Below ground level
+			COASTAL_WATER_Y,
 			-direction.y * (half_size + water_extent / 2.0)
 		)
 
 	coast_container.add_child(sand)
 	coast_container.add_child(water)
+
+
+## Boundary geometry used to allocate a StandardMaterial3D per segment, per cell.
+## One material each, held for the life of the run.
+var _beach_rock_material: StandardMaterial3D = null
+var _cliff_material: StandardMaterial3D = null
+var _sand_material: StandardMaterial3D = null
+var _water_material: StandardMaterial3D = null
+
+
+func _get_beach_rock_material() -> StandardMaterial3D:
+	if _beach_rock_material == null:
+		var mat: StandardMaterial3D = StandardMaterial3D.new()
+		mat.albedo_color = Color(0.45, 0.40, 0.35)  # Brown-gray beach rocks
+		mat.roughness = 0.95
+		_beach_rock_material = mat
+	return _beach_rock_material
+
+
+func _get_cliff_material() -> StandardMaterial3D:
+	if _cliff_material == null:
+		var mat: StandardMaterial3D = StandardMaterial3D.new()
+		mat.albedo_color = Color(0.35, 0.33, 0.30)
+		mat.roughness = 0.95
+		_cliff_material = mat
+	return _cliff_material
+
+
+func _get_sand_material() -> StandardMaterial3D:
+	if _sand_material == null:
+		var mat: StandardMaterial3D = StandardMaterial3D.new()
+		mat.albedo_color = Color(0.76, 0.70, 0.50)  # Sandy tan
+		mat.roughness = 0.95
+		_sand_material = mat
+	return _sand_material
+
+
+func _get_water_material() -> StandardMaterial3D:
+	if _water_material == null:
+		var mat: StandardMaterial3D = StandardMaterial3D.new()
+		mat.albedo_color = Color(0.12, 0.30, 0.40, 0.90)  # Deeper blue-green
+		mat.roughness = 0.15
+		mat.metallic = 0.4
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		_water_material = mat
+	return _water_material
 
 
 ## Strip ALL lighting nodes recursively from a cell instance

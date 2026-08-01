@@ -7,6 +7,9 @@ extends Node3D
 ## Zone ID for quest tracking
 const ZONE_ID := "open_world"
 
+## Ceiling on live enemies across every streamed cell at once, not per cell
+const GLOBAL_ENEMY_BUDGET: int = 24
+
 signal room_generated(room: WildernessRoom)
 signal edge_triggered(direction: int)  # CellEdge.Direction
 
@@ -2140,6 +2143,15 @@ func _spawn_enemies() -> void:
 	# Cap at performance budget (max 20 per zone)
 	scaled_max = mini(scaled_max, 20)
 
+	# The per-cell cap says nothing about the world: nine cells stream at once and
+	# the far map used to hold well over a hundred bodies. Danger still buys
+	# tougher enemies through _get_enemy_config_for_biome; it no longer buys crowds.
+	var world_budget: int = GLOBAL_ENEMY_BUDGET - get_tree().get_nodes_in_group("enemies").size()
+	if world_budget <= 0:
+		return
+	scaled_max = mini(scaled_max, world_budget)
+	scaled_min = mini(scaled_min, scaled_max)
+
 	var count := rng.randi_range(scaled_min, scaled_max)
 	var placed_positions: Array[Vector3] = []
 	var min_enemy_distance := 6.0  # Reduced from 8 to allow more enemies
@@ -2608,57 +2620,12 @@ func _spawn_mountain_wall(dir_data: Dictionary) -> void:
 	_spawn_mountain_edge_rocks(dir_data)
 
 
-## Spawn water/coastal visuals along an edge bordering water
+## Spawn coastal visuals along an edge bordering water
+## The water surface itself belongs to CellStreamer's coastal plane, which already
+## covers this edge; the strip of segments that used to sit here only added
+## transparent overdraw and a z-fight.
 func _spawn_water_boundary(dir_data: Dictionary) -> void:
-	var half_size := room_size / 2.0
-	var water_spacing := 8.0  # Space between water visual elements
-	var num_elements := int(room_size / water_spacing) + 1
-
-	for i in range(num_elements):
-		var offset := -half_size + i * water_spacing + rng.randf_range(-2, 2)
-		var pos: Vector3
-
-		if dir_data["axis"] == "x":
-			# North or South edge
-			var edge_z: float = dir_data["edge_z"]
-			pos = Vector3(offset, -0.3, edge_z + sign(edge_z) * -2.0)  # Slightly below ground at edge
-		else:
-			# East or West edge
-			var edge_x: float = dir_data["edge_x"]
-			pos = Vector3(edge_x + sign(edge_x) * -2.0, -0.3, offset)
-
-		# Create a simple water plane segment
-		var water := _create_water_segment()
-		water.position = pos
-		add_child(water)
-
-	# Spawn coastal rocks and driftwood along the water edge
 	_spawn_coastal_decorations(dir_data)
-
-
-## Create a single water segment for boundary visuals
-func _create_water_segment() -> Node3D:
-	var water := Node3D.new()
-	water.name = "WaterSegment"
-
-	# Create a flat water plane
-	var mesh_instance := MeshInstance3D.new()
-	var plane := PlaneMesh.new()
-	plane.size = Vector2(10.0, 8.0)
-	mesh_instance.mesh = plane
-
-	# Water material - dark blue/green tint
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.15, 0.25, 0.35, 0.9)
-	mat.roughness = 0.2
-	mat.metallic = 0.1
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mesh_instance.material_override = mat
-
-	water.add_child(mesh_instance)
-
-	# Water doesn't need collision - CellStreamer's boundary walls handle that
-	return water
 
 
 ## Spawn coastal decorations (rocks, driftwood) along water edges
@@ -2716,10 +2683,7 @@ func _create_coastal_rock() -> Node3D:
 	box.size = Vector3(size, size * 0.6, size * 0.8)
 	mesh.mesh = box
 
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.35, 0.35, 0.32)  # Gray coastal rock
-	mat.roughness = 0.95
-	mesh.material_override = mat
+	mesh.material_override = _get_coastal_rock_material()
 	mesh.position.y = size * 0.3
 
 	rock.add_child(mesh)
@@ -2739,10 +2703,7 @@ func _create_driftwood() -> Node3D:
 	cyl.height = rng.randf_range(1.5, 3.0)
 	mesh.mesh = cyl
 
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.28, 0.22, 0.18)  # Weathered wood
-	mat.roughness = 0.9
-	mesh.material_override = mat
+	mesh.material_override = _get_driftwood_material()
 
 	# Lay the wood on its side
 	mesh.rotation_degrees.z = 90
@@ -2760,11 +2721,52 @@ const MOUNTAIN_ROCK_TEXTURES := [
 ]
 
 
+## Boundary props used to allocate a StandardMaterial3D each, which broke batching
+## on exactly the cells that already carry the most geometry. These are shared.
+static var _coastal_rock_material: StandardMaterial3D = null
+static var _driftwood_material: StandardMaterial3D = null
+static var _mountain_materials: Array[StandardMaterial3D] = []
+
+
+static func _get_coastal_rock_material() -> StandardMaterial3D:
+	if _coastal_rock_material == null:
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color(0.35, 0.35, 0.32)  # Gray coastal rock
+		mat.roughness = 0.95
+		_coastal_rock_material = mat
+	return _coastal_rock_material
+
+
+static func _get_driftwood_material() -> StandardMaterial3D:
+	if _driftwood_material == null:
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color(0.28, 0.22, 0.18)  # Weathered wood
+		mat.roughness = 0.9
+		_driftwood_material = mat
+	return _driftwood_material
+
+
+static func _get_mountain_material(index: int) -> StandardMaterial3D:
+	if _mountain_materials.is_empty():
+		for tex_path: String in MOUNTAIN_ROCK_TEXTURES:
+			var mat := StandardMaterial3D.new()
+			mat.roughness = 0.95
+			mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST  # PS1 style
+			var rock_tex: Texture2D = load(tex_path)
+			if rock_tex:
+				mat.albedo_texture = rock_tex
+				mat.uv1_scale = Vector3(3.0, 3.0, 3.0)
+			else:
+				mat.albedo_color = Color(0.4, 0.38, 0.35)
+			_mountain_materials.append(mat)
+	return _mountain_materials[index % _mountain_materials.size()]
+
+
 ## Spawn clusters of rocks and iron veins along mountain edges
 func _spawn_mountain_edge_rocks(dir_data: Dictionary) -> void:
 	var half_size := room_size / 2.0
-	# Spawn 15-25 rock clusters along the mountain edge
-	var num_clusters := rng.randi_range(15, 25)
+	# Spawn 3-5 rock clusters along the mountain edge
+	var num_clusters := rng.randi_range(3, 5)
 
 	for _c in range(num_clusters):
 		# Random position along the edge
@@ -2783,8 +2785,8 @@ func _spawn_mountain_edge_rocks(dir_data: Dictionary) -> void:
 			var depth_offset := rng.randf_range(8.0, 20.0)
 			base_pos = Vector3(edge_x + sign(edge_x) * -depth_offset, 0, offset)
 
-		# Spawn a cluster of 3-7 rocks at this position
-		var cluster_size := rng.randi_range(3, 7)
+		# Spawn a cluster of 2-3 rocks at this position
+		var cluster_size := rng.randi_range(2, 3)
 		for _r in range(cluster_size):
 			# Scatter within 3-5 units of cluster center
 			var scatter := Vector3(
@@ -2819,23 +2821,8 @@ func _create_mountain_block() -> Node3D:
 	box.size = Vector3(width, height, depth)
 	mesh_instance.mesh = box
 
-	# Rocky material with texture
-	var mat := StandardMaterial3D.new()
-	mat.roughness = 0.95
-	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST  # PS1 style
-
-	# Load random rock texture
-	var tex_path: String = MOUNTAIN_ROCK_TEXTURES[rng.randi() % MOUNTAIN_ROCK_TEXTURES.size()]
-	var rock_tex: Texture2D = load(tex_path)
-	if rock_tex:
-		mat.albedo_texture = rock_tex
-		# Scale UV to tile texture across the rock face
-		mat.uv1_scale = Vector3(width / 4.0, height / 4.0, depth / 4.0)
-	else:
-		# Fallback to gray color if texture fails to load
-		mat.albedo_color = Color(0.4, 0.38, 0.35)
-
-	mesh_instance.material_override = mat
+	# Rocky material, shared per texture so the wall batches
+	mesh_instance.material_override = _get_mountain_material(rng.randi() % MOUNTAIN_ROCK_TEXTURES.size())
 
 	# Position so bottom is at ground level
 	mesh_instance.position.y = height / 2.0

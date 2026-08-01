@@ -19,6 +19,11 @@ const BASE_ENCOUNTER_CHANCE := 0.15
 ## Minimum time between forced encounters (prevent spam)
 const MIN_ENCOUNTER_COOLDOWN := 15.0  # Reduced for more action
 
+## Ceiling on live enemies across every streamed cell at once
+## Mirrors WildernessRoom.GLOBAL_ENEMY_BUDGET; kept local so this autoload never
+## reaches for a class that may not be parsed yet.
+const GLOBAL_ENEMY_BUDGET: int = 24
+
 ## Horde event configuration - rare but devastating
 const HORDE_CHANCE := 0.12  # 12% of encounters are hordes
 const HORDE_COUNT_MIN := 8
@@ -734,6 +739,13 @@ func _spawn_encounter_enemies(encounter_data: Dictionary) -> Array[Node]:
 
 	var enemy_type: String = encounter_data.get("enemy_type", "wolf")
 	var count: int = encounter_data.get("count", 1)
+
+	# Encounters used to ignore what was already alive; a horde on top of a full
+	# desert put the world far past budget.
+	var world_budget: int = GLOBAL_ENEMY_BUDGET - get_tree().get_nodes_in_group("enemies").size()
+	if world_budget <= 0:
+		return spawned
+	count = mini(count, world_budget)
 
 	# Get spawn config for this enemy type
 	var config: Dictionary = _resolve_spawn_config(enemy_type)
