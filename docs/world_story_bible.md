@@ -72,4 +72,7 @@ Not connected to the main story; a "huge flavor drop" the player can skip entire
 4. `[OPEN]` Where do the elven lands sit on the map (across the lake)?
 5. `[OPEN]` Tegnar: future invasion arc or permanent frontier?
 6. `[OPEN]` Names: the elf claimant, her son, the dead dwarf king, the uncle, Viktor's wife, the rogue princess.
-7. `[OPEN]` The main kingdom/capital itself — name and place on the map (it doesn't exist in the world grid yet; the current grid tops out at towns).
+7. **RESOLVED 8/1: the capital is Falkenhaften** — already built: `scenes/levels/falkenhaften.tscn`, world grid entry `{"id": "falkenhaften", type: "capital"}` at (7, −9), far northeast. Approach lore already in data: a ruined fortress guards the way (mountain pass collapsed) and organized bandits ambush merchants on the road — natural Act I→II journey content. Falkenhaften is the Act II hub the player graduates to from Dalhurst.
+
+## Proposed names (Wyrm 8/1 — PROPOSED ONLY, await Caleb's picks)
+Missing king: Aldric / Osric / Valdemar · Elf claimant: Sylvaine / Ithriel / Maerwen · Her son: Corwin / Auren / Elandor · Dead dwarf king: Thurgan Ironvein / Dagmar Stonehall / Borvik · Infant heir: Brann / Korrin · Uncle-regent: Morgrim / Hadrik · Viktor's wife: Isolde / Morwenna / Elisabetta · Rogue princess: Vespera / Seraphine / Isabeau · Goblin king: Skarrag the Devourer / Grubmaw
