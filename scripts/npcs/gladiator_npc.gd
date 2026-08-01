@@ -281,10 +281,11 @@ func _die(killer: Node = null) -> void:
 	# Remove from groups
 	remove_from_group("enemies")
 	remove_from_group("attackable")
-	remove_from_group("tournament_enemy")
 
-	# Emit kill signal
+	# Emit kill signal (listeners test tournament_enemy membership)
 	CombatManager.entity_killed.emit(self, killer)
+
+	remove_from_group("tournament_enemy")
 
 	# Give XP
 	if killer and killer.is_in_group("player") and GameManager and GameManager.player_data:
