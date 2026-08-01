@@ -65,6 +65,30 @@ Before making ANY code changes, follow this process:
 - Run through the user flow mentally to catch edge cases
 - Report what was done and what to test
 
+### CONTENT VALIDATOR (session gate)
+
+Run at the **start of every session** and again **before committing anything
+under `data/` or `scripts/levels/`**:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/validate.ps1
+```
+
+It boots Godot 4.5 headless, checks that quest givers are actually spawned,
+reward items and factions actually exist, encounter tables point at real
+enemies, and quest branches are reachable, then writes
+`docs/audits/validation_report.md`.
+
+**The count is not zero yet, and that is deliberate.** Everything still
+outstanding is recorded in `docs/audits/wave_b_dispositions.md` because fixing
+it needs a decision from Caleb - a name, stats, or a piece of world story.
+The rule is simply: **your change must never make the number go up.** Compare
+against the last committed report before you blame your own work.
+
+Never invent content to make the validator quiet. If a phantom reference cannot
+be fixed from data that already exists, add a row to the disposition table
+instead.
+
 ## RULES
 - Do NOT add features beyond what was requested
 - Do NOT move on until current task is complete
