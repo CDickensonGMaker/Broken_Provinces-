@@ -6,7 +6,10 @@
       "response_id": "rumor_hostile_1",
       "text": "Rumors? I've heard plenty. None I'd share with the likes of you.",
       "topic_type": 1,
-      "personality_affinity": ["hostile", "secretive"],
+      "personality_affinity": [
+        "hostile",
+        "secretive"
+      ],
       "min_disposition": 0,
       "max_disposition": 30,
       "required_knowledge": [],
@@ -18,7 +21,10 @@
       "response_id": "rumor_dismissive",
       "text": "Rumors are just idle talk for idle minds. I don't bother with such nonsense.",
       "topic_type": 1,
-      "personality_affinity": ["practical", "dismissive"],
+      "personality_affinity": [
+        "practical",
+        "dismissive"
+      ],
       "min_disposition": 30,
       "max_disposition": 50,
       "required_knowledge": [],
@@ -30,7 +36,10 @@
       "response_id": "rumor_none",
       "text": "I keep to myself, mostly. Don't hear much worth repeating.",
       "topic_type": 1,
-      "personality_affinity": ["reserved", "honest"],
+      "personality_affinity": [
+        "reserved",
+        "honest"
+      ],
       "min_disposition": 25,
       "max_disposition": 60,
       "required_knowledge": [],
@@ -38,15 +47,19 @@
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_eldermoor_crypts_1",
       "text": "Stay away from the Sunken Crypts. Folk who go there don't come back right... if they come back at all.",
       "topic_type": 1,
-      "personality_affinity": ["cautious", "superstitious"],
+      "personality_affinity": [
+        "cautious",
+        "superstitious"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
-      "required_knowledge": ["elder_moor"],
+      "required_knowledge": [
+        "elder_moor"
+      ],
       "weight": 1.3,
       "actions": [],
       "conditions": []
@@ -55,10 +68,15 @@
       "response_id": "rumor_eldermoor_crypts_2",
       "text": "The old burial grounds in the moors have been... stirring. Lights at night. Sounds that shouldn't be.",
       "topic_type": 1,
-      "personality_affinity": ["nervous", "observant"],
+      "personality_affinity": [
+        "nervous",
+        "observant"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
-      "required_knowledge": ["elder_moor"],
+      "required_knowledge": [
+        "elder_moor"
+      ],
       "weight": 1.2,
       "actions": [],
       "conditions": []
@@ -67,10 +85,15 @@
       "response_id": "rumor_eldermoor_bandits_1",
       "text": "The bandits have a hideout somewhere northeast of here. Cave system, they say. Well defended.",
       "topic_type": 1,
-      "personality_affinity": ["helpful", "informed"],
+      "personality_affinity": [
+        "helpful",
+        "informed"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
-      "required_knowledge": ["elder_moor"],
+      "required_knowledge": [
+        "elder_moor"
+      ],
       "weight": 1.2,
       "actions": [
         {
@@ -85,10 +108,15 @@
       "response_id": "rumor_eldermoor_bandits_2",
       "text": "Those bandits are extorting everyone on the Dalhurst road. Pay up or get robbed. Someone needs to deal with them.",
       "topic_type": 1,
-      "personality_affinity": ["frustrated", "worried"],
+      "personality_affinity": [
+        "frustrated",
+        "worried"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
-      "required_knowledge": ["elder_moor"],
+      "required_knowledge": [
+        "elder_moor"
+      ],
       "weight": 1.1,
       "actions": [],
       "conditions": []
@@ -97,10 +125,15 @@
       "response_id": "rumor_eldermoor_wolves_1",
       "text": "The wolf pack's been getting bolder. Bigger than normal wolves, some say. Led by something... wrong.",
       "topic_type": 1,
-      "personality_affinity": ["worried", "superstitious"],
+      "personality_affinity": [
+        "worried",
+        "superstitious"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
-      "required_knowledge": ["elder_moor"],
+      "required_knowledge": [
+        "elder_moor"
+      ],
       "weight": 1.1,
       "actions": [],
       "conditions": []
@@ -109,10 +142,15 @@
       "response_id": "rumor_eldermoor_lights_1",
       "text": "Strange lights have been seen floating over the moor at night. Will-o-wisps, the old folk call them. Follow one and you'll never find your way back.",
       "topic_type": 1,
-      "personality_affinity": ["superstitious", "cautious"],
+      "personality_affinity": [
+        "superstitious",
+        "cautious"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
-      "required_knowledge": ["elder_moor"],
+      "required_knowledge": [
+        "elder_moor"
+      ],
       "weight": 1.0,
       "actions": [],
       "conditions": []
@@ -121,10 +159,15 @@
       "response_id": "rumor_eldermoor_hermit",
       "text": "There's an old hermit living deep in the moors. Some say he's a healer who knows the swamp's secrets. Others say he's touched in the head.",
       "topic_type": 1,
-      "personality_affinity": ["gossipy", "curious"],
+      "personality_affinity": [
+        "gossipy",
+        "curious"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
-      "required_knowledge": ["elder_moor"],
+      "required_knowledge": [
+        "elder_moor"
+      ],
       "weight": 0.9,
       "actions": [],
       "conditions": []
@@ -133,23 +176,32 @@
       "response_id": "rumor_eldermoor_carefree",
       "text": "All this talk of kings and hordes... we've got wolves at the door and goblins on the road. That's what matters here.",
       "topic_type": 1,
-      "personality_affinity": ["practical", "local"],
+      "personality_affinity": [
+        "practical",
+        "local"
+      ],
       "min_disposition": 30,
       "max_disposition": 100,
-      "required_knowledge": ["elder_moor"],
+      "required_knowledge": [
+        "elder_moor"
+      ],
       "weight": 1.0,
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_dalhurst_thieves",
       "text": "Dalhurst has the biggest trading hub in the region, but watch your purse. The thieves guild runs strong there.",
       "topic_type": 1,
-      "personality_affinity": ["helpful", "mercantile"],
+      "personality_affinity": [
+        "helpful",
+        "mercantile"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
-      "required_knowledge": ["dalhurst"],
+      "required_knowledge": [
+        "dalhurst"
+      ],
       "weight": 1.1,
       "actions": [],
       "conditions": []
@@ -158,10 +210,15 @@
       "response_id": "rumor_dalhurst_harbor",
       "text": "The Harbor Master rules Dalhurst in all but name. The mayor does what he's told.",
       "topic_type": 1,
-      "personality_affinity": ["observant", "cynical"],
+      "personality_affinity": [
+        "observant",
+        "cynical"
+      ],
       "min_disposition": 45,
       "max_disposition": 100,
-      "required_knowledge": ["dalhurst"],
+      "required_knowledge": [
+        "dalhurst"
+      ],
       "weight": 1.0,
       "actions": [],
       "conditions": []
@@ -170,23 +227,32 @@
       "response_id": "rumor_dalhurst_eldermoor_view",
       "text": "The Dalhurst folk look down on us, call us backwoods loggers. But who keeps their shipyards running, eh?",
       "topic_type": 1,
-      "personality_affinity": ["defensive", "proud"],
+      "personality_affinity": [
+        "defensive",
+        "proud"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
-      "required_knowledge": ["elder_moor"],
+      "required_knowledge": [
+        "elder_moor"
+      ],
       "weight": 0.9,
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_thornfield_sister",
       "text": "Thornfield's our sister village, founded around the same time. Farm folk, mostly. Good people, but struggling.",
       "topic_type": 1,
-      "personality_affinity": ["friendly", "sympathetic"],
+      "personality_affinity": [
+        "friendly",
+        "sympathetic"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
-      "required_knowledge": ["elder_moor"],
+      "required_knowledge": [
+        "elder_moor"
+      ],
       "weight": 1.0,
       "actions": [],
       "conditions": []
@@ -195,10 +261,15 @@
       "response_id": "rumor_thornfield_collapse",
       "text": "Thornfield's close to where the mountain pass collapsed. They've been worried about more rockslides.",
       "topic_type": 1,
-      "personality_affinity": ["concerned", "informed"],
+      "personality_affinity": [
+        "concerned",
+        "informed"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
-      "required_knowledge": ["thornfield"],
+      "required_knowledge": [
+        "thornfield"
+      ],
       "weight": 1.1,
       "actions": [],
       "conditions": []
@@ -207,23 +278,32 @@
       "response_id": "rumor_thornfield_curse",
       "text": "Some say Thornfield's fields are cursed. Nothing grows right there anymore. Farmers blame the old burial grounds nearby.",
       "topic_type": 1,
-      "personality_affinity": ["superstitious", "gossipy"],
+      "personality_affinity": [
+        "superstitious",
+        "gossipy"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
-      "required_knowledge": ["thornfield"],
+      "required_knowledge": [
+        "thornfield"
+      ],
       "weight": 1.0,
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_millbrook_secret",
       "text": "Something's not right about Millbrook. The mayor's too friendly with those rough-looking strangers.",
       "topic_type": 1,
-      "personality_affinity": ["suspicious", "observant"],
+      "personality_affinity": [
+        "suspicious",
+        "observant"
+      ],
       "min_disposition": 45,
       "max_disposition": 100,
-      "required_knowledge": ["millbrook"],
+      "required_knowledge": [
+        "millbrook"
+      ],
       "weight": 1.1,
       "actions": [],
       "conditions": []
@@ -232,23 +312,32 @@
       "response_id": "rumor_millbrook_bandits",
       "text": "*lowers voice* Between you and me... I think the bandits control Millbrook. The whole town's a front.",
       "topic_type": 1,
-      "personality_affinity": ["secretive", "suspicious"],
+      "personality_affinity": [
+        "secretive",
+        "suspicious"
+      ],
       "min_disposition": 55,
       "max_disposition": 100,
-      "required_knowledge": ["millbrook"],
+      "required_knowledge": [
+        "millbrook"
+      ],
       "weight": 0.9,
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_kazandun_trouble",
       "text": "Kazan-Dun, the dwarf hold in the mountains - they've sealed their gates to outsiders. Something's wrong in the deep.",
       "topic_type": 1,
-      "personality_affinity": ["knowledgeable", "curious"],
+      "personality_affinity": [
+        "knowledgeable",
+        "curious"
+      ],
       "min_disposition": 45,
       "max_disposition": 100,
-      "required_knowledge": ["dwarves"],
+      "required_knowledge": [
+        "dwarves"
+      ],
       "weight": 1.2,
       "actions": [],
       "conditions": []
@@ -257,10 +346,16 @@
       "response_id": "rumor_kazandun_goblins",
       "text": "Goblins broke through into Kazan-Dun's lower tunnels. The dwarves are fighting for their home down there.",
       "topic_type": 1,
-      "personality_affinity": ["informed", "worried"],
+      "personality_affinity": [
+        "informed",
+        "worried"
+      ],
       "min_disposition": 45,
       "max_disposition": 100,
-      "required_knowledge": ["dwarves", "trade"],
+      "required_knowledge": [
+        "dwarves",
+        "trade"
+      ],
       "weight": 1.1,
       "actions": [],
       "conditions": []
@@ -269,7 +364,10 @@
       "response_id": "rumor_kazandun_architecture",
       "text": "They say Kazan-Dun is a marvel of dwarven craft. Halls carved from living rock, forges that burn eternally.",
       "topic_type": 1,
-      "personality_affinity": ["romantic", "knowledgeable"],
+      "personality_affinity": [
+        "romantic",
+        "knowledgeable"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -281,20 +379,27 @@
       "response_id": "rumor_kazandun_steel",
       "text": "The dwarves of Kazan-Dun forge the finest steel in the realm. Worth your weight in gold if you can get your hands on it.",
       "topic_type": 1,
-      "personality_affinity": ["mercantile", "adventurous"],
+      "personality_affinity": [
+        "mercantile",
+        "adventurous"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
-      "required_knowledge": ["trade"],
+      "required_knowledge": [
+        "trade"
+      ],
       "weight": 1.0,
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_faction_elf_tolerated",
       "text": "Elves? We tolerate them well enough. They keep to their forests, we keep to our towns. That's how it's always been.",
       "topic_type": 1,
-      "personality_affinity": ["practical", "neutral"],
+      "personality_affinity": [
+        "practical",
+        "neutral"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -306,7 +411,10 @@
       "response_id": "rumor_faction_elf_aloof",
       "text": "Elves look down on us, you know. Think they're better because they live longer. Arrogant, the lot of them.",
       "topic_type": 1,
-      "personality_affinity": ["cynical", "prejudiced"],
+      "personality_affinity": [
+        "cynical",
+        "prejudiced"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -318,7 +426,10 @@
       "response_id": "rumor_faction_elf_pola_perron",
       "text": "The elven city across the western sea... Pola Perron, they call it. Beautiful beyond imagining, if you can get there.",
       "topic_type": 1,
-      "personality_affinity": ["romantic", "worldly"],
+      "personality_affinity": [
+        "romantic",
+        "worldly"
+      ],
       "min_disposition": 45,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -326,12 +437,14 @@
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_faction_dwarf_needed",
       "text": "We need the dwarves, like it or not. Without their smithing and logistics, the empire's supply lines would collapse.",
       "topic_type": 1,
-      "personality_affinity": ["practical", "informed"],
+      "personality_affinity": [
+        "practical",
+        "informed"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -343,7 +456,10 @@
       "response_id": "rumor_faction_dwarf_respect",
       "text": "Dwarves are good folk if you earn their respect. Stubborn as stone, but honest. Can't say that about most humans.",
       "topic_type": 1,
-      "personality_affinity": ["respectful", "honest"],
+      "personality_affinity": [
+        "respectful",
+        "honest"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -355,20 +471,27 @@
       "response_id": "rumor_faction_dwarf_factions",
       "text": "The dwarves are split between two factions - Birth and Power. Traditionalists against progressives. Causes them no end of trouble.",
       "topic_type": 1,
-      "personality_affinity": ["knowledgeable", "gossipy"],
+      "personality_affinity": [
+        "knowledgeable",
+        "gossipy"
+      ],
       "min_disposition": 45,
       "max_disposition": 100,
-      "required_knowledge": ["dwarves"],
+      "required_knowledge": [
+        "dwarves"
+      ],
       "weight": 0.9,
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_faction_elf_dwarf",
       "text": "Elves and dwarves don't get along, never have. Something about old wars. They'll trade if they must, but warily.",
       "topic_type": 1,
-      "personality_affinity": ["knowledgeable", "observant"],
+      "personality_affinity": [
+        "knowledgeable",
+        "observant"
+      ],
       "min_disposition": 45,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -376,12 +499,14 @@
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_faction_tegner_enemy",
       "text": "The Tegners are monsters in human form. A hundred years they've pushed north, raiding, killing, eating the fallen.",
       "topic_type": 1,
-      "personality_affinity": ["hateful", "fearful"],
+      "personality_affinity": [
+        "hateful",
+        "fearful"
+      ],
       "min_disposition": 30,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -393,7 +518,10 @@
       "response_id": "rumor_faction_tegner_humies",
       "text": "Tegners call us 'humies.' Like we're something less than them. Savages, the lot of them. No negotiating with that kind.",
       "topic_type": 1,
-      "personality_affinity": ["hateful", "informed"],
+      "personality_affinity": [
+        "hateful",
+        "informed"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -405,7 +533,10 @@
       "response_id": "rumor_faction_tegner_cannibals",
       "text": "They eat their fallen enemies, you know. The Tegners. It's not just rumor - soldiers have seen it. Cannibals and worse.",
       "topic_type": 1,
-      "personality_affinity": ["fearful", "dramatic"],
+      "personality_affinity": [
+        "fearful",
+        "dramatic"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -417,7 +548,10 @@
       "response_id": "rumor_faction_tegner_moving",
       "text": "The Tegner horde is moving again. Pushing north. The border forts are barely holding. How long before they reach us?",
       "topic_type": 1,
-      "personality_affinity": ["worried", "informed"],
+      "personality_affinity": [
+        "worried",
+        "informed"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -425,12 +559,14 @@
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_faction_keepers",
       "text": "There's talk of a secret society... the Keepers, they call themselves. Ancient order that knows forbidden truths.",
       "topic_type": 1,
-      "personality_affinity": ["mysterious", "curious"],
+      "personality_affinity": [
+        "mysterious",
+        "curious"
+      ],
       "min_disposition": 50,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -442,7 +578,10 @@
       "response_id": "rumor_faction_keepers_king",
       "text": "Some say the Keepers know the truth about the King. Why he's been 'in seclusion' for forty years. Just rumors, of course.",
       "topic_type": 1,
-      "personality_affinity": ["secretive", "knowledgeable"],
+      "personality_affinity": [
+        "secretive",
+        "knowledgeable"
+      ],
       "min_disposition": 55,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -450,12 +589,14 @@
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_king_missing",
       "text": "The King hasn't been seen in years. The Council says he's meditating, but forty years? Nobody believes it anymore.",
       "topic_type": 1,
-      "personality_affinity": ["suspicious", "informed"],
+      "personality_affinity": [
+        "suspicious",
+        "informed"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -467,7 +608,10 @@
       "response_id": "rumor_king_dead",
       "text": "*whispers* Some say the King is dead. Has been for years. The Council's hiding it to keep power for themselves.",
       "topic_type": 1,
-      "personality_affinity": ["secretive", "suspicious"],
+      "personality_affinity": [
+        "secretive",
+        "suspicious"
+      ],
       "min_disposition": 50,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -475,12 +619,14 @@
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_pass_collapse",
       "text": "The mountain pass to Falkenhaften collapsed. Some say it was natural, others whisper about sabotage. Either way, we're cut off.",
       "topic_type": 1,
-      "personality_affinity": ["concerned", "informed"],
+      "personality_affinity": [
+        "concerned",
+        "informed"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -488,12 +634,14 @@
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_larton_ghosts",
       "text": "Ghost pirates have blockaded Larton harbor. Spectral ships that appear at night and sink any vessel that tries to leave.",
       "topic_type": 1,
-      "personality_affinity": ["superstitious", "informed"],
+      "personality_affinity": [
+        "superstitious",
+        "informed"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -505,7 +653,10 @@
       "response_id": "rumor_larton_crew",
       "text": "The ghost ships at Larton are crewed by sailors who drowned years ago. Can't die again. Can't rest. Just sail forever, hunting the living.",
       "topic_type": 1,
-      "personality_affinity": ["dramatic", "superstitious"],
+      "personality_affinity": [
+        "dramatic",
+        "superstitious"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -513,15 +664,19 @@
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_dungeon_stirring",
       "text": "They say {dungeon_name} has been stirring again. Lights in the depths, unnatural sounds...",
       "topic_type": 1,
-      "personality_affinity": ["nervous", "superstitious"],
+      "personality_affinity": [
+        "nervous",
+        "superstitious"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
-      "required_knowledge": ["rumors"],
+      "required_knowledge": [
+        "rumors"
+      ],
       "weight": 1.0,
       "actions": [],
       "conditions": []
@@ -530,20 +685,27 @@
       "response_id": "rumor_dungeon_adventurers",
       "text": "Adventurers went into {dungeon_name} a fortnight ago. None came back. Make of that what you will.",
       "topic_type": 1,
-      "personality_affinity": ["grim", "cautious"],
+      "personality_affinity": [
+        "grim",
+        "cautious"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
-      "required_knowledge": ["rumors"],
+      "required_knowledge": [
+        "rumors"
+      ],
       "weight": 1.0,
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_danger_roads",
       "text": "Stay off the roads after dark. There are things out there... things that hunt.",
       "topic_type": 1,
-      "personality_affinity": ["protective", "serious"],
+      "personality_affinity": [
+        "protective",
+        "serious"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -555,23 +717,32 @@
       "response_id": "rumor_danger_disappearances",
       "text": "Folk have been disappearing from the outskirts. The wolves, they say, but wolves don't pick locks.",
       "topic_type": 1,
-      "personality_affinity": ["suspicious", "observant"],
+      "personality_affinity": [
+        "suspicious",
+        "observant"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
-      "required_knowledge": ["rumors"],
+      "required_knowledge": [
+        "rumors"
+      ],
       "weight": 1.0,
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_quest_heirloom",
       "text": "The widow Marren's been asking around for help. Her husband's heirloom was taken by bandits. Poor woman's desperate.",
       "topic_type": 1,
-      "personality_affinity": ["sympathetic", "helpful"],
+      "personality_affinity": [
+        "sympathetic",
+        "helpful"
+      ],
       "min_disposition": 50,
       "max_disposition": 100,
-      "required_knowledge": ["rumors"],
+      "required_knowledge": [
+        "rumors"
+      ],
       "weight": 1.0,
       "actions": [
         {
@@ -586,10 +757,16 @@
       "response_id": "rumor_quest_shipment",
       "text": "The merchant guild's offering coin for anyone who can find their missing shipment. Vanished somewhere on the road. Good pay, if you've got the stomach for it.",
       "topic_type": 1,
-      "personality_affinity": ["mercantile", "opportunistic"],
+      "personality_affinity": [
+        "mercantile",
+        "opportunistic"
+      ],
       "min_disposition": 45,
       "max_disposition": 100,
-      "required_knowledge": ["trade", "rumors"],
+      "required_knowledge": [
+        "trade",
+        "rumors"
+      ],
       "weight": 1.0,
       "actions": [
         {
@@ -600,15 +777,20 @@
       ],
       "conditions": []
     },
-
     {
       "response_id": "rumor_treasure_caravan",
       "text": "A merchant lost his entire caravan somewhere on the eastern road. Never found a trace of the goods.",
       "topic_type": 1,
-      "personality_affinity": ["mercantile", "opportunistic"],
+      "personality_affinity": [
+        "mercantile",
+        "opportunistic"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
-      "required_knowledge": ["trade", "rumors"],
+      "required_knowledge": [
+        "trade",
+        "rumors"
+      ],
       "weight": 0.9,
       "actions": [],
       "conditions": []
@@ -617,23 +799,33 @@
       "response_id": "rumor_treasure_catacombs",
       "text": "They say the old lords hid their valuables when the catacombs were sealed. Still there, waiting.",
       "topic_type": 1,
-      "personality_affinity": ["knowledgeable", "adventurous"],
+      "personality_affinity": [
+        "knowledgeable",
+        "adventurous"
+      ],
       "min_disposition": 45,
       "max_disposition": 100,
-      "required_knowledge": ["rumors", "history"],
+      "required_knowledge": [
+        "rumors",
+        "history"
+      ],
       "weight": 1.0,
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_monster_corpse",
       "text": "A farmhand swears he saw a walking corpse in the fields at dawn. Eyes glowing like embers, he said.",
       "topic_type": 1,
-      "personality_affinity": ["superstitious", "gossipy"],
+      "personality_affinity": [
+        "superstitious",
+        "gossipy"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
-      "required_knowledge": ["rumors"],
+      "required_knowledge": [
+        "rumors"
+      ],
       "weight": 1.0,
       "actions": [],
       "conditions": []
@@ -642,7 +834,10 @@
       "response_id": "rumor_monster_wolves",
       "text": "Wolves have been acting strange lately. Moving in packs larger than normal, led by something... wrong.",
       "topic_type": 1,
-      "personality_affinity": ["observant", "cautious"],
+      "personality_affinity": [
+        "observant",
+        "cautious"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -650,15 +845,19 @@
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_secret_mayor",
       "text": "Look, I trust you, so I'll tell you this... the mayor's been seen meeting with hooded figures at night. Something's not right at the top.",
       "topic_type": 1,
-      "personality_affinity": ["trusting", "rebellious"],
+      "personality_affinity": [
+        "trusting",
+        "rebellious"
+      ],
       "min_disposition": 75,
       "max_disposition": 100,
-      "required_knowledge": ["rumors"],
+      "required_knowledge": [
+        "rumors"
+      ],
       "weight": 1.0,
       "actions": [],
       "conditions": []
@@ -667,20 +866,28 @@
       "response_id": "rumor_secret_passage",
       "text": "*lowers voice* Between you and me... there's a hidden passage beneath the old chapel. Leads somewhere deep. I've seen the priests going in at odd hours.",
       "topic_type": 1,
-      "personality_affinity": ["secretive", "trusting"],
+      "personality_affinity": [
+        "secretive",
+        "trusting"
+      ],
       "min_disposition": 80,
       "max_disposition": 100,
-      "required_knowledge": ["rumors", "occult"],
+      "required_knowledge": [
+        "rumors",
+        "occult"
+      ],
       "weight": 1.0,
       "actions": [],
       "conditions": []
     },
-
     {
       "response_id": "rumor_arena_exists",
       "text": "South of Elder Moor, past the marshes, there's an arena. The Bloodsand Arena, they call it. Warriors come from all over to fight for glory and gold.",
       "topic_type": 1,
-      "personality_affinity": ["adventurous", "informed"],
+      "personality_affinity": [
+        "adventurous",
+        "informed"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -692,10 +899,15 @@
       "response_id": "rumor_arena_champion",
       "text": "The reigning champion at the Bloodsand Arena is Krag the Unbroken. Massive orc, covered in scars. They say he's never lost a match.",
       "topic_type": 1,
-      "personality_affinity": ["informed", "dramatic"],
+      "personality_affinity": [
+        "informed",
+        "dramatic"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
-      "required_knowledge": ["bloodsand_arena"],
+      "required_knowledge": [
+        "bloodsand_arena"
+      ],
       "weight": 1.1,
       "actions": [],
       "conditions": []
@@ -704,7 +916,10 @@
       "response_id": "rumor_arena_gold",
       "text": "The tournaments at the Bloodsand Arena pay well. Win enough fights and you'll be swimming in gold. Of course, you've got to survive first.",
       "topic_type": 1,
-      "personality_affinity": ["mercantile", "opportunistic"],
+      "personality_affinity": [
+        "mercantile",
+        "opportunistic"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -716,10 +931,15 @@
       "response_id": "rumor_arena_death",
       "text": "The Bloodsand Arena doesn't just host tournaments. I've heard they have death matches too. No rules, no mercy. The crowd loves it.",
       "topic_type": 1,
-      "personality_affinity": ["dark", "informed"],
+      "personality_affinity": [
+        "dark",
+        "informed"
+      ],
       "min_disposition": 45,
       "max_disposition": 100,
-      "required_knowledge": ["bloodsand_arena"],
+      "required_knowledge": [
+        "bloodsand_arena"
+      ],
       "weight": 0.9,
       "actions": [],
       "conditions": []
@@ -728,7 +948,10 @@
       "response_id": "rumor_willow_dale_1",
       "text": "The old watchtower at Willow Dale has been abandoned for decades. They say it was built by some secret order, back before the Empire. Nobody goes there anymore - the dead don't rest easy in that place.",
       "topic_type": 1,
-      "personality_affinity": ["superstitious", "cautious"],
+      "personality_affinity": [
+        "superstitious",
+        "cautious"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -740,7 +963,10 @@
       "response_id": "rumor_willow_dale_2",
       "text": "Strange lights have been seen at Willow Dale lately. Purple fires burning where no one should be. Some folk claim to have heard chanting on the wind. Best stay away from there.",
       "topic_type": 1,
-      "personality_affinity": ["nervous", "observant"],
+      "personality_affinity": [
+        "nervous",
+        "observant"
+      ],
       "min_disposition": 35,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -752,7 +978,10 @@
       "response_id": "rumor_keepers_1",
       "text": "They say there's a secret society that watches over things. The Keepers, some call them. They've been around longer than the Empire - protecting us from threats most people don't even know exist.",
       "topic_type": 1,
-      "personality_affinity": ["scholarly", "secretive"],
+      "personality_affinity": [
+        "scholarly",
+        "secretive"
+      ],
       "min_disposition": 50,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -764,10 +993,15 @@
       "response_id": "rumor_keepers_2",
       "text": "That curiosity shop in Dalhurst - the one run by Aldric Vane - there's more to it than meets the eye. The man knows things. Old things. Dangerous things. Best to tread carefully around him.",
       "topic_type": 1,
-      "personality_affinity": ["suspicious", "knowing"],
+      "personality_affinity": [
+        "suspicious",
+        "knowing"
+      ],
       "min_disposition": 45,
       "max_disposition": 100,
-      "required_knowledge": ["dalhurst"],
+      "required_knowledge": [
+        "dalhurst"
+      ],
       "weight": 0.9,
       "actions": [],
       "conditions": []
@@ -776,7 +1010,10 @@
       "response_id": "rumor_darkness_1",
       "text": "The wilderness has grown darker these past months. More creatures stirring in the shadows. Bandits getting bolder. Something's wrong, and it's not just the usual troubles.",
       "topic_type": 1,
-      "personality_affinity": ["worried", "observant"],
+      "personality_affinity": [
+        "worried",
+        "observant"
+      ],
       "min_disposition": 40,
       "max_disposition": 100,
       "required_knowledge": [],
@@ -788,11 +1025,319 @@
       "response_id": "rumor_cultists_1",
       "text": "Cultists have been spotted in the ruins around here. They worship something old - something that came before the gods we know. Don't let them catch you alone.",
       "topic_type": 1,
-      "personality_affinity": ["cautious", "religious"],
+      "personality_affinity": [
+        "cautious",
+        "religious"
+      ],
       "min_disposition": 45,
       "max_disposition": 100,
       "required_knowledge": [],
       "weight": 1.1,
+      "actions": [],
+      "conditions": []
+    },
+    {
+      "response_id": "rumor_kazan_dun_fallen_1",
+      "text": "Kazan-Dun is gone. Seven layers of dwarf hold and the goblins have all seven. Nobody came north to tell us - we worked it out because the iron stopped coming.",
+      "topic_type": 1,
+      "personality_affinity": [
+        "grim",
+        "informed"
+      ],
+      "min_disposition": 35,
+      "max_disposition": 100,
+      "required_knowledge": [],
+      "weight": 1.4,
+      "actions": [],
+      "conditions": [
+        {
+          "condition_type": 5,
+          "string_value": "kazan_dun_fallen",
+          "int_value": 0,
+          "float_value": 0.0,
+          "negate": false
+        }
+      ]
+    },
+    {
+      "response_id": "rumor_kazan_dun_fallen_2",
+      "text": "There were dwarves on the south road last month. Not traders. Whole families, carrying what they could lift. They wouldn't say a word about it, and you don't ask twice.",
+      "topic_type": 1,
+      "personality_affinity": [
+        "observant",
+        "sympathetic"
+      ],
+      "min_disposition": 40,
+      "max_disposition": 100,
+      "required_knowledge": [],
+      "weight": 1.3,
+      "actions": [],
+      "conditions": [
+        {
+          "condition_type": 5,
+          "string_value": "kazan_dun_fallen",
+          "int_value": 0,
+          "float_value": 0.0,
+          "negate": false
+        }
+      ]
+    },
+    {
+      "response_id": "rumor_kazan_dun_fallen_3",
+      "text": "The way I heard it, their king died in the mine pits and the goblins took the body, and after that nothing the dwarves did counted for anything. Couldn't crown a new one. Couldn't agree. Argued until the gates came down.",
+      "topic_type": 1,
+      "personality_affinity": [
+        "gossipy",
+        "grim"
+      ],
+      "min_disposition": 40,
+      "max_disposition": 100,
+      "required_knowledge": [],
+      "weight": 1.2,
+      "actions": [],
+      "conditions": [
+        {
+          "condition_type": 5,
+          "string_value": "kazan_dun_fallen",
+          "int_value": 0,
+          "float_value": 0.0,
+          "negate": false
+        }
+      ]
+    },
+    {
+      "response_id": "rumor_kazan_dun_fallen_4",
+      "text": "Goblin king down there calls himself the Devourer now. Whatever he was building under that mountain, he finished it, and there wasn't a dwarf left to stop him.",
+      "topic_type": 1,
+      "personality_affinity": [
+        "nervous",
+        "superstitious"
+      ],
+      "min_disposition": 40,
+      "max_disposition": 100,
+      "required_knowledge": [],
+      "weight": 1.1,
+      "actions": [],
+      "conditions": [
+        {
+          "condition_type": 5,
+          "string_value": "kazan_dun_fallen",
+          "int_value": 0,
+          "float_value": 0.0,
+          "negate": false
+        }
+      ]
+    },
+    {
+      "response_id": "rumor_kazan_dun_helped_1",
+      "text": "Kazan-Dun holds. That's not nothing - a season ago the betting was on how many weeks. Some outsider went down into the pits for them, is what the traders say.",
+      "topic_type": 1,
+      "personality_affinity": [
+        "informed",
+        "impressed"
+      ],
+      "min_disposition": 35,
+      "max_disposition": 100,
+      "required_knowledge": [],
+      "weight": 1.4,
+      "actions": [],
+      "conditions": [
+        {
+          "condition_type": 5,
+          "string_value": "kazan_dun_helped",
+          "int_value": 0,
+          "float_value": 0.0,
+          "negate": false
+        }
+      ]
+    },
+    {
+      "response_id": "rumor_kazan_dun_helped_2",
+      "text": "Dwarven iron's on the roads again and it's cheaper than it was. Say what you like about dwarves, they remember a debt in both directions.",
+      "topic_type": 1,
+      "personality_affinity": [
+        "practical",
+        "informed"
+      ],
+      "min_disposition": 35,
+      "max_disposition": 100,
+      "required_knowledge": [],
+      "weight": 1.3,
+      "actions": [],
+      "conditions": [
+        {
+          "condition_type": 5,
+          "string_value": "kazan_dun_helped",
+          "int_value": 0,
+          "float_value": 0.0,
+          "negate": false
+        }
+      ]
+    },
+    {
+      "response_id": "rumor_kazan_dun_helped_3",
+      "text": "They burned their king properly in the end. Dwarves care about that more than we do - apparently nothing at all could happen down there until it was done.",
+      "topic_type": 1,
+      "personality_affinity": [
+        "religious",
+        "observant"
+      ],
+      "min_disposition": 40,
+      "max_disposition": 100,
+      "required_knowledge": [],
+      "weight": 1.1,
+      "actions": [],
+      "conditions": [
+        {
+          "condition_type": 5,
+          "string_value": "kazan_dun_helped",
+          "int_value": 0,
+          "float_value": 0.0,
+          "negate": false
+        }
+      ]
+    },
+    {
+      "response_id": "rumor_kazan_dun_regency_1",
+      "text": "There's a dwarf king ten months old under that mountain. His uncle stands in front of the chair and hands it back in sixteen years, and everyone's decided to believe he will.",
+      "topic_type": 1,
+      "personality_affinity": [
+        "gossipy",
+        "informed"
+      ],
+      "min_disposition": 40,
+      "max_disposition": 100,
+      "required_knowledge": [],
+      "weight": 1.2,
+      "actions": [],
+      "conditions": [
+        {
+          "condition_type": 5,
+          "string_value": "kazan_dun_regency_upheld",
+          "int_value": 0,
+          "float_value": 0.0,
+          "negate": false
+        }
+      ]
+    },
+    {
+      "response_id": "rumor_kazan_dun_trial_1",
+      "text": "They called the old rite at Kazan-Dun. Axes in a ring, and whoever walks out is king. In the middle of a siege. Dwarves.",
+      "topic_type": 1,
+      "personality_affinity": [
+        "blunt",
+        "impressed"
+      ],
+      "min_disposition": 40,
+      "max_disposition": 100,
+      "required_knowledge": [],
+      "weight": 1.2,
+      "actions": [],
+      "conditions": [
+        {
+          "condition_type": 5,
+          "string_value": "kazan_dun_trial_called",
+          "int_value": 0,
+          "float_value": 0.0,
+          "negate": false
+        }
+      ]
+    },
+    {
+      "response_id": "rumor_kazan_dun_disgrace_1",
+      "text": "Their regent was finished by a muster roll, of all things. Somebody read out what he did the night his brother died, and that was the end of him. Never even had to be accused.",
+      "topic_type": 1,
+      "personality_affinity": [
+        "gossipy",
+        "cynical"
+      ],
+      "min_disposition": 40,
+      "max_disposition": 100,
+      "required_knowledge": [],
+      "weight": 1.2,
+      "actions": [],
+      "conditions": [
+        {
+          "condition_type": 5,
+          "string_value": "kazan_dun_regent_disgraced",
+          "int_value": 0,
+          "float_value": 0.0,
+          "negate": false
+        }
+      ]
+    },
+    {
+      "response_id": "rumor_elf_claimant_1",
+      "text": "There's an elf woman at the capital with a boy she says is the king's. Been at it years, they say. The court doesn't laugh at her any more, which is the interesting part.",
+      "topic_type": 1,
+      "personality_affinity": [
+        "gossipy",
+        "informed"
+      ],
+      "min_disposition": 40,
+      "max_disposition": 100,
+      "required_knowledge": [],
+      "weight": 1.1,
+      "actions": [],
+      "conditions": []
+    },
+    {
+      "response_id": "rumor_elf_claimant_2",
+      "text": "Sylvaine, her name is. Elf. Turned up with a child and a claim and no proof anyone will print, and somehow she's still there and still being received.",
+      "topic_type": 1,
+      "personality_affinity": [
+        "informed",
+        "observant"
+      ],
+      "min_disposition": 45,
+      "max_disposition": 100,
+      "required_knowledge": [],
+      "weight": 1.0,
+      "actions": [],
+      "conditions": []
+    },
+    {
+      "response_id": "rumor_elf_claimant_3",
+      "text": "The boy's called Corwin. Half-elf, half whatever you think the king was. I've never seen him. Nobody I know has seen him. Everyone has an opinion about his chin.",
+      "topic_type": 1,
+      "personality_affinity": [
+        "gossipy",
+        "dismissive"
+      ],
+      "min_disposition": 40,
+      "max_disposition": 100,
+      "required_knowledge": [],
+      "weight": 1.0,
+      "actions": [],
+      "conditions": []
+    },
+    {
+      "response_id": "rumor_elf_claimant_4",
+      "text": "Twenty years the throne's been empty and now suddenly there's an heir. Convenient, isn't it. That's what the nobles say. Then they say it a bit quieter.",
+      "topic_type": 1,
+      "personality_affinity": [
+        "cynical",
+        "practical"
+      ],
+      "min_disposition": 40,
+      "max_disposition": 100,
+      "required_knowledge": [],
+      "weight": 1.0,
+      "actions": [],
+      "conditions": []
+    },
+    {
+      "response_id": "rumor_elf_claimant_5",
+      "text": "My cousin carts for a house at the capital. He says the elf woman never asks for anything - not coin, not a title. Just keeps putting the boy where people can see him. He finds that more frightening than if she'd asked.",
+      "topic_type": 1,
+      "personality_affinity": [
+        "nervous",
+        "observant"
+      ],
+      "min_disposition": 45,
+      "max_disposition": 100,
+      "required_knowledge": [],
+      "weight": 0.9,
       "actions": [],
       "conditions": []
     }

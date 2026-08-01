@@ -30,6 +30,9 @@ var npc_id: String:
 		return get_npc_id()
 var npc_type: String = "merchant"  # For NPC_TYPE_IN_REGION turn-ins
 @export var region_id: String = ""  # Set by zone when spawned or in scene
+## Faction this trader belongs to. Read by get_world_price_modifier(), so a
+## dwarven trader can price a hold-friend differently from a stranger.
+@export var faction_id: String = ""
 @export var sell_price_multiplier: float = 0.5  # Price when player sells (50% of value)
 @export var shop_tier: LootTables.LootTier = LootTables.LootTier.UNCOMMON
 @export var shop_type: String = "general"
@@ -677,6 +680,31 @@ func get_dialogue_price_modifier() -> float:
 	return maxf(0.5, modifier)
 
 
+## Price modifier the world owes the player for things he did somewhere else.
+## Standing arrangements, not haggling: a dwarf trader who knows what happened
+## at Kazan-Dun charges a hold-friend less, and a trader whose hold fell while
+## the player was busy elsewhere is in no mood to be generous.
+## Returns a multiplier: <1.0 = discount, >1.0 = markup.
+func get_world_price_modifier() -> float:
+	if not WorldState:
+		return 1.0
+
+	var modifier := 1.0
+
+	if faction_id == "dwarves" or faction_id.begins_with("dwarves_"):
+		if WorldState.has_flag("kazan_dun_helped"):
+			# A quarter off, whether or not the token is in hand - the hold
+			# knows him now. Carrying the token is what makes it obvious.
+			modifier -= 0.25
+			if InventoryManager and InventoryManager.has_item("hold_friend_token"):
+				modifier -= 0.05
+		elif WorldState.has_flag("kazan_dun_fallen"):
+			# Refugees. Prices are what they are.
+			modifier += 0.15
+
+	return maxf(0.5, modifier)
+
+
 ## Get faction reputation-based price modifier for BUYING
 ## Returns a multiplier: <1.0 = discount, >1.0 = markup
 ## Based on player's standing with the town faction
@@ -757,7 +785,10 @@ func get_speech_sell_modifier() -> float:
 	# Faction reputation modifier (FRIENDLY = get more gold, UNFRIENDLY = get less)
 	var faction_mod := get_faction_sell_modifier()
 
-	return skill_modifier * inverted_dialogue * faction_mod
+	# World standing works inversely for selling, same as dialogue modifiers
+	var inverted_world := 2.0 - get_world_price_modifier()
+
+	return skill_modifier * inverted_dialogue * faction_mod * inverted_world
 
 ## Get Speech skill buy price modifier (better Speech = lower buy prices)
 ## Formula: Speech -1% per point, PERSUASION -1% per level, NEGOTIATION -3% per level, + dialogue modifiers + faction modifiers, capped at 50% off
@@ -781,9 +812,12 @@ func get_speech_buy_modifier() -> float:
 	# Apply faction reputation modifier (FRIENDLY = cheaper, UNFRIENDLY = more expensive)
 	var faction_mod := get_faction_buy_modifier()
 
+	# Apply what the world owes him (hold-friend discounts and the like)
+	var world_mod := get_world_price_modifier()
+
 	# Cap at 50% minimum (can't get items for less than half price)
 	# But allow faction penalties to push above 1.0 (for UNFRIENDLY markup)
-	return maxf(0.5, skill_modifier * dialogue_mod * faction_mod)
+	return maxf(0.5, skill_modifier * dialogue_mod * faction_mod * world_mod)
 
 ## Get sell price with Speech skill modifier applied
 func get_sell_price_with_speech(inventory_index: int) -> int:

@@ -1,0 +1,49 @@
+{
+    "id": "durn_shieldbearer",
+    "display_name": "Durn Shieldbearer",
+    "description": "A Kazan-Dun hearth-guard given leave to walk out of the mountain with the outsider who settled the succession. He does not talk about which side he wanted to win. He carries a tower shield, stands where he is told, and considers the arrangement a debt being paid down rather than a job.",
+    "sprite_path": "res://assets/sprites/npcs/dwarves/dwarf_2.png",
+    "h_frames": 4,
+    "v_frames": 1,
+    "pixel_size": 0.0193,
+    "max_health": 150,
+    "damage": 14,
+    "armor": 40,
+    "combat_style": "melee",
+    "is_essential": true,
+    "follow_distance": 2.0,
+    "combat_range": 5.0,
+    "leash_range": 18.0,
+    "personality_traits": ["stoic", "loyal", "dry", "immovable"],
+    "abilities": [
+        {
+            "id": "shield_wall",
+            "name": "Shield Wall",
+            "description": "Plants the tower shield and soaks what comes at the party",
+            "cooldown": 25.0,
+            "effect": "buff_armor",
+            "effect_duration": 8.0,
+            "buff_amount": 0.4
+        },
+        {
+            "id": "hold_the_line",
+            "name": "Hold the Line",
+            "description": "Forces nearby enemies to come at Durn instead of anyone squishier",
+            "cooldown": 20.0,
+            "effect": "taunt",
+            "effect_duration": 5.0,
+            "range": 7.0
+        }
+    ],
+    "combat_lines": [
+        "Behind me.",
+        "It comes through me first.",
+        "Kazan-Dun stands.",
+        "Still standing."
+    ],
+    "idle_lines": [
+        "This sky is too far away. I will get used to it.",
+        "Morgrim gave me leave. Vurka signed it too. That took them an hour.",
+        "We buried him properly. That is the part that mattered."
+    ]
+}

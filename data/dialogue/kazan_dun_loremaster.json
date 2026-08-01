@@ -56,6 +56,15 @@
           "actions": []
         },
         {
+          "text": "Could the hold spare an axe? I'm going back out there.",
+          "next": "shieldbearer_offer",
+          "conditions": [
+            { "type": "flag_set", "param": "kazan_dun_helped", "value": 0 },
+            { "type": "flag_set", "param": "kazan_dun_shieldbearer_taken", "value": 0, "invert": true }
+          ],
+          "actions": []
+        },
+        {
           "text": "What do the goblins want with soulstones?",
           "next": "the_stones",
           "conditions": [],
@@ -188,6 +197,39 @@
         { "type": "complete_quest", "param": "kazan_dun_04_the_empty_chair", "value": 0 },
         { "type": "set_world_flag", "param": "kazan_dun_helped", "value": 0 }
       ]
+    },
+    {
+      "id": "shieldbearer_offer",
+      "speaker": "Loremaster Dwalki",
+      "text": "It can spare exactly one, and it took Morgrim and Vurka an hour in the same room to agree which. Durn. Hearth-guard, tower shield, no conversation in him whatsoever. He asked for the posting himself and would not say why, and I have written down that he did not say why, because that is my job. He will stand where you tell him to stand until one of you stops walking.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll take him.",
+          "next": "shieldbearer_taken",
+          "conditions": [],
+          "actions": [
+            { "type": "recruit_follower", "param": "durn_shieldbearer", "value": 0 },
+            { "type": "set_world_flag", "param": "kazan_dun_shieldbearer_taken", "value": 0 }
+          ]
+        },
+        {
+          "text": "I travel alone.",
+          "next": "greeting",
+          "conditions": [],
+          "actions": []
+        }
+      ]
+    },
+    {
+      "id": "shieldbearer_taken",
+      "speaker": "Loremaster Dwalki",
+      "text": "Then he is yours and the debt is being paid down, which is how a dwarf prefers to feel about anyone. Durn - go with them. ... He has already gone to the gate. He packed a week ago.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
     },
     {
       "id": "farewell",

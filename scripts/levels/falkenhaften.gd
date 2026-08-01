@@ -24,6 +24,7 @@ func _ready() -> void:
 		AudioManager.play_ambient(TOWN_AMBIENT_PATH)
 		AudioManager.play_zone_music("village")
 
+	_settle_the_south()
 	_setup_spawn_point_metadata()
 	_spawn_merchants()
 	_spawn_inns()
@@ -35,6 +36,25 @@ func _ready() -> void:
 	_spawn_portals()
 	_setup_day_night_cycle()
 	_bake_navigation()
+
+
+## Reaching the capital is the Act I -> Act II hinge, and it is where the south
+## stops waiting for the player. A player who never went to Kazan-Dun arrives to
+## find the hold has already fallen; nobody tells him so to his face, he just
+## starts hearing about it. Helping them is recorded here too, so gratitude has
+## somewhere to be read from.
+func _settle_the_south() -> void:
+	if not WorldState:
+		return
+
+	WorldState.set_flag("reached_the_capital", true)
+
+	if WorldState.has_flag("kazan_dun_helped"):
+		return
+	if WorldState.has_flag("kazan_dun_fallen"):
+		return
+
+	WorldState.set_flag("kazan_dun_fallen", true)
 
 
 ## Setup dynamic day/night lighting

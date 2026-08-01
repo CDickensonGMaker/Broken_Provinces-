@@ -55,12 +55,17 @@ func _setup_spawn_point_metadata() -> void:
 			child.set_meta("spawn_id", child.name)
 
 
-## Spawn dwarf NPCs in the entrance hall
+## Spawn dwarf NPCs in the entrance hall - unless the hold has already fallen,
+## in which case the same positions hold goblins and nobody is at the gate.
 func _spawn_dwarf_npcs() -> void:
 	if not npcs_node:
 		npcs_node = Node3D.new()
 		npcs_node.name = "NPCs"
 		add_child(npcs_node)
+
+	if WorldState and WorldState.has_flag("kazan_dun_fallen"):
+		_spawn_fallen_hold()
+		return
 
 	# Guards at the guard posts (left and right of entrance)
 	CivilianNPC.spawn_dwarf_guard(npcs_node, Vector3(-20, 0.5, 25), ZONE_ID)
@@ -100,6 +105,41 @@ func _spawn_dwarf_npcs() -> void:
 	warden_profile.base_disposition = 35  # Cautious with outsiders
 	warden_profile.speech_style = "formal"
 	gate_warden.npc_profile = warden_profile
+
+
+## The overrun state. The dwarves who stood at these nine posts are gone and
+## goblins are standing in them - same positions, so the hall reads as the same
+## room with the wrong people in it, which is the whole point.
+func _spawn_fallen_hold() -> void:
+	var enemies := Node3D.new()
+	enemies.name = "Enemies"
+	add_child(enemies)
+
+	var sprite_soldier: Texture2D = load("res://assets/sprites/enemies/goblins/goblin_sword.png")
+	var sprite_archer: Texture2D = load("res://assets/sprites/enemies/goblins/goblin_archer.png")
+	if not sprite_soldier or not sprite_archer:
+		push_error("[Kazan-Dun Entrance] Goblin sprites failed to load; the fallen hold is empty")
+		return
+
+	var soldier_posts: Array[Vector3] = [
+		Vector3(-20, 0.5, 25), Vector3(20, 0.5, 25),
+		Vector3(-8, 0, -35), Vector3(8, 0, -35),
+		Vector3(0, 0, -3), Vector3(0, 0.5, 30),
+	]
+	for post: Vector3 in soldier_posts:
+		var goblin: EnemyBase = EnemyBase.spawn_billboard_enemy(
+			enemies, post, "res://data/enemies/goblin_soldier.tres", sprite_soldier, 3, 1)
+		if goblin:
+			goblin.add_to_group("enemies")
+
+	var archer_posts: Array[Vector3] = [
+		Vector3(-15, 0, 0), Vector3(15, 0, 10), Vector3(-25, 0, -15),
+	]
+	for post: Vector3 in archer_posts:
+		var archer: EnemyBase = EnemyBase.spawn_billboard_enemy(
+			enemies, post, "res://data/enemies/goblin_archer.tres", sprite_archer, 3, 1)
+		if archer:
+			archer.add_to_group("enemies")
 
 
 ## Setup cell streaming if we're the main scene (has Player/HUD)

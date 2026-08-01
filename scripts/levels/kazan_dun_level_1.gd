@@ -46,6 +46,11 @@ func _initialize_level() -> void:
 
 
 func _spawn_succession_cast() -> void:
+	# If the hold fell while the player was elsewhere, there is nobody left in
+	# the Great Hall to argue about the chair.
+	if WorldState and WorldState.has_flag("kazan_dun_fallen"):
+		return
+
 	var npcs_node := get_node_or_null("NPCs") as Node3D
 	if not npcs_node:
 		npcs_node = Node3D.new()
