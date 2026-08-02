@@ -796,7 +796,7 @@
    },
    "quest_giver": true
   },
-  "priest_morthane_dalhurst": {
+  "acolyte_morthane_dalhurst": {
    "archetype": "priest",
    "zone": "dalhurst",
    "stations": {

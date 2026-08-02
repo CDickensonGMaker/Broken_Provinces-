@@ -59,7 +59,8 @@
 		}
 	},
 	"on_complete_flags": ["first_enchantment_complete", "knows_enchanting"],
-	"prerequisites": ["arcane_circle_apprentice"],
+	"prerequisites": [],
+	"flag_prerequisites": ["arcane_circle_apprentice"],
 	"next_quest": "mage_05_rogue_mage",
-	"notes": "Threat: a botched or late enchantment on a ring already paid for. Giver motive: the Circle takes commissions from Dalhurst patrons to fund itself, and a failed job is money refunded and a customer who doesn't come back. Consequence: unstated on the page - the quest cannot fail, so the stakes named in the description are never actually spent. First Apprentice quest."
+	"notes": "Threat: a botched or late enchantment on a ring already paid for. Giver motive: the Circle takes commissions from Dalhurst patrons to fund itself, and a failed job is money refunded and a customer who doesn't come back. Consequence: unstated on the page - the quest cannot fail, so the stakes named in the description are never actually spent. First Apprentice quest. PREREQUISITE FIX: the value in `prerequisites` was a FLAG name, not a quest id - QuestManager reads that list as completed QUEST ids, so this quest was never available and the ladder was dead from mage_02 down. Moved to `flag_prerequisites`, which is the list of flags that is actually checked; the flag itself is raised by the previous quest's on_complete_flags."
 }

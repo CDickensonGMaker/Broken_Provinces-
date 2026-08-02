@@ -360,36 +360,34 @@ func _spawn_npcs() -> void:
 	gaela_profile.personality_traits = ["pious", "nurturing", "kind"]
 	priest_gaela.npc_profile = gaela_profile
 
-	# Priest of Morthane (God/Goddess of Death & Rebirth) - Right side of altar
-	var priest_morthane_quests: Array[String] = [
-		"temple_undead_menace",
-		"morthane_necromancer",
-		"morthane_restless_soul",
-		"morthane_cycle_broken"
-	]
-	var priest_morthane := QuestGiver.spawn_quest_giver(
+	# Morthane's seat at the altar - kept by an acolyte, not a priest.
+	#
+	# There were two Priests of Morthane: this one had the dialogue and the
+	# devotion ritual and gave four quests; `priest_morthane_elder_moor` gave
+	# the whole eleven-quest devotion line and was spawned with no dialogue at
+	# all. The bond could only be taken here while the chain ran out of Elder
+	# Moor. Merged 8/2 into the quest-holding id, which took the dialogue and
+	# the four quests with it.
+	#
+	# The body stays where it stood. Brother Halm keeps the third seat, tends
+	# the candles, and will tell you plainly that the man you want is at Elder
+	# Moor with the graves - which is the honest reason a great temple's death
+	# altar is minded by an acolyte.
+	Townsfolk.spawn_townsfolk(
 		npcs_container,
 		Vector3(0, 0, -10),  # Inside temple, right of altar
-		"Priest of Morthane",
-		"priest_morthane_dalhurst",
-		null,  # Uses default sprite
-		4, 1,  # monk sprite frames
-		priest_morthane_quests
+		"Brother Halm",
+		"acolyte_morthane_dalhurst",
+		ZONE_ID,
+		"church_of_three",
+		NPCKnowledgeProfile.Archetype.PRIEST,
+		["dutiful", "young", "plain-spoken"],
+		["dalhurst", "temple", "religion", "priest_morthane", "death", "rebirth", "undead"],
+		"I keep the candles and I keep the register. If you want the rites themselves, the Priest is at Elder Moor with the graves - he says the dead are better company and I have stopped arguing.",
+		[],
+		true,
+		50
 	)
-	priest_morthane.region_id = ZONE_ID
-	priest_morthane.faction_id = "church_of_three"
-	priest_morthane.no_quest_dialogue = "Death comes to all, but through Morthane's grace, rebirth follows. The cycle must be protected."
-	# Load devotee choice dialogue from JSON
-	var morthane_dialogue: DialogueData = DialogueLoader.load_from_json("res://data/dialogue/priest_morthane_dalhurst.json")
-	if morthane_dialogue:
-		priest_morthane.dialogue_data = morthane_dialogue
-		priest_morthane.use_legacy_dialogue = false
-	else:
-		push_warning("[Dalhurst] Failed to load Priest of Morthane dialogue")
-	var morthane_profile := NPCKnowledgeProfile.priest()
-	morthane_profile.knowledge_tags = ["dalhurst", "temple", "religion", "priest_morthane", "death", "rebirth", "undead"]
-	morthane_profile.personality_traits = ["pious", "solemn", "wise"]
-	priest_morthane.npc_profile = morthane_profile
 
 	# Temple acolyte (wanders around temple area - not a quest giver)
 	var acolyte := CivilianNPC.spawn_monk_brown(npcs_container, Vector3(-2, 0, -5), ZONE_ID)

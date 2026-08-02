@@ -53,7 +53,8 @@
 		}
 	},
 	"on_complete_flags": ["arcane_circle_apprentice", "reagent_collection_complete"],
-	"prerequisites": ["library_duty_complete"],
+	"prerequisites": [],
+	"flag_prerequisites": ["library_duty_complete"],
 	"next_quest": "mage_04_enchantment_task",
-	"notes": "Soulstone-undercurrent touchpoint (quest_web.md #7, tell 2 - the buyer who pays triple): the stone-cutter's refusal to sell is stated once, as an irritated budget complaint from Elara, and never explained, named or called a pattern. Threat: the Circle's reagent supply is quietly drying up. Giver motive: pride - Elara would rather send a Novice out with a basket than admit the guild's usual supplier has been bought out from under it. Consequence: unstated on the page; the Circle absorbs the cost by spending a Novice's labor instead of coin. Final Novice quest, promotion to Apprentice."
+	"notes": "Soulstone-undercurrent touchpoint (quest_web.md #7, tell 2 - the buyer who pays triple): the stone-cutter's refusal to sell is stated once, as an irritated budget complaint from Elara, and never explained, named or called a pattern. Threat: the Circle's reagent supply is quietly drying up. Giver motive: pride - Elara would rather send a Novice out with a basket than admit the guild's usual supplier has been bought out from under it. Consequence: unstated on the page; the Circle absorbs the cost by spending a Novice's labor instead of coin. Final Novice quest, promotion to Apprentice. PREREQUISITE FIX: the value in `prerequisites` was a FLAG name, not a quest id - QuestManager reads that list as completed QUEST ids, so this quest was never available and the ladder was dead from mage_02 down. Moved to `flag_prerequisites`, which is the list of flags that is actually checked; the flag itself is raised by the previous quest's on_complete_flags."
 }

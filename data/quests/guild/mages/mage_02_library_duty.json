@@ -52,7 +52,8 @@
 		}
 	},
 	"on_complete_flags": ["library_duty_complete", "knows_about_restricted_vault"],
-	"prerequisites": ["arcane_circle_novice"],
+	"prerequisites": [],
+	"flag_prerequisites": ["arcane_circle_novice"],
 	"next_quest": "mage_03_reagent_gathering",
-	"notes": "Threat: a necromancy tome sitting unsecured where any visitor - patron or rival Magister - could have found it first. Giver motive: a misfiled forbidden text is Elara's mistake, and finding it before somebody else does is the only way it never becomes one. Consequence: unwired - the quest never lets the tome actually be found by anyone but the player, so the exposure it threatens never lands; a later pass could make failing this in time cost Elara a council rebuke. Second quest, Novice rank."
+	"notes": "Threat: a necromancy tome sitting unsecured where any visitor - patron or rival Magister - could have found it first. Giver motive: a misfiled forbidden text is Elara's mistake, and finding it before somebody else does is the only way it never becomes one. Consequence: unwired - the quest never lets the tome actually be found by anyone but the player, so the exposure it threatens never lands; a later pass could make failing this in time cost Elara a council rebuke. Second quest, Novice rank. PREREQUISITE FIX: the value in `prerequisites` was a FLAG name, not a quest id - QuestManager reads that list as completed QUEST ids, so this quest was never available and the ladder was dead from mage_02 down. Moved to `flag_prerequisites`, which is the list of flags that is actually checked; the flag itself is raised by the previous quest's on_complete_flags."
 }

@@ -1,7 +1,7 @@
 {
-  "id": "priest_morthane_dalhurst",
-  "display_name": "Priest of Morthane - Dalhurst Temple",
-  "description": "Dialogue for the Priest of Morthane in the Temple of Three Gods, Dalhurst. Includes devotee recruitment, cycle of death themes, and quest hooks.",
+  "id": "priest_morthane_elder_moor",
+  "display_name": "Priest of Morthane",
+  "description": "Dialogue for the Priest of Morthane, who keeps the shrine and the graves at Elder Moor and holds every Morthane quest. Merged 8/2: the id that held the eleven-quest chain absorbed the ritual dialogue the Dalhurst body carried, and that body is an acolyte now. Includes devotee recruitment, apostasy, blessing, the cycle-of-death themes and the quest hooks.",
   "start_node": "greeting",
   "nodes": [
     {
@@ -122,6 +122,18 @@
             {
               "type": "quest_state",
               "param": "morthane_necromancer",
+              "value": 2
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "Willow Dale. I found the one raising the dead there, and I have decided.",
+          "next": "willow_dale_trail_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "morthane_04_necromancer_trail",
               "value": 2
             }
           ],
@@ -721,6 +733,94 @@
         {
           "type": "complete_quest",
           "param": "morthane_necromancer",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "willow_dale_trail_turnin",
+      "speaker": "Priest of Morthane",
+      "text": "The ruins, then. You read his notes and you stood in front of him. I want the ending in your own words, not the one you think I want to hear - Morthane keeps no ledger of intentions.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I killed him. His work died with him.",
+          "next": "willow_dale_trail_killed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I turned him. He goes to the Circle to be watched, and to be taught.",
+          "next": "willow_dale_trail_redeemed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I let him walk. He is still out there, and still working.",
+          "next": "willow_dale_trail_freed",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "willow_dale_trail_killed",
+      "speaker": "Priest of Morthane",
+      "text": "Then it is finished, and the servants he made are at rest, which is the part that matters. Understand what you did: you did not punish a wicked man, you closed a wound. He was clever and he was frightened of dying, and those two together have made every necromancer there has ever been. Say the rites over him yourself next time you pass. He is owed them the same as anyone.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "morthane_04_necromancer_trail:kill_necromancer",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "morthane_04_necromancer_trail",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "willow_dale_trail_redeemed",
+      "speaker": "Priest of Morthane",
+      "text": "Alive, and watched, and taught. That is the harder answer and I will not pretend I would have reached it. The Circle will keep him honest or it will not, and if it does not, this comes back to you and to me both. But a man who can be turned and is killed anyway is a life spent for nothing, and Morthane counts waste as its own kind of desecration. You did well. I say that plainly because you will not hear it often.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "morthane_04_necromancer_trail:redeem_necromancer",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "morthane_04_necromancer_trail",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "willow_dale_trail_freed",
+      "speaker": "Priest of Morthane",
+      "text": "Out there. Still working. I asked for the truth and you gave it to me, so I will give you mine: I think you were merciful and I think you were wrong, and I have been both often enough not to sneer at it. He will not stop. Men like him never stop, they only move. When he surfaces - and he will - it will be your name he remembers and your face he runs from, and you will finish this yourself.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "morthane_04_necromancer_trail:spare_necromancer",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "morthane_04_necromancer_trail",
           "value": 0
         }
       ]

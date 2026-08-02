@@ -4,9 +4,9 @@
 	"description": "The necromantic totem you destroyed in the cemetery was no random artifact - it bore signs of deliberate craftsmanship. The Priest of Morthane has traced its origins to a necromancer operating near Crossroads. He asks you to find this necromancer, but warns you: not all who walk the path of death magic are purely evil. Some seek to understand the cycle, not pervert it. Your judgement will be needed.",
 	"is_main_quest": false,
 	"quest_source": "npc",
-	"giver_npc_id": "priest_morthane_dalhurst",
+	"giver_npc_id": "priest_morthane_elder_moor",
 	"giver_npc_type": "civilian",
-	"giver_region": "dalhurst",
+	"giver_region": "elder_moor",
 	"objectives": [
 		{
 			"id": "investigate_crossroads",
@@ -40,13 +40,13 @@
 			"id": "report_decision",
 			"description": "Report your decision to Priest of Morthane",
 			"type": "talk",
-			"target": "priest_morthane_dalhurst",
+			"target": "priest_morthane_elder_moor",
 			"required_count": 1
 		}
 	],
 	"turn_in_type": "npc_specific",
-	"turn_in_target": "priest_morthane_dalhurst",
-	"turn_in_zone": "dalhurst",
+	"turn_in_target": "priest_morthane_elder_moor",
+	"turn_in_zone": "elder_moor",
 	"rewards": {
 		"gold": 150,
 		"xp": 500,

@@ -4,9 +4,9 @@
 	"description": "The widow living alone on Cooper's Row asked the temple herself why her husband still walks the street outside their old house at night - she has heard him, or thinks she has, three nights running. The Priest of Morthane does not correct her fear so much as answer it: the spirit has something unfinished, and it is likely something meant for her. He asks you to find it and see whether she can finally stop lying awake for footsteps.",
 	"is_main_quest": false,
 	"quest_source": "npc",
-	"giver_npc_id": "priest_morthane_dalhurst",
+	"giver_npc_id": "priest_morthane_elder_moor",
 	"giver_npc_type": "civilian",
-	"giver_region": "dalhurst",
+	"giver_region": "elder_moor",
 	"objectives": [
 		{
 			"id": "locate_ghost",
@@ -47,13 +47,13 @@
 			"id": "report_to_priest",
 			"description": "Report to Priest of Morthane",
 			"type": "talk",
-			"target": "priest_morthane_dalhurst",
+			"target": "priest_morthane_elder_moor",
 			"required_count": 1
 		}
 	],
 	"turn_in_type": "npc_specific",
-	"turn_in_target": "priest_morthane_dalhurst",
-	"turn_in_zone": "dalhurst",
+	"turn_in_target": "priest_morthane_elder_moor",
+	"turn_in_zone": "elder_moor",
 	"rewards": {
 		"gold": 100,
 		"xp": 550,

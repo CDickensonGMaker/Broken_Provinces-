@@ -20,11 +20,11 @@
 		},
 		{
 			"id": "complete_task",
-			"description": "Do whatever the assignment turns out to need",
-			"type": "variable",
-			"target": "assignment_variable",
+			"description": "Bring back the arcane essence the assignment is written against",
+			"type": "has_item",
+			"target": "arcane_essence",
 			"required_count": 1,
-			"notes": "Could be: collect reagents, kill magical creatures, explore ruins, deliver items"
+			"notes": "Was type `variable`, which nothing in the engine dispatched - the quest could be accepted and never finished. The Circle's standing list is now one honest, checkable thing: have the reagent in hand when you report back. `has_item` asks about the pack rather than counting pickups, so essence the player already carried counts."
 		},
 		{
 			"id": "report_completion",
@@ -46,6 +46,7 @@
 		}
 	},
 	"on_complete_flags": [],
-	"prerequisites": ["arcane_circle_magister"],
-	"notes": "UNCOMPLETABLE: the `complete_task` objective uses type `variable`, which QuestManager deliberately does not implement - there is no handler for it anywhere in the engine, so this quest can be accepted but never finished. Already on the wave_b dispositions list. Prose rewritten for tone only; the underlying structural defect is untouched and out of scope for a prose-only pass - fixing it means either replacing `variable` with a real objective type or building the handler, both data/engine changes this batch's hard limits forbid. Repeatable quest, Magister rank."
+	"prerequisites": [],
+	"flag_prerequisites": ["arcane_circle_magister"],
+	"notes": "Fixed: `arcane_circle_magister` is a FLAG (mage_13_council_seat raises it), and it was sitting in `prerequisites`, which QuestManager reads as a list of completed QUEST ids - no quest by that name exists, so the quest was never available at all. Moved to `flag_prerequisites`, where flags are actually checked. The `complete_task` objective was type `variable` with no dispatcher and is now a real `has_item` on arcane_essence. `is_repeatable` is still a field nothing reads: the engine gates repeats on `cooldown_days`, and what the Circle's list should cost in days is a design call nobody has made, so no number is invented here. Repeatable quest, Magister rank."
 }

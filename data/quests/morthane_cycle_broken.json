@@ -4,9 +4,9 @@
 	"description": "The dead are rising near Willow Dale, Crossroads, and the outskirts of Thornfield, and the Dalhurst priest of Morthane has already lost two lay brothers sent out to bury the ones who fall in the first waves - young men who volunteered for grave duty and did not come back from it. He believes something in Willow Dale's lowest chambers is disrupting the cycle itself, and he asks you to finish what cost him two of his own before it costs a third.",
 	"is_main_quest": false,
 	"quest_source": "npc",
-	"giver_npc_id": "priest_morthane_dalhurst",
+	"giver_npc_id": "priest_morthane_elder_moor",
 	"giver_npc_type": "civilian",
-	"giver_region": "dalhurst",
+	"giver_region": "elder_moor",
 	"objectives": [
 		{
 			"id": "investigate_willow_dale",
@@ -40,13 +40,13 @@
 			"id": "return_triumphant",
 			"description": "Return to Priest of Morthane with news of victory",
 			"type": "talk",
-			"target": "priest_morthane_dalhurst",
+			"target": "priest_morthane_elder_moor",
 			"required_count": 1
 		}
 	],
 	"turn_in_type": "npc_specific",
-	"turn_in_target": "priest_morthane_dalhurst",
-	"turn_in_zone": "dalhurst",
+	"turn_in_target": "priest_morthane_elder_moor",
+	"turn_in_zone": "elder_moor",
 	"rewards": {
 		"gold": 250,
 		"xp": 750,

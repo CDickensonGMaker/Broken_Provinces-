@@ -699,10 +699,18 @@ func _spawn_guards() -> void:
 	garvek.npc_profile = garvek_profile
 
 
-## Spawn the Priest of Morthane who keeps Elder Moor's shrine.
-## He is the giver and turn-in for the eleven-quest Morthane devotion line
-## (giver_region "elder_moor"); Morthane is one of the Three Gods already
-## worshipped at the Dalhurst temple, where his counterpart priest stands.
+## Spawn the Priest of Morthane who keeps Elder Moor's shrine and its graves.
+##
+## There used to be two of him. This id gave all eleven quests of the devotion
+## line and was spawned with `null` dialogue; `priest_morthane_dalhurst` had the
+## dialogue - including the devotion ritual - and gave four quests of its own.
+## So Morthane's bond could only be taken in Dalhurst while his chain ran out of
+## Elder Moor, and neither half was a whole priest.
+##
+## Merged 8/2: the quest-holding id absorbed the ritual dialogue and the other
+## four quests. The Dalhurst body kept its place at the temple's third seat and
+## was demoted to a named acolyte, which is also the reason the temple has one:
+## the priest is here, with the shrine and the burials.
 func _spawn_priest_of_morthane() -> void:
 	var npcs_container: Node3D = get_node_or_null("NPCs")
 	if not npcs_container:
@@ -722,6 +730,11 @@ func _spawn_priest_of_morthane() -> void:
 		"morthane_09_undead_army",
 		"morthane_10_deathwalker",
 		"morthane_repeatable_cleansing",
+		# The four the Dalhurst body used to give, inherited in the 8/2 merge.
+		"temple_undead_menace",
+		"morthane_necromancer",
+		"morthane_restless_soul",
+		"morthane_cycle_broken",
 	]
 	var priest := QuestGiver.spawn_quest_giver(
 		npcs_container,
@@ -738,6 +751,15 @@ func _spawn_priest_of_morthane() -> void:
 	priest.region_id = ZONE_ID
 	priest.faction_id = "church_of_three"
 	priest.no_quest_dialogue = "Death is not the end, traveller. It is the turning of the wheel. Honour the dead and they will not trouble the living."
+	# The tree the Dalhurst body used to carry, including the devotion ritual.
+	var morthane_dialogue: DialogueData = DialogueLoader.load_from_json(
+		"res://data/dialogue/priest_morthane_elder_moor.json"
+	)
+	if morthane_dialogue:
+		priest.dialogue_data = morthane_dialogue
+		priest.use_legacy_dialogue = false
+	else:
+		push_warning("[Elder Moor] Failed to load Priest of Morthane dialogue")
 	var priest_profile := NPCKnowledgeProfile.priest()
 	priest_profile.knowledge_tags = ["elder_moor", "religion", "priest_morthane", "death", "rebirth", "undead"]
 	priest_profile.personality_traits = ["pious", "solemn", "wise"]
