@@ -1,0 +1,29 @@
+{
+	"id": "greenwood_shrine_errand",
+	"title": "The Shrine in the Greenwood",
+	"description": "Old Sage Brennan has not walked as far as the shrine in two winters, and he would like to know it is still standing. It is north of Elder Moor, in the forest, and he says you cannot miss it if you keep the trees on your left. Go and look at it, and come back and tell him.",
+	"is_main_quest": false,
+	"quest_source": "story",
+	"giver_npc_id": "sage_brennan",
+	"giver_npc_type": "quest_giver",
+	"giver_region": "elder_moor",
+	"objectives": [
+		{
+			"id": "reach_the_shrine",
+			"description": "Find the Greenwood Shrine, north of Elder Moor",
+			"type": "reach",
+			"target": "greenwood_shrine",
+			"required_count": 1
+		}
+	],
+	"turn_in_type": "npc_specific",
+	"turn_in_target": "sage_brennan",
+	"turn_in_zone": "elder_moor",
+	"rewards": {
+		"gold": 25,
+		"xp": 60
+	},
+	"prerequisites": [],
+	"next_quest": "",
+	"notes": "Authored 8/2 through the Quest Authoring panel, as its worked example and as the proof that the panel writes a quest the engine reads. Deliberately the smallest honest quest there is: one place, one look, one walk back. The place it sends the player to was authored the same afternoon in World Forge - a declared LOCATIONS row plus a painted cell - so the two tools close a loop between them."
+}

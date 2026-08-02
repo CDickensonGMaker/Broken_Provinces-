@@ -208,6 +208,10 @@ const LOCATIONS: Array = [
 	 "description": "Rolling moorland dotted with standing stones. Your journey begins here."},
 	{"id": "willow_dale", "name": "Willow Dale Ruins", "x": -5, "y": -5, "type": "dungeon",
 	 "description": "Crumbling stone ruins deep in the foothills."},
+	# Authored 8/2 through World Forge, as the worked example in
+	# docs/design/TOOLS_GUIDE.md: declare the place here, then Sync POIs.
+	{"id": "greenwood_shrine", "name": "Greenwood Shrine", "x": -3, "y": -6, "type": "landmark",
+	 "description": "A shrine to the three gods, standing alone in the forest north of Elder Moor."},
 	{"id": "bandit_hideout", "name": "Bandit Hideout", "x": 1, "y": -4, "type": "dungeon",
 	 "description": "A fortified cave entrance crawling with bandits."},
 	{"id": "dalhurst", "name": "Dalhurst", "x": -8, "y": -2, "type": "town",

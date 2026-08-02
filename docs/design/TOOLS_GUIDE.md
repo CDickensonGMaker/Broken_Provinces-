@@ -392,5 +392,34 @@ registered a second, separate copy of themselves next to the Level Editors
 umbrella - two windows over two states writing one file. They stand down now,
 so what you see in the dropdown is the only one.
 
+**The tools have a gate of their own now.** `tools/check_editor_tools.tscn`
+runs inside `run_all_checks.ps1` with the rest, and asserts six things: every
+addon script compiles in 4.7; no addon writes outside the repository; the forge
+map's cells are all inside the world, its biome overrides are real biomes and
+its POIs are declared places; `LOCATIONS` still decides where places are and
+every hand-built level still streams; the Town Editor's world/local conversion
+reproduces all 336 shipped station positions exactly; and every schedule record
+is one `NPCScheduler` can keep.
+
+**What was authored with these tools on 8/2, as proof they work:**
+
+- **World Forge** - the **Greenwood Shrine**, a wilderness landmark at (-3,-6),
+  north of Elder Moor: a `LOCATIONS` row plus a painted cell. And the northern
+  wall of the Iron Mountains, seventeen cells, given a `ROCKY_WINTER` biome
+  override without changing one thing about their terrain or passability - the
+  first use of the override layer, and the demonstration that it overrules the
+  climate model in exactly the cells it is painted in and nowhere else.
+- **Quest Authoring** - **The Shrine in the Greenwood**
+  (`data/quests/greenwood_shrine_errand.json`), the smallest honest quest there
+  is: Old Sage Brennan asks you to walk north and look at the shrine. Its target
+  is the place World Forge authored the same afternoon, so the two tools close a
+  loop between them.
+- **Town Editor** - its coordinate conversion is proved against the shipped
+  world rather than by inventing a hamlet: all 112 records and 336 stations run
+  backwards into scene-local space and forwards again through the editor's own
+  arithmetic, and every one comes back unchanged. Nothing was invented to
+  demonstrate it, because there was nothing missing to fill - all 112 records
+  already carry a home, a work and a leisure station.
+
 **The full estate audit, with measurements, is in
 `docs/audits/tool_suite_audit.md`.**
