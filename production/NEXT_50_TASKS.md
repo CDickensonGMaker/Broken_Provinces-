@@ -1552,3 +1552,55 @@ any of this is any good.
 would have silently gated every future commit on the abandoned binary. All three
 now default to 4.7. `~/_tools/godot45/` is left in place; pass `-Godot` (or
 `BP_GODOT`) to reach it.
+
+---
+
+## Batch record — factions, devotion and the lockout web (8/2)
+
+Caleb's two questions: "the faction system was a little wonky", and "certain
+things can lock you out of other things — if you go too far into devotion of
+one temple it'll soft lock you out of the other ones." Findings in
+`docs/audits/faction_exclusivity_audit.md`, rulings in
+`wave_b_dispositions.md` FX-1..FX-8. Four commits.
+
+**The wonk had one cause and it was not the faction system.** `complete_quest`
+read every `items` reward entry as `item["id"]`. That throws on a String, a
+throw aborts the function, and **114 of 236 quests write `"items": ["id"]`** —
+so for nearly half the game the reward pass stopped at the item and never
+reached the faction reputation on the next line, nor the follower, soulstone,
+title, area unlock, lore or `next_quest` chaining after it. The quest still
+wrote itself COMPLETED, because the state is set before the rewards are paid.
+Completing `gaela_03_protect_harvest` headless left Millbrook at 0; it pays 25.
+The same crash sat in three reward-preview sites, truncating the line a player
+reads before accepting.
+
+**`FactionManager.reset()` did not reset.** It cleared `player_reputations` and
+then `_initialize_player_reputations()` restored every value from
+`GameManager.player_data`, which `_sync_to_player_data()` had been mirroring all
+along. Both callers are new-game paths.
+
+**The devotion lockout was real and had never fired.** His notes are in the
+game's own dialogue, not in any design doc: each priest states the rule in his
+own voice and each has a written refusal for a rival's devotee. But quests are
+offered through `is_quest_available()`, and the temple chains used only
+`prerequisites` — so a devotee of Gaela could take the entire Chronos chain
+through the QUESTS topic and end up devoted to two gods, having never reached
+the refusal, which sits on a different door. Declining devotion also still
+unlocked the devotee-only content. The gate had in fact been authored for
+Chronos 6-10 under the key `flags_required`, which nothing reads; the field is
+`flag_prerequisites`. 22 bond quests are now gated both ways. Quests 1-4 stay
+open, because the same speeches promise open service to anyone — going *too
+far* is what closes the doors, which is exactly what he said. No threshold was
+invented: the metric is the devotee flag, binary, which is the boundary the
+content itself names.
+
+**19 dead cascade ids.** Seven `cultists` references repointed to
+`shadowed_hand_cult`; four ids with no determinate target recorded in the check
+instead, so a new one fails and a stale excuse fails too.
+
+`tools/check_faction_loop.tscn` is the fourteenth gate — 585 checks proving the
+quest → reputation → cascade → gate → rank → flag loop end to end. Validator
+held at 0 errors / 164 warnings throughout.
+
+**Nothing here was played.** The lockout is proven to fire headlessly; whether
+being refused by two priests reads as meaningful or as a wall is his call.

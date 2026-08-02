@@ -213,6 +213,22 @@ not the priest, so it is open service too.
 The player is told. `already_other_devotee` is real, written content in each
 priest's voice, and it is now the only door that opens.
 
+### One seam worth knowing about
+
+The devotee flag is set in exactly one place: the `devotee_confirmation` node
+in each priest's dialogue. The quest's own `choice_consequences` block — which
+also names the flag — is never applied, because nothing calls
+`apply_choice_consequence` for these quests (only the Millbrook camp and
+`QuestInteractable` call it at all).
+
+So the bond is taken by **doing the ritual in conversation**, and quest 5 is
+the paperwork beside it. Both are required for quest 6: the quest via
+`prerequisites`, the flag via `flag_prerequisites`. That is coherent and it is
+how it now behaves — but it means a player who completes quest 5's two `talk`
+objectives without ever walking the `devotee_inquiry` branch has finished the
+quest and not taken the bond. The priest will still offer the ritual, so it is
+recoverable rather than a soft-lock. Worth an eye during his playthrough.
+
 ---
 
 ## FOCUS 3 — claimed but not in the game (new finds)

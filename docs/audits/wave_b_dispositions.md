@@ -442,3 +442,81 @@ watched. Three present at 03:00 and thirty-three at 13:00 is the right shape;
 whether the town *reads* as alive — whether the teleport transitions are
 jarring, whether an empty night is atmospheric or just empty — is the eye gate,
 and it is entirely outstanding.
+
+---
+
+## FX — Factions, devotion and the lockout web (8/2)
+
+Full evidence, link-by-link verification and the fixes applied are in
+`docs/audits/faction_exclusivity_audit.md`. The eight items below are the ones
+that need **his ruling** and nothing else moves without them.
+
+### FX-1. The temple READMEs contradict the priests
+
+All three priests say devotion is exclusive, in voice, with a written refusal
+for a rival's devotee. All three `data/quests/temple/*/README.md` say it is not
+("Allow multi-devotion"). The dialogue was taken as canon and the lockout is
+now wired — he asked for it directly, and the speeches are older, in voice and
+player-facing where the READMEs are agent-generated and bulk-added in one
+commit. **Confirm.** If confirmed, the READMEs should be corrected so the next
+agent does not undo it.
+
+### FX-2. Can a devotee ever change gods?
+
+Chronos has a `devotee_regret` node; the refusals call the bond "a sacred bond
+that cannot be undone". `FlagManager.become_devotee()` would switch it silently
+and has zero callers. Permanent, or is there a road back — and at what price?
+
+### FX-3. Should serving one god cost standing with the others?
+
+The three churches are `neutrals` of each other: zero cascade in either
+direction. Nothing was invented here because no note anywhere fixes a
+magnitude. Exclusion alone, or a reciprocal reputation penalty as well?
+
+### FX-4. `undead` is named as an enemy by six factions and does not exist
+
+It is used everywhere as an enemy *category* (spawners, loot tables, encounter
+tables) and there is no `undead.tres`. Create the political faction, or strip
+the six references?
+
+### FX-5. Faction relationships are one-way
+
+`merchant_guild` names `thieves_guild` an enemy; the thieves do not name the
+merchants. Cascade reads only the source's list, so helping the merchants costs
+you with the thieves and robbing for the thieves costs you nothing with the
+merchants. True across many pairs. Intended asymmetry, or should they be
+reciprocal?
+
+### FX-6. Morthane's priest is two people
+
+`priest_morthane_elder_moor` gives all eleven Morthane quests and is spawned
+with `null` dialogue. `priest_morthane_dalhurst` has the dialogue — including
+the devotion ritual — and gives no quests. So the Morthane bond can only be
+taken in Dalhurst while the chain runs out of Elder Moor. Merge them, or give
+the Elder Moor priest the dialogue too?
+
+### FX-7. Authored quest fields nothing reads
+
+Each is written in two or more quest files and has zero consumers in
+`scripts/`: `on_complete_flags` (22), `rank_required` (14), `flags_set` (14),
+`unlocks_quests` (6), `xp_bonus`/`gold_bonus`/`reward_bonus` (12),
+`is_tutorial` (3), `is_repeatable` (3), `detection_consequences` (3),
+`optional_objectives`/`choice_paths`/`time_pressure`/`phases` (2 each). Wire or
+delete, per field. Related: the `moral_choice` blocks in `thieves_02`, `_04`,
+`_05` and `_10` are decorative — two siblings were migrated to real
+`choice_consequences` and these four were not.
+
+### FX-8. Promises with no mechanic
+
+- **Blessings.** All three priests offer blessing to any visitor, repeatedly.
+  Every bless/pray choice in all three files has `actions: []`. The only real
+  blessing in the game is the one-time devotee quest item.
+- **Thieves Guild capstone.** `rank_benefits` names `guild_vault_access`,
+  `command_authority`, `share_of_all_guild_jobs` and `personal_safehouse`.
+  Zero hits in `scripts/`. The item is granted; everything it claims to confer
+  is prose.
+- **Deception failure has no consequence** — CLAUDE.md's TODO is still true.
+- **Intuition and Endurance** — CLAUDE.md claims enemy radar, trap detection,
+  stamina, fall damage and jump height. Both skills appear only in stat-map and
+  display-name switches.
+- **`elves_anti_human`** — the only faction no quest can move.
