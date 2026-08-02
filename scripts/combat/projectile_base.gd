@@ -299,8 +299,9 @@ func _handle_collision(target: Node) -> void:
 	var damage := projectile_data.roll_damage(pierce_count, chain_count)
 
 	if target.has_method("take_damage"):
-		target.take_damage(damage, projectile_data.damage_type, owner_entity)
+		var dealt: int = target.take_damage(damage, projectile_data.damage_type, owner_entity)
 		hit_target.emit(target, damage)
+		CombatManager.report_damage(owner_entity, target, dealt, projectile_data.damage_type)
 
 	# Apply stagger
 	if projectile_data.stagger_power > 0 and target.has_method("apply_stagger"):
@@ -394,8 +395,9 @@ func _apply_aoe_damage() -> void:
 		damage = max(1, damage)
 
 		if enemy.has_method("take_damage"):
-			enemy.take_damage(damage, projectile_data.damage_type, owner_entity)
+			var dealt: int = enemy.take_damage(damage, projectile_data.damage_type, owner_entity)
 			hit_targets.append(enemy)
+			CombatManager.report_damage(owner_entity, enemy, dealt, projectile_data.damage_type)
 
 func _spawn_impact_effect() -> void:
 	if not projectile_data or projectile_data.impact_effect_path.is_empty():

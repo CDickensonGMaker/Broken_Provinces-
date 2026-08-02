@@ -217,78 +217,24 @@ func apply_melee_damage(
 
 	return actual_damage
 
-## Calculate and apply ranged damage
-func apply_ranged_damage(
-	attacker: Node,
-	target: Node,
-	weapon: WeaponData,
-	quality: Enums.ItemQuality,
-	distance: float = 0.0
-) -> int:
-	if not is_instance_valid(target) or not target.has_method("take_damage"):
-		return 0
+## Report damage a projectile (or any non-weapon source) already applied.
+##
+## The ranged verb is built on ProjectileData, not WeaponData: an arrow's
+## damage belongs to the arrow. So there is no weapon to hand a projectile
+## hit to - but the feedback layer is the same one melee and magic use, and
+## a bow hit was firing none of it. This emits the signals the HUD listens
+## on and pays the kill rewards, and touches no damage value.
+func report_damage(attacker: Node, target: Node, amount: int, damage_type: Enums.DamageType) -> void:
+	if not is_instance_valid(target):
+		return
 
-	# Get attacker stats
-	var attacker_agility: int = 0
-	var attacker_ranged_skill: int = 0
-	var attacker_data: CharacterData = null
-
-	if attacker.has_method("get_character_data"):
-		attacker_data = attacker.get_character_data()
-		attacker_agility = attacker_data.get_effective_stat(Enums.Stat.AGILITY)
-		attacker_ranged_skill = attacker_data.get_skill(Enums.Skill.RANGED)
-
-	# Roll base damage
-	var base_damage: int = weapon.roll_damage(quality)
-
-	# Apply damage formula for ranged
-	var damage_multiplier: float = 1.0 + (attacker_agility / 15.0) + (attacker_ranged_skill / 20.0)
-	var total_damage: int = int(base_damage * damage_multiplier)
-
-	# Distance falloff (optional, for realism)
-	if distance > weapon.max_range * 0.75:
-		var falloff: float = 1.0 - ((distance - weapon.max_range * 0.75) / (weapon.max_range * 0.25))
-		total_damage = int(total_damage * max(0.5, falloff))
-
-	# Critical hit
-	var crit_chance: float = weapon.crit_chance + (attacker_ranged_skill * 0.02)
-	if randf() < crit_chance:
-		total_damage = int(total_damage * weapon.crit_multiplier)
-		critical_hit.emit(attacker, target)
-
-	# Check if attacker is BLINDED (-50% accuracy)
-	if _has_condition(attacker, Enums.Condition.BLINDED):
-		if randf() < 0.5:  # 50% chance to miss
-			return 0  # Attack missed
-
-	# Armor reduction
-	var target_av: int = _get_target_armor(target)
-	total_damage = _reduce_by_armor(total_damage, target_av * (1.0 - weapon.armor_pierce))
-
-	# Apply ARMORED condition damage reduction (25% reduction)
-	if _has_condition(target, Enums.Condition.ARMORED):
-		total_damage = int(total_damage * 0.75)
-
-	# Damage type
-	total_damage = _apply_damage_type_modifier(total_damage, weapon.damage_type, target)
-	total_damage = max(1, total_damage)
-
-	# Apply damage
-	var actual_damage: int = target.take_damage(total_damage, weapon.damage_type, attacker)
-
-	# Conditions
-	if weapon.inflicts_condition != Enums.Condition.NONE:
-		if randf() < weapon.condition_chance:
-			apply_condition(target, weapon.inflicts_condition, weapon.condition_duration)
-
-	damage_dealt.emit(attacker, target, actual_damage, weapon.damage_type)
-	_spawn_damage_number(target, actual_damage, weapon.damage_type)
+	damage_dealt.emit(attacker, target, amount, damage_type)
+	_spawn_damage_number(target, amount, damage_type)
 
 	if target.has_method("is_dead") and target.is_dead():
 		entity_killed.emit(target, attacker)
-		_handle_kill_rewards(attacker, target)
-
-	return actual_damage
+		if is_instance_valid(attacker):
+			_handle_kill_rewards(attacker, target)
 
 ## Apply spell damage
 func apply_spell_damage(
