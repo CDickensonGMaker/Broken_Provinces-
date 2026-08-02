@@ -20,7 +20,7 @@
 			"id": "kill_spirit_captors",
 			"description": "Defeat the dark cultists holding the spirit captive",
 			"type": "kill",
-			"target": "dark_cultist",
+			"target": "cultist",
 			"required_count": 4,
 			"is_optional": false
 		},

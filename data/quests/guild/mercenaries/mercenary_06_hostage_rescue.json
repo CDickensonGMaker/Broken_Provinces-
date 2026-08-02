@@ -27,7 +27,7 @@
 			"id": "eliminate_guards",
 			"description": "Eliminate the bandit guards",
 			"type": "kill",
-			"target": "bandit_guard",
+			"target": "human_bandit",
 			"required_count": 6
 		},
 		{

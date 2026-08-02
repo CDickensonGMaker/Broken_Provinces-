@@ -26,7 +26,7 @@
 			"id": "kill_ghost_captain",
 			"description": "Defeat the Ghost Captain",
 			"type": "kill",
-			"target": "ghost_captain",
+			"target": "ghost_pirate_captain",
 			"required_count": 1
 		},
 		{

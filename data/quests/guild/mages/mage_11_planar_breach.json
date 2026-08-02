@@ -28,7 +28,7 @@
 			"id": "defeat_planar_entities",
 			"description": "Defeat the extraplanar invaders",
 			"type": "kill",
-			"target": "planar_horror",
+			"target": "planar_entity",
 			"required_count": 10,
 			"notes": "Otherworldly creatures immune to normal damage"
 		},

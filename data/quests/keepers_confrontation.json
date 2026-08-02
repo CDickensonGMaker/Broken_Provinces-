@@ -33,7 +33,7 @@
 			"id": "breach_outer_defenses",
 			"description": "Break through the cult's outer defenses",
 			"type": "kill",
-			"target": "cult_defender",
+			"target": "cultist",
 			"required_count": 10
 		},
 		{
@@ -47,7 +47,7 @@
 			"id": "defeat_malachai",
 			"description": "Defeat Malachai the Profane before the summoning completes",
 			"type": "kill",
-			"target": "malachai_the_profane",
+			"target": "malachai_profane",
 			"required_count": 1
 		},
 		{

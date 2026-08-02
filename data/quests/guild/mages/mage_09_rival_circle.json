@@ -44,7 +44,7 @@
 			"id": "defeat_shadow_mages",
 			"description": "Defeat the Shadow Circle mages",
 			"type": "kill",
-			"target": "shadow_circle_mage",
+			"target": "shadow_mage",
 			"required_count": 5,
 			"notes": "Hostile enemy mages"
 		},

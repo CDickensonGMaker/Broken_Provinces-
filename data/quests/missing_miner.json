@@ -33,7 +33,7 @@
 			"id": "optional_avenge",
 			"description": "(Optional) Slay the creature that killed Erik",
 			"type": "kill",
-			"target": "cave_spider_queen",
+			"target": "spider_queen",
 			"required_count": 1,
 			"is_optional": true
 		}

@@ -26,7 +26,7 @@
 			"id": "defeat_undead_lord",
 			"description": "Defeat the Undead Lord corrupting the cycle",
 			"type": "kill",
-			"target": "undead_lord",
+			"target": "undead_lord_malthor",
 			"required_count": 1
 		},
 		{

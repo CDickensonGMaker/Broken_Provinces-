@@ -26,7 +26,7 @@
 			"id": "resolve_troll_problem",
 			"description": "Deal with the troll (kill it OR successfully negotiate)",
 			"type": "kill",
-			"target": "bridge_troll",
+			"target": "troll",
 			"required_count": 1,
 			"is_optional": true
 		},

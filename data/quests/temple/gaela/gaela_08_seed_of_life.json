@@ -20,7 +20,7 @@
 			"id": "defeat_guardian",
 			"description": "Defeat the Ancient Nature Guardian protecting the Seed",
 			"type": "kill",
-			"target": "ancient_treant",
+			"target": "tree_ent",
 			"required_count": 1,
 			"is_optional": false
 		},

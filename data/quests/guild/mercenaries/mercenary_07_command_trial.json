@@ -20,14 +20,14 @@
 			"id": "clear_goblin_camp",
 			"description": "Lead the assault on the goblin camp",
 			"type": "kill",
-			"target": "goblin_warrior",
+			"target": "goblin_soldier",
 			"required_count": 12
 		},
 		{
 			"id": "defeat_shaman",
 			"description": "Eliminate the goblin shaman leader",
 			"type": "kill",
-			"target": "goblin_shaman",
+			"target": "goblin_mage",
 			"required_count": 1
 		},
 		{

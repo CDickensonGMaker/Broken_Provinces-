@@ -20,21 +20,21 @@
 			"id": "bandit_assault",
 			"description": "Repel the bandit coalition assault",
 			"type": "kill",
-			"target": "bandit_elite",
+			"target": "bandit_captain",
 			"required_count": 20
 		},
 		{
 			"id": "deserter_wave",
 			"description": "Defeat the deserter mercenaries",
 			"type": "kill",
-			"target": "deserter_mercenary",
+			"target": "rival_mercenary",
 			"required_count": 15
 		},
 		{
 			"id": "cultist_infiltration",
 			"description": "Eliminate dark cultist saboteurs",
 			"type": "kill",
-			"target": "dark_cultist",
+			"target": "cultist",
 			"required_count": 10
 		},
 		{

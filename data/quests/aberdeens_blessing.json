@@ -19,7 +19,7 @@
 			"id": "defeat_undead",
 			"description": "Clear the temple of undead",
 			"type": "kill",
-			"target": "skeleton",
+			"target": "skeleton_warrior",
 			"required_count": 10
 		},
 		{

@@ -44,7 +44,7 @@
 			"id": "defeat_cultists_optional",
 			"description": "[Optional] Defeat the dark cultists",
 			"type": "kill",
-			"target": "dark_cultist",
+			"target": "cultist",
 			"required_count": 4,
 			"is_optional": true,
 			"notes": "Only required if player chooses combat resolution"

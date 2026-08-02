@@ -20,7 +20,7 @@
 			"id": "clear_bandits",
 			"description": "Clear the bandit outpost with your squad",
 			"type": "kill",
-			"target": "bandit",
+			"target": "human_bandit",
 			"required_count": 8
 		},
 		{

@@ -112,13 +112,51 @@ and whether it can be faked, sold or destroyed. They are warnings, not errors,
 so they do not block anything, and creating 40 flavourless notes would be exactly
 the junk the item philosophy forbids.
 
-### 2g. Enemy stats (76 warnings)
+### 2g. Enemy stats (was 76 warnings, now about 41)
 
+**Filed wholesale, and about half of it was not a balance question at all.**
+Task 52 (8/1) read all 74 QUEST_ENEMY warnings against the 64 ids in
+`data/enemies/` and found 33 that were typos and near-misses against enemies
+that already exist, not missing stat blocks. Those are repointed:
+`skeleton`→`skeleton_warrior`, `dark_cultist`/`cult_defender`→`cultist`,
+`ghost_captain`→`ghost_pirate_captain`, `cave_spider_queen`→`spider_queen`,
+`bandit`/`bandit_guard`/`bandit_defender`→`human_bandit`,
+`bandit_elite`→`bandit_captain`, `bandit_commander`→`bandit_leader`,
+`goblin_warrior`→`goblin_soldier`, `goblin_shaman`→`goblin_mage`,
+`goblin_scout`→`goblin_archer`, `bridge_troll`→`troll`,
+`malachai_the_profane`→`malachai_profane`, `the_timeless_one`→`timeless_one`,
+`undead_lord`→`undead_lord_malthor`, `alpha_wolf`/`alpha_dire_wolf`→`dire_wolf`,
+`black_wolf_mercenary`/`rival_heavy_infantry`/`deserter_mercenary`→`rival_mercenary`,
+`temporal_rift_guardian`/`corrupted_temporal_guardian`→`temporal_guardian`,
+`planar_horror`→`planar_entity`, `shadow_circle_mage`→`shadow_mage`,
+`ancient_treant`→`tree_ent`.
+
+**What is still yours.** Roughly 41 ids genuinely need a stat block —
 `goblin_king`, `arena_champion_tier1`, `lich_aspirant_valdris`,
-`temporal_rift_guardian`, `rival_commander` and friends. Each needs HP, armour,
-damage, a level for the loot tier, a faction and a sprite. Deliberately left as
-warnings rather than guessed at — this is a balance pass, and
-`balance-reviewer` should own it.
+`rival_commander`, `orc_warrior`, `orc_warchief`, `ice_elemental`,
+`stone_guardian`, `arcane_guardian`, `necromancer_valdris`,
+`death_knight_commander`, `keeper_assassin`, `thornfield_chimera`,
+`katrina_steelwind`, `vorn_champion_form`, `hostile_marcus` and friends. Each
+needs HP, armour, damage, a level for the loot tier, a faction and a sprite.
+Still a balance pass, and `balance-reviewer` should own it.
+
+**Four are an engine gap, not a content gap.** `any_enemy_with_magic`,
+`bounty_target`, `contract_enemy` and `bandit_crossroads_group` are wildcards
+and groups: they want "any enemy matching a predicate" resolution, which
+`on_enemy_killed` cannot express beyond its one hardcoded `enemies` catch-all
+and its prefix-category split. Creating four stat blocks would be the wrong
+answer. Either extend `on_enemy_killed` with a tag/predicate match or convert
+the four objectives to something the engine can already count.
+
+**One audit misdiagnosis, recorded not forced.** The 8/1 audit read
+`tomas_informant` as "a `kill` objective targeting an *informant* — that reads
+like a `talk` objective mistyped." It is not. `thieves_guild_informant` has a
+`talk` objective on Tomas *and* a separate **optional** `kill` objective whose
+own description is "Deal with Tomas (kill, bribe, or intimidate)". Tomas is a
+real spawned NPC (`cultist_temple.gd:395`), killable by design. What the
+objective actually wants is an OR group of kill / bribe / intimidate, which is
+the machinery step 21 built — a quest-design job, not a typo fix. The warning
+stands because no `tomas_informant` enemy stat block exists for the kill road.
 
 ### 2h. Choice branches nobody can reach (74 warnings)
 

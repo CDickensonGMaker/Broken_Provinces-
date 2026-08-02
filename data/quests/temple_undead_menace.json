@@ -19,7 +19,7 @@
 			"id": "destroy_undead",
 			"description": "Destroy the risen dead",
 			"type": "kill",
-			"target": "skeleton",
+			"target": "skeleton_warrior",
 			"required_count": 10
 		},
 		{

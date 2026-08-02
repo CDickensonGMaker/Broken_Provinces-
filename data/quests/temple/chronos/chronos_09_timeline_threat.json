@@ -41,7 +41,7 @@
 			"id": "defeat_rift_guardian",
 			"description": "Defeat the Rift Guardian (boss encounter)",
 			"type": "kill",
-			"target": "temporal_rift_guardian",
+			"target": "temporal_guardian",
 			"required_count": 1
 		},
 		{

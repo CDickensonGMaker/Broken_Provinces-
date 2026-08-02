@@ -44,7 +44,7 @@
 			"id": "destroy_cultist_circle",
 			"description": "Destroy the cultist circle maintaining the curse",
 			"type": "kill",
-			"target": "dark_cultist",
+			"target": "cultist",
 			"required_count": 10,
 			"is_optional": false
 		},

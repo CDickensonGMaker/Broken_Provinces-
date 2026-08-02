@@ -20,7 +20,7 @@
 			"id": "first_wave",
 			"description": "Repel the first wave of goblin scouts",
 			"type": "kill",
-			"target": "goblin_scout",
+			"target": "goblin_archer",
 			"required_count": 15
 		},
 		{

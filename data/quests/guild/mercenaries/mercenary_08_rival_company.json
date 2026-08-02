@@ -27,7 +27,7 @@
 			"id": "resolve_conflict",
 			"description": "Resolve the rivalry (combat, negotiation, or contract competition)",
 			"type": "kill",
-			"target": "black_wolf_mercenary",
+			"target": "rival_mercenary",
 			"required_count": 8,
 			"is_optional": true
 		},

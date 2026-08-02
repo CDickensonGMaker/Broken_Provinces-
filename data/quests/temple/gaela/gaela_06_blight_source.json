@@ -28,7 +28,7 @@
 			"id": "kill_blight_cultists",
 			"description": "Defeat the cultists maintaining the corruption",
 			"type": "kill",
-			"target": "dark_cultist",
+			"target": "cultist",
 			"required_count": 6,
 			"is_optional": false
 		},

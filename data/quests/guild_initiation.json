@@ -26,7 +26,7 @@
 			"id": "kill_alpha",
 			"description": "Defeat the Alpha Wolf",
 			"type": "kill",
-			"target": "alpha_wolf",
+			"target": "dire_wolf",
 			"required_count": 1
 		},
 		{

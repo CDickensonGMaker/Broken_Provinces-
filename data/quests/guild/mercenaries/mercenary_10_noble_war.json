@@ -27,7 +27,7 @@
 			"id": "second_skirmish",
 			"description": "Defeat the enemy's reinforcements",
 			"type": "kill",
-			"target": "rival_heavy_infantry",
+			"target": "rival_mercenary",
 			"required_count": 6
 		},
 		{

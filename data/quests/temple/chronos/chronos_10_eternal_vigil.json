@@ -20,7 +20,7 @@
 			"id": "defeat_shrine_guardians",
 			"description": "Defeat the corrupted shrine guardians (6 enemies)",
 			"type": "kill",
-			"target": "corrupted_temporal_guardian",
+			"target": "temporal_guardian",
 			"required_count": 6
 		},
 		{
@@ -34,7 +34,7 @@
 			"id": "defeat_timeless_one",
 			"description": "Defeat the Timeless One (epic boss encounter)",
 			"type": "kill",
-			"target": "the_timeless_one",
+			"target": "timeless_one",
 			"required_count": 1
 		},
 		{
