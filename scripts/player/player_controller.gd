@@ -918,10 +918,6 @@ func _update_footsteps(delta: float, is_moving: bool) -> void:
 		footstep_timer = 0.0  # Reset timer when not moving
 		return
 
-	# Only play footsteps on grass terrain (forest, plains, hills)
-	if not _is_grass_terrain():
-		return
-
 	# Determine footstep interval based on movement state
 	var interval: float = FOOTSTEP_INTERVAL_WALK
 	if is_crouching:
@@ -935,7 +931,7 @@ func _update_footsteps(delta: float, is_moving: bool) -> void:
 	# Play footstep when timer exceeds interval
 	if footstep_timer >= interval:
 		footstep_timer = 0.0
-		AudioManager.play_footstep()
+		AudioManager.play_footstep_surface(_current_footstep_surface())
 		# Emit noise for stealth system
 		_emit_footstep_noise()
 
@@ -971,23 +967,37 @@ func _alert_enemies_in_radius(pos: Vector3, radius: float) -> void:
 				enemy.hear_sound(pos, NOISE_AWARENESS_BOOST)
 
 ## Check if the player is on grass terrain (forest, plains, hills, swamp)
-func _is_grass_terrain() -> bool:
-	# Get current cell from PlayerGPS
-	if not PlayerGPS:
-		return false
+## Which surface the player is standing on, as a footstep event suffix.
+##
+## Until 8/1 footsteps fired ONLY in grass biomes and always played one
+## hardcoded file, so there were no footsteps at all indoors, in dungeons, in
+## towns or on any stone floor - which is most of Act I. The absence of a
+## surface match must never mean silence: unknown ground is "dirt", and every
+## surface currently resolves to the one real footstep file anyway
+## (AudioManager.EVENT_SUBSTITUTES).
+func _current_footstep_surface() -> String:
+	# Indoors the world grid says nothing useful - a dungeon, a hall or a
+	# house is stone until the level tells us otherwise.
+	var scene_root: Node = get_tree().current_scene
+	if scene_root and scene_root.has_meta("footstep_surface"):
+		return str(scene_root.get_meta("footstep_surface"))
 
-	var current_cell: Vector2i = PlayerGPS.current_cell
-	var cell_info: WorldGrid.CellInfo = WorldGrid.get_cell(current_cell)
-
+	var cell_info: WorldGrid.CellInfo = WorldGrid.get_cell(PlayerGPS.current_cell)
 	if not cell_info:
-		return false
+		return "dirt"
 
-	# Grass footsteps play on these biomes
+	if cell_info.location_type == WorldGrid.LocationType.DUNGEON:
+		return "stone"
+
 	match cell_info.biome:
-		WorldGrid.Biome.FOREST, WorldGrid.Biome.PLAINS, WorldGrid.Biome.HILLS, WorldGrid.Biome.SWAMP:
-			return true
+		WorldGrid.Biome.FOREST, WorldGrid.Biome.PLAINS, WorldGrid.Biome.HILLS, 		WorldGrid.Biome.ROCKY_FOREST, WorldGrid.Biome.ROCKY_PLAINS:
+			return "grass"
+		WorldGrid.Biome.SWAMP, WorldGrid.Biome.COAST:
+			return "water"
+		WorldGrid.Biome.ROCKY, WorldGrid.Biome.MOUNTAINS, WorldGrid.Biome.ROCKY_WINTER:
+			return "stone"
 		_:
-			return false
+			return "dirt"
 
 ## Regenerate mana over time
 func _regenerate_mana(delta: float) -> void:
