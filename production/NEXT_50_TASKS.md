@@ -818,6 +818,131 @@ first one aimed at whether it is any good. Nothing here is art — every audio t
 is repointing code at files that already exist on disk, and anything with no
 asset at all goes to `art_replacement_manifest.md`.
 
+> **BATCH 4 DONE 8/1-8/2.** All eleven tasks landed, ten commits (62 and 63
+> are the same dead-input class and share one), plus two commits for bugs the
+> wiring exposed. Validator held at **0 errors / 179 warnings**; all eleven
+> existing check scenes green plus a new `check_audio_events.tscn`; real
+> headless boot clean.
+>
+> **57, the headline. Reproduced before and after.** `apply_melee_damage` had
+> zero callers - proved by grep across the whole repo, then by a probe: a
+> hitbox hit emitted **no signals at all**, and after routing every hit emits
+> `damage_dealt`. Hitbox now carries an optional WeaponData; set, it hands the
+> hit to CombatManager and keeps only its knockback, and left null (unarmed,
+> every enemy hitbox) it behaves exactly as before. Weapon degradation moved
+> with the damage - per landed hit, not per swing - so a hit is not charged
+> twice.
+>
+> **The routing is not damage-neutral, and the numbers are measured.**
+> `apply_melee_damage` multiplies by `1 + Grit/10 + Melee/20`, which the live
+> path never did, and reduces by the target's armour, which `take_damage` then
+> does again. 20,000 swings of a 1d6 weapon against armour 10 with no stat
+> bonuses: **2.67 before, 2.01 after** - a 25% drop from the double armour
+> alone, which a starting character's Grit roughly cancels and a heavy build
+> beats comfortably. Nothing was retuned in either direction; the three ways
+> to resolve it are laid out in dispositions 3a for Caleb.
+>
+> **Two bugs the routing exposed, both fixed in their own commits.**
+> `QuestManager._on_entity_killed` counted a kill that `EnemyBase._on_death`
+> had already counted, under a comment calling itself a backup - so **every
+> spell kill has been advancing kill objectives by two**, and with melee
+> routed every kill would have. And every hit spawned **two** damage numbers,
+> because CombatManager spawned one and the HUD spawned another off the same
+> signal; CombatManager now spawns only for heals and DOT ticks, which the HUD
+> cannot hear about. Both were invisible while melee was disconnected.
+>
+> **58 was misdiagnosed in the audit's own terms.** `apply_ranged_damage`
+> could not honestly be routed: it is WeaponData-based and the live ranged
+> verb is ProjectileData-based - an arrow's damage belongs to the arrow, and
+> routing would have replaced arrow damage with bow damage. Deleted as a
+> fossil. What was actually missing is the feedback, and that is shared:
+> `CombatManager.report_damage()` gives a projectile hit the signals, the
+> number and the kill rewards without touching a damage value.
+>
+> **XP has never been paid for a melee or a bow kill.** `_handle_kill_rewards`
+> is the only `add_ip` on the kill path and only the CombatManager functions
+> called it. Until today only *spell* kills granted XP. 57 and 58 fix that as
+> a side effect; it is the largest silent progression change in the batch.
+>
+> **59, the audio layer. Measured before: 113 events, 46 resolving, 67 dead.**
+> After: 117 events, 84 resolve, 33 silent and every one of the 33 declared.
+> Not 120 hand edits - three tables and a resolver (`EVENT_ALIASES`,
+> `EVENT_SUBSTITUTES`, `MISSING_SFX`). No asset was invented or repaired: the
+> 33 silent events and the substitutions standing in for them are rows in
+> `art_replacement_manifest.md`. 61 settled the other half in one line -
+> `play_sfx("player_hit")` now resolves the event name, so the CLAUDE.md audio
+> vocabulary is finally understood by the thing it was written for, and
+> CLAUDE.md says which of the two options was taken so nobody adds the other.
+>
+> **60 was worse than the audit found: the class is wired to nothing.**
+> `AmbientSoundscape` is instantiated by no script, scene or data file - zone
+> ambience goes through `AudioManager.play_zone_ambiance()` instead. Its table
+> named 36 loops in a directory that does not exist, and its loader suppressed
+> its own warning. Collapsed to the one bed that exists (caves/ruins),
+> suppression deleted, 36 loops logged to the manifest, and the wire-it-or-
+> delete-it call recorded in dispositions 3d rather than taken.
+>
+> **62/63, the dead keys.** `heavy_attack` is a real verb now - right mouse
+> swings the weapon, never a cast, and passes the +50% flag that has sat
+> unused in the damage function since it was written. `block` and `lock_on`
+> are real mechanics with real design questions behind them, so per the
+> audit's own rule ("do not ship a keybind that does nothing") the bindings
+> were **removed** rather than faked; `toggle_camera_mode` went with them, the
+> camera script having already disabled it because the game is first-person
+> only. `lock_on_target` and the HUD branch reading it are deleted; the target
+> health panel now follows the last enemy the player hit, which 57 makes
+> knowable.
+>
+> **64/65/66, the first ten minutes.** The player has a 0.35s mercy window
+> after a hit, a hit sound and a shake, and `apply_stagger` reads as something
+> rather than a silent boolean. Footsteps are no longer gated to grass biomes:
+> surface is looked up, unknown ground is dirt, and silence is never the
+> answer - so dungeons, towns and stone floors have footsteps (and stealth
+> noise) for the first time. The death screen stops offering saves that do not
+> exist; whether death should offer a respawn at all is a design call and is
+> logged, not taken. 66 was partly misdiagnosed - the autosave button already
+> disabled itself.
+>
+> **67.** The four feedback signals that carry feel are connected (item_use
+> sound, pause ducking, the five follower notifications) and the three dead
+> ones deleted - `rank_check_failed` and `LootableCorpse.looted` were never
+> emitted, and `GameManager.weather_changed` was a name-collision duplicate of
+> the live `WeatherManager.weather_changed`. The other 179 emitted-into-the-
+> void signals are left alone deliberately.
+>
+> **Two numbers were invented, both exported and both labelled.**
+> `heavy_attack_cooldown_multiplier = 2.0` (dispositions 3e) and
+> `hit_iframe_duration = 0.35` (3f). Nothing else was tuned.
+>
+> **The class-closing guard: `tools/check_audio_events.tscn`, 252 checks.**
+> An event that resolves to nothing must be in `MISSING_SFX`; every
+> `MISSING_SFX` entry must be a real event with a manifest row, and fails as a
+> stale excuse the day it starts resolving; every substitute must itself have
+> a file; and every sound name written at a call site must resolve - which is
+> what would have caught `enemy_roar`, `magic_attack`, `gold_drop`,
+> `npc_death`, `guard_death` and `kraken_rumble`, six names no table has ever
+> contained.
+>
+> **Eye gate outstanding, and this batch is the one that most needs it -
+> nothing here was played.** In rough order of how differently the game will
+> behave:
+> 1. **Melee damage changed** (see the measured numbers above), melee crits
+>    now happen, and melee kills pay XP for the first time. Any impression of
+>    difficulty, TTK or levelling speed formed before today was formed with
+>    swords disconnected from the combat system.
+> 2. **Kill objectives now count once, not twice.** A quest that wanted six
+>    bandits was being satisfied by three spell kills.
+> 3. **The game makes noise.** Hits, footsteps everywhere, menu clicks, item
+>    use, a hit sound and shake when the player is struck, ducking on pause.
+>    Several of those are stand-ins (every impact is a sword clank, every menu
+>    sound is one click); the point of the eye gate is whether the
+>    substitutions read as cheap or as fine.
+> 4. **A 0.35s mercy window after every hit** changes what a crowd feels like
+>    more than any other line in the batch.
+> 5. **Right mouse is a heavy attack** with a 2x cooldown, and Q, F and V no
+>    longer do anything (they never did).
+> 6. **One damage number per hit, not two.**
+
 ### 57. Melee bypasses `CombatManager` entirely — **L**
 - **System:** `scripts/autoload/combat_manager.gd:93-218`,
   `scripts/combat/hitbox.gd:_apply_hit`,
