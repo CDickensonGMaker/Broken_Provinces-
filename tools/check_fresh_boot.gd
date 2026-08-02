@@ -39,11 +39,31 @@ func _run() -> void:
 
 
 ## A new character, exactly as the main menu builds one.
+##
+## The flags and world facts set here stand in for the previous playthrough:
+## a guild rank, a deity devotion, a world fact. A new character must not
+## inherit any of them, and until 8/1 he inherited all of the FlagManager ones,
+## because reset_world_state() cleared eleven systems and not that one.
 func _new_character() -> void:
+	FlagManager.set_flag(FlagManager.FLAG_THIEVES_MASTER_THIEF, true)
+	FlagManager.set_flag(FlagManager.FLAG_GAELA_DEVOTEE, true)
+	FlagManager.set_context_variable("merchant_id", "last_run_smith")
+	WorldState.set_flag("last_run_fact", true)
+
 	GameManager.reset_for_new_game()
 	InventoryManager.clear_inventory_state()
 	QuestManager.reset_for_new_game()
+	SaveManager.reset_world_state()
 	GameManager.create_new_character("Smoke", Enums.Race.HUMAN, Enums.Career.SOLDIER)
+
+	_check("a new character does not inherit the last run's guild rank",
+		not FlagManager.has_flag(FlagManager.FLAG_THIEVES_MASTER_THIEF))
+	_check("a new character does not inherit the last run's devotion",
+		FlagManager.get_devoted_deity().is_empty())
+	_check("a new character does not inherit the last run's flag context",
+		FlagManager.get_context_variables().is_empty())
+	_check("a new character does not inherit the last run's world facts",
+		not WorldState.has_flag("last_run_fact"))
 
 	_check("character exists", GameManager.player_data != null)
 	if GameManager.player_data == null:

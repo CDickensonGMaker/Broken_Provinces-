@@ -1910,6 +1910,11 @@ func reset_world_state() -> void:
 	if CrimeManager:
 		CrimeManager.reset_for_new_game()
 
+	# Reset the player's flags. This is the store behind deity devotion, every
+	# guild-rank gate flag and every mirrored world fact, so skipping it handed
+	# a brand new character the last run's ranks and devotions.
+	FlagManager.reset_for_new_game()
+
 	# Reset dialogue flags
 	if DialogueManager:
 		DialogueManager.dialogue_flags.clear()
