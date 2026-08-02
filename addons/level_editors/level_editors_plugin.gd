@@ -14,7 +14,7 @@ var dungeon_editor_window: Window
 var npc_composer_window: Window
 var npc_blueprint_editor_window: Window
 var quest_blueprint_editor_window: Window
-var event_editor_window: Window
+var quest_authoring_window: Window
 
 # Editor docks
 var world_forge_dock: Control
@@ -25,7 +25,7 @@ var dungeon_editor_dock: Control
 var npc_composer_dock: Control
 var npc_blueprint_editor_dock: Control
 var quest_blueprint_editor_dock: Control
-var event_editor_dock: Control
+var quest_authoring_dock: Control
 
 # Preloads
 const WorldForgeDock = preload("res://addons/world_forge/world_forge_dock.gd")
@@ -36,7 +36,10 @@ const DungeonEditorDock = preload("res://addons/dungeon_editor/dungeon_editor_do
 const NPCComposerDock = preload("res://addons/authoring_tools/npc_composer/npc_composer_dock.gd")
 const NPCBlueprintEditorDock = preload("res://addons/authoring_tools/dialogue_editor/npc_blueprint_editor.gd")
 const QuestBlueprintEditorDock = preload("res://addons/authoring_tools/dialogue_editor/quest_blueprint_editor.gd")
-const ScriptedEventEditorDock = preload("res://addons/authoring_tools/event_editor/scripted_event_editor_dock.gd")
+## Replaces the Scripted Event Editor, which wrote data/events/*.json - a
+## directory that does not exist, in a format no script in this project reads.
+## See docs/audits/tool_suite_audit.md section 4.
+const QuestAuthoringDockScript = preload("res://addons/authoring_tools/quest_authoring/quest_authoring_dock.gd")
 
 # Menu IDs
 enum MenuID {
@@ -47,7 +50,7 @@ enum MenuID {
 	NPC_COMPOSER = 4,
 	NPC_BLUEPRINT_EDITOR = 5,
 	QUEST_BLUEPRINT_EDITOR = 6,
-	EVENT_EDITOR = 7,
+	QUEST_AUTHORING = 7,
 	CLOSE_ALL = 10
 }
 
@@ -67,7 +70,7 @@ func _enter_tree() -> void:
 	popup_menu.add_icon_item(null, "NPC Composer", MenuID.NPC_COMPOSER)
 	popup_menu.add_icon_item(null, "NPC Ideas (Blueprint)", MenuID.NPC_BLUEPRINT_EDITOR)
 	popup_menu.add_icon_item(null, "Quest Ideas (Blueprint)", MenuID.QUEST_BLUEPRINT_EDITOR)
-	popup_menu.add_icon_item(null, "Scripted Event Editor", MenuID.EVENT_EDITOR)
+	popup_menu.add_icon_item(null, "Quest Authoring", MenuID.QUEST_AUTHORING)
 	popup_menu.add_separator()
 	popup_menu.add_item("Close All", MenuID.CLOSE_ALL)
 
@@ -85,7 +88,7 @@ func _enter_tree() -> void:
 	_create_npc_composer_window()
 	_create_npc_blueprint_editor_window()
 	_create_quest_blueprint_editor_window()
-	_create_event_editor_window()
+	_create_quest_authoring_window()
 
 
 func _exit_tree() -> void:
@@ -119,9 +122,9 @@ func _exit_tree() -> void:
 		quest_blueprint_editor_window.queue_free()
 		quest_blueprint_editor_window = null
 
-	if event_editor_window:
-		event_editor_window.queue_free()
-		event_editor_window = null
+	if quest_authoring_window:
+		quest_authoring_window.queue_free()
+		quest_authoring_window = null
 
 	world_forge_dock = null
 	town_editor_dock = null
@@ -130,7 +133,7 @@ func _exit_tree() -> void:
 	npc_composer_dock = null
 	npc_blueprint_editor_dock = null
 	quest_blueprint_editor_dock = null
-	event_editor_dock = null
+	quest_authoring_dock = null
 
 
 func _create_world_forge_window() -> void:
@@ -205,8 +208,8 @@ func _on_menu_item_pressed(id: int) -> void:
 			_show_window(npc_blueprint_editor_window)
 		MenuID.QUEST_BLUEPRINT_EDITOR:
 			_show_window(quest_blueprint_editor_window)
-		MenuID.EVENT_EDITOR:
-			_show_window(event_editor_window)
+		MenuID.QUEST_AUTHORING:
+			_show_window(quest_authoring_window)
 		MenuID.CLOSE_ALL:
 			_close_all_windows()
 
@@ -241,8 +244,8 @@ func _close_all_windows() -> void:
 		npc_blueprint_editor_window.visible = false
 	if quest_blueprint_editor_window:
 		quest_blueprint_editor_window.visible = false
-	if event_editor_window:
-		event_editor_window.visible = false
+	if quest_authoring_window:
+		quest_authoring_window.visible = false
 
 
 func _on_world_forge_close() -> void:
@@ -316,23 +319,23 @@ func _create_quest_blueprint_editor_window() -> void:
 	EditorInterface.get_base_control().add_child(quest_blueprint_editor_window)
 
 
-func _create_event_editor_window() -> void:
-	event_editor_window = Window.new()
-	event_editor_window.title = "Scripted Event Editor"
-	event_editor_window.size = Vector2i(1500, 950)
-	event_editor_window.min_size = Vector2i(1100, 750)
-	event_editor_window.visible = false
-	event_editor_window.wrap_controls = true
-	event_editor_window.transient = true
-	event_editor_window.exclusive = false
-	event_editor_window.close_requested.connect(_on_event_editor_close)
+func _create_quest_authoring_window() -> void:
+	quest_authoring_window = Window.new()
+	quest_authoring_window.title = "Quest Authoring"
+	quest_authoring_window.size = Vector2i(1500, 950)
+	quest_authoring_window.min_size = Vector2i(1100, 750)
+	quest_authoring_window.visible = false
+	quest_authoring_window.wrap_controls = true
+	quest_authoring_window.transient = true
+	quest_authoring_window.exclusive = false
+	quest_authoring_window.close_requested.connect(_on_quest_authoring_close)
 
-	event_editor_dock = ScriptedEventEditorDock.new()
-	event_editor_dock.name = "ScriptedEventEditorDock"
-	event_editor_window.add_child(event_editor_dock)
-	event_editor_dock.set_anchors_preset(Control.PRESET_FULL_RECT)
+	quest_authoring_dock = QuestAuthoringDockScript.new()
+	quest_authoring_dock.name = "QuestAuthoringDock"
+	quest_authoring_window.add_child(quest_authoring_dock)
+	quest_authoring_dock.set_anchors_preset(Control.PRESET_FULL_RECT)
 
-	EditorInterface.get_base_control().add_child(event_editor_window)
+	EditorInterface.get_base_control().add_child(quest_authoring_window)
 
 
 func _on_npc_composer_close() -> void:
@@ -347,8 +350,8 @@ func _on_quest_blueprint_editor_close() -> void:
 	quest_blueprint_editor_window.visible = false
 
 
-func _on_event_editor_close() -> void:
-	event_editor_window.visible = false
+func _on_quest_authoring_close() -> void:
+	quest_authoring_window.visible = false
 
 
 ## Public API for external access
