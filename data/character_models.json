@@ -1,5 +1,6 @@
 {
   "_comment": "Which characters have a 3D body. An npc_id absent from this file renders as a billboard sprite, which is every character in the game until its model lands (docs/design/ART_GUIDE.md, THE MIGRATION). The value is a master in assets/models/citizens/glb/, without the .glb. Adding a line here is the whole of flipping a character to 3D - there is no code change per character.",
   "models": {
+    "grom_the_smith": "citizen_man"
   }
 }
