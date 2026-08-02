@@ -6,11 +6,18 @@ import os
 
 SRC_BLEND = r"C:\Users\caleb\RECONgame\assets\us\characters\us_base_v3.blend"
 PROJECT = r"C:\Users\caleb\CatacombsOfGore"
-STAGE = os.path.join(PROJECT, "assets", "models", "citizens")
+CITIZENS = os.path.join(PROJECT, "assets", "models", "citizens")
+# Blends and their placeholder textures live under src/, which carries the
+# .gdignore. glb/ must stay outside it or Godot never sees the exports - a
+# .gdignore hides every subdirectory beneath it too.
+STAGE = os.path.join(CITIZENS, "src")
+GLB_DIR = os.path.join(CITIZENS, "glb")
 REVIEW = os.path.join(PROJECT, "docs", "design", "citizen_review")
 MASTER = os.path.join(STAGE, "citizens_master.blend")
 
 MASTERS = ("MAN", "WOMAN", "BOY", "GIRL")
+GLB_NAME = {"MAN": "citizen_man.glb", "WOMAN": "citizen_woman.glb",
+            "BOY": "citizen_boy.glb", "GIRL": "citizen_girl.glb"}
 
 # material names - contract with the runtime dresser
 MAT_FACE = "face_atlas_mat"
@@ -21,8 +28,26 @@ TEX_FACE = "citizen_face_atlas_placeholder.png"
 TEX_GARB = "citizen_garb_palette_placeholder.png"
 TEX_HAIR = "citizen_hair_palette_placeholder.png"
 
-ATLAS_COLS = 10
-ATLAS_ROWS = 7
+# --------------------------------------------------------------------------- #
+# THE ATLAS CONTRACT (ruled 2026-08-02: RECON hand-packed wins over the grid)
+#
+# 256x256, 8 columns x 4 rows = 32 cells of 32x64 px. Within a cell, top-origin:
+#     rows  0..47  FACE rect (32x48) - the head mesh, and only the head mesh
+#     rows 48..63  SKIN patch (32x16) - body, hands, feet
+# The head is its own object so RECONgame/tools/bake_us_faces.py can measure the
+# face rect the way it measures a grunt's: cluster the UV centroids of every
+# poly on a mesh named *head* carrying a material named *face*. With head and
+# body fused, the flat skin patch is the denser cluster and the bake resolves a
+# 1x1 px rect and skips. The face rect is also inside that script's plausibility
+# window (>=16 px, <=25% of each atlas axis) at 256, 512 or 1024 square.
+# --------------------------------------------------------------------------- #
+ATLAS_SIZE = 256
+ATLAS_COLS = 8
+ATLAS_ROWS = 4
+CELL_W = ATLAS_SIZE // ATLAS_COLS      # 32
+CELL_H = ATLAS_SIZE // ATLAS_ROWS      # 64
+FACE_ROWS = 48                         # top of the cell
+SKIN_ROWS = CELL_H - FACE_ROWS         # 16
 
 
 def banner(msg):
@@ -188,3 +213,34 @@ def weight_all_to_bone(ob, bone_name):
 
 def deg(x):
     return math.radians(x)
+
+
+def dominant_groups(ob):
+    """vertex index -> name of its heaviest vertex group."""
+    names = {vg.index: vg.name for vg in ob.vertex_groups}
+    out = {}
+    for v in ob.data.vertices:
+        best = None
+        for g in v.groups:
+            if best is None or g.weight > best.weight:
+                best = g
+        out[v.index] = names.get(best.group) if best else None
+    return out
+
+
+def unhide_all():
+    for ob in bpy.data.objects:
+        ob.hide_viewport = False
+        ob.hide_render = False
+        try:
+            ob.hide_set(False)
+        except RuntimeError:
+            pass
+
+
+def select_only(objects):
+    bpy.ops.object.select_all(action='DESELECT')
+    for ob in objects:
+        ob.select_set(True)
+    if objects:
+        bpy.context.view_layer.objects.active = objects[0]

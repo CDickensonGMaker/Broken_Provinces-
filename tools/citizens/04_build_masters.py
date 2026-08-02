@@ -10,33 +10,44 @@ GIRL   = same child rig, woman-leaning silhouette at child scale.
 Bone names are never renamed or restructured - the child rig is a clone with
 identical names, so the Mixamo library retargets 1:1.
 
-Every body carries ONE material (face_atlas_mat) and is UV'd into atlas cell
-(0,0): head+neck into the face sub-rect, hands and the rest of the skin into the
-flat skin patch under it. Sliding uv1_offset by one cell moves face and skin
-together - mismatch is impossible.
+The head is SPLIT into its own object, <MASTER>_head, sharing face_atlas_mat
+with the body. That split is the atlas ruling made structural: the head owns the
+face rect of a cell and nothing else does, which is the only shape
+RECONgame/tools/bake_us_faces.py can measure (it clusters the UV centroids of
+polys on a mesh named *head* carrying a material named *face*). Body, hands and
+feet sample the flat skin patch of the SAME cell, so one uv1_offset slides both
+and a face/skin mismatch is impossible.
 
 Run: blender -b --factory-startup --python tools/citizens/04_build_masters.py
-Out: assets/models/citizens/_stage04_masters.blend
+Out: assets/models/citizens/src/_stage04_masters.blend
 """
+import bmesh
 import bpy
 import os
 import sys
 from mathutils import Vector
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from citizen_common import (STAGE, TEX_FACE, MAT_FACE, ATLAS_COLS, ATLAS_ROWS,
+from citizen_common import (STAGE, TEX_FACE, MAT_FACE, ATLAS_SIZE, CELL_W,
+                            CELL_H, FACE_ROWS,
                             open_stage, save_blend, purge, tri_count, banner,
                             report_floaters, get_or_make_image_material,
-                            armature_bind, island_count)
-
-ATLAS_SIZE = 256
-CELL_W = ATLAS_SIZE // ATLAS_COLS
-CELL_H = ATLAS_SIZE // ATLAS_ROWS
+                            armature_bind, island_count, dominant_groups)
 
 CHILD_SCALE = 0.65
 CHILD_HEAD_REGAIN = 1.32
 
+# EQ pass: the extremities carry the chunk. Perpendicular thickening about the
+# limb's own bone axis, so nothing gets longer.
+EQ_FOREARM = 1.16
+EQ_HAND = 1.22
+EQ_BOOT = 1.20
+
 HEAD_GROUPS = {"mixamorig:Head", "mixamorig:HeadTop_End", "mixamorig:Neck"}
+# The NECK stays on the body. It is skin, it samples the flat skin patch, and
+# leaving it on the head made the face rect span jaw-to-collarbone: the mouth
+# landed on the throat and every hair style's brow ring sat over the eyes.
+SPLIT_GROUPS = {"mixamorig:Head", "mixamorig:HeadTop_End"}
 HAND_GROUPS = set()
 for side in ("Left", "Right"):
     HAND_GROUPS.add("mixamorig:%sHand" % side)
@@ -54,17 +65,11 @@ ARM_GROUPS |= HAND_GROUPS
 # helpers
 # --------------------------------------------------------------------------- #
 
-def dominant_groups(ob):
-    """vertex index -> name of its heaviest vertex group."""
-    names = {vg.index: vg.name for vg in ob.vertex_groups}
-    out = {}
-    for v in ob.data.vertices:
-        best = None
-        for g in v.groups:
-            if best is None or g.weight > best.weight:
-                best = g
-        out[v.index] = names.get(best.group) if best else None
-    return out
+FOOT_GROUPS = set()
+for side in ("Left", "Right"):
+    FOOT_GROUPS |= {"mixamorig:%sFoot" % side, "mixamorig:%sToeBase" % side,
+                    "mixamorig:%sToe_End" % side}
+FOREARM_GROUPS = {"mixamorig:LeftForeArm", "mixamorig:RightForeArm"}
 
 
 def verts_in(ob, groups):
@@ -114,50 +119,154 @@ def move_to_collection(ob, col):
 # UV: one atlas cell per citizen, face on top, skin patch below
 # --------------------------------------------------------------------------- #
 
-def uv_body_into_cell(ob, col=0, row=0):
+def _cell_rects(col, row):
+    """Face and skin rects of atlas cell (col,row) as UV bounds."""
+    u0 = (col * CELL_W + 1.0) / ATLAS_SIZE
+    u1 = ((col + 1) * CELL_W - 1.0) / ATLAS_SIZE
+
+    def v_of(px_row):
+        return 1.0 - (row * CELL_H + px_row) / ATLAS_SIZE
+
+    return {
+        "u0": u0, "u1": u1,
+        "v_face_top": v_of(1.5),
+        "v_face_bot": v_of(FACE_ROWS - 1.5),
+        "u_skin": (col * CELL_W + CELL_W * 0.5) / ATLAS_SIZE,
+        "v_skin": v_of(FACE_ROWS + (CELL_H - FACE_ROWS) * 0.5),
+    }
+
+
+def uv_head_into_face_rect(ob, col=0, row=0):
+    """Front-planar wrap of the whole head object into the cell's FACE rect.
+
+    Rear-facing verts collapse onto the rect's edge columns, which is why the
+    atlas contract reserves those columns for scalp and never for features.
+    """
     me = ob.data
     if not me.uv_layers:
         me.uv_layers.new(name="UVMap")
     uv = me.uv_layers[0]
+    r = _cell_rects(col, row)
 
-    u0 = (col * CELL_W) / ATLAS_SIZE
-    u1 = ((col + 1) * CELL_W - 1) / ATLAS_SIZE
-    # image rows are top-origin; UV v is bottom-origin
-    def v_of(px_row):
-        return 1.0 - (row * CELL_H + px_row) / ATLAS_SIZE
-
-    v_face_top = v_of(1)
-    v_face_bot = v_of(23)
-    v_skin = v_of(30)
-    u_skin = (col * CELL_W + 12.5) / ATLAS_SIZE
-
-    head_idx = set(verts_in(ob, HEAD_GROUPS))
-    if not head_idx:
-        raise AssertionError("%s has no head verts" % ob.name)
-    zs = [me.vertices[i].co.z for i in head_idx]
-    xs = [abs(me.vertices[i].co.x) for i in head_idx]
-    ys = [me.vertices[i].co.y for i in head_idx]
+    zs = [v.co.z for v in me.vertices]
+    xs = [abs(v.co.x) for v in me.vertices]
+    ys = [v.co.y for v in me.vertices]
     z_bot, z_top = min(zs), max(zs)
     half_w = max(xs) or 1.0
     back_y = (min(ys) + max(ys)) * 0.5
 
     for poly in me.polygons:
         for li in poly.loop_indices:
-            vi = me.loops[li].vertex_index
-            if vi in head_idx:
-                co = me.vertices[vi].co
-                zn = min(1.0, max(0.0, (co.z - z_bot) / max(1e-6, z_top - z_bot)))
-                if co.y > back_y:                      # back of head -> edge columns
-                    u = u0 + 0.0015 if co.x < 0 else u1 - 0.0015
-                else:
-                    xn = min(1.0, max(0.0, co.x / (2.0 * half_w) + 0.5))
-                    u = u0 + xn * (u1 - u0)
-                uv.data[li].uv = (u, v_face_bot + zn * (v_face_top - v_face_bot))
+            co = me.vertices[me.loops[li].vertex_index].co
+            zn = min(1.0, max(0.0, (co.z - z_bot) / max(1e-6, z_top - z_bot)))
+            if co.y > back_y:
+                u = r["u0"] if co.x < 0 else r["u1"]
             else:
-                # hands, limbs, torso, feet: the flat skin patch of the SAME cell
-                uv.data[li].uv = (u_skin, v_skin)
+                xn = min(1.0, max(0.0, co.x / (2.0 * half_w) + 0.5))
+                u = r["u0"] + xn * (r["u1"] - r["u0"])
+            uv.data[li].uv = (u, r["v_face_bot"] + zn * (r["v_face_top"] - r["v_face_bot"]))
     me.update()
-    return len(head_idx)
+
+
+def uv_body_into_skin_patch(ob, col=0, row=0):
+    """Everything below the neck samples one flat pixel of the cell's skin patch."""
+    me = ob.data
+    if not me.uv_layers:
+        me.uv_layers.new(name="UVMap")
+    uv = me.uv_layers[0]
+    r = _cell_rects(col, row)
+    for poly in me.polygons:
+        for li in poly.loop_indices:
+            uv.data[li].uv = (r["u_skin"], r["v_skin"])
+    me.update()
+
+
+# --------------------------------------------------------------------------- #
+# head split - the atlas ruling made structural
+# --------------------------------------------------------------------------- #
+
+def split_head(body, collection):
+    """Move the all-head polys of `body` into a new <name>_head object.
+
+    Polys that straddle the neck seam stay on the BODY, so the head object is
+    open at its base and the body closes it - no hole either way. Both objects
+    keep the full vertex-group list and their weights, so deformation is
+    untouched.
+    """
+    head_idx = set(verts_in(body, SPLIT_GROUPS))
+    assert head_idx, "%s has no head verts" % body.name
+
+    head = body.copy()
+    head.data = body.data.copy()
+    head.name = body.name + "_head"
+    head.data.name = head.name + "_mesh"
+    collection.objects.link(head)
+
+    def cull(ob, keep_head):
+        bm = bmesh.new()
+        bm.from_mesh(ob.data)
+        bm.verts.ensure_lookup_table()
+        doomed = [f for f in bm.faces
+                  if all(v.index in head_idx for v in f.verts) != keep_head]
+        bmesh.ops.delete(bm, geom=doomed, context='FACES')
+        loose = [v for v in bm.verts if not v.link_faces]
+        if loose:
+            bmesh.ops.delete(bm, geom=loose, context='VERTS')
+        bm.to_mesh(ob.data)
+        bm.free()
+        ob.data.update()
+
+    cull(head, True)
+    cull(body, False)
+    assert len(head.data.polygons), "%s head split produced no faces" % body.name
+    return head
+
+
+# --------------------------------------------------------------------------- #
+# the EQ pass - chunk lives in the extremities
+# --------------------------------------------------------------------------- #
+
+def thicken_about_axis(ob, indices, p, d, factor):
+    """Push verts away from a bone's axis without changing anything along it."""
+    d = d.normalized()
+    for i in indices:
+        co = ob.data.vertices[i].co
+        v = co - p
+        along = d * v.dot(d)
+        out = p + along + (v - along) * factor
+        co[0], co[1], co[2] = out.x, out.y, out.z
+
+
+def eq_chunk_pass(ob, rig):
+    """EverQuest read: broader forearms, blockier hands, heavier boots."""
+    dom = dominant_groups(ob)
+    bones = rig.data.bones
+    mw = rig.matrix_world      # the rig carries Mixamo's -90 X; mesh space is world
+    moved = 0
+    for side in ("Left", "Right"):
+        pairs = (
+            ({"mixamorig:%sForeArm" % side},
+             "mixamorig:%sForeArm" % side, "mixamorig:%sHand" % side, EQ_FOREARM),
+            ({"mixamorig:%sHand" % side} |
+             {"mixamorig:%sHand%s%d" % (side, f, i)
+              for f in ("Thumb", "Index") for i in (1, 2, 3, 4)},
+             "mixamorig:%sHand" % side, "mixamorig:%sHandIndex1" % side, EQ_HAND),
+            ({"mixamorig:%sFoot" % side, "mixamorig:%sToeBase" % side,
+              "mixamorig:%sToe_End" % side},
+             "mixamorig:%sFoot" % side, "mixamorig:%sToeBase" % side, EQ_BOOT),
+        )
+        for groups, b0, b1, factor in pairs:
+            idx = [i for i, n in dom.items() if n in groups]
+            if not idx or b0 not in bones or b1 not in bones:
+                continue
+            p = mw @ bones[b0].head_local
+            d = (mw @ bones[b1].head_local) - p
+            if d.length < 1e-6:
+                d = (mw @ bones[b0].tail_local) - p
+            thicken_about_axis(ob, idx, p, d, factor)
+            moved += len(idx)
+    ob.data.update()
+    return moved
 
 
 # --------------------------------------------------------------------------- #
@@ -318,30 +427,81 @@ def main():
                    thigh=1.0, bust=0.0, arm_inboard=0.008)
     girl_h = shrink_to_child(girl)
 
-    # --- material + UV for every master ---------------------------------- #
-    for ob in (man, woman, boy, girl):
-        ob.data.materials.clear()
-        ob.data.materials.append(mat_face)
-        n_head = uv_body_into_cell(ob, 0, 0)
-        print("UV %-6s head/neck verts=%d -> face rect of atlas cell (0,0)" % (ob.name, n_head))
+    # --- EQ pass, ADULTS ONLY -------------------------------------------- #
+    # The children are clones taken above, so they keep the plain silhouette:
+    # the brief forbids re-proportioning them beyond the 65% clone.
+    for ob in (man, woman):
+        n = eq_chunk_pass(ob, adult_rig)
+        print("EQ %-6s thickened %d extremity verts "
+              "(forearm x%.2f, hand x%.2f, boot x%.2f)"
+              % (ob.name, n, EQ_FOREARM, EQ_HAND, EQ_BOOT))
+
+    # --- head split + material + UV for every master ---------------------- #
+    heads = {}
+    for ob, rig, col in ((man, adult_rig, col_man), (woman, adult_rig, col_woman),
+                         (boy, child_rig, col_boy), (girl, child_rig, col_girl)):
+        head = split_head(ob, col)
+        armature_bind(head, rig)
+        heads[ob.name] = head
+        for m in (ob, head):
+            m.data.materials.clear()
+            m.data.materials.append(mat_face)
+        uv_head_into_face_rect(head, 0, 0)
+        uv_body_into_skin_patch(ob, 0, 0)
+        print("SPLIT %-6s body tris=%d  head '%s' tris=%d"
+              % (ob.name, tri_count(ob), head.name, tri_count(head)))
 
     # --- asserts --------------------------------------------------------- #
     print("--- MASTER REPORT ---")
     for ob, rig in ((man, adult_rig), (woman, adult_rig), (boy, child_rig), (girl, child_rig)):
-        t = tri_count(ob)
-        h = max(v.co.z for v in ob.data.vertices)
-        print("  %-6s tris=%-4d verts=%-4d height=%.3fm rig=%-14s islands=%d mats=%s"
-              % (ob.name, t, len(ob.data.vertices), h, rig.name,
+        head = heads[ob.name]
+        t = tri_count(ob) + tri_count(head)
+        h = max(v.co.z for v in head.data.vertices)
+        print("  %-6s tris=%-4d (body %d + head %d) verts=%-4d height=%.3fm "
+              "rig=%-14s islands=%d mats=%s"
+              % (ob.name, t, tri_count(ob), tri_count(head),
+                 len(ob.data.vertices) + len(head.data.vertices), h, rig.name,
                  island_count(ob), [m.name for m in ob.data.materials]))
-        report_floaters(ob)
         assert 300 <= t <= 800, "%s tri budget violated: %d" % (ob.name, t)
-        assert len(ob.data.materials) == 1, "%s must carry exactly one material" % ob.name
-        assert ob.parent is rig, "%s not parented to %s" % (ob.name, rig.name)
-        assert any(m.type == 'ARMATURE' and m.object is rig for m in ob.modifiers), \
-            "%s lost its armature modifier" % ob.name
-        assert not ob.data.shape_keys, "%s must have no shape keys" % ob.name
-        assert not any(m.type == 'SUBSURF' for m in ob.modifiers), "%s has subsurf" % ob.name
-        assert ob.matrix_world.is_identity, "%s world matrix is not identity" % ob.name
+        for m in (ob, head):
+            report_floaters(m)
+            assert len(m.data.materials) == 1 and m.data.materials[0].name == MAT_FACE, \
+                "%s must carry exactly face_atlas_mat" % m.name
+            assert m.parent is rig, "%s not parented to %s" % (m.name, rig.name)
+            assert any(x.type == 'ARMATURE' and x.object is rig for x in m.modifiers), \
+                "%s lost its armature modifier" % m.name
+            assert not m.data.shape_keys, "%s must have no shape keys" % m.name
+            assert not any(x.type == 'SUBSURF' for x in m.modifiers), "%s has subsurf" % m.name
+            assert m.matrix_world.is_identity, "%s world matrix is not identity" % m.name
+            assert m.vertex_groups, "%s lost its weights" % m.name
+
+    # the bake-script contract, checked here rather than trusted
+    print("--- FACE RECT (as bake_us_faces.py would measure it) ---")
+    for ob in (man, woman, boy, girl):
+        head = heads[ob.name]
+        uvl = head.data.uv_layers[0]
+        cents = []
+        for p in head.data.polygons:
+            us = [uvl.data[li].uv[0] for li in p.loop_indices]
+            vs = [uvl.data[li].uv[1] for li in p.loop_indices]
+            cents.append((sum(us) / len(us), sum(vs) / len(vs)))
+        best, best_n = None, -1
+        for cu, cv in cents:
+            n = sum(1 for u, v in cents if abs(u - cu) < 0.09 and abs(v - cv) < 0.11)
+            if n > best_n:
+                best, best_n = (cu, cv), n
+        inl = [(u, v) for u, v in cents
+               if abs(u - best[0]) < 0.09 and abs(v - best[1]) < 0.11]
+        x0, x1 = int(min(u for u, _ in inl) * ATLAS_SIZE), int(max(u for u, _ in inl) * ATLAS_SIZE) + 1
+        y0, y1 = int(min(v for _, v in inl) * ATLAS_SIZE), int(max(v for _, v in inl) * ATLAS_SIZE) + 1
+        tw, th = x1 - x0, y1 - y0
+        print("  %-12s rect x %d-%d y %d-%d = %dx%d px  inliers %d/%d"
+              % (head.name, x0, x1, y0, y1, tw, th, len(inl), len(cents)))
+        assert len(inl) == len(cents), \
+            "%s face polys did not cluster into one rect (%d/%d)" % (head.name, len(inl), len(cents))
+        assert tw >= 16 and th >= 16, "%s face rect too small for the bake: %dx%d" % (head.name, tw, th)
+        assert tw <= ATLAS_SIZE * 0.25 and th <= ATLAS_SIZE * 0.25, \
+            "%s face rect too big for the bake: %dx%d" % (head.name, tw, th)
 
     adult_names = sorted(b.name for b in adult_rig.data.bones)
     child_names = sorted(b.name for b in child_rig.data.bones)
@@ -349,7 +509,7 @@ def main():
     assert all(n.startswith("mixamorig:") for n in adult_names), "non-Mixamo bone name present"
     print("  bones adult=%d child=%d (names identical)" % (len(adult_names), len(child_names)))
 
-    man_h = max(v.co.z for v in man.data.vertices)
+    man_h = max(v.co.z for v in heads["MAN"].data.vertices)
     print("  child/adult height ratio: BOY %.3f  GIRL %.3f" % (boy_h / man_h, girl_h / man_h))
 
     purge()

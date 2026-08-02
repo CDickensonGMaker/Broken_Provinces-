@@ -1,16 +1,18 @@
 """Stage 03 - generate the placeholder textures the citizen masters are UV'd against.
 
 Three PNGs, all nearest-neighbour PSX stock, all tiny:
-  citizen_face_atlas_placeholder.png  256x256, a 10x7 grid of 25x36 cells.
-      Each cell = one citizen's skin+face pixels. Top of the cell is the face
-      (eye/brow/mouth blocks), bottom is the flat skin patch the rest of the
-      body samples, so head/neck/hands/limbs slide together on one uv1_offset.
+  citizen_face_atlas_placeholder.png  256x256, an 8x4 grid of 32x64 cells.
+      Cell rows 0-47 are the FACE rect (the head mesh alone samples it), rows
+      48-63 the flat SKIN patch (body, hands, feet), so one uv1_offset slides
+      face and skin together and a mismatch is impossible.
   citizen_garb_palette_placeholder.png 64x64, four flat zones (vest, pants,
       sleeves, apron/hood) so a colour variant is a palette swap.
   citizen_hair_palette_placeholder.png 32x32, four flat hair colour strips.
 
 Caleb replaces the face atlas with real painted faces later; the CELL GRID is
-the contract, not the pixels.
+the contract, not the pixels, and it is resolution-independent - 512 or 1024
+square works with the same UVs as long as the grid stays 8x4 and the cell stays
+three-quarters face over one-quarter skin.
 
 Run: blender -b --factory-startup --python tools/citizens/03_make_textures.py
 """
@@ -20,17 +22,13 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from citizen_common import (STAGE, TEX_FACE, TEX_GARB, TEX_HAIR, ATLAS_COLS,
-                            ATLAS_ROWS, ensure_dirs, banner)
-
-ATLAS_SIZE = 256
-CELL_W = ATLAS_SIZE // ATLAS_COLS      # 25
-CELL_H = ATLAS_SIZE // ATLAS_ROWS      # 36
+                            ATLAS_ROWS, ATLAS_SIZE, CELL_W, CELL_H, FACE_ROWS,
+                            ensure_dirs, banner)
 
 SKIN_TONES = [
-    (0.94, 0.78, 0.66), (0.89, 0.72, 0.58), (0.84, 0.66, 0.52),
-    (0.78, 0.60, 0.46), (0.70, 0.53, 0.40), (0.62, 0.46, 0.34),
-    (0.53, 0.38, 0.28), (0.44, 0.31, 0.23), (0.36, 0.25, 0.18),
-    (0.28, 0.19, 0.14),
+    (0.94, 0.78, 0.66), (0.88, 0.71, 0.57), (0.82, 0.64, 0.50),
+    (0.75, 0.57, 0.44), (0.66, 0.49, 0.37), (0.56, 0.41, 0.30),
+    (0.45, 0.32, 0.24), (0.34, 0.24, 0.18),
 ]
 
 GARB_ZONES = [
@@ -87,32 +85,44 @@ def shade(rgb, k):
 
 
 def draw_face_cell(c, cx, cy, tone, variant):
-    """Cell layout, top-origin, 25x36:
-        rows  0..23  FACE  (head/neck/hands sample here)
-        rows 24..35  SKIN  (flat patch every other body vert samples)
+    """Cell layout, top-origin, 32x64:
+        rows  0..47  FACE  (the head mesh, and nothing else, samples here)
+        rows 48..63  SKIN  (flat patch the body/hands/feet sample)
+
+    Columns 0-3 and 28-31 of the face rect are the BACK of the head: the head
+    UV wrap sends rear-facing verts to the cell edges, so paint hair/scalp
+    there, never features.
     """
     c.rect(cx, cy, cx + CELL_W, cy + CELL_H, tone)
-    # hair/brow band across the crown
-    c.rect(cx, cy, cx + CELL_W, cy + 4, shade(tone, 0.35))
-    # eyes - variant slides them a pixel and changes the whites
-    ey = 9 + (variant % 3)
-    c.rect(cx + 4, cy + ey, cx + 9, cy + ey + 3, (0.92, 0.90, 0.86))
-    c.rect(cx + 16, cy + ey, cx + 21, cy + ey + 3, (0.92, 0.90, 0.86))
-    c.rect(cx + 6, cy + ey + 1, cx + 8, cy + ey + 3, shade(tone, 0.18))
-    c.rect(cx + 18, cy + ey + 1, cx + 20, cy + ey + 3, shade(tone, 0.18))
+
+    # back-of-head columns, left and right edge
+    back = shade(tone, 0.42)
+    c.rect(cx, cy, cx + 4, cy + FACE_ROWS, back)
+    c.rect(cx + CELL_W - 4, cy, cx + CELL_W, cy + FACE_ROWS, back)
+    # scalp band across the crown
+    c.rect(cx, cy, cx + CELL_W, cy + 7, shade(tone, 0.34))
+
+    ey = 15 + (variant % 3)
+    # eyes
+    c.rect(cx + 6, cy + ey, cx + 13, cy + ey + 4, (0.92, 0.90, 0.86))
+    c.rect(cx + 19, cy + ey, cx + 26, cy + ey + 4, (0.92, 0.90, 0.86))
+    c.rect(cx + 8, cy + ey + 1, cx + 11, cy + ey + 4, shade(tone, 0.16))
+    c.rect(cx + 21, cy + ey + 1, cx + 24, cy + ey + 4, shade(tone, 0.16))
     # brow
-    c.rect(cx + 4, cy + ey - 2, cx + 9, cy + ey - 1, shade(tone, 0.30))
-    c.rect(cx + 16, cy + ey - 2, cx + 21, cy + ey - 1, shade(tone, 0.30))
-    # nose shadow
-    c.rect(cx + 11, cy + ey + 3, cx + 14, cy + ey + 6, shade(tone, 0.80))
+    c.rect(cx + 6, cy + ey - 3, cx + 13, cy + ey - 1, shade(tone, 0.28))
+    c.rect(cx + 19, cy + ey - 3, cx + 26, cy + ey - 1, shade(tone, 0.28))
+    # nose
+    c.rect(cx + 14, cy + ey + 4, cx + 18, cy + ey + 12, shade(tone, 0.80))
     # mouth
-    my = ey + 9
-    c.rect(cx + 8, cy + my, cx + 17, cy + my + 2, shade(tone, 0.55))
-    # jaw shading so the head reads as rounded at PSX distance
-    c.rect(cx, cy + 20, cx + 2, cy + 24, shade(tone, 0.82))
-    c.rect(cx + CELL_W - 2, cy + 20, cx + CELL_W, cy + 24, shade(tone, 0.82))
-    # flat skin patch for the body
-    c.rect(cx, cy + 24, cx + CELL_W, cy + CELL_H, tone)
+    my = ey + 17
+    c.rect(cx + 11, cy + my, cx + 21, cy + my + 3, shade(tone, 0.52))
+    # jaw / cheek shading so the head reads rounded at PSX distance
+    c.rect(cx + 4, cy + FACE_ROWS - 9, cx + 7, cy + FACE_ROWS, shade(tone, 0.84))
+    c.rect(cx + CELL_W - 7, cy + FACE_ROWS - 9, cx + CELL_W - 4, cy + FACE_ROWS,
+           shade(tone, 0.84))
+
+    # flat skin patch for the body - one solid tone, no detail, on purpose
+    c.rect(cx, cy + FACE_ROWS, cx + CELL_W, cy + CELL_H, tone)
 
 
 def build_face_atlas(path):
@@ -123,7 +133,8 @@ def build_face_atlas(path):
             draw_face_cell(c, col * CELL_W, row * CELL_H,
                            SKIN_TONES[col], row)
             n += 1
-    print("face atlas: %d cells of %dx%d px" % (n, CELL_W, CELL_H))
+    print("face atlas: %d cells of %dx%d px (face rect %dx%d, skin patch %dx%d)"
+          % (n, CELL_W, CELL_H, CELL_W, FACE_ROWS, CELL_W, CELL_H - FACE_ROWS))
     c.save(TEX_FACE, path)
 
 
