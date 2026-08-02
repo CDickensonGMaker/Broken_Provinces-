@@ -2315,7 +2315,16 @@ static func find_item(items: Array[Dictionary]) -> Dictionary:
 - [ ] Save/Load works correctly
 - [ ] All core systems functional (combat, dialogue, quests, inventory, crafting)
 - [ ] No game-breaking bugs
-- [ ] Reduce starting gold/XP to intended values (currently 10k gold, 100k XP for testing)
+- [x] Starting gold/XP are at release values. The "10k gold, 100k XP for
+      testing" this line used to claim was already gone and had been for some
+      time: a new character's purse comes from their career in character
+      creation (10 gold for most, 15 apprentice, 50 merchant, 160 noble, 0
+      beggar) and improvement points start at 0. Two real leaks were closed on
+      8/1 - the death screen's New Game granted 300 gold and a kit before
+      handing off to character creation, and the InventoryManager default was
+      300. `apply_dev_stats()` in game_manager.gd is dead code and grants
+      nothing. No design doc states an intended figure, so the career ladder
+      stands as the intended value.
 - [ ] Export to Windows .exe
 - [ ] Test exported build
 

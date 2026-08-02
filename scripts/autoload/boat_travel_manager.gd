@@ -312,12 +312,10 @@ func start_journey(route_id: String, skip_cost: bool = false) -> bool:
 	# Check player can afford (skip if already handled by dialogue)
 	var cost: int = get_route_cost(route)
 	if not skip_cost:
-		if GameManager and GameManager.player_data:
-			if GameManager.player_data.gold < cost:
-				journey_cancelled.emit(route, "Not enough gold")
-				return false
-			# Deduct cost
-			GameManager.player_data.gold -= cost
+		if InventoryManager.gold < cost:
+			journey_cancelled.emit(route, "Not enough gold")
+			return false
+		InventoryManager.remove_gold(cost)
 
 	# Store departure info for potential failure handling
 	departure_port = route.departure_port
@@ -485,8 +483,7 @@ func _award_encounter_loot(encounter: SeaEncounter) -> void:
 
 	# Award gold
 	var gold: int = encounter.roll_gold_reward()
-	if GameManager and GameManager.player_data:
-		GameManager.player_data.gold += gold
+	InventoryManager.add_gold(gold)
 
 	# Award guaranteed loot
 	for item_id in encounter.guaranteed_loot:
@@ -502,8 +499,7 @@ func _award_encounter_loot(encounter: SeaEncounter) -> void:
 				var item_id: String = drop.get("item_id", "")
 				var quantity: int = drop.get("quantity", 1)
 				if item_id == "_gold":
-					if GameManager and GameManager.player_data:
-						GameManager.player_data.gold += quantity
+					InventoryManager.add_gold(quantity)
 				elif item_id and InventoryManager:
 					InventoryManager.add_item(item_id, quantity)
 

@@ -309,8 +309,7 @@ func _on_wave_complete() -> void:
 	var gold_earned: int = int(BASE_GOLD_REWARD * current_wave * random_multiplier)
 
 	# Give gold reward
-	if GameManager and GameManager.player_data:
-		GameManager.player_data.gold += gold_earned
+	InventoryManager.add_gold(gold_earned)
 	total_gold_earned += gold_earned
 
 	# Disable arena barrier

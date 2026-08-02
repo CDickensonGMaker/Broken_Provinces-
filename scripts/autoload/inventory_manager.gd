@@ -43,8 +43,10 @@ var spell_slots: Array[String] = ["", "", "", ""]
 ## Currently equipped spell (like main_hand for spells)
 var equipped_spell: SpellData = null
 
-## Gold
-var gold: int = 300  # Starting gold
+## Gold. A new character's purse comes from their career in character
+## creation - 10 for most, 15 apprentice, 50 merchant, 160 noble, 0 beggar -
+## so the autoload starts empty rather than carrying a figure of its own.
+var gold: int = 0
 
 ## Item database references (loaded from resources)
 var weapon_database: Dictionary = {}
@@ -1887,16 +1889,14 @@ func clear_inventory_state() -> void:
 	equipped_spell = null
 
 
-## Reset inventory for a new game (called from death screen "New Game")
-## Gives standard starting items for normal gameplay
+## Reset inventory for a new game (called from the death screen's "New Game")
+##
+## Clears, and grants nothing. The death screen hands off to character
+## creation exactly like the main menu does, and character creation issues the
+## career's purse and kit. This used to hand out 300 gold, a fine longsword, a
+## bow, twenty arrows, torches and a spell scroll first, so restarting from a
+## death began with thirty times the money and a weapon the career never gave
+## - a testing convenience that only fired down the one path nobody replays
+## deliberately.
 func reset_for_new_game() -> void:
-	# Clear state first
 	clear_inventory_state()
-
-	# Give standard starting items for normal gameplay
-	gold = 300
-	add_item("longsword", 1, Enums.ItemQuality.ABOVE_AVERAGE)  # Fine longsword
-	add_item("hunting_bow", 1, Enums.ItemQuality.AVERAGE)
-	add_item("arrows", 20, Enums.ItemQuality.AVERAGE)
-	add_item("torch", 3, Enums.ItemQuality.AVERAGE)
-	add_item("scroll_magic_missile", 1, Enums.ItemQuality.AVERAGE)  # Starter spell scroll
