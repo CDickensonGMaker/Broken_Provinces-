@@ -1,6 +1,9 @@
 # Broken Provinces — Master Art Guide & Tracker (v2 — PSX 3D)
 *2026-08-02, Wyrm. **v2 REWRITE per Caleb's pivot ruling: the game becomes a PSX 3D RPG — full 3D characters, not billboards.** The 2D pipeline was a skill-gap compromise; the skill now exists (the RECON stack). Every character item below is a MODEL, not a sheet. Existing sprites serve as placeholders until their model lands, then phase out (art rule: never repair a billboard). The wave lists below are unchanged — only the medium changed. Companion docs: `docs/audits/art_replacement_manifest.md`, `docs/audits/sprite_audit.md` (now legacy-2D reference).*
 
+## THE VISUAL NORTH STAR (Caleb, 8/2): **EVERQUEST (1999)**
+NPCs should look like EverQuest characters: chunky low-poly proportions, painted-on clothing detail over simple geometry, big readable silhouettes, faces mostly texture. When a modeling choice is ambiguous, ask "what would classic EQ do" — geometry for silhouette, texture for everything else. This slightly relaxes pure-PSX austerity: EQ bodies carry a bit more form than PS1, and that's the intent.
+
 ## THE SPEC (every character model — non-negotiable)
 - **PSX fidelity:** low-poly (300–800 tris for humanoids, boss-class up to ~1,500), single 128² or 256² texture per character, palette-limited hand-painted look, nearest-neighbor filtering, no normal maps. Vertex-lit look; affine/jitter comes from the game's existing PS1 shaders.
 - **Rig: the PSX humanoid rig, Mixamo-compatible bone names** — the RECON PSXRig discipline. Mixamo clips are DROP-IN (no retarget). NEVER rename or restructure bones on any variant rig.
@@ -74,7 +77,18 @@ CoG build: face/skin atlas (10×7 = 70 faces) per race + garb visibility toggles
 - [ ] Camp NPCs ×3: tenger_elder (+Makhar), tenger_trader, tenger_scout → create `tengers/`
 - [ ] Empty enemy rows: tenger_raider, tenger_shaman, tenger_warlord
 
-# BEASTS & UNDEAD (no wave — fill as needed)
+# WAVE 5 — UNDEAD & FANTASY TROPES (Caleb, 8/2: "skeletons and zombies etc, all the fantasy tropes")
+The cheap secret: most tropes ride the EXISTING humanoid rig — same bones, new mesh, full animation library free.
+- [ ] **Skeleton** — bone mesh on the human rig (the single best rig-reuse in fantasy; EQ's skeletons are the reference). Covers skeleton_warrior/shade + the 6 arena "gladiator" undead potential
+- [ ] **Zombie** — human base mesh, decayed variant + shamble texture; rest-pose slump layer (the goblin-hunch trick)
+- [ ] **Ghoul / drowned dead** — zombie palette + waterlogged variant
+- [ ] **Ghost** (The Drowned Man, ghost pirates) — human/citizen mesh + transparency/fresnel shader, no new geometry
+- [ ] **Vampire lord + Isolde-class royals** — dressed citizen masters + noble garb + palette (they're PEOPLE — the dresser does these)
+- [ ] **Cultist** — citizen master + robe garb toggle (may not need a model at all)
+- [ ] Later tropes on the same trick: wight/lich (skeleton + robes), draugr-class (zombie + armor garb)
+- [ ] **Horse** (mount/pack animal + the Tegnar's huge horses at scale-up) — source: Quaternius CC0 animated pack (Horse + White Horse, walk/run/idle/death clips included; fbx/gltf; quaternius.com / quaternius.itch.io/lowpoly-animated-animals / poly.pizza Animated Animal Pack). Restyle toward EQ chunk after import.
+
+# BEASTS & UNDEAD SPRITES (legacy 2D — placeholder-only now, fill only if a model is far off)
 - [ ] Empty sprite_paths: boar, deer, vampire_lord, undead_lord_malthor, planar_entity, temporal_guardian, timeless_one
 - [ ] 43 of 64 enemies have no ATTACK sprite — decide the standard (attack sheet per enemy vs flash-frame) before drawing any
 
