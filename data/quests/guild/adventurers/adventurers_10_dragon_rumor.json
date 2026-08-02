@@ -44,7 +44,7 @@
 			"id": "harvest_scales",
 			"description": "Harvest wyvern scales as proof",
 			"type": "collect",
-			"target": "wyvern_scales",
+			"target": "wyvern_scale",
 			"required_count": 5,
 			"is_optional": false
 		}

@@ -283,8 +283,17 @@ func _literal_of(arg: String) -> String:
 
 # --- checks ------------------------------------------------------------------
 
+## Quest staging directories (a leading underscore, e.g. data/quests/_future/)
+## are not shipped content: QuestManager skips them too. They are counted in the
+## report so the staging area stays visible instead of silently rotting, but
+## they do not gate.
+var staging_quest_count: int = 0
+
+
 func _check_quests() -> void:
-	for path: String in _walk(QUEST_DIR, ".json"):
+	staging_quest_count = _walk(QUEST_DIR, ".json").size() - _walk(QUEST_DIR, ".json", true).size()
+
+	for path: String in _walk(QUEST_DIR, ".json", true):
 		var quest: Dictionary = _read_json(path)
 		if quest.is_empty():
 			continue
@@ -529,6 +538,7 @@ func _write_report() -> bool:
 	lines.append("| Enemy ids discovered | %d |" % enemy_ids.size())
 	lines.append("| Interactable ids whitelisted | %d |" % INTERACTABLE_IDS.size())
 	lines.append("| Lore-only ids whitelisted | %d |" % LORE_ONLY_IDS.size())
+	lines.append("| Staging quests not gated (`_future/`) | %d |" % staging_quest_count)
 	lines.append("| Errors | %d |" % errors.size())
 	lines.append("| Warnings | %d |" % warnings.size())
 	lines.append("")
@@ -578,7 +588,7 @@ func _section(title: String, entries: Array[Dictionary]) -> Array[String]:
 
 # --- io helpers --------------------------------------------------------------
 
-func _walk(root: String, suffix: String) -> Array[String]:
+func _walk(root: String, suffix: String, skip_staging: bool = false) -> Array[String]:
 	var found: Array[String] = []
 	var pending: Array[String] = [root]
 	while not pending.is_empty():
@@ -589,7 +599,7 @@ func _walk(root: String, suffix: String) -> Array[String]:
 		dir.list_dir_begin()
 		var entry: String = dir.get_next()
 		while not entry.is_empty():
-			if entry.begins_with("."):
+			if entry.begins_with(".") or (skip_staging and entry.begins_with("_") and dir.current_is_dir()):
 				entry = dir.get_next()
 				continue
 			var full: String = dir_path.path_join(entry)

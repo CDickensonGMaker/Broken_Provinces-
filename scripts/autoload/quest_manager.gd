@@ -538,7 +538,11 @@ func _load_quests_from_directory(dir_path: String) -> void:
 	while file_name != "":
 		var full_path: String = dir_path + file_name
 
-		if dir.current_is_dir() and not file_name.begins_with("."):
+		# A leading underscore marks a staging directory (data/quests/_future/).
+		# Loading staging into the live database is how two stale forks came to
+		# overwrite the shipped aberdeens_blessing and missing_miner with their
+		# broken giver ids: the walk reached _future/ last and it won.
+		if dir.current_is_dir() and not file_name.begins_with(".") and not file_name.begins_with("_"):
 			# Recursively load from subdirectory
 			_load_quests_from_directory(full_path + "/")
 		elif file_name.ends_with(".json"):
