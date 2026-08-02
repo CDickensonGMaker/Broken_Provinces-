@@ -637,3 +637,39 @@ Written into `data/quests/temple/morthane/morthane_03_cemetery_duty.json` descri
 
 No new NPC ids, item ids, faction ids, or enemy ids were introduced anywhere in this batch. All names above are prose-only characters inside description/objective text, not data references. No `choice_consequences` entries were added; no objectives were added or removed; no bible `[OPEN]` was resolved.
 
+
+---
+
+## Living World v1 — schedules (8/2)
+
+A schedule is an invention about somebody's life: it says what hour a person
+gets up, where they eat and whether they drink. None of it is in the bible,
+because the bible does not describe anybody's Tuesday. The rules the schedules
+obey are the same two as everything else here — modest, and plausible for the
+trade the quest pass already gave them.
+
+**The trades are not invented.** Every archetype below was named by a display
+name or an npc_id that already existed: "Grom the Smith" is a smith, "Hamish
+Roke" is the man behind the inn's counter, "Watch-Captain Osbert Dunmoor" keeps
+a captain's hours. Where the name said nothing, the record says `townsfolk` —
+ordinary hours in an ordinary place — rather than guessing a life.
+
+| What | Where | Why it was needed | What it is built on |
+|---|---|---|---|
+| Twenty-two trades' working days, in hours | `data/schedules/archetypes/*.json` | "The NPCs should be living inside this world" needs an hour-by-hour answer for every person; without one a town is a diorama | Each trade's own name, already on the NPC. No new trades were introduced |
+| Shopkeepers shut for an hour at noon and go to the tavern | `shopkeeper.json` | Gives the market a rhythm a player can notice without locking anything: the keeper is still talkable, just not selling | Local colour |
+| Innkeepers work until 02:00 and sleep 03:00–09:00 | `innkeeper.json` | The one trade whose day is inverted, so the tavern is the only lit door at midnight | Local colour |
+| One watchman per town works the night rota | `night_watch.json`; `guard_elder_moor_1`, `guard_dalhurst_1` | A town at 03:00 that is simply empty is not alive either. Someone has to be awake | The camp already has "one watchman, one captain" in Osbert Dunmoor's own line |
+| Elder Moor's ambient population keep a logger's hours | `scripts/levels/elder_moor.gd` | Elder Moor is a logging camp; its people are the camp's people | The level's own comment: "loggers, workers - no nobles/gladiators" |
+| Each town's leisure station is its own tavern or fire | `data/npc_schedules.json`, `LEISURE_LOCAL` in three level scripts | Evening has to happen somewhere, and inventing a new building would be art | Measured: Elder Moor's is Martha's cook fire, Dalhurst's is the Gilded Grog, Thornfield's and Millbrook's are their innkeepers' own positions |
+| Borin Stonehammer and Ilsabet Corr keep no working hours | `data/npc_schedules.json` (`beggar`) | A courier off his feet with a broken leg and a dying woman laid beside a shrine do not go to work. `beggar` is the archetype for "no post to keep" | Both characters' own written situations |
+| Every NPC's home is `interior: true` at their own work position | `data/npc_schedules.json` | No interiors are modelled, so "went home" means "left the world". Marking the door rather than inventing a house keeps it honest and needs no art | ART RULE — route around, do not build |
+
+**Deliberately NOT invented:** who lives with whom (RECON's households are a v2
+item and need buildings first); what anybody does on a feast day or a market
+day; any reason for a schedule beyond the trade. No NPC was given a family, a
+grievance, or a destination outside their own town.
+
+**Not invention, measurement:** every station position is where the level
+script actually puts that NPC, read by booting the scene
+(`tools/_probe_npc_census.gd`). Nothing was placed by hand and nothing was moved.

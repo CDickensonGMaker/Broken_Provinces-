@@ -303,6 +303,17 @@ func _check_live_roster() -> void:
 			night.size(), day.size()],
 		night.keys() != day.keys())
 
+	# An invisible NPC with live collision is a wall the player cannot see.
+	var solid_ghosts: Array[String] = []
+	for node: Node in get_tree().get_nodes_in_group("npcs"):
+		if not node is CollisionObject3D:
+			continue
+		var body: CollisionObject3D = node as CollisionObject3D
+		if not body.visible and body.collision_layer != 0:
+			solid_ghosts.append(NPCScheduler._id_of(node))
+	_check("nobody who has left the world is still solid%s" % _tail(solid_ghosts),
+		solid_ghosts.is_empty())
+
 	var moved: int = 0
 	for npc_id: String in night.keys():
 		if day.has(npc_id) and (night[npc_id] as Vector3).distance_to(day[npc_id] as Vector3) > 1.0:

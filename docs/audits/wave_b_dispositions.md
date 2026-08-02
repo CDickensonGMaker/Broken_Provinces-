@@ -384,3 +384,61 @@ collapsed to the one bed that exists (caves/ruins); the other 36 loops are in
 the art manifest. Wire it to the wilderness generator, or delete it in favour
 of `play_zone_ambiance` — both are defensible and neither buys anything until
 biome ambience assets exist.
+
+---
+
+## Living World v1 — what needs a ruling (8/2)
+
+Five things the schedule pass found or reached and did not decide. None of them
+blocks the feature; all of them are yours.
+
+### LW-1. 76 of the town NPCs cannot be named by any data file
+
+`spawn_random` / `spawn_gendered_random` / `spawn_worker_random` draw a
+townsperson's name from `WorldLexicon`'s pool and their position from `randf()`.
+Booting Dalhurst twice gives 50 of its 107 NPCs a different `npc_id` **and** a
+different spot; Elder Moor 20 of 34, Thornfield 6 of 24. So no authored record
+can name them, and none does — they get a schedule at runtime from the trade
+their spawner declares.
+
+That is fine for schedules. It is not fine for anything that needs to remember
+a person: a disposition earned with Mabel is spent on a stranger next session,
+and no quest can ever name one of them. **The question is whether the ambient
+population should be seeded off `world_seed`** so a town's people are the same
+people every time you come back. That is a small change and a real design call
+about what kind of world this is.
+
+### LW-2. Dalhurst is wider than Dalhurst says it is
+
+`WorldGrid.LOCATIONS` declares Dalhurst's `scene_size` as 160x172. The Seabreeze
+Armory stands at local x=86, against a declared half-width of 80, and eight
+other stations sit outside the same box. The station bounds rule carries a 20%
+tolerance so this passes rather than failing nine NPCs who are demonstrably fine
+where they are. Either the declared size is wrong or the town sprawls past its
+cell; **it is a level-design call**, and the streaming ring will have an opinion
+about it before the schedules do.
+
+### LW-3. Three Dalhurst npc_ids are worn by two people each
+
+`worried_merchant_dalhurst`, `wizard_dalhurst` and `aldric_vane` are each
+spawned twice, at different positions, with different display names — "Worried
+Merchant" and a second Worried Merchant; "Maelorn the Wizard" and "Master Edric
+Vayle"; "Aldric Vane" and "Severin Vane". Quest turn-ins and dispositions key on
+the id, so whichever the engine finds first is the one that counts. The schedule
+table keeps the first and ignores the second. **Which of each pair is the real
+one, and what is the other one's id?**
+
+### LW-4. The Drowned Man keeps a beggar's hours
+
+`restless_ghost` is a ghost, and the schedule has him standing about the harbour
+in daylight like everyone else because there is no archetype for the dead.
+Whether a ghost should be visible by day, only by night, or never on a schedule
+at all is **a story ruling**, not a scheduling one.
+
+### LW-5. Nobody has been seen doing any of this
+
+Everything above is proved by a headless check counting nodes. Nothing has been
+watched. Three present at 03:00 and thirty-three at 13:00 is the right shape;
+whether the town *reads* as alive — whether the teleport transitions are
+jarring, whether an empty night is atmospheric or just empty — is the eye gate,
+and it is entirely outstanding.

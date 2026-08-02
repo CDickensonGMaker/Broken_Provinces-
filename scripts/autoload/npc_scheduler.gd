@@ -424,8 +424,11 @@ func _set_present(node: Node3D, _npc_id: String) -> void:
 		node.add_to_group("interactable")
 	if not node.is_in_group("npcs"):
 		node.add_to_group("npcs")
-	if node is CollisionObject3D:
-		(node as CollisionObject3D).set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
+
+	# Give the body back the collision layer it was built with, not a guess.
+	if node is CollisionObject3D and node.has_meta("schedule_collision_layer"):
+		(node as CollisionObject3D).set_deferred("collision_layer",
+			int(node.get_meta("schedule_collision_layer")))
 	var area: Node = node.get_node_or_null("InteractionArea")
 	if area is Area3D:
 		(area as Area3D).monitorable = true
@@ -454,6 +457,16 @@ func _set_absent(node: Node3D, npc_id: String) -> void:
 	var area: Node = node.get_node_or_null("InteractionArea")
 	if area is Area3D:
 		(area as Area3D).monitorable = false
+
+	# An invisible body with live collision is a wall the player walks into and
+	# cannot see, and an invisible wanderer keeps walking. Both off, and the
+	# layer is remembered rather than guessed at on the way back.
+	if node is CollisionObject3D:
+		var body: CollisionObject3D = node as CollisionObject3D
+		if not body.has_meta("schedule_collision_layer"):
+			body.set_meta("schedule_collision_layer", body.collision_layer)
+		body.set_deferred("collision_layer", 0)
+	node.process_mode = Node.PROCESS_MODE_DISABLED
 
 
 func _on_game_resumed() -> void:

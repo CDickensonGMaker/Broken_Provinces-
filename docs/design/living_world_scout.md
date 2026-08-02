@@ -58,3 +58,42 @@
 3. LOD re-entry rule — `civilian.gd:280-283`.
 4. Per-entry schedule dedup — `sim_clock.gd:93-99`.
 5. Prefix marker matching + skip-never-relocate — `site_planner.gd:896-907, 788-790`.
+
+---
+
+## v1 as built (8/2)
+
+Seven commits, against this brief. What was followed, and what the code found
+that the scout could not have known.
+
+**Followed as written:** the additive clock on GameManager rather than a second
+autoload; `advance()` as the one time-skip door; the per-entry dedup key,
+verbatim; `place_for_current_hour()` as the one placement implementation with
+per-class doors onto it; skip-never-relocate; missing station key → authored
+spawn + loud warning; unmatched hour → idle; stations in WORLD coordinates with
+the floating origin subtracted in exactly one place (`world_to_local()`);
+presence as the shop gate with the guard in the OPEN_SHOP path only; deferred
+despawn while in dialogue; `current_npc` cleared on despawn.
+
+**Added, because the scout was right that CoG must persist:** the clock is
+saved (format 9 → 10) and GameManager is registered in `check_serialization`
+with a written reason for each field it does not save.
+
+**What the code found.** The scout assumed a data table could name the town
+NPCs. Measuring says two-thirds of them cannot be named at all: 76 of 189 draw
+their `npc_id` from `WorldLexicon`'s pool and their position from `randf()`, so
+both change every boot. Records exist for the 112 that survive two cold boots;
+the rest get a runtime record from the archetype their spawner declares
+(`attach_ambient`). This is the same three-state model — it just accepts that
+one tier of the population has no stable identity, which is itself a design
+question now sitting in `wave_b_dispositions.md` as LW-1.
+
+**Also:** RECON's absent-marker rule needed a partner here. An NPC who leaves
+the world keeps their node (freeing an authored quest giver means rebuilding
+their quest state on the way back), so "absent" has to mean invisible AND
+collisionless AND not processing. An invisible body with live collision is a
+wall the player walks into and cannot see; `check_living_world.tscn` asserts
+against it by name.
+
+**Deferred to v2 exactly as scoped:** visible walking (`_bt_settle`), claimed
+seats, households. v3's reactive overrides untouched.
