@@ -328,6 +328,81 @@ several of these are only observable once the systems they belong to stop
 throwing. This batch ends by generalising the one guard that already works, so
 the next dropped field fails the day it is written rather than a month later.
 
+> **BATCH 2 DONE 8/1.** All ten tasks landed, nine commits (42 and 43 are the
+> same bug in the same shape and share one). Validator held at 0 errors / 228
+> warnings; all nine existing check scenes green, plus a new
+> `check_serialization.tscn`. Real headless boot clean.
+>
+> **Every one of the ten was reproduced before it was fixed.** A scratch probe
+> dirtied each field, ran the real `SaveManager.save_game` / `load_game` pair,
+> and printed DROP or PASS. Fourteen of fifteen assertions read DROP on the
+> first run. That probe is gone; task 45 is its permanent replacement.
+>
+> **36–37, the flag store.** `reset_world_state()` never touched
+> `FlagManager.flags`, so a new character inherited the last run's guild ranks
+> and devotions — proved, fixed, and `check_fresh_boot` now walks the real New
+> Game path (19 checks → 23; it dirties a rank, a devotion, a flag context and
+> a world fact and demands all four are gone). Flags also persisted only by
+> accident: `SaveManager` had **no reference to FlagManager at all**, and
+> `DialogueManager.to_dict()` was the courier, under a comment saying the
+> opposite. `FlagManager` now has a real section, `context_variables` is
+> carried, and `DialogueManager`'s shadow store, its `to_dict`/`from_dict` and
+> its nine always-true `if FlagManager:` fallbacks are deleted (guard ratchet
+> 313 → 304).
+>
+> **The version drift was worse than task 54 describes.** `SAVE_VERSION` was
+> two constants, `SaveManager`'s at 5 and `SaveData`'s at 7 — which is why the
+> "Version 5 → 6" block could never run. There is now one constant. Bumping to
+> 8 made the old blocks live, so they are guarded: an unguarded 5→6 would have
+> wiped the weather every v5 save already carried. 6→7 fills in WorldState, 7→8
+> renames `dialogue.flags` and back-solves `total_ip_earned` from `level`.
+> Verified against a hand-written version 5 save.
+>
+> **38–44, the dropped fields.** `total_ip_earned` (both hand-copies), the
+> crime return scene and position, the quest countdown timers and the paused
+> ones, the whole of `FastTravelManager`, `TournamentManager` and
+> `CaveManager`, and the follower's state. `check_quest_engine` was extended to
+> reflect over `QuestManager`'s own member state — the exact gap that let the
+> timers through — and verified to bite.
+>
+> **45 is the batch's real deliverable.** `tools/check_serialization.tscn`, 417
+> checks over seventeen classes. It is not just check_quest_engine pointed at
+> more classes: it round-trips through the **real SaveManager save/load pair,
+> on disk**, because every bug in this batch was a class with a perfectly
+> correct `to_dict` that SaveManager never called, read three keys out of, or
+> replaced with a hand-copy. A class-only guard would have passed on all of
+> them. Verified by re-breaking two of the fixes; it names both.
+>
+> **Three tasks were partly misdiagnosed, and are recorded rather than forced.**
+> - **40.** `_quest_spawns` cannot be carried. It holds live node references,
+>   every one freed by the scene change a load performs. It is declared
+>   transient with that reason. The real gap it exposes is different and is
+>   **open**: a chest or hostage from `spawn_on_accept` is not respawned after
+>   a load at all.
+> - **41.** "Saving mid-caravan strands the journey" cannot happen today — the
+>   caravan system is dead code by its own header comment, `_load_caravan_routes()`
+>   is a stub and `caravan_routes` is always empty. The save path is fixed
+>   anyway, and the fast-travel fields beside it are live.
+> - **37's third flag store.** `SaveManager.world_flags` has five writers
+>   (`game_systems`, `quest_manager` ×4) and **zero readers anywhere in the
+>   repo**. Deleting it changes the save format again and belongs with Batch
+>   5's deletions.
+>
+> **Two dead keys were deleted rather than carried.** `CaveManager.get_save_data`
+> wrote `areas` (every CaveArea serialised) and `active_cave_id`, and
+> `load_save_data` read neither — `area_data` is rebuilt from the cave model's
+> markers on registration. A key nothing reads is the same trap as a field
+> nothing writes.
+>
+> **Eye gate outstanding, and one rules call inside it.** Nothing here was
+> played. Specifically worth his eyes: a follower knocked unconscious now
+> **stays** unconscious across a save (its 30-second recovery timer restarts);
+> letting a load heal him would have made reloading the cheapest way to pick a
+> companion up, but that is a design reading, not a fact. And arena fame and
+> winnings now persist for the first time, so any impression of the Bloodsand
+> Arena's progression formed before today was formed with the scoreboard wiped
+> on every load.
+
 ### 36. `FlagManager` is never cleared on New Game — **S**
 - **System:** `scripts/autoload/save_manager.gd:1889` `reset_world_state()`
 - **Evidence:** the function resets eleven systems by name and clears
