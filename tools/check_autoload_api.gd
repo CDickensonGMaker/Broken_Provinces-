@@ -27,9 +27,17 @@ const DYNAMIC_WHITELIST: Dictionary = {}
 ## reader knows they are not special-cased.
 const _NOTE := "Node's own API resolves through has_method/has_signal already."
 
+## An autoload registered in project.godot is never null, so `if SomeAutoload:`
+## is always true. It is not a bug on its own - it is a lie that has twice let a
+## broken call read as defensive. Every one of them should eventually be deleted
+## or turned into has_method(). This is the ratchet: the count may fall, never
+## rise. Lower the number when you clear some.
+const MAX_ALWAYS_TRUE_GUARDS: int = 313
+
 var _failures: int = 0
 var _resolved: int = 0
 var _sites: int = 0
+var _always_true_guards: int = 0
 
 
 func _ready() -> void:
@@ -48,6 +56,11 @@ func _ready() -> void:
 
 	print("")
 	print("autoload member references: %d resolved, %d call sites read" % [_resolved, _sites])
+	print("always-true `if <Autoload>:` guards: %d (ceiling %d)" % [
+		_always_true_guards, MAX_ALWAYS_TRUE_GUARDS])
+	if _always_true_guards > MAX_ALWAYS_TRUE_GUARDS:
+		_fail("guards", "%d always-true autoload guards, up from %d. An autoload is never null; delete the guard, or use has_method() if the member really is optional." % [
+			_always_true_guards, MAX_ALWAYS_TRUE_GUARDS])
 	_finish()
 
 
@@ -100,6 +113,15 @@ func _scan_file(file_path: String, autoloads: Dictionary) -> void:
 		var line: String = _strip_noise(raw_line)
 		if line.is_empty():
 			continue
+
+		var bare: String = line.strip_edges()
+		if bare.ends_with(":"):
+			for keyword: String in ["if ", "elif "]:
+				if not bare.begins_with(keyword):
+					continue
+				var subject: String = bare.substr(keyword.length(), bare.length() - keyword.length() - 1).strip_edges()
+				if autoloads.has(subject):
+					_always_true_guards += 1
 
 		for singleton_name: String in autoloads:
 			var from: int = 0

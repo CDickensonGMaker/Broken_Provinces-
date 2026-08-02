@@ -363,6 +363,50 @@ static func spawn_guard_dwarf(parent: Node, pos: Vector3, patrol: Array[Vector3]
 
 **CRITICAL:** Always verify function names exist before using them. These are the CORRECT function names for common operations.
 
+### THE RULE: `if SomeAutoload:` guards nothing
+
+An autoload registered in `project.godot`'s `[autoload]` block is created at
+startup and lives for the whole process. **It is never null.** So:
+
+```gdscript
+# WRONG - reads as defensive, guards nothing, and hides a broken call
+if DiceManager:
+    DiceManager.skill_check(...)   # throws; skill_check does not exist
+```
+
+The habit has cost real money twice: nine nonexistent-method call sites reached
+a milestone build, five of them wrapped in one of these. Sea travel, the jail
+escape, the puzzle portal, town exits and the escort NPC were all hard-broken
+behind a guard that looked careful.
+
+- **Calling a member that must exist?** Call it. No guard.
+- **Calling a member that genuinely might not exist** (an optional signal, a
+  method on a class that varies)? Use the real test:
+
+```gdscript
+if InventoryManager.has_signal("spell_equipped"):
+    InventoryManager.spell_equipped.connect(_on_spell_equipped)
+
+if GameManager.has_method("get_time_of_day_light"):
+    return GameManager.get_time_of_day_light()
+```
+
+`has_method()` / `has_signal()` / `"field" in Autoload` are the correct forms
+and the only ones that mean anything.
+
+**The gate:**
+
+```powershell
+& $godot45 --headless --path . res://tools/check_autoload_api.tscn
+```
+
+It resolves every `Autoload.member` written anywhere in `scripts/`, `tools/`
+and `dev/` against the live singleton by reflection, and fails on anything that
+does not exist. References behind a `has_method`/`has_signal`/`in` test are
+skipped, because those cannot throw. It also counts the remaining always-true
+guards and **fails if that count goes up** - lower the ceiling in the script
+when you clear some, never raise it.
+
 ### InventoryManager Functions
 ```gdscript
 # Item queries
