@@ -1,7 +1,7 @@
 {
   "id": "gaela_bonus_bountiful_harvest",
   "title": "Bountiful Harvest",
-  "description": "Dalhurst is holding the autumn festival for the first time in three years - the last two were cancelled quietly, without much said about why. Priestess Elara wants the finest produce in the valley on the temple table this time, partly to honor Gaela and partly because a town that can hold its festival again is a town that knows it made it through.",
+  "description": "Dalhurst holds the autumn festival for the first time in three years; the last two were cancelled quietly. I want the finest of the valley on the temple table. A town that can hold its festival knows it survived.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_gaela_dalhurst",

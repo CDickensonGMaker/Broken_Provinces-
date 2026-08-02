@@ -1,7 +1,7 @@
 {
 	"id": "temple_prophecy_chronos",
 	"title": "Visions of Time",
-	"description": "The Priest of Chronos has sealed a vision concerning the High Chronist's own order - something about how Thornfield's branch of the faith will read the coming season, not a warning meant for any single villager. He does not pretend the timing is favorable; the High Chronist may already have drawn her own conclusions by the time this reaches her. He sends it anyway, because a temple that stops recording its foresight because the hour has already passed has stopped practicing the faith at all.",
+	"description": "This is sealed for the High Chronist in Thornfield, and she may well have reached her own conclusions before it arrives. Carry it anyway. A temple that stops writing down what it foresees has stopped practicing.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "deliver_prophecy",
-			"description": "Deliver the prophecy, whether or not it beats her own conclusions",
+			"description": "Deliver the prophecy to the High Chronist",
 			"type": "talk",
 			"target": "high_chronist_thornfield",
 			"required_count": 1

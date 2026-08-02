@@ -1,7 +1,7 @@
 {
   "id": "chronos_08_prophet_training",
   "title": "Glimpses of Tomorrow",
-  "description": "The Priest of Chronos will teach you to see what may come, not just what has passed - but slowly, at three sites, one vision at a time. He has watched acolytes rush this and come back unable to tell a true foresight from their own dread. He is not protecting you from danger. He is protecting you from believing yourself, too soon, about something that has not happened yet.",
+  "description": "I will teach you to see forward, at three sites, one vision at a time. Acolytes who rush this come back unable to tell foresight from their own dread. I am protecting you from believing yourself too soon.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_chronos_dalhurst",

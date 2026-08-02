@@ -1,7 +1,7 @@
 {
 	"id": "morthane_03_cemetery_duty",
 	"title": "Vigil of the Dead",
-	"description": "Grave robbers have been working the Thornfield cemetery, and what they left behind is what has the Priest of Morthane furious - the rings, the coin, the plate on the bodies, all of it still there. What is gone is the small stone set into each grave-board. Someone cut four short scratches into the gate post on their way out, close together, like a tally that stopped counting. The priest has no interest in why anyone would want a grave-stone and leave the gold; he wants the graves undisturbed, the dead left alone, and whatever the robbers woke up in doing it put back down.",
+	"description": "Grave robbers have been in the Thornfield cemetery and something came up after them. They left the rings and the coin, took the stones out of the grave-boards, and left four scratches on the gate post. I want the dead put back down.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_elder_moor",
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "purify_desecrated_graves",
-			"description": "Purify the graves the robbers pried the stones out of",
+			"description": "Purify the disturbed graves",
 			"type": "interact",
 			"target": "desecrated_grave_marker",
 			"target_zone": "thornfield",

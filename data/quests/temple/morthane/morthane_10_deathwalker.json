@@ -1,7 +1,7 @@
 {
   "id": "morthane_10_deathwalker",
   "title": "The Deathwalker",
-  "description": "You buried the nameless dead, freed one lingering spirit, stood watch at a desecrated cemetery, stopped a frightened old man from becoming what the priest despises most, and held two towns against a rising tide he could not have held alone. The Priest of Morthane offers the last test - to become a Deathwalker, one who can cross into death's edge and return, and confront what an undead lord makes of the cycle he still, after everything, refuses to forgive.",
+  "description": "There is one thing left and it is the hardest. Walk into death's edge and come back a Deathwalker, then go down into the catacombs beneath Kazer-Dun and face what an undead lord has made of the cycle.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_morthane_elder_moor",

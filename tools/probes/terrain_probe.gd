@@ -37,6 +37,9 @@ func _init() -> void:
 		_probe_biome(biome)
 
 	print("")
+	_probe_flatten()
+
+	print("")
 	if _failures > 0:
 		print("FAIL: %d assertion(s) failed" % _failures)
 		quit(1)
@@ -49,10 +52,13 @@ func _probe_biome(biome: int) -> void:
 	var g: int = TerrainGenerator.GRID_SIZE
 	var relief: Vector2 = TerrainConfig.biome_relief(biome)
 
-	var a: PackedFloat32Array = TerrainGenerator.generate_heights(3, -2, biome)
-	var east: PackedFloat32Array = TerrainGenerator.generate_heights(4, -2, biome)
-	var south: PackedFloat32Array = TerrainGenerator.generate_heights(3, -1, biome)
-	var again: PackedFloat32Array = TerrainGenerator.generate_heights(3, -2, biome)
+	# Relief is measured on the RAW field. The flatten field is a separate concern
+	# with its own assertions below, and measuring through it would report a town's
+	# level ground as a degenerate biome.
+	var a: PackedFloat32Array = TerrainGenerator.generate_heights(3, -2, biome, false)
+	var east: PackedFloat32Array = TerrainGenerator.generate_heights(4, -2, biome, false)
+	var south: PackedFloat32Array = TerrainGenerator.generate_heights(3, -1, biome, false)
+	var again: PackedFloat32Array = TerrainGenerator.generate_heights(3, -2, biome, false)
 
 	var min_h: float = INF
 	var max_h: float = -INF
@@ -93,6 +99,62 @@ func _probe_biome(biome: int) -> void:
 
 	if not deterministic:
 		_fail(name, "same seed produced different heights")
+
+
+## The flatten field: that it bites where it must, releases where it must, and that
+## it is a pure function of world position so it cannot tear a seam.
+func _probe_flatten() -> void:
+	var g: int = TerrainGenerator.GRID_SIZE
+	var size: float = TerrainGenerator.CELL_SIZE
+	var biome: int = TerrainConfig.Biome.WOODLANDS
+
+	# Elder Moor stands at (0, 0) with a 242x219 footprint. Its own ground is level.
+	var inside: float = TerrainFlatten.factor(0.0, 0.0)
+	print("flatten  inside Elder Moor            %.4f" % inside)
+	if inside > 0.0:
+		_fail("flatten", "town footprint is not level: factor %.4f" % inside)
+
+	# Somewhere out in the world the full heightfield must survive. If nothing does,
+	# the field has swallowed the map and this probe is the only thing that would say so.
+	var free_cells: int = 0
+	for cz: int in range(-8, 12):
+		for cx: int in range(-12, 8):
+			if TerrainFlatten.factor(float(cx) * size, float(cz) * size) >= 1.0:
+				free_cells += 1
+	print("flatten  cells at full relief         %d" % free_cells)
+	if free_cells < 40:
+		_fail("flatten", "only %d cell centres keep full relief" % free_cells)
+
+	# Purity: the vertex shared by cells (1,0) and (2,0) sits on Elder Moor's ramp.
+	# Each cell gathers its own source list; both must resolve it to the same float.
+	var boundary_x: float = 1.5 * size
+	var left: Array[Dictionary] = TerrainFlatten.build_sources(1, 0)
+	var right: Array[Dictionary] = TerrainFlatten.build_sources(2, 0)
+	var purity: float = 0.0
+	for z in range(g):
+		var world_z: float = -size * 0.5 + float(z) * size / float(g - 1)
+		var lf: float = TerrainFlatten.factor_from(left, boundary_x, world_z)
+		var rf: float = TerrainFlatten.factor_from(right, boundary_x, world_z)
+		purity = maxf(purity, absf(lf - rf))
+	print("flatten  ramp seam purity             %.9f" % purity)
+	if purity != 0.0:
+		_fail("flatten", "flatten factor disagrees across a cell boundary by %.9f" % purity)
+
+	# And the same claim measured on the delivered heightfield, on the ramp.
+	var a: PackedFloat32Array = TerrainGenerator.generate_heights(1, 0, biome)
+	var b: PackedFloat32Array = TerrainGenerator.generate_heights(2, 0, biome)
+	var again: PackedFloat32Array = TerrainGenerator.generate_heights(1, 0, biome)
+	var seam: float = 0.0
+	for z in range(g):
+		seam = maxf(seam, absf(a[z * g + (g - 1)] - b[z * g + 0]))
+	print("flatten  ramp heightfield seam        %.9f" % seam)
+	if seam >= SEAM_TOLERANCE:
+		_fail("flatten", "flattened seam discontinuity: %.5f" % seam)
+
+	for i in range(a.size()):
+		if a[i] != again[i]:
+			_fail("flatten", "flattened field is not deterministic")
+			break
 
 
 func _fail(biome_name: String, message: String) -> void:

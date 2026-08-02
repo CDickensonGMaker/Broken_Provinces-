@@ -12,19 +12,16 @@ const CELL_SIZE: float = TerrainGenerator.CELL_SIZE
 
 
 ## Build terrain for a cell.
-## blend_edges: Dictionary with "north", "south", "east", "west" bools - true where the
-## neighbouring cell uses flat ground and this cell must ramp down to meet it.
+## Roads and hand-built places are levelled by TerrainFlatten, inside the generator,
+## as a function of world position - there is no per-edge blend flag any more.
 ## Returns: Dictionary with "node" (Node3D) and "heights" (PackedFloat32Array).
 static func generate(
 	cell_x: int,
 	cell_z: int,
 	biome: int,
-	material: Material = null,
-	blend_edges: Dictionary = {}
+	material: Material = null
 ) -> Dictionary:
-	var heights: PackedFloat32Array = TerrainGenerator.generate_heights(
-		cell_x, cell_z, biome, blend_edges
-	)
+	var heights: PackedFloat32Array = TerrainGenerator.generate_heights(cell_x, cell_z, biome)
 
 	var root := Node3D.new()
 	root.name = "EnhancedTerrain"

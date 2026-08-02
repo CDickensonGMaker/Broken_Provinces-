@@ -1,7 +1,7 @@
 {
   "id": "gaela_09_famine_threat",
   "title": "When Harvests Fail",
-  "description": "Crops are failing in three towns and Priestess Elara can put a name to the failure in each one: the Hollis family in Elder Moor, whose spring grain never broke the soil at all; Edda in Millbrook, whose field you already know; and the Thornfield mill's own grain stores, half empty before the first frost. She fears dark magic is behind all three and sends you to find the source and stop it before a fourth household joins the list.",
+  "description": "Three failures I can name: the Hollis grain in Elder Moor that never broke soil, Edda's field, and the Thornfield mill half empty before frost. I think dark magic is under all three. Find it before a fourth household joins them.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_gaela_dalhurst",
@@ -34,7 +34,7 @@
     },
     {
       "id": "find_famine_source",
-      "description": "Discover the cursed totem causing the famine (hidden near Crossroads)",
+      "description": "Find the cursed totem near Crossroads",
       "type": "collect",
       "target": "cursed_famine_totem",
       "required_count": 1,
@@ -58,7 +58,7 @@
     },
     {
       "id": "cleanse_totem",
-      "description": "Return the cursed totem to Priestess Elara for cleansing",
+      "description": "Bring the cursed totem to Priestess Elara",
       "type": "talk",
       "target": "priest_gaela_dalhurst",
       "required_count": 1,

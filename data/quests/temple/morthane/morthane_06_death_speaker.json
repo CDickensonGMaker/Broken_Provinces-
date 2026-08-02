@@ -1,7 +1,7 @@
 {
   "id": "morthane_06_death_speaker",
   "title": "Voices Beyond the Veil",
-  "description": "As a Devotee of Morthane, you may now learn to hear the whispers of the recently departed. A murder has occurred in Millbrook, and the Priest asks you to use this sacred gift to speak with the victim and bring justice to their killer.",
+  "description": "A man has been murdered in Millbrook and the guard there has nothing to go on. You can hear the recently dead now. Go and ask him who did it.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_morthane_elder_moor",

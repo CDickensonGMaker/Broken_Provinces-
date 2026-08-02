@@ -1,7 +1,7 @@
 {
 	"id": "chronos_hourglass",
 	"title": "The Shattered Hourglass",
-	"description": "A sacred hourglass has been stolen from the roadside shrine near Crossroads, and the Priest of Chronos is fairly sure the bandits who took it have no idea what it is - shrine gold and shrine glass look the same in a saddlebag at night. That is precisely what worries him. A relic in the hands of someone who knows what it does is a problem he understands; one loose in a bandit camp, mishandled by people who think it is worth its weight and nothing more, is not.",
+	"description": "Bandits took the sacred hourglass from the shrine near Crossroads, and I doubt they know what it is. That is exactly what worries me. Shrine gold and shrine glass look the same in a saddlebag at night.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "recover_hourglass",
-			"description": "Recover the hourglass before someone breaks it open for the sand",
+			"description": "Recover the hourglass before it is broken open",
 			"type": "collect",
 			"target": "sacred_hourglass",
 			"required_count": 1

@@ -1,7 +1,7 @@
 {
 	"id": "gaela_04_sacred_grove",
 	"title": "The Sacred Grove",
-	"description": "An ancient grove near Elder Moor, sacred to Gaela, is threatened by loggers from Dalhurst who need timber for expansion. Priestess Elara asks you to negotiate a solution that balances nature and economy.",
+	"description": "Loggers out of Dalhurst want the old grove near Elder Moor for timber. It is Gaela's ground, and they have families to feed this winter. Go and settle it - I will hear how afterwards.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",

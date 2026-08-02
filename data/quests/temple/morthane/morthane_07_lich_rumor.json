@@ -1,7 +1,7 @@
 {
   "id": "morthane_07_lich_rumor",
   "title": "Whispers of Immortality",
-  "description": "The man attempting the ritual in Willow Dale is old enough that dying honestly should not surprise him, and that is exactly why he is doing it - he spent everything he owned on the research rather than face what is coming for everyone. The Priest of Morthane has no sympathy in him for that fear. Undeath is the one perversion of the cycle his doctrine will not forgive, however understandable the terror that drove someone to it. Stop the transformation before it finishes.",
+  "description": "An old man in Willow Dale is working a ritual to escape dying, and he has spent everything he owns on it. I have no sympathy in me for that fear. Undeath is the one thing the cycle does not forgive - stop him.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_morthane_elder_moor",
@@ -42,7 +42,7 @@
     },
     {
       "id": "defeat_aspirant",
-      "description": "Stop the old man before his fear of dying finishes the ritual",
+      "description": "Stop the old man before the ritual finishes",
       "type": "kill",
       "target": "lich_aspirant_valdris",
       "target_zone": "willow_dale",

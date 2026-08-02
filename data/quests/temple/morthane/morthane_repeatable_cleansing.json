@@ -1,7 +1,7 @@
 {
   "id": "morthane_repeatable_cleansing",
   "title": "Cleansing Duty",
-  "description": "The Priest of Morthane does not send you out for these because any one skeleton matters. He sends you because the cycle is not defended once and left defended - it is a duty kept or it is not kept at all, and he intends to keep asking for as long as the dead keep getting back up.",
+  "description": "No single skeleton matters. The cycle is not defended once and left defended - it is kept or it is not kept, and I will keep asking as long as the dead keep getting up.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_morthane_elder_moor",

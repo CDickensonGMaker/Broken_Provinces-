@@ -1,7 +1,7 @@
 {
   "id": "chronos_10_eternal_vigil",
   "title": "The Eternal Vigil",
-  "description": "Deep beneath the Kazer-Dun Entrance an old Chronos shrine still turns its hourglass, and every traveler and dwarf who uses that pass sets their watch-changes by it without knowing it is there. The Timeless One does not care about any of that - it exists outside the doctrine entirely, which is the one thing Chronos's faith cannot forgive. Break the hourglass and nobody in the caves below will be able to trust the hour again. The Priest sends you to finish this because he cannot.",
+  "description": "An old shrine below the Kazer-Dun Entrance still turns its hourglass, and everyone in that pass sets their hours by it without knowing. If that glass breaks, nobody below can trust the hour again. I cannot go myself.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_chronos_dalhurst",
@@ -46,7 +46,7 @@
     },
     {
       "id": "receive_champion_title",
-      "description": "Return to the Priest and receive the title of Champion",
+      "description": "Return to the Priest for the title",
       "type": "talk",
       "target": "priest_chronos_dalhurst",
       "required_count": 1

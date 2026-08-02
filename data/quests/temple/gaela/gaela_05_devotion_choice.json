@@ -1,7 +1,7 @@
 {
   "id": "gaela_05_devotion_choice",
   "title": "The Mother's Embrace",
-  "description": "Having proven your dedication to the Harvest Mother, Priestess Elara offers you the opportunity to become a Devotee of Gaela. This is a sacred commitment that will grant you deeper understanding of her domain.",
+  "description": "You have given enough of yourself that I can ask. Will you be Gaela's? Meditate at the shrine first, then tell me - a seed goes into the ground once, and after that you tend what grows.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_gaela_dalhurst",

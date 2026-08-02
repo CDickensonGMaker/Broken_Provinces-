@@ -1,7 +1,7 @@
 {
   "id": "gaela_08_seed_of_life",
   "title": "The Eternal Seed",
-  "description": "A plague has struck Thornfield. The healer there has kept a boy named Tam alive for three days on willow tea and little else, and she has run out of anything that might do more. Priestess Elara speaks of a legendary Seed of Life, guarded near the Bandit Hideout, and admits she has never sent anyone to claim it before now because she was never sure until this week that it was worth the asking.",
+  "description": "Plague in Thornfield. The healer has kept a boy named Tam alive three days on willow tea and has nothing left to try. The Seed of Life lies guarded near the Bandit Hideout - go, and hurry.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_gaela_dalhurst",
@@ -10,7 +10,7 @@
   "objectives": [
     {
       "id": "find_seed_location",
-      "description": "Search for the Seed of Life's resting place near Bandit Hideout",
+      "description": "Search near the Bandit Hideout for the Seed",
       "type": "explore",
       "target": "bandit_hideout",
       "required_count": 1,
@@ -34,7 +34,7 @@
     },
     {
       "id": "deliver_to_thornfield",
-      "description": "Get the Seed to Tam and the others before the willow tea runs out",
+      "description": "Get the Seed to Tam in Thornfield",
       "type": "talk",
       "target": "thornfield_healer",
       "required_count": 1,

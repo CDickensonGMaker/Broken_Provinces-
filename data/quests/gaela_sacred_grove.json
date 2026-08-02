@@ -1,7 +1,7 @@
 {
 	"id": "gaela_sacred_grove",
 	"title": "The Sacred Grove",
-	"description": "An ancient grove sacred to Gaela lies in the wilderness near Elder Moor. The grove has stood untouched for centuries, but now loggers from a nearby camp plan to clear it for timber. The Priestess asks you to protect the grove - either by defending it from the loggers, or finding a peaceful compromise that preserves Gaela's sacred ground.",
+	"description": "Loggers from a camp near Elder Moor mean to clear the old grove for timber. It has stood untouched for centuries and it is Gaela's. Defend it or find them another answer, but it stays standing.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",

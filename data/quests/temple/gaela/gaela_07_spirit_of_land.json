@@ -1,7 +1,7 @@
 {
   "id": "gaela_07_spirit_of_land",
   "title": "Voice of the Green",
-  "description": "The wells and greens around Crossroads have gone thin the same season a land spirit went quiet there, and Priestess Elara does not think that is a coincidence - a bound spirit does not tend what it cannot reach. As a Devotee, you can commune with what is left of it. Free it, and see whether the ground remembers how to grow again.",
+  "description": "The wells and greens around Crossroads went thin the same season the land spirit there went quiet, and I do not think that is chance. A bound spirit cannot tend what it cannot reach. Free it.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_gaela_dalhurst",
@@ -26,7 +26,7 @@
     },
     {
       "id": "gather_spirit_offerings",
-      "description": "Gather natural offerings to restore the spirit (Moonleaf, Silvervine, Wildflowers)",
+      "description": "Gather Moonleaf, Silvervine and Wildflowers as offerings",
       "type": "collect",
       "target": "moonleaf",
       "required_count": 3,

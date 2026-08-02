@@ -1,7 +1,7 @@
 {
   "id": "chronos_06_temporal_echo",
   "title": "Echoes of What Was",
-  "description": "As a Devotee of Chronos, you have been granted Temporal Sight - the ability to glimpse echoes of past events. The Priest wants to know one thing from Willow Dale's fall: whether the settlement had warning and ignored it, or had none at all. The temple has taught the story both ways for years and he is tired of not knowing which sermon is true. The guardians still standing watch over that hour will not let it be viewed for free.",
+  "description": "I want one thing out of Willow Dale's fall: did the settlement have warning and ignore it, or none at all? The temple has taught it both ways for years. The guardians standing over that hour will not let it be viewed for free.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_chronos_dalhurst",
@@ -39,7 +39,7 @@
     },
     {
       "id": "report_vision",
-      "description": "Tell the Priest which sermon he has to stop preaching",
+      "description": "Tell the Priest what you saw",
       "type": "talk",
       "target": "priest_chronos_dalhurst",
       "required_count": 1

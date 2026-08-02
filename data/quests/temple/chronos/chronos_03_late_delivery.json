@@ -1,7 +1,7 @@
 {
 	"id": "chronos_03_late_delivery",
 	"title": "Time-Sensitive",
-	"description": "The Priest of Chronos has a sealed prophecy for the High Chronist in Thornfield, and he does not pretend you will beat the hour it warns of. He has read enough of these to know how this one goes: the road is long, bandits work it, and the mill wheel it warns about will likely have already cracked by the time you arrive. He sends the warning anyway - not because it will arrive in time, but because Chronos's people write down what they saw coming whether or not anyone gets there first, so the next warning is believed a little sooner.",
+	"description": "Carry this sealed prophecy to the High Chronist in Thornfield. It warns of a mill wheel that has likely already cracked, and the road is long and worked by bandits. I send it anyway - what we saw coming gets written down regardless.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "deliver_to_thornfield",
-			"description": "Carry the prophecy to Thornfield, knowing it may already be too late",
+			"description": "Carry the prophecy to Thornfield",
 			"type": "talk",
 			"target": "high_chronist_thornfield",
 			"required_count": 1

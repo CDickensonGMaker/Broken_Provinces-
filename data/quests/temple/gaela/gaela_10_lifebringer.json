@@ -1,7 +1,7 @@
 {
   "id": "gaela_10_lifebringer",
   "title": "The Lifebringer",
-  "description": "Elder Moor, Millbrook and Thornfield are eating again because of what you did for the Hollis family, for Edda, and for the mill's stores. Priestess Elara tasks you with the last and largest test: restore life to the corrupted wasteland near Willow Dale itself, the ground that has taken the longest to answer for. If you can make that soil grow, nowhere in the valley is past saving.",
+  "description": "Elder Moor, Millbrook and Thornfield are eating again. Now the wasteland by Willow Dale - the ground that has answered slowest of all. Make that soil grow and nowhere in the valley is past saving.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_gaela_dalhurst",
@@ -34,7 +34,7 @@
     },
     {
       "id": "cleanse_corrupted_zone",
-      "description": "Clear the corrupted zone near Willow Dale of all dark creatures",
+      "description": "Clear the corrupted zone near Willow Dale",
       "type": "kill",
       "target": "corrupted_beast",
       "required_count": 12,
@@ -42,7 +42,7 @@
     },
     {
       "id": "perform_ritual",
-      "description": "Perform the Lifebringer Ritual at the heart of the corrupted zone",
+      "description": "Perform the Lifebringer Ritual at its heart",
       "type": "explore",
       "target": "willow_dale",
       "required_count": 1,

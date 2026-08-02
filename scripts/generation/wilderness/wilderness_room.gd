@@ -333,14 +333,18 @@ func _setup_materials() -> void:
 			rock_material.albedo_color = Color(0.55, 0.58, 0.62)
 
 
-## Create ground plane with simple solid color (PS1 style - no complex textures)
-## When use_heightmap is true, creates terrain with noise-based height variation
-## Cells inside or adjacent to towns/hand-crafted scenes use flat ground (exclusion zone)
-## This prevents terrain from spawning inside POIs and creates buffer zones around them
+## Create the cell's ground.
+##
+## Until 8/2 this was a binary switch: a road cell, or a cell inside OR ADJACENT to a
+## hand-built scene, was given a flat slab and no heightfield at all. Around Elder
+## Moor that is the town's own cells plus every neighbour, which is the whole of what
+## Caleb walked in the first playtest - the terrain generator was never asked.
+##
+## The heightfield is now generated everywhere and levelled where it must be, by
+## TerrainFlatten, as a smooth function of world position. Roads carve a ribbon, not
+## a whole cell; a town flattens its own footprint and lets the hills start outside it.
 func _create_ground() -> void:
-	var use_terrain: bool = use_heightmap and not is_road_cell and not _is_adjacent_to_scene()
-
-	if use_terrain:
+	if use_heightmap:
 		_create_heightmap_terrain()
 	else:
 		_create_flat_ground()
@@ -542,23 +546,14 @@ func _create_heightmap_terrain() -> void:
 	else:
 		terrain_mat.albedo_color = ground_material.albedo_color
 
-	# Calculate which edges need to blend to flat ground (y=0)
-	# This creates smooth transitions to roads, hand-crafted scenes, and boundaries
-	var blend_edges: Dictionary = {
-		"north": _neighbor_is_flat(grid_coords + Vector2i(0, -1)),
-		"south": _neighbor_is_flat(grid_coords + Vector2i(0, 1)),
-		"east": _neighbor_is_flat(grid_coords + Vector2i(1, 0)),
-		"west": _neighbor_is_flat(grid_coords + Vector2i(-1, 0)),
-	}
-
-	# Generate terrain with edge blending
-	# Uses EnhancedTerrain for better terrain shapes (domain warping, ridged multifractal)
+	# Uses EnhancedTerrain for better terrain shapes (domain warping, ridged
+	# multifractal). Levelling under roads and hand-built places happens inside the
+	# generator, as a smooth function of world position - see TerrainFlatten.
 	var result: Dictionary = EnhancedTerrain.generate(
 		grid_coords.x,
 		grid_coords.y,
 		biome,
-		terrain_mat,
-		blend_edges
+		terrain_mat
 	)
 
 	# Store heights for prop placement
@@ -567,27 +562,6 @@ func _create_heightmap_terrain() -> void:
 	# Add terrain node to scene
 	var terrain_node: Node3D = result.node
 	add_child(terrain_node)
-
-
-## Check if a neighboring cell uses flat ground (roads, hand-crafted scenes, blocked)
-func _neighbor_is_flat(coords: Vector2i) -> bool:
-	var cell_info: WorldGrid.CellInfo = WorldGrid.get_cell(coords)
-	if not cell_info:
-		return true  # Out of bounds = treat as flat/blocked
-
-	# Roads use flat ground
-	if cell_info.is_road:
-		return true
-
-	# Hand-crafted scenes (towns, dungeons, etc.) use their own flat ground
-	if cell_info.scene_path != "":
-		return true
-
-	# Blocked/impassable cells should blend to flat
-	if not cell_info.passable:
-		return true
-
-	return false
 
 
 ## Get terrain height at a world position (relative to room center)

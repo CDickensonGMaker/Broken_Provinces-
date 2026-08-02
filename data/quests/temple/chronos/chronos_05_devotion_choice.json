@@ -1,7 +1,7 @@
 {
   "id": "chronos_05_devotion_choice",
   "title": "The Timekeeper's Question",
-  "description": "The Priest of Chronos has watched your journey with interest. He now asks the question that will define your path: Will you dedicate yourself fully to the service of Chronos, God of Time? To become a Devotee is to see the world through the lens of fate, inevitability, and the endless turning of the hourglass. Choose carefully - time flows in only one direction.",
+  "description": "You have done enough for me to ask it. Will you give yourself to Chronos? Sit the meditation first, then answer - say it once and it is said, and sand does not run backwards.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_chronos_dalhurst",

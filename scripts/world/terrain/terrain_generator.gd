@@ -22,7 +22,7 @@ const CELL_SIZE: float = 100.0
 ## Per-biome generation parameters. Keys are TerrainConfig.Biome ordinals.
 const BIOME_PRESETS: Dictionary = {
 	TerrainConfig.Biome.WOODLANDS: {
-		"base_frequency": 0.008,
+		"base_frequency": 0.016,
 		"base_octaves": 4,
 		"base_persistence": 0.5,
 		"warp_enabled": true,
@@ -40,7 +40,7 @@ const BIOME_PRESETS: Dictionary = {
 		"smoothing_passes": 1,
 	},
 	TerrainConfig.Biome.GRASSLANDS: {
-		"base_frequency": 0.005,
+		"base_frequency": 0.011,
 		"base_octaves": 3,
 		"base_persistence": 0.5,
 		"warp_enabled": true,
@@ -58,7 +58,7 @@ const BIOME_PRESETS: Dictionary = {
 		"smoothing_passes": 2,
 	},
 	TerrainConfig.Biome.SWAMP: {
-		"base_frequency": 0.006,
+		"base_frequency": 0.012,
 		"base_octaves": 3,
 		"base_persistence": 0.5,
 		"warp_enabled": true,
@@ -76,7 +76,7 @@ const BIOME_PRESETS: Dictionary = {
 		"smoothing_passes": 2,
 	},
 	TerrainConfig.Biome.HILLS: {
-		"base_frequency": 0.012,
+		"base_frequency": 0.018,
 		"base_octaves": 5,
 		"base_persistence": 0.5,
 		"warp_enabled": true,
@@ -94,7 +94,7 @@ const BIOME_PRESETS: Dictionary = {
 		"smoothing_passes": 1,
 	},
 	TerrainConfig.Biome.ROCKY: {
-		"base_frequency": 0.01,
+		"base_frequency": 0.015,
 		"base_octaves": 4,
 		"base_persistence": 0.5,
 		"warp_enabled": false,
@@ -112,7 +112,7 @@ const BIOME_PRESETS: Dictionary = {
 		"smoothing_passes": 1,
 	},
 	TerrainConfig.Biome.DESERT: {
-		"base_frequency": 0.006,
+		"base_frequency": 0.012,
 		"base_octaves": 3,
 		"base_persistence": 0.55,
 		"warp_enabled": true,
@@ -130,7 +130,7 @@ const BIOME_PRESETS: Dictionary = {
 		"smoothing_passes": 3,
 	},
 	TerrainConfig.Biome.ROCKY_WOODLANDS: {
-		"base_frequency": 0.009,
+		"base_frequency": 0.015,
 		"base_octaves": 5,
 		"base_persistence": 0.45,
 		"warp_enabled": true,
@@ -148,7 +148,7 @@ const BIOME_PRESETS: Dictionary = {
 		"smoothing_passes": 2,
 	},
 	TerrainConfig.Biome.ROCKY_GRASSLANDS: {
-		"base_frequency": 0.007,
+		"base_frequency": 0.013,
 		"base_octaves": 4,
 		"base_persistence": 0.45,
 		"warp_enabled": true,
@@ -166,7 +166,7 @@ const BIOME_PRESETS: Dictionary = {
 		"smoothing_passes": 2,
 	},
 	TerrainConfig.Biome.WINTER: {
-		"base_frequency": 0.0055,
+		"base_frequency": 0.012,
 		"base_octaves": 4,
 		"base_persistence": 0.5,
 		"warp_enabled": true,
@@ -184,7 +184,7 @@ const BIOME_PRESETS: Dictionary = {
 		"smoothing_passes": 3,
 	},
 	TerrainConfig.Biome.ROCKY_WINTER: {
-		"base_frequency": 0.0085,
+		"base_frequency": 0.014,
 		"base_octaves": 5,
 		"base_persistence": 0.42,
 		"warp_enabled": true,
@@ -202,7 +202,7 @@ const BIOME_PRESETS: Dictionary = {
 		"smoothing_passes": 2,
 	},
 	TerrainConfig.Biome.ROCKY_DESERT: {
-		"base_frequency": 0.0065,
+		"base_frequency": 0.012,
 		"base_octaves": 4,
 		"base_persistence": 0.5,
 		"warp_enabled": true,
@@ -221,9 +221,6 @@ const BIOME_PRESETS: Dictionary = {
 	},
 }
 
-## Edge blend ramp, in vertices, applied where a neighbouring cell uses flat ground.
-const BLEND_DISTANCE: int = 4
-
 ## Base seed for the heightfield. Terrain shape is stable across playthroughs; the
 ## per-playthrough variation lives in biome assignment and prop placement instead.
 const NOISE_SEED: int = 42069
@@ -236,11 +233,13 @@ const RIDGE_MAX_GAIN: float = 0.3
 
 ## Generate the heightfield for one cell, in world units relative to the cell's ground
 ## plane. Returns GRID_SIZE * GRID_SIZE samples in row-major (z, x) order.
+## `flatten` levels the ground under roads and hand-built places; pass false to read
+## the raw heightfield, which is what the relief probe measures.
 static func generate_heights(
 	cell_x: int,
 	cell_z: int,
 	biome: int,
-	blend_edges: Dictionary = {},
+	flatten: bool = true,
 	world_seed: int = NOISE_SEED
 ) -> PackedFloat32Array:
 	var preset: Dictionary = BIOME_PRESETS.get(biome, BIOME_PRESETS[TerrainConfig.Biome.GRASSLANDS])
@@ -259,7 +258,7 @@ static func generate_heights(
 	for i in range(passes):
 		field = _smooth(field, padded_size)
 
-	return _extract_cell(field, padded_size, pad, biome, blend_edges)
+	return _extract_cell(field, padded_size, pad, biome, cell_x, cell_z, flatten)
 
 
 ## Height at a local position inside a cell, bilinearly interpolated.
@@ -436,27 +435,36 @@ static func _smooth(field: PackedFloat32Array, padded_size: int) -> PackedFloat3
 
 
 ## Crop the padded tile to the cell, convert normalized samples to world units through
-## TerrainConfig, and ramp edges that meet flat neighbours.
+## TerrainConfig, and damp the result towards level ground under roads and hand-built
+## places through TerrainFlatten - which is a pure function of world position, so the
+## damping cannot tear a seam either.
 static func _extract_cell(
 	field: PackedFloat32Array,
 	padded_size: int,
 	pad: int,
 	biome: int,
-	blend_edges: Dictionary
+	cell_x: int,
+	cell_z: int,
+	flatten: bool
 ) -> PackedFloat32Array:
 	var relief: Vector2 = TerrainConfig.biome_relief(biome)
 	var min_height: float = relief.x
 	var max_height: float = relief.y
 
-	var blend_north: bool = blend_edges.get("north", false)
-	var blend_south: bool = blend_edges.get("south", false)
-	var blend_east: bool = blend_edges.get("east", false)
-	var blend_west: bool = blend_edges.get("west", false)
+	var step: float = CELL_SIZE / float(GRID_SIZE - 1)
+	var half_size: float = CELL_SIZE * 0.5
+	var origin_x: float = float(cell_x) * CELL_SIZE - half_size
+	var origin_z: float = float(cell_z) * CELL_SIZE - half_size
+
+	var sources: Array[Dictionary] = []
+	if flatten:
+		sources = TerrainFlatten.build_sources(cell_x, cell_z)
 
 	var heights := PackedFloat32Array()
 	heights.resize(GRID_SIZE * GRID_SIZE)
 
 	for z in range(GRID_SIZE):
+		var world_z: float = origin_z + float(z) * step
 		for x in range(GRID_SIZE):
 			var n: float = field[(z + pad) * padded_size + (x + pad)]
 
@@ -466,16 +474,11 @@ static func _extract_cell(
 			else:
 				height = (n - 0.5) * 2.0 * absf(min_height)
 
-			var ramp: float = 1.0
-			if blend_north and z < BLEND_DISTANCE:
-				ramp = minf(ramp, float(z) / float(BLEND_DISTANCE))
-			if blend_south and z >= GRID_SIZE - BLEND_DISTANCE:
-				ramp = minf(ramp, float(GRID_SIZE - 1 - z) / float(BLEND_DISTANCE))
-			if blend_west and x < BLEND_DISTANCE:
-				ramp = minf(ramp, float(x) / float(BLEND_DISTANCE))
-			if blend_east and x >= GRID_SIZE - BLEND_DISTANCE:
-				ramp = minf(ramp, float(GRID_SIZE - 1 - x) / float(BLEND_DISTANCE))
+			if flatten:
+				var world_x: float = origin_x + float(x) * step
+				var damp: float = TerrainFlatten.factor_from(sources, world_x, world_z)
+				height = height * damp - TerrainFlatten.SCENE_SINK * (1.0 - damp)
 
-			heights[z * GRID_SIZE + x] = height * ramp
+			heights[z * GRID_SIZE + x] = height
 
 	return heights

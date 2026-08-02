@@ -1,7 +1,7 @@
 {
 	"id": "chronos_time_fragment",
 	"title": "Echoes of the Past",
-	"description": "The Priest of Chronos senses three artifacts in Willow Dale losing their charge, the way anything does eventually - that is not urgency to him, it is simply what time does to things. He would rather have the visions they hold than not, so he asks you to bring them back while there is still something in them to see. If they fade before you get there, that was always going to happen to something, sooner or later.",
+	"description": "Three artifacts in Willow Dale are losing their charge, the way everything does. I would rather have the visions in them than not. Fetch them while there is still something left to see.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",
@@ -17,7 +17,7 @@
 		},
 		{
 			"id": "collect_time_fragments",
-			"description": "Collect the time-touched artifacts while they still hold their visions",
+			"description": "Collect the time-touched artifacts",
 			"type": "collect",
 			"target": "time_fragment",
 			"required_count": 3

@@ -1,7 +1,7 @@
 {
 	"id": "temple_blessing_quest",
 	"title": "The Three's Blessing",
-	"description": "The temple's stock of moonpetal and spring water ran out during the blight scare last month, and every blessing performed since has been done without the proper ingredients - a compromise the Priestess of Gaela has tolerated but does not like. She wants the stores replenished from the true blessed sites before another crisis catches the temple empty-handed again.",
+	"description": "We ran out of moonpetal and spring water during the blight scare, and every blessing since has been made without them. I have tolerated that and I dislike it. Fill the stores from the blessed sites.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",

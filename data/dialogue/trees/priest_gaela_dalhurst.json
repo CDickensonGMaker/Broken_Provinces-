@@ -7,7 +7,7 @@
     {
       "id": "greeting",
       "speaker": "Priestess of Gaela",
-      "text": "Blessings of the Harvest Mother upon you, traveler. I am Elara, servant of Gaela in this temple. The earth is patient and gives freely to those who tend it with care. How may I nurture your spirit today?",
+      "text": "Blessings of the Harvest Mother on you. I am Elara. Mind the crate by the door - that is next spring's seed, and I would rather it was not kicked over. Now, what do you need?",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -517,7 +517,7 @@
     {
       "id": "quest_hub_pre_devotee",
       "speaker": "Priestess of Gaela",
-      "text": "There is always need for those who would tend Gaela's garden. For those who have not yet committed to devotion, we offer tasks that benefit both temple and community: gathering sacred herbs, protecting farmers from beasts, helping with the harvest. These acts of service teach you the Green Lady's ways and prove your heart's intention.",
+      "text": "There is always something. Herbs to gather, farms with beasts in the crop, offerings to carry out to the groves. None of it is glorious and all of it feeds somebody.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -538,7 +538,7 @@
     {
       "id": "quest_list_pre_devotee",
       "speaker": "Priestess of Gaela",
-      "text": "Currently, the temple has need of: helpers to gather healing herbs from the surrounding lands; protectors to guard the farms from dire beasts; and those who would carry offerings to Gaela's sacred groves. Complete these tasks, and you will grow closer to understanding the Green Lady's path. Perhaps, in time, your heart will know whether devotion calls to you.",
+      "text": "Healing herbs from the country round about. Farms that need the dire beasts driven off them. Offerings for the groves. Do the small work first, child - it is the work.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -575,7 +575,7 @@
     {
       "id": "quest_hub_devotee",
       "speaker": "Priestess of Gaela",
-      "text": "As a devotee, you have access to the sacred duties that protect and nurture the living world. The deeper quests involve: rooting out sources of corruption and blight; communing with the spirits of nature; learning the arts of sacred healing; and ultimately, restoring life to lands that have been poisoned. What service calls to your heart, child of the Green Lady?",
+      "text": "The deeper work, then. Corruption pulled out at the root, spirits of the land that have gone quiet, healing that costs the healer something. What is calling you?",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -596,7 +596,7 @@
     {
       "id": "quest_list_devotee",
       "speaker": "Priestess of Gaela",
-      "text": "The sacred garden needs many tenders. Early devotees learn to identify and purge corruption from the land. Advanced servants commune with land spirits and retrieve sacred seeds of power. Those approaching mastery must confront the sources of famine and blight, and learn the Lifebringer's ritual. Each task brings you closer to becoming Champion of Gaela. Tend your path with care.",
+      "text": "Blight to be found and burned out of the ground. Land spirits to be spoken with, and seeds that are guarded. And in time, earth that everyone else has given up on. Choose one, and go carefully.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -611,7 +611,7 @@
     {
       "id": "farewell",
       "speaker": "Priestess of Gaela",
-      "text": "May Gaela's blessings rain upon you like gentle spring showers. May your path be green with growth and your heart fertile with kindness. Return whenever you seek nurturing or wish to serve.",
+      "text": "Go on, then. Eat something before dark, and mind the road past the mill - it floods.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -619,7 +619,7 @@
     {
       "id": "farewell_devotee",
       "speaker": "Priestess of Gaela",
-      "text": "Go with the Harvest Mother's blessing, dear child. May your steps bring life wherever you walk, and may the green world welcome you as one of its own. Return when your spirit needs tending or when you are ready for sacred service.",
+      "text": "Go, dear one. Come back when your spirit needs tending, or when your boots need drying, whichever comes first.",
       "is_end": true,
       "auto_continue": "",
       "choices": []

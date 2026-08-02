@@ -1,7 +1,7 @@
 {
 	"id": "morthane_01_last_rites",
 	"title": "Final Rest",
-	"description": "Three graves west of Crossroads have gone unmarked since spring - a family of tanners who caught the fever on the road and never made it as far as Dalhurst. Whoever traveled with them buried nobody and kept walking; the priest does not know if that was cowardice or if there was no one left standing well enough to dig. He does not need to know. Morthane's doctrine does not ask who the dead were before it demands they be honored - it asks only that someone finally does the honoring.",
+	"description": "Three graves west of Crossroads have stood unmarked since spring - a tanner family who took the fever on the road. Whoever traveled with them buried nobody. Morthane does not ask who they were, only that someone finally does the honoring.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_elder_moor",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "travel_to_graves",
-			"description": "Find the tanner family's unmarked graves west of Crossroads",
+			"description": "Find the unmarked graves west of Crossroads",
 			"type": "reach",
 			"target": "crossroads",
 			"target_zone": "crossroads",
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "perform_rites",
-			"description": "Give the three of them the rites nobody else stayed to give",
+			"description": "Give the three of them their rites",
 			"type": "interact",
 			"target": "burial_site_marker",
 			"target_zone": "crossroads",

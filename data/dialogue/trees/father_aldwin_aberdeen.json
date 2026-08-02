@@ -7,7 +7,7 @@
     {
       "id": "greeting",
       "speaker": "Father Aldwin",
-      "text": "Blessings of Chronos upon you, traveler. You arrive in troubling times. Aberdeen faces darkness, and we need champions willing to stand against it.",
+      "text": "Blessings of Chronos upon you. Forgive the state of us - I am the last priest left in Aberdeen, and the nights have been getting worse.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -58,7 +58,7 @@
     {
       "id": "darkness_explanation",
       "speaker": "Father Aldwin",
-      "text": "The undead rise in greater numbers each night. They emerge from the old Temple of Chronos to the east - a sacred place that was abandoned when the corruption began. We fled like cowards, leaving our most holy relics behind. Now the dead claim what was once consecrated ground.",
+      "text": "The dead come out of the old temple east of here. We left it when the corruption started, and we left everything in it. I have not been back since.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -85,7 +85,7 @@
     {
       "id": "relic_explanation",
       "speaker": "Father Aldwin",
-      "text": "The Sacred Hourglass - a relic blessed by Chronos himself, or so the old texts claim. It measures the passage of time and mortality. While it remains in that corrupted place, the undead grow stronger, as if time itself bends to their will. We must reclaim it before the darkness spreads further.",
+      "text": "The Sacred Hourglass is still on the altar in there. It is the only working timepiece this town has, and every rite I keep now I keep by guesswork.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -118,7 +118,7 @@
     {
       "id": "why_not_returned",
       "speaker": "Father Aldwin",
-      "text": "We are priests, not warriors. The skeletal guardians that now inhabit the temple would cut us down before we reached the inner sanctum. We need someone skilled in combat, someone brave enough to face the undead and recover what we lost. Will you help us?",
+      "text": "I am a priest, not a soldier. The things in there were the temple guard once, and they still fight like it. Will you go?",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -151,7 +151,7 @@
     {
       "id": "danger_assessment",
       "speaker": "Father Aldwin",
-      "text": "Very dangerous. The undead are numerous - at least a dozen skeletal warriors patrol the temple grounds. They were once temple guards in life, and they retain their martial skill in death. But with faith, courage, and a sturdy weapon, they can be defeated. The relic is in the inner sanctum, behind the main altar.",
+      "text": "A dozen of them at least. They were the temple guard in life and they have not forgotten how. The hourglass is behind the main altar, in the inner sanctum.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -184,7 +184,7 @@
     {
       "id": "reward_question",
       "speaker": "Father Aldwin",
-      "text": "Aberdeen is not a wealthy town, but I can offer 75 gold from the temple coffers. More importantly, you would have the eternal gratitude of Chronos and his faithful. The Temple of Chronos across the realm would know your name. Will you help us?",
+      "text": "Seventy-five gold. It is what the coffer holds and I will not pretend it is generous - Aberdeen has nothing else to give you.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -211,7 +211,7 @@
     {
       "id": "accept_quest",
       "speaker": "Father Aldwin",
-      "text": "May Chronos guide your steps. The temple lies to the east, past the abandoned farms. Clear the undead from the sanctum and retrieve the Sacred Hourglass. Be wary - the dead do not tire, and they know no fear. Return safely, and Aberdeen will be forever in your debt.",
+      "text": "East, past the abandoned farms. Clear the sanctum and bring back the hourglass. Come back yourself as well; I have buried enough of this town.",
       "is_end": true,
       "auto_continue": "",
       "choices": []

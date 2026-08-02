@@ -1,7 +1,7 @@
 {
   "id": "chronos_09_timeline_threat",
   "title": "When Time Bleeds",
-  "description": "Your training has borne its first hard vision: a rift near the Bandit Hideout, and things coming through it that do not belong to this hour. The road between Dalhurst and Millbrook runs within a day's walk of the tear, and every caravan that has used it since spring will keep using it, because nobody told them not to yet. The Priest of Chronos asks you to close it before a wagon crew finds out what is coming through the hard way.",
+  "description": "There is a tear near the Bandit Hideout and things are coming through it. The Dalhurst road to Millbrook runs within a day's walk, and nobody has told the caravans. Close it before a wagon crew finds out.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_chronos_dalhurst",
@@ -46,7 +46,7 @@
     },
     {
       "id": "report_success",
-      "description": "Return to the Priest of Chronos with news of victory",
+      "description": "Return to the Priest of Chronos",
       "type": "talk",
       "target": "priest_chronos_dalhurst",
       "required_count": 1

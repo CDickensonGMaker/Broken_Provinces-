@@ -1,7 +1,7 @@
 {
 	"id": "aberdeens_blessing",
 	"title": "Aberdeen's Blessing",
-	"description": "Father Aldwin is the last priest of Chronos left in Aberdeen - the two who served with him died the year the temple was abandoned, and no one has been sent to replace them. He keeps the faith alone now, in a town too poor to rebuild the shrine, which is why the Sacred Hourglass sitting in the ruined inner sanctum matters more to him than its gold would suggest: it is the only working timepiece Aberdeen has left, and every rite he performs without one is a rite measured by guesswork.",
+	"description": "The Sacred Hourglass is still in the ruined sanctum east of town, and the undead have the run of it. It is the only working timepiece Aberdeen has left. Every rite I keep now is measured by guesswork.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "father_aldwin",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "travel_temple",
-			"description": "Travel to the ruined Temple of Chronos east of Aberdeen",
+			"description": "Travel to the ruined temple east of Aberdeen",
 			"type": "reach",
 			"target": "ruined_temple_chronos",
 			"required_count": 1
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "recover_relic",
-			"description": "Recover the last working timepiece Aberdeen has left",
+			"description": "Recover the Sacred Hourglass",
 			"type": "collect",
 			"target": "sacred_hourglass",
 			"required_count": 1

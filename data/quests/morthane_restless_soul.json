@@ -1,7 +1,7 @@
 {
 	"id": "morthane_restless_soul",
 	"title": "Unfinished Business",
-	"description": "The widow living alone on Cooper's Row asked the temple herself why her husband still walks the street outside their old house at night - she has heard him, or thinks she has, three nights running. The Priest of Morthane does not correct her fear so much as answer it: the spirit has something unfinished, and it is likely something meant for her. He asks you to find it and see whether she can finally stop lying awake for footsteps.",
+	"description": "The widow on Cooper's Row asked me herself why her husband still walks outside their old house at night - three nights running now. The spirit has something unfinished and I expect it is meant for her. Find it.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_elder_moor",
@@ -31,7 +31,7 @@
 		},
 		{
 			"id": "deliver_message",
-			"description": "Give the widow the message so she can finally sleep",
+			"description": "Give the widow her husband's message",
 			"type": "talk",
 			"target": "widow_dalhurst",
 			"required_count": 1

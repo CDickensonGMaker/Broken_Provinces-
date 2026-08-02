@@ -1,7 +1,7 @@
 {
 	"id": "temple_undead_menace",
 	"title": "Cleanse the Restless Dead",
-	"description": "The old cemetery north of Dalhurst has started giving up its dead, and the Priest of Morthane takes it as a personal offense rather than a mystery to solve - graves are not supposed to empty themselves, whatever the cause. He is less interested in why than in making it stop. Find the source of the corruption and put the dead back where doctrine says they belong.",
+	"description": "The old cemetery north of Dalhurst has started giving up its dead. Graves are not supposed to empty themselves, whatever the cause, and I am less interested in why than in making it stop. Put them back.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_elder_moor",

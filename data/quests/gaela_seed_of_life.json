@@ -1,7 +1,7 @@
 {
 	"id": "gaela_seed_of_life",
 	"title": "Seed of Renewal",
-	"description": "A dockworker named Osk and two others in the same tenement row have come down with a sickness that resists every poultice the temple has tried. Their landlord has already started asking when the rooms will be free. The Priestess of Gaela believes only the legendary Seed of Renewal can save them - grown deep in Willow Dale ruins, guarded by ancient protectors who will not simply hand it over.",
+	"description": "A dockworker named Osk and two others in his tenement row have a sickness no poultice of ours touches, and their landlord is already asking when the rooms come free. The Seed of Renewal lies deep in Willow Dale, guarded.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "collect_seed",
-			"description": "Collect the Seed of Renewal before Osk loses his room as well as his health",
+			"description": "Collect the Seed of Renewal",
 			"type": "collect",
 			"target": "seed_of_renewal",
 			"required_count": 1

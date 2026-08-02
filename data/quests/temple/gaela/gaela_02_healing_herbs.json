@@ -1,7 +1,7 @@
 {
 	"id": "gaela_02_healing_herbs",
 	"title": "The Healer's Garden",
-	"description": "Edda's youngest has been feverish since the thin planting, and the family cannot spare the coin for a Dalhurst healer. Priestess Elara teaches the healing side of her faith the same way she teaches everything else - by need, not by lesson plan. Gather moonleaf, silvervine and sunroot, and the temple will grind them into something that actually helps.",
+	"description": "Edda's youngest has been feverish since the thin planting and the family cannot pay a Dalhurst healer. Bring me moonleaf, silvervine and sunroot. The temple will grind them into something that actually helps.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",

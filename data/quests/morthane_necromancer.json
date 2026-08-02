@@ -1,7 +1,7 @@
 {
 	"id": "morthane_necromancer",
 	"title": "The Necromancer's Trail",
-	"description": "The necromantic totem you destroyed in the cemetery was no random artifact - it bore signs of deliberate craftsmanship. The Priest of Morthane has traced its origins to a necromancer operating near Crossroads. He asks you to find this necromancer, but warns you: not all who walk the path of death magic are purely evil. Some seek to understand the cycle, not pervert it. Your judgement will be needed.",
+	"description": "The totem you broke in the cemetery was made, not found, and the craft traces to a necromancer near Crossroads. Find him. Not everyone who studies death is perverting it - you will have to judge that yourself.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_elder_moor",

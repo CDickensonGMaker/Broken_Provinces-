@@ -1,7 +1,7 @@
 {
 	"id": "chronos_04_false_prophet",
 	"title": "The False Seer",
-	"description": "A charlatan in Millbrook claims to have prophetic visions granted by Chronos himself. The Priest asks you to investigate - either expose the fraud, or discover if there is any truth to the claims. Not all who claim to see the future are blessed by the Timekeeper.",
+	"description": "A man in Millbrook is selling visions he says Chronos gave him. Go and find out whether he is a fraud. Bring me what you actually saw, not what the crowd believed.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",

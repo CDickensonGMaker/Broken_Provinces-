@@ -1,7 +1,7 @@
 {
   "id": "chronos_repeatable_visions",
   "title": "Seeking Visions",
-  "description": "The Priest of Chronos keeps asking devotees back for the same reason he keeps a dozen hourglasses running at once - a single reading proves nothing, and a faith built on one vision is a faith built on a guess. Come and sit again. What the sand shows this week is not owed to you, and it will not be the same as last week's.",
+  "description": "Come and sit again. One reading proves nothing, and a faith built on a single vision is built on a guess. What the sand shows this week is not owed to you.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_chronos_dalhurst",

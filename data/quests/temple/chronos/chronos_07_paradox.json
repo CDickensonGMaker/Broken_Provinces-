@@ -1,7 +1,7 @@
 {
   "id": "chronos_07_paradox",
   "title": "The Paradox Stone",
-  "description": "A dangerous temporal artifact has surfaced near Crossroads, causing time loops and distortions. Travelers report experiencing the same moments repeatedly, unable to move forward. The Priest of Chronos fears the artifact could unravel the fabric of time itself if left unchecked. You must find the Paradox Stone and choose: destroy it, or harness its power for Chronos.",
+  "description": "Travelers near Crossroads are living the same hour over and over, and something out there is holding it. Find the Paradox Stone. Then decide what becomes of it - I will not decide that for you.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_chronos_dalhurst",

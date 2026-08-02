@@ -1,7 +1,7 @@
 {
 	"id": "morthane_02_restless_spirit",
 	"title": "Unfinished Business",
-	"description": "A spirit is lingering in Dalhurst, and the Priest of Morthane wants that word used precisely - lingering, not undead. There is a doctrinal difference he insists on: this soul has not been torn from the cycle by some abomination, it is simply delayed, tethered by an unfinished thing left behind in life. Find what it left and it will complete the passage on its own. Get the distinction wrong and you have learned nothing about his faith.",
+	"description": "A spirit is lingering in Dalhurst - lingering, not undead, and I want the word used precisely. It was not torn from the cycle; it is held by something unfinished. Find what it left behind and it will pass on its own.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_elder_moor",
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "deliver_locket_grave",
-			"description": "Place the locket at the ghost's grave in Dalhurst cemetery",
+			"description": "Place the locket at the ghost's grave",
 			"type": "interact",
 			"target": "ghost_grave_marker",
 			"target_zone": "dalhurst",

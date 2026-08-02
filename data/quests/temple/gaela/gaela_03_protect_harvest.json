@@ -1,7 +1,7 @@
 {
 	"id": "gaela_03_protect_harvest",
 	"title": "Guardians of the Field",
-	"description": "Edda's field is thin enough this year without dire wolves trampling what came up and rats getting into what little grain is stored. Losing this harvest on top of the last one does not mean a hungry month for that family - it means no seed grain for next spring at all. Priestess Elara asks you to drive the animals off before the family has nothing left to plant.",
+	"description": "Dire wolves are trampling Edda's field and rats are in what grain she has stored. Lose this harvest on top of the last one and there is no seed grain for spring. Drive them off.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "report_to_farmer",
-			"description": "Tell Edda whether she has seed grain for next spring",
+			"description": "Tell Edda what is left of her field",
 			"type": "talk",
 			"target": "farmer_edda",
 			"required_count": 1,

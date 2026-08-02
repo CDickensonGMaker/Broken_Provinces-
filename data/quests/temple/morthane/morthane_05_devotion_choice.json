@@ -1,7 +1,7 @@
 {
   "id": "morthane_05_devotion_choice",
   "title": "Embracing the Cycle",
-  "description": "The Priest of Morthane sees great potential in you. You have shown understanding of death's natural place in the world and dedication to opposing undeath's corruption. He offers you the chance to become a true Devotee of Morthane - one who walks the line between life and death.",
+  "description": "You understand where death belongs and you have not flinched from it. Meditate at the Shrine of Endings, take the Trial of Mortality, and then answer me. Once given, the bond is not handed back lightly.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_morthane_elder_moor",

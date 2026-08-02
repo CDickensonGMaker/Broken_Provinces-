@@ -38,23 +38,23 @@ enum Biome {
 static func biome_relief(biome: int) -> Vector2:
 	match biome:
 		Biome.WOODLANDS:
-			return Vector2(-0.5, 4.0)
+			return Vector2(-1.5, 9.0)
 		Biome.GRASSLANDS:
-			return Vector2(-0.3, 2.0)
+			return Vector2(-1.0, 5.0)
 		Biome.SWAMP:
-			return Vector2(-1.5, 1.5)
+			return Vector2(-2.0, 2.5)
 		Biome.HILLS:
-			return Vector2(-1.0, 8.0)
+			return Vector2(-2.0, 14.0)
 		Biome.ROCKY:
 			return Vector2(0.0, 6.0)
 		Biome.DESERT:
-			return Vector2(-0.5, 3.0)
+			return Vector2(-1.5, 6.0)
 		Biome.ROCKY_WOODLANDS:
 			return Vector2(-1.0, 11.0)
 		Biome.ROCKY_GRASSLANDS:
 			return Vector2(-1.0, 9.0)
 		Biome.WINTER:
-			return Vector2(-0.5, 3.5)
+			return Vector2(-1.5, 6.5)
 		Biome.ROCKY_WINTER:
 			return Vector2(-1.0, 12.0)
 		Biome.ROCKY_DESERT:

@@ -1,7 +1,7 @@
 {
   "id": "gaela_06_blight_source",
   "title": "Root of Corruption",
-  "description": "The blight spreading out of Willow Dale Ruins has already taken one plot of land bare - a smallholding on the ruins' edge whose family salted what soil they could save and moved into Dalhurst with nothing. Priestess Elara does not want a second family to lose their ground the same way. As a Devotee of Gaela, you are sent to find what is maintaining the corruption and put a stop to it before it reaches the next farm.",
+  "description": "The blight out of Willow Dale has already taken one smallholding bare; that family salted what soil they could and moved into Dalhurst with nothing. I will not lose a second. Find what is feeding it and stop it.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_gaela_dalhurst",
@@ -10,7 +10,7 @@
   "objectives": [
     {
       "id": "investigate_willow_dale",
-      "description": "Investigate the source of the blight in Willow Dale Ruins",
+      "description": "Find the blight's source in Willow Dale Ruins",
       "type": "explore",
       "target": "willow_dale",
       "required_count": 1,
@@ -34,7 +34,7 @@
     },
     {
       "id": "cleanse_artifact",
-      "description": "Return the corrupted artifact to Priestess Elara for cleansing",
+      "description": "Bring the corrupted artifact to Priestess Elara",
       "type": "talk",
       "target": "priest_gaela_dalhurst",
       "required_count": 1,

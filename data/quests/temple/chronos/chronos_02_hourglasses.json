@@ -1,7 +1,7 @@
 {
 	"id": "chronos_02_hourglasses",
 	"title": "Sands of Service",
-	"description": "Three of the temple's ceremonial hourglasses cracked in the same month - old glass, nobody's fault - and the equinox rite cannot be measured by guesswork. The Priest of Chronos needs fresh sacred sand from three blessed sites to cast new ones: Elder Moor's old timekeeping shrine, a windswept hilltop near Thornfield, and the ruins of Willow Dale where time once stood still. A rite run without a working glass is not a rite Chronos recognizes.",
+	"description": "Three of our ceremonial hourglasses cracked this month and the equinox rite cannot be measured by guesswork. I need fresh sacred sand from Elder Moor, the hilltop near Thornfield, and Willow Dale. Bring it before the equinox.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",

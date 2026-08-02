@@ -7,7 +7,7 @@
     {
       "id": "greeting",
       "speaker": "Priest of Chronos",
-      "text": "The sands of time have brought you to this sacred place, traveler. I am the keeper of Chronos's wisdom here in Dalhurst. How may I guide you through the endless flow of moments?",
+      "text": "Twenty past the hour, and later than you meant it to be - people always are. Sit. I keep Chronos's wisdom here in Dalhurst, and I have the time.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -529,7 +529,7 @@
     {
       "id": "quest_hub_pre_devotee",
       "speaker": "Priest of Chronos",
-      "text": "There are always tasks for those who would serve the temple. Seekers who have not yet committed to devotion may undertake our introductory quests - recovering sacred artifacts, delivering prophecies, investigating threats to the flow of time. These tasks will test your worth and teach you of Chronos's ways. Speak with me when you are ready to begin a specific quest.",
+      "text": "There is always work. Artifacts to recover, warnings to carry, men selling foresight in market squares. Say when you want one.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -550,7 +550,7 @@
     {
       "id": "quest_list_pre_devotee",
       "speaker": "Priest of Chronos",
-      "text": "Currently, the temple has need of champions who can: retrieve sacred artifacts from places corrupted by temporal disturbance; deliver time-sensitive prophecies to those who must receive them; and investigate false seers who profane Chronos's gift of foresight. Complete these tasks, and you may prove yourself worthy of deeper commitment to our faith.",
+      "text": "Sacred artifacts out of places where the hours run wrong. Prophecies to be carried whether or not they arrive in time. And seers who need looking at with a cold eye. Take your pick.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -587,7 +587,7 @@
     {
       "id": "quest_hub_devotee",
       "speaker": "Priest of Chronos",
-      "text": "As a devotee, you have access to the sacred duties that define our inner circle. The deeper quests involve: confronting temporal echoes of the past; solving paradoxes that threaten the flow of time; training in the arts of prophecy; and ultimately, defending against threats to the timeline itself. What would you undertake, Acolyte?",
+      "text": "The deeper duties, then. Echoes of hours already spent, paradoxes that will not let a road move forward, and training that cannot be rushed. What will you take?",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -608,7 +608,7 @@
     {
       "id": "quest_list_devotee",
       "speaker": "Priest of Chronos",
-      "text": "The sacred duties before you are many. Early devotees must face temporal echoes and prove their understanding of time's nature. Advanced acolytes confront paradoxes and receive training in prophetic arts. Those nearing the end of their journey must face the bleeding of timelines and stand the eternal vigil. Each task brings you closer to becoming Champion. Choose wisely when you are ready.",
+      "text": "Echoes first - a fall this temple has argued over for years and never settled. Then paradoxes. Then the sight itself, slowly. What comes after that I will describe when you are standing closer to it.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -623,7 +623,7 @@
     {
       "id": "farewell",
       "speaker": "Priest of Chronos",
-      "text": "May Chronos guide your steps through the moments ahead. Time waits for no one, so use it wisely. Return when you seek wisdom or wish to serve.",
+      "text": "Go. You have less of the day left than you think, and so do I.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -631,7 +631,7 @@
     {
       "id": "farewell_devotee",
       "speaker": "Priest of Chronos",
-      "text": "Go with the blessing of the Timekeeper, Acolyte. May your moments be filled with purpose, and may you always see the path that time reveals. Return when you are ready for sacred duty.",
+      "text": "Go, acolyte. Come back before the month turns - the sand does not keep, and neither do people.",
       "is_end": true,
       "auto_continue": "",
       "choices": []

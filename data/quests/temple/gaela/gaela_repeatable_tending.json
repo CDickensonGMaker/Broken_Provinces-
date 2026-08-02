@@ -1,7 +1,7 @@
 {
   "id": "gaela_repeatable_tending",
   "title": "Tending the Garden",
-  "description": "Priestess Elara keeps calling devotees back to the temple gardens for the plainest reason there is: compost doesn't turn itself and weeds don't pull themselves, and a goddess of growing things is not honored by people who only show up for the dramatic rescues. Come tend what's here.",
+  "description": "Compost does not turn itself and weeds do not pull themselves. A goddess of growing things is not honored by people who only appear for the dramatic rescues. Come and tend what is here.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_gaela_dalhurst",

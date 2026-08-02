@@ -1,7 +1,7 @@
 {
 	"id": "morthane_cycle_broken",
 	"title": "The Broken Cycle",
-	"description": "The dead are rising near Willow Dale, Crossroads, and the outskirts of Thornfield, and the Dalhurst priest of Morthane has already lost two lay brothers sent out to bury the ones who fall in the first waves - young men who volunteered for grave duty and did not come back from it. He believes something in Willow Dale's lowest chambers is disrupting the cycle itself, and he asks you to finish what cost him two of his own before it costs a third.",
+	"description": "The dead are rising near Willow Dale, Crossroads and outside Thornfield, and I have already lost two lay brothers who volunteered to bury them. Something in the lowest chambers of those ruins is breaking the cycle. Finish it before it costs a third.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_elder_moor",
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "defeat_undead_lord",
-			"description": "Defeat the Undead Lord that killed two of the priest's own",
+			"description": "Defeat the Undead Lord below the ruins",
 			"type": "kill",
 			"target": "undead_lord_malthor",
 			"required_count": 1
@@ -38,7 +38,7 @@
 		},
 		{
 			"id": "return_triumphant",
-			"description": "Return to Priest of Morthane with news of victory",
+			"description": "Return to the Priest of Morthane",
 			"type": "talk",
 			"target": "priest_morthane_elder_moor",
 			"required_count": 1

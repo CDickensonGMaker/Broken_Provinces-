@@ -1,7 +1,7 @@
 {
 	"id": "gaela_blight",
 	"title": "The Spreading Blight",
-	"description": "A Millbrook boatman came to the temple himself to ask about the withering crops, not sent by anyone - he ferries grain barges for a living and has watched three farms along his route come up empty this season. He is not a farmer and has no field of his own to lose, but he knows what an empty barge means for the town at the other end of his route. The Priestess of Gaela sends you to find what is poisoning the land before his cargo runs out entirely.",
+	"description": "A Millbrook boatman came here himself - he ferries grain and has watched three farms on his route come up empty. He owns no field to lose, but he knows what an empty barge means. Find what is poisoning the land.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",

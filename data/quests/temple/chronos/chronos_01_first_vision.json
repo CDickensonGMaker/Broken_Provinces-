@@ -1,7 +1,7 @@
 {
 	"id": "chronos_01_first_vision",
 	"title": "The First Vision",
-	"description": "The Priest of Chronos does not take a stranger's word for devotion. He sends you to the old shrine near Crossroads to sit still for an hour and bring back a token, because an hour spent doing nothing tells him more about a person than a week of talk does. Acolytes who cannot manage stillness do not last through what comes after.",
+	"description": "Sit an hour at the old shrine near Crossroads and bring me back the token. An hour of doing nothing tells me more about you than a week of talking would. Acolytes who cannot sit still do not last.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",
@@ -11,21 +11,21 @@
 	"objectives": [
 		{
 			"id": "visit_shrine",
-			"description": "Travel to the shrine near Crossroads and sit with it",
+			"description": "Sit at the shrine near Crossroads",
 			"type": "reach",
 			"target": "crossroads",
 			"required_count": 1
 		},
 		{
 			"id": "collect_offering",
-			"description": "Take the Timekeeper's Hourglass token as proof you stayed",
+			"description": "Take the Timekeeper's Hourglass token",
 			"type": "collect",
 			"target": "timekeepers_token",
 			"required_count": 1
 		},
 		{
 			"id": "return_to_priest",
-			"description": "Bring the token back as proof you sat through it",
+			"description": "Bring the token back to the Priest",
 			"type": "talk",
 			"target": "priest_chronos_dalhurst",
 			"required_count": 1

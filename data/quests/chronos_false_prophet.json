@@ -1,7 +1,7 @@
 {
 	"id": "chronos_false_prophet",
 	"title": "The False Seer",
-	"description": "Word has reached the Temple that a charlatan in Thornfield is claiming to possess prophetic powers, drawing crowds and collecting coin. The Priest of Chronos asks you to investigate this supposed seer - are they a fraud, or do they truly possess a fragment of Chronos's gift? Your findings will determine their fate.",
+	"description": "A man in Thornfield is drawing crowds and coin with prophecies he credits to Chronos. Go and watch him work. Tell me whether there is anything in it, and I will decide what is done.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",

@@ -1,7 +1,7 @@
 {
 	"id": "morthane_04_necromancer_trail",
 	"title": "The Defiler's Path",
-	"description": "The Priest of Morthane has discovered evidence of a necromancer raising the dead near Willow Dale. The cycle has been violated. You must track them down and discover their true motivations - not all who touch death magic are purely evil, but undeath is an abomination regardless.",
+	"description": "Someone near Willow Dale is raising the dead. Find them, and find out what they want - not everyone who touches death magic is wicked, but undeath is an abomination either way. Bring me your judgement.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_elder_moor",
