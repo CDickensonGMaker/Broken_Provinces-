@@ -4,7 +4,6 @@
 class_name LootableCorpse
 extends StaticBody3D
 
-signal looted
 
 ## Visual representation
 var mesh_root: Node3D

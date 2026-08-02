@@ -207,9 +207,6 @@ func apply_melee_damage(
 		var degrade_amount: int = maxi(1, int(actual_damage / 10))
 		InventoryManager.degrade_armor(degrade_amount)
 
-	# Spawn damage number
-	_spawn_damage_number(target, actual_damage, weapon.damage_type)
-
 	# Check for kill
 	if target.has_method("is_dead") and target.is_dead():
 		entity_killed.emit(target, attacker)
@@ -229,7 +226,6 @@ func report_damage(attacker: Node, target: Node, amount: int, damage_type: Enums
 		return
 
 	damage_dealt.emit(attacker, target, amount, damage_type)
-	_spawn_damage_number(target, amount, damage_type)
 
 	if target.has_method("is_dead") and target.is_dead():
 		entity_killed.emit(target, attacker)
@@ -313,7 +309,6 @@ func apply_spell_damage(
 				caster.restore_mana(manasteal)
 
 	damage_dealt.emit(caster, target, actual_damage, spell.damage_type)
-	_spawn_damage_number(target, actual_damage, spell.damage_type)
 
 	if target.has_method("is_dead") and target.is_dead():
 		entity_killed.emit(target, caster)
@@ -379,7 +374,6 @@ func _apply_custom_spell_damage(
 		var actual_damage: int = target.take_damage(modified_damage, dmg_type, caster)
 		total_damage_dealt += actual_damage
 		damage_dealt.emit(caster, target, actual_damage, dmg_type)
-		_spawn_damage_number(target, actual_damage, dmg_type)
 
 	# Apply conditions to target
 	for cond_info in effects.conditions_apply:
@@ -672,7 +666,12 @@ func _handle_kill_rewards(killer: Node, killed: Node) -> void:
 
 	killer_data.add_ip(xp_reward)
 
-## Spawn floating damage number
+## Spawn floating damage number.
+##
+## Only for damage the HUD cannot hear about: heals, and DOT ticks. Anything
+## that emits `damage_dealt` must NOT call this - the HUD spawns its own
+## number off that signal, and calling both is why a spell used to stack two
+## identical numbers on one hit.
 func _spawn_damage_number(target: Node, damage: int, _type: Enums.DamageType, is_heal: bool = false) -> void:
 	if not damage_number_scene:
 		return

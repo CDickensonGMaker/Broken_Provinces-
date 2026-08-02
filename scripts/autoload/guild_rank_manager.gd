@@ -4,7 +4,6 @@ extends Node
 
 ## Signals
 signal rank_promoted(guild_id: String, old_rank: String, new_rank: String, rank_level: int)
-signal rank_check_failed(guild_id: String, reason: String)  # For debug/UI feedback
 signal title_granted(title: String)  # A quest reward handed the player a style
 
 # =============================================================================

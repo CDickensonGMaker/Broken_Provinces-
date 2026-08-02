@@ -6,7 +6,6 @@ signal game_resumed
 signal time_of_day_changed(new_time: Enums.TimeOfDay)
 signal day_changed(new_day: int)
 signal time_advanced(hours: float)  # Emitted when time is advanced via waiting/resting
-signal weather_changed(new_weather: Enums.Weather)
 signal player_died
 
 ## Current player character data
@@ -214,11 +213,13 @@ func set_time(hour: float, day: int = -1) -> void:
 		current_time_of_day = new_time
 		time_of_day_changed.emit(current_time_of_day)
 
-## Set weather
+## Set weather.
+## The `weather_changed` signal that used to fire here was a dead duplicate of
+## the live `WeatherManager.weather_changed(old, new)` - same name, different
+## shape, one autoload apart, zero listeners. Deleted rather than connected.
 func set_weather(weather: Enums.Weather) -> void:
 	if weather != current_weather:
 		current_weather = weather
-		weather_changed.emit(current_weather)
 
 ## Pause the game
 func pause_game() -> void:

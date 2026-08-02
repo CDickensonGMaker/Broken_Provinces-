@@ -486,6 +486,47 @@ func _connect_signals() -> void:
 			if not CodexManager.bestiary_entry_discovered.is_connected(_on_bestiary_discovered):
 				CodexManager.bestiary_entry_discovered.connect(_on_bestiary_discovered)
 
+	# Follower signals - five of them, emitted into the void until now. A
+	# companion going down or being dismissed is exactly the kind of thing the
+	# player must not have to notice for himself.
+	if not FollowerManager.follower_added.is_connected(_on_follower_added):
+		FollowerManager.follower_added.connect(_on_follower_added)
+		FollowerManager.follower_dismissed.connect(_on_follower_dismissed)
+		FollowerManager.follower_unconscious.connect(_on_follower_unconscious)
+		FollowerManager.follower_recovered.connect(_on_follower_recovered)
+		FollowerManager.all_followers_commanded.connect(_on_followers_commanded)
+
+
+func _follower_display_name(follower_id: String) -> String:
+	var follower: Node = FollowerManager.get_follower(follower_id)
+	if follower and "follower_name" in follower and not str(follower.follower_name).is_empty():
+		return str(follower.follower_name)
+	return follower_id.capitalize()
+
+
+func _on_follower_added(follower_id: String) -> void:
+	show_notification("%s is following you." % _follower_display_name(follower_id))
+
+
+func _on_follower_dismissed(follower_id: String) -> void:
+	show_notification("%s stays behind." % _follower_display_name(follower_id))
+
+
+func _on_follower_unconscious(follower_id: String) -> void:
+	show_notification("%s is down!" % _follower_display_name(follower_id))
+
+
+func _on_follower_recovered(follower_id: String) -> void:
+	show_notification("%s is back on their feet." % _follower_display_name(follower_id))
+
+
+func _on_followers_commanded(command: String) -> void:
+	if command == "wait":
+		show_notification("Wait here.")
+	elif command == "follow":
+		show_notification("With me.")
+
+
 ## Disconnect signals from old player_data to prevent "signal connected to freed object" errors
 func _disconnect_player_data_signals() -> void:
 	if _connected_player_data and is_instance_valid(_connected_player_data):

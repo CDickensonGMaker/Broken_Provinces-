@@ -326,9 +326,36 @@ var _active_sound_instances: Dictionary = {}
 const STAGGER_DELAY_MIN: float = 0.1
 const STAGGER_DELAY_MAX: float = 0.3
 
+## How far music and ambience drop while the game is paused
+const PAUSE_DUCK_DB: float = -8.0
+
 func _ready() -> void:
 	_setup_audio_buses()
 	_create_players()
+	_connect_feedback_signals()
+
+
+## Sounds that belong to events the game already announces. These signals were
+## emitted into the void - `item_used` had no listener at all, and pause and
+## resume changed nothing anyone could hear.
+func _connect_feedback_signals() -> void:
+	InventoryManager.item_used.connect(_on_item_used)
+	GameManager.game_paused.connect(_on_game_paused)
+	GameManager.game_resumed.connect(_on_game_resumed)
+
+
+func _on_item_used(_item_id: String) -> void:
+	play_sfx("item_use", 0.0, 0.1)
+
+
+func _on_game_paused() -> void:
+	music_player.volume_db = _linear_to_db(music_volume) + PAUSE_DUCK_DB
+	ambient_player.volume_db = _linear_to_db(ambient_volume) + PAUSE_DUCK_DB
+
+
+func _on_game_resumed() -> void:
+	music_player.volume_db = _linear_to_db(music_volume)
+	ambient_player.volume_db = _linear_to_db(ambient_volume)
 
 func _setup_audio_buses() -> void:
 	# Create audio buses if they don't exist
