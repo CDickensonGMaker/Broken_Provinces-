@@ -312,6 +312,18 @@ The bindings are left in place and dead until ruled. `lock_on_target` on the
 player and the HUD branch that reads it were deleted per the fossil rule — a
 variable nothing assigns is not a feature.
 
+### 3e. What a heavy attack costs (the only number batch 4 invented)
+
+`heavy_attack` (right mouse) is wired now: it is a weapon swing that passes
+`is_heavy_attack: true` into `CombatManager.apply_melee_damage`, where a +50%
+bonus has sat unused since the function was written. What it should *cost* was
+not written anywhere, and an attack that is strictly better than the light one
+is not a choice - so `PlayerController.heavy_attack_cooldown_multiplier`
+defaults to **2.0** (a heavy swing takes twice as long to recover). That number
+is a placeholder, exported and labelled as such. A windup, a stamina cost or a
+different swing arc are all more interesting than a longer cooldown; that is
+his call.
+
 ### 3c. Death with no save (task 66) — respawn is a design call
 
 The death screen offers Load Autosave, Load Save, New Game and Main Menu. With

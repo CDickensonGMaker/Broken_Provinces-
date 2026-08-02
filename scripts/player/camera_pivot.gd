@@ -133,10 +133,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		return
 
-	# Camera mode toggle disabled - game is first-person only
-	# if event.is_action_pressed("toggle_camera_mode"):
-	# 	_toggle_camera_mode()
-	# 	return
+	# The game is first-person only; there is no camera mode to toggle and the
+	# `toggle_camera_mode` binding was removed with this comment (batch 4, 62).
 
 	# Mouse free-look (only when mouse is captured)
 	if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED and event is InputEventMouseMotion:

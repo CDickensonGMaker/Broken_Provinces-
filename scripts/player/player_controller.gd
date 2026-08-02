@@ -60,6 +60,10 @@ var current_ladder: Node3D = null  # Reference to the Ladder we're on
 @export var light_attack_damage: int = 10
 @export var light_attack_duration: float = 0.12
 @export var light_attack_cooldown: float = 0.25
+## Heavy attack: the +50% damage is CombatManager's, and has been since the
+## function was written. This is the only number batch 4 invented - what a
+## heavy swing should cost is Caleb's call (dispositions 3e).
+@export var heavy_attack_cooldown_multiplier: float = 2.0
 
 # --- Interaction tuning ---
 @export var interaction_range: float = 2.5  # How far player can interact
@@ -71,7 +75,6 @@ var current_ladder: Node3D = null  # Reference to the Ladder we're on
 @onready var spell_caster: SpellCaster = $SpellCaster
 
 var can_attack: bool = true
-var lock_on_target: Node3D = null  # Current lock-on target for combat
 var current_interactable: Node = null  # Currently highlighted interactable
 var mana_regen_accumulator: float = 0.0  # Accumulates fractional mana regen
 
@@ -125,6 +128,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	# Light attack input (also casts equipped spell)
 	if event.is_action_pressed("light_attack") and can_attack:
 		_do_light_attack()
+
+	# Heavy attack input - always a weapon swing, never a cast
+	if event.is_action_pressed("heavy_attack") and can_attack:
+		_do_light_attack(true)
 
 	# Interaction input
 	if event.is_action_pressed("interact"):
@@ -331,14 +338,16 @@ func _physics_process(delta: float) -> void:
 	# --- Update stealth visibility ---
 	_update_visibility()
 
-func _do_light_attack() -> void:
+func _do_light_attack(is_heavy: bool = false) -> void:
 	can_attack = false
 
-	# Check if spell is equipped (takes priority over weapon)
-	var equipped_spell: SpellData = InventoryManager.get_equipped_spell()
-	if equipped_spell:
-		_do_spell_attack(equipped_spell)
-		return
+	# Check if spell is equipped (takes priority over weapon).
+	# The heavy attack is a weapon verb - it swings even with a spell readied.
+	if not is_heavy:
+		var equipped_spell: SpellData = InventoryManager.get_equipped_spell()
+		if equipped_spell:
+			_do_spell_attack(equipped_spell)
+			return
 
 	var weapon: WeaponData = InventoryManager.get_equipped_weapon()
 
@@ -383,7 +392,7 @@ func _do_light_attack() -> void:
 		# Unarmed keeps the hitbox's own flat-damage path.
 		if weapon:
 			var weapon_quality: Enums.ItemQuality = InventoryManager.get_equipped_weapon_quality()
-			melee_hitbox.set_weapon(weapon, weapon_quality, false)
+			melee_hitbox.set_weapon(weapon, weapon_quality, is_heavy)
 		else:
 			melee_hitbox.set_weapon(null)
 
@@ -415,7 +424,10 @@ func _do_light_attack() -> void:
 		melee_hitbox.monitoring = false
 
 	# Cooldown before next attack
-	await get_tree().create_timer(light_attack_cooldown).timeout
+	var attack_cooldown: float = light_attack_cooldown
+	if is_heavy:
+		attack_cooldown *= heavy_attack_cooldown_multiplier
+	await get_tree().create_timer(attack_cooldown).timeout
 	can_attack = true
 
 ## Perform a spell attack with the equipped spell

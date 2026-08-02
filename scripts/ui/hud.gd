@@ -606,12 +606,10 @@ func _update_target_health() -> void:
 	if not enemy_health_container:
 		return
 
-	# Get player's lock-on target
-	var player := get_tree().get_first_node_in_group("player") as PlayerController
-	if player and player.lock_on_target:
-		current_target = player.lock_on_target
-	else:
-		current_target = null
+	# There is no lock-on. `PlayerController.lock_on_target` was read here and
+	# assigned nowhere, so this panel could never appear; both are deleted
+	# (batch 4, task 63). `current_target` is the last thing the player hit -
+	# see _on_damage_dealt - which is the target they actually have.
 
 	# Guard against freed objects - check validity before any access
 	if not is_instance_valid(current_target):
@@ -1098,9 +1096,13 @@ func _on_item_added(item_id: String, quantity: int) -> void:
 func _on_quick_slot_changed(slot: int, _item_id: String) -> void:
 	_update_quick_slot(slot)
 
-func _on_damage_dealt(_attacker: Node, target: Node, damage: int, _type: Enums.DamageType) -> void:
+func _on_damage_dealt(attacker: Node, target: Node, damage: int, _type: Enums.DamageType) -> void:
 	if target is Node3D:
 		spawn_damage_number((target as Node3D).global_position + Vector3.UP * 2, damage)
+
+	# The thing the player just hit is the thing whose health bar they want.
+	if is_instance_valid(attacker) and attacker.is_in_group("player") and target is EnemyBase:
+		current_target = target
 
 func _on_critical_hit(_attacker: Node, target: Node) -> void:
 	if target is Node3D:
