@@ -1,7 +1,7 @@
 {
 	"id": "bounty_cultist_activity",
 	"title": "Dark Cult Activity",
-	"description": "Cultists have been spotted performing dark rituals at an ancient temple in the forest. They've been seen conducting blood sacrifices. Put an end to their evil.",
+	"description": "The old temple's fires have burned three nights running and Ferris Coale hasn't come home since the second one. Nobody in Mill Brook has the stomach to climb up there, so they're passing a hat instead - what coin the hamlet has, for someone with a stronger stomach, to bring back what's left of him or make sure nothing comes down after the fires go out.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "kill_cultists",
-			"description": "Kill the cultists at the Ruined Temple",
+			"description": "Clear the cultists camped at the Ruined Temple",
 			"type": "kill",
 			"target": "cultist",
 			"required_count": 4
 		},
 		{
 			"id": "kill_leader",
-			"description": "Kill the Cult Leader",
+			"description": "Kill whoever is leading them and lighting those fires",
 			"type": "kill",
 			"target": "cult_leader",
 			"required_count": 1
@@ -38,5 +38,6 @@
 	"possible_zones": ["cultist_temple_north", "cultist_temple_east", "cultist_temple_south", "cultist_temple_west", "cultist_temple_central"],
 	"cooldown_days": 5,
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: a hamlet neighbor, Ferris Coale, missing since the second night of fires at the Ruined Temple. Giver motive: Mill Brook has no militia and pools its own coin because nobody local will climb up there. Refusal: the fires keep burning and whoever else Mill Brook loses to the temple is on the player."
 }

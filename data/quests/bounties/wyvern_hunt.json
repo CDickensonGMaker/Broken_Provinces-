@@ -1,7 +1,7 @@
 {
 	"id": "bounty_wyvern_hunt",
 	"title": "Wyvern Hunt",
-	"description": "A wyvern has been spotted near the eastern hills, snatching livestock and threatening farmers. Experienced hunters only - this is no ordinary beast.",
+	"description": "Three sheep and a plow-ox gone off the Hale farmstead in the eastern hills, and the last time anyone in this guild saw a wyvern take stock instead of deer, it didn't stop until someone put it down. The guild won't send apprentices after wings that size - this one is paid at the top of the board, for a hunter who has killed something that can see them coming.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "kill_wyvern",
-			"description": "Hunt down and kill the wyvern",
+			"description": "Kill the wyvern taking stock off the Hale farmstead",
 			"type": "kill",
 			"target": "wyvern",
 			"required_count": 1
@@ -30,5 +30,6 @@
 	},
 	"cooldown_days": 5,
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: named farm (the Hale farmstead) losing stock to a wyvern that has moved from deer to livestock - a known escalation the guild has seen before. Giver motive: the guild won't risk apprentices on it, so the bounty is paid at top rate for an experienced hunter. Refusal: the Hale farmstead keeps losing stock and the wyvern's pattern of escalation continues."
 }

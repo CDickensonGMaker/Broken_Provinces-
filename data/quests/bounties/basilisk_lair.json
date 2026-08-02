@@ -1,7 +1,7 @@
 {
 	"id": "bounty_basilisk_lair",
 	"title": "The Basilisk's Lair",
-	"description": "A basilisk has made its lair in the caves. Its petrifying gaze has already claimed several miners. This deadly creature must be destroyed.",
+	"description": "Six miners haven't come up from the Hollow Vein since caravan-master Otto Praed lost the third crew to whatever has denned in there. The Vein feeds half of Dalhurst's ore contracts, and every week it sits closed costs the Guild a shipment already sold north. Praed put up the head-money out of the Guild's own purse - it won't pay to send men down again, only to reward whoever else does.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "kill_basilisk",
-			"description": "Slay the basilisk in its lair",
+			"description": "Slay whatever has denned in the Hollow Vein and taken it for its own",
 			"type": "kill",
 			"target": "basilisk",
 			"required_count": 1
@@ -30,5 +30,6 @@
 	},
 	"cooldown_days": 5,
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: the Hollow Vein mine closed, six miners dead, a weekly shipment lost to the Merchant Guild's ledger. Giver motive: caravan-master Otto Praed pays the bounty from Guild coin because the Guild won't spend men, only gold. Refusal: the Vein stays shut and the lost shipments keep compounding."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "bounty_goblin_scouts",
 	"title": "Goblin Scouts",
-	"description": "Goblin scouts have been spotted at the forest edges. The militia is offering a bounty to prevent a larger incursion.",
+	"description": "Watch-Sergeant Coel Renn has counted four goblin scouts at the forest edge in a week, always in pairs, always moving north to south like they're marking something. Scouts this organized don't come without a column somewhere behind them, and the garrison hasn't the men to go find out where it's camped. Kill what shows itself; that's the only intelligence Dalhurst can currently afford.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "kill_goblins",
-			"description": "Kill goblin scouts in the forest",
+			"description": "Kill the goblin scouts marking the forest edge before more come",
 			"type": "kill",
 			"target": "goblin_soldier",
 			"required_count": 4
@@ -30,5 +30,6 @@
 	},
 	"cooldown_days": 5,
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: organized goblin scouting (paired, patterned movement) implies a column behind it the garrison cannot locate. Giver motive: Watch-Sergeant Renn can't spare men to track the column, so the bounty buys what reconnaissance it can. Refusal: the scouting continues unopposed and whatever is behind it closes the distance unwatched."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "bounty_undead_rising",
 	"title": "Undead Rising",
-	"description": "Skeletons have been rising from graves near Willow Dale. A cursed totem appears to be the source of the dark magic. Destroy the totem and put the dead back to rest.",
+	"description": "Widow Sarel found her husband's grave open and him standing in it three nights back, and walked him down herself with a hoe. She hasn't slept since. The graves nearest Willow Dale keep doing the same, and whatever is cut into that totem is pulling every one of them up faster than the village can lay them back down.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "kill_skeletons",
-			"description": "Destroy the risen skeletons",
+			"description": "Put the risen dead back down before more climb out",
 			"type": "kill",
 			"target": "skeleton_shade",
 			"required_count": 5
 		},
 		{
 			"id": "destroy_totem",
-			"description": "Destroy the cursed totem",
+			"description": "Destroy the totem driving them out of their graves",
 			"type": "interact",
 			"target": "cursed_totem",
 			"required_count": 1
@@ -37,5 +37,6 @@
 	},
 	"cooldown_days": 5,
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: named villager Widow Sarel had to put her own husband back in the ground; graves near Willow Dale keep opening faster than the village can manage. Giver motive: common folk pooling coin because nobody wants to keep doing what Sarel did. Refusal: more graves open, more families do what Sarel did alone. The totem's maker is left unstated on purpose - inventing one risks the bible's open goblin-king/soulstone mechanism, which this file does not touch."
 }

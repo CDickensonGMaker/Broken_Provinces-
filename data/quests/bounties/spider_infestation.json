@@ -1,7 +1,7 @@
 {
 	"id": "bounty_spider_infestation",
 	"title": "Spider Infestation",
-	"description": "Giant spiders have infested caves near the town. Miners are refusing to work until the threat is dealt with.",
+	"description": "The miners at Cutter's Claim walked off eight days ago and won't go back down - not for the ore, not for the wage advance the Guild offered to get them moving again. Foreman Alsett says it's spiders thick enough to web a cart axle. The Guild would rather pay a bounty once than keep paying idle wages every week the claim sits empty.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "kill_spiders",
-			"description": "Kill giant spiders in the caves",
+			"description": "Clear the giant spiders out of Cutter's Claim so the miners will go back down",
 			"type": "kill",
 			"target": "giant_spider",
 			"required_count": 6
@@ -30,5 +30,6 @@
 	},
 	"cooldown_days": 5,
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: Cutter's Claim mine idle for eight days, miners refusing even a wage advance to go back down. Giver motive: Foreman Alsett and the Guild lose more to idle wages than to a bounty. Refusal: the claim stays empty and the idle-wage cost keeps climbing."
 }

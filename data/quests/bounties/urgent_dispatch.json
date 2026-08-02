@@ -1,7 +1,7 @@
 {
 	"id": "bounty_urgent_dispatch",
 	"title": "Urgent Dispatch",
-	"description": "The guard captain needs an urgent message delivered to Thornfield. The roads are dangerous - a capable fighter is needed to ensure it arrives safely.",
+	"description": "Elder Moor's watch has turned back the supply column meant for Thornfield's garrison - bad axle, worse road - and someone needs to carry word ahead before Thornfield's captain plans a week around grain that isn't coming. The seal is wax, not paper folded twice; this one is meant to be believed on sight.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "deliver_dispatch",
-			"description": "Deliver the sealed dispatch to Thornfield's guard captain",
+			"description": "Get the sealed dispatch into Thornfield's captain's own hand",
 			"type": "talk",
 			"target": "thornfield_guard_captain",
 			"target_zone": "thornfield",
@@ -34,5 +34,6 @@
 	},
 	"cooldown_days": 5,
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: Thornfield's garrison is expecting a supply column that has been turned back and may run short before it knows. Giver motive: Elder Moor's watch relays the account garrison-to-garrison because a written warning beats a late wagon as the first sign of trouble. Refusal/consequence stated in prose only - no flag or timer wired, since this file has no choice_consequences to extend."
 }

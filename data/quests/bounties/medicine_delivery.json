@@ -1,7 +1,7 @@
 {
 	"id": "bounty_medicine_delivery",
 	"title": "Medicine for Millbrook",
-	"description": "Sickness has spread in Millbrook and they desperately need medicine from Dalhurst. Someone must carry it through the dangerous roads.",
+	"description": "The healer in Millbrook sent word three days ago: a fever is moving through the mill workers and she's out of feverfew tincture. Dalhurst's apothecary mixed a fresh batch and needs someone who isn't afraid of the road to carry it before the fever runs into its second week, which is when it stops being the kind people walk away from.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "deliver_medicine",
-			"description": "Deliver the medicine to the healer in Millbrook",
+			"description": "Get the tincture to the healer in Millbrook before the fever runs its second week",
 			"type": "talk",
 			"target": "millbrook_healer",
 			"target_zone": "millbrook",
@@ -34,5 +34,6 @@
 	},
 	"cooldown_days": 5,
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: a fever moving through Millbrook's mill workers, worsening past its second week. Giver motive: Dalhurst's apothecary and common folk cover the courier's fee because they can't spare a rider of their own. Refusal/consequence stated in prose only - no flag or timer wired, since choice_consequences does not exist on this file to extend and the spec forbids adding a new entry. A later pass could wire a late-delivery state if Caleb wants the deadline to bite."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "bounty_bandit_patrol",
 	"title": "Bandit Patrol",
-	"description": "Bandits have been spotted patrolling the roads. The guard captain is offering a bounty for their elimination.",
+	"description": "Captain Bess Ordell posted this one herself, in guard hand, not a scribe's. A crew has been camped on the Millbrook road for four days and it doesn't behave like bandits - it let every cart through but one, stopped a single wagon, took one strongbox off it, and went back to sitting. She doesn't like a robbery that isn't hungry. Kill them or run them off the road; she wants the account closed either way.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "kill_bandits",
-			"description": "Kill bandits on the roads",
+			"description": "Kill the crew that has been sitting the Millbrook road, not working it",
 			"type": "kill",
 			"target": "human_bandit",
 			"required_count": 3
@@ -30,5 +30,6 @@
 	},
 	"cooldown_days": 5,
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: a road crew camped on the Millbrook road for four days, taking only one strongbox off one wagon and letting everything else through - not how bandits work a road. Giver motive: Captain Ordell posts it herself because the garrison can't spare men to sit and watch, and the crew's restraint bothers her more than an ordinary robbery would. Refusal: the crew stays camped and Ordell's account stays open. Soulstone touchpoint (do not extend elsewhere): the captain's irritation at a crew that took one strongbox and nothing else is the seed - never explained, never named as a pattern."
 }

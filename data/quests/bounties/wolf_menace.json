@@ -1,7 +1,7 @@
 {
 	"id": "bounty_wolf_menace",
 	"title": "Wolf Menace",
-	"description": "Wolves have been attacking travelers near the Elder Moor. The local hunters' guild is offering a bounty for anyone who can thin out the pack.",
+	"description": "Three separate parties have come into the guild hall with wolf bites and torn packs this month, all off the Millbrook road. It isn't dire-wolf work, not big enough to pull a real hunter off a paying contract, but the complaints keep coming - so the board carries the price of a pack thinned instead.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "kill_wolves",
-			"description": "Kill wolves near Elder Moor",
+			"description": "Thin the pack harassing travelers on the Millbrook road",
 			"type": "kill",
 			"target": "wolf",
 			"required_count": 5
@@ -30,5 +30,6 @@
 	},
 	"cooldown_days": 5,
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: repeated wolf attacks on travelers along the Millbrook road, small but accumulating. Giver motive: the guild's real hunters are on paying contracts, so a standing bounty absorbs the complaints instead. Refusal: the complaints and bites keep coming in."
 }
