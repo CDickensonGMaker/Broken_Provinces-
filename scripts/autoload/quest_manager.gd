@@ -506,8 +506,14 @@ func _clear_quest_timers(quest_id: String) -> void:
 		_paused_timers.erase(key)
 
 
-## Handle entity killed event from combat manager (backup for spell kills via CombatManager)
+## Handle entity killed event from CombatManager.
+##
+## EnemyBase reports its own death in `_on_death()`, whatever killed it. This
+## handler exists for killable things that do not - counting an EnemyBase here
+## as well would advance a kill objective twice for one corpse.
 func _on_entity_killed(entity: Node, _killer: Node) -> void:
+	if entity is EnemyBase:
+		return
 	if entity.has_method("get_enemy_data"):
 		var enemy_data = entity.get_enemy_data()
 		if enemy_data and enemy_data.id:
