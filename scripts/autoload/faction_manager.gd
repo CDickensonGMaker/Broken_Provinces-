@@ -74,6 +74,22 @@ const ENEMY_CASCADE_MULT: float = -0.5     # Enemies get -50% of rep change (opp
 const PARENT_CASCADE_MULT: float = 0.5     # Parent faction gets 50% of rep change
 const CHILD_CASCADE_MULT: float = 0.25     # Child factions get 25% of parent change
 
+## Every relationship in the game was written from one side only. The merchants
+## call the thieves enemies; the thieves have never heard of the merchants. So
+## helping the merchants cost the player with the thieves, and robbing for the
+## thieves cost him nothing at all with the merchants - true across most pairs,
+## because `_cascade_reputation` reads the *source's* lists and nobody else's.
+##
+## Ruled: the reverse edge exists, at half strength. A grudge one side keeps
+## and the other has not noticed is still a grudge, but it does not weigh the
+## same from both ends. The reverse is derived rather than written into the
+## `.tres` files, so an edge authored tomorrow gets its reciprocal for free and
+## a hand-written mirror can never drift out of step with the edge it mirrors.
+##
+## An authored edge in BOTH directions is unaffected - it already cascades at
+## full strength each way, and the derived pass skips it.
+const RECIPROCAL_CASCADE_SCALE: float = 0.5
+
 ## Reputation bounds
 const MIN_REPUTATION: int = -100
 const MAX_REPUTATION: int = 100
@@ -545,6 +561,48 @@ func _cascade_reputation(source_faction_id: String, amount: int) -> void:
 			var child_amount: int = int(amount * CHILD_CASCADE_MULT)
 			if child_amount != 0:
 				_apply_reputation_change(faction_id, child_amount, "child of %s" % faction.display_name)
+
+	_cascade_reciprocal(source_faction_id, faction, amount)
+
+
+## The other half of every one-way relationship, at RECIPROCAL_CASCADE_SCALE.
+##
+## Walks the factions that name the source and that the source does not name
+## back, and cascades to each at half the multiplier the authored direction
+## would use. `neutrals` is deliberately not mirrored: a neutral is the absence
+## of a relationship and cascades nothing in either direction, and a faction the
+## source lists as neutral is not one that quietly cares.
+func _cascade_reciprocal(source_faction_id: String, faction: FactionData, amount: int) -> void:
+	for other_id: String in factions:
+		if other_id == source_faction_id:
+			continue
+
+		var other: FactionData = factions[other_id]
+
+		# Neutrality on the source's side is a statement, not a silence: if the
+		# source has looked at this faction and called it neutral, the reverse
+		# edge is not derived over the top of that ruling.
+		if other_id in faction.allies or other_id in faction.enemies or other_id in faction.neutrals:
+			continue
+
+		var mult: float = 0.0
+		if source_faction_id in other.allies:
+			mult = ALLY_CASCADE_MULT
+		elif source_faction_id in other.enemies:
+			mult = ENEMY_CASCADE_MULT
+		else:
+			continue
+
+		var reciprocal_amount: int = int(amount * mult * RECIPROCAL_CASCADE_SCALE)
+		if reciprocal_amount == 0:
+			continue
+
+		_apply_reputation_change(
+			other_id, reciprocal_amount, "%s counts %s a %s" % [
+				other.display_name, faction.display_name,
+				"friend" if mult > 0.0 else "rival"
+			]
+		)
 
 ## Check if player's rank changed due to reputation
 func _check_rank_change(faction_id: String, old_rep: int, new_rep: int) -> void:

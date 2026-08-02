@@ -12,8 +12,9 @@ extends Node
 ## player's actions would reach, and asserts the state the NEXT link needs:
 ##
 ##   L1  a quest's `faction_reputation` reward actually lands on FactionManager
-##   L2  the change cascades to allies, enemies, parent and children, and every
-##       id named in a cascade list resolves to a faction that exists
+##   L2  the change cascades to allies, enemies, parent and children, every id
+##       named in a cascade list resolves to a faction that exists, and every
+##       one-way relationship also cascades in reverse at half strength
 ##   L3  a dialogue REPUTATION condition reads the reputation the quest wrote
 ##   L4  GuildRankManager counts the quest, because the reward named a guild
 ##   L5  reputation + quest count together promote the player
@@ -106,6 +107,8 @@ func _run() -> void:
 	_check_reward_lands()
 	await _settle()
 	_check_cascade()
+	await _settle()
+	_check_reciprocal_cascade()
 	await _settle()
 	_check_no_dead_cascade_ids()
 	await _settle()
@@ -247,6 +250,68 @@ func _check_cascade() -> void:
 		FactionManager.get_reputation("church_of_three") > 0,
 		"parent cascade did not fire: church_of_three is %d" % FactionManager.get_reputation("church_of_three")
 	)
+
+
+## L2c. Every one-way relationship cascades in reverse too, at half strength.
+##
+## `merchant_guild.enemies` names `thieves_guild`; the thieves have never heard
+## of the merchants. Before the ruling, robbing for the thieves cost the player
+## nothing at all with the merchants, because the cascade only ever read the
+## source's own lists. Now it reads both, and the derived direction is worth
+## RECIPROCAL_CASCADE_SCALE of the authored one.
+func _check_reciprocal_cascade() -> void:
+	_reset()
+
+	# The merchants call the thieves enemies. The thieves say nothing about the
+	# merchants - so this whole effect is the derived edge.
+	_expect(
+		"thieves_guild" in FactionManager.factions["merchant_guild"].enemies,
+		"merchant_guild no longer names thieves_guild an enemy - this check needs a new pair"
+	)
+	_expect(
+		"merchant_guild" not in FactionManager.factions["thieves_guild"].enemies
+			and "merchant_guild" not in FactionManager.factions["thieves_guild"].allies
+			and "merchant_guild" not in FactionManager.factions["thieves_guild"].neutrals,
+		"thieves_guild now names merchant_guild directly - this check needs a new pair"
+	)
+
+	var merchants_before: int = FactionManager.get_reputation("merchant_guild")
+	FactionManager.modify_reputation("thieves_guild", 40, "probe")
+	var merchants_after: int = FactionManager.get_reputation("merchant_guild")
+
+	_expect(
+		merchants_after < merchants_before,
+		"robbing for the thieves cost nothing with the merchants who name them enemies: %d -> %d"
+			% [merchants_before, merchants_after]
+	)
+
+	# And it costs HALF what the authored direction costs. Pleasing the
+	# merchants moves the thieves by the full enemy multiplier.
+	var authored_delta: int = int(40 * FactionManager.ENEMY_CASCADE_MULT)
+	var derived_delta: int = merchants_after - merchants_before
+	_expect(
+		derived_delta == int(authored_delta * FactionManager.RECIPROCAL_CASCADE_SCALE),
+		"the derived edge moved %d, not %d - it is not half the authored magnitude" % [
+			derived_delta, int(authored_delta * FactionManager.RECIPROCAL_CASCADE_SCALE)
+		]
+	)
+
+	_reset()
+
+	# A faction the source has explicitly called neutral keeps that ruling: no
+	# reverse edge is derived over the top of a stated non-relationship.
+	_expect(
+		"thieves_guild" in FactionManager.factions["church_of_chronos"].neutrals,
+		"church_of_chronos no longer names thieves_guild neutral - this check needs a new pair"
+	)
+	var chronos_before: int = FactionManager.get_reputation("church_of_chronos")
+	FactionManager.modify_reputation("thieves_guild", 40, "probe")
+	_expect(
+		FactionManager.get_reputation("church_of_chronos") == chronos_before,
+		"a faction the source calls neutral was moved anyway"
+	)
+
+	_reset()
 
 
 ## Every id in an allies/enemies/neutrals/parent list must name a faction that
