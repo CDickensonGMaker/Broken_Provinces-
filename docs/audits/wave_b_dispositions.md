@@ -192,6 +192,36 @@ if the type stops shipping and the excuse is left behind.** The quest itself
 stays uncompletable; it is repeatable content behind a capstone that is now
 finishable, so it blocks no ladder.
 
+### 2k. What a failed Deception costs (design call)
+
+CLAUDE.md has carried this for months: *"Deception (HIGH RISK/REWARD):
+Deception skill checks should have CONSEQUENCES for failure. Higher rewards for
+successful deception checks."* Task 56 built the plumbing and stopped exactly
+there, because the rest is yours.
+
+**Built:** objectives take a `skill_check: {"skill": "deception", "dc": 14}`,
+`QuestInteractable` rolls it through `DiceManager.quest_skill_check`, and
+`thieves_07_noble_heist` now carries the deception check its own
+`challenge.skill_checks` block authored — DECEPTION's first gameplay consumer
+in the project's history. `tools/check_quest_engine.tscn` fails if it loses it.
+
+**Not built, and needs a ruling:** what a *failed* lie does. Today it costs the
+attempt and nothing more, deliberately, because the alternative is inventing a
+punishment. The plausible answers all have real consequences and none of them
+is obviously right:
+
+- the guest raises the alarm (hostility, and the heist goes loud)
+- the NPC's disposition drops permanently and the road closes
+- the lie is remembered — a flag other NPCs read, so lying has a reputation
+- nothing, and Deception is just a second Persuasion with a different name
+
+Until this is answered, the `skill_check` field has no failure branch and
+objectives that use it are marked `is_optional` so a bad roll can never strand
+a quest. The three remaining `skill_checks` blocks in
+`thieves_04`, `thieves_07` and `thieves_10/11` describe scene phases that do
+not exist yet — they are level-design notes now, not dead code, because the
+mechanism they were waiting for is real.
+
 ### 2j. Warnings task 46 deliberately created (9)
 
 Making the guild capstones completable added nine warnings, and all nine are the

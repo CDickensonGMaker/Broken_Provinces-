@@ -18,13 +18,16 @@ extends StaticBody3D
 @export var world_flag: String = ""
 ## Optional flag that must be set on FlagManager before this can be used.
 @export var required_flag: String = ""
-## Optional lockpicking DC. Above zero, using this rolls a real
-## DiceManager.lockpick_check and only settles the objective on a success - the
-## machinery Chest and LockableDoor already use. A failure costs nothing but
-## the attempt, so a locked quest object can never dead-end a quest.
-@export var lock_dc: int = 0
-## Line shown when the lock beats the player.
-@export_multiline var lock_failed_message: String = "The lock holds."
+## Optional skill check standing in front of this object. Above zero, using it
+## rolls a real DiceManager check and only settles the objective on a success.
+## Left at zero, the object asks QuestManager whether the objective it settles
+## authored a `skill_check` of its own - so a quest writer can put the DC in the
+## quest, where it belongs, and never touch the scene.
+@export var check_dc: int = 0
+## Which skill the check rolls. Lockpicking gets the lockpick bonus.
+@export var check_skill: Enums.Skill = Enums.Skill.LOCKPICKING
+## Line shown when the check beats the player.
+@export_multiline var check_failed_message: String = "It holds."
 ## Line shown when required_flag is missing.
 @export_multiline var locked_message: String = "Not yet."
 ## Whether using it consumes it.
@@ -88,7 +91,7 @@ func interact(_interactor: Node) -> void:
 		_notify(locked_message)
 		return
 
-	if lock_dc > 0 and not _pick_the_lock():
+	if not _pass_skill_check():
 		return
 
 	used = true
@@ -118,24 +121,50 @@ func interact(_interactor: Node) -> void:
 		mesh_instance.visible = false
 
 
-## Rolls the player's lockpicking against lock_dc. Returns true on a success.
-## Deliberately does not consume a lockpick or break one - this is a quest
-## object, not a loot container, and a broken pick must never strand a quest.
-func _pick_the_lock() -> bool:
+## Rolls whatever check stands in front of this object. Returns true when there
+## is none, or when the player beats it.
+##
+## Deliberately does not consume or break a lockpick - this is a quest object,
+## not a loot container, and a broken pick must never strand a quest. A failure
+## costs the attempt and nothing else, for the same reason.
+func _pass_skill_check() -> bool:
+	var skill: Enums.Skill = check_skill
+	var dc: int = check_dc
+
+	# No DC on the object? Ask the quest. This is the path that makes a quest's
+	# authored skill_check real without anyone editing a scene.
+	if dc <= 0 and not object_id.is_empty() and QuestManager:
+		var authored: Dictionary = QuestManager.get_objective_skill_check("interact", object_id)
+		if not authored.is_empty():
+			dc = int(authored.get("dc", 0))
+			var named: int = DiceManager.skill_from_string(String(authored.get("skill", "")))
+			if named >= 0:
+				skill = named as Enums.Skill
+			elif dc > 0:
+				push_warning("[QuestInteractable] '%s' authored a skill_check with an unknown skill '%s'"
+						% [object_id, authored.get("skill", "")])
+
+	if dc <= 0:
+		return true
+
 	var char_data: Object = GameManager.player_data
 	if char_data == null:
 		return true
 
-	var result: Dictionary = DiceManager.lockpick_check(
-		char_data.get_effective_stat(Enums.Stat.AGILITY),
-		char_data.get_skill(Enums.Skill.LOCKPICKING),
-		lock_dc
-	)
+	var result: Dictionary
+	if skill == Enums.Skill.LOCKPICKING:
+		result = DiceManager.lockpick_check(
+			char_data.get_effective_stat(Enums.Stat.AGILITY),
+			char_data.get_skill(Enums.Skill.LOCKPICKING),
+			dc
+		)
+	else:
+		result = DiceManager.quest_skill_check(skill, dc)
 
 	if bool(result.get("success", false)):
 		return true
 
-	_notify(lock_failed_message)
+	_notify(check_failed_message)
 	return false
 
 

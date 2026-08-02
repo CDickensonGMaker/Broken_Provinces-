@@ -206,6 +206,71 @@ func lockpick_check(
 		true  # Active roll
 	)
 
+## THE canonical skill -> governing stat map.
+##
+## Three copies of this match statement existed (dialogue_manager,
+## conversation_system, and whatever the next caller was going to write) and
+## they had already diverged: one filed LOCKPICKING under Agility in the main
+## block, the other appended it afterwards, and INTIMIDATION was Grit in one and
+## absent from the other. One map, on the class that rolls the dice.
+static func get_stat_for_skill(skill: Enums.Skill) -> Enums.Stat:
+	match skill:
+		Enums.Skill.MELEE, Enums.Skill.INTIMIDATION:
+			return Enums.Stat.GRIT
+		Enums.Skill.RANGED, Enums.Skill.DODGE, Enums.Skill.STEALTH, \
+		Enums.Skill.ENDURANCE, Enums.Skill.THIEVERY, Enums.Skill.ATHLETICS, \
+		Enums.Skill.LOCKPICKING:
+			return Enums.Stat.AGILITY
+		Enums.Skill.CONCENTRATION, Enums.Skill.RESIST, Enums.Skill.BRAVERY:
+			return Enums.Stat.WILL
+		Enums.Skill.PERSUASION, Enums.Skill.DECEPTION, Enums.Skill.NEGOTIATION:
+			return Enums.Stat.SPEECH
+		Enums.Skill.ARCANA_LORE, Enums.Skill.HISTORY, Enums.Skill.INTUITION, \
+		Enums.Skill.ENGINEERING, Enums.Skill.INVESTIGATION, \
+		Enums.Skill.RELIGION, Enums.Skill.NATURE:
+			return Enums.Stat.KNOWLEDGE
+		Enums.Skill.FIRST_AID, Enums.Skill.HERBALISM, Enums.Skill.SURVIVAL:
+			return Enums.Stat.VITALITY
+	return Enums.Stat.KNOWLEDGE
+
+
+## Roll a quest's authored skill check against the live player.
+##
+## This is the consumer `skill_checks` blocks in quest JSON never had, and the
+## first gameplay consumer DECEPTION has ever had - 24 of 25 skills had a real
+## formula behind them and Deception was read only by label lookups.
+func quest_skill_check(skill: Enums.Skill, dc: int) -> Dictionary:
+	var char_data: Object = GameManager.player_data
+	if char_data == null:
+		return {"success": true, "total": 0, "dc": dc}
+
+	var stat: Enums.Stat = get_stat_for_skill(skill)
+	var skill_name: String = skill_display_name(skill)
+	return make_check(
+		skill_name.to_upper() + " CHECK",
+		char_data.get_effective_stat(stat),
+		String(Enums.Stat.keys()[stat]).capitalize(),
+		char_data.get_skill(skill),
+		skill_name,
+		dc,
+		[],
+		true
+	)
+
+
+## "deception" / "DECEPTION" / "sleight_of_hand" -> the enum, or -1 if unknown.
+## Content authors write these as lower-case strings in quest JSON.
+static func skill_from_string(name: String) -> int:
+	var key: String = name.strip_edges().to_upper()
+	if Enums.Skill.has(key):
+		return Enums.Skill[key]
+	return -1
+
+
+static func skill_display_name(skill: Enums.Skill) -> String:
+	return String(Enums.Skill.keys()[skill]).capitalize()
+
+
 ## Speech check (persuasion, deception, negotiation, intimidation)
 func speech_check(
 	speech_stat: int,

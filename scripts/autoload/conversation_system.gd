@@ -2103,26 +2103,12 @@ func perform_skill_check(skill_enum: int, dc: int, context_text: String = "") ->
 	}
 
 
-## Get the governing stat for a skill (copy from DialogueManager for consistency)
+## Get the governing stat for a skill.
+## Delegates: this used to be a hand-copy of DialogueManager's table, and the
+## two had already drifted (LOCKPICKING was in one branch here and a separate
+## clause there). One map, on DiceManager.
 func _get_skill_governing_stat(skill_enum: int) -> int:
-	match skill_enum:
-		Enums.Skill.MELEE, Enums.Skill.INTIMIDATION:
-			return Enums.Stat.GRIT
-		Enums.Skill.RANGED, Enums.Skill.DODGE, Enums.Skill.STEALTH, \
-		Enums.Skill.ENDURANCE, Enums.Skill.THIEVERY, \
-		Enums.Skill.ATHLETICS, Enums.Skill.LOCKPICKING:
-			return Enums.Stat.AGILITY
-		Enums.Skill.CONCENTRATION, Enums.Skill.RESIST, Enums.Skill.BRAVERY:
-			return Enums.Stat.WILL
-		Enums.Skill.PERSUASION, Enums.Skill.DECEPTION, Enums.Skill.NEGOTIATION:
-			return Enums.Stat.SPEECH
-		Enums.Skill.ARCANA_LORE, Enums.Skill.HISTORY, Enums.Skill.INTUITION, \
-		Enums.Skill.ENGINEERING, Enums.Skill.INVESTIGATION, \
-		Enums.Skill.RELIGION, Enums.Skill.NATURE:
-			return Enums.Stat.KNOWLEDGE
-		Enums.Skill.FIRST_AID, Enums.Skill.HERBALISM, Enums.Skill.SURVIVAL:
-			return Enums.Stat.VITALITY
-	return Enums.Stat.KNOWLEDGE
+	return DiceManager.get_stat_for_skill(skill_enum as Enums.Skill)
 
 
 ## Get stat name from enum

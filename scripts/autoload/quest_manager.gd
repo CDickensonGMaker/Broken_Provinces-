@@ -154,6 +154,13 @@ class Objective:
 	## the quest no longer waits on it.
 	var is_settled: bool = false
 
+	## An authored skill check standing between the player and this objective,
+	## `{"skill": "deception", "dc": 14}`. Rolled by whatever settles the
+	## objective - QuestInteractable does it today. Empty means no roll.
+	## Quests carried these in decorative `skill_checks` blocks that
+	## QuestManager never read; this is the field that is actually consulted.
+	var skill_check: Dictionary = {}
+
 	## World-state condition that pre-completes this objective the moment the
 	## quest is offered - the "you already did this" case. Shape is documented
 	## on WorldState.evaluate_condition().
@@ -672,6 +679,9 @@ func _parse_quest(data: Dictionary) -> Quest:
 		var obj_condition: Variant = obj_data.get("world_condition", {})
 		if obj_condition is Dictionary:
 			obj.world_condition = (obj_condition as Dictionary).duplicate(true)
+		var obj_skill_check: Variant = obj_data.get("skill_check", {})
+		if obj_skill_check is Dictionary:
+			obj.skill_check = (obj_skill_check as Dictionary).duplicate(true)
 		quest.objectives.append(obj)
 
 	# Optional descriptions for the OR groups the objectives declared
@@ -835,6 +845,7 @@ func start_quest(quest_id: String) -> bool:
 		new_obj.dungeon_spawn = obj.dungeon_spawn.duplicate(true)
 		new_obj.group = obj.group
 		new_obj.world_condition = obj.world_condition.duplicate(true)
+		new_obj.skill_check = obj.skill_check.duplicate(true)
 		quest.objectives.append(new_obj)
 
 	# Copy the authored branch consequences so choices can fire while active
@@ -1425,6 +1436,21 @@ func on_location_explored(location_id: String) -> void:
 
 		if settled:
 			_check_quest_completion(quest_id)
+
+## The skill check standing in front of an active objective that names this
+## target, or {} if there is none. Whatever settles the objective asks first.
+func get_objective_skill_check(objective_type: String, target: String) -> Dictionary:
+	for quest_id: String in quests:
+		var quest: Quest = quests[quest_id]
+		if quest.state != Enums.QuestState.ACTIVE:
+			continue
+		for obj: Objective in quest.objectives:
+			if obj.is_satisfied() or obj.skill_check.is_empty():
+				continue
+			if obj.type == objective_type and obj.target == target:
+				return obj.skill_check
+	return {}
+
 
 ## Track object interaction
 func on_interact(object_id: String) -> void:
@@ -2864,6 +2890,7 @@ func from_dict(data: Dictionary) -> void:
 			obj.dungeon_spawn = t_obj.dungeon_spawn.duplicate(true)
 			obj.group = t_obj.group
 			obj.world_condition = t_obj.world_condition.duplicate(true)
+			obj.skill_check = t_obj.skill_check.duplicate(true)
 
 			# Restore progress
 			for saved in saved_objectives:

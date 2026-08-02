@@ -89,6 +89,7 @@ func _run() -> void:
 	_check_objective_type_coverage()
 	_check_shipping_data_types()
 	_check_title_reward()
+	_check_objective_skill_checks()
 
 	print("")
 	print("Checks run: %d" % _checks)
@@ -682,6 +683,71 @@ func _check_title_reward() -> void:
 
 	QuestManager.quests.erase(quest_id)
 	QuestManager.quest_database.erase(quest_id)
+
+
+# =============================================================================
+# 8. OBJECTIVE SKILL CHECKS, AND DECEPTION
+# =============================================================================
+#
+# Quests declared `skill_checks` blocks that QuestManager never read, and
+# Enums.Skill.DECEPTION was the one skill of twenty-five with no gameplay
+# consumer at all - raisable, and read only by label lookups.
+
+func _check_objective_skill_checks() -> void:
+	var quest_id := "_skill_check_probe"
+	QuestManager.quest_database[quest_id] = QuestManager._parse_quest({
+		"id": quest_id,
+		"title": "Skill check probe",
+		"turn_in_type": "auto_complete",
+		"objectives": [{
+			"id": "_obj", "type": "interact", "target": "_skill_target",
+			"skill_check": {"skill": "deception", "dc": 14},
+		}],
+	})
+
+	_expect(QuestManager.start_quest(quest_id), "the skill-check probe quest would not start")
+
+	var authored: Dictionary = QuestManager.get_objective_skill_check("interact", "_skill_target")
+	_expect(not authored.is_empty(), "an objective's authored skill_check is not readable from QuestManager")
+	_expect(int(authored.get("dc", 0)) == 14, "the authored DC did not survive the parse")
+
+	# The string a content author writes must resolve to a real skill.
+	_expect(
+		DiceManager.skill_from_string("deception") == Enums.Skill.DECEPTION,
+		"'deception' does not resolve to a skill, so the quest's check can never be rolled"
+	)
+	_expect(
+		DiceManager.get_stat_for_skill(Enums.Skill.DECEPTION) == Enums.Stat.SPEECH,
+		"DECEPTION has no governing stat, so a deception check cannot be built"
+	)
+
+	# One map, not three. The two managers that used to hand-copy it must agree
+	# with DiceManager for every skill, or a check rolls a different stat
+	# depending on which system asked.
+	for skill: int in Enums.Skill.values():
+		_expect(
+			DialogueManager._get_skill_governing_stat(skill) == DiceManager.get_stat_for_skill(skill),
+			"DialogueManager and DiceManager disagree on the governing stat for %s" % Enums.Skill.keys()[skill]
+		)
+		_expect(
+			ConversationSystem._get_skill_governing_stat(skill) == DiceManager.get_stat_for_skill(skill),
+			"ConversationSystem and DiceManager disagree on the governing stat for %s" % Enums.Skill.keys()[skill]
+		)
+
+	QuestManager.quests.erase(quest_id)
+	QuestManager.quest_database.erase(quest_id)
+
+	# And DECEPTION must have at least one real consumer in shipping data,
+	# or it is dead again the moment someone deletes the quest that uses it.
+	var deception_users: int = 0
+	for quest: Object in QuestManager.quest_database.values():
+		for obj: Object in quest.objectives:
+			if String(obj.skill_check.get("skill", "")).to_lower() == "deception":
+				deception_users += 1
+	_expect(
+		deception_users > 0,
+		"no quest objective rolls a deception check - DECEPTION is a dead skill again"
+	)
 
 
 ## Script-declared members on the QuestManager singleton.

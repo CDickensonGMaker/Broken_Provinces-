@@ -66,6 +66,7 @@
       "time_limit": 0,
       "fail_quest_on_timeout": false,
       "world_condition": {"flag": "_field_reference_world_fact"},
+      "skill_check": {"skill": "deception", "dc": 14},
       "dungeon_spawn": {
         "dungeon_id": "_reference_dungeon",
         "room_type": "boss",

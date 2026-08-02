@@ -895,36 +895,12 @@ func _execute_skill_check(action: DialogueAction) -> String:
 	else:
 		return action.failure_node_id
 
-## Get the governing stat for a skill
+## Get the governing stat for a skill.
+## Delegates to the one canonical map on DiceManager; this used to be a second
+## hand-copy, and it had already drifted from the one in ConversationSystem.
 func _get_skill_governing_stat(skill_enum: int) -> int:
-	match skill_enum:
-		# GRIT-based
-		Enums.Skill.MELEE, Enums.Skill.INTIMIDATION:
-			return Enums.Stat.GRIT
-		# AGILITY-based
-		Enums.Skill.RANGED, Enums.Skill.DODGE, Enums.Skill.STEALTH, \
-		Enums.Skill.ENDURANCE, Enums.Skill.THIEVERY, \
-		Enums.Skill.ATHLETICS:
-			return Enums.Stat.AGILITY
-		# WILL-based
-		Enums.Skill.CONCENTRATION, Enums.Skill.RESIST, Enums.Skill.BRAVERY:
-			return Enums.Stat.WILL
-		# SPEECH-based
-		Enums.Skill.PERSUASION, Enums.Skill.DECEPTION, Enums.Skill.NEGOTIATION:
-			return Enums.Stat.SPEECH
-		# KNOWLEDGE-based
-		Enums.Skill.ARCANA_LORE, Enums.Skill.HISTORY, Enums.Skill.INTUITION, \
-		Enums.Skill.ENGINEERING, Enums.Skill.INVESTIGATION, \
-		Enums.Skill.RELIGION, Enums.Skill.NATURE:
-			return Enums.Stat.KNOWLEDGE
-		# VITALITY-based
-		Enums.Skill.FIRST_AID, Enums.Skill.HERBALISM, Enums.Skill.SURVIVAL:
-			return Enums.Stat.VITALITY
-		# LOCKPICKING - Agility
-		Enums.Skill.LOCKPICKING:
-			return Enums.Stat.AGILITY
+	return DiceManager.get_stat_for_skill(skill_enum as Enums.Skill)
 
-	return Enums.Stat.KNOWLEDGE  # Default fallback
 
 ## Get stat name from enum
 func _get_stat_name(stat_enum: int) -> String:

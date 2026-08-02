@@ -27,6 +27,16 @@
       "description": "Locate the Emberlyn Sapphire on display"
     },
     {
+      "id": "obj_talk_past_suspicion",
+      "type": "interact",
+      "target": "emberlyn_suspicious_guest",
+      "required_count": 1,
+      "is_optional": true,
+      "skill_check": {"skill": "deception", "dc": 14},
+      "description": "Talk your way clear if a guest questions you",
+      "notes": "The challenge.skill_checks phase \"if_questioned\", made real. Optional, so a failed lie never strands the heist."
+    },
+    {
       "id": "obj_steal_sapphire",
       "type": "collect",
       "target": "emberlyn_sapphire",

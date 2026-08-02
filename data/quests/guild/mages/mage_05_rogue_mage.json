@@ -52,8 +52,8 @@
 			"target": "rogue_mage_parley",
 			"required_count": 1,
 			"group": "settle_the_rogue",
-			"lock_dc": 15,
-			"notes": "QuestInteractable rogue_mage_parley at the forest camp; skill check DC 15"
+			"skill_check": {"skill": "persuasion", "dc": 15},
+			"notes": "QuestInteractable rogue_mage_parley at the forest camp rolls this DC itself"
 		},
 		{
 			"id": "report_outcome",
