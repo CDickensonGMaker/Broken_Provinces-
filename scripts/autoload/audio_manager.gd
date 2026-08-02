@@ -391,6 +391,84 @@ const EVENT_SUBSTITUTES := {
 ## placeholders in EVENT_VARIANTS. Nothing this game names is silent.
 const MISSING_SFX: Array[String] = []
 
+# =============================================================================
+# DIALOGUE VOICE BLIPS
+# =============================================================================
+#
+# PS1/Banjo-Kazooie gibberish, not speech: a short pitched grain with a formant
+# on it, one per few revealed characters, quiet enough to sit under the reading
+# rather than in front of it. Nobody is voicing this game and nobody should
+# pretend to - a syllable-shaped tone reads as "a person is talking" where a
+# half-done recording reads as broken.
+#
+# Four pitch classes. Synthesised, PLACEHOLDER-CLASS, manifest rows in
+# docs/audits/art_replacement_manifest.md.
+
+const VOICE_BLIP_ROOT := "res://assets/audio/generated/voice/"
+
+const VOICE_BLIPS := {
+	"low": [
+		VOICE_BLIP_ROOT + "blip_low_1.wav", VOICE_BLIP_ROOT + "blip_low_2.wav",
+		VOICE_BLIP_ROOT + "blip_low_3.wav", VOICE_BLIP_ROOT + "blip_low_4.wav",
+		VOICE_BLIP_ROOT + "blip_low_5.wav", VOICE_BLIP_ROOT + "blip_low_6.wav",
+	],
+	"mid": [
+		VOICE_BLIP_ROOT + "blip_mid_1.wav", VOICE_BLIP_ROOT + "blip_mid_2.wav",
+		VOICE_BLIP_ROOT + "blip_mid_3.wav", VOICE_BLIP_ROOT + "blip_mid_4.wav",
+		VOICE_BLIP_ROOT + "blip_mid_5.wav", VOICE_BLIP_ROOT + "blip_mid_6.wav",
+	],
+	"high": [
+		VOICE_BLIP_ROOT + "blip_high_1.wav", VOICE_BLIP_ROOT + "blip_high_2.wav",
+		VOICE_BLIP_ROOT + "blip_high_3.wav", VOICE_BLIP_ROOT + "blip_high_4.wav",
+		VOICE_BLIP_ROOT + "blip_high_5.wav", VOICE_BLIP_ROOT + "blip_high_6.wav",
+	],
+	"solemn": [
+		VOICE_BLIP_ROOT + "blip_solemn_1.wav", VOICE_BLIP_ROOT + "blip_solemn_2.wav",
+		VOICE_BLIP_ROOT + "blip_solemn_3.wav", VOICE_BLIP_ROOT + "blip_solemn_4.wav",
+		VOICE_BLIP_ROOT + "blip_solemn_5.wav", VOICE_BLIP_ROOT + "blip_solemn_6.wav",
+	],
+}
+
+## NPCKnowledgeProfile.Archetype -> blip class. Keyed by the enum's integer so
+## this table does not have to preload the profile script.
+## GENERIC_VILLAGER=0 FARMER=1 GUARD=2 MERCHANT=3 INNKEEPER=4 BLACKSMITH=5
+## SCHOLAR=6 PRIEST=7 HUNTER=8 MINER=9 NOBLE=10 BEGGAR=11 THIEF=12 BARD=13
+const ARCHETYPE_BLIP_CLASS := {
+	0: "mid",      # generic villager
+	1: "mid",      # farmer
+	2: "low",      # guard - deep
+	3: "mid",      # merchant
+	4: "mid",      # innkeeper
+	5: "low",      # blacksmith - deep
+	6: "solemn",   # scholar
+	7: "solemn",   # priest - distinct, slower, with a room around it
+	8: "mid",      # hunter
+	9: "low",      # miner - deep
+	10: "high",    # noble - lighter, clipped
+	11: "low",     # beggar
+	12: "high",    # thief
+	13: "high",    # bard - the highest voice in the game until children exist
+}
+
+## Reveal this many characters between blips. A blip per character is a
+## machine gun; a blip per word is a metronome. Six is roughly syllabic.
+const BLIP_EVERY_CHARS: int = 6
+
+## Quiet on purpose. This sits under the reading.
+const BLIP_VOLUME_DB: float = -16.0
+
+
+## Play one dialogue syllable for a speaker of this archetype.
+## `archetype` is an `NPCKnowledgeProfile.Archetype`; -1 or anything unmapped
+## takes the mid voice, so an NPC with no profile still sounds like a person.
+func play_dialogue_blip(archetype: int = -1) -> void:
+	var blip_class: String = ARCHETYPE_BLIP_CLASS.get(archetype, "mid")
+	var choices: Array = VOICE_BLIPS.get(blip_class, [])
+	if choices.is_empty():
+		return
+	play_sfx(str(choices[randi() % choices.size()]), BLIP_VOLUME_DB, 0.08)
+
+
 ## Background music tracks
 const MUSIC := {
 	"menu": "res://assets/audio/background music/game_menu_intro_3min_medieval_trumpets_war_drums.wav",

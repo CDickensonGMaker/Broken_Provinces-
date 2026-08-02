@@ -84,6 +84,7 @@ func _process(delta: float) -> void:
 			typewriter_timer -= speed
 			visible_chars += 1
 			text_label.visible_characters = visible_chars
+			_blip_for_char(visible_chars - 1)
 
 		# Check if typing complete
 		if visible_chars >= full_text.length():
@@ -384,6 +385,7 @@ func _start_typewriter(text: String) -> void:
 	typewriter_timer = 0.0
 	is_typing = true
 	skip_typewriter = false
+	_blip_countdown = 0
 
 	text_label.text = text
 	text_label.visible_characters = 0
@@ -391,6 +393,39 @@ func _start_typewriter(text: String) -> void:
 	# Hide choices and continue indicator while typing
 	choice_container.visible = false
 	continue_indicator.visible = false
+
+
+## Characters left to reveal before the next dialogue blip.
+var _blip_countdown: int = 0
+
+
+## One PS1-style syllable every few revealed characters, in the speaker's own
+## pitch class. Whitespace and punctuation never trigger one - blipping on a
+## space is what makes the effect read as a machine rather than a mouth. It is
+## also suppressed while the player is holding the skip, because at that speed
+## it is a buzz.
+func _blip_for_char(index: int) -> void:
+	if skip_typewriter or index < 0 or index >= full_text.length():
+		return
+	var c: String = full_text[index]
+	if c.strip_edges().is_empty() or c in ".,;:!?-'\"()[]":
+		return
+	_blip_countdown -= 1
+	if _blip_countdown > 0:
+		return
+	_blip_countdown = AudioManager.BLIP_EVERY_CHARS
+	AudioManager.play_dialogue_blip(_speaker_archetype())
+
+
+## Scripted dialogue carries no knowledge profile of its own, so ask the NPC
+## being spoken to for one. A speaker with no profile takes the mid voice.
+func _speaker_archetype() -> int:
+	var npc: Node = DialogueManager.current_npc
+	if is_instance_valid(npc):
+		var profile: Variant = npc.get("knowledge_profile")
+		if profile is NPCKnowledgeProfile:
+			return (profile as NPCKnowledgeProfile).archetype
+	return -1
 
 
 func _on_typing_complete() -> void:

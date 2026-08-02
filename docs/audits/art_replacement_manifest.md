@@ -255,3 +255,46 @@ Still wanted, and not synthesised: the ACCENT and WEATHER layers of every
 biome. The layer scheme takes them the moment they exist - one line each in
 `SOUNDSCAPES` - and the beds do not sound unfinished without them.
 
+### Dialogue voice blips (new 8/2)
+
+Nobody is voicing this game and nobody should pretend to. What the dialogue
+had instead was nothing: text revealed one character at a time in total
+silence, in both UIs.
+
+24 synthesised **voice blips** now play under the reveal - the PS1 /
+Banjo-Kazooie trick, a short pitched grain with a formant on it, one per six
+revealed characters, at -16 dB. They are not speech and are not trying to be.
+
+All PLACEHOLDER-CLASS. Four pitch classes, six variants each, ~3 KB apiece.
+
+| Class | Voice | Archetypes that use it |
+|---|---|---|
+| `voice/blip_low_*.wav` | deep, sawtooth | guard, blacksmith, miner, beggar |
+| `voice/blip_mid_*.wav` | mid, square | generic villager, farmer, merchant, innkeeper, hunter |
+| `voice/blip_high_*.wav` | light, triangle | noble, thief, bard - and children, when there are any |
+| `voice/blip_solemn_*.wav` | slow sine with a room around it | priest, scholar |
+
+Where they fire: `conversation_ui.gd` and `dialogue_box.gd`, inside the
+typewriter loop, gated on `AudioManager.BLIP_EVERY_CHARS`. Whitespace and
+punctuation never trigger one, and holding the skip key suppresses them
+entirely - at that reveal speed a blip per six characters is a buzz.
+
+An NPC with no `NPCKnowledgeProfile` takes the mid voice, so a speaker with no
+profile still sounds like a person rather than falling silent.
+
+A real replacement is not "record voice acting" - it is a better blip set:
+more variants per class, and a class per named NPC for the dozen characters
+who carry the story.
+
+### Stylised combat vocalisations (new 8/2)
+
+Shipped with the one-shots above, listed here because they are the same
+judgement call: `sfx/voice/player_hurt_*.wav` (3), `enemy_hurt_*.wav` (3),
+`player_death.wav`, `enemy_death_*.wav` (3) and `death_exhale_*.wav` (2).
+
+Detuned saws through two swept formant bands plus breath noise. **Stylised on
+purpose, not attempted realism** - a synthesised human scream that is almost
+convincing reads as broken, where an obviously stylised one reads as a
+choice. If these are replaced, replace them with real recordings; do not try
+to make the synthesis more lifelike.
+
