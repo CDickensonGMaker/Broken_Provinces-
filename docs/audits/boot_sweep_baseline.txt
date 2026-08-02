@@ -1,0 +1,181 @@
+# Boot sweep baseline, 51 level scenes, Godot 4.7, pre-reorganisation (2026-08-02).
+# Regenerate: powershell -File tools/boot_sweep.ps1 -Report docs/audits/boot_sweep_baseline.txt
+# The contract across a mechanical change is: no NEW class, and no class louder.
+# boot sweep
+scenes: 51
+total lines: 88
+classes: 31
+
+## classes
+    13  ERROR: Condition "p.d == N" is true. Returning: PointN()
+     1  WARNING: [CellStreamer] Cannot start EncounterManager - no player found
+     2  WARNING: [Codex] Unknown lore entry: bandit_camp_east
+     1  WARNING: [Codex] Unknown lore entry: bandit_camp_north
+     1  WARNING: [Codex] Unknown lore entry: bandit_camp_south
+     1  WARNING: [Codex] Unknown lore entry: dalhurst
+     1  WARNING: [Codex] Unknown lore entry: millbrook
+     1  WARNING: [Codex] Unknown lore entry: thornfield
+     1  WARNING: [Codex] Unknown lore entry: willow_dale
+     1  WARNING: [ModularRoom] Door door_east not found in room kd_armory
+     1  WARNING: [ModularRoom] Door door_east not found in room kd_command_center
+     1  WARNING: [ModularRoom] Door door_east not found in room kd_common_quarters
+     1  WARNING: [ModularRoom] Door door_east not found in room kd_forge_main
+     1  WARNING: [ModularRoom] Door door_east not found in room kd_kitchen
+     1  WARNING: [ModularRoom] Door door_north not found in room kd_feast_hall
+     1  WARNING: [ModularRoom] Door door_north not found in room kd_great_hall_corridor
+     1  WARNING: [ModularRoom] Door door_north not found in room kd_storage_cellar
+     1  WARNING: [ModularRoom] Door door_north not found in room kd_throne_room
+     1  WARNING: [ModularRoom] Door door_south not found in room kd_common_quarters
+     1  WARNING: [ModularRoom] Door door_south not found in room kd_council_chamber
+     1  WARNING: [ModularRoom] Door door_south not found in room kd_great_hall_corridor
+     1  WARNING: [ModularRoom] Door door_south not found in room kd_ritual_chamber
+     1  WARNING: [ModularRoom] Door door_west not found in room kd_bathhouse
+     1  WARNING: [ModularRoom] Door door_west not found in room kd_command_center
+     1  WARNING: [ModularRoom] Door door_west not found in room kd_feast_hall
+     1  WARNING: [ModularRoom] Door door_west not found in room kd_mine_shaft
+     1  WARNING: [ModularRoom] Door door_west not found in room kd_treasury
+     1  WARNING: [WildernessRoom] Failed to load sprite:
+     1  WARNING: [WildernessRoom] Texture not found:
+     2  WARNING: Property agent_radius is ceiled to cell_size voxel units and loses precision.
+    44  WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+
+## per scene
+##### aberdeen.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### athenaeum.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### bandit_camp_east.tscn
+WARNING: [Codex] Unknown lore entry: bandit_camp_east
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### bandit_camp_north.tscn
+WARNING: [Codex] Unknown lore entry: bandit_camp_north
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### bandit_camp_south.tscn
+WARNING: [Codex] Unknown lore entry: bandit_camp_south
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+ERROR: Condition "p.d == 0" is true. Returning: Point2()
+##### bandit_hideout_exterior.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+ERROR: Condition "p.d == 0" is true. Returning: Point2()
+##### bandit_hideout_level_1.tscn
+##### bandit_hideout_level_2.tscn
+ERROR: Condition "p.d == 0" is true. Returning: Point2()
+##### bloodsand_arena.tscn
+WARNING: [CellStreamer] Cannot start EncounterManager - no player found
+##### crossroads_ruins.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### cult_hideout.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### cultist_ruins_corner.tscn
+##### cultist_temple.tscn
+##### cultist_temple_2.tscn
+##### dalhurst.tscn
+WARNING: [Codex] Unknown lore entry: dalhurst
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### dalhurst_cemetery.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### duncaster.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### dusty_hollow.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+ERROR: Condition "p.d == 0" is true. Returning: Point2()
+ERROR: Condition "p.d == 0" is true. Returning: Point2()
+##### elder_moor.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### elven_outpost.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### falkenhaften.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### goblin_camp.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### inn_interior.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### iron_hall.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### kazan_dun_back_entrance.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### kazan_dun_entrance.tscn
+WARNING: [WildernessRoom] Texture not found:
+WARNING: [WildernessRoom] Failed to load sprite:
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### kazan_dun_exit.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### kazan_dun_level_1.tscn
+WARNING: [ModularRoom] Door door_north not found in room kd_feast_hall
+WARNING: [ModularRoom] Door door_south not found in room kd_great_hall_corridor
+WARNING: [ModularRoom] Door door_north not found in room kd_great_hall_corridor
+WARNING: [ModularRoom] Door door_south not found in room kd_council_chamber
+WARNING: [ModularRoom] Door door_west not found in room kd_feast_hall
+WARNING: [ModularRoom] Door door_east not found in room kd_kitchen
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### kazan_dun_level_2.tscn
+WARNING: [ModularRoom] Door door_east not found in room kd_common_quarters
+WARNING: [ModularRoom] Door door_west not found in room kd_bathhouse
+WARNING: [ModularRoom] Door door_south not found in room kd_common_quarters
+WARNING: [ModularRoom] Door door_north not found in room kd_storage_cellar
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### kazan_dun_level_3.tscn
+WARNING: [ModularRoom] Door door_west not found in room kd_command_center
+WARNING: [ModularRoom] Door door_east not found in room kd_armory
+WARNING: [ModularRoom] Door door_east not found in room kd_command_center
+WARNING: [ModularRoom] Door door_west not found in room kd_treasury
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### kazan_dun_level_4.tscn
+WARNING: [ModularRoom] Door door_east not found in room kd_forge_main
+WARNING: [ModularRoom] Door door_west not found in room kd_mine_shaft
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### kazan_dun_level_5.tscn
+WARNING: [ModularRoom] Door door_south not found in room kd_ritual_chamber
+WARNING: [ModularRoom] Door door_north not found in room kd_throne_room
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### kazan_dun_road_leading_up.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### kazan_dun_south_road.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### kings_watch.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### larton.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### millbrook.tscn
+WARNING: [Codex] Unknown lore entry: millbrook
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### millbrook_bandit_camp.tscn
+##### mosshall_tombs.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+WARNING: Property agent_radius is ceiled to cell_size voxel units and loses precision.
+##### pola_perron.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### pola_perron_crypt.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### riverside_village.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### southern_cave_exterior.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### sunken_crypt.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+WARNING: Property agent_radius is ceiled to cell_size voxel units and loses precision.
+##### tenger_camp.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+ERROR: Condition "p.d == 0" is true. Returning: Point2()
+ERROR: Condition "p.d == 0" is true. Returning: Point2()
+ERROR: Condition "p.d == 0" is true. Returning: Point2()
+ERROR: Condition "p.d == 0" is true. Returning: Point2()
+ERROR: Condition "p.d == 0" is true. Returning: Point2()
+ERROR: Condition "p.d == 0" is true. Returning: Point2()
+##### thornfield.tscn
+WARNING: [Codex] Unknown lore entry: thornfield
+WARNING: [Codex] Unknown lore entry: bandit_camp_east
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### whalers_abyss.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### willow_dale.tscn
+WARNING: [Codex] Unknown lore entry: willow_dale
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+ERROR: Condition "p.d == 0" is true. Returning: Point2()
+ERROR: Condition "p.d == 0" is true. Returning: Point2()
+##### windmere.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### wolf_den_forest.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
+##### wyverns_roost.tscn
+WARNING: Source geometry parsing for navigation mesh baking had to parse RenderingServer meshes at runtime.
