@@ -489,11 +489,18 @@ func _connect_signals() -> void:
 	# Follower signals - five of them, emitted into the void until now. A
 	# companion going down or being dismissed is exactly the kind of thing the
 	# player must not have to notice for himself.
+	# _connect_signals() runs again whenever player_data changes, so each of
+	# these is tested on its own - one guard for five connections would leave
+	# four of them duplicating on the second call.
 	if not FollowerManager.follower_added.is_connected(_on_follower_added):
 		FollowerManager.follower_added.connect(_on_follower_added)
+	if not FollowerManager.follower_dismissed.is_connected(_on_follower_dismissed):
 		FollowerManager.follower_dismissed.connect(_on_follower_dismissed)
+	if not FollowerManager.follower_unconscious.is_connected(_on_follower_unconscious):
 		FollowerManager.follower_unconscious.connect(_on_follower_unconscious)
+	if not FollowerManager.follower_recovered.is_connected(_on_follower_recovered):
 		FollowerManager.follower_recovered.connect(_on_follower_recovered)
+	if not FollowerManager.all_followers_commanded.is_connected(_on_followers_commanded):
 		FollowerManager.all_followers_commanded.connect(_on_followers_commanded)
 
 
