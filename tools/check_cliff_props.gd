@@ -63,7 +63,7 @@ func _probe(scene: PackedScene, biome: int, expect_cliffs: bool) -> void:
 		# tree for the world enemy budget.
 		add_child(room)
 		if room.has_method("generate"):
-			room.call("generate", 4400 + cell * 97, Vector2i(cell, biome))
+			await room.call("generate", 4400 + cell * 97, Vector2i(cell, biome))
 
 		for child: Node in room.get_children():
 			# Outcrops are found by their mesh child, not by name. When siblings

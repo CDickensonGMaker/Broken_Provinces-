@@ -215,7 +215,24 @@ func _process(_delta: float) -> void:
 	pass
 
 
-## Generate the room with given seed
+## Generate the room with given seed.
+##
+## THIS IS A COROUTINE, and it must be awaited. Building a wilderness cell -
+## heightfield, mesh, collision, several hundred trees and props, then enemies -
+## measured 145 to 197 ms on 8/2, all of it inside one call, which is one frame
+## the player loses every time he crosses a cell boundary. That is the hitching
+## in the playtest report.
+##
+## The work is not made cheaper here; it is made to arrive in slices. The cell
+## yields between phases, so the streamer's one-frame spike becomes several small
+## ones spread over the frames the player spends walking the last hundred units
+## towards the boundary. LOAD_RADIUS is 1, so there are always a hundred units of
+## warning - the cell has time it was never given.
+##
+## The cell is HIDDEN until every phase is done, so a half-dressed cell is never
+## visible. Collision is live from the moment the ground exists, which is the
+## first slice, so a player who somehow arrives early stands on ground rather
+## than falling through it.
 func generate(seed_value: int = 0, coords: Vector2i = Vector2i.ZERO) -> void:
 	# Initialize texture cache once (static, shared across all rooms)
 	_init_texture_cache()
@@ -260,9 +277,14 @@ func generate(seed_value: int = 0, coords: Vector2i = Vector2i.ZERO) -> void:
 	# Check if this is a road cell
 	is_road_cell = WorldGrid.is_road(coords)
 
+	var was_visible: bool = visible
+	visible = false
+
+	# Slice 1: the ground the player will stand on, and the road across it.
 	_setup_materials()
 	_create_ground()
 	_create_road_if_needed()  # Add dirt road on road cells
+	await _yield_slice("ground+road")
 
 	# Only create environment and edges when NOT in seamless mode
 	# In seamless mode, the main scene provides lighting and CellStreamer handles boundaries
@@ -272,22 +294,57 @@ func generate(seed_value: int = 0, coords: Vector2i = Vector2i.ZERO) -> void:
 
 	_create_spawn_points()  # Directional spawn points for cell transitions
 
-	# ALWAYS spawn terrain/environment (trees, grass, props)
-	_spawn_environment()
+	# Slice 2: the vegetation, which is the largest node count in the cell and
+	# yields inside itself as well.
+	await _spawn_environment()
+	await _yield_slice("environment")
+
+	# Slice 3: the edges, where this cell meets its neighbours.
 	_create_boundary_props()
 	_create_edge_transitions()  # Blend terrain at edges with adjacent biomes
+	await _yield_slice("edges")
 
+	# Slice 4: everything that is a thing rather than scenery.
 	# SKIP enemies/ruins/dungeons if covered by hand-crafted zone
 	if not is_covered_by_handcrafted:
 		_spawn_ruins()
 		_spawn_cursed_totems()  # Skeleton spawners near ruins
-		_spawn_enemies()
+		await _yield_slice("ruins+totems")
+		await _spawn_enemies()
 		_spawn_fireplace()
 		_spawn_traveling_merchant()
 		_spawn_spock_easter_egg()  # Rare Spock easter egg
 		_spawn_signposts_if_road()  # Add signposts pointing to destinations
 
+	if profile_slices:
+		await _yield_slice("spawns")
+		_slice_mark = 0
+
+	visible = was_visible
 	room_generated.emit(self)
+
+
+## Set true by tools/probes/stream_probe.gd to print what each slice cost. Off in
+## the game: the answer to "which slice is the hitch" should be measured, and
+## measuring it should not need the file edited.
+static var profile_slices: bool = false
+static var _slice_mark: int = 0
+
+
+## Hand a frame back, if there is a tree to hand it back to. A cell built
+## outside the tree - which is what the check scenes and probes do - runs
+## straight through, so nothing that measures a cell has to drive a main loop.
+func _yield_slice(label: String = "") -> void:
+	if profile_slices:
+		var now: int = Time.get_ticks_usec()
+		if _slice_mark > 0:
+			print("    slice %-22s %7.2f ms" % [label, float(now - _slice_mark) / 1000.0])
+		_slice_mark = Time.get_ticks_usec()
+	if not is_inside_tree():
+		return
+	await get_tree().process_frame
+	if profile_slices:
+		_slice_mark = Time.get_ticks_usec()
 
 
 ## Setup materials based on biome
@@ -1356,6 +1413,8 @@ func _zone_accepts_tree(local_pos: Vector3) -> bool:
 
 
 ## Spawn environmental props (trees, rocks, bushes, grass, mushrooms)
+## A coroutine, like generate(): this is the largest single phase in a cell and
+## slicing it further is where most of the remaining spike lives.
 func _spawn_environment() -> void:
 	var tree_count := 0
 	var rock_count := 0
@@ -1476,6 +1535,8 @@ func _spawn_environment() -> void:
 		add_child(tree)
 		props.append(tree)
 
+	await _yield_slice("veg:trees")
+
 	# Spawn cliff outcrops. Content positions, not prop positions: an outcrop is
 	# 9-17 m across and one placed on a cell edge would grow out of the seam
 	# into the neighbouring cell.
@@ -1492,6 +1553,8 @@ func _spawn_environment() -> void:
 		add_child(rock)
 		props.append(rock)
 
+	await _yield_slice("veg:cliffs+rocks")
+
 	# Spawn bushes
 	for i in range(bush_count):
 		var bush := _create_bush()
@@ -1505,6 +1568,8 @@ func _spawn_environment() -> void:
 		grass.position = _get_random_prop_position()
 		add_child(grass)
 		props.append(grass)
+
+	await _yield_slice("veg:bushes+grass")
 
 	# Spawn swamp-specific trees (standing swamp trees with collision)
 	for i in range(swamp_tree_count):
@@ -1534,10 +1599,16 @@ func _spawn_environment() -> void:
 		add_child(mushroom)
 		props.append(mushroom)
 
+	await _yield_slice("veg:swamp+mushrooms")
+
 	# Spawn decorative 3D trees (non-harvestable, 50-80% of harvestable tree count)
 	# Using tree_pack_1.1 models (36 unique trees) for visual variety
 	var decorative_tree_count: int = int(tree_count * rng.randf_range(0.5, 0.8))
 	for i in range(decorative_tree_count):
+		# Every eighth, because these are GLB instances and the largest slice
+		# left after the rest was spread out was this loop.
+		if i > 0 and i % 8 == 0:
+			await _yield_slice("veg:deco_trees")
 		var pos: Vector3 = _get_random_prop_position()
 		if not _zone_accepts_tree(pos):
 			continue
@@ -2157,6 +2228,11 @@ func _spawn_enemies() -> void:
 	var min_enemy_distance := 6.0  # Reduced from 8 to allow more enemies
 
 	for i in range(count):
+		# One enemy per frame. Each spawn now shape-tests its position against
+		# static geometry, which is what stops skeletons standing in walls; doing
+		# a whole cell's worth in one frame is what made that expensive.
+		await _yield_slice()
+
 		var attempts := 0
 		var max_attempts := 15
 		var pos: Vector3

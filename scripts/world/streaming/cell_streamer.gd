@@ -230,7 +230,7 @@ func _load_cell(coords: Vector2i) -> void:
 			cell_node = await _load_handcrafted_cell_with_path(coords, cell_info, effective_scene_path)
 		else:
 			push_warning("[CellStreamer] Scene path doesn't exist: %s" % effective_scene_path)
-			cell_node = _generate_procedural_cell(coords, cell_info)
+			cell_node = await _generate_procedural_cell(coords, cell_info)
 	elif cell_info.location_type in [
 		WorldGrid.LocationType.VILLAGE,
 		WorldGrid.LocationType.TOWN,
@@ -239,11 +239,11 @@ func _load_cell(coords: Vector2i) -> void:
 		WorldGrid.LocationType.OUTPOST
 	] and effective_scene_path == "":
 		# Procedural settlement - use TownGenerator
-		cell_node = _generate_procedural_town(coords, cell_info)
+		cell_node = await _generate_procedural_town(coords, cell_info)
 	else:
 		# Procedural wilderness - always generate the cell
 		# WildernessRoom will handle skipping enemies/ruins for covered cells
-		cell_node = _generate_procedural_cell(coords, cell_info)
+		cell_node = await _generate_procedural_cell(coords, cell_info)
 
 	if not cell_node:
 		_loading_cells.erase(coords)
@@ -387,8 +387,10 @@ func _generate_procedural_cell(coords: Vector2i, cell_info: WorldGrid.CellInfo) 
 
 		# Generate with deterministic seed (world_seed ensures different worlds per playthrough)
 		var seed_value: int = GameManager.world_seed + (coords.x * 10000) + coords.y
+		# generate() is a coroutine: it yields between phases so a cell arrives in
+		# slices rather than as one 150ms frame. _load_cell is already async.
 		if room.has_method("generate"):
-			room.call("generate", seed_value, coords)
+			await room.call("generate", seed_value, coords)
 
 		return room
 
@@ -401,7 +403,7 @@ func _generate_procedural_town(coords: Vector2i, cell_info: WorldGrid.CellInfo) 
 	var TownGeneratorClass = load("res://scripts/generation/towns/town_generator.gd")
 	if not TownGeneratorClass:
 		push_warning("[CellStreamer] TownGenerator not found, falling back to wilderness")
-		return _generate_procedural_cell(coords, cell_info)
+		return await _generate_procedural_cell(coords, cell_info)
 
 	var town: Node3D = TownGeneratorClass.new()
 	town.name = "ProceduralTown_%s" % cell_info.location_id

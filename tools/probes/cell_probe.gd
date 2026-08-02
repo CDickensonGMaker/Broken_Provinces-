@@ -22,7 +22,7 @@ func _ready() -> void:
 		room.set("biome", biome)
 		room.call("set_seamless_mode", true)
 		add_child(room)
-		room.call("generate", 12345 + biome, PROBE_CELL)
+		await room.call("generate", 12345 + biome, PROBE_CELL)
 
 		var children: int = room.get_child_count()
 		print("%-18s %4d nodes" % [TerrainConfig.Biome.keys()[biome], children])
