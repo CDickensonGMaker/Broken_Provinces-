@@ -378,6 +378,15 @@ func _do_light_attack() -> void:
 		melee_hitbox.set_owner_entity(self)
 		melee_hitbox.set_damage_values(damage, damage_type)
 
+		# Armed swings go through CombatManager.apply_melee_damage, which is
+		# where crits, lifesteal, the damage number and the HUD signals live.
+		# Unarmed keeps the hitbox's own flat-damage path.
+		if weapon:
+			var weapon_quality: Enums.ItemQuality = InventoryManager.get_equipped_weapon_quality()
+			melee_hitbox.set_weapon(weapon, weapon_quality, false)
+		else:
+			melee_hitbox.set_weapon(null)
+
 		# Connect to hit_landed to play melee weapon sound (only for armed attacks)
 		if weapon:
 			# Disconnect any previous connection to avoid duplicates
@@ -390,8 +399,11 @@ func _do_light_attack() -> void:
 		# Fallback for non-Hitbox Area3D
 		melee_hitbox.monitoring = true
 
-	# Degrade weapon with each attack (1 durability per attack)
-	InventoryManager.degrade_weapon(1)
+	# Degrade weapon with each attack (1 durability per attack).
+	# An armed swing routed through CombatManager is degraded there, per landed
+	# hit - degrading here as well would wear the weapon down twice as fast.
+	if not (melee_hitbox is Hitbox and (melee_hitbox as Hitbox).weapon_data != null):
+		InventoryManager.degrade_weapon(1)
 
 	# Keep hitbox active for attack duration
 	await get_tree().create_timer(light_attack_duration).timeout

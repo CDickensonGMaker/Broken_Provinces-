@@ -19,6 +19,14 @@ signal hit_landed(target: Node)
 ## Owner reference (who is attacking)
 var owner_entity: Node = null
 
+## Weapon routing. When a WeaponData is set, this hitbox stops applying damage
+## itself and hands the hit to CombatManager.apply_melee_damage() - the function
+## that rolls crits, applies lifesteal, emits damage_dealt/critical_hit and
+## spawns the damage number. Left null, the hitbox behaves exactly as before.
+var weapon_data: WeaponData = null
+var weapon_quality: Enums.ItemQuality = Enums.ItemQuality.AVERAGE
+var is_heavy_attack: bool = false
+
 ## Track what we've hit this activation
 var hit_targets: Array[Node] = []
 
@@ -122,6 +130,18 @@ func _on_body_entered(body: Node3D) -> void:
 func _apply_hit(target: Node) -> void:
 	hit_landed.emit(target)
 
+	if weapon_data != null:
+		# Weapon path: CombatManager owns damage, crits, lifesteal, conditions,
+		# stagger (from weapon.stagger_power), the damage number and the signals.
+		# Only knockback stays here - it is the hitbox's own, and the combat
+		# manager has never had it.
+		_notify_backstab(owner_entity, target)
+		CombatManager.apply_melee_damage(
+			owner_entity, target, weapon_data, weapon_quality, is_heavy_attack, false
+		)
+		_apply_knockback(target)
+		return
+
 	# Calculate final damage (may be modified by backstab)
 	var final_damage: int = _calculate_backstab_damage(damage, owner_entity, target)
 
@@ -134,19 +154,33 @@ func _apply_hit(target: Node) -> void:
 		target.apply_stagger(stagger_power)
 
 	# Apply knockback
-	if knockback_force > 0 and target is CharacterBody3D and owner_entity is Node3D:
-		var direction: Vector3 = (target.global_position - (owner_entity as Node3D).global_position).normalized()
-		direction.y = 0.2  # Slight upward
-		(target as CharacterBody3D).velocity += direction * knockback_force
+	_apply_knockback(target)
 
 	# Apply condition
 	if inflicts_condition != Enums.Condition.NONE and randf() < condition_chance:
 		if target.has_method("apply_condition"):
 			target.apply_condition(inflicts_condition, condition_duration)
 
+## Push the target away from the attacker
+func _apply_knockback(target: Node) -> void:
+	if knockback_force <= 0 or not target is CharacterBody3D or not owner_entity is Node3D:
+		return
+	var direction: Vector3 = ((target as Node3D).global_position - (owner_entity as Node3D).global_position).normalized()
+	direction.y = 0.2  # Slight upward
+	(target as CharacterBody3D).velocity += direction * knockback_force
+
+
 ## Set owner (the entity this hitbox belongs to)
 func set_owner_entity(entity: Node) -> void:
 	owner_entity = entity
+
+
+## Route this hitbox's hits through CombatManager.apply_melee_damage.
+## Pass null to go back to the hitbox's own flat-damage path (unarmed, enemies).
+func set_weapon(weapon: WeaponData, quality: Enums.ItemQuality = Enums.ItemQuality.AVERAGE, heavy: bool = false) -> void:
+	weapon_data = weapon
+	weapon_quality = quality
+	is_heavy_attack = heavy
 
 ## Update damage values (for weapons with different stats)
 func set_damage_values(new_damage: int, new_type: Enums.DamageType = Enums.DamageType.PHYSICAL) -> void:
@@ -189,9 +223,22 @@ func _calculate_backstab_damage(base_damage: int, attacker: Node, target: Node) 
 	var mult: float = StealthConstants.get_stealth_backstab_multiplier(stealth_skill, true)
 	var backstab_damage: int = int(base_damage * mult)
 
-	# Show backstab feedback via HUD
+	_notify_backstab(attacker, target)
+
+	return backstab_damage
+
+
+## Show the BACKSTAB! notification when a hidden player strikes an unaware target.
+## The multiplier itself lives in whichever damage path runs - CombatManager
+## applies the same StealthConstants multiplier on the weapon path.
+func _notify_backstab(attacker: Node, target: Node) -> void:
+	if not is_instance_valid(attacker) or not attacker.is_in_group("player"):
+		return
+	if not attacker.has_method("get_is_hidden") or not attacker.get_is_hidden():
+		return
+	if not target.has_method("is_unaware") or not target.is_unaware():
+		return
+
 	var hud := attacker.get_tree().get_first_node_in_group("hud")
 	if hud and hud.has_method("show_notification"):
 		hud.show_notification("BACKSTAB!")
-
-	return backstab_damage
