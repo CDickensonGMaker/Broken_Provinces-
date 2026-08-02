@@ -451,6 +451,44 @@ func _check_version_agreement() -> void:
 		]
 	)
 
+	# The instance is fixed; this closes the class. load_game() only migrates
+	# `if version < SAVE_VERSION`, so a migration block whose target sits above
+	# SAVE_VERSION can never run, and one that stops short of it leaves the
+	# newest saves half-migrated. The ladder must end exactly at the constant.
+	var source: String = _read_text("res://scripts/autoload/save_manager.gd")
+	var re := RegEx.new()
+	re.compile("migrated\\[\"version\"\\]\\s*=\\s*(\\d+)")
+	var targets: Array[int] = []
+	for m: RegExMatch in re.search_all(source):
+		targets.append(int(m.get_string(1)))
+
+	_expect(not targets.is_empty(), "no migration blocks found in save_manager.gd - has _migrate_save_data moved?")
+	if targets.is_empty():
+		return
+
+	var highest: int = targets.max()
+	_expect(
+		highest == SaveManager.SAVE_VERSION,
+		"the migration ladder ends at version %d but SAVE_VERSION is %d - %s" % [
+			highest, SaveManager.SAVE_VERSION,
+			"blocks above the constant can never run" if highest > SaveManager.SAVE_VERSION
+				else "the newest format has no migration into it"
+		]
+	)
+
+	# And no rung may be missing, or a save two versions old stalls.
+	for step: int in range(1, SaveManager.SAVE_VERSION + 1):
+		_expect(targets.has(step), "no migration block produces save version %d - the ladder has a missing rung" % step)
+
+
+func _read_text(path: String) -> String:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return ""
+	var text: String = file.get_as_text()
+	file.close()
+	return text
+
 
 # =============================================================================
 # PLUMBING
