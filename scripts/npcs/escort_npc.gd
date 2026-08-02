@@ -276,11 +276,9 @@ func _check_location_arrival(location_id: String) -> bool:
 			if current_scene.location_id == location_id:
 				return true
 
-	# Check WorldGrid location
-	if WorldGrid:
-		var current_loc: Dictionary = WorldGrid.get_current_location()
-		if current_loc.get("id", "") == location_id:
-			return true
+	# PlayerGPS is the single source of truth for where the player is
+	if PlayerGPS.current_location_id == location_id:
+		return true
 
 	return false
 
