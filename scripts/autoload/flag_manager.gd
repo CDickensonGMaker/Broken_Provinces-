@@ -438,16 +438,23 @@ func pop_pending_boat_voyage() -> String:
 # SAVE/LOAD INTEGRATION
 # =============================================================================
 
-## Serialize flags for saving
+## Serialize flags for saving.
+##
+## context_variables belongs here as much as flags do: it is the substitution
+## context behind every `{merchant_id}:befriend` flag name, so a save that
+## carries the flags and drops the context restores names that no longer
+## resolve to anything.
 func to_dict() -> Dictionary:
 	return {
-		"flags": flags.duplicate()
+		"flags": flags.duplicate(),
+		"context_variables": context_variables.duplicate()
 	}
 
 
 ## Deserialize flags from save
 func from_dict(data: Dictionary) -> void:
 	flags = data.get("flags", {}).duplicate()
+	context_variables = data.get("context_variables", {}).duplicate()
 
 
 ## Reset state for new game

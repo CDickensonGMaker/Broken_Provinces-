@@ -10,7 +10,13 @@ extends Resource
 ## Version 6: Added WeatherSaveData (visual weather system)
 ## Version 7: Added WorldStateSaveData (persistent world facts and modifications);
 ##            FactionSaveData now carries ongoing effects, hostility and crime days
-const SAVE_VERSION := 7
+## Version 8: FlagSaveData replaces DialogueSaveData - flags are FlagManager's,
+##            not DialogueManager's, and context_variables is carried too
+##
+## SaveManager reads this constant rather than keeping its own copy. It kept one
+## for a long time, and the two drifted three versions apart, which left a live
+## migration block that could never run.
+const SAVE_VERSION := 8
 
 ## Metadata
 @export var version: int = SAVE_VERSION
@@ -36,8 +42,9 @@ var time_data = null  # TimeSaveData (renamed to avoid conflict with Time single
 ## Crime/bounty section
 var crime_data = null  # CrimeSaveData
 
-## Dialogue flags section
-var dialogue_data = null  # DialogueSaveData
+## Flag section (FlagManager: devotion, guild-rank gates, dialogue flags,
+## every mirrored world fact, and the substitution context behind flag names)
+var flag_data = null  # FlagSaveData
 
 ## Conversation memory section
 var conversation_data = null  # ConversationSaveData
@@ -110,7 +117,7 @@ func _init() -> void:
 	quests = QuestSaveData.new()
 	time_data = TimeSaveData.new()
 	crime_data = CrimeSaveData.new()
-	dialogue_data = DialogueSaveData.new()
+	flag_data = FlagSaveData.new()
 	conversation_data = ConversationSaveData.new()
 	errand_data = ErrandSaveData.new()
 	world_manager_data = WorldManagerSaveData.new()
@@ -145,7 +152,7 @@ func to_dict() -> Dictionary:
 		"quests": quests.to_dict() if quests else {},
 		"time": time_data.to_dict() if time_data else {},
 		"crime": crime_data.to_dict() if crime_data else {},
-		"dialogue": dialogue_data.to_dict() if dialogue_data else {},
+		"flags": flag_data.to_dict() if flag_data else {},
 		"conversation": conversation_data.to_dict() if conversation_data else {},
 		"errands": errand_data.to_dict() if errand_data else {},
 		"world_manager": world_manager_data.to_dict() if world_manager_data else {},
@@ -188,8 +195,8 @@ func from_dict(data: Dictionary) -> void:
 		time_data.from_dict(data.get("time", {}))
 	if crime_data:
 		crime_data.from_dict(data.get("crime", {}))
-	if dialogue_data:
-		dialogue_data.from_dict(data.get("dialogue", {}))
+	if flag_data:
+		flag_data.from_dict(data.get("flags", {}))
 	if conversation_data:
 		conversation_data.from_dict(data.get("conversation", {}))
 	if errand_data:
@@ -595,19 +602,28 @@ class CrimeSaveData:
 		confiscated_items = data.get("confiscated_items", {})
 
 
-## Dialogue flags save data structure
-class DialogueSaveData:
-	## Dialogue flags (flag_name -> value)
-	## Tracks things like "talked_to_merchant_about_quest", "intimidated_guard", etc.
+## Flag save data structure (FlagManager)
+##
+## Was written by DialogueManager under the key "dialogue" until save format 8,
+## which is why the old key is migrated forward rather than read here. Flags
+## were never dialogue's to own: devotion, guild-rank gates and the one-way
+## mirror of every world fact all live in the same dictionary.
+class FlagSaveData:
+	## All flags (flag_name -> value)
 	var flags: Dictionary = {}
+
+	## Substitution context behind templated flag names ("{merchant_id}:befriend")
+	var context_variables: Dictionary = {}
 
 	func to_dict() -> Dictionary:
 		return {
-			"flags": flags
+			"flags": flags,
+			"context_variables": context_variables
 		}
 
 	func from_dict(data: Dictionary) -> void:
 		flags = data.get("flags", {})
+		context_variables = data.get("context_variables", {})
 
 
 ## Conversation memory save data structure

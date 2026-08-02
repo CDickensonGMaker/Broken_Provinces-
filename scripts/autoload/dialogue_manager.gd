@@ -19,10 +19,6 @@ var current_npc: Node = null  ## The NPC being spoken to (for duel, shop actions
 ## to be substituted to "blacksmith_01:befriend"
 var context_variables: Dictionary = {}
 
-## Dialogue flags (persisted via SaveManager)
-## These track dialogue-specific state like "talked_to_npc_about_quest"
-var dialogue_flags: Dictionary = {}
-
 ## Flag for whether dialogue is active
 var is_dialogue_active: bool = false
 
@@ -1053,96 +1049,41 @@ func _substitute_context_variables(text: String) -> String:
 	return result
 
 ## Set a dialogue flag (supports context variable substitution)
-## Delegates to FlagManager for centralized storage
+## Delegates to FlagManager, which is where the value lands and is saved from.
 func set_flag(flag_name: String, value: Variant = true) -> void:
-	# Sync context variables with FlagManager
 	_sync_context_to_flag_manager()
-
-	if FlagManager:
-		FlagManager.set_flag(flag_name, value)
-	else:
-		# Fallback to local storage if FlagManager not ready
-		var resolved_name := _substitute_context_variables(flag_name)
-		dialogue_flags[resolved_name] = value
-
+	FlagManager.set_flag(flag_name, value)
 	flag_changed.emit(_substitute_context_variables(flag_name), value == true)
 
 ## Clear a dialogue flag (supports context variable substitution)
-## Delegates to FlagManager for centralized storage
 func clear_flag(flag_name: String) -> void:
-	# Sync context variables with FlagManager
 	_sync_context_to_flag_manager()
-
-	if FlagManager:
-		FlagManager.clear_flag(flag_name)
-	else:
-		# Fallback to local storage
-		var resolved_name := _substitute_context_variables(flag_name)
-		if dialogue_flags.has(resolved_name):
-			dialogue_flags.erase(resolved_name)
-
+	FlagManager.clear_flag(flag_name)
 	flag_changed.emit(_substitute_context_variables(flag_name), false)
 
 ## Check if a flag is set (supports context variable substitution)
-## Delegates to FlagManager for centralized storage
 func has_flag(flag_name: String) -> bool:
-	# Sync context variables with FlagManager
 	_sync_context_to_flag_manager()
-
-	if FlagManager:
-		return FlagManager.has_flag(flag_name)
-	else:
-		# Fallback to local storage
-		var resolved_name := _substitute_context_variables(flag_name)
-		return dialogue_flags.has(resolved_name)
+	return FlagManager.has_flag(flag_name)
 
 ## Get a flag value (supports context variable substitution)
-## Delegates to FlagManager for centralized storage
 func get_flag(flag_name: String, default: Variant = null) -> Variant:
-	# Sync context variables with FlagManager
 	_sync_context_to_flag_manager()
-
-	if FlagManager:
-		return FlagManager.get_flag(flag_name, default)
-	else:
-		# Fallback to local storage
-		var resolved_name := _substitute_context_variables(flag_name)
-		return dialogue_flags.get(resolved_name, default)
+	return FlagManager.get_flag(flag_name, default)
 
 ## Sync context variables to FlagManager
 func _sync_context_to_flag_manager() -> void:
-	if FlagManager and not context_variables.is_empty():
-		for key: String in context_variables:
-			FlagManager.set_context_variable(key, context_variables[key])
+	for key: String in context_variables:
+		FlagManager.set_context_variable(key, context_variables[key])
 
 ## Check and clear a pending shop flag (returns shop ID or empty string)
 func pop_pending_shop() -> String:
-	if FlagManager:
-		return FlagManager.pop_pending_shop()
-	else:
-		# Fallback to local storage
-		var shop_id := ""
-		for key in dialogue_flags.keys():
-			if key.begins_with("_pending_shop:"):
-				shop_id = key.substr(len("_pending_shop:"))
-				dialogue_flags.erase(key)
-				break
-		return shop_id
+	return FlagManager.pop_pending_shop()
 
 
 ## Check and clear a pending boat voyage flag (returns route ID or empty string)
 func pop_pending_boat_voyage() -> String:
-	if FlagManager:
-		return FlagManager.pop_pending_boat_voyage()
-	else:
-		# Fallback to local storage
-		var route_id := ""
-		for key in dialogue_flags.keys():
-			if key.begins_with("_pending_boat_voyage:"):
-				route_id = key.substr(len("_pending_boat_voyage:"))
-				dialogue_flags.erase(key)
-				break
-		return route_id
+	return FlagManager.pop_pending_boat_voyage()
 
 
 ## Check and start any pending boat voyage after dialogue ends
@@ -1165,26 +1106,11 @@ func _check_pending_boat_voyage() -> void:
 # SAVE/LOAD INTEGRATION
 # =============================================================================
 
-## Serialize dialogue flags for saving
-## Note: FlagManager handles its own save/load, but we keep dialogue_flags
-## in sync for backward compatibility with existing saves
-func to_dict() -> Dictionary:
-	# Get flags from FlagManager if available
-	if FlagManager:
-		return {
-			"dialogue_flags": FlagManager.flags.duplicate()
-		}
-	return {
-		"dialogue_flags": dialogue_flags.duplicate()
-	}
-
-## Deserialize dialogue flags from save
-## Note: This also syncs to FlagManager for centralized access
-func from_dict(data: Dictionary) -> void:
-	dialogue_flags = data.get("dialogue_flags", {}).duplicate()
-	# Sync to FlagManager
-	if FlagManager:
-		FlagManager.flags = dialogue_flags.duplicate()
+## DialogueManager has no save section of its own. It holds no durable state:
+## every flag it sets goes to FlagManager, which SaveManager saves directly
+## since format 8. It used to be the courier for that dictionary, under a
+## comment saying the opposite, with a shadow copy that diverged from the real
+## store on the first set_flag.
 
 ## Reset state for new game
 func reset_for_new_game() -> void:
@@ -1192,8 +1118,9 @@ func reset_for_new_game() -> void:
 	if is_dialogue_active:
 		end_dialogue()
 
-	# Clear all flags
-	dialogue_flags.clear()
+	# Flags belong to FlagManager, and SaveManager.reset_world_state() clears
+	# them there. Nothing to clear here.
+	context_variables.clear()
 
 
 # =============================================================================

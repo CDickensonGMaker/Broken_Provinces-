@@ -16,12 +16,11 @@ const SAVE_FILE_EXT := ".sav"
 const DUNGEON_SEEDS_FILE := "user://saves/dungeon_seeds.cache"
 const MAX_SAVE_SLOTS := 10
 
-## Current save format version - increment when structure changes
-## Version 2: Added CellStreamer integration, deprecated hex system fields
-## Version 3: Added MoralityManager, FactionManager, CodexManager, NPC dispositions
-## Version 4: Added StatsTracker, JournalManager (notes, bestiary, codex unlocks)
-## Version 5: Added SoulstoneEconomy (100 soulstone world limit, quest debt tracking)
-const SAVE_VERSION := 5
+## Current save format version. The table lives on SaveData, which is the class
+## that actually defines the format; this used to be a second copy of the number
+## and it drifted to 5 while SaveData said 7, so the "Version 5 -> 6" migration
+## block below could never run.
+const SAVE_VERSION := SaveDataClass.SAVE_VERSION
 
 ## Currently loaded save slot
 var current_slot: int = -1
@@ -396,9 +395,9 @@ func _collect_save_data():
 	if save_data.crime_data:
 		_collect_crime_data(save_data.crime_data)
 
-	# Dialogue flags data
-	if save_data.dialogue_data:
-		_collect_dialogue_data(save_data.dialogue_data)
+	# Flag data (FlagManager)
+	if save_data.flag_data:
+		_collect_flag_data(save_data.flag_data)
 
 	# Conversation memory data
 	if save_data.conversation_data:
@@ -625,13 +624,17 @@ func _collect_crime_data(crime_data) -> void:
 	crime_data.confiscated_items = crime_dict.get("confiscated_items", {})
 
 
-## Collect dialogue flags data
-func _collect_dialogue_data(dialogue_data) -> void:
-	if not DialogueManager:
-		return
-
-	var dialogue_dict := DialogueManager.to_dict()
-	dialogue_data.flags = dialogue_dict.get("dialogue_flags", {})
+## Collect flag data
+##
+## SaveManager contained no reference to FlagManager at all until 8/1. Flags
+## survived only because DialogueManager.to_dict() happened to return
+## FlagManager.flags, under a comment claiming FlagManager handled its own
+## save/load. It did not - FlagManager.to_dict/from_dict were dead code - and
+## context_variables was in neither path, so it was lost on every load.
+func _collect_flag_data(flag_data) -> void:
+	var flag_dict: Dictionary = FlagManager.to_dict()
+	flag_data.flags = flag_dict.get("flags", {})
+	flag_data.context_variables = flag_dict.get("context_variables", {})
 
 
 ## Collect conversation memory data
@@ -721,9 +724,9 @@ func _apply_save_data(save_data) -> void:
 	if save_data.crime_data:
 		_apply_crime_data(save_data.crime_data)
 
-	# Restore dialogue flags
-	if save_data.dialogue_data:
-		_apply_dialogue_data(save_data.dialogue_data)
+	# Restore flags
+	if save_data.flag_data:
+		_apply_flag_data(save_data.flag_data)
 
 	# Restore conversation memory
 	if save_data.conversation_data:
@@ -927,13 +930,11 @@ func _apply_crime_data(crime_data) -> void:
 	})
 
 
-## Apply dialogue flags data
-func _apply_dialogue_data(dialogue_data) -> void:
-	if not DialogueManager:
-		return
-
-	DialogueManager.from_dict({
-		"dialogue_flags": dialogue_data.flags
+## Apply flag data
+func _apply_flag_data(flag_data) -> void:
+	FlagManager.from_dict({
+		"flags": flag_data.flags,
+		"context_variables": flag_data.context_variables
 	})
 
 
@@ -1574,17 +1575,45 @@ func _migrate_save_data(data: Dictionary, from_version: int) -> Dictionary:
 		migrated["version"] = 5
 
 	# Version 5 -> 6: Add WeatherManager data
+	# Guarded, because saves written while SAVE_VERSION was stuck at 5 already
+	# carry weather - it has always been collected unconditionally - and an
+	# unguarded default would wipe it the first time this block ran for real.
 	if from_version < 6:
-		# Initialize with default weather state
-		migrated["weather"] = {
-			"current_weather": 0,  # Enums.Weather.CLEAR
-			"target_weather": 0,
-			"time_until_change": 180.0,
-			"transitioning": false,
-			"transition_progress": 0.0
-		}
+		if not migrated.has("weather"):
+			migrated["weather"] = {
+				"current_weather": 0,  # Enums.Weather.CLEAR
+				"target_weather": 0,
+				"time_until_change": 180.0,
+				"transitioning": false,
+				"transition_progress": 0.0
+			}
 
 		migrated["version"] = 6
+
+	# Version 6 -> 7: Add WorldState (persistent world facts and modifications)
+	if from_version < 7:
+		if not migrated.has("world_state"):
+			migrated["world_state"] = {
+				"flags": {},
+				"world_modifications": {}
+			}
+
+		migrated["version"] = 7
+
+	# Version 7 -> 8: Flags move out of the dialogue section into their own.
+	# The old key held FlagManager.flags the whole time - DialogueManager was
+	# only ever the courier - so the migration is a rename, not a conversion.
+	# context_variables was never written by anyone and starts empty.
+	if from_version < 8:
+		if not migrated.has("flags"):
+			var old_dialogue: Dictionary = migrated.get("dialogue", {})
+			migrated["flags"] = {
+				"flags": old_dialogue.get("flags", {}),
+				"context_variables": {}
+			}
+		migrated.erase("dialogue")
+
+		migrated["version"] = 8
 
 	return migrated
 
@@ -1915,9 +1944,6 @@ func reset_world_state() -> void:
 	# a brand new character the last run's ranks and devotions.
 	FlagManager.reset_for_new_game()
 
-	# Reset dialogue flags
-	if DialogueManager:
-		DialogueManager.dialogue_flags.clear()
 
 	# Reset conversation memory, flags, heard-counts and discovered topics.
 	# Clearing the two dictionaries by hand used to leave the heard-counts and

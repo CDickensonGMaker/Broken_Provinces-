@@ -32,7 +32,7 @@ const _NOTE := "Node's own API resolves through has_method/has_signal already."
 ## broken call read as defensive. Every one of them should eventually be deleted
 ## or turned into has_method(). This is the ratchet: the count may fall, never
 ## rise. Lower the number when you clear some.
-const MAX_ALWAYS_TRUE_GUARDS: int = 313
+const MAX_ALWAYS_TRUE_GUARDS: int = 304
 
 var _failures: int = 0
 var _resolved: int = 0
