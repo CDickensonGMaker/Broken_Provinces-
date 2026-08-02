@@ -1,7 +1,7 @@
 {
 	"id": "rescue_missing_child_1",
 	"title": "The Missing Child",
-	"description": "Elin didn't come home two nights running and half the hamlet's convinced hooded men dragged her into the woods. I've heard her talk about lights past the tree line for a month and I never asked who was showing them to her. Find the ruin in the forest. Find out if anyone made her go.",
+	"description": "Elin hasn't come home two nights running and half the hamlet says hooded men took her. She talked about lights past the tree line for a month and I never asked whose. Find the ruin.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "millbrook_elder",

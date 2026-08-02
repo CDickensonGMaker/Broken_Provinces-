@@ -1,7 +1,7 @@
 {
 	"id": "rescue_woodsman_3",
 	"title": "Return the Woodsman",
-	"description": "Tomas is alive, walking on his own, saying little. Bring him home to his wife and let her see for herself instead of taking a stranger's word for it.",
+	"description": "Tomas is walking on his own and saying little. Bring him home to his wife in Elder Moor and let her see for herself.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",

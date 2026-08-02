@@ -1,7 +1,7 @@
 {
 	"id": "rescue_merchant_daughter_1",
 	"title": "Find the Kidnappers",
-	"description": "Bandits north of Dalhurst have a merchant's daughter and have named a price he could pay twice over without missing a meal. He is not paying it. Every merchant who pays once pays again within the year, he says, and he will not spend the rest of his life buying her back a season at a time. So he is paying a stranger instead, and living with what that means.",
+	"description": "Bandits north of Dalhurst have my daughter and have named a price I could pay twice over. A merchant who pays once pays again every year after. So I am paying you instead.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "dalhurst_merchant",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "find_camp",
-			"description": "Find the bandit camp north of Dalhurst before they lose patience with the merchant's silence",
+			"description": "Find the bandit camp north of Dalhurst",
 			"type": "reach",
 			"target": "bandit_camp_north",
 			"required_count": 1

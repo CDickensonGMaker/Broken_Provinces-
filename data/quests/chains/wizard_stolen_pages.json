@@ -1,7 +1,7 @@
 {
 	"id": "wizard_stolen_pages",
 	"title": "Ink and Blood",
-	"description": "Master Helvant has examined the grimoire and confirmed his fears - several key pages containing advanced spells are missing. Using divination magic, he's traced them to Thornfield, where a rival mage or dark cult may be attempting to use the stolen knowledge. You must track down the thief and recover the missing pages before they're used for ill purposes.",
+	"description": "Pages are gone out of the grimoire - the ones I would have taught you last. The divination puts them in Thornfield. Find who has them before they get the words right.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "master_helvant_dalhurst",
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "question_thornfield_locals",
-			"description": "Question villagers about suspicious magical activity",
+			"description": "Question locals about strange magical activity",
 			"type": "talk",
 			"target": "thornfield_innkeeper",
 			"required_count": 1,
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "confront_rival_mage",
-			"description": "Confront the rival mage and recover the stolen pages",
+			"description": "Confront the rival mage holding the pages",
 			"type": "interact",
 			"target": "rival_mage_thornfield",
 			"required_count": 1,
@@ -59,7 +59,7 @@
 		},
 		{
 			"id": "return_pages_helvant",
-			"description": "Return the recovered pages to Master Helvant",
+			"description": "Return the pages to Helvant",
 			"type": "talk",
 			"target": "master_helvant_dalhurst",
 			"required_count": 1

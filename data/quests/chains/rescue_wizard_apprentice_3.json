@@ -1,7 +1,7 @@
 {
 	"id": "rescue_wizard_apprentice_3",
 	"title": "Return the Apprentice",
-	"description": "Perrin is out, and quiet in a way he wasn't before he left. Take him back to his master in Thornfield and let the wizard judge what's left of him - and what he owes him for refusing to teach it in the first place.",
+	"description": "Perrin is out, and quiet in a way he wasn't before he left. Take him back to his master in Thornfield and let the wizard see what is left.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",

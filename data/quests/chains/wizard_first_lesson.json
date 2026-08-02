@@ -1,7 +1,7 @@
 {
 	"id": "wizard_first_lesson",
 	"title": "Elemental Foundations",
-	"description": "Helvant teaches from a tower he built himself, not a guild's coffers - there's no council behind him if you get something wrong, only him telling you afterward which mistake would have killed you fastest. He wants the four elements gathered and used, not admired: forge-fire in Dalhurst, lake-water in Millbrook, standing-stone earth at the Crossroads, hilltop air over Elder Moor, and three real fights won on nothing but what you learned from them.",
+	"description": "No council stands behind me to tell you which mistake would have killed you - only me, afterward. Gather the four elements and use them: forge-fire in Dalhurst, lake-water in Millbrook, earth at the Crossroads, air over Elder Moor. Then win three fights with them.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "master_helvant_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "collect_fire_essence",
-			"description": "Draw fire essence from the forge at Dalhurst's blacksmith",
+			"description": "Draw fire essence from the Dalhurst forge",
 			"type": "interact",
 			"target": "blacksmith_forge_dalhurst",
 			"required_count": 1,
@@ -27,7 +27,7 @@
 		},
 		{
 			"id": "collect_earth_essence",
-			"description": "Draw earth essence from the standing stones at the Crossroads",
+			"description": "Draw earth essence from the Crossroads standing stones",
 			"type": "interact",
 			"target": "crossroads_stones",
 			"required_count": 1,
@@ -43,7 +43,7 @@
 		},
 		{
 			"id": "practice_spell_combat",
-			"description": "Kill three things with what you just learned, not a blade",
+			"description": "Kill three things with magic, not a blade",
 			"type": "kill",
 			"target": "any_enemy_with_magic",
 			"required_count": 3,
@@ -51,7 +51,7 @@
 		},
 		{
 			"id": "return_to_helvant_lesson",
-			"description": "Tell Helvant what each element felt like when it worked",
+			"description": "Tell Helvant what each element felt like",
 			"type": "talk",
 			"target": "master_helvant_dalhurst",
 			"required_count": 1

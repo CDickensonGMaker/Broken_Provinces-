@@ -1,7 +1,7 @@
 {
 	"id": "rescue_woodsman_1",
 	"title": "The Kidnapped Woodsman",
-	"description": "Tomas didn't come back from the eastern stands three nights running, and his axe mule came back without him. His wife knows what a woodsman missing that long usually means. She's asking a stranger to go look because the not-knowing has gotten worse than the knowing would be, and because there's nobody left to cut wood before winter if she waits on the guard.",
+	"description": "Tomas hasn't come back from the eastern stands in three nights, and his axe mule came home without him. I know what that usually means. The not-knowing has got worse than the knowing would be.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "elder_moor_woodsmans_wife",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "find_hideout",
-			"description": "Locate the bandit hideout that took Tomas, east of Thornfield",
+			"description": "Find the bandit hideout east of Thornfield",
 			"type": "reach",
 			"target": "bandit_camp_east",
 			"required_count": 1

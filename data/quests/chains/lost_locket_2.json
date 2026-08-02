@@ -1,7 +1,7 @@
 {
 	"id": "lost_locket_2",
 	"title": "Find the Locket",
-	"description": "The locket is in the chest at the bridge crossing, latch still shut. Open it and the portrait inside isn't the man she described - younger, dark-haired, a face that's never been seen in Millbrook. Whoever this locket belonged to, take it back to her and let her tell you what it means.",
+	"description": "The locket is in the chest at the bridge crossing, latch still shut. The portrait inside is a younger man, dark-haired, no face Millbrook knows. Take it back to her anyway.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "get_locket",
-			"description": "Take the locket - the portrait inside raises questions of its own",
+			"description": "Take the locket back to the widow",
 			"type": "collect",
 			"target": "silver_necklace",
 			"required_count": 1

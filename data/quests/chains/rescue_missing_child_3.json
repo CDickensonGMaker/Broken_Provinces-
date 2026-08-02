@@ -1,7 +1,7 @@
 {
 	"id": "rescue_missing_child_3",
 	"title": "Return the Child",
-	"description": "Bring Elin home. Her mother will want the story to be simple - hooded men, stolen in the night. It wasn't, and that's yours to tell or not.",
+	"description": "Bring Elin home. Her mother wants the story simple - hooded men, stolen in the night. It wasn't, and that's yours to tell or not.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",

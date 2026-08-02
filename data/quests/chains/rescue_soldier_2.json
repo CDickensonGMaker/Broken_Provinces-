@@ -1,7 +1,7 @@
 {
 	"id": "rescue_soldier_2",
 	"title": "Free the Soldier",
-	"description": "The camp holds one live prisoner, not two. You will find what's left of Toma Idle before you find Wex. Clear the bandits and get the corporal out while there is still a corporal to get out.",
+	"description": "The camp holds one live prisoner, not two. You will find what's left of Toma Idle first. Clear the bandits and get the corporal out.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",

@@ -1,7 +1,7 @@
 {
 	"id": "family_heirloom_3",
 	"title": "Return the Heirloom",
-	"description": "Give the old woman her ring back. Say nothing about the empty setting unless she asks - and she will.",
+	"description": "Give the old woman her ring back. Say nothing about the setting unless she asks - and she will.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "return_ring",
-			"description": "Return the ring - empty setting and all",
+			"description": "Return the ring to the old woman",
 			"type": "talk",
 			"target": "elder_moor_old_woman",
 			"target_zone": "elder_moor",

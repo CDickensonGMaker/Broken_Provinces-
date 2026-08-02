@@ -1,7 +1,7 @@
 {
 	"id": "missing_courier_1",
 	"title": "The Missing Courier",
-	"description": "My courier should have reached Thornfield four days ago and I've heard nothing - not from him, not from the man he was carrying papers to. He's missed deadlines before when the ale was good, but never this long. Ask at the inn before I have to write off both the courier and the contract.",
+	"description": "My courier should have reached Thornfield four days ago. He has missed a deadline for good ale before, never this long. Ask at the inn before I write off the man and the contract both.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "dalhurst_merchant",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "ask_innkeeper",
-			"description": "Ask the innkeeper what he heard about the courier",
+			"description": "Ask the innkeeper about the courier",
 			"type": "talk",
 			"target": "innkeeper_dalhurst",
 			"target_zone": "dalhurst",

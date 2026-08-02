@@ -1,7 +1,7 @@
 {
 	"id": "market_theft_1",
 	"title": "Theft at the Market",
-	"description": "Somebody cleared out half a stall at the Mill Brook market two nights back. The merchant has a guess who, and a guess is not proof - accusing the wrong neighbour in a hamlet this size costs him more custom than the goods were worth. He wants someone found who actually saw something.",
+	"description": "Half my stall went missing two nights back. I have a guess who, and a guess is not proof - accusing the wrong neighbour here costs me more than the goods were worth. Find someone who saw it.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "millbrook_merchant",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "question_witness1",
-			"description": "Question the witness before you go accusing anybody",
+			"description": "Question the witness before accusing anyone",
 			"type": "talk",
 			"target": "millbrook_witness",
 			"target_zone": "millbrook",

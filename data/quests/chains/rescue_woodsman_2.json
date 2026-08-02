@@ -1,7 +1,7 @@
 {
 	"id": "rescue_woodsman_2",
 	"title": "Free the Woodsman",
-	"description": "The camp is small and mean, same as any bandit camp. Cut through them and see whether the man in the pit is still worth walking home.",
+	"description": "The camp is small and mean, same as any bandit camp. Cut through them and see whether the man in the pit still walks.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "rescue",
-			"description": "Pull Tomas out, whatever state he's in",
+			"description": "Pull Tomas out of the pit",
 			"type": "talk",
 			"target": "hostage_woodsman",
 			"required_count": 1

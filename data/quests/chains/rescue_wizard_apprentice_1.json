@@ -1,7 +1,7 @@
 {
 	"id": "rescue_wizard_apprentice_1",
 	"title": "The Missing Apprentice",
-	"description": "Perrin took himself south to the cultists in the ruin - they didn't take him. He went because his master would not teach him the working he wanted, and the cultists said they would. What the wizard fears now is not that they are holding him against his will. It's that the working is real, and it does not care whose idea it was.",
+	"description": "Perrin took himself south to the cultists in the ruin - they did not take him. He went because I would not teach him the working he wanted. What I fear is that the working is real.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "thornfield_wizard",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "find_temple",
-			"description": "Find the temple south of Thornfield before the working finishes with him",
+			"description": "Find the temple south of Thornfield",
 			"type": "reach",
 			"target": "cultist_temple_south",
 			"required_count": 1

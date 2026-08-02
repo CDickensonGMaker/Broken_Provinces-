@@ -1,7 +1,7 @@
 {
 	"id": "bandit_justice_1",
 	"title": "Bandit Justice",
-	"description": "Three wagons haven't made the north road this month, and the last driver's mule came back to Elder Moor alone. The empire pays for eyes on a problem before it pays for swords - I need a count on that camp before I requisition more men than this town can spare. Every week they sit up there is a week the road stays closed.",
+	"description": "Three wagons haven't made the north road this month, and one driver's mule came back to Elder Moor alone. I can't requisition swords on a rumour. Get me a count on that camp.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "elder_moor_guard",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "scout_camp",
-			"description": "Get eyes on the bandit camp without starting a fight you can't win alone",
+			"description": "Count the bandits at the camp without being seen",
 			"type": "reach",
 			"target": "bandit_camp_north",
 			"required_count": 1

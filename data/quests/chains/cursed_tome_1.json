@@ -1,7 +1,7 @@
 {
 	"id": "cursed_tome_1",
 	"title": "The Cursed Tome",
-	"description": "The Ashgrave Cantos went missing from the restricted shelf three nights ago, and the boy who catalogued it hasn't stopped shaking since. It isn't dangerous the way a sword is dangerous - the last person who read from it aloud without training lost the rest of that week. The cultists west of town took it for a reason. I need to know what that reason is before they finish reading it.",
+	"description": "The Ashgrave Cantos went off my restricted shelf three nights ago. Read aloud untrained, it costs a man the rest of his week. The cultists west of town took it - find out why.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "dalhurst_scholar",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "find_temple",
-			"description": "Find the cultist temple west of Dalhurst - do not go in blind",
+			"description": "Find the cultist temple west of Dalhurst",
 			"type": "reach",
 			"target": "cultist_temple_west",
 			"required_count": 1

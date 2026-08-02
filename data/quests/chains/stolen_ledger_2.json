@@ -1,7 +1,7 @@
 {
 	"id": "stolen_ledger_2",
 	"title": "Recover the Ledger",
-	"description": "The bandits left a chest by the road, and it still has the coin in it. Only the paper is gone. Someone has cut four short scratches into the lid, close together, like a tally that stopped at four - not that there's anyone here to ask why.",
+	"description": "The bandits left a chest by the road with the coin still in it, only the paper gone, four short scratches cut close together into the lid. Take the ledger back.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",

@@ -1,7 +1,7 @@
 {
 	"id": "bandit_justice_2",
 	"title": "Eliminate the Bandits",
-	"description": "The camp is exactly as bad as the guard feared - a dry camp with more supplies than six men need, meaning they were never just passing through. Break it before it grows into something Elder Moor can't scout its way out of.",
+	"description": "A dry camp with supplies for more than six men. They were never passing through. Break it before it grows.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "kill_bandits",
-			"description": "Cut down the crew - six ambushes on the north road is six too many",
+			"description": "Cut down the bandit crew",
 			"type": "kill",
 			"target": "human_bandit",
 			"required_count": 6
 		},
 		{
 			"id": "kill_leader",
-			"description": "Kill the one running the camp - the raids stop when he does",
+			"description": "Kill the one running the camp",
 			"type": "kill",
 			"target": "bandit_boss",
 			"required_count": 1

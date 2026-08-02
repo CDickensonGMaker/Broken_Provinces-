@@ -1,7 +1,7 @@
 {
 	"id": "road_safety_3",
 	"title": "Collect Your Bounty",
-	"description": "The rise is Thornfield's again. Report to the captain, who still doesn't have the men to keep it held without someone like you doing this again next season.",
+	"description": "The rise is Thornfield's again. Report to the captain, who still hasn't the men to keep it held.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",

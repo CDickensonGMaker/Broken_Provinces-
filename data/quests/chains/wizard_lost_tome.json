@@ -1,7 +1,7 @@
 {
 	"id": "wizard_lost_tome",
 	"title": "The Lost Grimoire",
-	"description": "The grimoire belonged to Edric Vayle, Helvant's own master, and it is most of what Helvant knows that he didn't teach himself. He hasn't set foot in Willow Dale in decades - not since the undead there, first grief and now simply age. This isn't a guild sending an Adept after guild property. It's an old man asking a near-stranger to go get back the one thing he has left of the person who taught him.",
+	"description": "The grimoire belonged to Edric Vayle, who taught me most of what I know. It has lain in Willow Dale for decades and I have not gone back - first grief, now age. Fetch it for me.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "master_helvant_dalhurst",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "enter_willow_dale",
-			"description": "Travel to the ruins where the grimoire has lain for decades",
+			"description": "Travel to the Willow Dale ruins",
 			"type": "reach",
 			"target": "willow_dale",
 			"required_count": 1
 		},
 		{
 			"id": "find_tome_location",
-			"description": "Find the library chamber, past whatever traps still hold",
+			"description": "Find the library chamber past whatever traps still hold",
 			"type": "reach",
 			"target": "willow_dale_library",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "defeat_tome_guardian",
-			"description": "Put down whatever's been guarding it all this time",
+			"description": "Put down whatever has been guarding it",
 			"type": "kill",
 			"target": "arcane_guardian_willow_dale",
 			"required_count": 1,
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "recover_grimoire",
-			"description": "Take Edric Vayle's grimoire - carefully, it's the only copy",
+			"description": "Take Edric Vayle's grimoire - it is the only copy",
 			"type": "collect",
 			"target": "helvants_master_grimoire",
 			"required_count": 1,
@@ -42,7 +42,7 @@
 		},
 		{
 			"id": "return_grimoire_helvant",
-			"description": "Bring it back to Helvant",
+			"description": "Bring the grimoire back to Helvant",
 			"type": "talk",
 			"target": "master_helvant_dalhurst",
 			"required_count": 1

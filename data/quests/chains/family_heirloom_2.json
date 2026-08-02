@@ -1,7 +1,7 @@
 {
 	"id": "family_heirloom_2",
 	"title": "Retrieve the Ring",
-	"description": "The chest is where she said it would be, kicked into the brush and never opened by whoever ran her off the road. The ring is inside. The gold band is untouched - but the stone that sat in the setting is gone, worked out clean rather than torn, like whoever did it wanted the stone and nothing else.",
+	"description": "The chest is in the brush, never opened by whoever ran her off the road. The ring is inside - gold band untouched, the setting worked clean and empty. Take it back to her.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "get_ring",
-			"description": "Take the ring from the chest - mind the empty setting",
+			"description": "Take the ring from the chest",
 			"type": "collect",
 			"target": "gold_ring",
 			"required_count": 1

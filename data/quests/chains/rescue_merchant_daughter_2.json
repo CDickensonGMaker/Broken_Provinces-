@@ -1,7 +1,7 @@
 {
 	"id": "rescue_merchant_daughter_2",
 	"title": "Rescue the Merchant's Daughter",
-	"description": "The camp's exactly where the scouting put it. Break it, and get to the merchant's daughter before anyone decides a stranger showing up without ransom coin means the money isn't coming at all.",
+	"description": "The camp is where the scouting put it. Break it, and reach the girl before anyone decides a stranger without ransom coin means no coin is coming.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -25,7 +25,7 @@
 		},
 		{
 			"id": "free_hostage",
-			"description": "Free the merchant's daughter - no ransom paid, no ransom coming",
+			"description": "Free the merchant's daughter",
 			"type": "talk",
 			"target": "hostage_merchant_daughter",
 			"required_count": 1

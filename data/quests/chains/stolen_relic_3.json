@@ -1,7 +1,7 @@
 {
 	"id": "stolen_relic_3",
 	"title": "Return the Relic",
-	"description": "The relic is back, and whole. Return it to Gaela's priestess in Dalhurst so she has it in hand before the planting.",
+	"description": "The relic is back, and whole. Return it to Gaela's priestess in Dalhurst before the planting.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "priest_gaela_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "return",
-			"description": "Return the relic to the priestess before the planting",
+			"description": "Return the relic to the priestess in Dalhurst",
 			"type": "talk",
 			"target": "priest_gaela_dalhurst",
 			"target_zone": "dalhurst",

@@ -1,7 +1,7 @@
 {
 	"id": "rescue_soldier_1",
 	"title": "Missing Soldier",
-	"description": "Corporal Wex Bramwell and Private Toma Idle rode the south road six days ago and never came back. Their horses did, saddles empty, two mornings later. The garrison is short-handed and the captain cannot spare a squad to go looking without leaving the wall thin, so he is paying a stranger to find out how many of his men are still breathing.",
+	"description": "Corporal Wex Bramwell and Private Toma Idle rode the south road six days ago. Their horses came back two mornings later with empty saddles. I cannot thin the wall to send a squad after them.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "thornfield_guard_captain",

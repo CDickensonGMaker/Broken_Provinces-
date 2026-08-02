@@ -1,7 +1,7 @@
 {
 	"id": "cursed_tome_2",
 	"title": "Recover the Tome",
-	"description": "The cultists have the tome open on a stone altar, and someone's reading from it in turns, like they're afraid to let it sit too long in one man's head. Kill them before they finish and take the book before anyone else opens it.",
+	"description": "They have it open on an altar, reading in turns, as if afraid to let it sit too long in one man's head. Kill them and take the book.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "get_tome",
-			"description": "Take the tome off the altar before they finish with it",
+			"description": "Take the tome off the altar",
 			"type": "collect",
 			"target": "cursed_tome",
 			"required_count": 1

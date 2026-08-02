@@ -1,7 +1,7 @@
 {
 	"id": "road_safety_2",
 	"title": "Eliminate the Threat",
-	"description": "Whoever dug in on that rise means to keep it. Clear them out and take the lookout back for Thornfield, since the captain has nobody else to send to hold it after you.",
+	"description": "Whoever dug in on that rise means to keep it. Clear them off and take the lookout back for Thornfield.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",

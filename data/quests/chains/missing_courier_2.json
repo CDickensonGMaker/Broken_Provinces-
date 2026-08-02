@@ -1,7 +1,7 @@
 {
 	"id": "missing_courier_2",
 	"title": "Find the Courier",
-	"description": "The innkeeper's right about the watchtower - the courier's there, at the bottom of the stair, and he's been dead longer than four days. His purse is still on his belt, coin and all. Nobody robbed him. He fell, or he was pushed, and either way the letter's still sealed in his coat.",
+	"description": "The courier is at the foot of the watchtower stair, dead longer than four days. His purse is still on his belt, coin and all. The letter is still sealed in his coat.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "collect_letter",
-			"description": "Take the letter - it's the only reason anyone will ever ask what happened to him",
+			"description": "Take the sealed letter from his coat",
 			"type": "collect",
 			"target": "sealed_letter",
 			"required_count": 1

@@ -1,7 +1,7 @@
 {
 	"id": "stolen_relic_2",
 	"title": "Recover the Sacred Relic",
-	"description": "The relic isn't buried, just guarded. Cut through the cultists and take it back before they can finish whatever they had planned for it.",
+	"description": "The relic isn't buried, only guarded. Cut through the cultists and take it back before they finish whatever they planned for it.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "get_relic",
-			"description": "Retrieve the seed-relic before the planting",
+			"description": "Retrieve the seed-relic",
 			"type": "collect",
 			"target": "sacred_relic",
 			"required_count": 1

@@ -1,7 +1,7 @@
 {
 	"id": "rescue_sacrifice_victim_1",
 	"title": "The Ritual Sacrifice",
-	"description": "Fenna Voss followed a traveling preacher out of Millbrook three weeks ago, chasing a god kinder than the one she grew up with. His people camp in the ruined temple north of town, and word came back last night that they mean to bleed her for it at the next full moon. The priest asking you to go is ashamed to ask - he confirmed her the year she came of age, and he cannot make himself tell her father she may not want saving.",
+	"description": "Fenna Voss followed a traveling preacher out of Millbrook three weeks ago, chasing a kinder god. His people camp in the ruined temple north of town. Word came last night that they mean to bleed her at the full moon.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "millbrook_priest",

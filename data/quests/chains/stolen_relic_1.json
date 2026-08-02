@@ -1,7 +1,7 @@
 {
 	"id": "stolen_relic_1",
 	"title": "The Stolen Temple Relic",
-	"description": "Cultists broke into the Dalhurst temple two nights ago and took the seed-relic the priestess uses to bless the planting every spring. She cares less about the theft than the calendar - the blessing has to be spoken over it before the first planting, three weeks off, or the temple has nothing to give the farmers this year. She believes the cultists carried it east to their own temple, and she doesn't trust the guard to move fast enough.",
+	"description": "Cultists took the seed-relic from the temple two nights ago. The blessing must be spoken over it before the first planting, three weeks off, or I have nothing for the farmers. They carried it east.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "find_temple",
-			"description": "Find the cultist temple east of Dalhurst before the planting",
+			"description": "Find the cultist temple east of Dalhurst",
 			"type": "reach",
 			"target": "cultist_temple_east",
 			"required_count": 1

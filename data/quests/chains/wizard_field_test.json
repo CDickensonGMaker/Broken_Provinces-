@@ -1,7 +1,7 @@
 {
 	"id": "wizard_field_test",
 	"title": "Practical Application",
-	"description": "Helvant doesn't send you to villagers to be seen doing good - he sends you because word is the only reputation a solitary wizard has, and it travels faster than he does anymore. Harbormaster Harmon Voss hasn't had a working beacon in a week and two boats have already turned back from the rocks rather than risk the dark. Ysolt Bracken in Thornfield has been hauling creek water since her well turned foul. A carter named Denner Cobb has sat three days at the Crossroads with a fallen tree across the road and a load of fish going bad in the sun. And there are bandits working that same stretch who won't ask twice before they take something.",
+	"description": "Word is the only reputation a solitary wizard has. Harmon Voss has had no beacon for a week, Ysolt Bracken's well is foul, and Denner Cobb sits at the Crossroads with a tree across the road. Go be useful.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "master_helvant_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "light_harbor_beacon",
-			"description": "Light Harmon Voss's harbor beacon before another boat turns back",
+			"description": "Light Harmon Voss's harbor beacon",
 			"type": "interact",
 			"target": "dalhurst_harbor_beacon",
 			"required_count": 1,
@@ -19,7 +19,7 @@
 		},
 		{
 			"id": "purify_thornfield_well",
-			"description": "Purify Ysolt Bracken's well - she's been hauling creek water for a week",
+			"description": "Purify Ysolt Bracken's well in Thornfield",
 			"type": "interact",
 			"target": "thornfield_well",
 			"required_count": 1,
@@ -27,7 +27,7 @@
 		},
 		{
 			"id": "clear_road_obstacle",
-			"description": "Clear the tree off the road before Denner Cobb's fish finish spoiling",
+			"description": "Clear the fallen tree off the Crossroads road",
 			"type": "interact",
 			"target": "crossroads_tree_obstacle",
 			"required_count": 1,
@@ -35,7 +35,7 @@
 		},
 		{
 			"id": "combat_test_bandits",
-			"description": "Drive off the bandits working the travelers on that road",
+			"description": "Drive off the bandits working that road",
 			"type": "kill",
 			"target": "bandit_crossroads_group",
 			"required_count": 5,
@@ -43,7 +43,7 @@
 		},
 		{
 			"id": "return_to_helvant_field",
-			"description": "Tell Helvant how the villagers actually took it",
+			"description": "Tell Helvant how the villagers took it",
 			"type": "talk",
 			"target": "master_helvant_dalhurst",
 			"required_count": 1

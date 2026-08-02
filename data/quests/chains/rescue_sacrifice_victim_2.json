@@ -1,7 +1,7 @@
 {
 	"id": "rescue_sacrifice_victim_2",
 	"title": "Stop the Sacrifice",
-	"description": "The temple is real and so is the altar. What the priest did not know is that Fenna is not chained to it - she knelt there on her own, and she will not thank you for what happens next. Kill the cultists standing between you and her, then see if she still wants to leave.",
+	"description": "The altar is real, and Fenna is not chained to it - she knelt there herself. She will not thank you for what happens next. Kill the ones standing between you and her.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -18,14 +18,14 @@
 		},
 		{
 			"id": "kill_priest",
-			"description": "Kill the priest who talked her into this",
+			"description": "Kill the preacher who talked her into this",
 			"type": "kill",
 			"target": "cult_leader",
 			"required_count": 1
 		},
 		{
 			"id": "free_victim",
-			"description": "Get Fenna away from the altar, whether she wants to go or not",
+			"description": "Get Fenna away from the altar",
 			"type": "talk",
 			"target": "hostage_sacrifice_victim",
 			"required_count": 1

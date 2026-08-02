@@ -1,7 +1,7 @@
 {
 	"id": "stolen_ledger_1",
 	"title": "The Stolen Ledger",
-	"description": "Bandits took the merchant's trade ledger on the Sunken Crypts road three nights back, and without it he says he cannot prove half of what Dalhurst owes him. That's not what he fears losing most, though he'll only say it once: one leaf records a sale at three times what the goods were worth, paid in new imperial coin, to a buyer who gave no house and no name. He says it, then goes back to talking about the debts.",
+	"description": "Bandits took my trade ledger on the Sunken Crypts road. Without it I cannot prove what Dalhurst owes me - one leaf records a sale at three times worth, paid in new imperial coin by a buyer who named no house. Get it back.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "dalhurst_merchant",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "search_area",
-			"description": "Search near the Sunken Crypts for the stolen ledger",
+			"description": "Search near the Sunken Crypts for the ledger",
 			"type": "reach",
 			"target": "sunken_crypts",
 			"required_count": 1

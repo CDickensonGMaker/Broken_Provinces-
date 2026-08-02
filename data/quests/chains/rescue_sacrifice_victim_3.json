@@ -1,7 +1,7 @@
 {
 	"id": "rescue_sacrifice_victim_3",
 	"title": "Return the Rescued",
-	"description": "Fenna is out of the temple and has said nothing the whole walk back. Take her to Millbrook's priest and let him decide what to tell her father - and whether she stays this time.",
+	"description": "Fenna has said nothing the whole walk back. Take her to Millbrook's priest and let him decide what her father is told.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "return",
-			"description": "Bring Fenna back to the priest in Millbrook",
+			"description": "Bring Fenna to the priest in Millbrook",
 			"type": "talk",
 			"target": "millbrook_priest",
 			"target_zone": "millbrook",

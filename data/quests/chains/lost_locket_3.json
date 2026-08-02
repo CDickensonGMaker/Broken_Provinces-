@@ -1,7 +1,7 @@
 {
 	"id": "lost_locket_3",
 	"title": "Return the Locket",
-	"description": "Bring the locket back to the widow. She asked for her husband's portrait. Decide whether that's what you're handing her.",
+	"description": "Bring the locket back to the widow. She asked for her husband's portrait. Decide what you're handing her.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "return_locket",
-			"description": "Return the locket - and whatever you decide to tell her about it",
+			"description": "Return the locket to the widow in Millbrook",
 			"type": "talk",
 			"target": "millbrook_widow",
 			"target_zone": "millbrook",

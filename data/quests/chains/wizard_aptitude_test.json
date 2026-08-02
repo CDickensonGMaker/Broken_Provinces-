@@ -1,7 +1,7 @@
 {
 	"id": "wizard_aptitude_test",
 	"title": "The Spark Within",
-	"description": "Helvant has turned away three would-be students this year, each one certain of a spark that wasn't there. He has outlived two apprentices who never got past their first real spell, and there is no Circle behind him to absorb a bad choice - just an old man and however many years he has left to teach in. Bring him a moonpetal from the Crossroads shrine and silver dust cut from something undead you put down yourself, and he'll know inside the hour whether you're worth the time.",
+	"description": "I have turned away three would-be students this year, each one certain of a spark that wasn't there. Bring me a moonpetal from the Crossroads shrine, and silver dust cut from something undead you put down yourself. I will know inside the hour.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "master_helvant_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "collect_moonpetal",
-			"description": "Find a moonpetal flower at the Crossroads shrine - the easy half of the test",
+			"description": "Find a moonpetal flower at the Crossroads shrine",
 			"type": "collect",
 			"target": "moonpetal_flower",
 			"required_count": 1,
@@ -19,7 +19,7 @@
 		},
 		{
 			"id": "collect_silver_dust",
-			"description": "Cut silver dust from something undead you've put down yourself",
+			"description": "Cut silver dust from something undead you killed yourself",
 			"type": "collect",
 			"target": "silver_dust",
 			"required_count": 1,
@@ -27,7 +27,7 @@
 		},
 		{
 			"id": "return_to_helvant",
-			"description": "Bring both back and let Helvant judge you on them",
+			"description": "Bring both back to Helvant",
 			"type": "talk",
 			"target": "master_helvant_dalhurst",
 			"required_count": 1

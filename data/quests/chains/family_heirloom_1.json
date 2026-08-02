@@ -1,7 +1,7 @@
 {
 	"id": "family_heirloom_1",
 	"title": "The Family Heirloom",
-	"description": "An old woman in Elder Moor was run off the Crossroads road by bandits and dropped her mother's ring somewhere in the grass. It is not worth much as gold. It was her mother's, and her mother's before that, and her knees will not carry her back to look. She says she would not ask if she could still make the walk.",
+	"description": "Bandits ran me off the Crossroads road and I dropped my mother's ring in the grass. It is worth nothing as gold. My knees will not carry me back to look.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "elder_moor_old_woman",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "find_chest",
-			"description": "Search the Crossroads road where she was run off it",
+			"description": "Search the Crossroads road where she was run off",
 			"type": "reach",
 			"target": "crossroads",
 			"required_count": 1

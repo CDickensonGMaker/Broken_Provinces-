@@ -1,7 +1,7 @@
 {
 	"id": "rescue_missing_child_2",
 	"title": "Save the Child",
-	"description": "Elin's in the ruin, and she didn't get there in chains - she followed the lights on her own two feet, same as she told the hamlet she would if anyone had listened. Whatever she was promised, the cult leader isn't in a hurry to let her walk back out. Break the ones holding the door and get her free.",
+	"description": "Elin walked into the ruin on her own two feet, following the lights she told everyone about. Whatever she was promised, the cult leader is in no hurry to let her go. Break the ones holding the door.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "kill_leader",
-			"description": "Kill the cult leader before he decides Elin isn't leaving",
+			"description": "Kill the cult leader",
 			"type": "kill",
 			"target": "cult_leader",
 			"required_count": 1

@@ -1,7 +1,7 @@
 {
 	"id": "road_safety_1",
 	"title": "Road Safety",
-	"description": "The rise east of Thornfield has watched the road since before the captain's time, and whoever holds it can see three miles of traffic coming. It isn't held by Thornfield anymore. The captain has eleven men for a wall that wants twenty, and not one he can send up that hill without leaving a gate empty, so he's paying a stranger to find out who's sitting on his lookout.",
+	"description": "The rise east of town has watched this road since before my time, and it is not ours anymore. I have eleven men for a wall that wants twenty. Find out who is sitting on my lookout.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "thornfield_guard_captain",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "find_outpost",
-			"description": "Find who's holding the lookout post east of town",
+			"description": "Find who holds the lookout post east of town",
 			"type": "reach",
 			"target": "bandit_camp_east",
 			"required_count": 1

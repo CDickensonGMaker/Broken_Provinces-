@@ -1,7 +1,7 @@
 {
 	"id": "rescue_soldier_3",
 	"title": "Report to the Guard Captain",
-	"description": "Wex is alive. Toma is not. Return to Thornfield and report to the guard captain, and let him decide what Toma's mother is told.",
+	"description": "Wex is alive. Toma is not. Report to the guard captain in Thornfield and let him decide what Toma's mother is told.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",

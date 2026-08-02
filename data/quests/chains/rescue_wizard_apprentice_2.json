@@ -1,7 +1,7 @@
 {
 	"id": "rescue_wizard_apprentice_2",
 	"title": "Free the Apprentice",
-	"description": "The cultists have not chained Perrin to anything. They are watching the working take his color and calling it a wonder, same as he is. Kill your way to the circle and pull him out of it before it finishes what he started.",
+	"description": "Nobody has chained Perrin to anything. They are watching the working take his color and calling it a wonder, and so is he. Pull him out of the circle.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",

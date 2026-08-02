@@ -1,7 +1,7 @@
 {
 	"id": "market_theft_3",
 	"title": "Return the Stolen Goods",
-	"description": "Bring the merchant what you recovered. He'll count it twice and ask about the one case that didn't come back - then decide he doesn't want to know badly enough to ask a second time.",
+	"description": "Bring the merchant what you recovered. He will count it twice, ask once about the case that didn't come back, and decide he would rather not know.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "return_goods",
-			"description": "Return what you recovered to the merchant",
+			"description": "Return the recovered goods to the merchant",
 			"type": "talk",
 			"target": "millbrook_merchant",
 			"target_zone": "millbrook",

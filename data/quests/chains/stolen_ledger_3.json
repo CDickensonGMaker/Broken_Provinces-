@@ -1,7 +1,7 @@
 {
 	"id": "stolen_ledger_3",
 	"title": "Return the Ledger",
-	"description": "The merchant all but takes the ledger out of your hands, and it's a moment too long before he starts turning pages instead of thanking you. He says everything he needs is there. He doesn't say which page he checked first, and he doesn't offer to show you.",
+	"description": "The merchant takes the ledger almost out of your hands and turns pages before he thanks you. He says everything he needs is there. He doesn't say which page he checked first.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "return_ledger",
-			"description": "Return the ledger to the merchant before his creditors stop waiting",
+			"description": "Return the ledger to the merchant in Dalhurst",
 			"type": "talk",
 			"target": "dalhurst_merchant",
 			"target_zone": "dalhurst",

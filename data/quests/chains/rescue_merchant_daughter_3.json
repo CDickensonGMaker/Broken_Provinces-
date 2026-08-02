@@ -1,7 +1,7 @@
 {
 	"id": "rescue_merchant_daughter_3",
 	"title": "Return to the Merchant",
-	"description": "Bring her back to Dalhurst. The merchant will thank you loudly, where people can hear him do it, and probably not know what to say to her once they're alone. He got his daughter back and never opened his strongbox. That will cost him something in his own house that gold never has to cover.",
+	"description": "Bring her back to Dalhurst. The merchant will thank you loudly, where people can hear him. He never opened his strongbox, and that will cost him at home.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "return",
-			"description": "Return to the merchant in Dalhurst - and to his daughter",
+			"description": "Return to the merchant in Dalhurst",
 			"type": "talk",
 			"target": "dalhurst_merchant",
 			"target_zone": "dalhurst",

@@ -1,7 +1,7 @@
 {
 	"id": "bandit_justice_3",
 	"title": "Report to the Guard Captain",
-	"description": "The camp is broken. Get back to Elder Moor and tell the guard what you found - and what it cost to put down.",
+	"description": "The camp is broken. Get back to Elder Moor and tell the guard what it cost.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "report",
-			"description": "Report to the guard - the north road is yours to call safe or not",
+			"description": "Report to the guard in Elder Moor",
 			"type": "talk",
 			"target": "elder_moor_guard",
 			"target_zone": "elder_moor",
