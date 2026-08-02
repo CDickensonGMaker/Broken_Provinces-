@@ -268,11 +268,8 @@ func get_available_routes(current_port: String) -> Array[BoatTravelData]:
 		player_level = GameManager.player_data.level
 
 	# Get completed quests
-	if QuestManager:
-		for quest_id in QuestManager.active_quests:
-			var quest: Dictionary = QuestManager.active_quests[quest_id]
-			if quest.get("state", 0) == Enums.QuestState.COMPLETED:
-				completed_quests.append(quest_id)
+	for quest: QuestManager.Quest in QuestManager.get_completed_quests():
+		completed_quests.append(quest.id)
 
 	# Filter routes
 	for route_id in routes:

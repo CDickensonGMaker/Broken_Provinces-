@@ -221,11 +221,9 @@ func _input(event: InputEvent) -> void:
 		# F5 = Force start tournament
 		if event.keycode == KEY_F5:
 			Log.d("[CombatArenaTest] Force starting tournament...")
-			if TournamentManager:
-				# Reset any previous state
-				TournamentManager.end_tournament(false)
-				# Start fresh
-				TournamentManager.start_tournament()
+			# Reset any previous state, then start fresh
+			TournamentManager.leave_tournament()
+			TournamentManager.start_tournament()
 
 		# F6 = Spawn a single test enemy
 		if event.keycode == KEY_F6:
