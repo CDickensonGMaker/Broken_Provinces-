@@ -1390,7 +1390,9 @@ the code it describes has stopped moving.
   the code path correct, log it in `docs/audits/art_replacement_manifest.md`.
   Tasks 59 and 60 repoint code at files that already exist — that is wiring. Any
   sound with no asset at all goes to the manifest.
-- Godot 4.5 binary only (`~/_tools/godot45/`). Validator green before any commit
+- Godot 4.7 binary only (`~/_tools/godot47/`), per Caleb's 8/1 ruling — `project.godot`
+  is stamped `4.7` by `a4e4bbd` and `tools/validate.ps1`, `tools/run_all_checks.ps1`
+  and the pre-commit hook all default to it. Validator green before any commit
   touching content; **errors stay at zero and warnings never go up.**
 - Strict typing held. One commit per task or per coherent group, pushed.
 - **Caleb's eye gate ends every batch. Headless checks prove a system loads and
@@ -1485,3 +1487,68 @@ that an open world with pathing enemies plays the way the last two months of
 work assumed. The single most important outstanding item in this project is
 still Caleb sitting down with a build and forming his own opinion - and it now
 matters more than it did on 8/1, because far more has changed underneath him.
+
+---
+
+## Godot 4.7 migration, verified (8/2)
+
+Caleb ruled 4.7 on 8/1 and `a4e4bbd` stamped `project.godot`. Everything above
+this section was proved on the **4.5** binary. This is the re-verification on
+**4.7** (`4.7.stable.official.5b4e0cb0f`, installed at `~/_tools/godot47/`).
+
+**The gauntlet is green on 4.7.** `validate_content` reports `Errors: 0
+Warnings: 179` — identical to its 4.5 verdict — and all twelve `check_*.tscn`
+probes PASS. `check_navmesh` was the canary for the NavigationServer API and it
+passes; nothing in the 4.5→4.7 nav changes reached this project's baking code.
+
+**The 51-scene boot sweep moved 124 → 130 lines, and every line is accounted
+for.** Both sweeps were run with the same script on the same tree, so the delta
+is real rather than a change of method:
+
+| Class | 4.5 | 4.7 | Reading |
+|---|---|---|---|
+| Nav source geometry parsed at runtime | 44 | 44 | unchanged |
+| `ext_resource, invalid UID` | 24 | 24 → **0** | pre-existing on both; fixed, see below |
+| `ObjectDB instances were leaked at exit` | 9 | 13 | shutdown race, see below |
+| `N resources still in use at exit` | 9 | 13 | same race |
+| **`Navigation region synchronization error`** | **3** | **0** | **4.7 fixes this** |
+| `Condition "p.d == 0"` | 3 | 4 | same three scenes, one doubled |
+| everything else (ModularRoom doors, Codex, WildernessRoom…) | 32 | 32 | unchanged, all project-level |
+
+**No 4.7-only regression exists.** The only class that got quieter is
+navigation: Crossroads Ruins, Dalhurst and Mosshall Tombs each threw a
+`Navigation region synchronization error` about edges occupying the same
+rasterization space on 4.5, and none of them throws it on 4.7.
+
+**The two classes that got louder are both noise, and were checked rather than
+assumed.** The exit-time leak pair is nondeterministic — three consecutive
+`--headless --quit` boots on 4.7 produced the leak twice, not at all, and not at
+all, and the *set of scenes* that report it differs between the 4.5 and 4.7
+sweeps almost entirely. It is a shutdown-ordering race in the engine's own
+teardown, after `--quit-after` has already fired; it is not a per-scene defect
+and no gameplay code runs at that point. `Condition "p.d == 0"` is a degenerate
+plane inside Godot's geometry code, raised by the same three scenes
+(`dusty_hollow`, `tenger_camp`, `willow_dale`) on both versions; 4.7 just
+reaches it twice in Dusty Hollow. Both are **documented, not fixed** — a fix
+would be a behaviour change to level geometry, which this migration is not
+licensed to make.
+
+**One class was fixed:** nine `ext_resource` UIDs across seven level scenes
+named UIDs no `.import` file on disk carries. Godot fell back to the text path
+and warned once per load, on 4.5 and 4.7 alike — 24 of the sweep's lines. This
+is an import-class defect, not a version one; it was fixed here because the
+migration surfaced it. All seven scenes now boot with zero invalid-UID lines.
+
+**The milestone build.** `Broken_Provinces_The_Empty_Throne_milestone47_2026-08-02.exe`
+(109 MB) + `.pck` (316 MB) in `C:\Users\caleb\_builds\CatacombsOfGore\`, exported
+release with the 4.7 templates, zero errors in the export log. Launched: it
+opens a responding **Broken Provinces** window and holds it. That is the whole
+claim — **it starts.** It has still never been played, and the closing note
+above stands unchanged: headless green on a newer engine is not evidence that
+any of this is any good.
+
+**Tooling repointed.** `tools/validate.ps1`, `tools/run_all_checks.ps1` and
+`tools/hooks/pre-commit-validate.sh` defaulted to `~/_tools/godot45/`, which
+would have silently gated every future commit on the abandoned binary. All three
+now default to 4.7. `~/_tools/godot45/` is left in place; pass `-Godot` (or
+`BP_GODOT`) to reach it.
