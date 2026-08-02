@@ -489,9 +489,18 @@ func _generate_patrol_points() -> void:
 ## Simple approach: wait 2 physics frames for NavigationServer3D to sync after baking
 ## This works regardless of when the enemy spawns (initial load, save load, or late spawn)
 func _wait_for_navigation_then_start() -> void:
+	# An enemy can be built inside a streamed cell that CellStreamer has not
+	# parented yet, and this deferred call can land before it is. Awaiting a
+	# tree this node is not in used to abort here, which is how an enemy ends up
+	# alive, solid, and permanently inert - it never reaches its first state.
+	if not is_inside_tree():
+		await tree_entered
+
 	# Wait 2 physics frames for NavigationServer3D to sync
 	await get_tree().physics_frame
 	await get_tree().physics_frame
+	if not is_inside_tree():
+		return
 	_start_initial_behavior()
 
 

@@ -2163,7 +2163,16 @@ func _spawn_enemies() -> void:
 	# The per-cell cap says nothing about the world: nine cells stream at once and
 	# the far map used to hold well over a hundred bodies. Danger still buys
 	# tougher enemies through _get_enemy_config_for_biome; it no longer buys crowds.
-	var world_budget: int = GLOBAL_ENEMY_BUDGET - get_tree().get_nodes_in_group("enemies").size()
+	# CellStreamer generates a cell before it parents it, so get_tree() is null
+	# here on every streamed cell, and calling a method on null aborts the
+	# function. The world budget silently meant "no enemies in the open world at
+	# all". The main loop IS the scene tree whether or not this node is in it.
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		tree = Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return
+	var world_budget: int = GLOBAL_ENEMY_BUDGET - tree.get_nodes_in_group("enemies").size()
 	if world_budget <= 0:
 		return
 	scaled_max = mini(scaled_max, world_budget)
