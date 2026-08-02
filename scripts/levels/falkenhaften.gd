@@ -8,7 +8,7 @@
 extends Node3D
 
 const ZONE_ID := "capital_falkenhafen"
-const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
+const TOWN_AMBIENT_PATH := "res://assets/audio/ambience/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
 
 @onready var nav_region: NavigationRegion3D = $NavigationRegion3D
 

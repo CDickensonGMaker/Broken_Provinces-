@@ -112,7 +112,7 @@ class EditorNPCData:
 
 ## Custom model properties
 class CustomModelData:
-	var model_path: String = ""  # res://assets/models/...
+	var model_path: String = ""  # res://assets/world/props/...
 	var collision_mode: CollisionMode = CollisionMode.AUTO
 	var cast_shadows: bool = true
 	var material_override: String = ""

@@ -138,7 +138,7 @@ art, and it is stated as inference:
 ### The finding that matters most
 
 **Right now every citizen in Broken Provinces wears the same four colours.**
-`scripts/visuals/citizen_dresser.gd` binds the garb palette to `_shared_garb`, one
+`scripts/characters/visuals/citizen_dresser.gd` binds the garb palette to `_shared_garb`, one
 `BaseMaterial3D` for the entire game, deliberately ("neither carries per-instance state in
 v1"). The face atlas slides per instance; the clothes do not. Our variation is therefore
 **2 vests × 3 sleeves × ≤2 legs × 2 hood × 2 apron = 24 garment silhouettes in one colourway**,
@@ -274,7 +274,7 @@ page stride (uv1_offset) = (0.25, 0.25)
   and it will look like a texture bug rather than a UV bug.
 - Assert `garb_vest_laced` is *gone*, so it cannot come back through a stale stage file.
 
-### 3.E `scripts/visuals/citizen_dresser.gd` — the real behavioural change
+### 3.E `scripts/characters/visuals/citizen_dresser.gd` — the real behavioural change
 
 1. **`_shared_garb` must die.** Duplicate the garb material per instance, exactly as the face
    material is duplicated, for exactly the same reason (law 2 — "a fireteam of octuplets").
@@ -419,4 +419,4 @@ for a living.
 
 In-repo: `docs/design/ART_GUIDE.md`, `docs/design/citizen_review/REVIEW.md`,
 `tools/citizens/03_make_textures.py`, `tools/citizens/05_build_garb.py`,
-`tools/citizens/citizen_common.py`, `scripts/visuals/citizen_dresser.gd`.
+`tools/citizens/citizen_common.py`, `scripts/characters/visuals/citizen_dresser.gd`.

@@ -9,7 +9,7 @@ var toolbar_button: Button
 
 func _enter_tree() -> void:
 	# Force WorldGrid to reload fresh data on editor startup
-	var world_grid_script = load("res://scripts/data/world_grid.gd")
+	var world_grid_script = load("res://scripts/core/world_grid.gd")
 	if world_grid_script and world_grid_script.has_method("force_reload"):
 		world_grid_script.force_reload()
 		print("[WorldForge] Cleared WorldGrid cache - will load fresh from JSON")

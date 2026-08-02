@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="SeaEncounter" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://scripts/travel/sea_encounter.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/systems/travel/sea_encounter.gd" id="1"]
 
 [resource]
 script = ExtResource("1")

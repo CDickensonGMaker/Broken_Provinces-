@@ -144,8 +144,21 @@ autoloads living in `scripts/data/` because they also declare data shapes.
 
 The machine-readable map is `tools/layout_rules.json`; the expansion of it into
 2185 individual file moves is `tools/layout_moves.tsv`, and the 139 deletions
-are `tools/layout_deletes.tsv`. Both are committed, so this is auditable rather
-than assertable.
+are `tools/layout_deletes.tsv`. All three are committed and are excluded from
+the remapper, so they still say what the tree *used to be* - a map that rewrote
+itself would read new -> new and explain nothing.
+
+Git sees 1221 renames and 80 deletions, not 2185 and 139, because `*.uid` and
+`*.import` are gitignored. Those sidecars are the other 964 files, and they
+moved too. They had to: a `.gd` separated from its `.gd.uid` is issued a fresh
+uid on the next import, which silently breaks every `uid://` reference in every
+scene that loads it, and an `.import` separated from its asset forces a
+reimport that mints a new uid the same way.
+
+`addons/` was not moved - plugin paths are fragile and already work - but eight
+of its scripts reach into `scripts/`, `data/`, `assets/` and `scenes/`, and
+those 17 references were rewritten like any others. Skipping them the first
+time round produced a project that would not even import.
 
 Read `layout_rules.json` top to bottom: rules are applied in order and the first
 match wins, so a file rule always precedes the directory rule that would
@@ -221,7 +234,31 @@ path-unreferenced while still being loaded.
 | `Gameplay footage/` | Gitignored capture output. `project.godot`'s `movie_writer/movie_file` pointed into it and is repointed to `dev/recordings/`. |
 | `scenes/levels/modular house blocks{, 1, 2}.glb` | Byte-identical (md5-verified) to the `assets/models/buildings/` copies. Their uids grep to 0 hits outside their own `.import` files. `willow_dale_UPDATED.glb`, in the same directory, IS referenced and was moved, not deleted. |
 | `resources/projectiles/goblin_bolt.tres` | 0 hits by filename and by stem. Its header carries no `uid=` at all, so there is no uid path either. The other four projectiles in that directory are live and moved to `data/projectiles/`. |
-| `README.txt`, `README broken provinces.txt` | Byte-identical to each other, referenced by nothing, superseded by `README.md`. |
+| `README.txt`, `README broken provinces.txt` | Byte-identical to each other (md5-verified), referenced by nothing, superseded by `README.md`. |
+
+### Two things that moved rather than died, and one that changed shape
+
+`project.godot`'s `[editor] movie_writer/movie_file` pointed into
+`Gameplay footage/`. Godot does not create the parent directory for that file,
+so deleting the folder would have broken Movie Maker Mode silently, the next
+time Caleb pressed the button. The key now points at `dev/recordings/`, which
+exists and is gitignored, and `export_presets.cfg`'s matching exclude filter
+followed it.
+
+`assets/sprites/SPRITE_REFERENCE.md` had 74 rows naming
+`res://Sprite folders grab bag/`. Every one of them is deleted, and the section
+now says why: not one of the filenames the table listed was actually in that
+folder. It had been fiction before it was stale.
+
+`tools/validate_content.gd`'s `DIALOGUE_DIRS` and `CONVERSATION_POOL_DIR` are
+written without a trailing slash, so no rename rule could reach them, and
+`data/dialogue/` gained children - a recursive walk of it would have started
+reading conversation pools as dialogue trees. Both constants were repointed by
+hand at `data/dialogue/trees`, `data/dialogue/resources` and
+`data/dialogue/pools`. The pre-commit hook's path filter was repointed the same
+way, for the same reason: it fires on `scripts/dialogue/`, which no longer
+exists, and a content gate that stops firing looks exactly like a content gate
+that passes.
 
 ### Kept, against the first instinct
 
@@ -252,15 +289,52 @@ the project that can carry a path, pulls out every `res://` literal, and demands
 the target exist. It closes the failure class this migration created for good:
 a reference that rotted and stayed invisible because the uid still resolved.
 
+It **ratchets rather than demanding zero.** 195 paths were already dead the day
+it was written - sprites named in blueprints that were never drawn, cave GLBs
+that were never modelled. That is art work, not a rename, so a zero-tolerance
+gate would either lie or block every commit until the art landed. The committed
+`tools/fixtures/broken_paths_baseline.txt` is the list of what was already
+rotten; anything outside it fails, and a baseline line that now resolves fails
+too, so the list cannot rot into a hiding place.
+
+**The damage report for this migration is that diff.** Mapping the pre-move
+baseline through the move table and comparing it to the post-move scan gives
+three newly broken references, all three found and fixed before the commit:
+
+| Newly broken | Why the script missed it | Fix |
+|---|---|---|
+| `procedural_town_generator.gd -> res://scenes/levels/town editor towns/` | the path contains **spaces**, and an unquoted `res://` literal is read up to the first space, so it truncated to `res://scenes/levels/town` and matched no rule | repointed to `res://data/towns/` |
+| `model_browser.gd -> res://assets/models` | a directory literal with no trailing slash, in a file that was not scanned at all on the first pass because `addons/` was excluded | repointed to `res://assets/world` |
+| `check_no_broken_paths.gd -> res://Sprite folders grab bag/rat.png` | the check named a real path in its own docstring, and then deleted it | reworded |
+
+Nothing else moved from resolving to not resolving. That is the whole claim the
+mechanical half of this change makes.
+
 `tools/boot_sweep.ps1` is the 51-scene boot sweep, previously a scratch script
 that lived in a temp folder and was rewritten by hand each time it was needed.
 It now lives in the repo, writes a normalised class table, and can be diffed
 run against run.
 
-Old saves keep loading. `SaveManager` remaps every `res://` string it reads out
-of a save file through the same old -> new table, unconditionally and
-idempotently, on both of the two paths that parse a save. `check_fresh_boot`
-carries a fixture written in the old layout and proves it.
+Old saves keep loading. Seven fields in a save file can hold a `res://` string:
+the scene the player stood in, the scene the jailer took him from, follower and
+companion sprite textures, a `CompanionData` resource, and bestiary icons.
+`SaveManager._remap_layout_paths` walks the whole parsed dictionary - not those
+seven keys, so the eighth one somebody adds next month is covered too - and
+rewrites each through `LAYOUT_PATH_REMAP`.
+
+It runs on **both** code paths that parse a save, not just the migrating one.
+`get_save_info()` never migrates and hands `current_scene` straight to
+`SceneManager` from the save-select and quick-load screens; a version-gated
+remap would have fixed `load_game()` and left the menu loading a dead scene.
+The function is idempotent - a path already in the new tree matches an identity
+rule ahead of the rule that would move it - which is what lets it run
+unconditionally.
+
+`check_fresh_boot` proves it, on a real save file with old paths written back
+into it rather than a hand-built dictionary: the save-select path returns a live
+scene that exists on disk, the load succeeds, a nested sprite path and a path
+inside an array are both rewritten, a non-path string is left alone, and running
+the remap twice changes nothing.
 
 ## What this document does not cover
 

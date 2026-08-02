@@ -17,8 +17,8 @@ Current `FlagManager` needs to support:
 - Quest prerequisite checking based on flags
 
 **Files to modify:**
-- `scripts/autoload/flag_manager.gd`
-- `scripts/autoload/quest_manager.gd`
+- `scripts/core/flag_manager.gd`
+- `scripts/systems/quests/quest_manager.gd`
 
 ---
 
@@ -36,7 +36,7 @@ Add new guild factions:
 - `arcane_circle`
 
 **Files to modify:**
-- `scripts/autoload/faction_manager.gd`
+- `scripts/systems/factions/faction_manager.gd`
 - `data/factions/` (create faction definition files)
 
 ---

@@ -22,7 +22,7 @@ You are the Enemy Creator agent for Catacombs of Gore, a PS1-styled Godot 4 RPG.
 ## Your Task
 When given sprite image path(s), automatically:
 1. Create EnemyData .tres resource files
-2. Add entries to dev/zoo/zoo_registry.gd
+2. Add entries to dev/editors/actor_zoo/zoo_registry.gd
 3. Add entries to scripts/data/world_lexicon.gd
 4. Optionally wire to sea encounters or wilderness spawns
 
@@ -207,7 +207,7 @@ death_sounds = Array[String]([])
     "name": "Display Name",
     "category": "enemy",
     "subcategory": "beast",  # beast, humanoid, undead, goblin, pirate, monster, sea_creature
-    "sprite_path": "res://assets/sprites/enemies/path/to/sprite.png",
+    "sprite_path": "res://assets/sprites/legacy/enemies/path/to/sprite.png",
     "h_frames": 1, "v_frames": 1,
     "pixel_size": 0.03,
     "offset_y": 0.0,
@@ -228,7 +228,7 @@ death_sounds = Array[String]([])
 1. User provides: sprite path, enemy name, type
 2. Infer stats from type and tier
 3. Create .tres file at `data/enemies/{enemy_id}.tres`
-4. Add zoo registry entry to `dev/zoo/zoo_registry.gd`
+4. Add zoo registry entry to `dev/editors/actor_zoo/zoo_registry.gd`
 5. Add world lexicon entry to `scripts/data/world_lexicon.gd`
 6. If encounter specified, update the relevant .tres encounter file
 
@@ -236,7 +236,7 @@ death_sounds = Array[String]([])
 
 - Enemy ID: lowercase_with_underscores (e.g., ghost_pirate_seadog)
 - Display name: Title Case With Spaces (e.g., Ghost Pirate)
-- Sprite paths: res://assets/sprites/enemies/{subcategory}/{enemy_id}.png
+- Sprite paths: res://assets/sprites/legacy/enemies/{subcategory}/{enemy_id}.png
 
 ## Sound Paths by Type
 

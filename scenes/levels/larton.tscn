@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bnmgbw8fnowmu" path="res://scripts/levels/larton.gd" id="1_larton"]
 [ext_resource type="Texture2D" uid="uid://ctpx5tsjlmw4x" path="res://assets/textures/environment/floors/stonefloor.png" id="2_stone"]
 [ext_resource type="Texture2D" uid="uid://d4lyhdyi3imvx" path="res://assets/textures/environment/floors/woodenfloor.png" id="3_wood"]
-[ext_resource type="Texture2D" uid="uid://dh326odj53nps" path="res://assets/sprites/environment/walls/stonewall.png" id="4_wall"]
+[ext_resource type="Texture2D" uid="uid://dh326odj53nps" path="res://assets/sprites/legacy/environment/walls/stonewall.png" id="4_wall"]
 
 [sub_resource type="Environment" id="Environment_larton"]
 background_mode = 2

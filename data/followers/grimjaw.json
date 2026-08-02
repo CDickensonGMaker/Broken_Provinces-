@@ -2,7 +2,7 @@
     "id": "grimjaw",
     "display_name": "Grimjaw",
     "description": "A half-orc berserker who found purpose in the Iron Company. His savage fighting style makes him devastatingly effective.",
-    "sprite_path": "res://assets/sprites/npcs/combat/male_gladiator1.png",
+    "sprite_path": "res://assets/sprites/legacy/npcs/combat/male_gladiator1.png",
     "h_frames": 1,
     "v_frames": 1,
     "pixel_size": 0.0384,

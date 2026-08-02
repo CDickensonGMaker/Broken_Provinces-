@@ -56,7 +56,7 @@ func _spawn_devourer() -> void:
 	spawn_enemy_in_room(
 		"kd_throne_room",
 		"res://data/enemies/goblin_warboss.tres",
-		"res://assets/sprites/enemies/goblins/goblin_sword.png",
+		"res://assets/sprites/legacy/enemies/goblins/goblin_sword.png",
 		Vector3(0, 0, -4)
 	)
 

@@ -10,12 +10,12 @@
 
 | Component | File | Role |
 |---|---|---|
-| TournamentManager (autoload) | `scripts/autoload/tournament_manager.gd` | Wave defs, spawn, completion detection, gold, fame, equipment lock |
+| TournamentManager (autoload) | `scripts/systems/events/tournament_manager.gd` | Wave defs, spawn, completion detection, gold, fame, equipment lock |
 | Arena level | `scripts/levels/bloodsand_arena.gd` + `scenes/levels/bloodsand_arena.tscn` | Floor w/ spike pit, barrier, spawn markers, shops, arena master spawn |
-| Gladiator enemy | `scripts/npcs/gladiator_npc.gd` | All wave enemies (every enemy type spawns as this class) |
-| Arena Master NPC | `scripts/npcs/arena_master.gd` | Gormund — entry dialogue, between-wave continue/leave, victory dialogue |
+| Gladiator enemy | `scripts/characters/npcs/gladiator_npc.gd` | All wave enemies (every enemy type spawns as this class) |
+| Arena Master NPC | `scripts/characters/npcs/arena_master.gd` | Gormund — entry dialogue, between-wave continue/leave, victory dialogue |
 | Quests | `data/quests/arena_tournament.json`, `arena_tier_1.json`, `meet_the_arena_master.json` | Quest layer (mostly disconnected, see §4) |
-| Dialogue JSON | `data/dialogue/arena_master_gormund.json`, `varn_the_scarred_arena.json` | Gormund JSON is ORPHANED (never loaded) |
+| Dialogue JSON | `data/dialogue/trees/arena_master_gormund.json`, `varn_the_scarred_arena.json` | Gormund JSON is ORPHANED (never loaded) |
 | Enemy data | `data/enemies/arena_gladiator_*.tres`, `arena_champion_krag.tres`, `arena_legend_bloodfang.tres` | Only `arena_gladiator_novice` is ever used; rest is dead content |
 
 ## 2. Traced Tournament Flow (with break points)
@@ -75,7 +75,7 @@ GladiatorNPC does not use navigation — it beelines at the player (`gladiator_n
 Gormund is `attackable` and permanently killable (arena_master.gd:46,431-488) with no respawn — kill him and the tournament can never advance or start again this session. Worse, his between-wave dialogue fires off a one-shot 1.5s timer (arena_master.gd:291-294) into `ConversationSystem.start_scripted_dialogue`, which **aborts with a warning if any dialogue is already active** (conversation_system.gd:1043-1046). If the player is talking to a shop merchant at that moment, the continue/leave prompt is lost forever -> soft-lock (no retry mechanism).
 
 **BUG-8: Quest layer is fully disconnected from the tournament.**
-- `arena_novice_tournament` (`data/quests/arena_tournament.json`) is never started by any code — `arena_master.gd` uses hardcoded scripted lines and never issues START_QUEST; the JSON dialogue that contains the start action (`data/dialogue/arena_master_gormund.json`) is orphaned (id referenced nowhere in scripts).
+- `arena_novice_tournament` (`data/quests/arena_tournament.json`) is never started by any code — `arena_master.gd` uses hardcoded scripted lines and never issues START_QUEST; the JSON dialogue that contains the start action (`data/dialogue/trees/arena_master_gormund.json`) is orphaned (id referenced nowhere in scripts).
 - Its kill objective targets `"arena_gladiator"` (count 9 — matches no wave math; actual novice count across waves is 14) and no enemy has that id; and QuestManager kill tracking requires `get_enemy_data()` (`quest_manager.gd:409-412`) which GladiatorNPC lacks — kills would never count anyway.
 - `next_quest: "arena_veteran_tournament"` points to a quest JSON that **does not exist**.
 - `arena_tier_1.json` targets three enemies that don't exist (`arena_pit_fighter`, `arena_beast`, `arena_champion_tier1`) and describes a 3-round format from a scrapped design.

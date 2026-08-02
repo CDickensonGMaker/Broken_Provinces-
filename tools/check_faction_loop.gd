@@ -29,7 +29,7 @@ extends Node
 ## it out loud ("deep devotion can only be given to one" -
 ## priest_chronos_dalhurst.json, node devotee_inquiry), refuses a rival's
 ## devotee in his own voice (node already_other_devotee), and
-## design/gdd/quest-system.md documents `forbidden_flags` using these exact
+## docs/gdd/quest-system.md documents `forbidden_flags` using these exact
 ## flags as its example. This check is what makes the speech true.
 
 var _failures: Array[String] = []

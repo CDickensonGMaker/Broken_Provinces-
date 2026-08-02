@@ -20,7 +20,7 @@ extends Node
 ##
 ## It also asserts the non-rocky biomes stay clear: a cliff in a swamp is a bug.
 
-const ROOM_SCENE := "res://scenes/generation/wilderness_room.tscn"
+const ROOM_SCENE := "res://scenes/generation/wilderness/wilderness_room.tscn"
 
 ## Biomes that must produce outcrops, and biomes that must not.
 const ROCKY_BIOMES: Array[int] = [4, 6, 7, 9, 10]   # ROCKY, ROCKY_FOREST/PLAINS/WINTER/DESERT

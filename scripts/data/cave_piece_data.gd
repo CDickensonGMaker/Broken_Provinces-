@@ -44,8 +44,8 @@ const PIECES: Dictionary = {
 		"openings": [Opening.SOUTH],
 		"original_size": Vector3(16.18, 16.0, 6.02),
 		"scale": 1.0,
-		"scene_path": "res://scenes/rooms/caves/mine_entrance.tscn",
-		"glb_path": "res://assets/models/caves/cave_entrance_1exit.glb",
+		"scene_path": "res://scenes/generation/caves/mine_entrance.tscn",
+		"glb_path": "res://assets/world/caves/cave_entrance_1exit.glb",
 		"room_type": "CAVE_ENTRANCE"
 	},
 
@@ -55,8 +55,8 @@ const PIECES: Dictionary = {
 		"openings": [Opening.SOUTH],
 		"original_size": Vector3(4.36, 6.44, 4.47),
 		"scale": 2.5,  # Scale up to ~11x16
-		"scene_path": "res://scenes/rooms/caves/mine_dead_end_small.tscn",
-		"glb_path": "res://assets/models/caves/cave_piece_01.glb",
+		"scene_path": "res://scenes/generation/caves/mine_dead_end_small.tscn",
+		"glb_path": "res://assets/world/caves/cave_piece_01.glb",
 		"room_type": "CAVE_DEAD_END"
 	},
 
@@ -66,8 +66,8 @@ const PIECES: Dictionary = {
 		"openings": [Opening.SOUTH, Opening.EAST],
 		"original_size": Vector3(8.60, 8.22, 5.42),
 		"scale": 1.9,  # Scale to ~16x16
-		"scene_path": "res://scenes/rooms/caves/mine_corner_se.tscn",
-		"glb_path": "res://assets/models/caves/cave_piece_02.glb",
+		"scene_path": "res://scenes/generation/caves/mine_corner_se.tscn",
+		"glb_path": "res://assets/world/caves/cave_piece_02.glb",
 		"room_type": "CAVE_CORNER_SE"
 	},
 
@@ -77,8 +77,8 @@ const PIECES: Dictionary = {
 		"openings": [Opening.NORTH, Opening.SOUTH],
 		"original_size": Vector3(5.77, 14.57, 5.33),
 		"scale": 1.1,  # Scale slightly to fit 16 length
-		"scene_path": "res://scenes/rooms/caves/mine_corridor_ns_long.tscn",
-		"glb_path": "res://assets/models/caves/cave_piece_03.glb",
+		"scene_path": "res://scenes/generation/caves/mine_corridor_ns_long.tscn",
+		"glb_path": "res://assets/world/caves/cave_piece_03.glb",
 		"room_type": "CAVE_CORRIDOR_NS"
 	},
 
@@ -88,8 +88,8 @@ const PIECES: Dictionary = {
 		"openings": [Opening.NORTH],
 		"original_size": Vector3(6.47, 7.32, 4.75),
 		"scale": 2.2,  # Scale up
-		"scene_path": "res://scenes/rooms/caves/mine_dead_end_medium.tscn",
-		"glb_path": "res://assets/models/caves/cave_piece_04.glb",
+		"scene_path": "res://scenes/generation/caves/mine_dead_end_medium.tscn",
+		"glb_path": "res://assets/world/caves/cave_piece_04.glb",
 		"room_type": "CAVE_DEAD_END"
 	},
 
@@ -99,8 +99,8 @@ const PIECES: Dictionary = {
 		"openings": [Opening.NORTH, Opening.WEST],
 		"original_size": Vector3(8.93, 8.93, 4.73),
 		"scale": 1.8,  # Scale to ~16x16
-		"scene_path": "res://scenes/rooms/caves/mine_corner_nw.tscn",
-		"glb_path": "res://assets/models/caves/cave_piece_05.glb",
+		"scene_path": "res://scenes/generation/caves/mine_corner_nw.tscn",
+		"glb_path": "res://assets/world/caves/cave_piece_05.glb",
 		"room_type": "CAVE_CORNER_NW"
 	},
 
@@ -110,8 +110,8 @@ const PIECES: Dictionary = {
 		"openings": [Opening.EAST, Opening.WEST],
 		"original_size": Vector3(4.42, 8.90, 4.47),
 		"scale": 1.8,  # Scale up
-		"scene_path": "res://scenes/rooms/caves/mine_corridor_ew_narrow.tscn",
-		"glb_path": "res://assets/models/caves/cave_piece_06.glb",
+		"scene_path": "res://scenes/generation/caves/mine_corridor_ew_narrow.tscn",
+		"glb_path": "res://assets/world/caves/cave_piece_06.glb",
 		"room_type": "CAVE_CORRIDOR_EW"
 	},
 
@@ -121,8 +121,8 @@ const PIECES: Dictionary = {
 		"openings": [Opening.NORTH, Opening.SOUTH],
 		"original_size": Vector3(5.23, 14.57, 5.33),
 		"scale": 1.1,
-		"scene_path": "res://scenes/rooms/caves/mine_corridor_ns_standard.tscn",
-		"glb_path": "res://assets/models/caves/cave_piece_07.glb",
+		"scene_path": "res://scenes/generation/caves/mine_corridor_ns_standard.tscn",
+		"glb_path": "res://assets/world/caves/cave_piece_07.glb",
 		"room_type": "CAVE_CORRIDOR_NS"
 	},
 
@@ -132,8 +132,8 @@ const PIECES: Dictionary = {
 		"openings": [Opening.NORTH, Opening.SOUTH],
 		"original_size": Vector3(14.06, 12.33, 16.24),
 		"scale": 1.15,  # Slight scale to 16x16 footprint
-		"scene_path": "res://scenes/rooms/caves/mine_shaft_vertical.tscn",
-		"glb_path": "res://assets/models/caves/cave_piece_08.glb",
+		"scene_path": "res://scenes/generation/caves/mine_shaft_vertical.tscn",
+		"glb_path": "res://assets/world/caves/cave_piece_08.glb",
 		"room_type": "CAVE_CORRIDOR_NS",  # Treated as corridor for pathfinding
 		"height_change": -8.0  # Drops down 8 units
 	},
@@ -144,8 +144,8 @@ const PIECES: Dictionary = {
 		"openings": [Opening.NORTH, Opening.SOUTH],
 		"original_size": Vector3(4.57, 9.23, 7.66),
 		"scale": 1.75,
-		"scene_path": "res://scenes/rooms/caves/mine_ramp_down.tscn",
-		"glb_path": "res://assets/models/caves/cave_piece_09.glb",
+		"scene_path": "res://scenes/generation/caves/mine_ramp_down.tscn",
+		"glb_path": "res://assets/world/caves/cave_piece_09.glb",
 		"room_type": "CAVE_CORRIDOR_NS",
 		"height_change": -4.0  # Gradual descent
 	},
@@ -156,8 +156,8 @@ const PIECES: Dictionary = {
 		"openings": [Opening.NORTH, Opening.SOUTH],
 		"original_size": Vector3(6.11, 14.69, 7.85),
 		"scale": 1.1,
-		"scene_path": "res://scenes/rooms/caves/mine_ramp_long.tscn",
-		"glb_path": "res://assets/models/caves/cave_piece_10.glb",
+		"scene_path": "res://scenes/generation/caves/mine_ramp_long.tscn",
+		"glb_path": "res://assets/world/caves/cave_piece_10.glb",
 		"room_type": "CAVE_CORRIDOR_NS",
 		"height_change": -4.0
 	},
@@ -168,8 +168,8 @@ const PIECES: Dictionary = {
 		"openings": [Opening.NORTH, Opening.SOUTH, Opening.EAST, Opening.WEST],
 		"original_size": Vector3(12.43, 22.18, 8.44),
 		"scale": 1.3,  # Scale to ~16x~28 (takes 2 grid cells)
-		"scene_path": "res://scenes/rooms/caves/mine_chamber_medium.tscn",
-		"glb_path": "res://assets/models/caves/cave_piece_11.glb",
+		"scene_path": "res://scenes/generation/caves/mine_chamber_medium.tscn",
+		"glb_path": "res://assets/world/caves/cave_piece_11.glb",
 		"room_type": "CAVE_CHAMBER",
 		"grid_size": Vector2i(1, 2)  # Occupies 1x2 grid cells
 	},
@@ -180,8 +180,8 @@ const PIECES: Dictionary = {
 		"openings": [Opening.NORTH, Opening.SOUTH, Opening.EAST, Opening.WEST],
 		"original_size": Vector3(12.72, 26.39, 8.48),
 		"scale": 1.25,
-		"scene_path": "res://scenes/rooms/caves/mine_hall_large.tscn",
-		"glb_path": "res://assets/models/caves/cave_piece_12.glb",
+		"scene_path": "res://scenes/generation/caves/mine_hall_large.tscn",
+		"glb_path": "res://assets/world/caves/cave_piece_12.glb",
 		"room_type": "CAVE_CHAMBER",
 		"grid_size": Vector2i(1, 2)
 	},
@@ -192,8 +192,8 @@ const PIECES: Dictionary = {
 		"openings": [Opening.NORTH, Opening.SOUTH, Opening.EAST, Opening.WEST],
 		"original_size": Vector3(11.32, 18.53, 8.44),
 		"scale": 1.4,  # Scale to ~16x~26
-		"scene_path": "res://scenes/rooms/caves/mine_chamber_small.tscn",
-		"glb_path": "res://assets/models/caves/cave_piece_13.glb",
+		"scene_path": "res://scenes/generation/caves/mine_chamber_small.tscn",
+		"glb_path": "res://assets/world/caves/cave_piece_13.glb",
 		"room_type": "CAVE_CHAMBER",
 		"grid_size": Vector2i(1, 2)
 	}

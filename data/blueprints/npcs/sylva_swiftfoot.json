@@ -6,7 +6,7 @@
   "quests": "Adventurer's Guild Champion reward choice",
   "sprite": {
     "type": "ranger",
-    "path": "res://assets/sprites/npcs/civilians/female_hunter.png",
+    "path": "res://assets/sprites/legacy/npcs/civilians/female_hunter.png",
     "h_frames": 1,
     "v_frames": 1,
     "pixel_size": 0.0280,

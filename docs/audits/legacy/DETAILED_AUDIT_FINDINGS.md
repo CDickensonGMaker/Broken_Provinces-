@@ -15,9 +15,9 @@ All examined scene files correctly reference existing GDScript files:
 ✓ scripts/levels/thornfield.gd
 ✓ scripts/levels/bandit_hideout_exterior.gd
 ✓ scripts/levels/bandit_hideout_level_1.gd
-✓ scripts/world/bounty_board.gd
-✓ scripts/world/zone_door.gd
-✓ scripts/combat/spell_projectile.gd
+✓ scripts/world/interactables/bounty_board.gd
+✓ scripts/world/interactables/zone_door.gd
+✓ scripts/systems/combat/spell_projectile.gd
 ✓ scripts/npcs/billboard_sprite.gd (referenced in NPC scenes)
 ```
 
@@ -36,11 +36,11 @@ Spot-checked 50+ texture references:
 ✓ assets/textures/environment/walls/stonewall.png
 ✓ assets/textures/environment/dungeon/stonefloor.png
 ✓ assets/textures/environment/dungeon/stonewall.png
-✓ assets/sprites/environment/walls/stonewall.png
-✓ assets/sprites/npcs/animals/cat_animiation.png
-✓ assets/sprites/npcs/animals/cow_animiation.png
-✓ assets/sprites/npcs/named/old_man_sage.png
-✓ assets/sprites/npcs/civilians/blacksmith.png
+✓ assets/sprites/legacy/environment/walls/stonewall.png
+✓ assets/sprites/legacy/npcs/animals/cat_animiation.png
+✓ assets/sprites/legacy/npcs/animals/cow_animiation.png
+✓ assets/sprites/legacy/npcs/named/old_man_sage.png
+✓ assets/sprites/legacy/npcs/civilians/blacksmith.png
 ```
 
 **Finding:** All checked texture paths exist. Some lack UID metadata (non-critical).
@@ -49,11 +49,11 @@ Spot-checked 50+ texture references:
 Spot-checked GLB/FBX references:
 
 ```
-✓ assets/models/terrain/elder_moor.glb
-✓ assets/models/terrain/boat_v2.glb
-✓ assets/models/buildings/modular_house_blocks.glb
-✓ assets/models/buildings/modular_house_blocks_1.glb
-✓ assets/models/statues/sword_statue.glb
+✓ assets/world/terrain/elder_moor.glb
+✓ assets/world/terrain/boat_v2.glb
+✓ assets/world/buildings/modular_house_blocks.glb
+✓ assets/world/buildings/modular_house_blocks_1.glb
+✓ assets/world/props/sword_statue.glb
 ```
 
 **Finding:** All model paths resolve correctly.
@@ -62,8 +62,8 @@ Spot-checked GLB/FBX references:
 Spot-checked audio references:
 
 ```
-✓ assets/audio/Ambiance/towns/town_murmur_medieval_mix_60s_ps1_retro.wav
-✓ assets/audio/Ambiance/cities/port_city_1.wav
+✓ assets/audio/ambience/towns/town_murmur_medieval_mix_60s_ps1_retro.wav
+✓ assets/audio/ambience/cities/port_city_1.wav
 ```
 
 **Finding:** Audio files referenced correctly in code (managed by AudioManager).
@@ -242,16 +242,16 @@ var _player_check: Node = get_node_or_null("Player")  ✓
 Verified all autoload references exist in project.godot:
 
 ```
-✓ GameManager="*res://scripts/autoload/game_manager.gd"
-✓ WorldGrid="*res://scripts/data/world_grid.gd"
-✓ PlayerGPS="*res://scripts/autoload/player_gps.gd"
-✓ CellStreamer="*res://scripts/autoload/cell_streamer.gd"
-✓ SceneManager="*res://scripts/autoload/scene_manager.gd"
-✓ CombatManager="*res://scripts/autoload/combat_manager.gd"
-✓ AudioManager="*res://scripts/autoload/audio_manager.gd"
-✓ DialogueManager="*res://scripts/autoload/dialogue_manager.gd"
-✓ QuestManager="*res://scripts/autoload/quest_manager.gd"
-✓ FlagManager="*res://scripts/autoload/flag_manager.gd"
+✓ GameManager="*res://scripts/core/game_manager.gd"
+✓ WorldGrid="*res://scripts/core/world_grid.gd"
+✓ PlayerGPS="*res://scripts/world/streaming/player_gps.gd"
+✓ CellStreamer="*res://scripts/world/streaming/cell_streamer.gd"
+✓ SceneManager="*res://scripts/core/scene_manager.gd"
+✓ CombatManager="*res://scripts/systems/combat/combat_manager.gd"
+✓ AudioManager="*res://scripts/core/audio_manager.gd"
+✓ DialogueManager="*res://scripts/systems/dialogue/dialogue_manager.gd"
+✓ QuestManager="*res://scripts/systems/quests/quest_manager.gd"
+✓ FlagManager="*res://scripts/core/flag_manager.gd"
 ```
 
 All referenced autoloads verified to exist. ✓

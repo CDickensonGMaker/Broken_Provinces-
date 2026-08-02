@@ -80,12 +80,12 @@
     {
       "token": "Blackmont",
       "reason": "The Siege of Blackmont - where Katrina Steelwind's predecessor took an arrow to the throat. A battle fought before the game begins, spoken of once, as a soldier's history. No cell, and it should not have one.",
-      "found_in": "data/dialogue/captain_roderick_steele.json"
+      "found_in": "data/dialogue/trees/captain_roderick_steele.json"
     },
     {
       "token": "Ironpeak",
       "reason": "The Ironpeak foothills, north of the mining camps - where a wyvern nest is said to be. This one is a direction, not a memory, and is the weakest row here: if the nest ever becomes a place the player travels to, this reference must be re-pointed at the real cell.",
-      "found_in": "data/dialogue/katrina_steelwind.json"
+      "found_in": "data/dialogue/trees/katrina_steelwind.json"
     },
     {
       "token": "Ashgrave",
@@ -100,32 +100,32 @@
     {
       "token": "Shadowroot",
       "reason": "A reagent on the Arcane Circle's research board. No ItemData exists for it, so the board is asking for something the player cannot carry - a real gap, recorded rather than papered over with an invented item.",
-      "found_in": "data/dialogue/arcane_circle_research_board.json"
+      "found_in": "data/dialogue/trees/arcane_circle_research_board.json"
     },
     {
       "token": "Glowcap",
       "reason": "As Shadowroot: a board reagent with no item behind it.",
-      "found_in": "data/dialogue/arcane_circle_research_board.json"
+      "found_in": "data/dialogue/trees/arcane_circle_research_board.json"
     },
     {
       "token": "Moonpetals",
       "reason": "As Shadowroot: a board reagent with no item behind it.",
-      "found_in": "data/dialogue/arcane_circle_research_board.json"
+      "found_in": "data/dialogue/trees/arcane_circle_research_board.json"
     },
     {
       "token": "Moonweave",
       "reason": "Moonweave, the Circle's name for a fabric and for a council seat's endowment. Named twice, never handled.",
-      "found_in": "data/dialogue/archmage_elara.json, data/quests/guild/mages/mage_13_council_seat.json"
+      "found_in": "data/dialogue/trees/archmage_elara.json, data/quests/guild/mages/mage_13_council_seat.json"
     },
     {
       "token": "Silverleaf",
       "reason": "An elven place-word in Sylva Swiftfoot's own account of where she comes from. The bible leaves the elven lands' position [OPEN]; naming a cell for it would answer his question for him.",
-      "found_in": "data/dialogue/companions/sylva_swiftfoot.json"
+      "found_in": "data/dialogue/trees/companions/sylva_swiftfoot.json"
     },
     {
       "token": "Velkyr",
       "reason": "An archmage of the Circle before Elara. Faculty history, spoken in the past tense.",
-      "found_in": "data/dialogue/archmage_elara.json"
+      "found_in": "data/dialogue/trees/archmage_elara.json"
     }
   ]
 }

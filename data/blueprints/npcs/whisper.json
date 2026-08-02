@@ -6,7 +6,7 @@
   "quests": "Thieves Guild Shadow Master reward choice",
   "sprite": {
     "type": "rogue",
-    "path": "res://assets/sprites/npcs/combat/thief.png",
+    "path": "res://assets/sprites/legacy/npcs/combat/thief.png",
     "h_frames": 1,
     "v_frames": 1,
     "pixel_size": 0.0192,

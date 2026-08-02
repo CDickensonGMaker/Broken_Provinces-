@@ -466,7 +466,7 @@ Add topics the NPC can discuss:
 | Town Editor | res://data/layouts/*.json |
 | Dungeon Editor | res://data/dungeons/*.json |
 | NPC Composer | res://data/npcs/*.tres |
-| Dialogue Editor | res://data/dialogue/pools/*.json |
+| Dialogue Editor | res://data/dialogue/trees/pools/*.json |
 | Quest Builder | res://data/quests/*.json |
 | Event Editor | res://data/events/*.json |
 

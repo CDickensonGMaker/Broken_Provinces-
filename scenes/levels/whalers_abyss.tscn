@@ -1,7 +1,7 @@
 [gd_scene load_steps=20 format=3 uid="uid://whalers_abyss_001"]
 
 [ext_resource type="Script" path="res://scripts/levels/whalers_abyss.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
 [ext_resource type="Texture2D" uid="uid://dh326odj53nps" path="res://assets/textures/environment/walls/stonewall.png" id="4"]
 [ext_resource type="Texture2D" uid="uid://d4lyhdyi3imvx" path="res://assets/textures/environment/floors/woodenfloor.png" id="5"]

@@ -6,7 +6,7 @@ Biome-driven random terrain in the open world: 8 European-styled profiles — **
 
 ## Key scout facts
 - Zero 4.6/4.7-only APIs in the engine; 4.5-safe. Typed dicts only in comments.
-- CoG already has a partial port: `scripts/terrain/enhanced_terrain.gd` (455 ln, "Based on TerrainEngine"). The seam is proven and narrow:
+- CoG already has a partial port: `scripts/world/terrain/enhanced_terrain.gd` (455 ln, "Based on TerrainEngine"). The seam is proven and narrow:
   - `wilderness_room.gd:540 _create_heightmap_terrain()` → `EnhancedTerrain.generate(cell_x, cell_z, biome, material, blend_edges) -> {node, heights}` + `get_height_at()` readback (:605).
   - **`cell_streamer.gd` needs ZERO changes** (100m cells, 3×3 ring, floating origin keyed off WorldGrid cell coords).
 - Do NOT port RECON's TerrainManager chunk streaming — CoG's CellStreamer stays the streamer. Port the **generator core + relief normalization + TerrainConfig height authority + terrain_zoning classifier + edge blending**, and optionally the tree-cover LOD mechanism.
@@ -22,7 +22,7 @@ Biome-driven random terrain in the open world: 8 European-styled profiles — **
 
 ## Verification
 - Real `--headless --quit` boot per phase with the 4.5 binary ONLY.
-- A probe script (`tools/terrain_probe.gd`): generate one cell of each of the 8 biomes headless, assert height range within preset relief, assert edge continuity between two adjacent cells (max seam delta < 0.01), assert same-seed determinism. Run it per phase.
+- A probe script (`tools/probes/terrain_probe.gd`): generate one cell of each of the 8 biomes headless, assert height range within preset relief, assert edge continuity between two adjacent cells (max seam delta < 0.01), assert same-seed determinism. Run it per phase.
 - Caleb's eye gate tonight: walk cell boundaries (seam check), visit each biome via debug teleport, old saves still load.
 
 ## Out of scope

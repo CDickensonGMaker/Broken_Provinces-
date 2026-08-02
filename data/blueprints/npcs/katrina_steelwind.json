@@ -6,7 +6,7 @@
   "quests": "The Champion's Challenge (adventurers_13_champion), Elite Contracts (various), Training Opportunities",
   "sprite": {
     "type": "warrior",
-    "path": "res://assets/sprites/npcs/guild_champion_female.png",
+    "path": "res://assets/sprites/legacy/npcs/guild_champion_female.png",
     "h_frames": 5,
     "v_frames": 1,
     "pixel_size": 0.0384,

@@ -52,7 +52,7 @@ Use this checklist to ensure all dependencies are created before activating the 
 
 ### If Missing, Create
 - [ ] Create missing enemy .tres files in `data/enemies/`
-- [ ] Add to zoo registry (`dev/zoo/zoo_registry.gd`)
+- [ ] Add to zoo registry (`dev/editors/actor_zoo/zoo_registry.gd`)
 - [ ] Add to WorldLexicon creature database
 
 ---

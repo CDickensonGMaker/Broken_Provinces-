@@ -1,14 +1,14 @@
 [gd_scene load_steps=10 format=3 uid="uid://cctfciclxsagi"]
 
 [ext_resource type="Script" uid="uid://bbjwc5fi13oqd" path="res://scripts/levels/kazan_dun_level_5.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/world/zone_door_instance.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_goblin_camp.tscn" id="5"]
-[ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_ritual_chamber.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_throne_room.tscn" id="7"]
-[ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_barricade.tscn" id="8"]
-[ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_stairwell_down.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/generation/kazan_dun/kd_goblin_camp.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/generation/kazan_dun/kd_ritual_chamber.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/generation/kazan_dun/kd_throne_room.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/generation/kazan_dun/kd_barricade.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/generation/kazan_dun/kd_stairwell_down.tscn" id="9"]
 
 [node name="KazanDunLevel5Modular" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20, 51)

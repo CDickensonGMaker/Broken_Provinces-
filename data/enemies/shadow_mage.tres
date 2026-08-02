@@ -109,9 +109,9 @@ drop_table = {
 }
 xp_reward = 120
 scene_path = ""
-icon_path = "res://assets/sprites/enemies/humanoid/cultist_red.png"
+icon_path = "res://assets/sprites/legacy/enemies/humanoid/cultist_red.png"
 scale = 1.0
-sprite_path = "res://assets/sprites/enemies/humanoid/cultist_red.png"
+sprite_path = "res://assets/sprites/legacy/enemies/humanoid/cultist_red.png"
 attack_sprite_path = ""
 sprite_hframes = 1
 sprite_vframes = 1

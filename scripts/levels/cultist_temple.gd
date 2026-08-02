@@ -5,14 +5,14 @@ extends Node3D
 const ZONE_ID := "cultist_temple"
 
 ## Tree textures for the overgrown ruins
-const WILLOW_TEXTURE := "res://assets/sprites/environment/trees/swamp_willow.png"
+const WILLOW_TEXTURE := "res://assets/sprites/legacy/environment/trees/swamp_willow.png"
 const SWAMP_TREE_TEXTURES: Array[String] = [
-	"res://assets/sprites/environment/trees/swamp_tree1.png",
-	"res://assets/sprites/environment/trees/swamp_tree2.png",
+	"res://assets/sprites/legacy/environment/trees/swamp_tree1.png",
+	"res://assets/sprites/legacy/environment/trees/swamp_tree2.png",
 ]
 const FALLEN_LOG_TEXTURES: Array[String] = [
-	"res://assets/sprites/environment/trees/swamp_fallen_1.png",
-	"res://assets/sprites/environment/trees/swamp_fallen_2.png",
+	"res://assets/sprites/legacy/environment/trees/swamp_fallen_1.png",
+	"res://assets/sprites/legacy/environment/trees/swamp_fallen_2.png",
 ]
 
 ## Container for spawned vegetation
@@ -95,7 +95,7 @@ func _spawn_enemy_at_marker(marker: Marker3D) -> void:
 	var enemy_type: String = marker.get_meta("enemy_type", "cultist")
 
 	# Try to get sprite config from ActorRegistry (includes Zoo patches)
-	var sprite_path: String = marker.get_meta("sprite_path", "res://assets/sprites/enemies/humanoid/cultist_red.png")
+	var sprite_path: String = marker.get_meta("sprite_path", "res://assets/sprites/legacy/enemies/humanoid/cultist_red.png")
 	var h_frames: int = marker.get_meta("h_frames", 4)
 	var v_frames: int = marker.get_meta("v_frames", 1)
 
@@ -339,7 +339,7 @@ func _setup_wildlife() -> void:
 
 ## Spawn an ambient rat (non-hostile, just visual atmosphere)
 func _spawn_ambient_rat(pos: Vector3) -> void:
-	var tex := load("res://assets/sprites/enemies/beasts/rat_moving_forward.png") as Texture2D
+	var tex := load("res://assets/sprites/legacy/enemies/beasts/rat_moving_forward.png") as Texture2D
 	if not tex:
 		return
 

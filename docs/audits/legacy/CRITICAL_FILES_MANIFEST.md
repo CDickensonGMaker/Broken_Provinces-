@@ -16,15 +16,15 @@
 
 **Critical Autoloads:**
 ```
-GameManager="*res://scripts/autoload/game_manager.gd"
-WorldGrid="*res://scripts/data/world_grid.gd"
-PlayerGPS="*res://scripts/autoload/player_gps.gd"
-CellStreamer="*res://scripts/autoload/cell_streamer.gd"
-SceneManager="*res://scripts/autoload/scene_manager.gd"
-CombatManager="*res://scripts/autoload/combat_manager.gd"
-AudioManager="*res://scripts/autoload/audio_manager.gd"
-DialogueManager="*res://scripts/autoload/dialogue_manager.gd"
-QuestManager="*res://scripts/autoload/quest_manager.gd"
+GameManager="*res://scripts/core/game_manager.gd"
+WorldGrid="*res://scripts/core/world_grid.gd"
+PlayerGPS="*res://scripts/world/streaming/player_gps.gd"
+CellStreamer="*res://scripts/world/streaming/cell_streamer.gd"
+SceneManager="*res://scripts/core/scene_manager.gd"
+CombatManager="*res://scripts/systems/combat/combat_manager.gd"
+AudioManager="*res://scripts/core/audio_manager.gd"
+DialogueManager="*res://scripts/systems/dialogue/dialogue_manager.gd"
+QuestManager="*res://scripts/systems/quests/quest_manager.gd"
 ```
 
 ---
@@ -51,7 +51,7 @@ QuestManager="*res://scripts/autoload/quest_manager.gd"
 **Validates:** Loads/unloads cells around player position
 
 ### PlayerGPS
-**Path:** C:\Users\caleb\CatacombsOfGore\scripts/autoload/player_gps.gd
+**Path:** C:\Users\caleb\CatacombsOfGore\scripts/world/streaming/player_gps.gd
 **Status:** ✓ Critical system
 **Purpose:** Tracks player location and discoveries
 **Note:** Autoload on startup - no manual loading needed
@@ -73,7 +73,7 @@ QuestManager="*res://scripts/autoload/quest_manager.gd"
 **Contains:** Player, HUD, world management
 
 ### Player Character
-**Path:** res://scenes/player/player.tscn
+**Path:** res://scenes/characters/player.tscn
 **Status:** ✓ Verified
 **Required by:** Every game level
 **Critical Check:** Verify character spawns correctly
@@ -120,19 +120,19 @@ QuestManager="*res://scripts/autoload/quest_manager.gd"
 ## DIALOGUE & QUEST SYSTEMS
 
 ### DialogueManager
-**Path:** C:\Users\caleb\CatacombsOfGore\scripts/autoload/dialogue_manager.gd
+**Path:** C:\Users\caleb\CatacombsOfGore\scripts/systems/dialogue/dialogue_manager.gd
 **Status:** ✓ Verified
 **Purpose:** Manages all dialogue interactions
 **Critical:** No known issues
 
 ### QuestManager
-**Path:** C:\Users\caleb\CatacombsOfGore\scripts/autoload/quest_manager.gd
+**Path:** C:\Users\caleb\CatacombsOfGore\scripts/systems/quests/quest_manager.gd
 **Status:** ✓ Verified
 **Purpose:** Tracks quest progress and completion
 **Critical:** No known issues
 
 ### FlagManager
-**Path:** C:\Users\caleb\CatacombsOfGore\scripts/autoload/flag_manager.gd
+**Path:** C:\Users\caleb\CatacombsOfGore\scripts/core/flag_manager.gd
 **Status:** ✓ Verified
 **Purpose:** Global game state flags
 **Critical for:** Quest gating, dialogue conditions
@@ -142,13 +142,13 @@ QuestManager="*res://scripts/autoload/quest_manager.gd"
 ## INVENTORY & CRAFTING
 
 ### InventoryManager
-**Path:** C:\Users\caleb\CatacombsOfGore\scripts/autoload/inventory_manager.gd
+**Path:** C:\Users\caleb\CatacombsOfGore\scripts/systems/economy/inventory_manager.gd
 **Status:** ✓ Verified
 **Purpose:** Player inventory management
 **Critical:** No known issues
 
 ### CraftingManager
-**Path:** C:\Users\caleb\CatacombsOfGore\scripts/autoload/crafting_manager.gd
+**Path:** C:\Users\caleb\CatacombsOfGore\scripts/systems/economy/crafting_manager.gd
 **Status:** ✓ Verified
 **Purpose:** Crafting system control
 **Important:** Recipes loaded from data/crafting/
@@ -158,13 +158,13 @@ QuestManager="*res://scripts/autoload/quest_manager.gd"
 ## COMBAT SYSTEM
 
 ### CombatManager
-**Path:** C:\Users\caleb\CatacombsOfGore\scripts/autoload/combat_manager.gd
+**Path:** C:\Users\caleb\CatacombsOfGore\scripts/systems/combat/combat_manager.gd
 **Status:** ✓ Verified
 **Purpose:** Combat mechanics and NPC combat AI
 **Critical:** Extensively used in dungeons
 
 ### EnemyBase
-**Path:** C:\Users\caleb\CatacombsOfGore\scenes/enemies/enemy_base.tscn
+**Path:** C:\Users\caleb\CatacombsOfGore\scenes/characters/enemy_base.tscn
 **Status:** ✓ Verified
 **Purpose:** Enemy template scene
 **Used for:** All AI enemies
@@ -174,7 +174,7 @@ QuestManager="*res://scripts/autoload/quest_manager.gd"
 ## AUDIO SYSTEM
 
 ### AudioManager
-**Path:** C:\Users\caleb\CatacombsOfGore\scripts/autoload/audio_manager.gd
+**Path:** C:\Users\caleb\CatacombsOfGore\scripts/core/audio_manager.gd
 **Status:** ✓ Verified
 **Purpose:** Music, ambient sounds, UI sfx
 **Files:** All audio paths reference assets/audio/

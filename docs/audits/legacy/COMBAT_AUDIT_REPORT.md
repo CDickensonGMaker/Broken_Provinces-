@@ -59,7 +59,7 @@ Overall system health: **GOOD with CRITICAL gaps**
 **Recommendation:**
 Add proper icon_path values to all 19 files. Example:
 ```tres
-icon_path = "res://assets/sprites/enemies/boar.png"
+icon_path = "res://assets/sprites/legacy/enemies/boar.png"
 ```
 
 ---
@@ -83,7 +83,7 @@ icon_path = "res://assets/sprites/enemies/boar.png"
 **Recommendation:**
 Each .tres file must include:
 ```tres
-sprite_path = "res://assets/sprites/enemies/[enemy_name].png"
+sprite_path = "res://assets/sprites/legacy/enemies/[enemy_name].png"
 attack_sprite_path = ""
 sprite_hframes = [count]
 sprite_vframes = [count]

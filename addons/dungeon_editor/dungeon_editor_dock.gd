@@ -461,7 +461,7 @@ func _on_export_pressed() -> void:
 		return
 
 	# Attach the hand_crafted_dungeon script
-	var dungeon_script: Script = load("res://scripts/dungeons/hand_crafted_dungeon.gd")
+	var dungeon_script: Script = load("res://scripts/generation/dungeons/hand_crafted_dungeon.gd")
 	if dungeon_script:
 		build_result.dungeon_root.set_script(dungeon_script)
 
@@ -480,7 +480,7 @@ func _on_export_pressed() -> void:
 	# Sanitize name
 	scene_name = scene_name.replace(" ", "_").to_lower()
 
-	var save_path: String = "res://scenes/dungeons/%s.tscn" % scene_name
+	var save_path: String = "res://scenes/generation/dungeons/%s.tscn" % scene_name
 
 	# Ensure directory exists
 	var dir := DirAccess.open("res://")

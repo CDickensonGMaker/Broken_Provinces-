@@ -163,7 +163,7 @@ metric is **the devotee flag**, binary, set at quest 5 / the ritual dialogue.
 "Too far" = has taken the bond with one god. That boundary is stated by the
 content itself, so nothing here is a guess.
 
-`design/gdd/quest-system.md:216-224` documents the `forbidden_flags` quest
+`docs/gdd/quest-system.md:216-224` documents the `forbidden_flags` quest
 field — and uses **`["gaela_devotee", "morthane_devotee"]` as its worked
 example.** The engine reads it (`quest_manager.gd:776, 2163`). Somebody
 reached for exactly this and never wired it to content.

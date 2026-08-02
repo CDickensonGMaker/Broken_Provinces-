@@ -121,7 +121,7 @@ func _spawn_npcs() -> void:
 		archmage_pos,
 		"Archmage Elara",
 		"archmage_elara_dalhurst",
-		preload("res://assets/sprites/npcs/civilians/female_noble1.png"),
+		preload("res://assets/sprites/legacy/npcs/civilians/female_noble1.png"),
 		1, 1,
 		["mage_01_entrance_exam", "mage_02_library_duty", "mage_03_elemental_attunement", "mage_04_artifact_recovery", "mage_05_forbidden_knowledge", "mage_06_circle_politics", "mage_07_arcane_investigation", "mage_08_tower_defense", "mage_09_planar_research", "mage_10_master_thesis", "mage_11_council_seat", "mage_12_ancient_mystery", "mage_13_archmage_trial"],
 		false
@@ -144,7 +144,7 @@ func _spawn_npcs() -> void:
 		librarian_pos,
 		"Archivist Thorne",
 		"athenaeum_librarian",
-		preload("res://assets/sprites/npcs/civilians/man_civilian.png"),
+		preload("res://assets/sprites/legacy/npcs/civilians/man_civilian.png"),
 		1, 1,
 		[],
 		false

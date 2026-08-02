@@ -133,7 +133,7 @@ drop_table = {
 }
 xp_reward = 400
 scene_path = ""
-icon_path = "res://assets/sprites/enemies/humanoid/human_bandit_alt.png"
+icon_path = "res://assets/sprites/legacy/enemies/humanoid/human_bandit_alt.png"
 scale = 1.3
 idle_sounds = Array[String](["res://assets/audio/sfx/monsters/low_growl.wav"])
 attack_sounds = Array[String](["res://assets/audio/sfx/weapons/sword_clank_1.wav", "res://assets/audio/sfx/weapons/sword_clank_2.wav", "res://assets/audio/sfx/weapons/sword_clank_3.wav"])

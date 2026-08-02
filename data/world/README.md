@@ -4,7 +4,7 @@
 
 The world's land, as painted in World Forge. **`WorldGrid.initialize()` reads
 this exact path**, and if it is absent the land comes from `GRID_DATA` in
-`scripts/data/world_grid.gd` instead. Either way the *places* - which cell is
+`scripts/core/world_grid.gd` instead. Either way the *places* - which cell is
 Dalhurst, which scene streams there, how big it is, whether it is WIP - come
 from `LOCATIONS` and `LOCATION_SCENES` in that same script, and never from the
 map. The map owns the land; `world_grid.gd` owns the places.

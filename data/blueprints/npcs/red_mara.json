@@ -6,7 +6,7 @@
   "quests": "Thieves Guild Rivalry quests, Potential recruitment as follower, Information for main questline",
   "sprite": {
     "type": "rogue",
-    "path": "res://assets/sprites/npcs/thief_female_red.png",
+    "path": "res://assets/sprites/legacy/npcs/thief_female_red.png",
     "h_frames": 5,
     "v_frames": 1,
     "pixel_size": 0.0384,

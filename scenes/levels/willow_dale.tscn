@@ -1,10 +1,10 @@
 [gd_scene load_steps=9 format=3 uid="uid://coiq8g1vpp7jq"]
 
 [ext_resource type="Script" uid="uid://wus2eng818nn" path="res://scripts/levels/willow_dale.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/world/zone_door_instance.tscn" id="4"]
-[ext_resource type="PackedScene" uid="uid://dusd3eb2bqx0y" path="res://scenes/levels/willow_dale_UPDATED.glb" id="6_1df61"]
+[ext_resource type="PackedScene" uid="uid://dusd3eb2bqx0y" path="res://assets/world/buildings/willow_dale_updated.glb" id="6_1df61"]
 [ext_resource type="Texture2D" uid="uid://cpil7cxqwjepn" path="res://assets/textures/environment/walls/monastary walls.png" id="6_floor"]
 
 [sub_resource type="Environment" id="Environment_willow"]

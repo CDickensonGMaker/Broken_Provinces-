@@ -122,8 +122,8 @@ func _spawn_fallen_hold() -> void:
 	enemies.name = "Enemies"
 	add_child(enemies)
 
-	var sprite_soldier: Texture2D = load("res://assets/sprites/enemies/goblins/goblin_sword.png")
-	var sprite_archer: Texture2D = load("res://assets/sprites/enemies/goblins/goblin_archer.png")
+	var sprite_soldier: Texture2D = load("res://assets/sprites/legacy/enemies/goblins/goblin_sword.png")
+	var sprite_archer: Texture2D = load("res://assets/sprites/legacy/enemies/goblins/goblin_archer.png")
 	if not sprite_soldier or not sprite_archer:
 		push_error("[Kazan-Dun Entrance] Goblin sprites failed to load; the fallen hold is empty")
 		return

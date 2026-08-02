@@ -2,7 +2,7 @@
     "id": "durn_shieldbearer",
     "display_name": "Durn Shieldbearer",
     "description": "A Kazan-Dun hearth-guard given leave to walk out of the mountain with the outsider who settled the succession. He does not talk about which side he wanted to win. He carries a tower shield, stands where he is told, and considers the arrangement a debt being paid down rather than a job.",
-    "sprite_path": "res://assets/sprites/npcs/dwarves/dwarf_2.png",
+    "sprite_path": "res://assets/sprites/legacy/npcs/dwarves/dwarf_2.png",
     "h_frames": 4,
     "v_frames": 1,
     "pixel_size": 0.0193,

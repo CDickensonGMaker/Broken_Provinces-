@@ -25,7 +25,7 @@ The project has **160+ unused parameter warnings** across core autoload and scri
 
 **Files with Most Issues (by frequency):**
 
-### 1. `scripts/autoload/audio_manager.gd` - **11 unused parameters**
+### 1. `scripts/core/audio_manager.gd` - **11 unused parameters**
 ```gdscript
 # Lines found with unused params:
 - func play_crafting_sound(_position: Vector3 = Vector3.ZERO) -> void:
@@ -40,7 +40,7 @@ The project has **160+ unused parameter warnings** across core autoload and scri
 
 ---
 
-### 2. `scripts/autoload/combat_manager.gd` - **2 unused parameters**
+### 2. `scripts/systems/combat/combat_manager.gd` - **2 unused parameters**
 ```gdscript
 # Line 47: Signal callback with unused parameter
 func _on_scene_load_started(_scene_path: String) -> void:
@@ -56,7 +56,7 @@ func _physics_process(_delta: float) -> void:
 
 ---
 
-### 3. `scripts/autoload/save_manager.gd` - **1 unused parameter**
+### 3. `scripts/core/save_manager.gd` - **1 unused parameter**
 ```gdscript
 # Line 81: Signal callback
 func _notification(what: int) -> void:
@@ -68,7 +68,7 @@ func _notification(what: int) -> void:
 
 ---
 
-### 4. `scripts/autoload/conversation_system.gd` - **Multiple unused parameters**
+### 4. `scripts/systems/dialogue/conversation_system.gd` - **Multiple unused parameters**
 **Example from file (need to verify exact lines)**
 
 ```gdscript
@@ -78,21 +78,21 @@ func _on_some_signal(unused_param: Type) -> void:
 ```
 
 **Files to Check:**
-- `scripts/autoload/bounty_manager.gd`
-- `scripts/autoload/cell_streamer.gd`
-- `scripts/autoload/companion_manager.gd`
-- `scripts/autoload/conversation_system.gd`
-- `scripts/autoload/duel_manager.gd`
-- `scripts/autoload/encounter_manager.gd`
-- `scripts/autoload/escort_manager.gd`
-- `scripts/autoload/faction_manager.gd`
-- `scripts/autoload/follower_manager.gd`
-- `scripts/autoload/player_gps.gd`
-- `scripts/autoload/quest_manager.gd`
-- `scripts/autoload/soulstone_economy.gd`
-- `scripts/autoload/stats_tracker.gd`
-- `scripts/autoload/takeover_manager.gd`
-- `scripts/autoload/tournament_manager.gd`
+- `scripts/systems/crime/bounty_manager.gd`
+- `scripts/world/streaming/cell_streamer.gd`
+- `scripts/characters/ai/companion_manager.gd`
+- `scripts/systems/dialogue/conversation_system.gd`
+- `scripts/systems/events/duel_manager.gd`
+- `scripts/systems/events/encounter_manager.gd`
+- `scripts/characters/ai/escort_manager.gd`
+- `scripts/systems/factions/faction_manager.gd`
+- `scripts/characters/ai/follower_manager.gd`
+- `scripts/world/streaming/player_gps.gd`
+- `scripts/systems/quests/quest_manager.gd`
+- `scripts/systems/economy/soulstone_economy.gd`
+- `scripts/core/stats_tracker.gd`
+- `scripts/systems/factions/takeover_manager.gd`
+- `scripts/systems/events/tournament_manager.gd`
 
 ---
 
@@ -102,7 +102,7 @@ func _on_some_signal(unused_param: Type) -> void:
 
 ### Files Affected: 10+ files
 
-#### 1. `scripts/autoload/combat_manager.gd` - **3 instances**
+#### 1. `scripts/systems/combat/combat_manager.gd` - **3 instances**
 ```gdscript
 # Line 118: ALREADY HAS @warning_ignore - OK
 var damage_multiplier: float = 1.0 + (attacker_grit / 10.0) + (attacker_melee_skill / 20.0)
@@ -118,7 +118,7 @@ var falloff: float = 1.0 - ((distance - weapon.max_range * 0.75) / (weapon.max_r
 
 ---
 
-#### 2. `scripts/combat/spell_caster.gd` - **4 instances (NEEDS FIXES)**
+#### 2. `scripts/systems/combat/spell_caster.gd` - **4 instances (NEEDS FIXES)**
 ```gdscript
 # Lines 75-78: ALREADY ANNOTATED ✅
 @warning_ignore("integer_division")
@@ -137,7 +137,7 @@ var stamina_cost := total_cost / 3
 
 ---
 
-#### 3. `scripts/components/billboard_sprite.gd` - **1 instance**
+#### 3. `scripts/characters/visuals/billboard_sprite.gd` - **1 instance**
 ```gdscript
 # Line 237:
 var direction_index := int(round((angle + PI) / (TAU / direction_count))) % direction_count
@@ -150,7 +150,7 @@ var direction_index: int = int(round((angle + PI) / (TAU / float(direction_count
 
 ---
 
-#### 4. `scripts/data/world_grid.gd` - **Multiple instances**
+#### 4. `scripts/core/world_grid.gd` - **Multiple instances**
 **Example pattern:**
 ```gdscript
 # Check grep results for exact lines
@@ -160,7 +160,7 @@ var direction_index: int = int(round((angle + PI) / (TAU / float(direction_count
 
 ---
 
-#### 5. `scripts/generation/wilderness_room.gd` - **Multiple instances**
+#### 5. `scripts/generation/wilderness/wilderness_room.gd` - **Multiple instances**
 **Pattern:** Spawning, positioning, and random number generation
 ```gdscript
 # Likely pattern:
@@ -185,9 +185,9 @@ func process_quest(quest: Quest) -> void:
 ```
 
 **Files to Check:**
-- `scripts/autoload/quest_manager.gd` - Quest class definitions and processing
-- `scripts/combat/spell_caster.gd` - spell variable shadowing
-- `scripts/generation/wilderness_room.gd` - rng, textures state shadowing
+- `scripts/systems/quests/quest_manager.gd` - Quest class definitions and processing
+- `scripts/systems/combat/spell_caster.gd` - spell variable shadowing
+- `scripts/generation/wilderness/wilderness_room.gd` - rng, textures state shadowing
 
 **Status:** ⚠️ NEEDS VERIFICATION with specific line numbers
 
@@ -215,7 +215,7 @@ obj.some_static_method()  # Should be: SomeClass.some_static_method()
 
 ### 🔴 CRITICAL (Do First) - Integer Division Precision
 
-1. **`scripts/components/billboard_sprite.gd` (Line 237)**
+1. **`scripts/characters/visuals/billboard_sprite.gd` (Line 237)**
    - Add float() cast for direction_count division
    - Time to fix: 2 minutes
 
@@ -231,9 +231,9 @@ obj.some_static_method()  # Should be: SomeClass.some_static_method()
    - Time to fix: 30-45 minutes (scan + fix any missed)
 
 4. **Core autoload files to verify:**
-   - `scripts/autoload/combat_manager.gd` - ✅ Looks clean
-   - `scripts/autoload/audio_manager.gd` - ✅ Looks clean
-   - `scripts/autoload/save_manager.gd` - ✅ Looks clean
+   - `scripts/systems/combat/combat_manager.gd` - ✅ Looks clean
+   - `scripts/core/audio_manager.gd` - ✅ Looks clean
+   - `scripts/core/save_manager.gd` - ✅ Looks clean
    - Others in the list above
 
 ### 🟡 MEDIUM - Variable Shadowing
@@ -257,10 +257,10 @@ obj.some_static_method()  # Should be: SomeClass.some_static_method()
 
 | Rank | File | Issues | Est. Time |
 |------|------|--------|-----------|
-| 1 | `scripts/generation/wilderness_room.gd` | Int division, shadowing, complexity | 30-40 min |
-| 2 | `scripts/autoload/quest_manager.gd` | Shadowing, potential unused params | 20-30 min |
-| 3 | `scripts/components/billboard_sprite.gd` | Int division (1 fix) | 5 min |
-| 4 | `scripts/data/world_grid.gd` | Int division verification | 10-15 min |
+| 1 | `scripts/generation/wilderness/wilderness_room.gd` | Int division, shadowing, complexity | 30-40 min |
+| 2 | `scripts/systems/quests/quest_manager.gd` | Shadowing, potential unused params | 20-30 min |
+| 3 | `scripts/characters/visuals/billboard_sprite.gd` | Int division (1 fix) | 5 min |
+| 4 | `scripts/core/world_grid.gd` | Int division verification | 10-15 min |
 | 5 | All other autoloads | Mostly already fixed | 15-20 min total |
 
 **Total Estimated Time:** 1.5-2.5 hours for comprehensive fixes

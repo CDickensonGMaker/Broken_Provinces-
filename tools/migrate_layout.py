@@ -27,7 +27,11 @@ DELETES = os.path.join(ROOT, "tools", "layout_deletes.tsv")
 
 SIDECARS = (".uid", ".import")
 
-SKIP_DIRS = {".git", ".godot", ".beads", "addons", "node_modules", "__pycache__"}
+# addons/ is never MOVED - plugin paths are fragile and already work - but its
+# scripts reach into scripts/, data/, assets/ and scenes/ and must be rewritten
+# like anything else. So it is skipped by the mover and scanned by the remapper.
+SKIP_DIRS = {".git", ".godot", ".beads", "node_modules", "__pycache__"}
+MOVE_SKIP_DIRS = SKIP_DIRS | {"addons"}
 
 # Files whose text carries res:// paths. .import is included because its
 # source_file= line names the asset, and a stale one forces a reimport that
@@ -37,6 +41,19 @@ TEXT_EXT = {
     ".py", ".godot", ".gdshader", ".sh", ".txt",
 }
 
+# Records of what the tree used to be. Rewriting these turns the map into a
+# tautology - layout_rules.json would say new -> new, and the design doc's
+# "Was | Is" table would say "Is | Is" - so the one artefact that explains the
+# move would be the one artefact the move destroyed.
+NEVER_REWRITE = {
+    "tools/layout_rules.json",
+    "tools/layout_moves.tsv",
+    "tools/layout_deletes.tsv",
+    "tools/fixtures/broken_paths_baseline.txt",
+    "docs/audits/boot_sweep_baseline.txt",
+    "docs/design/PROJECT_LAYOUT.md",
+}
+
 
 def load_rules():
     with open(RULES, encoding="utf-8") as f:
@@ -44,15 +61,16 @@ def load_rules():
     return [r for r in doc["rules"] if r["k"] != "c"]
 
 
-def walk_files():
+def walk_files(skip=None):
     """Every file in the tree, repo-relative, forward slashes."""
+    skip = SKIP_DIRS if skip is None else skip
     out = []
     for dirpath, dirnames, filenames in os.walk(ROOT):
-        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
+        dirnames[:] = [d for d in dirnames if d not in skip]
         for fn in filenames:
             full = os.path.join(dirpath, fn)
             rel = os.path.relpath(full, ROOT).replace("\\", "/")
-            if rel.split("/")[0] in SKIP_DIRS:
+            if rel.split("/")[0] in skip:
                 continue
             out.append(rel)
     return sorted(out)
@@ -72,7 +90,7 @@ def base_of(rel):
 
 def plan():
     rules = load_rules()
-    files = walk_files()
+    files = walk_files(MOVE_SKIP_DIRS)
 
     moves = []      # (old, new)
     deletes = []    # (path, why)
@@ -165,7 +183,7 @@ def move():
 
     # Directories the moves emptied.
     for dirpath, dirnames, filenames in os.walk(ROOT, topdown=False):
-        if any(part in SKIP_DIRS for part in dirpath.replace("\\", "/").split("/")):
+        if any(part in MOVE_SKIP_DIRS for part in dirpath.replace("\\", "/").split("/")):
             continue
         if dirpath == ROOT:
             continue
@@ -218,7 +236,7 @@ def _map(p, exact, pinned, prefixes):
     return p + tail
 
 
-def remap():
+def remap(scope=None):
     with open(MOVES, encoding="utf-8") as f:
         pairs = [line.rstrip("\n").split("\t") for line in f if line.strip()]
 
@@ -230,7 +248,7 @@ def remap():
     # Prose names paths without the scheme - CLAUDE.md's tables, the design
     # docs, the shell scripts. Only whole file paths are rewritten there, never
     # directory prefixes, because "scripts/world/" in a sentence is ambiguous
-    # in a way "scripts/world/chest.gd" is not.
+    # in a way "scripts/world/interactables/chest.gd" is not.
     bare_pairs = [(o, n) for o, n in pairs
                   if "/" in o and "." in os.path.basename(o)]
     bare_pairs.sort(key=lambda p: len(p[0]), reverse=True)
@@ -253,6 +271,10 @@ def remap():
         return bare_map[m.group()]
 
     for rel in walk_files():
+        if rel in NEVER_REWRITE:
+            continue
+        if scope is not None and not rel.startswith(scope):
+            continue
         ext = os.path.splitext(rel)[1].lower()
         if rel == "project.godot":
             ext = ".godot"
@@ -368,4 +390,7 @@ def preflight():
 
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "plan"
-    {"plan": plan, "move": move, "remap": remap, "preflight": preflight}[cmd]()
+    if cmd == "remap":
+        remap(sys.argv[2] if len(sys.argv) > 2 else None)
+    else:
+        {"plan": plan, "move": move, "preflight": preflight}[cmd]()

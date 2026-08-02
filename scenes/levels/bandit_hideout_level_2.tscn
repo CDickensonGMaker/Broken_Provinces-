@@ -1,12 +1,12 @@
 [gd_scene load_steps=34 format=3 uid="uid://bieabafpgvp7l"]
 
 [ext_resource type="Script" uid="uid://qhpaq0818vpc" path="res://scripts/levels/bandit_hideout_level_2.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
-[ext_resource type="Texture2D" uid="uid://dilhhkx3xdfns" path="res://assets/sprites/props/dungeon/hanging_gore_totem1.png" id="5"]
-[ext_resource type="Texture2D" uid="uid://bm7yidtuy4wyj" path="res://assets/sprites/props/dungeon/hanging_gore_totem2.png" id="6"]
-[ext_resource type="Texture2D" uid="uid://b3o2chjxaj4k" path="res://assets/sprites/props/dungeon/hanging_gore_totem3.png" id="7"]
-[ext_resource type="Texture2D" uid="uid://1xjlkpui02ro" path="res://assets/sprites/props/dungeon/gore_totem2.png" id="7_x7dke"]
+[ext_resource type="Texture2D" uid="uid://dilhhkx3xdfns" path="res://assets/sprites/legacy/props/dungeon/hanging_gore_totem1.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://bm7yidtuy4wyj" path="res://assets/sprites/legacy/props/dungeon/hanging_gore_totem2.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://b3o2chjxaj4k" path="res://assets/sprites/legacy/props/dungeon/hanging_gore_totem3.png" id="7"]
+[ext_resource type="Texture2D" uid="uid://1xjlkpui02ro" path="res://assets/sprites/legacy/props/dungeon/gore_totem2.png" id="7_x7dke"]
 [ext_resource type="Texture2D" uid="uid://bcblmlpu6wmf4" path="res://assets/textures/environment/floors/monastary_floor_outside1.png" id="8_8ijyh"]
 [ext_resource type="Texture2D" uid="uid://c6kh0sjkw0gys" path="res://assets/textures/environment/floors/stonefloor_3.png" id="12_8d3as"]
 [ext_resource type="Material" path="res://assets/materials/dungeon/woodenfloor_mat.tres" id="14_rsfg8"]
@@ -1714,7 +1714,7 @@ metadata/boss_name = "BanditLeader"
 [node name="DarkGeneralBoss" type="Marker3D" parent="EnemySpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -27)
 metadata/enemy_data = "res://data/enemies/dark_general.tres"
-metadata/sprite_path = "res://assets/sprites/enemies/dark_general_idle.png"
+metadata/sprite_path = "res://assets/sprites/legacy/enemies/dark_general_idle.png"
 metadata/h_frames = 4
 metadata/v_frames = 1
 metadata/patrol_radius = 6

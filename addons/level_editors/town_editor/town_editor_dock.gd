@@ -10,8 +10,8 @@ const ModelBrowser = preload("res://addons/level_editors/shared/model_browser.gd
 const LevelEditorData = preload("res://addons/level_editors/shared/editor_data.gd")
 
 ## Path to custom building models - GLB/FBX files named by building ID (e.g., cottage.glb)
-const BUILDING_MODELS_PATH := "res://assets/models/buildings/"
-const PROP_MODELS_PATH := "res://assets/models/props/"
+const BUILDING_MODELS_PATH := "res://assets/world/buildings/"
+const PROP_MODELS_PATH := "res://assets/world/props/"
 
 
 ## Try to find a model file with various naming conventions and formats
@@ -1911,7 +1911,7 @@ func _write_schedules() -> void:
 		_set_status("This layout has no id. Give the town a name or load it from the Locations dropdown before writing schedules.")
 		return
 
-	var world_grid_script: Script = load("res://scripts/data/world_grid.gd")
+	var world_grid_script: Script = load("res://scripts/core/world_grid.gd")
 	if world_grid_script == null:
 		_set_status("ERROR: could not load world_grid.gd")
 		return
@@ -3735,7 +3735,7 @@ func export_scene(path: String) -> void:
 	root.name = level_data.level_name if level_data.level_name else "Town"
 
 	# Attach TownSpawner script to root
-	var spawner_script = load("res://scripts/levels/town_spawner.gd")
+	var spawner_script = load("res://scripts/generation/towns/town_spawner.gd")
 	if spawner_script:
 		root.set_script(spawner_script)
 		root.set("zone_id", level_data.level_id if level_data.level_id else level_data.level_name.to_snake_case())
@@ -4099,7 +4099,7 @@ func _populate_locations_dropdown() -> void:
 	locations_dropdown.set_item_metadata(0, {})
 
 	# Get settlements from WorldGrid LOCATIONS constant
-	var WorldGridScript := load("res://scripts/data/world_grid.gd")
+	var WorldGridScript := load("res://scripts/core/world_grid.gd")
 	if not WorldGridScript:
 		push_error("[TownEditor] Could not load WorldGrid script")
 		return

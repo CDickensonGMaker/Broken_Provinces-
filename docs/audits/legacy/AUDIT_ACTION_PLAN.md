@@ -9,7 +9,7 @@ These enemies WILL NOT RENDER without sprite_path:
 **File 1:** `C:\Users\caleb\CatacombsOfGore\data\enemies\boar.tres`
 ```
 Add after line 80 (before current icon_path):
-sprite_path = "res://assets/sprites/enemies/boar.png"
+sprite_path = "res://assets/sprites/legacy/enemies/boar.png"
 attack_sprite_path = ""
 sprite_hframes = 1
 sprite_vframes = 1
@@ -19,7 +19,7 @@ sprite_pixel_size = 0.03
 **File 2:** `C:\Users\caleb\CatacombsOfGore\data\enemies\deer.tres`
 ```
 Add after line 80:
-sprite_path = "res://assets/sprites/enemies/deer.png"
+sprite_path = "res://assets/sprites/legacy/enemies/deer.png"
 attack_sprite_path = ""
 sprite_hframes = 1
 sprite_vframes = 1
@@ -29,7 +29,7 @@ sprite_pixel_size = 0.03
 **File 3:** `C:\Users\caleb\CatacombsOfGore\data\enemies\tenger_archer.tres`
 ```
 Add after line 80:
-sprite_path = "res://assets/sprites/enemies/tengers/tenger_archer.png"
+sprite_path = "res://assets/sprites/legacy/enemies/tengers/tenger_archer.png"
 attack_sprite_path = ""
 sprite_hframes = 4
 sprite_vframes = 2
@@ -39,7 +39,7 @@ sprite_pixel_size = 0.025
 **File 4:** `C:\Users\caleb\CatacombsOfGore\data\enemies\tenger_shaman.tres`
 ```
 Add after line 80:
-sprite_path = "res://assets/sprites/enemies/tengers/tenger_shaman.png"
+sprite_path = "res://assets/sprites/legacy/enemies/tengers/tenger_shaman.png"
 attack_sprite_path = ""
 sprite_hframes = 4
 sprite_vframes = 2
@@ -49,7 +49,7 @@ sprite_pixel_size = 0.025
 **File 5:** `C:\Users\caleb\CatacombsOfGore\data\enemies\tenger_warlord.tres`
 ```
 Add after line 80:
-sprite_path = "res://assets/sprites/enemies/tengers/tenger_warlord.png"
+sprite_path = "res://assets/sprites/legacy/enemies/tengers/tenger_warlord.png"
 attack_sprite_path = ""
 sprite_hframes = 4
 sprite_vframes = 2
@@ -59,7 +59,7 @@ sprite_pixel_size = 0.025
 **File 6:** `C:\Users\caleb\CatacombsOfGore\data\enemies\tenger_raider.tres`
 ```
 Add after line 80:
-sprite_path = "res://assets/sprites/enemies/tengers/tenger_raider.png"
+sprite_path = "res://assets/sprites/legacy/enemies/tengers/tenger_raider.png"
 attack_sprite_path = ""
 sprite_hframes = 4
 sprite_vframes = 2
@@ -69,7 +69,7 @@ sprite_pixel_size = 0.025
 **File 7:** `C:\Users\caleb\CatacombsOfGore\data\enemies\tenger_warrior.tres`
 ```
 Add after line 80:
-sprite_path = "res://assets/sprites/enemies/tengers/tenger_warrior.png"
+sprite_path = "res://assets/sprites/legacy/enemies/tengers/tenger_warrior.png"
 attack_sprite_path = ""
 sprite_hframes = 4
 sprite_vframes = 2
@@ -112,25 +112,25 @@ These files need icon_path for the Codex to display properly:
 
 **Files to update (add `icon_path` field after `scale` or at end):**
 
-1. `boar.tres` - Add: `icon_path = "res://assets/sprites/enemies/boar.png"`
-2. `deer.tres` - Add: `icon_path = "res://assets/sprites/enemies/deer.png"`
-3. `goblin_soldier.tres` - Add: `icon_path = "res://assets/sprites/enemies/goblins/goblin_sword.png"`
-4. `goblin_archer.tres` - Add: `icon_path = "res://assets/sprites/enemies/goblins/goblin_archer.png"`
-5. `goblin_leader.tres` - Add: `icon_path = "res://assets/sprites/enemies/goblins/goblin_leader.png"`
-6. `goblin_mage.tres` - Add: `icon_path = "res://assets/sprites/enemies/goblins/goblin_mage.png"`
-7. `goblin_warboss.tres` - Add: `icon_path = "res://assets/sprites/enemies/goblins/goblin_warboss.png"`
-8. `skeleton_warrior.tres` - Add: `icon_path = "res://assets/sprites/enemies/undead/skeleton.png"`
-9. `skeleton_shade.tres` - Add: `icon_path = "res://assets/sprites/enemies/undead/skeleton_shade.png"`
-10. `tenger_archer.tres` - Add: `icon_path = "res://assets/sprites/enemies/tengers/tenger_archer.png"`
-11. `tenger_cavalry.tres` - Add: `icon_path = "res://assets/sprites/enemies/tengers/tenger_cavalry.png"`
-12. `tenger_infantry.tres` - Add: `icon_path = "res://assets/sprites/enemies/tengers/tenger_infantry.png"`
-13. `tenger_raider.tres` - Add: `icon_path = "res://assets/sprites/enemies/tengers/tenger_raider.png"`
-14. `tenger_berserker.tres` - Add: `icon_path = "res://assets/sprites/enemies/tengers/tenger_berserker.png"`
-15. `tenger_shaman.tres` - Add: `icon_path = "res://assets/sprites/enemies/tengers/tenger_shaman.png"`
-16. `tenger_warbanner.tres` - Add: `icon_path = "res://assets/sprites/enemies/tengers/tenger_warbanner.png"`
-17. `tenger_warlord.tres` - Add: `icon_path = "res://assets/sprites/enemies/tengers/tenger_warlord.png"`
-18. `tenger_warrior.tres` - Add: `icon_path = "res://assets/sprites/enemies/tengers/tenger_warrior.png"`
-19. `vampire_lord.tres` - Add: `icon_path = "res://assets/sprites/enemies/vampire_lord.png"`
+1. `boar.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/boar.png"`
+2. `deer.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/deer.png"`
+3. `goblin_soldier.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/goblins/goblin_sword.png"`
+4. `goblin_archer.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/goblins/goblin_archer.png"`
+5. `goblin_leader.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/goblins/goblin_leader.png"`
+6. `goblin_mage.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/goblins/goblin_mage.png"`
+7. `goblin_warboss.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/goblins/goblin_warboss.png"`
+8. `skeleton_warrior.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/undead/skeleton.png"`
+9. `skeleton_shade.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/undead/skeleton_shade.png"`
+10. `tenger_archer.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/tengers/tenger_archer.png"`
+11. `tenger_cavalry.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/tengers/tenger_cavalry.png"`
+12. `tenger_infantry.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/tengers/tenger_infantry.png"`
+13. `tenger_raider.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/tengers/tenger_raider.png"`
+14. `tenger_berserker.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/tengers/tenger_berserker.png"`
+15. `tenger_shaman.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/tengers/tenger_shaman.png"`
+16. `tenger_warbanner.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/tengers/tenger_warbanner.png"`
+17. `tenger_warlord.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/tengers/tenger_warlord.png"`
+18. `tenger_warrior.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/tengers/tenger_warrior.png"`
+19. `vampire_lord.tres` - Add: `icon_path = "res://assets/sprites/legacy/enemies/vampire_lord.png"`
 
 ---
 

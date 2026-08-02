@@ -19,7 +19,7 @@ feet sample the flat skin patch of the SAME cell, so one uv1_offset slides both
 and a face/skin mismatch is impossible.
 
 Run: blender -b --factory-startup --python tools/citizens/04_build_masters.py
-Out: assets/models/citizens/src/_stage04_masters.blend
+Out: assets/characters/citizens/src/_stage04_masters.blend
 """
 import bmesh
 import bpy

@@ -31,7 +31,7 @@
 
 ## 2. Wired vs Dead Feature Matrix
 
-Audited: `scripts/autoload/quest_manager.gd` (2,577 ln), `faction_manager.gd` (750 ln), `dialogue_manager.gd`, `dialogue_data.gd`, `dialogue_loader.gd`, `scripts/ui/humanoid_dialogue.gd`.
+Audited: `scripts/systems/quests/quest_manager.gd` (2,577 ln), `faction_manager.gd` (750 ln), `dialogue_manager.gd`, `dialogue_data.gd`, `dialogue_loader.gd`, `scripts/ui/humanoid_dialogue.gd`.
 
 | Feature | Engine Status | Content Status | Verdict |
 |---|---|---|---|

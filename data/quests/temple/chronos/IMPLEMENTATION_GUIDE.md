@@ -108,7 +108,7 @@ var priest := CivilianNPC.spawn_civilian(
     Vector3(305, 0, -195),  # Near temple/shrine area
     "high_chronist_thornfield",
     "High Chronist",
-    preload("res://assets/sprites/npcs/priest_male.png"),  # Use priest sprite
+    preload("res://assets/sprites/legacy/npcs/priest_male.png"),  # Use priest sprite
     5, 1, 0.0384
 )
 priest.archetype = "priest"
@@ -151,7 +151,7 @@ var seer := CivilianNPC.spawn_civilian(
     Vector3(-685, 0, 395),  # Town square
     "false_prophet_millbrook",
     "Traveling Seer",
-    preload("res://assets/sprites/npcs/wizard_old.png"),  # Mystic appearance
+    preload("res://assets/sprites/legacy/npcs/wizard_old.png"),  # Mystic appearance
     5, 1, 0.0384
 )
 seer.archetype = "civilian"
@@ -477,7 +477,7 @@ var guardian1 := EnemyBase.spawn_billboard_enemy(
     self,
     Vector3(-490, 0, -475),
     "res://data/enemies/temporal_guardian.tres",
-    preload("res://assets/sprites/enemies/temporal_guardian.png"),
+    preload("res://assets/sprites/legacy/enemies/temporal_guardian.png"),
     4, 4
 )
 

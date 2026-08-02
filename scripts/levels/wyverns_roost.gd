@@ -267,11 +267,11 @@ func _spawn_wyvern(pos: Vector3) -> void:
 		push_warning("[WyvernsRoost] Wyvern enemy data not found, using wolf as fallback")
 
 	# Try to load wyvern sprite, fall back to wolf if not available
-	var sprite: Texture2D = load("res://assets/sprites/enemies/beasts/wyvern.png")
+	var sprite: Texture2D = load("res://assets/sprites/legacy/enemies/beasts/wyvern.png")
 	if not sprite:
-		sprite = load("res://assets/sprites/enemies/beasts/wolf.png")
+		sprite = load("res://assets/sprites/legacy/enemies/beasts/wolf.png")
 	if not sprite:
-		sprite = load("res://assets/sprites/enemies/undead/skeleton_shade_walking.png")
+		sprite = load("res://assets/sprites/legacy/enemies/undead/skeleton_shade_walking.png")
 	if not sprite:
 		push_warning("[WyvernsRoost] Missing wyvern sprite")
 		return

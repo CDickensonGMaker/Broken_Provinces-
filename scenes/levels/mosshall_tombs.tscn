@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cx2d6xlewb51v"]
 
 [ext_resource type="Script" uid="uid://b4vd4ipa71ar1" path="res://scripts/levels/mosshall_tombs.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
 
 [node name="MosshallTombs" type="Node3D"]

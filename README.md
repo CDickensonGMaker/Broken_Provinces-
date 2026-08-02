@@ -1,6 +1,6 @@
 # Broken Provinces: The Empty Throne
 
-A PS1-style open world action RPG built in Godot 4.5, inspired by classic dark fantasy games. (Formerly developed under the working title *Catacombs of Gore*.)
+A PS1-style open world action RPG built in Godot 4.7, inspired by classic dark fantasy games. (Formerly developed under the working title *Catacombs of Gore*.)
 
 ## Game Overview
 
@@ -18,7 +18,7 @@ A PS1-style open world action RPG built in Godot 4.5, inspired by classic dark f
 
 ## Technical Details
 
-- **Engine**: Godot 4.5
+- **Engine**: Godot 4.7
 - **Language**: GDScript (strict typing)
 - **Rendering**: Forward+ with custom PS1 shaders
 - **Resolution**: 640x480 (window scaled to 1280x960)
@@ -27,30 +27,42 @@ A PS1-style open world action RPG built in Godot 4.5, inspired by classic dark f
 
 ```
 CatacombsOfGore/
-├── assets/           # Sprites, shaders, textures
-├── data/             # Game data resources (.tres files)
-│   ├── armor/        # Armor definitions
-│   ├── enemies/      # Enemy data
-│   ├── items/        # Item definitions
-│   ├── quests/       # Quest data (JSON)
-│   ├── spells/       # Magic spells
-│   └── weapons/      # Weapon definitions
-├── docs/             # Design documentation
-├── scenes/           # Scene files (.tscn)
-│   ├── combat/       # Combat-related scenes
-│   ├── levels/       # Level scenes
-│   ├── player/       # Player scenes
-│   └── ui/           # UI scenes
-└── scripts/          # GDScript files
-    ├── autoload/     # Singleton managers
-    ├── combat/       # Combat systems
-    ├── data/         # Data structures
-    ├── dialogue/     # Dialogue resources
-    ├── npcs/         # NPC scripts
-    ├── player/       # Player scripts
-    ├── ui/           # UI scripts
-    └── world/        # World/level scripts
+├── assets/           # Art, by type
+│   ├── characters/   # Citizen models
+│   ├── world/        # Buildings, caves, props, terrain, nature
+│   ├── weapons/      # Weapon models
+│   ├── audio/        # music/ ambience/ sfx/ generated/
+│   ├── textures/     # materials/ shaders/ ui/
+│   └── sprites/legacy/   # Billboard sprites - being phased out
+├── data/             # Game content (.tres and JSON)
+│   ├── quests/  items/  weapons/  armor/  enemies/  npcs/
+│   ├── dialogue/     # trees/ resources/ pools/ - one tree, was three
+│   └── towns/        # Town Editor layouts
+├── docs/             # adr/ gdd/ design/ audits/ lore/
+├── scenes/
+│   ├── levels/       # The 51 hand-authored places
+│   ├── characters/   # Player, enemy base, NPC instances
+│   ├── world/        # Interactables, stations, structures
+│   ├── effects/      # Projectiles and VFX
+│   ├── generation/   # Caves, dungeons, rooms, wilderness
+│   └── ui/           # Screens
+├── scripts/
+│   ├── core/         # Services every domain depends on
+│   ├── world/        # streaming/ terrain/ interactables/ props/
+│   ├── characters/   # player/ npcs/ enemies/ visuals/ ai/
+│   ├── systems/      # quests/ factions/ combat/ economy/ dialogue/
+│   │                 # crime/ travel/ events/ puzzles/
+│   ├── generation/   # towns/ dungeons/ wilderness/ rooms/
+│   ├── levels/       # One script per hand-authored place
+│   ├── ui/           # Screens, panels, HUD
+│   └── data/         # Resource subclasses
+├── tools/            # Headless gates - run_all_checks.ps1 is the session gate
+├── dev/              # Hand-run harnesses and editors
+└── addons/           # Editor plugins
 ```
+
+The layout, the reasoning behind it, and the complete old -> new map are in
+[docs/design/PROJECT_LAYOUT.md](docs/design/PROJECT_LAYOUT.md).
 
 ## Core Systems
 

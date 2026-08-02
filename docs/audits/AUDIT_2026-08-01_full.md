@@ -18,7 +18,7 @@
 
 **Concerns:**
 - **44 autoload singletons** — manager-sprawl (GameManager, QuestManager, CrimeManager, BountyManager, MoralityManager, FactionManager, TournamentManager, DuelManager, EscortManager, CompanionManager, GuildRankManager, WeatherManager, SoulstoneEconomy, SpellCreator…). Init-order and cross-coupling risk; same divergent-parallel-systems blindspot RECONgame has.
-- **God scripts:** `scripts/ui/hud.gd` 4,086 lines; `scripts/generation/wilderness_room.gd` 3,332; `scripts/enemies/enemy_base.gd` 3,169 (one base class carries all 64 enemies + 10-state AI machine); `quest_manager.gd` 2,577; `conversation_system.gd` 2,503; `boat_voyage.gd` 2,239; `game_menu.gd` 2,132.
+- **God scripts:** `scripts/ui/hud.gd` 4,086 lines; `scripts/generation/wilderness/wilderness_room.gd` 3,332; `scripts/characters/enemies/enemy_base.gd` 3,169 (one base class carries all 64 enemies + 10-state AI machine); `quest_manager.gd` 2,577; `conversation_system.gd` 2,503; `boat_voyage.gd` 2,239; `game_menu.gd` 2,132.
 - **Two dialogue systems in parallel:** `dialogue_manager.gd` (choice-tree) + `conversation_system.gd` (topic-based Daggerfall-style), with parallel data dirs `data/dialogue/` (32), `data/dialogues/` (16), `data/conversation_pools/` (11). Deliberately layered but the War Room synthesis itself flags dead tiers ("archetype/unique response tiers (dead registration API)").
 - **Debug noise:** 335 `print(` calls — incl. ladder bounds printed on every climb start (`player_controller.gd:1099`).
 - **TODO/FIXME density remarkably low:** 33 across 144k lines. `archive/orphaned_scripts/` shows dead code was moved out, not left in.
@@ -36,7 +36,7 @@
 - **2.7 GB total; 764 MB assets/, 1.1 GB exports/.**
 - **Biggest problem: `assets/models/caves/` = 479 MB** — ~26 cave GLBs at ~18 MB each = 63% of all assets in one kit; almost certainly unoptimized. `assets/audio` 111 MB, `buildings` 72 MB, `textures` 42 MB, `sprites` 32 MB.
 - **Root junk:** `data.zip`, `scripts (2).zip`, `testnew_dungeon.json`, `Sprite folders grab bag/` (11 MB), `Gameplay footage/`, ~11 machine-generated audit reports (`AUDIT_*.md`, `LINTER_REPORT.md`, `WARNINGS_*.txt`) untracked. 170+ MB exe/pck in root + 1.1 GB `exports/`.
-- Uncommitted `.blend`/`.blend1` source art in-repo without LFS (`assets/models/dwarven/bridge/kazans_span_bridge.blend`).
+- Uncommitted `.blend`/`.blend1` source art in-repo without LFS (`assets/world/dwarven/bridge/kazans_span_bridge.blend`).
 
 ## 5. Git state
 
@@ -53,11 +53,11 @@
 
 ## 7. Strengths worth carrying forward
 
-1. **Ladder system (confirmed gold-standard):** `scripts/world/ladder.gd` (148 lines) + `player_controller.gd:1076-1150+`. Self-contained Node3D discovers `ladder_bottom`/`ladder_top`/`climb_trigger_zone` markers by name convention, auto-builds its own Area3D trigger, talks to player via duck-typed `has_method()` calls — zero hard coupling; artists drop named markers in the GLB. Direct ancestor of RECONgame's marker contracts. Ruling stands: **port, never rewrite.**
+1. **Ladder system (confirmed gold-standard):** `scripts/world/interactables/ladder.gd` (148 lines) + `player_controller.gd:1076-1150+`. Self-contained Node3D discovers `ladder_bottom`/`ladder_top`/`climb_trigger_zone` markers by name convention, auto-builds its own Area3D trigger, talks to player via duck-typed `has_method()` calls — zero hard coupling; artists drop named markers in the GLB. Direct ancestor of RECONgame's marker contracts. Ruling stands: **port, never rewrite.**
 2. **Strict typing at scale** — 98%+ across 144k lines proves the discipline scales.
 3. **Data-driven content** — enemies/items/spells as .tres, quests as JSON, per-town bounty templates.
 4. **ADR + GDD + War Room paper trail** — the post-alpha decree is a model of scope-cutting with named sacrifices.
-5. **In-editor tooling** — `addons/dungeon_editor`, `level_editors`, `world_forge`, `dev/zoo/zoo_registry.gd` (1,756-line creature zoo), `dev/unit_viewer/` — the "every rig needs an exercising probe" instinct predates RECONgame.
+5. **In-editor tooling** — `addons/dungeon_editor`, `level_editors`, `world_forge`, `dev/editors/actor_zoo/zoo_registry.gd` (1,756-line creature zoo), `dev/unit_viewer/` — the "every rig needs an exercising probe" instinct predates RECONgame.
 6. **Archive discipline** — dead scripts/assets moved to `archive/`, not rotting in place.
 
 ## 8. Top improvements, prioritized

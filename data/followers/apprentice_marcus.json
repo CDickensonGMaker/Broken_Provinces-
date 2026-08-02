@@ -2,7 +2,7 @@
     "id": "apprentice_marcus",
     "display_name": "Marcus",
     "description": "A young wizard's apprentice you rescued from a crystal prison in Willow Dale.",
-    "sprite_path": "res://assets/sprites/npcs/civilians/wizard_civilian.png",
+    "sprite_path": "res://assets/sprites/legacy/npcs/civilians/wizard_civilian.png",
     "h_frames": 1,
     "v_frames": 1,
     "pixel_size": 0.0256,

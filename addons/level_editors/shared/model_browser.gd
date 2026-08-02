@@ -6,7 +6,7 @@ extends Control
 signal model_selected(path: String)
 
 const SUPPORTED_EXTENSIONS: Array[String] = ["glb", "gltf", "tscn", "obj"]
-const MODELS_ROOT: String = "res://assets/models"
+const MODELS_ROOT: String = "res://assets/world"
 const THUMBNAIL_SIZE: Vector2 = Vector2(64, 64)
 
 var model_list: ItemList

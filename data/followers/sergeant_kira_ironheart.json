@@ -2,7 +2,7 @@
     "id": "sergeant_kira_ironheart",
     "display_name": "Sergeant Kira Ironheart",
     "description": "A disciplined soldier of the Iron Company. Master of polearms and defensive tactics, she leads by example.",
-    "sprite_path": "res://assets/sprites/npcs/combat/female_gladiator1.png",
+    "sprite_path": "res://assets/sprites/legacy/npcs/combat/female_gladiator1.png",
     "h_frames": 1,
     "v_frames": 1,
     "pixel_size": 0.0300,

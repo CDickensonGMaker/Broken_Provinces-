@@ -135,9 +135,9 @@ drop_table = {
 }
 xp_reward = 650
 scene_path = ""
-icon_path = "res://assets/sprites/enemies/beasts/spider.png"
+icon_path = "res://assets/sprites/legacy/enemies/beasts/spider.png"
 scale = 2.0
-sprite_path = "res://assets/sprites/enemies/beasts/spider.png"
+sprite_path = "res://assets/sprites/legacy/enemies/beasts/spider.png"
 attack_sprite_path = ""
 sprite_hframes = 1
 sprite_vframes = 1

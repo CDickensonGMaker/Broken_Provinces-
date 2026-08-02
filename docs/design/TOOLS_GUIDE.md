@@ -61,7 +61,7 @@ roads run, and (rarely) forcing a biome the climate would not have chosen.
 **The one thing to understand.** *The map owns the land. `world_grid.gd` owns
 the places.* Painting a town symbol on the map does not create a town. A place
 exists because it has a row in `LOCATIONS` inside
-`scripts/data/world_grid.gd` - which is where its id, its coordinates, its
+`scripts/core/world_grid.gd` - which is where its id, its coordinates, its
 scene, its size and its WIP flag live. The POI layer in World Forge is there so
 you can see where those places are while you paint around them.
 
@@ -104,7 +104,7 @@ before 8/2 there was no line, and 3296 painted cells had been put outside it.)
 World Forge cannot do this alone, on purpose. A place with a name and nothing
 behind it is what THE GROUNDING LAW forbids. The order is:
 
-1. add a row to `LOCATIONS` in `scripts/data/world_grid.gd` - `id`, `name`,
+1. add a row to `LOCATIONS` in `scripts/core/world_grid.gd` - `id`, `name`,
    `x`, `y`, `type`, `description`;
 2. if it has a hand-built level, add `id -> scene path` to `LOCATION_SCENES`;
 3. in World Forge, press **Sync POIs**; it appears, with its scene already

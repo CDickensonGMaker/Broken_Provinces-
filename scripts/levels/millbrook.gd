@@ -5,7 +5,7 @@ extends Node3D
 
 const ZONE_ID := "millbrook"
 const ZONE_SIZE := 100.0  # Matches WorldGrid.CELL_SIZE
-const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
+const TOWN_AMBIENT_PATH := "res://assets/audio/ambience/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
 
 @onready var nav_region: NavigationRegion3D = $NavigationRegion3D
 
@@ -116,7 +116,7 @@ func _spawn_npcs() -> void:
 	elder.no_quest_dialogue = "You've done a great service for our hamlet.\nMay Gaela bless your travels, stranger."
 	# The elder offers and takes back the flagship five different ways, so he
 	# needs a real tree rather than the generic offer/turn-in cards.
-	var elder_dialogue: DialogueData = DialogueLoader.get_dialogue("res://data/dialogue/millbrook_elder.json")
+	var elder_dialogue: DialogueData = DialogueLoader.get_dialogue("res://data/dialogue/trees/millbrook_elder.json")
 	if elder_dialogue:
 		elder.dialogue_data = elder_dialogue
 		elder.use_legacy_dialogue = false

@@ -25,13 +25,16 @@ const ITEM_DIRS: Array[String] = [
 ]
 const ENEMY_DIR := "res://data/enemies"
 const NPC_DIR := "res://data/npcs"
-const DIALOGUE_DIRS: Array[String] = ["res://data/dialogue", "res://data/dialogues"]
+const DIALOGUE_DIRS: Array[String] = [
+	"res://data/dialogue/trees",
+	"res://data/dialogue/resources",
+]
 const SCRIPT_DIRS: Array[String] = ["res://scripts"]
 const SCENE_DIRS: Array[String] = ["res://scenes"]
 
-const ENCOUNTER_MANAGER_PATH := "res://scripts/autoload/encounter_manager.gd"
-const DIALOGUE_LOADER_PATH := "res://scripts/dialogue/dialogue_loader.gd"
-const QUEST_MANAGER_PATH := "res://scripts/autoload/quest_manager.gd"
+const ENCOUNTER_MANAGER_PATH := "res://scripts/systems/events/encounter_manager.gd"
+const DIALOGUE_LOADER_PATH := "res://scripts/systems/dialogue/dialogue_loader.gd"
+const QUEST_MANAGER_PATH := "res://scripts/systems/quests/quest_manager.gd"
 
 ## Keys that are notes to the reader by convention, allowed anywhere a
 ## vocabulary is otherwise closed. Everything else must be dispatched.
@@ -100,9 +103,9 @@ const FACTION_DIR := "res://data/factions"
 ## and has no cell on the map. This is the only file that may excuse one.
 const GROUNDING_WHITELIST_PATH := "res://data/lore_only_whitelist.json"
 
-const WORLD_GRID_PATH := "res://scripts/data/world_grid.gd"
+const WORLD_GRID_PATH := "res://scripts/core/world_grid.gd"
 const WORLD_LEXICON_PATH := "res://scripts/data/world_lexicon.gd"
-const CONVERSATION_POOL_DIR := "res://data/conversation_pools"
+const CONVERSATION_POOL_DIR := "res://data/dialogue/pools"
 const NPC_NAMES_PATH := "res://data/npc_names.json"
 const COMPANION_DIRS: Array[String] = [
 	"res://data/companions",
@@ -743,7 +746,7 @@ func _load_schedules() -> void:
 		schedule_records = npcs
 
 	# Cell half-extents, read off WorldGrid rather than restated here.
-	var grid_text: String = _read_text("res://scripts/data/world_grid.gd")
+	var grid_text: String = _read_text("res://scripts/core/world_grid.gd")
 	var re := RegEx.new()
 	# (?s) so `.` crosses newlines: a LOCATIONS entry puts scene_size on the
 	# line after the coordinates, and without it every town read as 100x100.

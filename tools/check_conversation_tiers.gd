@@ -245,7 +245,7 @@ func _check_reaction_pools_registered() -> void:
 	print("  reaction greetings:   %d" % greeting_reactions)
 
 	if reaction_count < 100:
-		_failures.append("only %d reaction lines registered; data/conversation_pools/reactions.json is not loading" % reaction_count)
+		_failures.append("only %d reaction lines registered; data/dialogue/pools/reactions.json is not loading" % reaction_count)
 	if archetypes_reacting.size() < 5:
 		_failures.append("only %d archetypes have reactions; priest/guard/merchant/thief/villager is the minimum" % archetypes_reacting.size())
 	if greeting_reactions < 20:
@@ -407,7 +407,7 @@ func _check_unreadable_conditions_fail_closed() -> void:
 
 ## Per-NPC pools are meant to be droppable into a folder, not listed in code.
 func _check_unique_pool_directory_is_read() -> void:
-	var files: Array[String] = ConversationSystem._list_unique_pool_files("res://data/conversation_pools/")
+	var files: Array[String] = ConversationSystem._list_unique_pool_files("res://data/dialogue/pools/")
 	print("  unique/ pool files found: %d" % files.size())
-	if not DirAccess.dir_exists_absolute("res://data/conversation_pools/unique/"):
+	if not DirAccess.dir_exists_absolute("res://data/dialogue/pools/unique/"):
 		_failures.append("data/conversation_pools/unique/ does not exist; per-NPC pools have nowhere to go")

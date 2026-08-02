@@ -571,8 +571,8 @@ static func get_region_name(coords: Vector2i) -> String:
 static func get_background_asset(coords: Vector2i) -> String:
 	var cell := get_cell(coords)
 	if cell and cell.background_asset != "":
-		return "res://assets/sprites/environment/backgrounds/" + cell.background_asset
-	return "res://assets/sprites/environment/backgrounds/" + BG_PLAINS
+		return "res://assets/sprites/legacy/environment/backgrounds/" + cell.background_asset
+	return "res://assets/sprites/legacy/environment/backgrounds/" + BG_PLAINS
 
 
 ## Mark a cell as discovered

@@ -17,7 +17,7 @@
 ##      - weight: Encumbrance weight
 ##
 ## 2. REGISTER IN INVENTORY_MANAGER
-##    - Open scripts/autoload/inventory_manager.gd
+##    - Open scripts/systems/economy/inventory_manager.gd
 ##    - Add the item id string to the item_files array
 ##    - Place it in the appropriate category section with a comment
 ##

@@ -105,9 +105,9 @@ drop_table = {
 }
 xp_reward = 200
 scene_path = ""
-icon_path = "res://assets/sprites/enemies/undead/abomination.png"
+icon_path = "res://assets/sprites/legacy/enemies/undead/abomination.png"
 scale = 1.2
-sprite_path = "res://assets/sprites/enemies/undead/abomination.png"
+sprite_path = "res://assets/sprites/legacy/enemies/undead/abomination.png"
 attack_sprite_path = ""
 sprite_hframes = 1
 sprite_vframes = 1

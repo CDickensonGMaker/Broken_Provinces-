@@ -201,10 +201,10 @@ levels are rejected.
 > geometry pass, not a nav pass.
 
 ### 26. `InventoryManager.get_gold()` does not exist — 3 call sites — **S**
-- **System:** `scripts/autoload/boat_travel_manager.gd:659`,
-  `scripts/autoload/fast_travel_manager.gd:408`,
-  `scripts/autoload/game_systems.gd:551`
-- **Evidence:** `grep -n 'func get_gold' scripts/autoload/inventory_manager.gd`
+- **System:** `scripts/systems/travel/boat_travel_manager.gd:659`,
+  `scripts/systems/travel/fast_travel_manager.gd:408`,
+  `scripts/core/game_systems.gd:551`
+- **Evidence:** `grep -n 'func get_gold' scripts/systems/economy/inventory_manager.gd`
   → no match. The public field is `var gold`. All three sites are gold-cost
   gates: sea fare, caravan fare, guard bribe.
 - **Fix:** replace with `InventoryManager.gold`. Do **not** add a `get_gold()`
@@ -214,9 +214,9 @@ levels are rejected.
   had no `gold` field. These three sites were missed in that sweep.
 
 ### 27. `DiceManager.skill_check()` does not exist — 4 call sites — **S**
-- **System:** `scripts/autoload/boat_travel_manager.gd:545,578`,
-  `scripts/world/jail_guard.gd:597,650`
-- **Evidence:** `grep -n 'func skill_check' scripts/autoload/dice_manager.gd` →
+- **System:** `scripts/systems/travel/boat_travel_manager.gd:545,578`,
+  `scripts/characters/npcs/jail_guard.gd:597,650`
+- **Evidence:** `grep -n 'func skill_check' scripts/core/dice_manager.gd` →
   no match. Real API: `make_check`, `passive_check`, `speech_check`,
   `lockpick_check`, `bravery_check`.
 - **Fix:** map each site to the right real method by what it is checking
@@ -225,8 +225,8 @@ levels are rejected.
   the callers already destructure.
 
 ### 28. `ConversationSystem.get_last_scripted_choice_index()` does not exist — **S**
-- **System:** `scripts/world/jail_cell_door.gd:100`,
-  `scripts/world/jail_exit_door.gd:91`, `scripts/world/prison.gd:571`
+- **System:** `scripts/world/interactables/jail_cell_door.gd:100`,
+  `scripts/world/interactables/jail_exit_door.gd:91`, `scripts/world/interactables/prison.gd:571`
 - **Evidence:** only `select_scripted_choice(idx)` exists — a setter with no
   getter. All three sites are the jail lockpick dialogue-choice flow, which with
   27 means the jail is doubly unescapable.
@@ -234,8 +234,8 @@ levels are rejected.
   internally), or have the three doors read the index they passed in.
 
 ### 29. `SceneManager.goto_scene()` and `transition_to_adjacent_room()` do not exist — **S**
-- **System:** `scripts/puzzles/puzzle_portal.gd:220`,
-  `scripts/generation/town_generator.gd:794`
+- **System:** `scripts/systems/puzzles/puzzle_portal.gd:220`,
+  `scripts/generation/towns/town_generator.gd:794`
 - **Evidence:** real API is `change_scene(scene_path, spawn_id, fade)`. Both
   sites sit under `if SceneManager:`, which is always true. Breaks the puzzle
   portal teleport and *exiting a procedurally generated town*.
@@ -244,7 +244,7 @@ levels are rejected.
   which is the pattern `ZoneDoor` already uses.
 
 ### 30. `WorldGrid.get_current_location()` does not exist — **S**
-- **System:** `scripts/npcs/escort_npc.gd:281`, under `if WorldGrid:`
+- **System:** `scripts/characters/npcs/escort_npc.gd:281`, under `if WorldGrid:`
 - **Evidence:** `WorldGrid` exposes `get_cell(coords)`; the player's live
   position is `PlayerGPS.current_cell` / `current_location_id`. Escort NPC
   location logic throws.
@@ -253,7 +253,7 @@ levels are rejected.
   source of truth for where the player is.
 
 ### 31. `DialogueManager.set_dialogue_flag()` does not exist — **S**
-- **System:** `scripts/autoload/quest_manager.gd:1756`
+- **System:** `scripts/systems/quests/quest_manager.gd:1756`
 - **Evidence:** no such method on `DialogueManager`; the real one is `set_flag`,
   which itself delegates to `FlagManager.set_flag`. The site is the
   faction-quest-failed-via-temptation flag write, so a betrayal outcome silently
@@ -262,9 +262,9 @@ levels are rejected.
   anyway, and it removes one hop through a shim.
 
 ### 32. `AudioManager.play_sound_3d()` and `play_ui_sound()` do not exist — 6 sites — **S**
-- **System:** `scripts/travel/boat_voyage.gd:464,486,1832,1873`;
-  `scripts/autoload/dialogue_manager.gd:672`;
-  `scripts/autoload/conversation_system.gd:2226`
+- **System:** `scripts/systems/travel/boat_voyage.gd:464,486,1832,1873`;
+  `scripts/systems/dialogue/dialogue_manager.gd:672`;
+  `scripts/systems/dialogue/conversation_system.gd:2226`
 - **Evidence:** real methods are `play_sfx_3d()` and the specific
   `play_ui_select/confirm/cancel/open/close()`. The four boat sites are every
   sea-monster growl. The two dialogue sites are the dispatch for the
@@ -404,7 +404,7 @@ the next dropped field fails the day it is written rather than a month later.
 > on every load.
 
 ### 36. `FlagManager` is never cleared on New Game — **S**
-- **System:** `scripts/autoload/save_manager.gd:1889` `reset_world_state()`
+- **System:** `scripts/core/save_manager.gd:1889` `reset_world_state()`
 - **Evidence:** the function resets eleven systems by name and clears
   `DialogueManager.dialogue_flags` (line 1915) — but never touches
   `FlagManager.flags`. `FlagManager.reset_for_new_game()` exists
@@ -416,8 +416,8 @@ the next dropped field fails the day it is written rather than a month later.
   is gone — the current smoke test only proves flags survive a *load*.
 
 ### 37. `FlagManager` persists only by accident, and drops `context_variables` — **M**
-- **System:** `scripts/autoload/dialogue_manager.gd:1169-1187`,
-  `scripts/autoload/flag_manager.gd:442-456`, `scripts/autoload/save_manager.gd`
+- **System:** `scripts/systems/dialogue/dialogue_manager.gd:1169-1187`,
+  `scripts/core/flag_manager.gd:442-456`, `scripts/core/save_manager.gd`
 - **Evidence:** `SaveManager` contains **no reference to FlagManager at all**.
   Flags survive only because `DialogueManager.to_dict()` returns
   `FlagManager.flags.duplicate()` and `from_dict()` assigns it back — under the
@@ -437,7 +437,7 @@ the next dropped field fails the day it is written rather than a month later.
   `set_world_flag`/`get_world_flag` at lines 1714–1724). Decide which two survive.
 
 ### 38. `CharacterData.total_ip_earned` dropped by save/load — **S**
-- **System:** `scripts/autoload/save_manager.gd:486-511` and `816-836`
+- **System:** `scripts/core/save_manager.gd:486-511` and `816-836`
 - **Evidence:** the field is declared at `character_data.gd:42`, incremented by
   `add_ip()` (132), and is the **only** input to the level threshold table (137)
   and the XP bar's in-level progress (513). Both the collect and apply
@@ -490,7 +490,7 @@ the next dropped field fails the day it is written rather than a month later.
 - **Fix:** wire it in.
 
 ### 44. `FollowerNPC` writes a state it never reads back — **S**
-- **System:** `scripts/npcs/follower_npc.gd:702` (write), `:727-770` (read)
+- **System:** `scripts/characters/npcs/follower_npc.gd:702` (write), `:727-770` (read)
 - **Evidence:** `get_save_data()` writes `"state": current_state`;
   `load_save_data()` never reads the `"state"` key. Followers always come back
   `FOLLOWING`, regardless of whether they were `WAITING` or `UNCONSCIOUS`. A
@@ -647,7 +647,7 @@ session gate instead of a silent no-op.
 >    exist. It is Caleb's configuration, not an agent's to rewrite.
 
 ### 46. Ten objective types have no handler — guild capstones uncompletable — **L**
-- **System:** `scripts/autoload/quest_manager.gd`; `data/quests/guild/thieves/`,
+- **System:** `scripts/systems/quests/quest_manager.gd`; `data/quests/guild/thieves/`,
   `data/quests/guild/mages/`, `data/quests/noble_soulstone_request.json`
 - **Evidence:** parsing all 55 quest JSONs yields 21 distinct objective `type`
   values. `quest_manager.gd` dispatches `kill`, `collect`, `talk`,
@@ -694,9 +694,9 @@ session gate instead of a silent no-op.
   either way; the first is the better fit with the guild rank system.
 
 ### 49. `spawn_errand` action cannot be written from JSON — **S**
-- **System:** `scripts/dialogue/dialogue_loader.gd:164-193`,
-  `scripts/dialogue/dialogue_data.gd:65`,
-  `scripts/autoload/dialogue_manager.gd:678`
+- **System:** `scripts/systems/dialogue/dialogue_loader.gd:164-193`,
+  `scripts/systems/dialogue/dialogue_data.gd:65`,
+  `scripts/systems/dialogue/dialogue_manager.gd:678`
 - **Evidence:** `ActionType.SPAWN_ERRAND` is in the enum and **is dispatched** at
   runtime, but `_parse_action_type()` has no `"spawn_errand"` case. Any such
   string falls to the `_:` default, which `push_warning`s and coerces to `NONE`.
@@ -706,7 +706,7 @@ session gate instead of a silent no-op.
   rather than a warning, so the next omission cannot be silent.
 
 ### 50. `morality` and `guild_rank` conditions silently evaluate TRUE — **S**
-- **System:** `scripts/dialogue/dialogue_loader.gd:138-158` vs.
+- **System:** `scripts/systems/dialogue/dialogue_loader.gd:138-158` vs.
   `dialogue_manager.gd:444,451,564,576`
 - **Evidence:** both `ConditionType.MORALITY` and `GUILD_RANK` are fully
   implemented at runtime. `_parse_condition_type()` has no case for either, so
@@ -766,7 +766,7 @@ session gate instead of a silent no-op.
   fix it; the rest are real missing MacGuffins and stay in the dispositions file.
 
 ### 54. Dead save-migration block claims v5→v6 while `SAVE_VERSION` is 5 — **S**
-- **System:** `scripts/autoload/save_manager.gd:24`, `:1461-1589`, `:367`
+- **System:** `scripts/core/save_manager.gd:24`, `:1461-1589`, `:367`
 - **Evidence:** `_migrate_save_data` contains a live "Version 5 → 6: Add
   WeatherManager data" block (1576–1587) that sets `migrated["version"] = 6`,
   but `SAVE_VERSION` was never bumped past 5 and `load_game()` only migrates
@@ -791,7 +791,7 @@ session gate instead of a silent no-op.
   `check_*.tscn` probes to it or to a `run_all_checks.ps1`.
 
 ### 56. `QuestManager` never reads a quest's `skill_checks`, and DECEPTION is dead — **M**
-- **System:** `scripts/autoload/quest_manager.gd`,
+- **System:** `scripts/systems/quests/quest_manager.gd`,
   `data/quests/guild/thieves/thieves_07_noble_heist.json:62`
 - **Evidence:** the quest declares `{"type": "deception", "dc": 14}` in a
   `skill_checks` block that `QuestManager` never reads — there is no
@@ -944,9 +944,9 @@ asset at all goes to `art_replacement_manifest.md`.
 > 6. **One damage number per hit, not two.**
 
 ### 57. Melee bypasses `CombatManager` entirely — **L**
-- **System:** `scripts/autoload/combat_manager.gd:93-218`,
-  `scripts/combat/hitbox.gd:_apply_hit`,
-  `scripts/player/player_controller.gd:_do_light_attack`
+- **System:** `scripts/systems/combat/combat_manager.gd:93-218`,
+  `scripts/systems/combat/hitbox.gd:_apply_hit`,
+  `scripts/characters/player/player_controller.gd:_do_light_attack`
 - **Evidence:** `grep -rn 'apply_melee_damage' scripts/` returns **only the
   declaration**. 125 lines of crit rolling, lifesteal, `damage_dealt` /
   `critical_hit` emission and `_spawn_damage_number` have zero callers. The live
@@ -962,14 +962,14 @@ asset at all goes to `art_replacement_manifest.md`.
   the two signals the HUD already listens on (`hud.gd:1101`).
 
 ### 58. `apply_ranged_damage` also has zero callers — **M**
-- **System:** `scripts/autoload/combat_manager.gd:221`
+- **System:** `scripts/systems/combat/combat_manager.gd:221`
 - **Evidence:** same grep, same result. Bows and muskets take whatever path the
   projectile code takes and get none of the CombatManager treatment.
 - **Fix:** find the live ranged damage path and route it through, or delete the
   function. Do it in the same pass as 57 so all three verbs agree.
 
 ### 59. `AudioManager`'s event table points at an empty directory — **L**
-- **System:** `scripts/autoload/audio_manager.gd:12-168` (`EVENTS`), `620-684`
+- **System:** `scripts/core/audio_manager.gd:12-168` (`EVENTS`), `620-684`
   (`play_*` shortcuts), `687-697` (`_load_sound`)
 - **Evidence:** ~120 hardcoded paths under `res://assets/audio/sfx/*.wav`.
   `find assets/audio/sfx -maxdepth 1 -type f` → **0**. The 49 real files live in
@@ -987,7 +987,7 @@ asset at all goes to `art_replacement_manifest.md`.
 - **This is the single largest game-feel item in the list.**
 
 ### 60. `ambient_soundscape.gd` targets a directory that does not exist, silently — **M**
-- **System:** `scripts/audio/ambient_soundscape.gd:42-128` (`SOUNDSCAPES`),
+- **System:** `scripts/world/ambient_soundscape.gd:42-128` (`SOUNDSCAPES`),
   `:342-344` (`_load_sound`)
 - **Evidence:** every path is `res://assets/audio/ambient/*.ogg`; the real folder
   is `assets/audio/Ambiance/` (`cities/`, `towns/`, `ruins/`, `combat arena/`)
@@ -1013,8 +1013,8 @@ asset at all goes to `art_replacement_manifest.md`.
   two, written down, not both.
 
 ### 62. Four dead keybinds, including the heavy attack and block — **M**
-- **System:** `project.godot` `[input]`, `scripts/player/player_controller.gd`,
-  `scripts/player/camera_pivot.gd:137`
+- **System:** `project.godot` `[input]`, `scripts/characters/player/player_controller.gd`,
+  `scripts/characters/player/camera_pivot.gd:137`
 - **Evidence:** `heavy_attack`, `block`, `lock_on`, `toggle_camera_mode` are
   declared and read by no input code. `heavy_attack` appears only as a parameter
   inside the dead `apply_melee_damage` (`is_heavy_attack`, line 98) — so the
@@ -1028,7 +1028,7 @@ asset at all goes to `art_replacement_manifest.md`.
   nothing. Uncomment or delete `toggle_camera_mode`.
 
 ### 63. `lock_on_target` is read by the HUD and never assigned — **S**
-- **System:** `scripts/player/player_controller.gd:74`, `scripts/ui/hud.gd:611-612`
+- **System:** `scripts/characters/player/player_controller.gd:74`, `scripts/ui/hud.gd:611-612`
 - **Evidence:** declared `var lock_on_target: Node3D = null`, read by the HUD to
   pick the target nameplate, **assigned nowhere**. There is no lock-on, no aim
   assist and no soft-lock; melee aim is whatever the forward hitbox overlaps.
@@ -1037,7 +1037,7 @@ asset at all goes to `art_replacement_manifest.md`.
   path that can never run.
 
 ### 64. No i-frames or hit reaction on the player — **M**
-- **System:** `scripts/player/player_controller.gd:727-793`
+- **System:** `scripts/characters/player/player_controller.gd:727-793`
 - **Evidence:** `take_damage` does armour math, HP, a damage number, armour
   degradation and a death check. There is no post-hit invulnerability window —
   `_set_invulnerable` (720) exists but is called **only** from the dodge roll.
@@ -1050,7 +1050,7 @@ asset at all goes to `art_replacement_manifest.md`.
   started spawning enemies again, so nobody has felt this yet.
 
 ### 65. Footsteps: one hardcoded file, gated to grass — **S**
-- **System:** `scripts/player/player_controller.gd:853-880`, `:912-929`
+- **System:** `scripts/characters/player/player_controller.gd:853-880`, `:912-929`
   (`_is_grass_terrain`), `audio_manager.gd:99-100`
 - **Evidence:** `_update_footsteps` only fires in grass/forest/plains/hills/swamp
   and always plays a single hardcoded `footstep_1.wav`. `footstep_stone`,
@@ -1064,7 +1064,7 @@ asset at all goes to `art_replacement_manifest.md`.
 
 ### 66. Death dead-ends when there is no save — **S**
 - **System:** `scripts/ui/hud.gd:1189-1379`,
-  `scripts/autoload/game_manager.gd:269-271`
+  `scripts/core/game_manager.gd:269-271`
 - **Evidence:** HP 0 → `_on_death()` → `player_died` → a full-screen panel with
   four buttons: Load Last Autosave, Load Save…, New Game (full character wipe),
   Main Menu. There is **no in-place respawn or checkpoint of any kind**. If no
@@ -1270,7 +1270,7 @@ the code it describes has stopped moving.
   (`scripts/ui/world_map.gd`) genuinely reads `PlayerGPS.discovered_cells`.
 
 ### 69. Minimap door icons never appear — group name mismatch — **S**
-- **System:** `scripts/ui/minimap.gd:329,723` vs. `scripts/world/zone_door.gd:40`
+- **System:** `scripts/ui/minimap.gd:329,723` vs. `scripts/world/interactables/zone_door.gd:40`
 - **Evidence:** the minimap reads `get_nodes_in_group("zone_doors")`. The only
   place doors register calls `add_to_group("doors")`. `"zone_doors"` is joined by
   nothing in the repo, so the lookup always returns an empty array. Deterministic,
@@ -1279,7 +1279,7 @@ the code it describes has stopped moving.
   readers that would now see the same nodes.
 
 ### 70. Quest compass markers silently resolve to the origin — **M**
-- **System:** `scripts/autoload/quest_manager.gd:2495-2530`
+- **System:** `scripts/systems/quests/quest_manager.gd:2495-2530`
 - **Evidence:** `_find_enemy_spawn_position`, `_find_item_position` and
   `_find_location_position` fall back to `get_nodes_in_group()` on
   `"enemy_spawns"`, `"items"`, `"location_markers"` and `"exits"`. **None of
@@ -1292,10 +1292,10 @@ the code it describes has stopped moving.
 
 ### 71. Five more group lookups nothing joins, and day/night light is always 0.5 — **S**
 - **System:** `scripts/ui/hud/hud_navigation.gd:1339` (`containers`),
-  `scripts/world/damage_zone.gd:224` + `triggered_trap.gd:201` (`gladiators`),
+  `scripts/world/interactables/damage_zone.gd:224` + `triggered_trap.gd:201` (`gladiators`),
   `scripts/ui/companion_command_ui.gd:311` (`game_menu`),
-  `scripts/autoload/conversation_system.gd:787` + `minimap.gd:760` (`guilds`),
-  `scripts/player/player_controller.gd:1053-1056` (`sun`)
+  `scripts/systems/dialogue/conversation_system.gd:787` + `minimap.gd:760` (`guilds`),
+  `scripts/characters/player/player_controller.gd:1053-1056` (`sun`)
 - **Evidence:** all six group names are read and joined nowhere. The `"guilds"`
   one means guild NPCs never get their distinct minimap icon or dialogue branch.
   The `"sun"` one is the second step of a three-step fallback chain:
@@ -1321,7 +1321,7 @@ the code it describes has stopped moving.
 
 ### 73. Nine consumable effect types are never applied — **M**
 - **System:** `scripts/data/item_data.gd:72-80` (enum), `:151-167` (tooltip
-  text), `scripts/autoload/inventory_manager.gd:798-800`
+  text), `scripts/systems/economy/inventory_manager.gd:798-800`
 - **Evidence:** `BUFF_STRENGTH`, `BUFF_AGILITY`, `BUFF_WILL`, `BUFF_ARMOR`,
   `BUFF_DAMAGE`, `RESIST_FIRE`, `RESIST_FROST`, `RESIST_POISON` and
   `INVISIBILITY` all generate a tooltip describing what they do, and
@@ -1339,7 +1339,7 @@ the code it describes has stopped moving.
 
 ### 74. Dead `ItemData` fields, and the literacy gate is commented out — **S**
 - **System:** `scripts/data/item_data.gd`,
-  `scripts/autoload/inventory_manager.gd:~669`
+  `scripts/systems/economy/inventory_manager.gd:~669`
 - **Evidence:** `requires_literacy` / `literacy_dc` are set to real values in
   data (`scroll_chain_lightning.tres:19` → `literacy_dc = 18`) and the check that
   reads them **is commented out** in `use_item`. `shop_bundle_size` is set on

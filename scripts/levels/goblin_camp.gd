@@ -61,7 +61,7 @@ func _create_materials() -> void:
 
 
 func _load_terrain_model() -> void:
-	var glb_scene: PackedScene = load("res://assets/models/terrain/goblin_camp.glb")
+	var glb_scene: PackedScene = load("res://assets/world/terrain/goblin_camp.glb")
 	if not glb_scene:
 		push_error("[GoblinCamp] Failed to load goblin_camp.glb")
 		return
@@ -266,7 +266,7 @@ func _spawn_goblin(pos: Vector3, goblin_type: String) -> void:
 		v_frames = sprite_config.get("v_frames", 1)
 	else:
 		# Fallback defaults
-		sprite_path = "res://assets/sprites/enemies/goblins/goblin_sword.png"
+		sprite_path = "res://assets/sprites/legacy/enemies/goblins/goblin_sword.png"
 		h_frames = 4
 		v_frames = 2
 
@@ -303,7 +303,7 @@ func _spawn_goblin_warboss(pos: Vector3) -> void:
 		h_frames = sprite_config.get("h_frames", 4)
 		v_frames = sprite_config.get("v_frames", 2)
 	else:
-		sprite_path = "res://assets/sprites/enemies/goblins/goblin_sword.png"
+		sprite_path = "res://assets/sprites/legacy/enemies/goblins/goblin_sword.png"
 		h_frames = 4
 		v_frames = 2
 

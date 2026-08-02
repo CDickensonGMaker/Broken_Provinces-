@@ -29,14 +29,14 @@ var direction_index: int = int(round((angle + PI) / (TAU / float(direction_count
 
 ### Fix #2: Verify All Integer Division Warnings
 **Files Needing Check:**
-1. `scripts/autoload/game_systems.gd`
-2. `scripts/autoload/stats_tracker.gd`
-3. `scripts/autoload/conversation_system.gd`
-4. `scripts/data/world_grid.gd`
-5. `scripts/dev/combat_arena_test.gd`
-6. `scripts/dev/duel_test.gd`
-7. `scripts/dungeons/dungeon_builder.gd`
-8. `scripts/generation/wilderness_room.gd`
+1. `scripts/core/game_systems.gd`
+2. `scripts/core/stats_tracker.gd`
+3. `scripts/systems/dialogue/conversation_system.gd`
+4. `scripts/core/world_grid.gd`
+5. `dev/harnesses/combat_arena_test.gd`
+6. `dev/harnesses/duel_test.gd`
+7. `scripts/generation/dungeons/dungeon_builder.gd`
+8. `scripts/generation/wilderness/wilderness_room.gd`
 
 **How to Find:**
 ```gdscript
@@ -77,21 +77,21 @@ Line 42: Unused parameter 'param_name'
 ```
 
 **Files to Audit:**
-- `scripts/autoload/bounty_manager.gd`
-- `scripts/autoload/cell_streamer.gd`
-- `scripts/autoload/companion_manager.gd`
-- `scripts/autoload/conversation_system.gd`
-- `scripts/autoload/duel_manager.gd`
-- `scripts/autoload/encounter_manager.gd`
-- `scripts/autoload/escort_manager.gd`
-- `scripts/autoload/faction_manager.gd`
-- `scripts/autoload/follower_manager.gd`
-- `scripts/autoload/player_gps.gd`
-- `scripts/autoload/quest_manager.gd`
-- `scripts/autoload/soulstone_economy.gd`
-- `scripts/autoload/stats_tracker.gd`
-- `scripts/autoload/takeover_manager.gd`
-- `scripts/autoload/tournament_manager.gd`
+- `scripts/systems/crime/bounty_manager.gd`
+- `scripts/world/streaming/cell_streamer.gd`
+- `scripts/characters/ai/companion_manager.gd`
+- `scripts/systems/dialogue/conversation_system.gd`
+- `scripts/systems/events/duel_manager.gd`
+- `scripts/systems/events/encounter_manager.gd`
+- `scripts/characters/ai/escort_manager.gd`
+- `scripts/systems/factions/faction_manager.gd`
+- `scripts/characters/ai/follower_manager.gd`
+- `scripts/world/streaming/player_gps.gd`
+- `scripts/systems/quests/quest_manager.gd`
+- `scripts/systems/economy/soulstone_economy.gd`
+- `scripts/core/stats_tracker.gd`
+- `scripts/systems/factions/takeover_manager.gd`
+- `scripts/systems/events/tournament_manager.gd`
 
 **Fix Pattern:**
 ```gdscript
@@ -131,9 +131,9 @@ func process(item: Item) -> void:
 ```
 
 **Files Most Likely to Have Issues:**
-1. `scripts/autoload/quest_manager.gd` - Quest/Objective processing
-2. `scripts/generation/wilderness_room.gd` - Procedural generation
-3. `scripts/combat/spell_caster.gd` - Spell variable naming
+1. `scripts/systems/quests/quest_manager.gd` - Quest/Objective processing
+2. `scripts/generation/wilderness/wilderness_room.gd` - Procedural generation
+3. `scripts/systems/combat/spell_caster.gd` - Spell variable naming
 
 **How to Find:**
 - Open file in Godot editor
@@ -174,13 +174,13 @@ SomeClass.static_method()
 - [ ] Create list of integer division warnings via Godot
 
 ### Phase 2: Integer Division Audit (45-90 minutes)
-- [ ] Check `scripts/autoload/game_systems.gd`
-- [ ] Check `scripts/autoload/stats_tracker.gd`
-- [ ] Check `scripts/autoload/conversation_system.gd`
-- [ ] Check `scripts/data/world_grid.gd`
+- [ ] Check `scripts/core/game_systems.gd`
+- [ ] Check `scripts/core/stats_tracker.gd`
+- [ ] Check `scripts/systems/dialogue/conversation_system.gd`
+- [ ] Check `scripts/core/world_grid.gd`
 - [ ] Check `scripts/dev/` files
-- [ ] Check `scripts/dungeons/dungeon_builder.gd`
-- [ ] Check `scripts/generation/wilderness_room.gd`
+- [ ] Check `scripts/generation/dungeons/dungeon_builder.gd`
+- [ ] Check `scripts/generation/wilderness/wilderness_room.gd`
 - [ ] Apply fixes to all files
 
 ### Phase 3: Unused Parameters (30-75 minutes)

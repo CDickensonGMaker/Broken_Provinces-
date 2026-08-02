@@ -217,9 +217,9 @@ Examples:
 ## FILES REQUIRING UPDATES
 
 **GDScript files to update h_frames/v_frames:**
-- Check sprite references in scripts/world/civilian_npc.gd
-- Check scripts/npcs/quest_giver.gd
-- Verify dev/zoo/zoo_registry.gd h_frames values
+- Check sprite references in scripts/characters/npcs/civilian_npc.gd
+- Check scripts/characters/npcs/quest_giver.gd
+- Verify dev/editors/actor_zoo/zoo_registry.gd h_frames values
 - Audit all EnemyData .tres files for matching sprite dims
 
 **Scene files to audit (.tscn):**

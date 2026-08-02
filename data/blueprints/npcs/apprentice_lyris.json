@@ -6,7 +6,7 @@
   "quests": "Arcane Circle Magus Trial reward choice",
   "sprite": {
     "type": "mage",
-    "path": "res://assets/sprites/npcs/civilians/wizard_mage.png",
+    "path": "res://assets/sprites/legacy/npcs/civilians/wizard_mage.png",
     "h_frames": 1,
     "v_frames": 1,
     "pixel_size": 0.0256,

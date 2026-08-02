@@ -9,14 +9,14 @@
 
 ## 0. Where the desert actually is (context for everything below)
 
-Two desert zones exist in `GRID_DATA` (`scripts/data/world_grid.gd:148-192`):
+Two desert zones exist in `GRID_DATA` (`scripts/core/world_grid.gd:148-192`):
 
 1. **Western Shore strip** — column 2 of every northern row (`"W","W","D",...`, rows 0-19). A 1-cell-wide desert ribbon with open WATER on its west edge for its entire length. Elder Moor-relative x = -10.
 2. **Tenger Desert** — rows 32-39 (Elder Moor-relative y = 24..31). A large contiguous region **wedged between ocean (W) on the west and mountains (B/H) on the east/south** (`world_grid.gd:184-191`).
 
 Both zones share one structural property no forest/plains cell has: **almost every desert cell touches at least one impassable edge (water or mountain), and deep-desert cells touch 2-3.** This matters because impassable edges are where the generators dump enormous amounts of extra geometry (see H1).
 
-Also relevant: `WorldGrid.to_wilderness_biome()` maps `Biome.DESERT -> 1 (PLAINS)` (`world_grid.gd:940`), so desert cells run the PLAINS generation path in `WildernessRoom`. The `WildernessRoom.Biome.DESERT` enum value (`wilderness_room.gd:21`) and the `EnhancedTerrain` DESERT dune preset (`scripts/terrain/enhanced_terrain.gd:23, 97-103`) are **dead code — unreachable via streaming**. Desert is not "denser vegetation" than forest (plains spawns *fewer* trees); the lag comes from boundaries, enemies, and transparency, not cacti.
+Also relevant: `WorldGrid.to_wilderness_biome()` maps `Biome.DESERT -> 1 (PLAINS)` (`world_grid.gd:940`), so desert cells run the PLAINS generation path in `WildernessRoom`. The `WildernessRoom.Biome.DESERT` enum value (`wilderness_room.gd:21`) and the `EnhancedTerrain` DESERT dune preset (`scripts/world/terrain/enhanced_terrain.gd:23, 97-103`) are **dead code — unreachable via streaming**. Desert is not "denser vegetation" than forest (plains spawns *fewer* trees); the lag comes from boundaries, enemies, and transparency, not cacti.
 
 ---
 
@@ -28,7 +28,7 @@ Every cell edge bordering BLOCKED or WATER terrain triggers **two independent ge
 
 **Per BLOCKED (mountain) edge:**
 - `wilderness_room.gd:2542-2565` `_spawn_mountain_wall()`: `int(100/5)+1 = 21` mountain blocks. Each block (`_create_mountain_block`, `wilderness_room.gd:2764-2819`) = MeshInstance3D + **a brand-new `StandardMaterial3D` per block** + StaticBody3D + CollisionShape3D (~4 nodes, 1 unique material).
-- `wilderness_room.gd:2721-2760` `_spawn_mountain_edge_rocks()`: **15-25 clusters × 3-7 rocks = 45-175 `HarvestableRock` nodes per edge** (each a StaticBody3D with mesh + collision, `scripts/world/harvestable_rock.gd:3`).
+- `wilderness_room.gd:2721-2760` `_spawn_mountain_edge_rocks()`: **15-25 clusters × 3-7 rocks = 45-175 `HarvestableRock` nodes per edge** (each a StaticBody3D with mesh + collision, `scripts/world/interactables/harvestable_rock.gd:3`).
 - `cell_streamer.gd:663-705` `_create_boundary_wall()`: 8 CSG cliff segments, each with **its own `StandardMaterial3D` created inside the loop** (`cell_streamer.gd:679`), each with `use_collision = true` (separate physics body per segment).
 
 **Per WATER edge:**
@@ -119,9 +119,9 @@ Fixes 1-4 are an afternoon of work and should recover the bulk of the lost frame
 
 ## 4. Key file references
 
-- `scripts/data/world_grid.gd` — :148-192 grid layout (desert wedged between W and B), :697-700 danger formula, :933-942 DESERT→PLAINS mapping
-- `scripts/autoload/cell_streamer.gd` — :23-24 load radius, :566-705 boundary walls (unique material per cliff segment :679), :708-779 300-unit transparent coastal plane
-- `scripts/generation/wilderness_room.gd` — :2081-2100 enemy scaling (per-cell cap only), :2456-2504 boundary props, :2542-2565 mountain wall (21 blocks), :2721-2760 rock cluster explosion (45-175/edge), :2569-2662 water boundary + coastal decorations, :2764-2819 per-block materials
-- `scripts/enemies/enemy_base.gd` — :514-555 AI LOD (good; keep), :518-527 recovery print spam
-- `scripts/autoload/encounter_manager.gd` — :14 30 s checks, :23-25 hordes, :39 desert multiplier, :109-114 broken desert table, :735-773 no global cap
-- `scripts/terrain/enhanced_terrain.gd` — :23, :97-103 unused DESERT dune preset (dead code)
+- `scripts/core/world_grid.gd` — :148-192 grid layout (desert wedged between W and B), :697-700 danger formula, :933-942 DESERT→PLAINS mapping
+- `scripts/world/streaming/cell_streamer.gd` — :23-24 load radius, :566-705 boundary walls (unique material per cliff segment :679), :708-779 300-unit transparent coastal plane
+- `scripts/generation/wilderness/wilderness_room.gd` — :2081-2100 enemy scaling (per-cell cap only), :2456-2504 boundary props, :2542-2565 mountain wall (21 blocks), :2721-2760 rock cluster explosion (45-175/edge), :2569-2662 water boundary + coastal decorations, :2764-2819 per-block materials
+- `scripts/characters/enemies/enemy_base.gd` — :514-555 AI LOD (good; keep), :518-527 recovery print spam
+- `scripts/systems/events/encounter_manager.gd` — :14 30 s checks, :23-25 hordes, :39 desert multiplier, :109-114 broken desert table, :735-773 no global cap
+- `scripts/world/terrain/enhanced_terrain.gd` — :23, :97-103 unused DESERT dune preset (dead code)

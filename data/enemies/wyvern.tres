@@ -135,10 +135,10 @@ drop_table = {
 }
 xp_reward = 700
 scene_path = ""
-icon_path = "res://assets/sprites/enemies/beasts/wyvern.png"
+icon_path = "res://assets/sprites/legacy/enemies/beasts/wyvern.png"
 scale = 1.8
-sprite_path = "res://assets/sprites/enemies/beasts/wyvern.png"
-attack_sprite_path = "res://assets/sprites/enemies/beasts/wyvern_attack.png"
+sprite_path = "res://assets/sprites/legacy/enemies/beasts/wyvern.png"
+attack_sprite_path = "res://assets/sprites/legacy/enemies/beasts/wyvern_attack.png"
 sprite_hframes = 6
 sprite_vframes = 1
 attack_hframes = 5

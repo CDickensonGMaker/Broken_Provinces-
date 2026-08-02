@@ -10,7 +10,7 @@ PS1-styled open world adventure RPG built in Godot 4.5. Inspired by Skyrim, Fall
 ### Session 1: World Building Foundation
 
 #### Fast Travel System
-- [x] Created `FastTravelShrine` class (`scripts/world/fast_travel_shrine.gd`)
+- [x] Created `FastTravelShrine` class (`scripts/world/interactables/fast_travel_shrine.gd`)
 - [x] Applied shrine texture from `Sprite folders grab bag/shrinetexture.png`
 - [x] Added shrines to test_level and riverside_village
 - [x] Shrines auto-discover zones via MapTracker
@@ -85,8 +85,8 @@ PS1-styled open world adventure RPG built in Godot 4.5. Inspired by Skyrim, Fall
 - `scripts/autoload/map_tracker.gd`
 - `scripts/ui/minimap.gd`
 - `scripts/ui/zone_map.gd`
-- `scripts/world/merchant.gd`
-- `scripts/world/zone_door.gd`
+- `scripts/characters/npcs/merchant.gd`
+- `scripts/world/interactables/zone_door.gd`
 
 #### 1.2 Compass Bounty Integration
 **Status:** NOT STARTED
@@ -105,7 +105,7 @@ PS1-styled open world adventure RPG built in Godot 4.5. Inspired by Skyrim, Fall
 
 **Files to Modify:**
 - `scripts/ui/hud.gd` (compass section, lines 1134-1665)
-- `scripts/world/bounty_board.gd` (expose active bounty data)
+- `scripts/world/interactables/bounty_board.gd` (expose active bounty data)
 
 ---
 
@@ -141,8 +141,8 @@ Dwarf guild master in Elder Moor who stops player when first trying to leave, gi
 
 **Files to Modify:**
 - `scripts/levels/test_level.gd`
-- `scripts/world/zone_door.gd`
-- `scripts/autoload/quest_manager.gd`
+- `scripts/world/interactables/zone_door.gd`
+- `scripts/systems/quests/quest_manager.gd`
 
 #### 2.2 Connected NPCs
 **Status:** NOT STARTED

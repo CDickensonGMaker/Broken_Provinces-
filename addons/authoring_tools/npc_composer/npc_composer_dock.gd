@@ -229,7 +229,7 @@ func _create_center_panel() -> VBoxContainer:
 
 	sprite_path_edit = LineEdit.new()
 	sprite_path_edit.size_flags_horizontal = SIZE_EXPAND_FILL
-	sprite_path_edit.placeholder_text = "res://assets/sprites/..."
+	sprite_path_edit.placeholder_text = "res://assets/sprites/legacy/..."
 	sprite_path_edit.text_changed.connect(_on_sprite_path_changed)
 	sprite_row.add_child(sprite_path_edit)
 

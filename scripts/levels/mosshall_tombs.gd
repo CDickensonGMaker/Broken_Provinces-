@@ -445,10 +445,10 @@ func _spawn_enemy(pos: Vector3, enemy_type: String) -> void:
 	match enemy_type:
 		"skeleton_shade":
 			data_path = "res://data/enemies/skeleton_shade.tres"
-			sprite_path = "res://assets/sprites/enemies/undead/skeleton_shade_walking.png"
+			sprite_path = "res://assets/sprites/legacy/enemies/undead/skeleton_shade_walking.png"
 		"skeleton_warrior":
 			data_path = "res://data/enemies/skeleton_warrior.tres"
-			sprite_path = "res://assets/sprites/enemies/undead/skeleton_walking.png"
+			sprite_path = "res://assets/sprites/legacy/enemies/undead/skeleton_walking.png"
 			h_frames = 8
 			v_frames = 1
 		_:
@@ -483,7 +483,7 @@ func _spawn_enemy(pos: Vector3, enemy_type: String) -> void:
 
 func _spawn_boss(pos: Vector3) -> void:
 	# Tomb Guardian Spirit - stronger vampire variant
-	var sprite_texture: Texture2D = load("res://assets/sprites/enemies/undead/vampirelord_walking.png")
+	var sprite_texture: Texture2D = load("res://assets/sprites/legacy/enemies/undead/vampirelord_walking.png")
 	if not sprite_texture:
 		push_warning("[MosshallTombs] Failed to load boss sprite")
 		return

@@ -4,7 +4,7 @@ Second pass over the four PSX citizen masters, built headless from RECON's
 `us_base_v3.blend`. **They are now EXPORTED**: four GLBs live in
 `assets/models/citizens/glb/` and each one has been reimported and asserted.
 
-- Blend: `assets/models/citizens/src/citizens_master.blend`
+- Blend: `assets/characters/citizens/src/citizens_master.blend`
 - Exports: `assets/models/citizens/glb/citizen_{man,woman,boy,girl}.glb`
 - Build scripts: `tools/citizens/01`–`09` (each re-runnable from the stage before it)
 - Renders: this folder

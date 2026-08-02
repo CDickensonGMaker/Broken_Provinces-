@@ -14,7 +14,7 @@ const ZONE_ID := "dalhurst"
 const LEISURE_LOCAL := Vector3(-9.0, 0.0, -39.0)
 const ZONE_SIZE := Vector2(160.0, 172.0)  # Actual scene dimensions (width, depth)
 const ZONE_SIZE_LEGACY := 172.0  # For backwards compatibility (use larger dimension)
-const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/cities/port_city_1.wav"
+const TOWN_AMBIENT_PATH := "res://assets/audio/ambience/cities/port_city_1.wav"
 
 @onready var nav_region: NavigationRegion3D = $NavigationRegion3D
 
@@ -185,7 +185,7 @@ func _spawn_npcs() -> void:
 	harbor_master.region_id = ZONE_ID
 	harbor_master.faction_id = "human_empire"
 	# Load boat travel dialogue from JSON
-	var harbor_dialogue: DialogueData = DialogueLoader.load_from_json("res://data/dialogue/harbor_master_dalhurst.json")
+	var harbor_dialogue: DialogueData = DialogueLoader.load_from_json("res://data/dialogue/trees/harbor_master_dalhurst.json")
 	if harbor_dialogue:
 		harbor_master.dialogue_data = harbor_dialogue
 		harbor_master.use_legacy_dialogue = false
@@ -318,7 +318,7 @@ func _spawn_npcs() -> void:
 	priest_chronos.faction_id = "church_of_three"
 	priest_chronos.no_quest_dialogue = "The sands of time flow ever onward, child. May Chronos guide your steps."
 	# Load devotee choice dialogue from JSON
-	var chronos_dialogue: DialogueData = DialogueLoader.load_from_json("res://data/dialogue/priest_chronos_dalhurst.json")
+	var chronos_dialogue: DialogueData = DialogueLoader.load_from_json("res://data/dialogue/trees/priest_chronos_dalhurst.json")
 	if chronos_dialogue:
 		priest_chronos.dialogue_data = chronos_dialogue
 		priest_chronos.use_legacy_dialogue = false
@@ -349,7 +349,7 @@ func _spawn_npcs() -> void:
 	priest_gaela.faction_id = "church_of_three"
 	priest_gaela.no_quest_dialogue = "Gaela's blessings upon you, traveler. May your harvests be bountiful and your spirit nourished."
 	# Load devotee choice dialogue from JSON
-	var gaela_dialogue: DialogueData = DialogueLoader.load_from_json("res://data/dialogue/priest_gaela_dalhurst.json")
+	var gaela_dialogue: DialogueData = DialogueLoader.load_from_json("res://data/dialogue/trees/priest_gaela_dalhurst.json")
 	if gaela_dialogue:
 		priest_gaela.dialogue_data = gaela_dialogue
 		priest_gaela.use_legacy_dialogue = false
@@ -419,7 +419,7 @@ func _spawn_npcs() -> void:
 	guild_master.no_quest_dialogue = "Looking for work? Check the bounty board outside, or speak with me about official guild contracts."
 	# The whole thirteen-contract Adventurers Guild line lives in this tree and
 	# has never been attached to the man who is supposed to speak it.
-	var vorn_dialogue: DialogueData = DialogueLoader.get_dialogue("res://data/dialogue/guildmaster_vorn.json")
+	var vorn_dialogue: DialogueData = DialogueLoader.get_dialogue("res://data/dialogue/trees/guildmaster_vorn.json")
 	if vorn_dialogue:
 		guild_master.dialogue_data = vorn_dialogue
 		guild_master.use_legacy_dialogue = false
@@ -532,7 +532,7 @@ func _spawn_npcs() -> void:
 	)
 	aldric.region_id = ZONE_ID
 	aldric.faction_id = "the_keepers"  # "keepers" names no faction file
-	aldric.dialogue_data = load("res://data/dialogues/aldric_vane.tres")
+	aldric.dialogue_data = load("res://data/dialogue/resources/aldric_vane.tres")
 	aldric.no_quest_dialogue = "You've proven yourself a trusted ally of the Keepers. Should you need guidance, speak with me again."
 	var aldric_profile := NPCKnowledgeProfile.new()
 	aldric_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
@@ -898,7 +898,7 @@ func _spawn_thieves_guild() -> void:
 		8, 2,
 		["thieves_guild_initiation"]
 	)
-	_dress_thief(recruiter, "res://data/dialogue/thieves_guild_recruiter.json",
+	_dress_thief(recruiter, "res://data/dialogue/trees/thieves_guild_recruiter.json",
 			["watchful", "smooth", "opportunistic"],
 			"Keep your ears open and your hands quiet. That's the whole trade.")
 
@@ -918,7 +918,7 @@ func _spawn_thieves_guild() -> void:
 		8, 2,
 		fence_quests
 	)
-	_dress_thief(fence, "res://data/dialogue/thieves_guild_fence.json",
+	_dress_thief(fence, "res://data/dialogue/trees/thieves_guild_fence.json",
 			["cagey", "shrewd", "impatient"],
 			"Bring me goods, not conversation.")
 
@@ -938,7 +938,7 @@ func _spawn_thieves_guild() -> void:
 		8, 2,
 		raven_quests
 	)
-	_dress_thief(raven, "res://data/dialogue/raven_thief_contact.json",
+	_dress_thief(raven, "res://data/dialogue/trees/raven_thief_contact.json",
 			["quick", "wry", "encouraging"],
 			"Stay sharp. The Guild remembers who earns.")
 
@@ -959,7 +959,7 @@ func _spawn_thieves_guild() -> void:
 		8, 2,
 		vex_quests
 	)
-	_dress_thief(vex, "res://data/dialogue/shadowmaster_vex.json",
+	_dress_thief(vex, "res://data/dialogue/trees/shadowmaster_vex.json",
 			["calculating", "patient", "demanding"],
 			"Plans first. Blades last. That is how we survive.")
 
@@ -979,7 +979,7 @@ func _spawn_thieves_guild() -> void:
 		8, 2,
 		nightshade_quests
 	)
-	_dress_thief(nightshade, "res://data/dialogue/lady_nightshade.json",
+	_dress_thief(nightshade, "res://data/dialogue/trees/lady_nightshade.json",
 			["mysterious", "commanding", "cryptic"],
 			"The Guild does not forget its friends. Or its debts.")
 
@@ -994,7 +994,7 @@ func _spawn_thieves_guild() -> void:
 		[],
 		true  # is_talk_target
 	)
-	_dress_thief(red_mara, "res://data/dialogue/red_mara.json",
+	_dress_thief(red_mara, "res://data/dialogue/trees/red_mara.json",
 			["brash", "independent", "dangerous"],
 			"I answer to nobody wearing Nightshade's colours.")
 
@@ -1054,7 +1054,7 @@ func _spawn_master_helvant() -> void:
 	helvant.faction_id = "arcane_circle"
 	helvant.no_quest_dialogue = "Magic rewards patience, apprentice. Study, and return when you are ready."
 	var helvant_dialogue: DialogueData = DialogueLoader.load_from_json(
-			"res://data/dialogue/master_helvant_wizard_training.json")
+			"res://data/dialogue/trees/master_helvant_wizard_training.json")
 	if helvant_dialogue:
 		helvant.dialogue_data = helvant_dialogue
 		helvant.use_legacy_dialogue = false
@@ -1116,18 +1116,18 @@ func _spawn_forest_border() -> void:
 
 	# Tree textures (forest/autumn style)
 	var tree_textures: Array[String] = [
-		"res://assets/sprites/environment/trees/autumn_tree_1.png",
-		"res://assets/sprites/environment/trees/autumn_tree_2.png",
-		"res://assets/sprites/environment/trees/green_tree1.png",
-		"res://assets/sprites/environment/trees/green_tree2.png",
-		"res://assets/sprites/environment/trees/green_tree3.png"
+		"res://assets/sprites/legacy/environment/trees/autumn_tree_1.png",
+		"res://assets/sprites/legacy/environment/trees/autumn_tree_2.png",
+		"res://assets/sprites/legacy/environment/trees/green_tree1.png",
+		"res://assets/sprites/legacy/environment/trees/green_tree2.png",
+		"res://assets/sprites/legacy/environment/trees/green_tree3.png"
 	]
 
 	# Bush textures
 	var bush_textures: Array[String] = [
-		"res://assets/sprites/environment/trees/bush_1.png",
-		"res://assets/sprites/environment/trees/bush_2.png",
-		"res://assets/sprites/environment/trees/autumn_bush.png"
+		"res://assets/sprites/legacy/environment/trees/bush_1.png",
+		"res://assets/sprites/legacy/environment/trees/bush_2.png",
+		"res://assets/sprites/legacy/environment/trees/autumn_bush.png"
 	]
 
 	# Spawn trees heavily on NORTH, EAST, and SOUTH edges (not west - that's the coast)
@@ -1313,7 +1313,7 @@ func _decorate_temple_of_three_gods() -> void:
 
 	# === STATUE OF CHRONOS (God of Time) - Left side behind altar ===
 	# statue_decay2.png - Hooded figure holding an hourglass
-	var chronos_tex: Texture2D = load("res://assets/sprites/props/monastery/statue_decay2.png")
+	var chronos_tex: Texture2D = load("res://assets/sprites/legacy/props/monastery/statue_decay2.png")
 	if chronos_tex:
 		var chronos_statue: Sprite3D = Sprite3D.new()
 		chronos_statue.name = "StatueChronos"
@@ -1330,7 +1330,7 @@ func _decorate_temple_of_three_gods() -> void:
 
 	# === STATUE OF GAELA (Goddess of Harvest) - Center behind altar ===
 	# statue_decay1.png - Mother/rebirth figure
-	var gaela_tex: Texture2D = load("res://assets/sprites/props/monastery/statue_decay1.png")
+	var gaela_tex: Texture2D = load("res://assets/sprites/legacy/props/monastery/statue_decay1.png")
 	if gaela_tex:
 		var gaela_statue: Sprite3D = Sprite3D.new()
 		gaela_statue.name = "StatueGaela"
@@ -1347,7 +1347,7 @@ func _decorate_temple_of_three_gods() -> void:
 
 	# === STATUE OF MORTHANE (God/Goddess of Death & Rebirth) - Right side behind altar ===
 	# statue_decay4.png - Skeletal/death figure
-	var morthane_tex: Texture2D = load("res://assets/sprites/props/monastery/statue_decay4.png")
+	var morthane_tex: Texture2D = load("res://assets/sprites/legacy/props/monastery/statue_decay4.png")
 	if morthane_tex:
 		var morthane_statue: Sprite3D = Sprite3D.new()
 		morthane_statue.name = "StatueMorthane"
@@ -1364,8 +1364,8 @@ func _decorate_temple_of_three_gods() -> void:
 
 	# === HANGING ORNAMENTS (from ceiling) ===
 	# Hanging brass/gold ornaments between the columns
-	var hanging_tex1: Texture2D = load("res://assets/sprites/props/monastery/monastary_hanging1.png")
-	var hanging_tex2: Texture2D = load("res://assets/sprites/props/monastery/monastary_hanging2.png")
+	var hanging_tex1: Texture2D = load("res://assets/sprites/legacy/props/monastery/monastary_hanging1.png")
+	var hanging_tex2: Texture2D = load("res://assets/sprites/legacy/props/monastery/monastary_hanging2.png")
 
 	# Left column hanging
 	if hanging_tex1:
@@ -1409,7 +1409,7 @@ func _decorate_temple_of_three_gods() -> void:
 		decorations.add_child(hanging_center)
 
 	# === ALTAR DECORATION (stone altar/lectern on the altar surface) ===
-	var altar_tex: Texture2D = load("res://assets/sprites/props/monastery/monastary_altar1.png.png")
+	var altar_tex: Texture2D = load("res://assets/sprites/legacy/props/monastery/monastary_altar1.png.png")
 	if altar_tex:
 		var altar_prop: Sprite3D = Sprite3D.new()
 		altar_prop.name = "AltarDecoration"
@@ -1426,7 +1426,7 @@ func _decorate_temple_of_three_gods() -> void:
 
 	# === FLOOR DECORATION (monastery floor tiles in front of altar) ===
 	# Create a decorative floor overlay using the ornate monastery floor
-	var floor_tex: Texture2D = load("res://assets/sprites/props/monastery/monastary_floor2.png")
+	var floor_tex: Texture2D = load("res://assets/sprites/legacy/props/monastery/monastary_floor2.png")
 	if floor_tex:
 		# Create a floor material with the monastery texture
 		var floor_mat: StandardMaterial3D = StandardMaterial3D.new()
@@ -1447,7 +1447,7 @@ func _decorate_temple_of_three_gods() -> void:
 
 	# === WALL DECORATION (monastery wall texture on back wall) ===
 	# Add wall banners/tapestries using the wall texture as Sprite3D
-	var wall_tex: Texture2D = load("res://assets/sprites/props/monastery/monastary_wall1.png")
+	var wall_tex: Texture2D = load("res://assets/sprites/legacy/props/monastery/monastary_wall1.png")
 	if wall_tex:
 		var wall_banner: Sprite3D = Sprite3D.new()
 		wall_banner.name = "WallBanner"

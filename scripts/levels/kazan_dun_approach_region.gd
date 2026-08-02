@@ -86,7 +86,7 @@ func _spawn_enemy_at_marker(marker: Marker3D) -> void:
 	var enemy_type: String = marker.get_meta("enemy_type", "goblin_soldier")
 
 	# Default values from marker metadata
-	var sprite_path: String = marker.get_meta("sprite_path", "res://assets/sprites/enemies/goblins/goblin_sword.png")
+	var sprite_path: String = marker.get_meta("sprite_path", "res://assets/sprites/legacy/enemies/goblins/goblin_sword.png")
 	var h_frames: int = marker.get_meta("h_frames", 4)
 	var v_frames: int = marker.get_meta("v_frames", 4)
 

@@ -2,7 +2,7 @@
     "id": "apprentice_lyris",
     "display_name": "Apprentice Lyris",
     "description": "A talented young mage of the Arcane Circle. Specializes in elemental magic and support spells.",
-    "sprite_path": "res://assets/sprites/npcs/civilians/wizard_mage.png",
+    "sprite_path": "res://assets/sprites/legacy/npcs/civilians/wizard_mage.png",
     "h_frames": 1,
     "v_frames": 1,
     "pixel_size": 0.0256,

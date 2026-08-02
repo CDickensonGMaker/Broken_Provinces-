@@ -1,9 +1,9 @@
 [gd_scene load_steps=10 format=3 uid="uid://cejsh5y8fg3gc"]
 
 [ext_resource type="Script" uid="uid://t81rcc5exrwm" path="res://scripts/levels/cultist_temple.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
-[ext_resource type="PackedScene" uid="uid://8yid0w81js5b" path="res://assets/models/terrain/cultist_temple2.glb" id="4_ruins"]
+[ext_resource type="PackedScene" uid="uid://8yid0w81js5b" path="res://assets/world/terrain/cultist_temple2.glb" id="4_ruins"]
 [ext_resource type="Texture2D" uid="uid://blh8r118ndc6n" path="res://assets/textures/environment/walls/mossy stones.png" id="5_grass"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
@@ -163,35 +163,35 @@ metadata/spawn_id = "from_wilderness"
 [node name="Cultist_1" type="Marker3D" parent="EnemySpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.19814014, 8)
 metadata/enemy_data = "res://data/enemies/cultist.tres"
-metadata/sprite_path = "res://assets/sprites/enemies/humanoid/cultist_red.png"
+metadata/sprite_path = "res://assets/sprites/legacy/enemies/humanoid/cultist_red.png"
 metadata/h_frames = 1
 metadata/v_frames = 1
 
 [node name="Cultist_2" type="Marker3D" parent="EnemySpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.029512644, 8)
 metadata/enemy_data = "res://data/enemies/cultist.tres"
-metadata/sprite_path = "res://assets/sprites/enemies/humanoid/cultist_red.png"
+metadata/sprite_path = "res://assets/sprites/legacy/enemies/humanoid/cultist_red.png"
 metadata/h_frames = 1
 metadata/v_frames = 1
 
 [node name="Cultist_3" type="Marker3D" parent="EnemySpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.15593624, -2)
 metadata/enemy_data = "res://data/enemies/cultist.tres"
-metadata/sprite_path = "res://assets/sprites/enemies/humanoid/cultist_red.png"
+metadata/sprite_path = "res://assets/sprites/legacy/enemies/humanoid/cultist_red.png"
 metadata/h_frames = 1
 metadata/v_frames = 1
 
 [node name="Cultist_4" type="Marker3D" parent="EnemySpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.28254604, -2)
 metadata/enemy_data = "res://data/enemies/cultist.tres"
-metadata/sprite_path = "res://assets/sprites/enemies/humanoid/cultist_red.png"
+metadata/sprite_path = "res://assets/sprites/legacy/enemies/humanoid/cultist_red.png"
 metadata/h_frames = 1
 metadata/v_frames = 1
 
 [node name="Cult_Leader" type="Marker3D" parent="EnemySpawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95779705, -0.0071487427)
 metadata/enemy_data = "res://data/enemies/cult_leader.tres"
-metadata/sprite_path = "res://assets/sprites/enemies/undead/vampire_lord_walk.png"
+metadata/sprite_path = "res://assets/sprites/legacy/enemies/undead/vampire_lord_walk.png"
 metadata/h_frames = 4
 metadata/v_frames = 1
 

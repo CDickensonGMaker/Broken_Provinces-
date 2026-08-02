@@ -55,8 +55,10 @@ reference/
 # Blender autosaves
 *.blend1
 
-# Gameplay recordings and video captures
-Gameplay footage/
+# Gameplay recordings and video captures.
+# Movie Maker Mode writes into dev/recordings/ (project.godot movie_writer).
+dev/recordings/*
+!dev/recordings/README.txt
 *.mp4
 *.avi
 *.mkv
@@ -71,3 +73,7 @@ Gameplay footage/
 # citizen build stage files - regenerable from tools/citizens/01..06
 assets/models/citizens/_stage*.blend
 tools/citizens/__pycache__/
+
+# Python bytecode from tools/
+__pycache__/
+*.pyc

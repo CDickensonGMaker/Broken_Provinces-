@@ -2,7 +2,7 @@
     "id": "theron_the_bold",
     "display_name": "Theron the Bold",
     "description": "A seasoned human warrior from the Adventurer's Guild. Known for his aggressive fighting style and unwavering courage in battle.",
-    "sprite_path": "res://assets/sprites/npcs/combat/male_gladiator1.png",
+    "sprite_path": "res://assets/sprites/legacy/npcs/combat/male_gladiator1.png",
     "h_frames": 1,
     "v_frames": 1,
     "pixel_size": 0.0320,

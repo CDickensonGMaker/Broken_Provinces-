@@ -498,7 +498,7 @@ func _spawn_tavern(parent: Node3D, pos: Vector3, npc_name: String = "Innkeeper")
 	if is_female:
 		innkeeper.use_random_gender = false
 		innkeeper.is_male = false
-		var sprite_tex: Texture2D = load("res://assets/sprites/npcs/merchants/Innkeeper_woman.png")
+		var sprite_tex: Texture2D = load("res://assets/sprites/legacy/npcs/merchants/Innkeeper_woman.png")
 		if sprite_tex:
 			innkeeper.sprite_texture = sprite_tex
 			innkeeper.sprite_h_frames = 5

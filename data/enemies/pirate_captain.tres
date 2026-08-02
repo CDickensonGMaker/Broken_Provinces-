@@ -137,9 +137,9 @@ drop_table = {
 }
 xp_reward = 200
 scene_path = ""
-icon_path = "res://assets/sprites/enemies/humanoid/pirate_captain.png"
+icon_path = "res://assets/sprites/legacy/enemies/humanoid/pirate_captain.png"
 scale = 1.1
-sprite_path = "res://assets/sprites/enemies/humanoid/pirate_captain.png"
+sprite_path = "res://assets/sprites/legacy/enemies/humanoid/pirate_captain.png"
 attack_sprite_path = ""
 sprite_hframes = 1
 sprite_vframes = 1

@@ -6,7 +6,7 @@
 
 ## CATEGORY: INTEGER DIVISION (Precision Loss)
 
-### 1. ❌ REQUIRES FIX: `scripts/components/billboard_sprite.gd`
+### 1. ❌ REQUIRES FIX: `scripts/characters/visuals/billboard_sprite.gd`
 
 **Issue Type:** Integer Division
 **Severity:** MEDIUM (Sprite direction calculation)
@@ -35,7 +35,7 @@ var direction_index: int = int(round((angle + PI) / angle_per_direction)) % dire
 
 ---
 
-### 2. ✅ ALREADY FIXED: `scripts/combat/spell_caster.gd`
+### 2. ✅ ALREADY FIXED: `scripts/systems/combat/spell_caster.gd`
 
 **Issue Type:** Integer Division (Properly Suppressed)
 **Lines:** 75-78, 144-147
@@ -59,7 +59,7 @@ var stamina_cost := total_cost / 3
 
 ---
 
-### 3. ✅ ALREADY HANDLED: `scripts/autoload/combat_manager.gd`
+### 3. ✅ ALREADY HANDLED: `scripts/systems/combat/combat_manager.gd`
 
 **Issue Type:** Integer Division (Uses float directly)
 **Lines:** 118, 207, 250
@@ -83,7 +83,7 @@ var falloff: float = 1.0 - ((distance - weapon.max_range * 0.75) / (weapon.max_r
 
 ---
 
-### 4. ⚠️ NEEDS VERIFICATION: `scripts/autoload/game_systems.gd`
+### 4. ⚠️ NEEDS VERIFICATION: `scripts/core/game_systems.gd`
 
 **Issue Type:** Potential Integer Division
 **Lines:** TBD (requires file inspection)
@@ -103,7 +103,7 @@ var falloff: float = 1.0 - ((distance - weapon.max_range * 0.75) / (weapon.max_r
 
 ---
 
-### 5. ⚠️ NEEDS VERIFICATION: `scripts/autoload/stats_tracker.gd`
+### 5. ⚠️ NEEDS VERIFICATION: `scripts/core/stats_tracker.gd`
 
 **Issue Type:** Potential Integer Division
 **Lines:** TBD
@@ -119,7 +119,7 @@ var percent := current / max  # Should be float
 
 ---
 
-### 6. ⚠️ NEEDS VERIFICATION: `scripts/autoload/conversation_system.gd`
+### 6. ⚠️ NEEDS VERIFICATION: `scripts/systems/dialogue/conversation_system.gd`
 
 **Issue Type:** Potential Integer Division or Type Casting
 **Lines:** TBD
@@ -130,7 +130,7 @@ var percent := current / max  # Should be float
 
 ---
 
-### 7. ⚠️ NEEDS VERIFICATION: `scripts/data/world_grid.gd`
+### 7. ⚠️ NEEDS VERIFICATION: `scripts/core/world_grid.gd`
 
 **Issue Type:** Grid coordinate calculations (likely integer math)
 **Lines:** TBD (probably in cell calculations)
@@ -147,7 +147,7 @@ func world_to_cell(world_pos: Vector3) -> Vector2i:
 
 ---
 
-### 8. ⚠️ NEEDS VERIFICATION: `scripts/generation/wilderness_room.gd`
+### 8. ⚠️ NEEDS VERIFICATION: `scripts/generation/wilderness/wilderness_room.gd`
 
 **Issue Type:** Procedural generation math (multiple divisions)
 **Lines:** TBD (likely 100+)
@@ -170,7 +170,7 @@ var scaled_pos: Vector3 = pos / scale_factor  # Check types
 
 ---
 
-### 9. ⚠️ NEEDS VERIFICATION: `scripts/dungeons/dungeon_builder.gd`
+### 9. ⚠️ NEEDS VERIFICATION: `scripts/generation/dungeons/dungeon_builder.gd`
 
 **Issue Type:** Dungeon dimension calculations
 **Lines:** TBD
@@ -185,7 +185,7 @@ var room_spacing: int = dungeon_size / room_count  # Check float
 
 ---
 
-### 10. ✅ ALREADY HANDLED: `scripts/dev/combat_arena_test.gd` and `scripts/dev/duel_test.gd`
+### 10. ✅ ALREADY HANDLED: `dev/harnesses/combat_arena_test.gd` and `dev/harnesses/duel_test.gd`
 
 **Status:** Development/test files
 **Action:** If using for testing, ensure no real precision issues
@@ -204,24 +204,24 @@ func handle_signal(_parameter: Type) -> void:  # ✅ Underscore prefix suppresse
 ```
 
 ### Files Already Using Correct Pattern:
-1. ✅ `scripts/autoload/audio_manager.gd` - All 11 unused params properly prefixed
-2. ✅ `scripts/autoload/combat_manager.gd` - All unused params (e.g., _scene_path, _delta) properly prefixed
-3. ✅ `scripts/autoload/save_manager.gd` - Properly formatted
-4. ✅ `scripts/autoload/conversation_system.gd` - Needs verification
-5. ✅ `scripts/autoload/bounty_manager.gd` - Needs verification
-6. ✅ `scripts/autoload/cell_streamer.gd` - Needs verification
-7. ✅ `scripts/autoload/companion_manager.gd` - Needs verification
-8. ✅ `scripts/autoload/duel_manager.gd` - Needs verification
-9. ✅ `scripts/autoload/encounter_manager.gd` - Needs verification
-10. ✅ `scripts/autoload/escort_manager.gd` - Needs verification
-11. ✅ `scripts/autoload/faction_manager.gd` - Needs verification
-12. ✅ `scripts/autoload/follower_manager.gd` - Needs verification
-13. ✅ `scripts/autoload/player_gps.gd` - Needs verification
-14. ✅ `scripts/autoload/quest_manager.gd` - Needs verification
-15. ✅ `scripts/autoload/soulstone_economy.gd` - Needs verification
-16. ✅ `scripts/autoload/stats_tracker.gd` - Needs verification
-17. ✅ `scripts/autoload/takeover_manager.gd` - Needs verification
-18. ✅ `scripts/autoload/tournament_manager.gd` - Needs verification
+1. ✅ `scripts/core/audio_manager.gd` - All 11 unused params properly prefixed
+2. ✅ `scripts/systems/combat/combat_manager.gd` - All unused params (e.g., _scene_path, _delta) properly prefixed
+3. ✅ `scripts/core/save_manager.gd` - Properly formatted
+4. ✅ `scripts/systems/dialogue/conversation_system.gd` - Needs verification
+5. ✅ `scripts/systems/crime/bounty_manager.gd` - Needs verification
+6. ✅ `scripts/world/streaming/cell_streamer.gd` - Needs verification
+7. ✅ `scripts/characters/ai/companion_manager.gd` - Needs verification
+8. ✅ `scripts/systems/events/duel_manager.gd` - Needs verification
+9. ✅ `scripts/systems/events/encounter_manager.gd` - Needs verification
+10. ✅ `scripts/characters/ai/escort_manager.gd` - Needs verification
+11. ✅ `scripts/systems/factions/faction_manager.gd` - Needs verification
+12. ✅ `scripts/characters/ai/follower_manager.gd` - Needs verification
+13. ✅ `scripts/world/streaming/player_gps.gd` - Needs verification
+14. ✅ `scripts/systems/quests/quest_manager.gd` - Needs verification
+15. ✅ `scripts/systems/economy/soulstone_economy.gd` - Needs verification
+16. ✅ `scripts/core/stats_tracker.gd` - Needs verification
+17. ✅ `scripts/systems/factions/takeover_manager.gd` - Needs verification
+18. ✅ `scripts/systems/events/tournament_manager.gd` - Needs verification
 
 ### Action Required:
 **MINIMAL** - Most files already use correct pattern
@@ -235,7 +235,7 @@ func handle_signal(_parameter: Type) -> void:  # ✅ Underscore prefix suppresse
 
 ### Likely Problem Areas (Need Verification):
 
-#### 1. ⚠️ CHECK: `scripts/autoload/quest_manager.gd`
+#### 1. ⚠️ CHECK: `scripts/systems/quests/quest_manager.gd`
 
 **Issue Type:** Variable shadowing in quest processing
 **Likely Locations:** Quest/Objective class processing
@@ -255,7 +255,7 @@ func process_quest(quest: Quest) -> void:
 
 ---
 
-#### 2. ⚠️ CHECK: `scripts/generation/wilderness_room.gd`
+#### 2. ⚠️ CHECK: `scripts/generation/wilderness/wilderness_room.gd`
 
 **Issue Type:** Procedural generation variable reuse
 **Likely Locations:** Prop spawning, terrain generation sections
@@ -271,7 +271,7 @@ for prop in props:
 
 ---
 
-#### 3. ⚠️ CHECK: `scripts/combat/spell_caster.gd`
+#### 3. ⚠️ CHECK: `scripts/systems/combat/spell_caster.gd`
 
 **Issue Type:** Spell data variable shadowing
 **Likely Locations:** Spell lookup, casting logic
@@ -313,7 +313,7 @@ SomeClass.static_method()  # ✅ Correct
 ## 📋 QUICK FIX CHECKLIST
 
 ### Step 1: Billboard Sprite (5 minutes)
-- [ ] Open `scripts/components/billboard_sprite.gd`
+- [ ] Open `scripts/characters/visuals/billboard_sprite.gd`
 - [ ] Go to line 237
 - [ ] Change `(TAU / direction_count)` to `(TAU / float(direction_count))`
 - [ ] Save

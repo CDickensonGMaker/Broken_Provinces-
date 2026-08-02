@@ -1,13 +1,13 @@
 # Dialogue Architecture P0 Fixes — Implementation Log
 
 Implements the three P0 items from `dialogue_quest_master.md` (HEADLINE FINDING + §1).
-Scope: `scripts/autoload/conversation_system.gd` and `scripts/dialogue/conversation_response.gd` only.
+Scope: `scripts/systems/dialogue/conversation_system.gd` and `scripts/systems/dialogue/conversation_response.gd` only.
 No content files were edited (weather.tres loaded as-is; career_greetings.json / career_topics.json untouched).
 
 ## Files changed
 
-- `scripts/autoload/conversation_system.gd`
-- `scripts/dialogue/conversation_response.gd`
+- `scripts/systems/dialogue/conversation_system.gd`
+- `scripts/systems/dialogue/conversation_response.gd`
 
 ---
 
@@ -121,7 +121,7 @@ that answers "can this NPC say this at all," not "how likely is this NPC to pick
 
 ## Fix 3 — weather.tres
 
-**Problem:** `data/conversation_pools/weather.tres` (21 authored responses) was never loaded — the
+**Problem:** `data/dialogue/pools/weather.tres` (21 authored responses) was never loaded — the
 JSON-only loader never touched it, and `WEATHER` was never added to `get_available_topics()`.
 
 **Change:**

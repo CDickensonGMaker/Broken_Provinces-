@@ -40,8 +40,8 @@ Then run it and **fix what it finds** — this IS the War Room's #1 defect class
 
 Order by risk/reward:
 1. **`scripts/ui/hud.gd` (4,086)** — safest split: extract self-contained panels (minimap, status bars, hotbar, notifications) into their own scripts on their existing scene nodes; hud.gd becomes a coordinator. UI splits are low-blast-radius.
-2. **`scripts/enemies/enemy_base.gd` (3,169)** — extract the 10-state AI machine into `enemy_ai.gd` (component node or RefCounted owned by base); combat/stats stay. 64 enemies inherit this — **run the game and fight 3–4 enemy types after**, not just parse-check.
-3. **`scripts/generation/wilderness_room.gd` (3,332)** — only if time remains; generation code is the hardest to verify quickly.
+2. **`scripts/characters/enemies/enemy_base.gd` (3,169)** — extract the 10-state AI machine into `enemy_ai.gd` (component node or RefCounted owned by base); combat/stats stay. 64 enemies inherit this — **run the game and fight 3–4 enemy types after**, not just parse-check.
+3. **`scripts/generation/wilderness/wilderness_room.gd` (3,332)** — only if time remains; generation code is the hardest to verify quickly.
 
 **NOT today:** autoload consolidation (44 → fewer). That's an architecture change with init-order blast radius across every system — needs its own War Room session, not a refactor-day line item.
 

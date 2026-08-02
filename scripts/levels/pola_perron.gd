@@ -4,7 +4,7 @@
 extends Node3D
 
 const ZONE_ID := "monastery_pola_perron"
-const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
+const TOWN_AMBIENT_PATH := "res://assets/audio/ambience/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
 
 ## Elevation constants for NPC spawning
 const BASE_LEVEL := 0.0

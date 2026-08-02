@@ -133,7 +133,7 @@ func _load_terrain_model() -> void:
 
 	if not terrain_model:
 		# Try to load dynamically if not in scene
-		var glb_scene: PackedScene = load("res://assets/models/terrain/willow_dale.glb")
+		var glb_scene: PackedScene = load("res://assets/world/terrain/willow_dale.glb")
 		if not glb_scene:
 			push_error("[WillowDale] Failed to load willow_dale.glb")
 			return
@@ -281,7 +281,7 @@ func _spawn_cave_entrance() -> void:
 		entrance_pos,
 		"ancient_depths",  # cave_system_id
 		"from_willow_dale",  # destination spawn_id in target scene
-		"res://scenes/dungeons/new_dungeon.tscn",  # link_to_scene
+		"res://scenes/generation/dungeons/new_dungeon.tscn",  # link_to_scene
 		"The Ancient Depths"  # entrance_name
 	)
 
@@ -335,7 +335,7 @@ func _spawn_skeleton_shade(pos: Vector3) -> void:
 		v_frames = sprite_config.get("v_frames", 1)
 	else:
 		# Fall back to defaults
-		sprite_path = "res://assets/sprites/enemies/undead/skeleton_shade_walking.png"
+		sprite_path = "res://assets/sprites/legacy/enemies/undead/skeleton_shade_walking.png"
 		h_frames = 4
 		v_frames = 1
 
@@ -487,7 +487,7 @@ func _spawn_cultist(pos: Vector3) -> void:
 		v_frames = sprite_config.get("v_frames", 1)
 	else:
 		# Fall back to defaults
-		sprite_path = "res://assets/sprites/enemies/humanoid/cultist_red.png"
+		sprite_path = "res://assets/sprites/legacy/enemies/humanoid/cultist_red.png"
 		h_frames = 3
 		v_frames = 1
 
@@ -529,7 +529,7 @@ func _spawn_cult_leader(pos: Vector3) -> void:
 		v_frames = sprite_config.get("v_frames", 1)
 	else:
 		# Fall back to defaults
-		sprite_path = "res://assets/sprites/enemies/undead/vampire_lord_walk.png"
+		sprite_path = "res://assets/sprites/legacy/enemies/undead/vampire_lord_walk.png"
 		h_frames = 5
 		v_frames = 1
 

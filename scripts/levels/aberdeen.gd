@@ -10,7 +10,7 @@ extends Node3D
 
 const ZONE_ID := "town_aberdeen"
 const ZONE_SIZE := 90.0  # 90x90 unit zone
-const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
+const TOWN_AMBIENT_PATH := "res://assets/audio/ambience/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
 
 @onready var nav_region: NavigationRegion3D = $NavigationRegion3D
 
@@ -147,7 +147,7 @@ func _spawn_civilians(container: Node3D) -> void:
 		Vector3(-20, 0, -6),  # Near town hall building
 		"Mayor Bjorn",
 		"aberdeen_mayor",
-		preload("res://assets/sprites/npcs/civilians/man_noble1.png"),
+		preload("res://assets/sprites/legacy/npcs/civilians/man_noble1.png"),
 		1, 1,
 		[],  # Quest IDs to be added later
 		false
@@ -201,7 +201,7 @@ func _create_frozen_corpse_decorations() -> void:
 	var decorations := $Decorations
 
 	# Frost monster texture (frozen creature corpse)
-	var frost_monster_tex: Texture2D = load("res://assets/sprites/enemies/beasts/frost_monster.png")
+	var frost_monster_tex: Texture2D = load("res://assets/sprites/legacy/enemies/beasts/frost_monster.png")
 	if not frost_monster_tex:
 		push_warning("[Aberdeen] Failed to load frost_monster.png")
 		return

@@ -4,7 +4,7 @@
 extends Node3D
 
 const ZONE_ID := "village_riverside"
-const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
+const TOWN_AMBIENT_PATH := "res://assets/audio/ambience/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
 
 @onready var nav_region: NavigationRegion3D = $NavigationRegion3D
 
@@ -122,9 +122,9 @@ func _spawn_priests() -> void:
 	var npc_spawns := $NPCSpawnPoints
 
 	# Load dialogue data
-	var dialogue_time: DialogueData = load("res://data/dialogues/priest_of_time.tres") as DialogueData
-	var dialogue_harvest: DialogueData = load("res://data/dialogues/priest_of_harvest.tres") as DialogueData
-	var dialogue_rebirth: DialogueData = load("res://data/dialogues/priest_of_rebirth.tres") as DialogueData
+	var dialogue_time: DialogueData = load("res://data/dialogue/resources/priest_of_time.tres") as DialogueData
+	var dialogue_harvest: DialogueData = load("res://data/dialogue/resources/priest_of_harvest.tres") as DialogueData
+	var dialogue_rebirth: DialogueData = load("res://data/dialogue/resources/priest_of_rebirth.tres") as DialogueData
 
 	# Priest of Time - Aldren
 	var aldren_marker := npc_spawns.get_node_or_null("NPCSpawn_PriestAldren")

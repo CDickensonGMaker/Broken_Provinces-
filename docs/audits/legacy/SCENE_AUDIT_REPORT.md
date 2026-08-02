@@ -64,7 +64,7 @@ The following WorldGrid locations reference scene files that exist, but some WIP
 **Issue: Some scene files reference textures with inconsistent UID tags**
 
 Examples:
-- `dalhurst.tscn` line 8: `path="res://assets/sprites/environment/walls/stonewall.png"` (missing UID)
+- `dalhurst.tscn` line 8: `path="res://assets/sprites/legacy/environment/walls/stonewall.png"` (missing UID)
 - Some textures have UIDs, some don't
 
 **Impact:** Low - Godot manages UIDs automatically on save/load
@@ -196,7 +196,7 @@ Checked for circular dependencies and invalid inheritance chains:
 
 **Sample scenes with inheritance:**
 - `town_preview.tscn` inherits from `thornfield.tscn` ✓
-- `dev/boat_travel_test.tscn` references `scenes/player/player.tscn` ✓
+- `dev/boat_travel_test.tscn` references `scenes/characters/player.tscn` ✓
 - NPC instance scenes properly reference base templates ✓
 
 **Result:** ✓ No circular dependencies detected
@@ -326,10 +326,10 @@ All present and accounted for. See file listing above.
 
 #### NPCs & Enemies
 - `scenes/npcs/*.tscn` - 3 files ✓
-- `scenes/enemies/enemy_base.tscn` ✓
+- `scenes/characters/enemy_base.tscn` ✓
 
 #### Generation & Procedural
-- `scenes/generation/wilderness_room.tscn` ✓
+- `scenes/generation/wilderness/wilderness_room.tscn` ✓
 - `scenes/rooms/kazan_dun/*.tscn` - 23 files ✓
 
 ---

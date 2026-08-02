@@ -131,8 +131,8 @@ func _spawn_enemies() -> void:
 		enemies_container.name = "Enemies"
 		add_child(enemies_container)
 
-	var skeleton_texture: Texture2D = load("res://assets/sprites/enemies/undead/skeleton_walking.png")
-	var bandit_texture: Texture2D = load("res://assets/sprites/enemies/humanoid/human_bandit_alt.png")
+	var skeleton_texture: Texture2D = load("res://assets/sprites/legacy/enemies/undead/skeleton_walking.png")
+	var bandit_texture: Texture2D = load("res://assets/sprites/legacy/enemies/humanoid/human_bandit_alt.png")
 
 	var enemy_count: int = 0
 	for child in enemy_spawn_points.get_children():

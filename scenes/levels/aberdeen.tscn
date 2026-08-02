@@ -1,7 +1,7 @@
 [gd_scene load_steps=39 format=3 uid="uid://dwtn7kpbhmnpu"]
 
 [ext_resource type="Script" uid="uid://b5deh5yw7jpvd" path="res://scripts/levels/aberdeen.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
 [ext_resource type="Texture2D" uid="uid://ctpx5tsjlmw4x" path="res://assets/textures/environment/floors/stonefloor.png" id="4"]
 [ext_resource type="Texture2D" uid="uid://dh326odj53nps" path="res://assets/textures/environment/walls/stonewall.png" id="5"]
@@ -9,12 +9,12 @@
 [ext_resource type="PackedScene" path="res://scenes/world/merchant_instance.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://scenes/world/rest_spot_instance.tscn" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/world/fast_travel_shrine_instance.tscn" id="9"]
-[ext_resource type="PackedScene" path="res://scenes/npcs/quest_giver_instance.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/characters/quest_giver_instance.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://scenes/world/zone_door_instance.tscn" id="11"]
 [ext_resource type="PackedScene" path="res://scenes/world/bounty_board_instance.tscn" id="12"]
-[ext_resource type="Texture2D" uid="uid://dd2545kodv82h" path="res://assets/sprites/environment/backgrounds/road_to_kazan_dun_background.png" id="13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/beasts/frost_monster.png" id="14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/npcs/animals/cat_animiation.png" id="15"]
+[ext_resource type="Texture2D" uid="uid://dd2545kodv82h" path="res://assets/sprites/legacy/environment/backgrounds/road_to_kazan_dun_background.png" id="13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/legacy/enemies/beasts/frost_monster.png" id="14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/legacy/npcs/animals/cat_animiation.png" id="15"]
 
 [sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
 sky_top_color = Color(0.55, 0.6, 0.7, 1)

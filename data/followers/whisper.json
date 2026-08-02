@@ -2,7 +2,7 @@
     "id": "whisper",
     "display_name": "Whisper",
     "description": "A halfling infiltrator known for her incredible speed and agility. Her dual daggers are coated in deadly poisons.",
-    "sprite_path": "res://assets/sprites/npcs/combat/thief.png",
+    "sprite_path": "res://assets/sprites/legacy/npcs/combat/thief.png",
     "h_frames": 1,
     "v_frames": 1,
     "pixel_size": 0.0192,

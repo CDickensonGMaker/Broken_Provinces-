@@ -12,7 +12,7 @@ const ZONE_ID := "thornfield"
 ## Godfrey Larke's inn - where the village drinks. Scene-local; see _leisure_world_pos().
 const LEISURE_LOCAL := Vector3(3.0, 0.0, 9.0)
 const ZONE_SIZE := 100.0  # Matches WorldGrid.CELL_SIZE
-const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
+const TOWN_AMBIENT_PATH := "res://assets/audio/ambience/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
 
 @onready var nav_region: NavigationRegion3D = $NavigationRegion3D
 
@@ -444,7 +444,7 @@ func _spawn_npcs() -> void:
 		captain_position,
 		"Guard Captain Halden",
 		"thornfield_guard_captain",
-		preload("res://assets/sprites/npcs/civilians/guard2_civilian.png"),
+		preload("res://assets/sprites/legacy/npcs/civilians/guard2_civilian.png"),
 		1, 1,
 		["rescue_soldier_1", "road_safety_1"],
 		true  # is_talk_target

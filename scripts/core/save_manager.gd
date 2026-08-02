@@ -1,0 +1,2210 @@
+## save_manager.gd - Handles saving and loading game state with versioned structure
+extends Node
+
+const SaveDataClass = preload("res://scripts/data/save_data.gd")
+# DungeonState system uses SimpleDungeons addon - state tracked via dungeon_states Dictionary
+# const DungeonStateScript := preload("res://scripts/generation/dungeons/dungeon_state.gd")
+
+signal save_completed(slot: int)
+signal load_completed(slot: int)
+signal save_failed(slot: int, error: String)
+signal load_failed(slot: int, error: String)
+
+const SAVE_DIR := "user://saves/"
+const SAVE_FILE_PREFIX := "save_"
+const SAVE_FILE_EXT := ".sav"
+const DUNGEON_SEEDS_FILE := "user://saves/dungeon_seeds.cache"
+const MAX_SAVE_SLOTS := 10
+
+## Current save format version. The table lives on SaveData, which is the class
+## that actually defines the format; this used to be a second copy of the number
+## and it drifted to 5 while SaveData said 7, so the "Version 5 -> 6" migration
+## block below could never run.
+const SAVE_VERSION := SaveDataClass.SAVE_VERSION
+
+## Currently loaded save slot
+var current_slot: int = -1
+
+## Autosave settings - dual save system
+const AUTOSAVE_PERIODIC_SLOT: int = 8  # "30 Second Auto Save"
+const AUTOSAVE_EXIT_SLOT: int = 9      # "Auto Save Menu Close"
+var autosave_enabled: bool = true
+var autosave_interval: float = 30.0   # 30 seconds
+var autosave_timer: float = 0.0
+
+## Play time tracking
+var session_start_time: float = 0.0
+var total_play_time: float = 0.0
+var rest_count: int = 0
+var death_count: int = 0
+
+## World state tracking
+var discovered_locations: Dictionary = {}
+var killed_enemies: Dictionary = {}
+var dropped_items: Dictionary = {}
+var opened_containers: Dictionary = {}
+var unlocked_shortcuts: Dictionary = {}
+var current_zone_id: String = ""
+var current_zone_name: String = ""
+
+## Persistent chest contents (town storage chests)
+## Format: { "chest_id": [ {item_id, quantity, quality}, ... ] }
+var persistent_chest_contents: Dictionary = {}
+
+## Dungeon seeds for procedural generation persistence
+## Format: { "dungeon_id": seed_int }
+var dungeon_seeds: Dictionary = {}
+
+## Dungeon states for persistence (main/minor dungeon tracking)
+## Format: { "dungeon_id": DungeonState.to_dict() }
+var dungeon_states: Dictionary = {}
+
+## Pending data to apply after scene load
+var pending_known_spells: Array = []
+
+func _ready() -> void:
+	_ensure_save_directory()
+	_load_dungeon_seeds_cache()
+	session_start_time = Time.get_unix_time_from_system()
+	# Connect to scene load completed to apply pending data
+	if SceneManager:
+		SceneManager.scene_load_completed.connect(_on_scene_load_completed)
+	# Setup quick save/load keybindings
+	_setup_save_keybindings()
+	# Enable exit notification handling
+	get_tree().set_auto_accept_quit(false)
+
+
+## Handle window close / quit notifications
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		# Auto-save on exit (with error protection)
+		_safe_autosave_on_exit()
+		# Allow quit
+		if get_tree():
+			get_tree().quit()
+	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		# Mobile back button - also autosave
+		_safe_autosave_on_exit()
+
+
+## Safely attempt autosave, catching any errors
+func _safe_autosave_on_exit() -> void:
+	# Wrap in error handling to prevent crashes on exit
+	if not get_tree():
+		return
+	if not is_instance_valid(self):
+		return
+
+	# Try to autosave, but don't crash if it fails
+	autosave_on_exit()
+
+func _setup_save_keybindings() -> void:
+	# Add quick_save action (F5)
+	if not InputMap.has_action("quick_save"):
+		InputMap.add_action("quick_save")
+		var f5_event := InputEventKey.new()
+		f5_event.physical_keycode = KEY_F5
+		InputMap.action_add_event("quick_save", f5_event)
+
+	# Add quick_load action (F9)
+	if not InputMap.has_action("quick_load"):
+		InputMap.add_action("quick_load")
+		var f9_event := InputEventKey.new()
+		f9_event.physical_keycode = KEY_F9
+		InputMap.action_add_event("quick_load", f9_event)
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("quick_save"):
+		_do_quick_save()
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("quick_load"):
+		_do_quick_load()
+		get_viewport().set_input_as_handled()
+
+func _do_quick_save() -> void:
+	# Prevent saving during scene transitions to avoid corrupted state
+	if SceneManager and SceneManager.is_loading:
+		_show_save_notification("Cannot save during scene transition")
+		return
+
+	if quick_save():
+		_show_save_notification("Game Saved")
+	else:
+		_show_save_notification("Save Failed!")
+
+func _do_quick_load() -> void:
+	if save_exists(0):
+		# Get save info BEFORE loading to get scene path
+		var save_info := get_save_info(0)
+		var scene_path: String = save_info.get("current_scene", "")
+
+		if quick_load():
+			_show_save_notification("Game Loaded")
+			# Change to the saved scene
+			if not scene_path.is_empty():
+				SceneManager.change_scene(scene_path)
+			else:
+				push_warning("[SaveManager] Quick load has no current_scene")
+		else:
+			_show_save_notification("Load Failed!")
+	else:
+		_show_save_notification("No Save Found")
+
+func _show_save_notification(message: String) -> void:
+	# Try to show via HUD
+	var hud := get_tree().get_first_node_in_group("hud")
+	if hud and hud.has_method("show_notification"):
+		hud.show_notification(message)
+
+func _process(delta: float) -> void:
+	if autosave_enabled:
+		autosave_timer += delta
+		if autosave_timer >= autosave_interval:
+			autosave_timer = 0.0
+			_do_autosave()
+
+## Perform periodic autosave (every 30 seconds)
+func _do_autosave() -> void:
+	# Only autosave if player exists (in gameplay, not menus)
+	var player := get_tree().get_first_node_in_group("player")
+	if not player:
+		return
+
+	# Don't autosave if player is dead - prevents save loop on death
+	if player.has_method("is_dead") and player.is_dead():
+		return
+
+	# Also check GameManager death state
+	if GameManager and GameManager.player_data:
+		if GameManager.player_data.current_hp <= 0:
+			return
+
+	# Don't autosave if game is paused (in menu)
+	if get_tree().paused:
+		return
+
+	# Don't autosave during scene transitions
+	if SceneManager and SceneManager.is_loading:
+		return
+
+	if save_game(AUTOSAVE_PERIODIC_SLOT):
+		_show_save_notification("30s Autosave")
+
+
+## Perform exit/menu close autosave - call when game is closing or pausing
+func autosave_on_exit() -> void:
+	# Safety check for tree validity
+	if not get_tree():
+		return
+
+	# Only save if player exists
+	var player := get_tree().get_first_node_in_group("player")
+	if not player:
+		return
+
+	# Don't save if player is dead
+	if player.has_method("is_dead") and player.is_dead():
+		return
+
+	if GameManager and GameManager.player_data:
+		if GameManager.player_data.current_hp <= 0:
+			return
+
+	# Don't save during scene transitions
+	if SceneManager and SceneManager.is_loading:
+		return
+
+	if save_game(AUTOSAVE_EXIT_SLOT):
+		pass
+
+## Ensure save directory exists
+func _ensure_save_directory() -> void:
+	if not DirAccess.dir_exists_absolute(SAVE_DIR):
+		DirAccess.make_dir_absolute(SAVE_DIR)
+
+## Get save file path for slot
+func _get_save_path(slot: int) -> String:
+	return SAVE_DIR + SAVE_FILE_PREFIX + str(slot) + SAVE_FILE_EXT
+
+## Save the game to a slot
+func save_game(slot: int) -> bool:
+	if slot < 0 or slot >= MAX_SAVE_SLOTS:
+		save_failed.emit(slot, "Invalid slot number")
+		return false
+
+	var save_data = _collect_save_data()
+
+	var json_string: String = JSON.stringify(save_data.to_dict(), "\t")
+	var file := FileAccess.open(_get_save_path(slot), FileAccess.WRITE)
+
+	if not file:
+		var error := FileAccess.get_open_error()
+		save_failed.emit(slot, "Failed to open file: " + str(error))
+		return false
+
+	file.store_string(json_string)
+	file.close()
+
+	current_slot = slot
+	save_completed.emit(slot)
+	return true
+
+## Load a game from a slot
+func load_game(slot: int) -> bool:
+	if slot < 0 or slot >= MAX_SAVE_SLOTS:
+		load_failed.emit(slot, "Invalid slot number")
+		return false
+
+	var path := _get_save_path(slot)
+	if not FileAccess.file_exists(path):
+		load_failed.emit(slot, "Save file not found")
+		return false
+
+	var file := FileAccess.open(path, FileAccess.READ)
+	if not file:
+		var error := FileAccess.get_open_error()
+		load_failed.emit(slot, "Failed to open file: " + str(error))
+		return false
+
+	var json_string := file.get_as_text()
+	file.close()
+
+	var json := JSON.new()
+	var parse_result := json.parse(json_string)
+	if parse_result != OK:
+		load_failed.emit(slot, "Failed to parse save data")
+		return false
+
+	var raw_data: Dictionary = json.data
+
+	# Check version and migrate if needed
+	var version: int = raw_data.get("version", 0)
+	if version < SAVE_VERSION:
+		raw_data = _migrate_save_data(raw_data, version)
+	_remap_layout_paths(raw_data)
+
+	var save_data = SaveDataClass.new()
+	save_data.from_dict(raw_data)
+
+	if not save_data.is_valid():
+		load_failed.emit(slot, "Invalid save data structure")
+		return false
+
+	_apply_save_data(save_data)
+
+	current_slot = slot
+	session_start_time = Time.get_unix_time_from_system()
+	load_completed.emit(slot)
+	return true
+
+## Delete a save slot
+func delete_save(slot: int) -> bool:
+	var path := _get_save_path(slot)
+	if FileAccess.file_exists(path):
+		var err := DirAccess.remove_absolute(path)
+		return err == OK
+	return true
+
+## Check if a save slot exists
+func save_exists(slot: int) -> bool:
+	return FileAccess.file_exists(_get_save_path(slot))
+
+## Get save metadata for a slot (for save select screen)
+func get_save_info(slot: int) -> Dictionary:
+	if not save_exists(slot):
+		return {}
+
+	var file := FileAccess.open(_get_save_path(slot), FileAccess.READ)
+	if not file:
+		return {}
+
+	var json := JSON.new()
+	var parse_result := json.parse(file.get_as_text())
+	file.close()
+
+	if parse_result != OK:
+		return {}
+
+	var raw_data: Dictionary = json.data
+	# This path never migrates, so the remap has to be here too - see the note
+	# on _remap_layout_paths.
+	_remap_layout_paths(raw_data)
+	var save_data = SaveDataClass.new()
+	save_data.from_dict(raw_data)
+
+	return save_data.get_display_info()
+
+## Get all save slot infos
+func get_all_save_infos() -> Array[Dictionary]:
+	var infos: Array[Dictionary] = []
+	for i in range(MAX_SAVE_SLOTS):
+		if save_exists(i):
+			var info := get_save_info(i)
+			info["slot"] = i
+			# Label autosave slots
+			if i == AUTOSAVE_PERIODIC_SLOT:
+				info["slot_name"] = "30 Second Auto Save"
+			elif i == AUTOSAVE_EXIT_SLOT:
+				info["slot_name"] = "Auto Save Menu Close"
+			else:
+				info["slot_name"] = "Save Slot %d" % (i + 1)
+			infos.append(info)
+		else:
+			var empty_info: Dictionary = {"slot": i, "empty": true}
+			if i == AUTOSAVE_PERIODIC_SLOT:
+				empty_info["slot_name"] = "30 Second Auto Save"
+			elif i == AUTOSAVE_EXIT_SLOT:
+				empty_info["slot_name"] = "Auto Save Menu Close"
+			else:
+				empty_info["slot_name"] = "Save Slot %d" % (i + 1)
+			infos.append(empty_info)
+	return infos
+
+## Collect all data to save
+func _collect_save_data():
+	var save_data = SaveDataClass.new()
+
+	# Metadata
+	save_data.version = SAVE_VERSION
+	save_data.timestamp = Time.get_unix_time_from_system()
+	save_data.datetime_string = Time.get_datetime_string_from_system()
+	save_data.game_version = ProjectSettings.get_setting("application/config/version", "1.0.0")
+
+	# Player data
+	if save_data.player:
+		_collect_player_data(save_data.player)
+
+	# Inventory data
+	if save_data.inventory:
+		_collect_inventory_data(save_data.inventory)
+
+	# World data
+	if save_data.world:
+		_collect_world_data(save_data.world)
+
+	# Quest data
+	if save_data.quests:
+		_collect_quest_data(save_data.quests)
+
+	# Time data
+	if save_data.time_data:
+		_collect_time_data(save_data.time_data)
+
+	# Audio settings
+	save_data.audio_settings = AudioManager.get_settings()
+
+	# Crime/bounty data
+	if save_data.crime_data:
+		_collect_crime_data(save_data.crime_data)
+
+	# Flag data (FlagManager)
+	if save_data.flag_data:
+		_collect_flag_data(save_data.flag_data)
+
+	# Conversation memory data
+	if save_data.conversation_data:
+		_collect_conversation_data(save_data.conversation_data)
+
+	# Errand quest data
+	if save_data.errand_data:
+		_collect_errand_data(save_data.errand_data)
+
+	# World manager (location discovery) data
+	if save_data.world_manager_data:
+		_collect_world_manager_data(save_data.world_manager_data)
+
+	# Encounter manager data
+	if save_data.encounter_data:
+		_collect_encounter_data(save_data.encounter_data)
+
+	# Cell streamer data (floating origin, active cell)
+	if save_data.cell_streamer_data:
+		_collect_cell_streamer_data(save_data.cell_streamer_data)
+
+	# Morality data
+	if save_data.morality_data:
+		_collect_morality_data(save_data.morality_data)
+
+	# Faction data
+	if save_data.faction_data:
+		_collect_faction_data(save_data.faction_data)
+
+	# NPC disposition data
+	if save_data.npc_disposition_data:
+		_collect_npc_disposition_data(save_data.npc_disposition_data)
+
+	# Codex data
+	if save_data.codex_data:
+		_collect_codex_data(save_data.codex_data)
+
+	# Stats tracker data
+	if save_data.stats_data:
+		_collect_stats_data(save_data.stats_data)
+
+	# Journal data (notes and bestiary)
+	if save_data.journal_data:
+		_collect_journal_data(save_data.journal_data)
+
+	# Soulstone economy data
+	if save_data.soulstone_data:
+		_collect_soulstone_data(save_data.soulstone_data)
+
+	# Follower system data
+	if save_data.follower_data:
+		_collect_follower_data(save_data.follower_data)
+
+	# Guild rank system data
+	if save_data.guild_rank_data:
+		_collect_guild_rank_data(save_data.guild_rank_data)
+
+	# Duel manager data
+	if save_data.duel_data:
+		_collect_duel_data(save_data.duel_data)
+
+	# Escort manager data
+	if save_data.escort_data:
+		_collect_escort_data(save_data.escort_data)
+
+	# Companion manager data
+	if save_data.companion_data:
+		_collect_companion_data(save_data.companion_data)
+
+	# Weather system data
+	if save_data.weather_data:
+		_collect_weather_data(save_data.weather_data)
+
+	# World state data (persistent world facts and modifications)
+	if save_data.world_state_data:
+		_collect_world_state_data(save_data.world_state_data)
+
+	# Fast travel data (journey in progress, caravan routes)
+	if save_data.fast_travel_data:
+		_collect_fast_travel_data(save_data.fast_travel_data)
+
+	# Tournament data (arena fame, winnings)
+	if save_data.tournament_data:
+		_collect_tournament_data(save_data.tournament_data)
+
+	# Cave data (visited areas, per-area state)
+	if save_data.cave_data:
+		_collect_cave_data(save_data.cave_data)
+
+	return save_data
+
+## Collect player data
+func _collect_player_data(player_data) -> void:
+	if not GameManager.player_data:
+		return
+
+	var pd := GameManager.player_data
+
+	player_data.character_name = pd.character_name
+	player_data.race = pd.race
+	player_data.career = pd.career
+	player_data.grit = pd.grit
+	player_data.agility = pd.agility
+	player_data.will = pd.will
+	player_data.speech = pd.speech
+	player_data.knowledge = pd.knowledge
+	player_data.vitality = pd.vitality
+	player_data.current_hp = pd.current_hp
+	player_data.max_hp = pd.max_hp
+	player_data.current_stamina = pd.current_stamina
+	player_data.max_stamina = pd.max_stamina
+	player_data.current_mana = pd.current_mana
+	player_data.max_mana = pd.max_mana
+	player_data.current_spell_slots = pd.current_spell_slots
+	player_data.max_spell_slots = pd.max_spell_slots
+	player_data.level = pd.level
+	player_data.improvement_points = pd.improvement_points
+	player_data.total_ip_earned = pd.total_ip_earned
+	player_data.skills = pd.skills.duplicate()
+	player_data.conditions = pd.conditions.duplicate()
+	player_data.active_buffs = pd.active_buffs.duplicate(true)
+
+	# Known spells from SpellCaster
+	var player: Node = null
+	if get_tree():
+		player = get_tree().get_first_node_in_group("player")
+	if player:
+		var spell_caster: SpellCaster = player.get_node_or_null("SpellCaster")
+		if spell_caster:
+			player_data.known_spells = []
+			for spell in spell_caster.known_spells:
+				if spell:
+					player_data.known_spells.append(spell.id)
+
+	# Player position
+	if player and player is Node3D:
+		player_data.position = (player as Node3D).global_position
+		if player.has_node("MeshRoot"):
+			player_data.rotation_y = player.get_node("MeshRoot").rotation.y
+
+	if get_tree() and get_tree().current_scene:
+		player_data.current_scene = get_tree().current_scene.scene_file_path
+	else:
+		player_data.current_scene = ""
+
+## Collect inventory data
+func _collect_inventory_data(inv_data) -> void:
+	var inv_dict := InventoryManager.to_dict()
+	inv_data.items = inv_dict.get("inventory", [])
+	inv_data.equipment = inv_dict.get("equipment", {})
+	inv_data.gold = inv_dict.get("gold", 0)
+	inv_data.quickslots = inv_dict.get("quick_slots", [])
+	inv_data.hotbar = inv_dict.get("hotbar", [])
+	inv_data.spell_slots = inv_dict.get("spell_slots", [])
+	inv_data.equipped_spell_id = inv_dict.get("equipped_spell_id", "")
+
+## Collect world data
+func _collect_world_data(world_data) -> void:
+	world_data.world_seed = GameManager.world_seed
+	world_data.active_goblin_camps = GameManager.active_goblin_camps.duplicate()
+	world_data.current_zone_id = current_zone_id
+	world_data.current_zone_name = current_zone_name
+	world_data.discovered_locations = discovered_locations.duplicate()
+	world_data.killed_enemies = killed_enemies.duplicate()
+	world_data.dropped_items = _collect_dropped_items()
+	world_data.opened_containers = opened_containers.duplicate()
+	world_data.unlocked_shortcuts = unlocked_shortcuts.duplicate()
+	world_data.dungeon_seeds = dungeon_seeds.duplicate()
+	world_data.dungeon_states = dungeon_states.duplicate()
+
+	# RestManager data (diminishing returns, respawn tracking)
+	if RestManager:
+		world_data.rest_manager = RestManager.get_save_data()
+
+	# SpellCreator custom spells data
+	if SpellCreator:
+		world_data.custom_spells = SpellCreator.get_save_data()
+
+## Collect dropped items in current zone
+func _collect_dropped_items() -> Dictionary:
+	var items := dropped_items.duplicate()
+
+	# Also collect any currently spawned world items
+	var world_items := get_tree().get_nodes_in_group("world_items")
+	var zone_items: Array = []
+
+	for item in world_items:
+		if item.has_method("to_save_dict"):
+			zone_items.append(item.to_save_dict())
+
+	if zone_items.size() > 0:
+		items[current_zone_id] = zone_items
+
+	return items
+
+## Collect quest data
+## QuestManager.to_dict() returns: {tracked_quest_id, quests, bounty_cooldowns}
+## We store the raw dict directly using QuestSaveData's fields as a container
+func _collect_quest_data(quest_data) -> void:
+	var quest_dict := QuestManager.to_dict()
+	# Store raw QuestManager data in QuestSaveData fields
+	# active = the full quests dictionary, completed/failed/variables used for compatibility
+	quest_data.active = quest_dict.get("quests", {})
+	quest_data.completed = {}  # Not used in new format, kept for save file compatibility
+	quest_data.failed = {}  # Not used in new format, kept for save file compatibility
+	quest_data.variables = {
+		"tracked_quest_id": quest_dict.get("tracked_quest_id", ""),
+		"bounty_cooldowns": quest_dict.get("bounty_cooldowns", {})
+	}
+	quest_data.timed_objectives = quest_dict.get("timed_objectives", {})
+	quest_data.paused_timers = quest_dict.get("paused_timers", {})
+
+## Collect time data
+func _collect_time_data(time_data) -> void:
+	# Calculate total play time including current session
+	var current_session := Time.get_unix_time_from_system() - session_start_time
+	time_data.play_time = total_play_time + current_session
+	var clock: Dictionary = GameManager.to_dict()
+	time_data.game_time = clock.get("game_time", 8.0)
+	time_data.current_day = clock.get("current_day", 1)
+	time_data.schedules = clock.get("schedules", [])
+	time_data.fired_event_keys = clock.get("fired_event_keys", {})
+	time_data.rest_count = rest_count
+	time_data.death_count = death_count
+	time_data.session_start = session_start_time
+
+
+## Collect crime/bounty data
+func _collect_crime_data(crime_data) -> void:
+	if not CrimeManager:
+		return
+
+	var crime_dict := CrimeManager.to_dict()
+	crime_data.bounties = crime_dict.get("bounties", {})
+	crime_data.last_crimes = crime_dict.get("last_crimes", {})
+	crime_data.is_jailed = crime_dict.get("is_jailed", false)
+	crime_data.jail_region = crime_dict.get("jail_region", "")
+	crime_data.jail_time_remaining = crime_dict.get("jail_time_remaining", 0.0)
+	crime_data.confiscated_items = crime_dict.get("confiscated_items", {})
+	crime_data.return_scene = crime_dict.get("return_scene", "")
+	var return_pos: Dictionary = crime_dict.get("return_position", {})
+	crime_data.return_position = Vector3(
+		return_pos.get("x", 0.0),
+		return_pos.get("y", 0.0),
+		return_pos.get("z", 0.0)
+	)
+
+
+## Collect flag data
+##
+## SaveManager contained no reference to FlagManager at all until 8/1. Flags
+## survived only because DialogueManager.to_dict() happened to return
+## FlagManager.flags, under a comment claiming FlagManager handled its own
+## save/load. It did not - FlagManager.to_dict/from_dict were dead code - and
+## context_variables was in neither path, so it was lost on every load.
+func _collect_flag_data(flag_data) -> void:
+	var flag_dict: Dictionary = FlagManager.to_dict()
+	flag_data.flags = flag_dict.get("flags", {})
+	flag_data.context_variables = flag_dict.get("context_variables", {})
+
+
+## Collect conversation memory data
+func _collect_conversation_data(conversation_data) -> void:
+	if not ConversationSystem:
+		return
+
+	var conversation_dict := ConversationSystem.to_dict()
+	conversation_data.npc_memory = conversation_dict.get("npc_memory", {})
+	conversation_data.npc_memory_heard_count = conversation_dict.get("npc_memory_heard_count", {})
+	conversation_data.conversation_flags = conversation_dict.get("conversation_flags", {})
+	conversation_data.player_known_topics = conversation_dict.get("player_known_topics", [])
+
+
+## Collect bounty quest data
+func _collect_errand_data(errand_data) -> void:
+	if not has_node("/root/BountyManager"):
+		return
+
+	var bounty_manager := get_node("/root/BountyManager")
+	var bounty_dict: Dictionary = bounty_manager.to_dict()
+	errand_data.bounties = bounty_dict.get("bounties", {})
+	errand_data.npc_offered_bounties = bounty_dict.get("npc_offered_bounties", {})
+	errand_data.completed_bounty_ids = bounty_dict.get("completed_bounty_ids", [])
+	errand_data.bounty_counter = bounty_dict.get("bounty_counter", 0)
+	errand_data.current_settlement = bounty_dict.get("current_settlement", "elder_moor")
+
+## Clear node references in all autoloads to prevent "Trying to cast a freed object" errors
+## Called before applying save data as a safety measure
+func _clear_all_autoload_node_references() -> void:
+	if CombatManager and CombatManager.has_method("_clear_node_references"):
+		CombatManager._clear_node_references()
+
+	if ConversationSystem and ConversationSystem.has_method("_clear_node_references"):
+		ConversationSystem._clear_node_references()
+
+	if PlayerGPS and PlayerGPS.has_method("_clear_node_references"):
+		PlayerGPS._clear_node_references()
+
+	if TournamentManager and TournamentManager.has_method("_clear_node_references"):
+		TournamentManager._clear_node_references()
+
+	if has_node("/root/FollowerManager"):
+		var follower_manager := get_node("/root/FollowerManager")
+		if follower_manager.has_method("_clear_node_references"):
+			follower_manager._clear_node_references()
+
+
+## Apply loaded save data
+func _apply_save_data(save_data) -> void:
+	# Clear all autoload node references FIRST to prevent stale object casts
+	# This is a safety measure in case scene_load_started wasn't called
+	_clear_all_autoload_node_references()
+
+	# Reset GameManager interaction state flags to prevent stuck states after load
+	GameManager.is_paused = false
+	GameManager.is_in_menu = false
+	GameManager.is_in_dialogue = false
+	GameManager.is_in_combat = false
+	get_tree().paused = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+	# Restore player character
+	if save_data.player:
+		_apply_player_data(save_data.player)
+
+	# Restore inventory
+	if save_data.inventory:
+		_apply_inventory_data(save_data.inventory)
+
+	# Restore world state
+	if save_data.world:
+		_apply_world_data(save_data.world)
+
+	# Restore quest state
+	if save_data.quests:
+		_apply_quest_data(save_data.quests)
+
+	# Restore time data
+	if save_data.time_data:
+		_apply_time_data(save_data.time_data)
+
+	# Restore audio settings
+	AudioManager.load_settings(save_data.audio_settings)
+
+	# Restore crime/bounty data
+	if save_data.crime_data:
+		_apply_crime_data(save_data.crime_data)
+
+	# Restore flags
+	if save_data.flag_data:
+		_apply_flag_data(save_data.flag_data)
+
+	# Restore conversation memory
+	if save_data.conversation_data:
+		_apply_conversation_data(save_data.conversation_data)
+
+	# Restore errand quests
+	if save_data.errand_data:
+		_apply_errand_data(save_data.errand_data)
+
+	# Restore world manager (location discovery) data
+	if save_data.world_manager_data:
+		_apply_world_manager_data(save_data.world_manager_data)
+
+	# Restore encounter manager data
+	if save_data.encounter_data:
+		_apply_encounter_data(save_data.encounter_data)
+
+	# Restore cell streamer data (floating origin, active cell)
+	# NOTE: This is stored for application after scene loads
+	if save_data.cell_streamer_data:
+		_store_pending_cell_streamer_data(save_data.cell_streamer_data)
+
+	# Restore morality data
+	if save_data.morality_data:
+		_apply_morality_data(save_data.morality_data)
+
+	# Restore faction data
+	if save_data.faction_data:
+		_apply_faction_data(save_data.faction_data)
+
+	# Restore NPC disposition data
+	if save_data.npc_disposition_data:
+		_apply_npc_disposition_data(save_data.npc_disposition_data)
+
+	# Restore codex data
+	if save_data.codex_data:
+		_apply_codex_data(save_data.codex_data)
+
+	# Restore stats tracker data
+	if save_data.stats_data:
+		_apply_stats_data(save_data.stats_data)
+
+	# Restore journal data (notes and bestiary)
+	if save_data.journal_data:
+		_apply_journal_data(save_data.journal_data)
+
+	# Restore soulstone economy data
+	if save_data.soulstone_data:
+		_apply_soulstone_data(save_data.soulstone_data)
+
+	# Restore follower system data
+	if save_data.follower_data:
+		_apply_follower_data(save_data.follower_data)
+
+	# Restore guild rank system data
+	if save_data.guild_rank_data:
+		_apply_guild_rank_data(save_data.guild_rank_data)
+
+	# Restore duel manager data
+	if save_data.duel_data:
+		_apply_duel_data(save_data.duel_data)
+
+	# Restore escort manager data
+	if save_data.escort_data:
+		_apply_escort_data(save_data.escort_data)
+
+	# Restore companion manager data
+	if save_data.companion_data:
+		_apply_companion_data(save_data.companion_data)
+
+	# Restore weather system data
+	if save_data.weather_data:
+		_apply_weather_data(save_data.weather_data)
+
+	# Restore world state (must land before anything that reads world facts)
+	if save_data.world_state_data:
+		_apply_world_state_data(save_data.world_state_data)
+
+	# Restore fast travel state
+	if save_data.fast_travel_data:
+		_apply_fast_travel_data(save_data.fast_travel_data)
+
+	# Restore tournament state
+	if save_data.tournament_data:
+		_apply_tournament_data(save_data.tournament_data)
+
+	# Restore cave state
+	if save_data.cave_data:
+		_apply_cave_data(save_data.cave_data)
+
+
+## Collect tournament data
+func _collect_tournament_data(tournament_save_data) -> void:
+	var t_dict: Dictionary = TournamentManager.get_save_data()
+	tournament_save_data.arena_fame = t_dict.get("arena_fame", 0)
+	tournament_save_data.total_gold_earned = t_dict.get("total_gold_earned", 0)
+	tournament_save_data.is_tournament_active = t_dict.get("is_tournament_active", false)
+	tournament_save_data.current_wave = t_dict.get("current_wave", 0)
+	tournament_save_data.is_equipment_locked = t_dict.get("is_equipment_locked", false)
+
+
+## Apply tournament data
+func _apply_tournament_data(tournament_save_data) -> void:
+	TournamentManager.load_save_data({
+		"arena_fame": tournament_save_data.arena_fame,
+		"total_gold_earned": tournament_save_data.total_gold_earned,
+		"is_tournament_active": tournament_save_data.is_tournament_active,
+		"current_wave": tournament_save_data.current_wave,
+		"is_equipment_locked": tournament_save_data.is_equipment_locked
+	})
+
+
+## Collect cave data
+func _collect_cave_data(cave_save_data) -> void:
+	var c_dict: Dictionary = CaveManager.get_save_data()
+	cave_save_data.visited_areas = c_dict.get("visited_areas", {})
+	cave_save_data.cave_faction = c_dict.get("cave_faction", "natural")
+	cave_save_data.cave_danger_level = c_dict.get("cave_danger_level", 3)
+
+
+## Apply cave data
+func _apply_cave_data(cave_save_data) -> void:
+	CaveManager.load_save_data({
+		"visited_areas": cave_save_data.visited_areas,
+		"cave_faction": cave_save_data.cave_faction,
+		"cave_danger_level": cave_save_data.cave_danger_level
+	})
+
+
+## Collect fast travel data
+func _collect_fast_travel_data(fast_travel_save_data) -> void:
+	var ft_dict: Dictionary = FastTravelManager.to_dict()
+	fast_travel_save_data.is_traveling = ft_dict.get("is_traveling", false)
+	fast_travel_save_data.travel_destination = ft_dict.get("travel_destination", "")
+	fast_travel_save_data.travel_hours_remaining = ft_dict.get("travel_hours_remaining", 0.0)
+	fast_travel_save_data.caravan_routes = ft_dict.get("caravan_routes", {})
+	fast_travel_save_data.is_caravan_traveling = ft_dict.get("is_caravan_traveling", false)
+	fast_travel_save_data.caravan_destination = ft_dict.get("caravan_destination", "")
+	fast_travel_save_data.caravan_segments = ft_dict.get("caravan_segments", [])
+	fast_travel_save_data.caravan_current_segment = ft_dict.get("caravan_current_segment", 0)
+
+
+## Apply fast travel data
+func _apply_fast_travel_data(fast_travel_save_data) -> void:
+	FastTravelManager.from_dict({
+		"is_traveling": fast_travel_save_data.is_traveling,
+		"travel_destination": fast_travel_save_data.travel_destination,
+		"travel_hours_remaining": fast_travel_save_data.travel_hours_remaining,
+		"caravan_routes": fast_travel_save_data.caravan_routes,
+		"is_caravan_traveling": fast_travel_save_data.is_caravan_traveling,
+		"caravan_destination": fast_travel_save_data.caravan_destination,
+		"caravan_segments": fast_travel_save_data.caravan_segments,
+		"caravan_current_segment": fast_travel_save_data.caravan_current_segment
+	})
+
+## Apply player data
+func _apply_player_data(player_data) -> void:
+	if not GameManager.player_data:
+		GameManager.player_data = CharacterData.new()
+
+	var pd := GameManager.player_data
+
+	pd.character_name = player_data.character_name
+	pd.race = player_data.race
+	pd.career = player_data.career
+	pd.grit = player_data.grit
+	pd.agility = player_data.agility
+	pd.will = player_data.will
+	pd.speech = player_data.speech
+	pd.knowledge = player_data.knowledge
+	pd.vitality = player_data.vitality
+	pd.current_hp = player_data.current_hp
+	pd.max_hp = player_data.max_hp
+	pd.current_stamina = player_data.current_stamina
+	pd.max_stamina = player_data.max_stamina
+	pd.current_mana = player_data.current_mana
+	pd.max_mana = player_data.max_mana
+	pd.current_spell_slots = player_data.current_spell_slots
+	pd.max_spell_slots = player_data.max_spell_slots
+	pd.level = player_data.level
+	pd.improvement_points = player_data.improvement_points
+	pd.total_ip_earned = player_data.total_ip_earned
+	pd.skills = player_data.skills.duplicate()
+	pd.conditions = player_data.conditions.duplicate()
+	pd.active_buffs = player_data.active_buffs.duplicate(true)
+
+	# Store known spells to apply after scene loads
+	pending_known_spells = player_data.known_spells.duplicate()
+
+	# Store position for scene loader to apply
+	SceneManager.set_player_position(player_data.position, player_data.rotation_y)
+
+## Apply inventory data
+func _apply_inventory_data(inv_data) -> void:
+	InventoryManager.from_dict({
+		"inventory": inv_data.items,
+		"equipment": inv_data.equipment,
+		"gold": inv_data.gold,
+		"quick_slots": inv_data.quickslots,
+		"hotbar": inv_data.hotbar,
+		"spell_slots": inv_data.spell_slots,
+		"equipped_spell_id": inv_data.equipped_spell_id
+	})
+
+## Apply world data
+func _apply_world_data(world_data) -> void:
+	GameManager.world_seed = world_data.world_seed
+	GameManager.active_goblin_camps.clear()
+	for camp: Variant in world_data.active_goblin_camps:
+		GameManager.active_goblin_camps.append(String(camp))
+	current_zone_id = world_data.current_zone_id
+	current_zone_name = world_data.current_zone_name
+	discovered_locations = world_data.discovered_locations.duplicate()
+	killed_enemies = world_data.killed_enemies.duplicate()
+	dropped_items = world_data.dropped_items.duplicate()
+	opened_containers = world_data.opened_containers.duplicate()
+	unlocked_shortcuts = world_data.unlocked_shortcuts.duplicate()
+	dungeon_seeds = world_data.dungeon_seeds.duplicate()
+	if "dungeon_states" in world_data and world_data.dungeon_states is Dictionary:
+		dungeon_states = world_data.dungeon_states.duplicate()
+	else:
+		dungeon_states = {}
+
+	# RestManager data
+	if RestManager and not world_data.rest_manager.is_empty():
+		RestManager.load_save_data(world_data.rest_manager)
+
+	# SpellCreator custom spells data
+	if SpellCreator and not world_data.custom_spells.is_empty():
+		SpellCreator.load_save_data(world_data.custom_spells)
+
+## Apply quest data
+## QuestManager.from_dict() expects: {tracked_quest_id, quests, bounty_cooldowns}
+## We reconstruct this from how we stored it in _collect_quest_data
+func _apply_quest_data(quest_data) -> void:
+	# Reconstruct QuestManager format from how we stored it
+	var tracked_id: String = ""
+	var bounty_cooldowns: Dictionary = {}
+
+	# Check if variables contains the new format data
+	if quest_data.variables is Dictionary:
+		tracked_id = quest_data.variables.get("tracked_quest_id", "")
+		bounty_cooldowns = quest_data.variables.get("bounty_cooldowns", {})
+
+	QuestManager.from_dict({
+		"tracked_quest_id": tracked_id,
+		"quests": quest_data.active,  # active field holds the quests dict
+		"bounty_cooldowns": bounty_cooldowns,
+		"timed_objectives": quest_data.timed_objectives,
+		"paused_timers": quest_data.paused_timers
+	})
+
+## Apply time data
+func _apply_time_data(time_data) -> void:
+	total_play_time = time_data.play_time
+	# Handle old saves that don't have current_day property
+	var day_value: int = 1
+	if "current_day" in time_data:
+		day_value = time_data.current_day
+	GameManager.from_dict({
+		"game_time": time_data.game_time,
+		"current_day": day_value,
+		"schedules": time_data.schedules,
+		"fired_event_keys": time_data.fired_event_keys,
+	})
+	rest_count = time_data.rest_count
+	death_count = time_data.death_count
+
+
+## Apply crime/bounty data
+func _apply_crime_data(crime_data) -> void:
+	if not CrimeManager:
+		return
+
+	CrimeManager.from_dict({
+		"bounties": crime_data.bounties,
+		"last_crimes": crime_data.last_crimes,
+		"is_jailed": crime_data.is_jailed,
+		"jail_region": crime_data.jail_region,
+		"jail_time_remaining": crime_data.jail_time_remaining,
+		"confiscated_items": crime_data.confiscated_items,
+		"return_scene": crime_data.return_scene,
+		"return_position": {
+			"x": crime_data.return_position.x,
+			"y": crime_data.return_position.y,
+			"z": crime_data.return_position.z
+		}
+	})
+
+
+## Apply flag data
+func _apply_flag_data(flag_data) -> void:
+	FlagManager.from_dict({
+		"flags": flag_data.flags,
+		"context_variables": flag_data.context_variables
+	})
+
+
+## Apply conversation memory data
+func _apply_conversation_data(conversation_data) -> void:
+	if not ConversationSystem:
+		return
+
+	ConversationSystem.from_dict({
+		"npc_memory": conversation_data.npc_memory,
+		"npc_memory_heard_count": conversation_data.npc_memory_heard_count,
+		"conversation_flags": conversation_data.conversation_flags,
+		"player_known_topics": conversation_data.player_known_topics
+	})
+
+
+## Apply bounty quest data
+func _apply_errand_data(errand_data) -> void:
+	if not has_node("/root/BountyManager"):
+		return
+
+	var bounty_manager := get_node("/root/BountyManager")
+	# errand_data is an ErrandSaveData object, access properties directly
+	bounty_manager.from_dict({
+		"bounties": errand_data.bounties if errand_data else {},
+		"npc_offered_bounties": errand_data.npc_offered_bounties if errand_data else {},
+		"completed_bounty_ids": errand_data.completed_bounty_ids if errand_data else [],
+		"bounty_counter": errand_data.bounty_counter if errand_data else 0,
+		"current_settlement": errand_data.current_settlement if errand_data else "elder_moor"
+	})
+
+
+## Collect world manager (location discovery) data - now uses PlayerGPS
+func _collect_world_manager_data(world_manager_data) -> void:
+	if not PlayerGPS:
+		return
+
+	var gps_dict: Dictionary = PlayerGPS.to_dict()
+	world_manager_data.discovered_locations = gps_dict.get("discovered_locations", {})
+	world_manager_data.discovered_cells = gps_dict.get("discovered_cells", [])
+	world_manager_data.current_cell = gps_dict.get("current_cell", {"x": 0, "y": 0})
+	world_manager_data.current_region = gps_dict.get("current_region", "")
+	world_manager_data.current_location_id = gps_dict.get("current_location_id", "")
+	world_manager_data.cells_traveled = gps_dict.get("cells_traveled", 0)
+	world_manager_data.locations_visited = gps_dict.get("locations_visited", 0)
+
+
+## Apply world manager (location discovery) data - now uses PlayerGPS
+func _apply_world_manager_data(world_manager_data) -> void:
+	if not PlayerGPS:
+		return
+
+	PlayerGPS.from_dict({
+		"discovered_locations": world_manager_data.discovered_locations,
+		"discovered_cells": world_manager_data.discovered_cells,
+		"current_cell": world_manager_data.current_cell,
+		"current_region": world_manager_data.current_region,
+		"current_location_id": world_manager_data.current_location_id,
+		"cells_traveled": world_manager_data.cells_traveled,
+		"locations_visited": world_manager_data.locations_visited
+	})
+
+
+## Collect encounter manager data
+func _collect_encounter_data(encounter_data) -> void:
+	if not has_node("/root/EncounterManager"):
+		return
+
+	var em := get_node("/root/EncounterManager")
+	var em_dict: Dictionary = em.to_dict()
+	encounter_data.encounters_triggered = em_dict.get("encounters_triggered", 0)
+	encounter_data.encounters_avoided = em_dict.get("encounters_avoided", 0)
+	# Also save current cooldown and timer state
+	if "cooldown_timer" in em:
+		encounter_data.cooldown_remaining = em._cooldown_timer
+	if "_encounter_timer" in em:
+		encounter_data.encounter_timer = em._encounter_timer
+	if "_last_check_hex" in em:
+		var hex: Vector2i = em._last_check_hex
+		encounter_data.last_check_hex = {"x": hex.x, "y": hex.y}
+
+
+## Apply encounter manager data
+func _apply_encounter_data(encounter_data) -> void:
+	if not has_node("/root/EncounterManager"):
+		return
+
+	var em := get_node("/root/EncounterManager")
+	em.from_dict({
+		"encounters_triggered": encounter_data.encounters_triggered,
+		"encounters_avoided": encounter_data.encounters_avoided
+	})
+	# Restore timer state
+	if "_cooldown_timer" in em:
+		em._cooldown_timer = encounter_data.cooldown_remaining
+	if "_encounter_timer" in em:
+		em._encounter_timer = encounter_data.encounter_timer
+	if "_last_check_hex" in em:
+		var hex_raw = encounter_data.last_check_hex
+		# Handle both Dictionary and malformed data
+		if hex_raw is Dictionary:
+			em._last_check_hex = Vector2i(hex_raw.get("x", 0), hex_raw.get("y", 0))
+		else:
+			# Fallback for corrupted/string data
+			em._last_check_hex = Vector2i.ZERO
+
+
+## Pending cell streamer data to apply after scene loads
+var _pending_cell_streamer_data: Dictionary = {}
+
+
+## Check if there's pending cell streamer data from a load
+func has_pending_cell_data() -> bool:
+	return not _pending_cell_streamer_data.is_empty()
+
+
+## Get pending cell coordinates (for scene initialization)
+func get_pending_cell_coords() -> Vector2i:
+	return Vector2i(
+		_pending_cell_streamer_data.get("active_cell_x", 0),
+		_pending_cell_streamer_data.get("active_cell_y", 0)
+	)
+
+
+## Collect cell streamer data (floating origin, active cell)
+func _collect_cell_streamer_data(cell_streamer_save_data) -> void:
+	if not CellStreamer:
+		return
+
+	var cs_dict: Dictionary = CellStreamer.get_save_data()
+	cell_streamer_save_data.active_cell_x = cs_dict.get("active_cell_x", 0)
+	cell_streamer_save_data.active_cell_y = cs_dict.get("active_cell_y", 0)
+	cell_streamer_save_data.world_offset_x = cs_dict.get("world_offset_x", 0.0)
+	cell_streamer_save_data.world_offset_y = cs_dict.get("world_offset_y", 0.0)
+	cell_streamer_save_data.world_offset_z = cs_dict.get("world_offset_z", 0.0)
+	cell_streamer_save_data.streaming_enabled = cs_dict.get("streaming_enabled", false)
+
+
+## Store cell streamer data for deferred application
+func _store_pending_cell_streamer_data(cell_streamer_save_data) -> void:
+	_pending_cell_streamer_data = {
+		"active_cell_x": cell_streamer_save_data.active_cell_x,
+		"active_cell_y": cell_streamer_save_data.active_cell_y,
+		"world_offset_x": cell_streamer_save_data.world_offset_x,
+		"world_offset_y": cell_streamer_save_data.world_offset_y,
+		"world_offset_z": cell_streamer_save_data.world_offset_z,
+		"streaming_enabled": cell_streamer_save_data.streaming_enabled
+	}
+
+
+## Apply pending cell streamer data (called after scene loads)
+func _apply_pending_cell_streamer_data() -> void:
+	if _pending_cell_streamer_data.is_empty():
+		return
+
+	if not CellStreamer:
+		_pending_cell_streamer_data.clear()
+		return
+
+	# If streaming is already enabled (main scene's _setup_cell_streaming already ran),
+	# don't apply pending data - the scene has already set up streaming correctly.
+	# This prevents duplicate cell loading on save/load.
+	if CellStreamer.streaming_enabled:
+		_pending_cell_streamer_data.clear()
+		return
+
+	CellStreamer.load_save_data(_pending_cell_streamer_data)
+	_pending_cell_streamer_data.clear()
+
+
+## Collect morality data
+func _collect_morality_data(morality_save_data) -> void:
+	if not MoralityManager:
+		return
+
+	var morality_dict: Dictionary = MoralityManager.to_dict()
+	morality_save_data.morality_score = morality_dict.get("morality_score", 0)
+	morality_save_data.hours_since_last_decay = morality_dict.get("hours_since_last_decay", 0.0)
+
+
+## Apply morality data
+func _apply_morality_data(morality_save_data) -> void:
+	if not MoralityManager:
+		return
+
+	MoralityManager.from_dict({
+		"morality_score": morality_save_data.morality_score,
+		"hours_since_last_decay": morality_save_data.hours_since_last_decay
+	})
+
+
+## Collect faction data
+func _collect_faction_data(faction_save_data) -> void:
+	if not FactionManager:
+		return
+
+	var faction_dict: Dictionary = FactionManager.to_dict()
+	faction_save_data.reputations = faction_dict.get("reputations", {})
+	faction_save_data.memberships = faction_dict.get("memberships", {})
+	faction_save_data.ongoing_effects = faction_dict.get("ongoing_effects", {})
+	faction_save_data.hostility = faction_dict.get("hostility", {})
+	faction_save_data.last_crime_day = faction_dict.get("last_crime_day", {})
+	faction_save_data.last_decay_day = faction_dict.get("last_decay_day", {})
+
+
+## Apply faction data
+func _apply_faction_data(faction_save_data) -> void:
+	if not FactionManager:
+		return
+
+	FactionManager.from_dict({
+		"reputations": faction_save_data.reputations,
+		"memberships": faction_save_data.memberships,
+		"ongoing_effects": faction_save_data.ongoing_effects,
+		"hostility": faction_save_data.hostility,
+		"last_crime_day": faction_save_data.last_crime_day,
+		"last_decay_day": faction_save_data.last_decay_day
+	})
+
+
+## Collect world state data
+func _collect_world_state_data(world_state_save_data) -> void:
+	if not has_node("/root/WorldState"):
+		return
+
+	var world_state := get_node("/root/WorldState")
+	var world_state_dict: Dictionary = world_state.to_dict()
+	world_state_save_data.flags = world_state_dict.get("flags", {})
+	world_state_save_data.world_modifications = world_state_dict.get("world_modifications", {})
+
+
+## Apply world state data
+func _apply_world_state_data(world_state_save_data) -> void:
+	if not has_node("/root/WorldState"):
+		return
+
+	var world_state := get_node("/root/WorldState")
+	world_state.from_dict({
+		"flags": world_state_save_data.flags,
+		"world_modifications": world_state_save_data.world_modifications
+	})
+
+
+## Collect NPC disposition data
+func _collect_npc_disposition_data(npc_disposition_save_data) -> void:
+	# NPC dispositions are tracked in GameManager.npc_disposition_modifiers
+	if not GameManager:
+		return
+
+	if "npc_disposition_modifiers" in GameManager:
+		npc_disposition_save_data.modifiers = GameManager.npc_disposition_modifiers.duplicate()
+
+
+## Apply NPC disposition data
+func _apply_npc_disposition_data(npc_disposition_save_data) -> void:
+	if not GameManager:
+		return
+
+	if "npc_disposition_modifiers" in GameManager:
+		GameManager.npc_disposition_modifiers = npc_disposition_save_data.modifiers.duplicate()
+
+
+## Collect codex data
+func _collect_codex_data(codex_save_data) -> void:
+	if not CodexManager:
+		return
+
+	var codex_dict: Dictionary = CodexManager.to_dict()
+	codex_save_data.discovered_recipes = codex_dict.get("discovered_recipes", {})
+	codex_save_data.discovered_lore = codex_dict.get("discovered_lore", {})
+	codex_save_data.bestiary_entries = codex_dict.get("bestiary_entries", {})
+
+
+## Apply codex data
+func _apply_codex_data(codex_save_data) -> void:
+	if not CodexManager:
+		return
+
+	CodexManager.from_dict({
+		"discovered_recipes": codex_save_data.discovered_recipes,
+		"discovered_lore": codex_save_data.discovered_lore,
+		"bestiary_entries": codex_save_data.bestiary_entries
+	})
+
+
+## Collect stats tracker data
+func _collect_stats_data(stats_save_data) -> void:
+	if not StatsTracker:
+		return
+
+	var stats_dict: Dictionary = StatsTracker.to_dict()
+	stats_save_data.stats = stats_dict
+
+
+## Apply stats tracker data
+func _apply_stats_data(stats_save_data) -> void:
+	if not StatsTracker:
+		return
+
+	StatsTracker.from_dict(stats_save_data.stats)
+
+
+## Collect journal data (notes and bestiary)
+func _collect_journal_data(journal_save_data) -> void:
+	if not JournalManager:
+		return
+
+	var journal_dict: Dictionary = JournalManager.to_dict()
+	journal_save_data.notes = journal_dict.get("notes", [])
+	journal_save_data.next_note_id = journal_dict.get("next_note_id", 1)
+	journal_save_data.bestiary = journal_dict.get("bestiary", {})
+	journal_save_data.unlocked_codex_entries = journal_dict.get("unlocked_codex_entries", [])
+
+
+## Apply journal data (notes and bestiary)
+func _apply_journal_data(journal_save_data) -> void:
+	if not JournalManager:
+		return
+
+	JournalManager.from_dict({
+		"notes": journal_save_data.notes,
+		"next_note_id": journal_save_data.next_note_id,
+		"bestiary": journal_save_data.bestiary,
+		"unlocked_codex_entries": journal_save_data.unlocked_codex_entries
+	})
+
+
+## Collect soulstone economy data
+func _collect_soulstone_data(soulstone_save_data) -> void:
+	# SoulstoneEconomy data
+	if SoulstoneEconomy:
+		var economy_dict: Dictionary = SoulstoneEconomy.get_save_data()
+		soulstone_save_data.soulstone_registry = economy_dict.get("soulstone_registry", {})
+		soulstone_save_data.quest_targets = economy_dict.get("quest_targets", {})
+		soulstone_save_data.distribution_counts = economy_dict.get("distribution_counts", {})
+
+	# EnchantmentManager soulstone tracking data
+	if EnchantmentManager:
+		var enchant_dict: Dictionary = EnchantmentManager.get_save_data()
+		soulstone_save_data.enchantment_soulstone_energy = enchant_dict.get("soulstone_energy", {})
+		soulstone_save_data.economy_to_inventory_map = enchant_dict.get("economy_to_inventory_map", {})
+
+
+## Apply soulstone economy data
+func _apply_soulstone_data(soulstone_save_data) -> void:
+	# SoulstoneEconomy data
+	if SoulstoneEconomy:
+		SoulstoneEconomy.load_save_data({
+			"soulstone_registry": soulstone_save_data.soulstone_registry,
+			"quest_targets": soulstone_save_data.quest_targets,
+			"distribution_counts": soulstone_save_data.distribution_counts
+		})
+
+	# EnchantmentManager soulstone tracking data
+	if EnchantmentManager:
+		EnchantmentManager.load_save_data({
+			"soulstone_energy": soulstone_save_data.enchantment_soulstone_energy,
+			"economy_to_inventory_map": soulstone_save_data.economy_to_inventory_map
+		})
+
+
+## Collect follower system data
+func _collect_follower_data(follower_save_data) -> void:
+	if not has_node("/root/FollowerManager"):
+		return
+
+	var follower_manager := get_node("/root/FollowerManager")
+	var follower_dict: Dictionary = follower_manager.get_save_data()
+	follower_save_data.active_follower_ids = follower_dict.get("active_follower_ids", [])
+	follower_save_data.follower_states = follower_dict.get("follower_data", {})
+	follower_save_data.available_followers = follower_dict.get("available_followers", [])
+
+
+## Apply follower system data
+func _apply_follower_data(follower_save_data) -> void:
+	if not has_node("/root/FollowerManager"):
+		return
+
+	var follower_manager := get_node("/root/FollowerManager")
+	follower_manager.load_save_data({
+		"active_follower_ids": follower_save_data.active_follower_ids,
+		"follower_data": follower_save_data.follower_states,
+		"available_followers": follower_save_data.available_followers
+	})
+
+
+## Collect guild rank system data
+func _collect_guild_rank_data(guild_rank_save_data) -> void:
+	if not has_node("/root/GuildRankManager"):
+		return
+
+	var guild_manager := get_node("/root/GuildRankManager")
+	var guild_dict: Dictionary = guild_manager.to_dict()
+	guild_rank_save_data.quest_counts = guild_dict.get("quest_counts", {})
+	guild_rank_save_data.rank_levels = guild_dict.get("rank_levels", {})
+	guild_rank_save_data.earned_titles = guild_dict.get("earned_titles", [])
+
+
+## Apply guild rank system data
+func _apply_guild_rank_data(guild_rank_save_data) -> void:
+	if not has_node("/root/GuildRankManager"):
+		return
+
+	var guild_manager := get_node("/root/GuildRankManager")
+	guild_manager.from_dict({
+		"quest_counts": guild_rank_save_data.quest_counts,
+		"rank_levels": guild_rank_save_data.rank_levels,
+		"earned_titles": guild_rank_save_data.earned_titles
+	})
+
+
+## Collect duel manager data
+func _collect_duel_data(duel_save_data) -> void:
+	if not has_node("/root/DuelManager"):
+		return
+
+	var duel_manager := get_node("/root/DuelManager")
+	var duel_dict: Dictionary = duel_manager.get_save_data()
+	duel_save_data.last_duel_id = duel_dict.get("last_duel_id", "")
+	duel_save_data.last_duel_result = duel_dict.get("last_duel_result", "none")
+
+
+## Apply duel manager data
+func _apply_duel_data(duel_save_data) -> void:
+	if not has_node("/root/DuelManager"):
+		return
+
+	var duel_manager := get_node("/root/DuelManager")
+	duel_manager.load_save_data({
+		"last_duel_id": duel_save_data.last_duel_id,
+		"last_duel_result": duel_save_data.last_duel_result
+	})
+
+
+## Collect escort manager data
+func _collect_escort_data(escort_save_data) -> void:
+	if not has_node("/root/EscortManager"):
+		return
+
+	var escort_manager := get_node("/root/EscortManager")
+	var escort_dict: Dictionary = escort_manager.to_dict()
+	escort_save_data.escort_states = escort_dict.get("escort_states", {})
+	escort_save_data.primary_escort_id = escort_dict.get("primary_escort_id", "")
+
+
+## Apply escort manager data
+func _apply_escort_data(escort_save_data) -> void:
+	if not has_node("/root/EscortManager"):
+		return
+
+	var escort_manager := get_node("/root/EscortManager")
+	escort_manager.from_dict({
+		"escort_states": escort_save_data.escort_states,
+		"primary_escort_id": escort_save_data.primary_escort_id
+	})
+
+
+## Collect companion manager data
+func _collect_companion_data(companion_save_data) -> void:
+	if not has_node("/root/CompanionManager"):
+		return
+
+	var companion_manager := get_node("/root/CompanionManager")
+	var companion_dict: Dictionary = companion_manager.to_dict()
+	companion_save_data.unlocked_companions = companion_dict.get("unlocked_companions", [])
+	companion_save_data.active_companion_ids = companion_dict.get("active_companion_ids", [])
+	companion_save_data.companion_states = companion_dict.get("companion_states", {})
+	companion_save_data.position_mode = companion_dict.get("position_mode", 0)
+
+
+## Apply companion manager data
+func _apply_companion_data(companion_save_data) -> void:
+	if not has_node("/root/CompanionManager"):
+		return
+
+	var companion_manager := get_node("/root/CompanionManager")
+	companion_manager.from_dict({
+		"unlocked_companions": companion_save_data.unlocked_companions,
+		"active_companion_ids": companion_save_data.active_companion_ids,
+		"companion_states": companion_save_data.companion_states,
+		"position_mode": companion_save_data.position_mode
+	})
+
+
+## Collect weather system data
+func _collect_weather_data(weather_save_data) -> void:
+	if not has_node("/root/WeatherManager"):
+		return
+
+	var weather_manager := get_node("/root/WeatherManager")
+	var weather_dict: Dictionary = weather_manager.get_save_data()
+	weather_save_data.current_weather = weather_dict.get("current_weather", 0)
+	weather_save_data.target_weather = weather_dict.get("target_weather", 0)
+	weather_save_data.time_until_change = weather_dict.get("time_until_change", 180.0)
+	weather_save_data.transitioning = weather_dict.get("transitioning", false)
+	weather_save_data.transition_progress = weather_dict.get("transition_progress", 0.0)
+
+
+## Apply weather system data
+func _apply_weather_data(weather_save_data) -> void:
+	if not has_node("/root/WeatherManager"):
+		return
+
+	var weather_manager := get_node("/root/WeatherManager")
+	weather_manager.load_save_data({
+		"current_weather": weather_save_data.current_weather,
+		"target_weather": weather_save_data.target_weather,
+		"time_until_change": weather_save_data.time_until_change,
+		"transitioning": weather_save_data.transitioning,
+		"transition_progress": weather_save_data.transition_progress
+	})
+
+
+## Migrate old save data to current version
+func _migrate_save_data(data: Dictionary, from_version: int) -> Dictionary:
+	var migrated := data.duplicate(true)
+
+	# Version 0 -> 1: Restructure to new format
+	if from_version < 1:
+		# Convert old format to new format
+		var player_data := {}
+		if migrated.has("character"):
+			player_data = migrated["character"]
+		if migrated.has("player_position"):
+			player_data["position"] = migrated["player_position"]
+		if migrated.has("game_state"):
+			player_data["current_scene"] = migrated["game_state"].get("current_scene", "")
+
+		migrated["player"] = player_data
+		migrated["version"] = 1
+
+		# Convert time data
+		migrated["time"] = {
+			"play_time": migrated.get("meta", {}).get("playtime", 0.0),
+			"game_time": migrated.get("game_state", {}).get("game_time", 8.0),
+			"current_day": migrated.get("game_state", {}).get("current_day", 1),
+			"rest_count": 0,
+			"death_count": 0,
+			"session_start": 0.0
+		}
+
+		# World data
+		var old_world: Dictionary = migrated.get("world_state", {})
+		migrated["world"] = {
+			"current_zone_id": "",
+			"current_zone_name": "",
+			"discovered_locations": {},
+			"killed_enemies": {},
+			"dropped_items": {},
+			"flags": {},
+			"opened_containers": {},
+			"unlocked_shortcuts": old_world.get("unlocked_shortcuts", {})
+		}
+
+	# Version 1 -> 2: Add CellStreamer data, remove hex system data
+	if from_version < 2:
+		# Create default cell_streamer data (player will spawn at default position)
+		migrated["cell_streamer"] = {
+			"active_cell_x": 0,
+			"active_cell_y": 0,
+			"world_offset_x": 0.0,
+			"world_offset_y": 0.0,
+			"world_offset_z": 0.0,
+			"streaming_enabled": false
+		}
+
+		# Remove deprecated hex fields from world data if present
+		if migrated.has("world"):
+			var world_data: Dictionary = migrated["world"]
+			world_data.erase("use_hex_system")
+			world_data.erase("current_hex_q")
+			world_data.erase("current_hex_r")
+			world_data.erase("last_hex_q")
+			world_data.erase("last_hex_r")
+			world_data.erase("hex_discovery")
+			world_data.erase("hex_seeds")
+
+		migrated["version"] = 2
+
+	# Version 2 -> 3: Add morality, faction, codex, and NPC disposition data
+	if from_version < 3:
+		# Initialize with defaults
+		migrated["morality"] = {
+			"morality_score": 0,
+			"hours_since_last_decay": 0.0
+		}
+		migrated["factions"] = {
+			"reputations": {},
+			"memberships": {}
+		}
+		migrated["npc_dispositions"] = {
+			"modifiers": {}
+		}
+		migrated["codex"] = {
+			"discovered_recipes": {},
+			"discovered_lore": {},
+			"bestiary_entries": {}
+		}
+
+		migrated["version"] = 3
+
+	# Version 3 -> 4: Add StatsTracker and JournalManager data
+	if from_version < 4:
+		# Initialize with empty defaults
+		migrated["stats"] = {
+			"stats": {}
+		}
+		migrated["journal"] = {
+			"notes": [],
+			"next_note_id": 1,
+			"bestiary": {},
+			"unlocked_codex_entries": []
+		}
+
+		migrated["version"] = 4
+
+	# Version 4 -> 5: Add SoulstoneEconomy data
+	if from_version < 5:
+		# Initialize with empty defaults - will be populated on first load
+		migrated["soulstones"] = {
+			"soulstone_registry": {},
+			"quest_targets": {},
+			"distribution_counts": {},
+			"enchantment_soulstone_energy": {},
+			"economy_to_inventory_map": {}
+		}
+
+		migrated["version"] = 5
+
+	# Version 5 -> 6: Add WeatherManager data
+	# Guarded, because saves written while SAVE_VERSION was stuck at 5 already
+	# carry weather - it has always been collected unconditionally - and an
+	# unguarded default would wipe it the first time this block ran for real.
+	if from_version < 6:
+		if not migrated.has("weather"):
+			migrated["weather"] = {
+				"current_weather": 0,  # Enums.Weather.CLEAR
+				"target_weather": 0,
+				"time_until_change": 180.0,
+				"transitioning": false,
+				"transition_progress": 0.0
+			}
+
+		migrated["version"] = 6
+
+	# Version 6 -> 7: Add WorldState (persistent world facts and modifications)
+	if from_version < 7:
+		if not migrated.has("world_state"):
+			migrated["world_state"] = {
+				"flags": {},
+				"world_modifications": {}
+			}
+
+		migrated["version"] = 7
+
+	# Version 7 -> 8: Flags move out of the dialogue section into their own.
+	# The old key held FlagManager.flags the whole time - DialogueManager was
+	# only ever the courier - so the migration is a rename, not a conversion.
+	# context_variables was never written by anyone and starts empty.
+	if from_version < 8:
+		if not migrated.has("flags"):
+			var old_dialogue: Dictionary = migrated.get("dialogue", {})
+			migrated["flags"] = {
+				"flags": old_dialogue.get("flags", {}),
+				"context_variables": {}
+			}
+		migrated.erase("dialogue")
+
+		# total_ip_earned was never written before format 8. It cannot be
+		# recovered exactly, but level was saved, so back-solve the floor of the
+		# level the player reached: he keeps his level and loses at most the
+		# progress banked toward the next one, instead of losing all of it.
+		if migrated.has("player"):
+			var old_player: Dictionary = migrated["player"]
+			if not old_player.has("total_ip_earned"):
+				var old_level: int = int(old_player.get("level", 1))
+				var index: int = clampi(old_level - 1, 0, CharacterData.IP_PER_LEVEL.size() - 1)
+				old_player["total_ip_earned"] = CharacterData.IP_PER_LEVEL[index]
+
+		migrated["version"] = 8
+
+	# Version 8 -> 9: FogOfWarSaveData is gone. The painted world map it served
+	# was removed before this key ever carried anything but {}. Drop it rather
+	# than carry a section no class reads.
+	# Version 8 -> 9 also drops world.flags: SaveManager.world_flags was a
+	# fourth flag store with five writers and zero readers anywhere in the
+	# repo. Nothing ever read it, so nothing is lost by not carrying it.
+	if migrated.get("version", 0) == 8:
+		migrated.erase("fog_of_war")
+		var old_world: Variant = migrated.get("world", null)
+		if old_world is Dictionary:
+			(old_world as Dictionary).erase("flags")
+		migrated["version"] = 9
+
+	# Version 9 -> 10: the simulation clock is saved. Old saves carry no booked
+	# events and no fired keys, which is exactly what an empty book means, and
+	# no goblin-camp roll - a v9 save had none active either way, so the empty
+	# array is not a loss. Both default correctly, so this rung only stamps.
+	if migrated.get("version", 0) == 9:
+		migrated["version"] = 10
+
+	return migrated
+
+
+## Directories the 2026-08-02 layout reorganisation moved, oldest name first.
+##
+## check_no_broken_paths: skip - this table is a record of paths that no longer
+## exist, which is the whole point of it.
+##
+## A save file carries seven res:// strings: the scene the player stood in, the
+## scene the jailer took him from, follower and companion sprite textures, a
+## CompanionData resource, and bestiary icons. Every one of them was written
+## against the old tree, and a save is the one artefact a scripted rename
+## cannot reach - it lives in user://, on his disk, and it has to keep working.
+##
+## Longest prefix first. See docs/design/PROJECT_LAYOUT.md.
+const LAYOUT_PATH_REMAP: Array = [
+	["res://scenes/generation/wilderness_room.tscn", "res://scenes/generation/wilderness/wilderness_room.tscn"],
+	["res://scenes/dungeon_entrances/", "res://scenes/generation/entrances/"],
+	["res://scenes/rooms/kazan_dun/", "res://scenes/generation/kazan_dun/"],
+	["res://scenes/dungeons/rooms/", "res://scenes/generation/dungeon_rooms/"],
+	["res://scenes/interactables/", "res://scenes/world/"],
+	["res://scenes/rooms/caves/", "res://scenes/generation/caves/"],
+	["res://scenes/structures/", "res://scenes/world/"],
+	["res://scenes/wilderness/", "res://scenes/generation/wilderness/"],
+	["res://scenes/dungeons/", "res://scenes/generation/dungeons/"],
+	["res://scenes/puzzles/", "res://scenes/generation/puzzles/"],
+	["res://scenes/summons/", "res://scenes/characters/"],
+	["res://scenes/enemies/", "res://scenes/characters/"],
+	["res://scenes/player/", "res://scenes/characters/"],
+	["res://scenes/travel/", "res://scenes/world/"],
+	["res://scenes/npcs/", "res://scenes/characters/"],
+	["res://scenes/combat/", "res://scenes/effects/"],
+	["res://scenes/vfx/", "res://scenes/effects/"],
+	["res://scenes/dev/", "res://dev/harnesses/"],
+	# Identity first: a path already in the new tree must match here and stop,
+	# or the rule below would nest it - assets/sprites/legacy/legacy/.
+	["res://assets/sprites/legacy/", "res://assets/sprites/legacy/"],
+	["res://assets/sprites/", "res://assets/sprites/legacy/"],
+	["res://assets/models/citizens/", "res://assets/characters/citizens/"],
+	["res://resources/projectiles/", "res://data/projectiles/"],
+	["res://data/dialogues/", "res://data/dialogue/resources/"],
+	["res://data/conversation_pools/", "res://data/dialogue/pools/"],
+]
+
+
+## Rewrite every res:// string a save file carries into the current layout.
+##
+## Runs on every parse, not only on a version bump, and is idempotent. That
+## matters because get_save_info() reads the file WITHOUT migrating it and
+## hands current_scene straight to SceneManager from the save-select and
+## quick-load paths - a version-gated remap would have fixed load_game() and
+## left the menu loading a dead scene.
+##
+## It walks the whole dictionary rather than the seven known keys. Nothing in a
+## save stores a res://-prefixed string that is not a resource path, and the
+## eighth one somebody adds next month should not need this function edited.
+func _remap_layout_paths(value: Variant) -> Variant:
+	if value is String:
+		var s: String = value
+		if not s.begins_with("res://"):
+			return s
+		for pair: Array in LAYOUT_PATH_REMAP:
+			var old_prefix: String = pair[0]
+			if s.begins_with(old_prefix):
+				return pair[1] + s.substr(old_prefix.length())
+		return s
+	if value is Dictionary:
+		var d: Dictionary = value
+		for key: Variant in d.keys():
+			d[key] = _remap_layout_paths(d[key])
+		return d
+	if value is Array:
+		var a: Array = value
+		for i: int in range(a.size()):
+			a[i] = _remap_layout_paths(a[i])
+		return a
+	return value
+
+## Get current play time (including current session)
+func get_total_playtime() -> float:
+	var current_session := Time.get_unix_time_from_system() - session_start_time
+	return total_play_time + current_session
+
+## Format play time as string (HH:MM:SS)
+func format_playtime(seconds: float) -> String:
+	var hours := int(seconds / 3600)
+	var minutes := int(fmod(seconds, 3600) / 60)
+	var secs := int(fmod(seconds, 60))
+	return "%02d:%02d:%02d" % [hours, minutes, secs]
+
+## Quick save (slot 0)
+func quick_save() -> bool:
+	return save_game(0)
+
+## Quick load (slot 0)
+func quick_load() -> bool:
+	return load_game(0)
+
+## Called when scene finishes loading - apply pending data
+func _on_scene_load_completed(_scene_path: String) -> void:
+	# Apply pending known spells with retry mechanism to ensure player is ready
+	if not pending_known_spells.is_empty():
+		_apply_pending_known_spells_with_retry(0)
+
+	# Apply pending cell streamer data after scene loads
+	# This ensures player positioning is correct relative to world offset
+	_apply_pending_cell_streamer_data()
+
+	# Refresh compass quest marker after scene is fully loaded
+	# NPCs/enemies need time to initialize before compass can find them
+	call_deferred("_refresh_compass_after_load")
+
+
+## Refresh compass quest marker after save data is applied
+## Wait 2 frames for all NPCs/enemies to initialize, then force HUD to recalculate
+func _refresh_compass_after_load() -> void:
+	# Wait 2 frames for all NPCs/enemies to initialize
+	await get_tree().process_frame
+	await get_tree().process_frame
+
+	# Force HUD to recalculate compass markers
+	var hud: Node = get_tree().get_first_node_in_group("hud")
+	if hud and hud.has_method("refresh_compass_quest_marker"):
+		hud.refresh_compass_quest_marker()
+
+
+## Apply pending known spells to player's SpellCaster with retry mechanism
+## Retries up to 10 times with 0.1s delay between attempts
+func _apply_pending_known_spells_with_retry(attempt: int) -> void:
+	const MAX_RETRIES := 10
+	const RETRY_DELAY := 0.1
+
+	if pending_known_spells.is_empty():
+		return
+
+	if attempt >= MAX_RETRIES:
+		push_warning("[SaveManager] Failed to apply pending spells after %d attempts" % MAX_RETRIES)
+		pending_known_spells.clear()
+		return
+
+	var player := get_tree().get_first_node_in_group("player")
+
+	# Check player validity
+	if not player or not is_instance_valid(player) or not player.is_inside_tree():
+		# Retry after delay
+		get_tree().create_timer(RETRY_DELAY).timeout.connect(
+			func(): _apply_pending_known_spells_with_retry(attempt + 1)
+		)
+		return
+
+	var spell_caster: SpellCaster = player.get_node_or_null("SpellCaster")
+
+	# Check spell caster validity
+	if not spell_caster or not is_instance_valid(spell_caster):
+		# Retry after delay
+		get_tree().create_timer(RETRY_DELAY).timeout.connect(
+			func(): _apply_pending_known_spells_with_retry(attempt + 1)
+		)
+		return
+
+	# Successfully found player and spell caster - apply spells
+	spell_caster.known_spells.clear()
+	for spell_id in pending_known_spells:
+		spell_caster.learn_spell_by_id(spell_id)
+
+	pending_known_spells.clear()
+
+## World state tracking methods
+
+## Set current zone (call when entering a new area)
+func set_current_zone(zone_id: String, zone_name: String) -> void:
+	current_zone_id = zone_id
+	current_zone_name = zone_name
+
+	# Update BountyManager if entering a settlement
+	if BountyManager and WorldLexicon.SETTLEMENTS.has(zone_id):
+		BountyManager.set_current_settlement(zone_id)
+
+## Mark a location as discovered
+func discover_location(location_id: String, location_data: Dictionary = {}) -> void:
+	if not discovered_locations.has(location_id):
+		discovered_locations[location_id] = {
+			"discovered_at": Time.get_unix_time_from_system(),
+			"data": location_data
+		}
+
+## Check if location is discovered
+func is_location_discovered(location_id: String) -> bool:
+	return discovered_locations.has(location_id)
+
+## Mark an enemy as killed (for enemies that should stay dead)
+func mark_enemy_killed(enemy_id: String, kill_data: Dictionary = {}) -> void:
+	killed_enemies[enemy_id] = {
+		"killed_at": Time.get_unix_time_from_system(),
+		"data": kill_data
+	}
+
+## Check if enemy was killed
+func was_enemy_killed(enemy_id: String) -> bool:
+	return killed_enemies.has(enemy_id)
+
+## Mark a container as opened
+func mark_container_opened(container_id: String) -> void:
+	opened_containers[container_id] = true
+
+## Check if container was opened
+func was_container_opened(container_id: String) -> bool:
+	return opened_containers.has(container_id)
+
+## Unlock a shortcut
+func unlock_shortcut(shortcut_id: String) -> void:
+	unlocked_shortcuts[shortcut_id] = true
+
+## Check if shortcut is unlocked
+func is_shortcut_unlocked(shortcut_id: String) -> bool:
+	return unlocked_shortcuts.has(shortcut_id)
+
+## Increment rest count
+func increment_rest_count() -> void:
+	rest_count += 1
+
+## Increment death count
+func increment_death_count() -> void:
+	death_count += 1
+
+
+## Save persistent chest contents
+func save_chest_contents(chest_id: String, contents: Array) -> void:
+	if chest_id.is_empty():
+		return
+	persistent_chest_contents[chest_id] = contents.duplicate(true)
+
+
+## Load persistent chest contents
+func load_chest_contents(chest_id: String) -> Array:
+	if chest_id.is_empty() or not persistent_chest_contents.has(chest_id):
+		return []
+	return persistent_chest_contents[chest_id].duplicate(true)
+
+
+## Check if chest has saved contents
+func has_chest_contents(chest_id: String) -> bool:
+	return persistent_chest_contents.has(chest_id)
+
+
+## Get saved dungeon seed for a zone (-1 if none exists)
+func get_dungeon_seed(zone_id: String) -> int:
+	if zone_id.is_empty() or not dungeon_seeds.has(zone_id):
+		return -1
+	return dungeon_seeds[zone_id]
+
+
+## Set dungeon seed for a zone (auto-persists to cache file)
+func set_dungeon_seed(zone_id: String, seed_value: int) -> void:
+	if zone_id.is_empty():
+		return
+	dungeon_seeds[zone_id] = seed_value
+	_save_dungeon_seeds_cache()
+
+
+## Save dungeon seeds to a lightweight cache file (survives exit without full save)
+func _save_dungeon_seeds_cache() -> void:
+	var file := FileAccess.open(DUNGEON_SEEDS_FILE, FileAccess.WRITE)
+	if not file:
+		push_warning("[SaveManager] Failed to write dungeon seeds cache")
+		return
+
+	var json_string := JSON.stringify(dungeon_seeds)
+	file.store_string(json_string)
+	file.close()
+
+
+## Load dungeon seeds from cache file on startup
+func _load_dungeon_seeds_cache() -> void:
+	if not FileAccess.file_exists(DUNGEON_SEEDS_FILE):
+		return
+
+	var file := FileAccess.open(DUNGEON_SEEDS_FILE, FileAccess.READ)
+	if not file:
+		return
+
+	var json := JSON.new()
+	var parse_result := json.parse(file.get_as_text())
+	file.close()
+
+	if parse_result == OK and json.data is Dictionary:
+		# Merge cached seeds with any already loaded (full save takes priority)
+		for zone_id in json.data:
+			if not dungeon_seeds.has(zone_id):
+				dungeon_seeds[zone_id] = int(json.data[zone_id])
+
+
+## Get or create a seed for a dungeon (random on first visit, persistent after)
+## Returns the seed value to use for generation
+func get_or_create_dungeon_seed(dungeon_id: String) -> int:
+	if dungeon_id.is_empty():
+		return randi()
+
+	# Check if we already have a seed
+	if dungeon_seeds.has(dungeon_id):
+		return dungeon_seeds[dungeon_id]
+
+	# First visit - generate random seed
+	var new_seed: int = randi()
+	dungeon_seeds[dungeon_id] = new_seed
+	_save_dungeon_seeds_cache()
+
+	Log.d("[SaveManager] Generated new seed for dungeon '%s': %d" % [dungeon_id, new_seed])
+	return new_seed
+
+
+## Check if a dungeon has been visited before
+func has_visited_dungeon(dungeon_id: String) -> bool:
+	return dungeon_seeds.has(dungeon_id)
+
+
+## Get dungeon state (creates new state if doesn't exist)
+## Uses SimpleDungeons addon for procedural generation
+func get_dungeon_state(dungeon_id: String, _is_main: bool = false) -> Dictionary:
+	if dungeon_states.has(dungeon_id):
+		return dungeon_states[dungeon_id]
+	# Return empty state dict
+	return {
+		"dungeon_id": dungeon_id,
+		"seed_value": get_or_create_dungeon_seed(dungeon_id),
+		"first_visited_timestamp": int(Time.get_unix_time_from_system()),
+		"last_visited_timestamp": int(Time.get_unix_time_from_system()),
+		"visit_count": 1,
+		"cleared": false
+	}
+
+
+## Save dungeon state
+## Uses SimpleDungeons addon for procedural generation
+func save_dungeon_state(state: Dictionary) -> void:
+	var dungeon_id: String = state.get("dungeon_id", "")
+	if dungeon_id.is_empty():
+		return
+	state["last_visited_timestamp"] = int(Time.get_unix_time_from_system())
+	state["visit_count"] = state.get("visit_count", 0) + 1
+	dungeon_states[dungeon_id] = state
+
+
+## Get main dungeon state (permanent clear tracking)
+## Uses SimpleDungeons addon for procedural generation
+func get_main_dungeon_state(dungeon_id: String) -> Dictionary:
+	return get_dungeon_state(dungeon_id, true)
+
+
+## Get minor dungeon state (respawning)
+## Uses SimpleDungeons addon for procedural generation
+func get_minor_dungeon_state(dungeon_id: String) -> Dictionary:
+	return get_dungeon_state(dungeon_id, false)
+
+
+## Check if a main dungeon has been cleared
+func is_dungeon_cleared(dungeon_id: String) -> bool:
+	if not dungeon_states.has(dungeon_id):
+		return false
+	var data: Dictionary = dungeon_states[dungeon_id]
+	return data.get("cleared", false)
+
+
+## Reset world state (for new game)
+func reset_world_state() -> void:
+	discovered_locations.clear()
+	killed_enemies.clear()
+	dropped_items.clear()
+	opened_containers.clear()
+	unlocked_shortcuts.clear()
+	persistent_chest_contents.clear()
+	dungeon_seeds.clear()
+	dungeon_states.clear()
+	current_zone_id = ""
+	current_zone_name = ""
+	total_play_time = 0.0
+	rest_count = 0
+	death_count = 0
+	session_start_time = Time.get_unix_time_from_system()
+	# Clear the dungeon seeds cache file for new game
+	if FileAccess.file_exists(DUNGEON_SEEDS_FILE):
+		DirAccess.remove_absolute(DUNGEON_SEEDS_FILE)
+
+	# Reset crime/bounty data
+	if CrimeManager:
+		CrimeManager.reset_for_new_game()
+
+	# Reset the player's flags. This is the store behind deity devotion, every
+	# guild-rank gate flag and every mirrored world fact, so skipping it handed
+	# a brand new character the last run's ranks and devotions.
+	FlagManager.reset_for_new_game()
+
+	# And the ladder those flags gate. Clearing the flags alone left
+	# guild_rank_levels and guild_quest_counts standing, so a new character
+	# started twelve quests into the Thieves Guild with the badge taken off him.
+	# GuildRankManager.reset_for_new_game() existed with zero callers, exactly
+	# as FlagManager's did.
+	GuildRankManager.reset_for_new_game()
+
+	# Reset conversation memory, flags, heard-counts and discovered topics.
+	# Clearing the two dictionaries by hand used to leave the heard-counts and
+	# the player's unlocked topics behind, so a new game started with the last
+	# game's conversation history quietly still in place.
+	if ConversationSystem:
+		ConversationSystem.reset_for_new_game()
+
+	# Reset bounty quests
+	if has_node("/root/BountyManager"):
+		var bounty_manager := get_node("/root/BountyManager")
+		bounty_manager.reset_for_new_game()
+
+	# Reset player GPS (location discovery)
+	if PlayerGPS:
+		PlayerGPS.reset()
+
+	# Reset morality
+	if MoralityManager:
+		MoralityManager.reset()
+
+	# Reset faction reputations
+	if FactionManager:
+		FactionManager.reset()
+
+	# Reset world facts
+	if has_node("/root/WorldState"):
+		get_node("/root/WorldState").reset_for_new_game()
+
+	# Reset codex
+	if CodexManager:
+		CodexManager.reset()
+
+	# Reset NPC dispositions
+	if GameManager and "npc_disposition_modifiers" in GameManager:
+		GameManager.npc_disposition_modifiers.clear()
+
+	# Reset takeover manager (clear any stuck UI states)
+	if TakeoverManager:
+		TakeoverManager.reset_for_new_game()
+
+	# Reset stats tracker
+	if StatsTracker:
+		StatsTracker.reset()
+
+	# Reset journal manager
+	if JournalManager:
+		JournalManager.reset()
+
+	# Reset soulstone economy
+	if SoulstoneEconomy:
+		SoulstoneEconomy.reset()
+
+	# Reset follower system
+	if has_node("/root/FollowerManager"):
+		var follower_manager := get_node("/root/FollowerManager")
+		follower_manager.reset_for_new_game()
+
+	# Reset weather system
+	if has_node("/root/WeatherManager"):
+		var weather_manager := get_node("/root/WeatherManager")
+		weather_manager.reset_for_new_game()

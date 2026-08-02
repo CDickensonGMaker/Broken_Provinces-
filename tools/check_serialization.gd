@@ -51,7 +51,7 @@ const TEST_SLOT := 5
 const REGISTRY: Array[Dictionary] = [
 	{
 		"name": "GameManager",
-		"script": "res://scripts/autoload/game_manager.gd",
+		"script": "res://scripts/core/game_manager.gd",
 		"object": "GameManager",
 		"serialize": "to_dict", "deserialize": "from_dict",
 		"alias": {
@@ -77,13 +77,13 @@ const REGISTRY: Array[Dictionary] = [
 	},
 	{
 		"name": "CrimeManager",
-		"script": "res://scripts/autoload/crime_manager.gd",
+		"script": "res://scripts/systems/crime/crime_manager.gd",
 		"object": "CrimeManager",
 		"serialize": "to_dict", "deserialize": "from_dict",
 	},
 	{
 		"name": "FactionManager",
-		"script": "res://scripts/autoload/faction_manager.gd",
+		"script": "res://scripts/systems/factions/faction_manager.gd",
 		"object": "FactionManager",
 		"serialize": "to_dict", "deserialize": "from_dict",
 		"alias": {
@@ -97,19 +97,19 @@ const REGISTRY: Array[Dictionary] = [
 	},
 	{
 		"name": "WorldState",
-		"script": "res://scripts/autoload/world_state.gd",
+		"script": "res://scripts/core/world_state.gd",
 		"object": "WorldState",
 		"serialize": "to_dict", "deserialize": "from_dict",
 	},
 	{
 		"name": "FlagManager",
-		"script": "res://scripts/autoload/flag_manager.gd",
+		"script": "res://scripts/core/flag_manager.gd",
 		"object": "FlagManager",
 		"serialize": "to_dict", "deserialize": "from_dict",
 	},
 	{
 		"name": "ConversationSystem",
-		"script": "res://scripts/autoload/conversation_system.gd",
+		"script": "res://scripts/systems/dialogue/conversation_system.gd",
 		"object": "ConversationSystem",
 		"serialize": "to_dict", "deserialize": "from_dict",
 		"transient": {
@@ -136,7 +136,7 @@ const REGISTRY: Array[Dictionary] = [
 	},
 	{
 		"name": "WeatherManager",
-		"script": "res://scripts/autoload/weather_manager.gd",
+		"script": "res://scripts/world/weather_manager.gd",
 		"object": "WeatherManager",
 		"serialize": "get_save_data", "deserialize": "load_save_data",
 		"alias": {
@@ -155,13 +155,13 @@ const REGISTRY: Array[Dictionary] = [
 	},
 	{
 		"name": "SoulstoneEconomy",
-		"script": "res://scripts/autoload/soulstone_economy.gd",
+		"script": "res://scripts/systems/economy/soulstone_economy.gd",
 		"object": "SoulstoneEconomy",
 		"serialize": "get_save_data", "deserialize": "load_save_data",
 	},
 	{
 		"name": "GuildRankManager",
-		"script": "res://scripts/autoload/guild_rank_manager.gd",
+		"script": "res://scripts/systems/factions/guild_rank_manager.gd",
 		"object": "GuildRankManager",
 		"serialize": "to_dict", "deserialize": "from_dict",
 		"alias": {
@@ -171,13 +171,13 @@ const REGISTRY: Array[Dictionary] = [
 	},
 	{
 		"name": "MoralityManager",
-		"script": "res://scripts/autoload/morality_manager.gd",
+		"script": "res://scripts/systems/factions/morality_manager.gd",
 		"object": "MoralityManager",
 		"serialize": "to_dict", "deserialize": "from_dict",
 	},
 	{
 		"name": "CodexManager",
-		"script": "res://scripts/autoload/codex_manager.gd",
+		"script": "res://scripts/systems/quests/codex_manager.gd",
 		"object": "CodexManager",
 		"serialize": "to_dict", "deserialize": "from_dict",
 		"transient": {
@@ -187,13 +187,13 @@ const REGISTRY: Array[Dictionary] = [
 	},
 	{
 		"name": "JournalManager",
-		"script": "res://scripts/autoload/journal_manager.gd",
+		"script": "res://scripts/systems/quests/journal_manager.gd",
 		"object": "JournalManager",
 		"serialize": "to_dict", "deserialize": "from_dict",
 	},
 	{
 		"name": "StatsTracker",
-		"script": "res://scripts/autoload/stats_tracker.gd",
+		"script": "res://scripts/core/stats_tracker.gd",
 		"object": "StatsTracker",
 		"serialize": "to_dict", "deserialize": "from_dict",
 		"whole": "stats",
@@ -203,13 +203,13 @@ const REGISTRY: Array[Dictionary] = [
 	},
 	{
 		"name": "FastTravelManager",
-		"script": "res://scripts/autoload/fast_travel_manager.gd",
+		"script": "res://scripts/systems/travel/fast_travel_manager.gd",
 		"object": "FastTravelManager",
 		"serialize": "to_dict", "deserialize": "from_dict",
 	},
 	{
 		"name": "TournamentManager",
-		"script": "res://scripts/autoload/tournament_manager.gd",
+		"script": "res://scripts/systems/events/tournament_manager.gd",
 		"object": "TournamentManager",
 		"serialize": "get_save_data", "deserialize": "load_save_data",
 		"transient": {
@@ -222,7 +222,7 @@ const REGISTRY: Array[Dictionary] = [
 	},
 	{
 		"name": "CaveManager",
-		"script": "res://scripts/autoload/cave_manager.gd",
+		"script": "res://scripts/world/streaming/cave_manager.gd",
 		"object": "CaveManager",
 		"serialize": "get_save_data", "deserialize": "load_save_data",
 		"transient": {
@@ -251,7 +251,7 @@ const REGISTRY: Array[Dictionary] = [
 	},
 	{
 		"name": "FollowerNPC",
-		"script": "res://scripts/npcs/follower_npc.gd",
+		"script": "res://scripts/characters/npcs/follower_npc.gd",
 		"object": "",
 		"build": "follower",
 		"serialize": "get_save_data", "deserialize": "load_save_data",
@@ -481,7 +481,7 @@ func _check_version_agreement() -> void:
 	# `if version < SAVE_VERSION`, so a migration block whose target sits above
 	# SAVE_VERSION can never run, and one that stops short of it leaves the
 	# newest saves half-migrated. The ladder must end exactly at the constant.
-	var source: String = _read_text("res://scripts/autoload/save_manager.gd")
+	var source: String = _read_text("res://scripts/core/save_manager.gd")
 	var re := RegEx.new()
 	re.compile("migrated\\[\"version\"\\]\\s*=\\s*(\\d+)")
 	var targets: Array[int] = []

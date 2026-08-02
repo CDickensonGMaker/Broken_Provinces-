@@ -4,7 +4,7 @@
 **Author:** UX Designer architect
 **Date:** 2026-07-08
 **Scope:** All modal/popup UIs vs the reference standard (dialogue_box.gd, game_menu.gd)
-**Prior art:** ADR-003 (design/adr/003-ui-patterns.md) already declared ShopUI the canonical blueprint on 2026-05-25 — it was never enforced. This analysis supersedes/extends it.
+**Prior art:** ADR-003 (docs/adr/003-ui-patterns.md) already declared ShopUI the canonical blueprint on 2026-05-25 — it was never enforced. This analysis supersedes/extends it.
 
 ---
 
@@ -111,7 +111,7 @@ Two reference UIs, two legitimate size classes:
 - `open()`/`close()` delegate to UIManager; emits `ui_closed` for legacy compatibility.
 - Click-outside: default OFF for transactional UIs (shop, bounty); if enabled, it must live on the overlay only and never overlap within 0px of the panel.
 
-**`scripts/autoload/ui_manager.gd`** — owns:
+**`scripts/core/ui_manager.gd`** — owns:
 - ONE persistent `CanvasLayer(layer = 100)` for all popups (kills the per-opener canvas creation, leaks, and layer drift).
 - A modal stack: `push(popup)` / `pop()` — only top popup receives input; opening a second popup no longer double-pauses.
 - **Pause refcount:** `paused = stack.size() > 0`. Removes every direct `get_tree().paused =` write from openers. Crafting/enchanting get pause for free.

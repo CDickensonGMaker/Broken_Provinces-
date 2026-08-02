@@ -138,9 +138,9 @@ drop_table = {
 }
 xp_reward = 350
 scene_path = ""
-icon_path = "res://assets/sprites/enemies/undead/ghost_pirate_captian.png"
+icon_path = "res://assets/sprites/legacy/enemies/undead/ghost_pirate_captian.png"
 scale = 1.15
-sprite_path = "res://assets/sprites/enemies/undead/ghost_pirate_captian.png"
+sprite_path = "res://assets/sprites/legacy/enemies/undead/ghost_pirate_captian.png"
 attack_sprite_path = ""
 sprite_hframes = 1
 sprite_vframes = 1

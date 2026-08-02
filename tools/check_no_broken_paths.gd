@@ -51,6 +51,15 @@ const SKIP_FILES: Array[String] = [
 	"res://tools/layout_deletes.tsv",
 ]
 
+## A file may opt itself out by carrying this marker followed by a reason:
+##
+##     ## check_no_broken_paths: skip - <why this file names dead paths>
+##
+## There is exactly one legitimate use: code whose JOB is to know what a path
+## used to be, which right now means SaveManager's layout remap table. A marker
+## with nothing after the dash is not a reason and does not count.
+const SKIP_MARKER := "check_no_broken_paths: skip - "
+
 ## Paths that do not resolve on disk and are correct anyway. One line of reason
 ## each; an entry with no reason is a bug being hidden.
 const ALLOWED: Dictionary = {
@@ -87,9 +96,10 @@ func _ready() -> void:
 	# Two passes, because paths with spaces exist and are legal. A quoted
 	# literal runs to its closing quote whatever is inside it; only after those
 	# are lifted out can the rest be scanned on the assumption that whitespace
-	# ends a path. Doing it the other way round truncates
-	# "res://Sprite folders grab bag/rat.png" to "res://Sprite" and reports 100
-	# imaginary breakages.
+	# ends a path. Doing it the other way round truncates a quoted path with a
+	# space in it at the first space and reports a hundred imaginary breakages -
+	# which is exactly what it did on the first run, against the sprite folder
+	# that has since been deleted.
 	var quoted := RegEx.new()
 	quoted.compile("[\"'](res://[^\"'\\n]*)[\"']")
 	var bare := RegEx.new()
@@ -193,6 +203,13 @@ func _scan_file(path: String, quoted: RegEx, bare: RegEx) -> void:
 		return
 	var text := f.get_as_text()
 	f.close()
+	if text.contains(SKIP_MARKER):
+		var at := text.find(SKIP_MARKER) + SKIP_MARKER.length()
+		var reason := text.substr(at, 80).split("
+")[0].strip_edges()
+		if reason.length() >= 8:
+			return
+		printerr("  %s carries the skip marker with no reason after it" % path)
 	_scanned += 1
 	if not text.contains("res://"):
 		return

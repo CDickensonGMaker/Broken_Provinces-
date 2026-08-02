@@ -74,7 +74,7 @@ const OUT_OF_BOUNDS_LOCATIONS: Array[String] = [
 const USER_PATH_EXEMPTIONS: Dictionary = {
 	"res://addons/world_forge/world_forge_dock.gd":
 		"LEGACY_PATH, offered as a one-way import and read nowhere else",
-	"res://scripts/data/world_grid.gd":
+	"res://scripts/core/world_grid.gd":
 		"LEGACY_FORGE_MAP_PATH, named so the tool can find it, never loaded from",
 }
 

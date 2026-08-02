@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://repair_station_scene"]
 
-[ext_resource type="Script" path="res://scripts/world/repair_station.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/world/interactables/repair_station.gd" id="1_script"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1"]
 size = Vector3(1.0, 0.7, 0.6)

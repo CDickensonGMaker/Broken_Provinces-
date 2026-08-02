@@ -1,9 +1,9 @@
 [gd_scene load_steps=10 format=3 uid="uid://inn_interior"]
 
-[ext_resource type="PackedScene" uid="uid://player_scene" path="res://scenes/player/player.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://player_scene" path="res://scenes/characters/player.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="2"]
 [ext_resource type="Script" path="res://scripts/levels/inn_interior.gd" id="3"]
-[ext_resource type="Script" path="res://scripts/world/zone_door.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/world/interactables/zone_door.gd" id="4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
 sky_top_color = Color(0.05, 0.05, 0.08, 1)

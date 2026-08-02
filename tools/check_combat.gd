@@ -306,7 +306,7 @@ func _check_removed_verbs() -> void:
 		"the options menu offers a binding for a verb the game does not have"
 	)
 
-	var player_source: String = FileAccess.get_file_as_string("res://scripts/player/player_controller.gd")
+	var player_source: String = FileAccess.get_file_as_string("res://scripts/characters/player/player_controller.gd")
 	_expect(
 		not player_source.is_empty(),
 		"could not read player_controller.gd to check for the removed verbs"
@@ -317,7 +317,7 @@ func _check_removed_verbs() -> void:
 			"PlayerController declares `%s` again - a removed verb is growing back" % banned
 		)
 
-	var camera_source: String = FileAccess.get_file_as_string("res://scripts/player/camera_pivot.gd")
+	var camera_source: String = FileAccess.get_file_as_string("res://scripts/characters/player/camera_pivot.gd")
 	_expect(
 		not camera_source.contains("bias_toward"),
 		"CameraPivot.bias_toward is back - that function existed only to serve lock-on"

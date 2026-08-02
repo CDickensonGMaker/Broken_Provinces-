@@ -104,7 +104,7 @@ func _ready() -> void:
 ## a type added there appears here the same day and a type removed vanishes.
 func _load_objective_types() -> void:
 	objective_types.clear()
-	var qm: Script = load("res://scripts/autoload/quest_manager.gd")
+	var qm: Script = load("res://scripts/systems/quests/quest_manager.gd")
 	if qm:
 		for t: String in qm.HANDLED_OBJECTIVE_TYPES:
 			objective_types.append(t)

@@ -1,11 +1,11 @@
 [gd_scene load_steps=7 format=3 uid="uid://thornfield_hamlet_001"]
 
 [ext_resource type="Script" path="res://scripts/levels/thornfield.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/npcs/animals/cat_animiation.png" id="4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/npcs/animals/cow_animiation.png" id="5"]
-[ext_resource type="Script" path="res://scripts/world/bounty_board.gd" id="6_bounty_board"]
+[ext_resource type="Texture2D" path="res://assets/sprites/legacy/npcs/animals/cat_animiation.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/legacy/npcs/animals/cow_animiation.png" id="5"]
+[ext_resource type="Script" path="res://scripts/world/interactables/bounty_board.gd" id="6_bounty_board"]
 
 [node name="Thornfield" type="Node3D"]
 script = ExtResource("1")

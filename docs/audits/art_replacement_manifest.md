@@ -13,13 +13,13 @@ replacement class**.
 | `assets/textures/sky/moon.png` | **Routed around 8/1.** Was missing; every outdoor level logged `Resource file not found` on boot. A 64×64 placeholder now exists: a flat disc in four hard-stepped bands with four maria, no gradient. It is a stand-in, not art | `scripts/world/day_night_cycle.gd`, all outdoor scenes | A real moon at 64×64, PS1 palette, ideally with a phase strip |
 | `assets/sprites/enemies/undead/skeleton_warrior.png` | File never existed. King's Watch asked for it at 4×4 and Mosshall Tombs at 8×12 — two different frame counts for one absent sheet, so neither was ever seen. Repointed 8/1 to `skeleton_walking.png` (8×1), the sheet the zoo and dungeon spawner already agree on | `kings_watch.gd`, `mosshall_tombs.gd`, `sunken_crypt.gd` | Nothing needed unless a distinct armoured skeleton is wanted, in which case an 8×1 sheet matching `skeleton_walking.png` |
 | `assets/sprites/enemies/undead/vampire_lord_alt.png` | File never existed; the tomb/crypt boss drew nothing. Repointed 8/1 to `vampirelord_walking.png` (5×1). Note the folder holds two unrelated vampire sets at different resolutions — `vampire_lord_*` at 431×96 and `vampirelord_*` at 247×55 | `mosshall_tombs.gd`, `sunken_crypt.gd` | A boss-distinct vampire sheet; also worth collapsing the two vampire sets into one |
-| `assets/sprites/props/monastery/monastary_altar1.png.png` | Saved with a doubled extension. Code asked for the sensible name and got nothing, so the Dalhurst altar drew untextured. Repointed 8/1 to the real doubled name rather than renaming the asset | `dalhurst.gd` | Rename the file to a single `.png` and repoint back |
-| `assets/sprites/enemies/goblins/goblin_warboss_walking.png` | 514×150 — not divisible into whole frames at any sane count, and 514 is not a power of two. `data/enemies/goblin_warboss.tres` already points away from it, at `goblin_sword.png` | Nothing, currently. Skarrag the Devourer spawns in `kazan_dun_level_5.gd` on the generic goblin sprite instead | A boss-scale goblin sheet at 4×1 or 4×4, power-of-two, matching the goblin palette |
-| `assets/sprites/enemies/goblins/goblin_warboss_dying.png` | Same family as above; unreferenced | Nothing | Death row of the sheet above |
-| `assets/sprites/enemies/goblins/goblin_archer_Fixed.png` | Duplicate of `goblin_archer.png` with a hand-fix suffix. The dungeon loot config referenced it at `assets/sprites/goblin_archer_Fixed.png` — the wrong folder — so goblin archers in generated dungeons drew nothing. Repointed 8/1 to `goblin_archer.png`; the `_Fixed` copy is now referenced by nothing at all | Was `scripts/dungeons/dungeon_loot_config.gd`, now nothing | Delete one, or fold the fix into `goblin_archer.png` |
-| `assets/models/rocks/Cliff_01.obj`, `Cliff_02.obj` | Both name a `Cliff_01.mtl` / `Cliff_02.mtl` that was never shipped alongside them, so the meshes import untextured. Routed around 8/1: the cliff spawner overrides with one shared triplanar material over `impass_rock.png` rather than repairing the .obj | `scripts/generation/wilderness_room.gd` (`_create_cliff`), all rocky biomes | Ship the .mtl and its texture, or re-export with the material embedded |
+| `assets/sprites/legacy/props/monastery/monastary_altar1.png.png` | Saved with a doubled extension. Code asked for the sensible name and got nothing, so the Dalhurst altar drew untextured. Repointed 8/1 to the real doubled name rather than renaming the asset | `dalhurst.gd` | Rename the file to a single `.png` and repoint back |
+| `assets/sprites/legacy/enemies/goblins/goblin_warboss_walking.png` | 514×150 — not divisible into whole frames at any sane count, and 514 is not a power of two. `data/enemies/goblin_warboss.tres` already points away from it, at `goblin_sword.png` | Nothing, currently. Skarrag the Devourer spawns in `kazan_dun_level_5.gd` on the generic goblin sprite instead | A boss-scale goblin sheet at 4×1 or 4×4, power-of-two, matching the goblin palette |
+| `assets/sprites/legacy/enemies/goblins/goblin_warboss_dying.png` | Same family as above; unreferenced | Nothing | Death row of the sheet above |
+| `assets/sprites/legacy/enemies/goblins/goblin_archer_Fixed.png` | Duplicate of `goblin_archer.png` with a hand-fix suffix. The dungeon loot config referenced it at `assets/sprites/goblin_archer_Fixed.png` — the wrong folder — so goblin archers in generated dungeons drew nothing. Repointed 8/1 to `goblin_archer.png`; the `_Fixed` copy is now referenced by nothing at all | Was `scripts/generation/dungeons/dungeon_loot_config.gd`, now nothing | Delete one, or fold the fix into `goblin_archer.png` |
+| `assets/world/nature/Cliff_01.obj`, `Cliff_02.obj` | Both name a `Cliff_01.mtl` / `Cliff_02.mtl` that was never shipped alongside them, so the meshes import untextured. Routed around 8/1: the cliff spawner overrides with one shared triplanar material over `impass_rock.png` rather than repairing the .obj | `scripts/generation/wilderness/wilderness_room.gd` (`_create_cliff`), all rocky biomes | Ship the .mtl and its texture, or re-export with the material embedded |
 | `assets/textures/environment/floors/leaves_full.png`, `leaves_half.png` | Not broken — moved. Three call sites still pointed at the old `assets/sprites/environment/ground/` path and produced **1,607 boot errors**, by far the loudest thing in the log. Repointed 8/1 | `elder_moor.gd`, `elder_moor.tscn`, `thornfield.gd` | None |
-| **Placeholder geometry — `QuestInteractable`** | Not broken; deliberately plain. Every quest object added in steps 14/23 (`kd_thurgans_pyre`, `kd_regents_roll`, `kd_pit_floor_remains`, `kd_gallery_props`, `kd_soulstone_parley`, the Millbrook camp objects) draws an untinted box with a prompt | `scripts/world/quest_interactable.gd`, Kazan-Dun levels 1/4/5, Millbrook bandit camp | Props: a pyre, a lectern with a roll, a drag-marked pit floor, timber props, a stone stack, a war chest. Swap the mesh in one place and every instance inherits it |
+| **Placeholder geometry — `QuestInteractable`** | Not broken; deliberately plain. Every quest object added in steps 14/23 (`kd_thurgans_pyre`, `kd_regents_roll`, `kd_pit_floor_remains`, `kd_gallery_props`, `kd_soulstone_parley`, the Millbrook camp objects) draws an untinted box with a prompt | `scripts/world/interactables/quest_interactable.gd`, Kazan-Dun levels 1/4/5, Millbrook bandit camp | Props: a pyre, a lectern with a roll, a drag-marked pit floor, timber props, a stone stack, a war chest. Swap the mesh in one place and every instance inherits it |
 
 ## Sprite reuse for new NPCs (replacement candidates)
 
@@ -146,7 +146,7 @@ and gave the events with no asset a declared stand-in where an honest one
 exists (`AudioManager.EVENT_SUBSTITUTES`). **32 events had no asset and no
 honest stand-in and stayed silent.**
 
-**8/2: they were synthesised.** `tools/gen_audio.py` writes procedural
+**8/2: they were synthesised.** `tools/build/gen_audio.py` writes procedural
 placeholders into `assets/audio/generated/` and nowhere else - it cannot reach
 a real recording, and the gate
 (`tools/check_audio_events.tscn`) fails if a wired variant path leaves that
@@ -163,7 +163,7 @@ event's *own* asset before it checks `EVENT_VARIANTS`, so dropping a real file
 at the path in the `EVENTS` column retires its placeholder the moment it lands.
 The wiring survives replacement because the event name never moves.
 
-Regenerate the whole set with `python tools/gen_audio.py all` (needs numpy and
+Regenerate the whole set with `python tools/build/gen_audio.py all` (needs numpy and
 ffmpeg). It is deterministic - the same seeds give the same files.
 
 | Event | What it is | Generated placeholder | Variants | What a real one would be |
@@ -212,7 +212,7 @@ exact name, and none of them is silent.
 
 ### Biome ambience (8/1: no assets at all - synthesised 8/2)
 
-`scripts/audio/ambient_soundscape.gd` wanted 7 biomes x day/night x 3 layers =
+`scripts/world/ambient_soundscape.gd` wanted 7 biomes x day/night x 3 layers =
 36 loops under `assets/audio/ambient/`. That directory never existed; the real
 one is `assets/audio/Ambiance/` and holds four files (a town murmur, a port
 city, a ruins ambience, two arena beds), none of them a biome bed. **Biome
@@ -226,7 +226,7 @@ eight biomes across day and night, and `AudioManager` owns the one
 All PLACEHOLDER-CLASS. 62-second seamless loops (the last four seconds are
 crossfaded over the first, so there is no click at the loop point), Ogg
 Vorbis at 40 kbit mono, RMS-matched to -33 dBFS so no biome is louder than
-another. Regenerate with `python tools/gen_audio.py ambience`.
+another. Regenerate with `python tools/build/gen_audio.py ambience`.
 
 | Bed | Layers synthesised | What a real one would be |
 |---|---|---|
@@ -305,7 +305,7 @@ to make the synthesis more lifelike.
 | `music/dark_fantasy_drone.ogg` | `AudioManager.MUSIC["horror"]` | 2:24 loop. Detuned saw pads through a slow lowpass over Dm - Bb - Gm - A, sparse low bells on the chord roots, a breath of air over the top, tape wobble under everything. 56 kbit mono, 860 KB |
 
 PLACEHOLDER-CLASS, like everything under `assets/audio/generated/`. Regenerate
-with `python tools/gen_audio.py music`.
+with `python tools/build/gen_audio.py music`.
 
 **It is not the menu music and must not become it.** The main menu already has
 a real three-minute medieval-trumpets track and the law is that a real

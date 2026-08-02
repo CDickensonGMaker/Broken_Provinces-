@@ -31,7 +31,7 @@ extends Node
 ##    dressed, wearing his apron, standing at his 13:00 station - and the
 ##    billboard NPCs around him are untouched.
 
-const MAN := "res://assets/models/citizens/glb/citizen_man.glb"
+const MAN := "res://assets/characters/citizens/glb/citizen_man.glb"
 const MASTERS: Array[String] = ["citizen_man", "citizen_woman", "citizen_boy", "citizen_girl"]
 const PILOT_ID := "grom_the_smith"
 const PILOT_MODEL := "citizen_man"
@@ -90,7 +90,7 @@ func _check_registry() -> void:
 ## ============================================================================
 
 func _check_billboard_wrap() -> void:
-	var texture: Texture2D = load("res://assets/sprites/npcs/civilians/man_civilian.png")
+	var texture: Texture2D = load("res://assets/sprites/legacy/npcs/civilians/man_civilian.png")
 	if texture == null:
 		_check("man_civilian.png loads", false)
 		return

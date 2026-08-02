@@ -1,14 +1,14 @@
 [gd_scene load_steps=10 format=3 uid="uid://byma3wm3jrof1"]
 
 [ext_resource type="Script" uid="uid://bg6cfvj8rv8u3" path="res://scripts/levels/kazan_dun_level_4.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/world/zone_door_instance.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_forge_main.tscn" id="5"]
-[ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_mine_shaft.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_bridge_span.tscn" id="7"]
-[ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_bridge_gatehouse.tscn" id="8"]
-[ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_stairwell_down.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/generation/kazan_dun/kd_forge_main.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/generation/kazan_dun/kd_mine_shaft.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/generation/kazan_dun/kd_bridge_span.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/generation/kazan_dun/kd_bridge_gatehouse.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/generation/kazan_dun/kd_stairwell_down.tscn" id="9"]
 
 [node name="KazanDunLevel4Modular" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18, 52)

@@ -90,8 +90,8 @@ func _setup_environment() -> void:
 ## Call register_room() or register_room_scene() for each room
 func _register_rooms() -> void:
 	# Example registration (override in subclass):
-	# register_room_scene("great_hall", "res://scenes/rooms/kazan_dun/great_hall.tscn")
-	# register_room_scene("kitchen", "res://scenes/rooms/kazan_dun/kitchen.tscn")
+	# register_room_scene("great_hall", "res://scenes/generation/kazan_dun/great_hall.tscn")
+	# register_room_scene("kitchen", "res://scenes/generation/kazan_dun/kitchen.tscn")
 	pass
 
 

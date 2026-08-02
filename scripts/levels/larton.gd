@@ -13,7 +13,7 @@ extends Node3D
 
 const ZONE_ID := "larton"
 const ZONE_SIZE := Vector2(100.0, 100.0)  # Smaller than Dalhurst - a struggling town
-const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/cities/port_city_1.wav"  # Use same as Dalhurst for now
+const TOWN_AMBIENT_PATH := "res://assets/audio/ambience/cities/port_city_1.wav"  # Use same as Dalhurst for now
 
 @onready var nav_region: NavigationRegion3D = $NavigationRegion3D
 
@@ -128,7 +128,7 @@ func _spawn_npcs() -> void:
 		Vector3(20, 0.5, -8),  # Inside survivor hideout
 		"Mayor Kendrick",
 		"mayor_aldric_larton",
-		preload("res://assets/sprites/npcs/civilians/man_noble1.png"),
+		preload("res://assets/sprites/legacy/npcs/civilians/man_noble1.png"),
 		1, 1,
 		mayor_quests
 	)
@@ -149,7 +149,7 @@ func _spawn_npcs() -> void:
 		Vector3(14, 0.5, -6),  # At the barricade
 		"Captain Harken",
 		"captain_harken",
-		preload("res://assets/sprites/npcs/civilians/guard_civilian.png"),
+		preload("res://assets/sprites/legacy/npcs/civilians/guard_civilian.png"),
 		1, 1,
 		[],  # No quests - turn-in target for retake_harbor
 		true  # is_talk_target
@@ -171,7 +171,7 @@ func _spawn_npcs() -> void:
 		Vector3(-42, 0.3, 40),  # Near the rotting docks
 		"Old Willem",
 		"old_salt_willem",
-		preload("res://assets/sprites/npcs/civilians/guy_civilian1.png"),
+		preload("res://assets/sprites/legacy/npcs/civilians/guy_civilian1.png"),
 		1, 1,
 		[],  # No quests - just information
 		true  # is_talk_target
@@ -297,7 +297,7 @@ func _spawn_npcs() -> void:
 func _spawn_bandits(parent: Node3D) -> void:
 	var bandit_data_path := "res://data/enemies/human_bandit.tres"
 	var bandit_captain_path := "res://data/enemies/bandit_captain.tres"
-	var bandit_sprite: Texture2D = preload("res://assets/sprites/enemies/humanoid/human_bandit_alt.png")
+	var bandit_sprite: Texture2D = preload("res://assets/sprites/legacy/enemies/humanoid/human_bandit_alt.png")
 
 	# Bandit positions - warehouse and streets
 	var bandit_positions: Array[Vector3] = [

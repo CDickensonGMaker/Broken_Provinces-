@@ -36,6 +36,7 @@ func _run() -> void:
 	await _boot_start_scene()
 	var quest_id: String = _quest_offer()
 	await _save_load_round_trip(quest_id)
+	_old_layout_save()
 
 
 ## A new character, exactly as the main menu builds one.
@@ -185,6 +186,83 @@ func _save_load_round_trip(quest_id: String) -> void:
 			QuestManager.is_quest_active(quest_id))
 
 	SaveManager.delete_save(TEST_SLOT)
+
+
+## A save written before the 2026-08-02 layout migration still loads.
+##
+## check_no_broken_paths: skip - the fixture is deliberately written in the old
+## layout, which is the only way to prove the remap works.
+##
+## The migration moved 2185 files. Every artefact in the repository was
+## rewritten by script; a save file is the one that could not be, because it
+## lives in user:// on a player's disk and names scenes and sprites by their
+## old paths. SaveManager remaps them on read, and this proves it on BOTH code
+## paths that parse a save - load_game(), and get_save_info(), which does not
+## migrate and hands current_scene straight to the scene loader from the
+## save-select and quick-load screens.
+##
+## The fixture is a real save file with old paths written back into it, not a
+## hand-built dictionary, so it fails if the parse order changes.
+func _old_layout_save() -> void:
+	const SLOT := 6
+	# Where two things a save really carries used to live.
+	const OLD_SCENE := "res://scenes/dungeons/dungeon_1.tscn"
+	const OLD_SPRITE := "res://assets/sprites/npcs/civilians/barmaid_4x4.png"
+
+	if not SaveManager.save_game(SLOT):
+		_check("old-layout fixture: a save can be written", false)
+		return
+
+	var path: String = SaveManager._get_save_path(SLOT)
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		_check("old-layout fixture: the save can be re-read", false)
+		return
+	var raw: Variant = JSON.parse_string(f.get_as_text())
+	f.close()
+	if not (raw is Dictionary):
+		_check("old-layout fixture: the save is a JSON object", false)
+		return
+
+	var data: Dictionary = raw
+	var player: Dictionary = data.get("player", {})
+	player["current_scene"] = OLD_SCENE
+	data["player"] = player
+
+	var w := FileAccess.open(path, FileAccess.WRITE)
+	w.store_string(JSON.stringify(data))
+	w.close()
+
+	# get_save_info() never migrates. It must still hand back a live path.
+	var info: Dictionary = SaveManager.get_save_info(SLOT)
+	var seen: String = info.get("current_scene", "")
+	_check("an old save's scene path is remapped on the save-select path (%s)" % seen,
+		seen != OLD_SCENE and seen.begins_with("res://"))
+	_check("the remapped scene path exists on disk", ResourceLoader.exists(seen))
+	_check("an old save loads", SaveManager.load_game(SLOT))
+
+	# The remap walks the whole dictionary rather than a list of known keys, and
+	# it is idempotent - it runs on every parse, including files already current.
+	var nested: Dictionary = {
+		"a": OLD_SPRITE,
+		"b": {"c": [OLD_SCENE, "res://data/dialogues/guard_generic.tres"]},
+		"d": "not a path at all",
+	}
+	SaveManager._remap_layout_paths(nested)
+	var moved_sprite: String = nested["a"]
+	var inner: Array = nested["b"]["c"]
+	_check("a nested sprite path is remapped (%s)" % moved_sprite,
+		moved_sprite != OLD_SPRITE)
+	_check("the remapped sprite exists", FileAccess.file_exists(moved_sprite))
+	_check("a path inside a nested array is remapped", inner[0] != OLD_SCENE)
+	_check("a moved .tres is remapped and resolves", ResourceLoader.exists(inner[1]))
+	_check("a non-path string is left alone", nested["d"] == "not a path at all")
+
+	var twice: Dictionary = nested.duplicate(true)
+	SaveManager._remap_layout_paths(twice)
+	_check("the remap is idempotent", twice["a"] == nested["a"])
+
+	SaveManager.delete_save(SLOT)
 
 
 func _check(what: String, passed: bool) -> void:

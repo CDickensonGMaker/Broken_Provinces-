@@ -109,7 +109,7 @@ func _spawn_npcs() -> void:
 		captain_pos,
 		"Captain Roderick Steele",
 		"captain_roderick_steele",
-		preload("res://assets/sprites/npcs/civilians/man_noble1.png"),
+		preload("res://assets/sprites/legacy/npcs/civilians/man_noble1.png"),
 		1, 1,
 		["mercenary_01_enlistment", "mercenary_02_drill", "mercenary_03_escort", "mercenary_04_caravan_guard", "mercenary_05_siege_support", "mercenary_06_monster_hunt", "mercenary_07_border_patrol", "mercenary_08_rival_company", "mercenary_09_war_council", "mercenary_10_fortress_assault", "mercenary_11_elite_contract", "mercenary_12_legendary_bounty", "mercenary_13_company_captain"],
 		false
@@ -132,7 +132,7 @@ func _spawn_npcs() -> void:
 		clerk_pos,
 		"Contract Clerk",
 		"iron_hall_clerk",
-		preload("res://assets/sprites/npcs/civilians/man_civilian.png"),
+		preload("res://assets/sprites/legacy/npcs/civilians/man_civilian.png"),
 		1, 1,
 		[],
 		false

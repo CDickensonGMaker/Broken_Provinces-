@@ -11,7 +11,7 @@ const IntroDialogueUIScript = preload("res://scripts/ui/intro_dialogue_ui.gd")
 const ZONE_ID := "elder_moor"
 const ZONE_SIZE := Vector2(242.0, 219.0)  # Actual scene dimensions (width, depth)
 const ZONE_SIZE_LEGACY := 242.0  # For backwards compatibility (use larger dimension)
-const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
+const TOWN_AMBIENT_PATH := "res://assets/audio/ambience/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
 
 ## Town center radius - buildings are kept within this area
 const TOWN_RADIUS := 80.0  # Expanded for larger scene
@@ -523,7 +523,7 @@ func _spawn_tutorial_npcs() -> void:
 ## ============================================================================
 func _spawn_martha_the_cook() -> void:
 	# Load Martha's sprite texture
-	var martha_sprite: Texture2D = load("res://assets/sprites/npcs/named/martha_cook.png")
+	var martha_sprite: Texture2D = load("res://assets/sprites/legacy/npcs/named/martha_cook.png")
 	if not martha_sprite:
 		push_error("[Elder Moor] Failed to load Martha the Cook sprite!")
 		return
@@ -558,7 +558,7 @@ func _spawn_martha_the_cook() -> void:
 ## ============================================================================
 func _spawn_varn_the_scarred() -> void:
 	# Load Varn's sprite texture (gladiator sprite)
-	var varn_sprite: Texture2D = load("res://assets/sprites/npcs/combat/male_gladiator1.png")
+	var varn_sprite: Texture2D = load("res://assets/sprites/legacy/npcs/combat/male_gladiator1.png")
 	if not varn_sprite:
 		push_error("[Elder Moor] Failed to load Varn the Scarred sprite!")
 		return
@@ -761,7 +761,7 @@ func _spawn_priest_of_morthane() -> void:
 	priest.no_quest_dialogue = "Death is not the end, traveller. It is the turning of the wheel. Honour the dead and they will not trouble the living."
 	# The tree the Dalhurst body used to carry, including the devotion ritual.
 	var morthane_dialogue: DialogueData = DialogueLoader.load_from_json(
-		"res://data/dialogue/priest_morthane_elder_moor.json"
+		"res://data/dialogue/trees/priest_morthane_elder_moor.json"
 	)
 	if morthane_dialogue:
 		priest.dialogue_data = morthane_dialogue

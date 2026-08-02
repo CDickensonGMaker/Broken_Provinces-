@@ -14,7 +14,7 @@ const QUARTERMASTER_POSITION := Vector3(-6, 0.1, -8)
 
 const BANDIT_DATA := "res://data/enemies/human_bandit.tres"
 const BANDIT_BOSS_DATA := "res://data/enemies/bandit_boss.tres"
-const BANDIT_SPRITE := "res://assets/sprites/enemies/humanoid/human_bandit_alt.png"
+const BANDIT_SPRITE := "res://assets/sprites/legacy/enemies/humanoid/human_bandit_alt.png"
 
 ## Where the crew stands when the camp is still a going concern.
 const CREW_POSTS: Array[Vector3] = [
@@ -207,7 +207,7 @@ func _spawn_named_crew() -> void:
 			null, 8, 2,
 			[]
 		)
-		_dress_bandit(chief, "res://data/dialogue/millbrook_bandit_chief.json",
+		_dress_bandit(chief, "res://data/dialogue/trees/millbrook_bandit_chief.json",
 				["shrewd", "unbothered", "practical", "dangerous"],
 				"Sit down or don't. You walked into my camp, so you wanted something.")
 	else:
@@ -221,7 +221,7 @@ func _spawn_named_crew() -> void:
 		null, 8, 2,
 		[]
 	)
-	_dress_bandit(pell, "res://data/dialogue/millbrook_bandit_quartermaster.json",
+	_dress_bandit(pell, "res://data/dialogue/trees/millbrook_bandit_quartermaster.json",
 			["bookish", "dry", "cowardly", "loyal to the ledger"],
 			"Everything in this camp is written down twice. That is why it still exists.")
 

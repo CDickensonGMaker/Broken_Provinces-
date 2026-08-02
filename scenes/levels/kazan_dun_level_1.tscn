@@ -1,14 +1,14 @@
 [gd_scene load_steps=11 format=3 uid="uid://b803ngtwcm606"]
 
 [ext_resource type="Script" uid="uid://hdweyu457cvo" path="res://scripts/levels/kazan_dun_level_1.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/world/zone_door_instance.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_feast_hall.tscn" id="5"]
-[ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_council_chamber.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/generation/kazan_dun/kd_feast_hall.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/generation/kazan_dun/kd_council_chamber.tscn" id="6"]
 [ext_resource type="Texture2D" uid="uid://dh326odj53nps" path="res://assets/textures/environment/walls/stonewall.png" id="6_gl53g"]
-[ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_kitchen.tscn" id="7"]
-[ext_resource type="PackedScene" path="res://scenes/rooms/kazan_dun/kd_great_hall_corridor.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/generation/kazan_dun/kd_kitchen.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/generation/kazan_dun/kd_great_hall_corridor.tscn" id="8"]
 
 [sub_resource type="StandardMaterial3D" id="mat_stone_wall"]
 albedo_color = Color(0.42, 0.38, 0.35, 1)

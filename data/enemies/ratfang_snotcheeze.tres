@@ -135,10 +135,10 @@ drop_table = {
 }
 xp_reward = 300
 scene_path = ""
-icon_path = "res://assets/sprites/enemies/Named Enemies/ratgan_idle.png"
+icon_path = "res://assets/sprites/legacy/enemies/Named Enemies/ratgan_idle.png"
 scale = 1.0
-sprite_path = "res://assets/sprites/enemies/Named Enemies/ratgan_idle.png"
-attack_sprite_path = "res://assets/sprites/enemies/Named Enemies/ratgan_walking.png"
+sprite_path = "res://assets/sprites/legacy/enemies/Named Enemies/ratgan_idle.png"
+attack_sprite_path = "res://assets/sprites/legacy/enemies/Named Enemies/ratgan_walking.png"
 sprite_hframes = 1
 sprite_vframes = 1
 attack_hframes = 4

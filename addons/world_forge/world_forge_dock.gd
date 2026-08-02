@@ -72,7 +72,7 @@ func _ready() -> void:
 
 
 func _read_world_bounds() -> void:
-	var world_grid_script: Script = load("res://scripts/data/world_grid.gd")
+	var world_grid_script: Script = load("res://scripts/core/world_grid.gd")
 	if world_grid_script:
 		world_bounds_min = world_grid_script.GRID_MIN
 		world_bounds_max = world_grid_script.GRID_MAX
@@ -1024,7 +1024,7 @@ func _audit_map() -> Dictionary:
 			outside += 1
 
 	var declared: Dictionary = {}
-	var world_grid_script: Script = load("res://scripts/data/world_grid.gd")
+	var world_grid_script: Script = load("res://scripts/core/world_grid.gd")
 	if world_grid_script:
 		for loc: Dictionary in world_grid_script.LOCATIONS:
 			declared[String(loc.get("id", ""))] = true
@@ -1144,7 +1144,7 @@ func _on_reload_pressed() -> void:
 
 func _on_sync_pois_pressed() -> void:
 	# Load WorldGrid.LOCATIONS and add any missing POIs to the current map
-	var world_grid_script = load("res://scripts/data/world_grid.gd")
+	var world_grid_script = load("res://scripts/core/world_grid.gd")
 	if not world_grid_script:
 		_set_status("ERROR: Could not load WorldGrid script")
 		return
@@ -1224,7 +1224,7 @@ func _on_sync_pois_pressed() -> void:
 
 func _load_from_world_grid() -> void:
 	# This runs in the editor, so we need to load the WorldGrid script
-	var world_grid_script = load("res://scripts/data/world_grid.gd")
+	var world_grid_script = load("res://scripts/core/world_grid.gd")
 	if not world_grid_script:
 		_set_status("ERROR: Could not load WorldGrid script")
 		return

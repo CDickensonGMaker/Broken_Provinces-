@@ -99,7 +99,7 @@ func _read_world() -> void:
 	cells.clear()
 	scene_cover.clear()
 
-	var wg: Script = load("res://scripts/data/world_grid.gd")
+	var wg: Script = load("res://scripts/core/world_grid.gd")
 	if wg == null:
 		push_error("[WorldOverview] Could not load world_grid.gd")
 		return
@@ -582,7 +582,7 @@ func _refresh_summary() -> void:
 
 
 func _biome_names() -> Array:
-	var wg: Script = load("res://scripts/data/world_grid.gd")
+	var wg: Script = load("res://scripts/core/world_grid.gd")
 	if wg:
 		return wg.Biome.keys()
 	return []

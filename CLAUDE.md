@@ -138,7 +138,7 @@ the map.
 
 The gate is a pass inside `validate_content.gd`, so it runs everywhere the
 validator already runs - `validate.ps1`, `run_all_checks.ps1`, and the
-pre-commit hook (whose path filter now includes `scripts/dialogue/` and the two
+pre-commit hook (whose path filter now includes `scripts/systems/dialogue/` and the two
 conversation autoloads, because what they spawn is what grounds the words).
 
 **An unresolvable proper noun is an ERROR, not a warning.**
@@ -262,7 +262,7 @@ max_carry_weight = 50 + (Grit * 10)
 - Visual: gore mesh with blood pool
 
 **Files:**
-- `scripts/world/lootable_corpse.gd` - Corpse class with loot generation
+- `scripts/world/interactables/lootable_corpse.gd` - Corpse class with loot generation
 - `scripts/ui/corpse_loot_ui.gd` - Search interface (dark/gore themed)
 
 ## CONSUMABLE BUFFS
@@ -349,13 +349,13 @@ adding it to `MISSING_SFX` with a manifest row.
 ### GENERATED AUDIO NEVER TOUCHES A REAL RECORDING
 
 **Every synthesised file lives under `assets/audio/generated/` and nowhere
-else.** `tools/gen_audio.py` writes only there, and `check_audio_events.tscn`
+else.** `tools/build/gen_audio.py` writes only there, and `check_audio_events.tscn`
 fails if a wired variant path leaves that directory. The rule exists because
 generated audio has overwritten real recordings on another project, and a
 generated file sitting beside a hand-made one is a single careless rename away
 from doing it here.
 
-`python tools/gen_audio.py all` regenerates the set (numpy + ffmpeg;
+`python tools/build/gen_audio.py all` regenerates the set (numpy + ffmpeg;
 deterministic, same seeds every time). 114 files, 7 MB: 74 one-shots, 15 biome
 beds, 24 dialogue blips, one music bed. All of it is **PLACEHOLDER-CLASS** with
 a row in `docs/audits/art_replacement_manifest.md`.
@@ -845,7 +845,7 @@ static func spawn_billboard_enemy(
 ```gdscript
 # CORRECT - pass path string and loaded texture
 var enemy_data_path := "res://data/enemies/human_bandit.tres"
-var sprite_texture: Texture2D = load("res://assets/sprites/enemies/human_bandit.png")
+var sprite_texture: Texture2D = load("res://assets/sprites/legacy/enemies/human_bandit.png")
 
 var enemy = EnemyBase.spawn_billboard_enemy(
     self,
@@ -871,7 +871,7 @@ EnemyBase.spawn_billboard_enemy(self, pos, path, "res://sprite.png", ...)  # ERR
 ```gdscript
 func _spawn_enemy_at_marker(marker: Node3D) -> void:
     var enemy_data_path: String = marker.get_meta("enemy_data", "res://data/enemies/human_bandit.tres")
-    var sprite_path: String = marker.get_meta("sprite_path", "res://assets/sprites/enemies/human_bandit.png")
+    var sprite_path: String = marker.get_meta("sprite_path", "res://assets/sprites/legacy/enemies/human_bandit.png")
     var h_frames: int = marker.get_meta("h_frames", 3)
     var v_frames: int = marker.get_meta("v_frames", 4)
 
@@ -1018,7 +1018,7 @@ metadata/spawn_id = "default"  # or "from_exterior", "from_level_2", etc.
 **EnemySpawns markers:**
 ```
 metadata/enemy_data = "res://data/enemies/human_bandit.tres"
-metadata/sprite_path = "res://assets/sprites/enemies/human_bandit.png"
+metadata/sprite_path = "res://assets/sprites/legacy/enemies/human_bandit.png"
 metadata/h_frames = 3
 metadata/v_frames = 4
 metadata/patrol_radius = 5.0  # Optional
@@ -1536,7 +1536,7 @@ ring.location = (0, 0, local_z)  # NOW set local position relative to parent cen
 **Workflow:**
 1. Provide sprite path(s) and enemy name/type
 2. Agent creates EnemyData .tres file with appropriate stats
-3. Agent adds entry to `dev/zoo/zoo_registry.gd`
+3. Agent adds entry to `dev/editors/actor_zoo/zoo_registry.gd`
 4. Agent adds entry to `scripts/data/world_lexicon.gd`
 5. Optionally wires to encounters (sea_encounters, wilderness spawns)
 
@@ -1560,7 +1560,7 @@ ring.location = (0, 0, local_z)  # NOW set local position relative to parent cen
 
 **Required Files:**
 - `data/enemies/{enemy_id}.tres` - EnemyData resource
-- `dev/zoo/zoo_registry.gd` - Visual registry entry
+- `dev/editors/actor_zoo/zoo_registry.gd` - Visual registry entry
 - `scripts/data/world_lexicon.gd` - Creature database entry
 
 **Full documentation:** `dev/agents/enemy-creator.md`
@@ -1600,10 +1600,10 @@ The game uses a Daggerfall-inspired cell streaming system for seamless open worl
 
 | System | File | Purpose |
 |--------|------|---------|
-| **CellStreamer** | `scripts/autoload/cell_streamer.gd` | Loads/unloads cells around player |
-| **PlayerGPS** | `scripts/autoload/player_gps.gd` | Tracks player position and discovery |
-| **WorldGrid** | `scripts/data/world_grid.gd` | Single source of truth for world data |
-| **CellEdge** | `scripts/world/cell_edge.gd` | Boundary walls for impassable terrain |
+| **CellStreamer** | `scripts/world/streaming/cell_streamer.gd` | Loads/unloads cells around player |
+| **PlayerGPS** | `scripts/world/streaming/player_gps.gd` | Tracks player position and discovery |
+| **WorldGrid** | `scripts/core/world_grid.gd` | Single source of truth for world data |
+| **CellEdge** | `scripts/world/streaming/cell_edge.gd` | Boundary walls for impassable terrain |
 | **WorldMap** | `scripts/ui/world_map.gd` | World map UI, fog of war, fast travel |
 
 ---
@@ -1992,7 +1992,7 @@ What EXISTS:
   facts, and both doors into a faction, from data)
 - **NEW: `world_flags_to_set` consequence key** (a quest branch can write world
   facts, not just player paperwork)
-- **NEW: `QuestInteractable`** (`scripts/world/quest_interactable.gd`) - a thing
+- **NEW: `QuestInteractable`** (`scripts/world/interactables/quest_interactable.gd`) - a thing
   in the world an `interact` objective can point at, which can also settle a
   quest branch and write a world fact
 
@@ -2311,7 +2311,7 @@ Dialogue ↔ Quest Integration:
 
 ## DIALOGUE SYSTEM ARCHITECTURE
 
-### Core Resources (scripts/dialogue/)
+### Core Resources (scripts/systems/dialogue/)
 - **DialogueData** - Container for full dialogue trees with nodes dictionary
 - **DialogueNode** - Single node with speaker, text, choices, and branching
 - **DialogueChoice** - Player response option with conditions and actions
@@ -2371,12 +2371,12 @@ greeting -> destinations -> confirm_larton -> depart_larton (END + actions)
 ```
 
 **Files Involved:**
-- `scripts/dialogue/dialogue_node.gd` - `actions: Array[DialogueAction]`
-- `scripts/dialogue/dialogue_loader.gd` - Parses node actions from JSON
-- `scripts/autoload/dialogue_manager.gd` - `_execute_node_actions()` runs on end nodes
+- `scripts/systems/dialogue/dialogue_node.gd` - `actions: Array[DialogueAction]`
+- `scripts/systems/dialogue/dialogue_loader.gd` - Parses node actions from JSON
+- `scripts/systems/dialogue/dialogue_manager.gd` - `_execute_node_actions()` runs on end nodes
 
 **Testing:**
-- Use `scenes/dev/boat_travel_test.tscn` for boat travel testing
+- Use `dev/harnesses/boat_travel_test.tscn` for boat travel testing
 - Press F6 to force-start voyage (skip dialogue)
 - Press F3 during voyage to open debug menu
 
@@ -2450,7 +2450,7 @@ decides who counts - a guild rank buys nothing at an honest counter.
 
 ## THE REACTIVE LAYER (conversation)
 
-Reaction lines live in `data/conversation_pools/reactions.json` (topic answers)
+Reaction lines live in `data/dialogue/pools/reactions.json` (topic answers)
 and `reaction_greetings.json` (the line you get without asking). They are
 ordinary pool content and ride the tier system, anti-repeat and `npc_memory`
 exactly as everything else does. Two rules make them reactions:
@@ -2671,7 +2671,7 @@ func spawn():
 **Fix Pattern:**
 ```gdscript
 # Preload the script instead
-const GladiatorNPCScript = preload("res://scripts/npcs/gladiator_npc.gd")
+const GladiatorNPCScript = preload("res://scripts/characters/npcs/gladiator_npc.gd")
 
 func spawn():
     enemy = GladiatorNPCScript.spawn_gladiator(...)  # Works!
@@ -2786,11 +2786,11 @@ The puzzle system provides interactive elements for dungeon challenges and quest
 ### Core Files
 | File | Purpose |
 |------|---------|
-| `scripts/puzzles/puzzle_element.gd` | Base class for interactive puzzle elements |
-| `scripts/puzzles/puzzle_pillar.gd` | Activatable crystal pillar element |
-| `scripts/puzzles/puzzle_room_controller.gd` | Manages puzzle state and sequences |
-| `scripts/puzzles/crystal_hearts_controller.gd` | Crystal Hearts specific controller |
-| `scripts/puzzles/crystal_portal.gd` | Trapped portal visual |
+| `scripts/systems/puzzles/puzzle_element.gd` | Base class for interactive puzzle elements |
+| `scripts/systems/puzzles/puzzle_pillar.gd` | Activatable crystal pillar element |
+| `scripts/systems/puzzles/puzzle_room_controller.gd` | Manages puzzle state and sequences |
+| `scripts/systems/puzzles/crystal_hearts_controller.gd` | Crystal Hearts specific controller |
+| `scripts/systems/puzzles/crystal_portal.gd` | Trapped portal visual |
 
 ### PuzzleElement Base Class
 ```gdscript
@@ -2835,7 +2835,7 @@ A limited economy system with exactly 100 soulstones in the world.
 ### Core Files
 | File | Purpose |
 |------|---------|
-| `scripts/autoload/soulstone_economy.gd` | Global soulstone tracker autoload |
+| `scripts/systems/economy/soulstone_economy.gd` | Global soulstone tracker autoload |
 
 ### Distribution (100 Total)
 | Source | Count | Notes |
@@ -2887,8 +2887,8 @@ The follower system allows NPCs to join the player as companions, following them
 ### Core Files
 | File | Purpose |
 |------|---------|
-| `scripts/npcs/follower_npc.gd` | Base follower class extending CivilianNPC |
-| `scripts/autoload/follower_manager.gd` | Global follower tracking autoload |
+| `scripts/characters/npcs/follower_npc.gd` | Base follower class extending CivilianNPC |
+| `scripts/characters/ai/follower_manager.gd` | Global follower tracking autoload |
 | `data/followers/` | Follower data definitions (JSON/tres) |
 
 ### FollowerNPC Class
@@ -2991,7 +2991,7 @@ When a quest with `follower` reward completes, `FollowerManager.unlock_follower(
 {
     "id": "martha_barmaid",
     "display_name": "Martha",
-    "sprite_path": "res://assets/sprites/npcs/barmaid.png",
+    "sprite_path": "res://assets/sprites/legacy/npcs/barmaid.png",
     "h_frames": 5,
     "v_frames": 1,
     "pixel_size": 0.0256,
@@ -3010,7 +3010,7 @@ var follower := FollowerNPC.spawn_follower(
     position,
     "martha_barmaid",
     "Martha",
-    "res://assets/sprites/npcs/barmaid.png",
+    "res://assets/sprites/legacy/npcs/barmaid.png",
     5, 1, 0.0256
 )
 FollowerManager.add_follower(follower)
@@ -3027,9 +3027,9 @@ The guild rank system manages player progression through guild ranks based on **
 ### Core Files
 | File | Purpose |
 |------|---------|
-| `scripts/autoload/guild_rank_manager.gd` | Manages rank progression, quest tracking |
-| `scripts/autoload/flag_manager.gd` | Stores rank flags for dialogue checks |
-| `scripts/autoload/faction_manager.gd` | Handles reputation and membership |
+| `scripts/systems/factions/guild_rank_manager.gd` | Manages rank progression, quest tracking |
+| `scripts/core/flag_manager.gd` | Stores rank flags for dialogue checks |
+| `scripts/systems/factions/faction_manager.gd` | Handles reputation and membership |
 
 ### Supported Guilds
 

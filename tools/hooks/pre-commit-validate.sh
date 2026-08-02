@@ -5,7 +5,7 @@
 # conversation scripts - the trees the validator reads - so ordinary code
 # commits are not taxed with a Godot boot.
 #
-# scripts/dialogue/ and the conversation autoloads are in the filter because of
+# scripts/systems/dialogue/ and the conversation autoloads are in the filter because of
 # THE GROUNDING LAW: the lint's vocabulary is partly built out of what those
 # files spawn and name, so a change there can turn a grounded reference into a
 # phantom without a single data file moving.
@@ -27,7 +27,7 @@ fi
 
 staged=$(git diff --cached --name-only --diff-filter=ACMR)
 case "$staged" in
-    *data/*|*scripts/levels/*|*scripts/dialogue/*|*conversation_system.gd*|*dialogue_manager.gd*) ;;
+    *data/*|*scripts/levels/*|*scripts/systems/dialogue/*|*conversation_system.gd*|*dialogue_manager.gd*) ;;
     *)
         exit 0
         ;;

@@ -6,7 +6,7 @@
   "quests": "Adventurer's Guild Champion reward choice",
   "sprite": {
     "type": "warrior",
-    "path": "res://assets/sprites/npcs/combat/male_gladiator1.png",
+    "path": "res://assets/sprites/legacy/npcs/combat/male_gladiator1.png",
     "h_frames": 1,
     "v_frames": 1,
     "pixel_size": 0.0320,

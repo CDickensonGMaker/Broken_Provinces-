@@ -70,7 +70,7 @@ func _spawn_succession_cast() -> void:
 		null, 8, 2,
 		regent_quests
 	)
-	_dress_dwarf(regent, "res://data/dialogue/kazan_dun_regent.json",
+	_dress_dwarf(regent, "res://data/dialogue/trees/kazan_dun_regent.json",
 			["measured", "burdened", "honest", "stubborn"],
 			["kazan_dun", "dwarves", "succession", "dwarf_law", "the_siege"],
 			"The chair stays empty until my brother has burned. That is not grief. That is law.")
@@ -83,7 +83,7 @@ func _spawn_succession_cast() -> void:
 		null, 8, 2,
 		[]
 	)
-	_dress_dwarf(thane, "res://data/dialogue/kazan_dun_thane.json",
+	_dress_dwarf(thane, "res://data/dialogue/trees/kazan_dun_thane.json",
 			["blunt", "proud", "impatient", "fearless"],
 			["kazan_dun", "dwarves", "succession", "the_siege", "trial_by_combat"],
 			"Third gate still stands. Ask anyone which gate that is.")
@@ -96,7 +96,7 @@ func _spawn_succession_cast() -> void:
 		null, 8, 2,
 		[]
 	)
-	_dress_dwarf(loremaster, "res://data/dialogue/kazan_dun_loremaster.json",
+	_dress_dwarf(loremaster, "res://data/dialogue/trees/kazan_dun_loremaster.json",
 			["scholarly", "dry", "precise", "guarded"],
 			["kazan_dun", "dwarves", "dwarf_law", "funeral_rites", "soulstones"],
 			"Six hundred years of names, and I am three columns behind.")

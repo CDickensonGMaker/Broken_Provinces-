@@ -2,7 +2,7 @@
     "id": "zephyr",
     "display_name": "Zephyr",
     "description": "An air elemental bound as a familiar by the Arcane Circle. A being of pure wind and lightning, loyal to those who prove themselves to the Circle.",
-    "sprite_path": "res://assets/sprites/npcs/civilians/wizard_wild.png",
+    "sprite_path": "res://assets/sprites/legacy/npcs/civilians/wizard_wild.png",
     "h_frames": 1,
     "v_frames": 1,
     "pixel_size": 0.0320,

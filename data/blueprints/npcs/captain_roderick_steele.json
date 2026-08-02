@@ -6,7 +6,7 @@
   "quests": "Sign the Contract (mercenary_01_enlistment), Full Iron Company quest chain (14 quests), Repeatable Contracts (mercenary_repeatable_contracts)",
   "sprite": {
     "type": "warrior",
-    "path": "res://assets/sprites/npcs/mercenary_captain.png",
+    "path": "res://assets/sprites/legacy/npcs/mercenary_captain.png",
     "h_frames": 5,
     "v_frames": 1,
     "pixel_size": 0.0384,

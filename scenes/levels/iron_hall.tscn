@@ -1,7 +1,7 @@
 [gd_scene load_steps=15 format=3 uid="uid://iron_hall_001"]
 
 [ext_resource type="Script" path="res://scripts/levels/iron_hall.gd" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
 
 [sub_resource type="Environment" id="Environment_iron_hall"]

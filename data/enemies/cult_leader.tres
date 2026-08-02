@@ -132,10 +132,10 @@ drop_table = {
 }
 xp_reward = 200
 scene_path = ""
-icon_path = "res://assets/sprites/enemies/undead/vampire_lord_walk.png"
+icon_path = "res://assets/sprites/legacy/enemies/undead/vampire_lord_walk.png"
 scale = 1.1
-sprite_path = "res://assets/sprites/enemies/undead/vampire_lord_walk.png"
-attack_sprite_path = "res://assets/sprites/enemies/undead/vampire_lord_idle.png"
+sprite_path = "res://assets/sprites/legacy/enemies/undead/vampire_lord_walk.png"
+attack_sprite_path = "res://assets/sprites/legacy/enemies/undead/vampire_lord_idle.png"
 sprite_hframes = 4
 sprite_vframes = 1
 attack_hframes = 5
