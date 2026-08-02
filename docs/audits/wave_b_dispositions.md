@@ -43,6 +43,28 @@ is on this page with the question that blocks it.
 
 ## 2. Blocked on Caleb — a decision no file can supply
 
+### The two story questions are STILL OPEN, deliberately
+
+Nothing in the 8/2 ruling pass touched either of these, and nothing should have.
+They are listed here at the top so no future agent reads the RULED-AND-BUILT
+headings below and concludes the file is finished.
+
+1. **Does the game reach the king's cave at all?** The bible's first
+   `[OPEN — deliberately]`. `king_aldric` is still not standing in a room and
+   still has no proxy — no statue, no portrait, no decree — because putting his
+   face on a wall is itself a ruling about how present he is in Act I. See §2a.
+2. **Who is buying the soulstones, and why?** Twelve prose touchpoints across
+   twelve unrelated quests add up to somebody quietly acquiring soulstones
+   across the province, and **nothing anywhere names, describes or implies who.**
+   Deliberately. There is no soulstone mastermind in this repository and none was
+   invented. See §2l for the six candidates the world already supports, none of
+   them chosen — including "nobody", which is a legitimate answer and the
+   cheapest one to keep.
+
+Neither blocks shipping. The soulstone thread costs nothing while it sits
+unresolved, which is the point of laying it that way.
+
+
 ### 2a. The seven LORE_ONLY ids (19 warnings)
 
 These are on `tools/validate_content.gd`'s `LORE_ONLY_IDS` list, each with the
@@ -169,7 +191,37 @@ unblocked in this pass, because their turn-in NPCs now exist: `sailors_debt`,
 `wizard_stolen_pages` and the three `morthane_*` quests whose giver now has a
 tree to hang nodes on. That is the cheapest next wave of content work.
 
-### 2i. `variable` — what a repeatable research assignment *is* (1 objective)
+### 2i. `variable`, and the two repeatables — **RULED-AND-BUILT**
+
+**Ruled: implement `variable` as a simple named-counter objective, or convert
+the quest honestly if that fights the engine. It fought the engine, so it was
+converted:** `mage_repeatable_research`'s middle objective is a `has_item` on a
+real reagent now. A counter API's only callers would have had to be authored in
+dialogue data, so it would have shipped as an API with zero consumers — which is
+the exact defect this whole pass exists to kill. `DEFERRED_OBJECTIVE_TYPES` is
+empty; `variable` was its only entry.
+
+`thieves_repeatable_jobs` had **no top-level `objectives` array at all** — only
+six nested `job_types` — so it parsed to a quest with zero objectives and
+completed instantly on accept. It has a real three-beat rotating job now, built
+from targets in its own `job_types`, which are kept as the authored design they
+are. Its `repeatable`/`cooldown_hours` (neither read by the engine) are now
+`cooldown_days: 1`, which is.
+
+**Both complete headlessly, and `check_quest_engine.tscn` proves it** by driving
+every objective of each through the game's own entry points and asserting
+COMPLETED.
+
+**Found on the way, and worth more than the ruling:** `mage_02` through
+`mage_13` all had the same defect — each gated on the previous quest's
+`on_complete_flags` value through `prerequisites`, which reads *completed quest
+ids*. **The entire Arcane Circle ladder was dead from its second rung down.**
+All twelve are moved to `flag_prerequisites`.
+
+One thing deliberately left: `mage_repeatable_research` authored no repeat
+interval at all, so none was invented. Noted in the file.
+
+### 2i (original text, kept for the reasoning)
 
 `mage_repeatable_research` is the Arcane Circle's post-capstone loop. Its middle
 objective is `{"type": "variable", "target": "assignment_variable"}`, with the
@@ -207,7 +259,31 @@ the completed-quest-id list, so it was never offered at all; it now sits in
 through the wrong list - and is fixed the same way. The Arcane Circle ladder was
 dead from its second rung down.
 
-### 2k. What a failed Deception costs (design call)
+### 2k. What a failed Deception costs — **RULED-AND-BUILT**
+
+**Ruled: a failed Deception check drops the lied-to NPC's disposition and
+leaves a `caught_lying_<npc>` mark the conversation system surfaces.** The drop
+is **15** — exactly one disposition band, so neutral 50 becomes cool 35 and the
+greeting, the response filtering and every `min_disposition` line change
+together. One blown lie is felt at once; three make somebody permanently
+hostile. The mark rides the conversation flags into the save, that NPC's
+greeting opens on the lie from then on, and any `FLAG_SET` condition can read
+it. Other skills are untouched: they still cost the attempt and nothing more.
+
+**Where a quest authored something harsher, it is honoured as far as it can be.**
+Only one had. `thieves_07` wanted *"identified as thief, bounty placed, quest
+failure"* for a lie at the Ashford gala, so its disposition hit is doubled to 30
+and its own `thieves_emberlyn_enemy` flag fires. **Quest failure is not
+honoured** — the objective is `is_optional` precisely so a bad roll cannot
+strand a heist. **The bounty is not honoured either, and that is still yours:**
+whether a lie caught at a party is a witnessed crime is a CrimeManager question
+and nothing was invented.
+
+**And one thing to fix in a scene, not in code:** `emberlyn_suspicious_guest`
+has no `QuestInteractable` anywhere, so the path is wired and unreachable in
+play until somebody places one.
+
+### 2k (original text, kept for the reasoning)
 
 CLAUDE.md has carried this for months: *"Deception (HIGH RISK/REWARD):
 Deception skill checks should have CONSEQUENCES for failure. Higher rewards for
@@ -566,7 +642,50 @@ Full evidence, link-by-link verification and the fixes applied are in
 `docs/audits/faction_exclusivity_audit.md`. The eight items below are the ones
 that need **his ruling** and nothing else moves without them.
 
-### FX-1. The temple READMEs contradict the priests
+### FX-1 / FX-2 / FX-3. Devotion — **RULED-AND-BUILT**
+
+**FX-1 confirmed: the dialogue is canon, and the three READMEs are corrected.**
+Each now carries the ruling at the point where it used to claim the opposite,
+plus a line telling the next agent not to restore it.
+
+**FX-2 — yes, there is a road back, and it costs.** A renunciation choice sits
+at the player's OWN god's priest, gated on that god's devotee flag, written in
+that priest's voice. It clears the devotee flag, costs **−50** with that church,
+and starts a **seven-day `forsworn_<god>`** daily penalty. While the `forsworn`
+flag stands the other two bonds are closed — the three `*_05_devotion_choice`
+quests forbid it — and when the penalty expires it clears the flag and they
+open. The sentence and the lockout are the same object, so they cannot drift.
+
+Each god takes it differently, which is the whole point of putting it in three
+voices rather than one menu:
+
+> **Chronos** — cold inevitability. *"There is no releasing… What you are asking
+> me for is not freedom. It is for the record to be corrected."*
+>
+> **Gaela** — sorrow. *"What will hurt is that in a month you will smell cut hay
+> and it will still mean me."*
+>
+> **Morthane** — acceptance of endings. *"You want an ending. That is the one
+> thing I am actually qualified to give you, so let us not pretend it is a
+> tragedy. Morthane is the god of things stopping."*
+
+**FX-3 — yes, serving one god costs the others.** Taking the bond costs the
+other two churches **−15** each. It fires on the devotee flag being *set*,
+watched in FlagManager, so all three doors into devotion — the ritual,
+`become_devotee()`, and a raw `set_flag` from data — charge the same price.
+
+`tools/check_faction_loop.tscn` proves the whole transaction per god: the rival
+cost, that a non-devotee cannot renounce, the flag clearing, the −50, the
+penalty starting, the other two bonds being shut while it runs, the penalty
+expiring on its own after seven days, and the bonds reopening.
+
+**One thing this needed that did not exist:** an ongoing effect had no end.
+`add_ongoing_effect` now takes `days` (or `expires_on_day`) and
+`process_ongoing_effects` retires the effect after the last day it is felt.
+Every effect written before this is unaffected — no expiry means forever, which
+is what a debt should be.
+
+### FX-1 (original text, kept for the reasoning)
 
 All three priests say devotion is exclusive, in voice, with a written refusal
 for a rival's devotee. All three `data/quests/temple/*/README.md` say it is not
@@ -610,7 +729,7 @@ the devotion ritual — and gives no quests. So the Morthane bond can only be
 taken in Dalhurst while the chain runs out of Elder Moor. Merge them, or give
 the Elder Moor priest the dialogue too?
 
-### FX-7. Authored quest fields nothing reads
+### FX-7. Authored quest fields nothing reads — **RULED-AND-BUILT** (the four named)
 
 **Partly closed.** `on_complete_flags` (22), `flags_set` (14) and
 `rank_required` (14) are wired: the first two union into one
@@ -627,7 +746,42 @@ delete, per field. Related: the `moral_choice` blocks in `thieves_02`, `_04`,
 `_05` and `_10` are decorative — two siblings were migrated to real
 `choice_consequences` and these four were not.
 
-### FX-8. Promises with no mechanic
+### FX-8 blessings — **RULED-AND-BUILT**
+
+Every priest offered a blessing to any visitor, repeatedly, and **every bless
+and pray choice in all three files had `actions: []`.** They are real now, as
+timed buffs on the consumables' machinery (`CharacterData.apply_buff`, same
+clock, saved, cleared by sleep) via a new `apply_buff` dialogue action — a
+second door into the buff system, not a second implementation.
+
+| God | Blessing |
+|---|---|
+| **Chronos** | +12% movement speed, +15% attack speed |
+| **Gaela** | +0.6 HP/sec regeneration, +60 carry weight |
+| **Morthane** | +30% damage against the undead, +4 to horror checks |
+
+**Donation: 100 gold** — twice a health potion (50), well under the permanent
+blessing consumables (250), unaffordable at level 1 and an easy tithe by
+mid-game. **Duration: one game-day** (1440 real seconds; 1 real second is 1 game
+minute). **A devotee of that god gets double**, and each priest says why in his
+own register — Chronos calls it resonance, Gaela calls it favouritism and does
+not apologise, Morthane says the cycle already knows your name.
+
+**Six new buff ids, and every one has a reader**, because a buff id nothing
+reads is the same lie one step further in: `move_speed` →
+`get_movement_speed_multiplier`, `attack_speed` → the player's attack cooldown,
+`hp_regen` → `get_hp_regen` (which returned a hard 0.0 and now returns what was
+granted), `carry_weight` → `get_max_carry_weight`, `undead_damage` →
+`apply_melee_damage` against `Faction.UNDEAD`/`ABOMINATION`, `horror_ward` →
+`trigger_horror_check`.
+
+**Two things were already broken and are fixed on the way past.** The player had
+no HP-regeneration tick at all, so any granted regen would have ticked into
+nothing; and `get_attack_speed_multiplier` — the Agility attack-speed bonus,
+displayed on the character sheet since forever — had **no gameplay consumer**.
+It does now.
+
+### FX-8 (original text, and the three items still outstanding)
 
 - **Blessings.** All three priests offer blessing to any visitor, repeatedly.
   Every bless/pray choice in all three files has `actions: []`. The only real
