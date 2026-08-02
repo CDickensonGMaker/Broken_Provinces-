@@ -16,7 +16,12 @@ extends Node
 ##    separate instances, wears exactly the same clothes. Grom is the same Grom
 ##    in every session, forever.
 ## 4. THE DRESSER IS VARIED. Two hundred ids produce a spread of outfits rather
-##    than a village of twins.
+##    than a village of twins - and, since 2026-08-02, a spread of garb PAGES
+##    and DYES, which is where the variety was supposed to live all along and
+##    did not: the garb material was one shared object for the entire game.
+##    The archetype decides the page, the seed decides the dye, and the
+##    upper/lower material split is adopted on a measurement rather than a
+##    preference (4c).
 ## 5. THE COMPOSITION RULES HOLD, at population scale, on all four masters:
 ##    exactly one vest, legs on, exactly one sleeve style, at most one hair, and
 ##    a skirt only where a skirt exists.
@@ -47,6 +52,10 @@ func _run() -> void:
 	_check_billboard_wrap()
 	_check_dresser_determinism()
 	_check_dresser_variety()
+	_check_archetype_pages()
+	_measure_garb_draw_calls()
+	_check_garb_instancing()
+	_check_the_robe()
 	_check_composition_rules()
 	_check_material_instancing()
 	_check_the_body_is_alive()
@@ -175,6 +184,27 @@ func _check_dresser_determinism() -> void:
 		_check("%s has the same face twice" % npc_id,
 			first.get("loadout", {}).get("face", -1) == second.get("loadout", {}).get("face", -2))
 
+		# The determinism promise now covers CLOTHING. A page or a dye that moved
+		# between runs would be the same broken promise as a face that moved,
+		# and it is the half nobody was checking.
+		var one: Dictionary = first.get("loadout", {})
+		var two: Dictionary = second.get("loadout", {})
+		_check("%s wears the same garb page twice" % npc_id,
+			one.get("garb_page", -1) == two.get("garb_page", -2),
+			"%s vs %s" % [one.get("garb_page", -1), two.get("garb_page", -2)])
+		_check("%s is dyed the same twice" % npc_id,
+			one.get("garb_tint", Color.BLACK) == two.get("garb_tint", Color.WHITE)
+			and one.get("garb_tint_lower", Color.BLACK) == two.get("garb_tint_lower", Color.WHITE))
+		_check("%s's garb offset is the page it names" % npc_id,
+			(one.get("garb_offset", Vector3.ONE) as Vector3).is_equal_approx(
+				CitizenDresser.garb_page_offset(int(one.get("garb_page", -1)))))
+
+	_check("the garb seed is its own stream",
+		CitizenDresser.garb_seed_for("grom_the_smith")
+			!= CitizenDresser.seed_for("grom_the_smith"))
+	_check("and it is still the id and nothing else",
+		CitizenDresser.garb_seed_for("mabel") == CitizenDresser.garb_seed_for("mabel"))
+
 	_check("the seed is the id and nothing else",
 		CitizenDresser.seed_for("grom_the_smith") == CitizenDresser.seed_for("grom_the_smith"))
 	_check("two ids are two seeds",
@@ -187,15 +217,260 @@ func _check_dresser_variety() -> void:
 	# only thing that mattered.
 	var outfits: Dictionary = {}
 	var faces: Dictionary = {}
+	var pages: Dictionary = {}
+	var tints: Dictionary = {}
+	var looks: Dictionary = {}
 	for index: int in POPULATION:
 		var result: Dictionary = _dress(PILOT_MODEL, "villager_%d" % index)
+		var loadout: Dictionary = result.get("loadout", {})
 		outfits["|".join(result.get("worn", []) as Array[String])] = true
-		faces[int(result.get("loadout", {}).get("face", -1))] = true
+		faces[int(loadout.get("face", -1))] = true
+		pages[int(loadout.get("garb_page", -1))] = true
+		tints[str(loadout.get("garb_tint", Color.BLACK))] = true
+		looks["%d|%s|%s" % [int(loadout.get("garb_page", -1)),
+			loadout.get("garb_tint", Color.BLACK),
+			loadout.get("garb_tint_lower", Color.BLACK)]] = true
 
 	_check("%d men wear more than 8 distinct outfits (got %d)" % [POPULATION, outfits.size()],
 		outfits.size() > 8)
 	_check("%d men wear more than 16 distinct faces (got %d)" % [POPULATION, faces.size()],
 		faces.size() > 16)
+
+	# THE FINDING THIS WHOLE PASS EXISTS TO FIX. Before it, every citizen in the
+	# game wore the same four colours: the garb material was one shared
+	# BaseMaterial3D and no page or dye could move. One page and one tint would
+	# still pass every determinism check above.
+	_check("%d men spread across more than one garb page (got %d)"
+		% [POPULATION, pages.size()], pages.size() > 1, str(pages.keys()))
+	_check("%d men are dyed more than one colour (got %d)"
+		% [POPULATION, tints.size()], tints.size() > 1)
+	_check("%d men wear more than 16 distinct page+dye combinations (got %d)"
+		% [POPULATION, looks.size()], looks.size() > 16)
+
+
+## ============================================================================
+## 4b. THE PAGE IS THE TRADE'S, THE DYE IS THE SEED'S
+## ============================================================================
+
+func _check_archetype_pages() -> void:
+	# EQEmu's npc_types.texture, restated: a guard is page 3 in every town,
+	# forever, and a priest's page is his GOD's rather than his trade's - the
+	# schedule record only ever says "priest".
+	var expected: Dictionary = {
+		"guard": 3, "night_watch": 3, "shopkeeper": 2, "innkeeper": 2,
+		"laborer": 1, "farmer": 1, "townsfolk": 0, "beggar": 12,
+	}
+	for trade: String in expected.keys():
+		_check("a %s wears page %d" % [trade, int(expected[trade])],
+			CitizenDresser.page_for(trade, "someone_%s" % trade) == int(expected[trade]),
+			str(CitizenDresser.page_for(trade, "someone_%s" % trade)))
+
+	for deity: String in ["chronos", "gaela", "morthane"]:
+		var page: int = int(CitizenDresser.DEITY_PAGE[deity])
+		_check("a priest of %s wears page %d" % [deity, page],
+			CitizenDresser.page_for("priest", "priest_%s_dalhurst" % deity) == page)
+		_check("an acolyte of %s wears it too" % deity,
+			CitizenDresser.page_for("acolyte", "acolyte_%s_dalhurst" % deity) == page)
+	_check("three priesthoods are three pages",
+		CitizenDresser.page_for("priest", "priest_chronos_a")
+			!= CitizenDresser.page_for("priest", "priest_gaela_a"))
+	_check("a priest of no named god still gets a priest page",
+		CitizenDresser.page_for("priest", "millbrook_priest") == 8)
+
+	# An unlisted trade is a varied townsman, not a clone of page 0.
+	var unlisted: Dictionary = {}
+	for index: int in 60:
+		var page: int = CitizenDresser.page_for("", "nobody_%d" % index)
+		unlisted[page] = true
+		_check("an unlisted trade draws from the commoner range",
+			CitizenDresser.COMMONER_PAGES.has(page), str(page))
+	_check("and it actually spreads (%d of the range)" % unlisted.size(), unlisted.size() > 3)
+
+	# The real world's archetypes must all land somewhere sensible, not silently
+	# fall through - these are the trades data/schedules/archetypes actually has.
+	for trade: String in ["priest", "acolyte", "mage", "scholar", "guard", "healer",
+			"crook", "official", "noble", "bard", "barmaid", "sailor", "fisherman",
+			"hunter", "shepherd", "revenant", "innkeeper", "beggar", "farmer",
+			"laborer", "shopkeeper", "night_watch", "townsfolk"]:
+		var page: int = CitizenDresser.page_for(trade, "someone")
+		_check("%s's page %d is a real page" % [trade, page], page >= 0 and page < 16)
+
+
+## ============================================================================
+## 4c. THE DRAW-CALL MEASUREMENT (EQ_TECHNIQUE sec 3.E.6)
+## ============================================================================
+##
+## The brief said to split garb into an upper and a lower material so a
+## citizen's shirt and trousers do not always tint together - and to MEASURE the
+## cost before adopting it rather than assume it, because the tri-budget law
+## says draw calls are the thing that matters.
+##
+## The measurement, on a 30-citizen town's worth of dressed bodies: the split
+## costs ZERO extra draw calls. The premise that it costs one per citizen was
+## wrong. Vest, robe, pants, skirt, sleeves, apron and hood are each already
+## their own MeshInstance3D carrying exactly one surface, so a surface is one
+## draw call whichever material it holds. Giving the upper meshes one material
+## and the lower meshes another changes the surface count by nothing at all.
+##
+## What it does cost is one extra duplicated material per citizen - 2 instead of
+## 1 - which is memory, not frame time, and is already the price law 2 charges
+## for the face. So it is adopted, and this is the number that says why.
+
+func _measure_garb_draw_calls() -> void:
+	const TOWN: int = 30
+	var packed: PackedScene = load(MAN)
+	var garb_surfaces: int = 0
+	var garb_meshes: int = 0
+	var multi_surface: int = 0
+	var straddlers: int = 0
+	var materials: Dictionary = {}
+
+	for index: int in TOWN:
+		var root: Node3D = packed.instantiate() as Node3D
+		CitizenDresser.dress(root, PILOT_MODEL, "townsman_%d" % index)
+		for mi: MeshInstance3D in CitizenDresser.all_meshes(root):
+			if not mi.visible or not String(mi.name).begins_with("garb_"):
+				continue
+			garb_meshes += 1
+			var mesh: Mesh = mi.mesh
+			if mesh == null:
+				continue
+			var count: int = mesh.get_surface_count()
+			garb_surfaces += count
+			if count != 1:
+				multi_surface += 1
+			# A mesh that is BOTH an upper and a lower garment could not be
+			# split without splitting a surface. None is - but assert it rather
+			# than believe it, because that is the only way the measurement
+			# could go stale.
+			var lower: bool = CitizenDresser.GARB_LOWER.has(String(mi.name))
+			if lower and String(mi.name).begins_with("garb_sleeve"):
+				straddlers += 1
+			for surface: int in count:
+				var material: BaseMaterial3D = mi.get_active_material(surface) as BaseMaterial3D
+				if material != null:
+					materials[material.get_instance_id()] = true
+		root.free()
+
+	print("  MEASURED garb across %d citizens: %d meshes, %d surfaces, %d distinct materials (%.2f per citizen)"
+		% [TOWN, garb_meshes, garb_surfaces, materials.size(), float(materials.size()) / float(TOWN)])
+	_check("every garb mesh carries exactly one surface (%d that do not)" % multi_surface,
+		multi_surface == 0)
+	_check("no garb mesh is both an upper and a lower garment", straddlers == 0)
+	_check("so the upper/lower split costs no draw call (%d meshes, %d surfaces)"
+		% [garb_meshes, garb_surfaces], garb_surfaces == garb_meshes)
+	_check("and it costs 2 materials per citizen, not more (%.2f)"
+		% (float(materials.size()) / float(TOWN)),
+		materials.size() <= TOWN * 2, str(materials.size()))
+
+
+## ============================================================================
+## 4d. THE OCTUPLETS LAW, EXTENDED TO THE CLOTHES
+## ============================================================================
+
+func _check_garb_instancing() -> void:
+	var packed: PackedScene = load(MAN)
+	var one: Node3D = packed.instantiate() as Node3D
+	var two: Node3D = packed.instantiate() as Node3D
+	var load_one: Dictionary = CitizenDresser.dress(one, PILOT_MODEL, "dyer_alpha")
+	CitizenDresser.dress(two, PILOT_MODEL, "dyer_beta")
+
+	var upper_one: BaseMaterial3D = _garb_material(one, "garb_vest_plain")
+	var upper_two: BaseMaterial3D = _garb_material(two, "garb_vest_plain")
+	var lower_one: BaseMaterial3D = _garb_material(one, "garb_pants")
+
+	_check("a dressed citizen has a garb material", upper_one != null)
+	if upper_one != null and upper_two != null and lower_one != null:
+		# `_shared_garb` used to make this one object for the whole game.
+		_check("two citizens do NOT share one garb material", upper_one != upper_two)
+		_check("shirt and trousers are separate materials", upper_one != lower_one)
+		_check("his garb offset is the page his loadout names",
+			upper_one.uv1_offset.is_equal_approx(
+				CitizenDresser.garb_page_offset(int(load_one.get("garb_page", -1)))),
+			"%s vs page %d" % [upper_one.uv1_offset, int(load_one.get("garb_page", -1))])
+		_check("the dye reached the material",
+			upper_one.albedo_color.is_equal_approx(load_one.get("garb_tint", Color.BLACK)))
+		_check("and the trousers got their own",
+			lower_one.albedo_color.is_equal_approx(load_one.get("garb_tint_lower", Color.BLACK)))
+		_check("the garb texture is PSX-filtered",
+			upper_one.texture_filter == BaseMaterial3D.TEXTURE_FILTER_NEAREST)
+		_check("the atlas stride is the 4x4 page convention",
+			CitizenDresser.garb_page_offset(1).is_equal_approx(Vector3(0.25, 0.0, 0.0))
+			and CitizenDresser.garb_page_offset(4).is_equal_approx(Vector3(0.0, 0.25, 0.0)))
+		_check("page 15 is the far corner, not off the atlas",
+			CitizenDresser.garb_page_offset(15).is_equal_approx(Vector3(0.75, 0.75, 0.0)))
+		_check("and it is NOT the material the GLB shipped",
+			upper_one != _garb_material_raw(packed))
+
+	# Every upper garment on one citizen shares ONE material, or his sleeves and
+	# his vest are dyed differently and he looks like a harlequin.
+	var uppers: Array[BaseMaterial3D] = []
+	for mi: MeshInstance3D in CitizenDresser.all_meshes(one):
+		var name: String = String(mi.name)
+		if not mi.visible or not name.begins_with("garb_"):
+			continue
+		if CitizenDresser.GARB_LOWER.has(name):
+			continue
+		var material: BaseMaterial3D = mi.get_active_material(0) as BaseMaterial3D
+		if material != null and not uppers.has(material):
+			uppers.append(material)
+	_check("all his upper garments share one dye (%d materials)" % uppers.size(),
+		uppers.size() == 1)
+
+	one.free()
+	two.free()
+
+
+## ============================================================================
+## 4e. THE ROBE
+## ============================================================================
+
+func _check_the_robe() -> void:
+	# The robe replaces vest AND legs - it is one shoulder-to-shin tube. A robed
+	# citizen wearing trousers underneath would be the composition bug that
+	# every other garment rule exists to prevent.
+	for trade: String in CitizenDresser.ROBE_ARCHETYPES:
+		var result: Dictionary = _dress(PILOT_MODEL, "a_%s" % trade, trade)
+		var worn: Array = result.get("worn", [])
+		_check("a %s wears the robe" % trade, worn.has("garb_robe"), str(worn))
+		_check("a %s wears no vest under it" % trade,
+			_count_prefix(worn, "garb_vest_") == 0, str(worn))
+		_check("a %s wears no trousers under it" % trade,
+			not worn.has("garb_pants") and not worn.has("garb_skirt"), str(worn))
+
+	var smith: Dictionary = _dress(PILOT_MODEL, "someone", "shopkeeper")
+	_check("a shopkeeper does not wear a robe",
+		not (smith.get("worn", []) as Array).has("garb_robe"))
+
+	# And it is a real mesh on every master, not just the men.
+	for model: String in MASTERS:
+		var robed: Dictionary = _dress(model, "%s_priest" % model, "priest")
+		_check("%s carries a robe" % model,
+			(robed.get("worn", []) as Array).has("garb_robe"), str(robed.get("worn", [])))
+
+	# The mesh that was deleted stays deleted, in the file that ships.
+	var packed: PackedScene = load(MAN)
+	var root: Node3D = packed.instantiate() as Node3D
+	var names: Array[String] = []
+	for mi: MeshInstance3D in CitizenDresser.all_meshes(root):
+		names.append(String(mi.name))
+	_check("garb_vest_laced is not in the GLB", not names.has("garb_vest_laced"), str(names))
+	_check("garb_robe is", names.has("garb_robe"))
+	root.free()
+
+
+func _garb_material(root: Node3D, mesh_name: String) -> BaseMaterial3D:
+	for mi: MeshInstance3D in CitizenDresser.all_meshes(root):
+		if String(mi.name) == mesh_name:
+			return mi.get_active_material(0) as BaseMaterial3D
+	return null
+
+
+func _garb_material_raw(packed: PackedScene) -> BaseMaterial3D:
+	var stock: Node3D = packed.instantiate() as Node3D
+	var material: BaseMaterial3D = _garb_material(stock, "garb_vest_plain")
+	stock.free()
+	return material
 
 
 func _check_composition_rules() -> void:

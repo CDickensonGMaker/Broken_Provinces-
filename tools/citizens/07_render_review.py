@@ -2,6 +2,8 @@
 
   citizen_turnaround_<MASTER>.png  front / 3-quarter / side / back
   citizen_variant_wall.png         garb toggles and hair styles on man and woman
+  citizen_garb_wall.png            16 garb pages x 3 dyes, full size
+  citizen_garb_wall_12px.png       the same grid at 12 px tall - Rule 5, automated
   citizen_scale_check.png          child beside adult
   citizen_skirt_walk.png           six posed frames of the woman's skirt
   citizen_robe_walk_<MASTER>.png   the same arc for the robe, man and woman
@@ -22,7 +24,9 @@ import sys
 from mathutils import Vector
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from citizen_common import MASTER, REVIEW, MASTERS, ensure_dirs, banner, tri_count
+from citizen_common import (MASTER, REVIEW, MASTERS, MAT_GARB,
+                            GARB_PAGES as GARB_PAGE_COUNT, garb_page_uv_offset,
+                            ensure_dirs, banner, tri_count)
 
 SLOT_W = 0.95
 ROW_H = 2.05
@@ -200,6 +204,125 @@ def variant_wall():
     camera_over(-SLOT_W * 0.55, SLOT_W * (ncol - 1) + SLOT_W * 0.55,
                 -(len(rows) - 1) * ROW_H - 0.30, 1.95, 512, 640)
     render_to(os.path.join(REVIEW, "citizen_variant_wall.png"))
+
+
+def _garb_page_material(page, tint, tag):
+    """A garb material for one page and one dye.
+
+    Faithful to what the runtime does rather than a lookalike: the page is a
+    UV OFFSET fed through a Mapping node - the same arithmetic as the dresser's
+    `uv1_offset` - and the dye is a MULTIPLY over the sampled texel, which is
+    what `albedo_color` is on a BaseMaterial3D. Get either of those wrong and
+    the contact sheet flatters an atlas the game will not draw.
+    """
+    uo, vo = garb_page_uv_offset(page)
+    name = "_rv_garb_p%02d_%s" % (page, tag)
+    mat = bpy.data.materials.get(name)
+    if mat is not None:
+        return mat
+    src = bpy.data.materials[MAT_GARB]
+    img = None
+    for n in src.node_tree.nodes:
+        if n.type == 'TEX_IMAGE':
+            img = n.image
+    assert img is not None, "the garb material has no image to page"
+
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    nt = mat.node_tree
+    nt.nodes.clear()
+    out = nt.nodes.new("ShaderNodeOutputMaterial")
+    bsdf = nt.nodes.new("ShaderNodeBsdfDiffuse")
+    mix = nt.nodes.new("ShaderNodeMixRGB")
+    mix.blend_type = 'MULTIPLY'
+    mix.inputs["Fac"].default_value = 1.0
+    mix.inputs[2].default_value = (tint[0], tint[1], tint[2], 1.0)
+    tex = nt.nodes.new("ShaderNodeTexImage")
+    tex.image = img
+    tex.interpolation = 'Closest'
+    tex.extension = 'REPEAT'
+    mapping = nt.nodes.new("ShaderNodeMapping")
+    mapping.inputs["Location"].default_value = (uo, vo, 0.0)
+    uvmap = nt.nodes.new("ShaderNodeUVMap")
+    nt.links.new(uvmap.outputs["UV"], mapping.inputs["Vector"])
+    nt.links.new(mapping.outputs["Vector"], tex.inputs["Vector"])
+    nt.links.new(tex.outputs["Color"], mix.inputs[1])
+    nt.links.new(mix.outputs["Color"], bsdf.inputs["Color"])
+    nt.links.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
+    return mat
+
+
+def stamp_garbed(names, x, z, garb_mat, label=None):
+    """Like stamp(), but any slot holding the garb material is overridden at the
+    OBJECT level - so the mesh data stays shared and only the material varies."""
+    made = []
+    for n in names:
+        src = bpy.data.objects.get(n)
+        assert src is not None, "missing object for review: %s" % n
+        ob = bpy.data.objects.new("_rv_%s_%d" % (n, len(bpy.data.objects)), src.data)
+        bpy.context.scene.collection.objects.link(ob)
+        ob.location = (x, 0.0, z)
+        for slot in ob.material_slots:
+            if slot.name == MAT_GARB and garb_mat is not None:
+                slot.link = 'OBJECT'
+                slot.material = garb_mat
+        made.append(ob)
+    if label:
+        made.extend(stamp([], x, z, 0.0, label))
+    return made
+
+
+# Three dyes off CitizenDresser.DYES - undyed, woad blue, madder red. Three is
+# enough to prove the multiply reads without turning the sheet into a paint
+# chart; the point of the wall is the PAGES.
+WALL_TINTS = (("undyed", (1.00, 0.98, 0.94)),
+              ("woad", (0.78, 0.86, 1.00)),
+              ("madder", (1.00, 0.80, 0.76)))
+
+
+def garb_page_wall():
+    """RULE 5, AUTOMATED. One master x 16 pages x 3 tints, rendered at full size
+    AND at 12 px tall - the size a townsman actually occupies across a market
+    square.
+
+    Sec 2, Rule 5: before a page is accepted, view it at ~12 px tall. If the
+    citizen is not identifiable as a silhouette plus two colour blocks, the page
+    has failed, and the fix is bigger blocks and more value contrast, never more
+    detail. That test was a thing somebody had to remember to do by hand; it is
+    a build artefact now, regenerated every time the atlas changes.
+
+    Read the 12 px sheet FIRST. At full size every page looks fine, which is
+    exactly why the full-size sheet is the one that lies.
+    """
+    master = "MAN"
+    worn = ["garb_vest_plain_%s" % master, "garb_pants_%s" % master,
+            "garb_sleeve_long_%s" % master, "hair_short_crop_%s" % master]
+    slot = 0.80
+    row_h = 2.05
+    clear_render_scene()
+    for ti, (tag, tint) in enumerate(WALL_TINTS):
+        for page in range(GARB_PAGE_COUNT):
+            mat = _garb_page_material(page, tint, tag)
+            label = ("p%d" % page) if ti == 0 else None
+            stamp_garbed(parts_of(master) + worn, page * slot, -ti * row_h, mat, label)
+    hide_everything_real()
+
+    x0, x1 = -slot * 0.55, slot * (GARB_PAGE_COUNT - 1) + slot * 0.55
+    z0, z1 = -(len(WALL_TINTS) - 1) * row_h - 0.30, 1.95
+    camera_over(x0, x1, z0, z1, 1280, 460)
+    render_to(os.path.join(REVIEW, "citizen_garb_wall.png"))
+
+    # The same grid, at the size he is actually seen. A citizen is ~1.8 m of the
+    # 2.25 m row, so the row is sized to put the FIGURE at 12 px, not the row.
+    figure_m = 1.80
+    ppm = 12.0 / figure_m
+    w = max(8, int(round((x1 - x0) * ppm)))
+    h = max(8, int(round((z1 - z0) * ppm)))
+    camera_over(x0, x1, z0, z1, w, h, name="_rv_cam12")
+    render_to(os.path.join(REVIEW, "citizen_garb_wall_12px.png"))
+    print("RULE5 wall: %d pages x %d tints, full 1280x460 and %dx%d at 12 px/figure"
+          % (GARB_PAGE_COUNT, len(WALL_TINTS), w, h))
+    clear_render_scene()
 
 
 def scale_check():
@@ -452,6 +575,7 @@ def main():
     for m in MASTERS:
         turnaround(m)
     variant_wall()
+    garb_page_wall()
     scale_check()
     hair_wall()
     skirt_walk_strip()
