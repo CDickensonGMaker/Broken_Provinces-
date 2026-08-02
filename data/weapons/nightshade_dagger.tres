@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "nightshade_dagger"
+display_name = "Nightshade's Dagger"
+description = "Thin, black, and balanced for the throw she never uses. Lady Nightshade gives one away per decade and it is always a message."
+weapon_class = 1
+base_damage = Array[int]([3, 6, 7])
+armor_pierce = 0.25
+required_grit = 2
+base_value = 1200
+weight = 0.5

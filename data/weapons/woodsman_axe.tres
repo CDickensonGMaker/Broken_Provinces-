@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "woodsman_axe"
+display_name = "Woodsman's Axe"
+description = "A felling axe, not a war axe. It is heavier at the head than anything a soldier would carry and it does not care."
+weapon_class = 0
+base_damage = Array[int]([2, 8, 2])
+armor_pierce = 0.0
+required_grit = 4
+base_value = 95
+weight = 5.0

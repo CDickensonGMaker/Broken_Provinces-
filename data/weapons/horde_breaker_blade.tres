@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "horde_breaker_blade"
+display_name = "Horde-Breaker"
+description = "Forged after the Tenger Wars, for a war that did not come back. Broad, heavy, and made to be swung at a line rather than a man."
+weapon_class = 1
+base_damage = Array[int]([4, 8, 3])
+armor_pierce = 0.2
+required_grit = 7
+base_value = 1600
+weight = 7.0

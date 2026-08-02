@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "shepherds_crook"
+display_name = "Shepherd's Crook"
+description = "Six feet of seasoned ash with an iron-shod foot. Every shepherd in the province owns one and every wolf in the province respects it."
+weapon_class = 0
+base_damage = Array[int]([2, 6, 1])
+armor_pierce = 0.0
+required_grit = 2
+base_value = 35
+weight = 2.5

@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "fish_oil"
+display_name = "Fish Oil"
+description = "Rendered off the Mill Brook catch. Foul, and it puts the wind back in your legs: restores 20 stamina."
+item_type = 0
+is_stackable = true
+max_stack = 20
+consumable_effect = 2
+effect_value = Array[int]([20, 0, 0])
+effect_duration = 0.0
+effect_percent = 0.0
+teaches_spell_id = ""
+requires_literacy = false
+literacy_dc = 10
+unlocks_recipe = ""
+base_value = 12
+weight = 0.3
+icon_path = ""
+mesh_path = ""
+use_sound = ""

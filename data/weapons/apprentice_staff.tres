@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "apprentice_staff"
+display_name = "Apprentice's Staff"
+description = "Ash, iron-shod, with a socket at the head that has never held anything. It is a walking stick that counts as a focus, and both jobs matter."
+weapon_class = 2
+base_damage = Array[int]([2, 6, 1])
+armor_pierce = 0.0
+required_grit = 2
+base_value = 150
+weight = 3.0

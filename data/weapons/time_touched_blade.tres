@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "time_touched_blade"
+display_name = "Time-Touched Blade"
+description = "It arrives a fraction before it is swung. The Chronos temple has an opinion about this and will not share it."
+weapon_class = 2
+base_damage = Array[int]([4, 6, 5])
+armor_pierce = 0.2
+required_grit = 4
+base_value = 1700
+weight = 2.8

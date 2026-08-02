@@ -75,7 +75,17 @@ func _load_item_databases() -> void:
 		"dagger", "longsword", "battleaxe", "flamebrand",
 		"hunting_bow", "crossbow", "musket",
 		"iron_sword", "steel_sword", "iron_dagger",
-		"axe", "pickaxe"  # Tools for harvesting
+		"axe", "pickaxe",  # Tools for harvesting
+		# --- Wave B backlog: the Arcane Circle staff ladder ---
+		"apprentice_staff", "staff_of_the_adept", "staff_of_containment",
+		"archmage_staff",
+		# --- Wave B backlog: Iron Company issue ---
+		"iron_company_sword", "iron_lieutenant_sword",
+		# --- Wave B backlog: named uniques ---
+		"vorns_battleaxe", "nightshade_dagger", "ghost_captains_cutlass",
+		"horde_breaker_blade", "time_touched_blade",
+		# --- Wave B backlog: working weapons ---
+		"hunters_bow", "woodsman_axe", "miner_pickaxe_refined", "shepherds_crook",
 	]
 	for weapon_id in weapon_files:
 		var path := "res://data/weapons/%s.tres" % weapon_id
@@ -98,7 +108,32 @@ func _load_item_databases() -> void:
 		"troll_armor", "wyvern_armor", "fur_cloak", "scale_mail",
 		# Gem jewelry (resistance bonuses)
 		"ruby_ring", "sapphire_ring", "emerald_amulet", "amethyst_amulet",
-		"diamond_ring", "pearl_amulet"
+		"diamond_ring", "pearl_amulet",
+		# --- Wave B backlog: the Arcane Circle rank ladder ---
+		"novice_robes", "apprentice_robe", "journeyman_robes", "adept_robes",
+		"magister_robes", "gaelas_verdant_robes",
+		# --- Wave B backlog: Iron Company issue ---
+		"iron_company_armor", "iron_lieutenant_armor", "iron_company_shield",
+		"sergeant_cloak", "company_commander_cloak",
+		# --- Wave B backlog: Thieves Guild and the Keepers ---
+		"thieves_guild_armor", "shadow_equipment_set", "shadow_cloak",
+		"master_thief_cloak", "shadowstep_boots", "keepers_cloak",
+		"keepers_silent_boots",
+		# --- Wave B backlog: Adventurers Guild and the arena ---
+		"legendary_adventurer_cloak", "champions_mantle", "champion_circlet",
+		"champions_laurel", "chimera_scale_armor", "dragonscale_shield",
+		"crossroads_defender_shield", "timekeepers_aegis",
+		"enchanted_explorer_boots",
+		# --- Wave B backlog: cloaks ---
+		"wool_cloak", "hunters_cloak", "wolf_pelt_cloak", "dire_wolf_cloak",
+		# --- Wave B backlog: temple and charm jewellery ---
+		"morthane_amulet", "morthanes_favor_ring", "chronos_amulet",
+		"chronos_favor_amulet", "gaelas_amulet", "natures_bond_ring",
+		"eternal_harvest_ring", "truth_seekers_pendant", "prophets_circlet",
+		"harvest_festival_crown", "spirit_ward_charm", "purifying_charm",
+		"natures_whisper_charm", "farmers_blessing_charm", "cornucopia_charm",
+		"sailors_charm", "elven_blessing_charm", "enchanted_amulet_minor",
+		"amulet_arcane_sight",
 	]
 	for armor_id in armor_files:
 		var path := "res://data/armor/%s.tres" % armor_id
@@ -194,7 +229,34 @@ func _load_item_databases() -> void:
 		"soulstone_lesser_empty", "soulstone_lesser_filled",
 		"soulstone_common_empty", "soulstone_common_filled",
 		"soulstone_greater_empty", "soulstone_greater_filled",
-		"soulstone_grand_empty", "soulstone_grand_filled"
+		"soulstone_grand_empty", "soulstone_grand_filled",
+		# --- Wave B backlog: spell scrolls (teach the nearest existing spell) ---
+		"spell_scroll_flame_bolt", "spell_scroll_flame_burst",
+		"spell_scroll_ice_shard", "spell_scroll_ice_spike",
+		"spell_scroll_arcane_shield", "spell_scroll_meteor_storm",
+		"minor_spell_scroll", "gaelas_blessing_scroll", "temple_blessing_scroll",
+		# --- Wave B backlog: divine blessings (timed buffs) ---
+		"blessing_of_gaela", "blessing_of_chronos", "blessing_of_foresight",
+		"blessing_of_bounty", "minor_time_blessing",
+		# --- Wave B backlog: consumables ---
+		"major_healing_herb", "natures_vigor_potion", "gaelas_embrace_potion",
+		"gaelas_bounty_potion", "fish_oil", "healing_poultice", "seed_of_renewal",
+		# --- Wave B backlog: tools and schematics ---
+		"lockpick_set", "master_lockpick_set", "master_thieves_tools",
+		"keepers_disguise_kit", "sailor_spyglass", "dwarven_compass",
+		"spider_silk_rope", "healing_poultice_recipe",
+		# --- Wave B backlog: tokens and relics ---
+		"arena_victor_belt", "ceremonial_hourglass", "eternal_hourglass_fragment",
+		"ancient_coin_collection",
+		# --- Wave B backlog: reagents ---
+		"arcane_essence", "enchanting_dust", "silver_dust", "mana_crystal",
+		"spirit_essence", "planar_binding_reagent",
+		# --- Wave B backlog: Gaela's herb set ---
+		"moonpetal_flower", "moonleaf", "silvervine", "sunroot", "moonwater",
+		"sacred_soil", "sacred_spring_water",
+		# --- Wave B backlog: foods ---
+		"wild_honey", "great_pumpkin", "autumn_apple", "fresh_wheat",
+		"grain_sack", "ration_pack",
 	]
 	for item_id in item_files:
 		var path := "res://data/items/%s.tres" % item_id

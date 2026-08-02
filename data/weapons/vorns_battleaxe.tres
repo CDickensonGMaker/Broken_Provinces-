@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "vorns_battleaxe"
+display_name = "Vorn's Battleaxe"
+description = "The Guildmaster's own, hung over the contract board for eleven years before he took it down and handed it over. The haft is wrapped in three different men's leather."
+weapon_class = 1
+base_damage = Array[int]([4, 8, 2])
+armor_pierce = 0.2
+required_grit = 7
+base_value = 1400
+weight = 8.0

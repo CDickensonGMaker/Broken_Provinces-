@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "staff_of_the_adept"
+display_name = "Staff of the Adept"
+description = "Blackwood with a silver band per rank. The head holds a stone that warms when you are about to be right."
+weapon_class = 2
+base_damage = Array[int]([3, 6, 2])
+armor_pierce = 0.0
+required_grit = 3
+base_value = 550
+weight = 3.2

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "iron_lieutenant_sword"
+display_name = "Iron Lieutenant's Blade"
+description = "The same pattern in better steel, with a lieutenant's red cord through the pommel. It is a length of authority you can also fight with."
+weapon_class = 1
+base_damage = Array[int]([4, 6, 3])
+armor_pierce = 0.05
+required_grit = 5
+base_value = 520
+weight = 3.0

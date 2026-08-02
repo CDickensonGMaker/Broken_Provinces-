@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="ArmorData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/armor_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "master_thief_cloak"
+display_name = "Master Thief's Cloak"
+description = "Nightshade's own pattern. It is quieter than it has any right to be, and nobody in the Guild will explain the lining."
+slot = 1
+weight_class = 0
+is_shield = false
+armor_value = 8
+block_value = 0
+fire_resistance = 0.0
+frost_resistance = 0.0
+lightning_resistance = 0.0
+poison_resistance = 0.0
+necrotic_resistance = 0.0
+magic_resistance = 0.1
+grit_bonus = 0
+agility_bonus = 2
+will_bonus = 0
+speech_bonus = 1
+knowledge_bonus = 0
+vitality_bonus = 0
+agility_penalty = 0
+stealth_penalty = -5
+spell_failure_chance = 0.0
+required_grit = 0
+base_value = 1100
+weight = 2.5
+mesh_path = ""
+icon_path = ""

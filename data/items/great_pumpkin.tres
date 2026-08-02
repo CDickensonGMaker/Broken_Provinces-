@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "great_pumpkin"
+display_name = "Great Pumpkin"
+description = "Mill Brook's harvest-festival winner, and it takes two people to lift. Fed to a household it lasts a week: +2 Grit for ten minutes."
+item_type = 0
+is_stackable = true
+max_stack = 3
+consumable_effect = 7
+effect_value = Array[int]([0, 0, 2])
+effect_duration = 600.0
+effect_percent = 0.0
+teaches_spell_id = ""
+requires_literacy = false
+literacy_dc = 10
+unlocks_recipe = ""
+base_value = 40
+weight = 12.0
+icon_path = ""
+mesh_path = ""
+use_sound = ""

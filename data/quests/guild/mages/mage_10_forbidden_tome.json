@@ -61,7 +61,7 @@
 	"rewards": {
 		"gold": 500,
 		"xp": 1100,
-		"items": ["forbidden_spell_variable"],
+		"items": ["scroll_soul_drain"],
 		"faction_reputation": {
 			"arcane_circle": 35
 		}

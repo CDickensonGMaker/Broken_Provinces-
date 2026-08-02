@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "staff_of_containment"
+display_name = "Staff of Containment"
+description = "Built to shut something rather than throw something. Every ring on the shaft is a binding, and the Circle keeps a list of what each one is for."
+weapon_class = 2
+base_damage = Array[int]([3, 6, 1])
+armor_pierce = 0.15
+required_grit = 3
+base_value = 700
+weight = 3.5

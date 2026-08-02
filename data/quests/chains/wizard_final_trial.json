@@ -55,7 +55,7 @@
 	"rewards": {
 		"gold": 200,
 		"xp": 1000,
-		"items": ["spell_scroll_meteor_storm", "adept_wizard_robes", "staff_of_the_adept"],
+		"items": ["spell_scroll_meteor_storm", "adept_robes", "staff_of_the_adept"],
 		"faction_reputation": {
 			"arcane_circle": 50
 		}

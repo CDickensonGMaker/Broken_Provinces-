@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "miner_pickaxe_refined"
+display_name = "Refined Miner's Pick"
+description = "Duncaster steel, tempered twice. It goes through rock, which means it also goes through most other things."
+weapon_class = 0
+base_damage = Array[int]([3, 4, 3])
+armor_pierce = 0.2
+required_grit = 4
+base_value = 200
+weight = 4.5

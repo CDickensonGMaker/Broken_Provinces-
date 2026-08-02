@@ -346,5 +346,18 @@
     "skill_required": "None",
     "output": "leather_strip",
     "output_quantity": 3
+  },
+  {
+    "id": "craft_healing_poultice",
+    "title": "Healing Poultice",
+    "category": "consumables",
+    "description": "Healing herb crushed against the flat of a knife, worked into rendered fat and bound in a strip of cut leather. Field medicine: it will not save a man, but it will keep him arguing until somebody who can save him arrives.",
+    "materials": {
+      "healing_herb": 2,
+      "leather_strip": 1
+    },
+    "gold_cost": 5,
+    "skill_required": "Engineering 1",
+    "output": "healing_poultice"
   }
 ]

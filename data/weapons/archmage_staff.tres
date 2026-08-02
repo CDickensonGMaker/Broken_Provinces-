@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "archmage_staff"
+display_name = "Archmage's Staff"
+description = "There is one. It is handed over, not made, and the last four people to hold it are all named in the Athenaeum's ledger with the date they gave it back."
+weapon_class = 2
+base_damage = Array[int]([5, 6, 3])
+armor_pierce = 0.1
+required_grit = 4
+base_value = 1800
+weight = 3.5

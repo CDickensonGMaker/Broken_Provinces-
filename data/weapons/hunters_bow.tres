@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "hunters_bow"
+display_name = "Hunter's Bow"
+description = "Lodge make: shorter than a war bow and drawn faster. Built for one shot at a moving animal, not twenty at a line of men."
+weapon_class = 1
+base_damage = Array[int]([2, 8, 1])
+armor_pierce = 0.0
+required_grit = 3
+base_value = 190
+weight = 2.0

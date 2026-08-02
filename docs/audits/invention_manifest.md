@@ -345,3 +345,88 @@ portrait, no decree, because no Act I quest needs one and putting his face on a
 wall is a ruling about how present he is; the secret society's name; the elves'
 position on the map; whether East Hollow is destroyed or intact; the Thornfield
 temple; any Crossroads building.
+
+---
+
+## Wave B backlog — stage 5: 117 items
+
+Every item obeys the CLAUDE.md philosophy: it does something. Gear stats are
+derived from the closest existing item of the same tier, and the donor is named
+below so a balance pass can find the anchor. All three databases in
+`InventoryManager` were updated, because that list is hand-maintained and an
+unregistered `.tres` is invisible at runtime even though the validator sees it.
+
+### Gear, and what it was derived from
+
+| Group | Donor | The rule |
+|---|---|---|
+| Arcane Circle robes — novice → apprentice → journeyman → adept → magister | `leather_armor` (AV 10, 100g) for the cloth curve; `ring_of_protection` (magic 0.15, 150g) for the warding curve | AV 3/5/7/9/12, Will +1→+4, magic resistance appears at journeyman and doubles each rank. 60g → 900g |
+| Arcane Circle staves — apprentice → adept → containment → archmage | `longsword` ([3,6,4], 150g) at the bottom, `flamebrand` ([5,6,0], 1500g) at the top | Magical class, 150g → 1800g. The containment staff trades a die for armour-pierce, because its job is holding rather than hitting |
+| Iron Company issue | `chainmail` (AV 11, 300g) and `steel_sword` ([3,6,3], 200g) | Company harness is chainmail +1 AV for the shoulder band. The lieutenant's is plate-class and costs double. Company blades are the steel sword, plain |
+| Thieves Guild and Keepers | `leather_armor` and `fur_cloak` (AV 6, 120g) | Everything in this group pays for stealth with a **negative stealth penalty**, which is the only lever in ArmorData that rewards being quiet |
+| Adventurers Guild / arena top end | `plate_armor` (AV 18, 800g), `scale_mail` (AV 14, 600g), `wooden_shield` (block 5, 50g) | Guild rewards top out around 1400g and buy resistances rather than raw AV, so they do not obsolete the smith |
+| Cloaks — wool → hunter → wolf → dire wolf | `fur_cloak` | AV 4/7/7/10, frost the whole ladder, 45g → 550g |
+| Charms, amulets, rings, circlets | `amulet_of_wisdom` (Will+1 Know+2, 225g), `ring_of_protection` | One resistance and one or two stat points each; 60g for a hamlet charm, 900g for Gaela's high gift |
+| Named uniques — Vorn's axe, Nightshade's dagger, the Ghost Captain's cutlass, Horde-Breaker, the Time-Touched Blade | `battleaxe` ([3,8,0], 250g), `dagger` ([2,6,6], 50g), `longsword`, `flamebrand` | Each is its donor plus one die step and pierce, at 1200–1700g. None of them out-damages Flamebrand by much, because uniques here are **lore**, not a power tier |
+
+### The six spells that do not exist
+
+`spell_scroll_ice_shard`, `_ice_spike`, `_flame_burst`, `_flame_bolt`,
+`_arcane_shield`, `_meteor_storm` name spells the game has never had. Repointing
+them silently would have changed what the reward is, so instead each is a real
+SCROLL that **teaches the nearest existing spell in the same school and says so
+in its own description** — the Flame Bolt scroll admits the bolt grew into a
+Fireball, and the Meteor Storm scroll admits the archmage who titled it was
+showing off. Six one-line repoints the day those spells are written.
+
+Mapping: flame_bolt→`fireball` · flame_burst→`fire_gate` · ice_shard→`cone_of_cold` ·
+ice_spike→`ice_storm` · arcane_shield→`armor` · meteor_storm→`summon_flaming_skulls`.
+
+### Divine blessings, as timed buffs
+
+The Three Gods' favour has no rules, and none were invented. Each blessing is a
+consumable using an effect type that already exists, chosen so the god decides
+the stat:
+
+* **Gaela** — +3 Grit, 10 minutes. The strength that gets a field in before the rain.
+* **Chronos** — +3 Agility, 10 minutes. Time's favour does not slow the world; it makes you slightly earlier.
+* **Foresight** (Chronos rite) — +4 Armour, 10 minutes. You do not dodge; you are already leaning.
+* **Bounty** (Gaela) — cures all conditions. A full meal and a hand on the shoulder.
+* **Minor Time Blessing** — +1 Agility, 5 minutes. What an acolyte can manage.
+
+Morthane has no blessing consumable, because nothing in the effect list means
+*death and rebirth* and guessing would have been an answer. His favour is
+jewellery instead: necrotic resistance on an amulet and a ring.
+
+### The three literal placeholders, fixed in the quest data
+
+| Was | Now | Where |
+|---|---|---|
+| `research_materials_variable` (collect) | `arcane_essence` — a new reagent the Circle measures research in | `mage_07_thesis_project` |
+| `specialization_bonus_variable` (reward) | `amulet_arcane_sight` — the thesis earns you the eye, not a stat block | `mage_07_thesis_project` |
+| `forbidden_spell_variable` (reward) | `scroll_soul_drain` — an existing forbidden spell, which is the point of the restricted vault | `mage_10_forbidden_tome` |
+| `adept_wizard_robes` | repointed to `adept_robes` | `wizard_final_trial` — one adept robe, not two |
+
+### Also created
+
+Nineteen herbs, reagents and foods (the group the dispositions file called "a
+small design pass of its own"), each with an effect or a crafting use: the
+moon-set (moonpetal, moonleaf, moonwater), silvervine, sunroot, sacred soil and
+spring water, six arcane reagents, and six foods that each do something
+different — wild honey heals, the great pumpkin is a ten-minute +2 Grit for a
+whole household, a ration pack restores stamina and does not spoil, and a sack
+of grain is what the relief road is actually carrying.
+
+Two tools needed a real system behind them and got one: `healing_poultice_recipe`
+is a SCHEMATIC, so `craft_healing_poultice` was added to
+`data/recipes/crafting_recipes.json` and `healing_poultice` created as its output.
+
+**Deliberately NOT invented:** the six missing spells; a Morthane blessing
+consumable; any belt slot (the arena victor's belt is a rank token, because
+ArmorData has no belt); the heist loot abstractions (`vault_gold`,
+`valuable_goods`, `harwick_valuables` and friends) which are piles of money
+rather than objects and want a gold reward per heist — a quest-design call, held
+in `wave_b_dispositions.md`; and the lore relics that touch bible `[OPEN]`s
+(`sacred_hourglass`, `paradox_stone`, `crown_of_mountain_kings`,
+`hammer_of_first_king`, `soulbound_phylactery`). Those remain validator
+*warnings*, which is where they belong.

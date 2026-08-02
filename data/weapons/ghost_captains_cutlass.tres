@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "ghost_captains_cutlass"
+display_name = "The Ghost Captain's Cutlass"
+description = "Pulled off a man who was not there. Salt-pitted to the spine and still takes an edge, which nobody at the forge can account for."
+weapon_class = 1
+base_damage = Array[int]([4, 6, 4])
+armor_pierce = 0.15
+required_grit = 4
+base_value = 1300
+weight = 2.6

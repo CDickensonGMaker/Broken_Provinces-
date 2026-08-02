@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "iron_company_sword"
+display_name = "Iron Company Blade"
+description = "Company steel, stamped at the ricasso and sharpened by whoever drew it. Nothing about it is remarkable and nothing about it fails."
+weapon_class = 1
+base_damage = Array[int]([3, 6, 3])
+armor_pierce = 0.0
+required_grit = 4
+base_value = 210
+weight = 2.8

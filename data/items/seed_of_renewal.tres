@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "seed_of_renewal"
+display_name = "Seed of Renewal"
+description = "A living seed of Gaela's first grove, warm in the palm. Planted, it restores a blighted field; eaten, it restores you. Cures everything and heals 30 HP."
+item_type = 0
+is_stackable = false
+max_stack = 1
+consumable_effect = 6
+effect_value = Array[int]([30, 0, 0])
+effect_duration = 0.0
+effect_percent = 0.0
+teaches_spell_id = ""
+requires_literacy = false
+literacy_dc = 10
+unlocks_recipe = ""
+base_value = 600
+weight = 0.1
+icon_path = ""
+mesh_path = ""
+use_sound = ""
