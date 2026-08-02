@@ -298,3 +298,27 @@ convincing reads as broken, where an obviously stylised one reads as a
 choice. If these are replaced, replace them with real recordings; do not try
 to make the synthesis more lifelike.
 
+### Music (new 8/2 - one bed)
+
+| Track | Wired to | What it is |
+|---|---|---|
+| `music/dark_fantasy_drone.ogg` | `AudioManager.MUSIC["horror"]` | 2:24 loop. Detuned saw pads through a slow lowpass over Dm - Bb - Gm - A, sparse low bells on the chord roots, a breath of air over the top, tape wobble under everything. 56 kbit mono, 860 KB |
+
+PLACEHOLDER-CLASS, like everything under `assets/audio/generated/`. Regenerate
+with `python tools/gen_audio.py music`.
+
+**It is not the menu music and must not become it.** The main menu already has
+a real three-minute medieval-trumpets track and the law is that a real
+recording is never displaced. `"horror"` is where the gap actually was:
+`cult_hideout.gd` and `dalhurst_cemetery.gd` both ask for it, `MUSIC` had no
+such key, and `play_zone_music()` falls through to **wilderness** for anything
+it does not recognise - so the two most frightening places in the game were
+playing walking music.
+
+Zone music keys still asked for and still absent, all of them falling through
+to the wilderness track: `mystic` (`athenaeum`), `boss` and `boss_fight` and
+`victory` (`crossroads_ruins`). Zone *ambience* keys still absent, falling
+through to the town murmur: `interior`, `dungeon`, `graveyard`. These are left
+ungenerated deliberately - a wrong-but-real recording is a smaller lie than a
+synthesised boss theme, and a boss theme is composition, not synthesis.
+

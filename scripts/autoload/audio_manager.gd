@@ -476,6 +476,18 @@ const MUSIC := {
 	"wilderness": "res://assets/audio/background music/general_game_music_wilderness_120s_ps1_retro.wav",
 	"dungeon": "res://assets/audio/background music/general_game_music_dungeon_lofi_120s_ps1_retro.wav",
 	"ruins": "res://assets/audio/background music/ruins_game_music_dungeon_lofi_120s_v2_ps1_retro.wav",
+
+	# Synthesised, PLACEHOLDER-CLASS, manifest row in the art manifest.
+	# A 2:24 dark-fantasy ambient loop: detuned saw pads through a slow
+	# lowpass over a minor progression, sparse low bells, tape wobble.
+	#
+	# It is wired to "horror" and NOT to "menu". The menu already has a real
+	# three-minute trumpets-and-war-drums track, and the law is that a real
+	# recording is never displaced. "horror" is where the gap was: the cult
+	# hideout and the Dalhurst cemetery both ask for it, and every unknown
+	# zone type falls through to the *wilderness* track - so the two most
+	# frightening places in the game were playing walking music.
+	"horror": "res://assets/audio/generated/music/dark_fantasy_drone.ogg",
 }
 
 ## Ambient sound loops by zone type
@@ -827,6 +839,12 @@ func play_music(music_path: String, crossfade: bool = true) -> void:
 	var stream := _load_sound(music_path)
 	if not stream:
 		return
+
+	# Ogg tracks loop in the stream, seamlessly. The .wav tracks have no such
+	# property and keep riding `_on_music_finished`, which restarts them with
+	# an audible gap - fine for those, wrong for a bed written to loop.
+	if "loop" in stream:
+		stream.set("loop", true)
 
 	if crossfade and music_player.playing:
 		_crossfade_music(stream)
