@@ -769,6 +769,23 @@ func load_save_data(data: Dictionary) -> void:
 			pos_data.get("z", 0.0)
 		)
 
+	# get_save_data has always written "state" and this never read it back, so
+	# a follower told to wait rejoined the player through any zone transition
+	# and a downed one stood back up whole.
+	#
+	# UNCONSCIOUS is restored rather than healed: the state has a recovery path
+	# of its own (recover_from_unconscious, on a 30 second timer), so letting a
+	# save undo it would make reloading the cheapest way to pick a companion up.
+	# The timer is restarted, not resumed - the exact remainder is not worth a
+	# field, and restarting is the reading that favours the player.
+	var saved_state: int = int(data.get("state", FollowerState.FOLLOWING))
+	if saved_state >= 0 and saved_state < FollowerState.size():
+		_change_state(saved_state as FollowerState)
+		if current_state == FollowerState.UNCONSCIOUS:
+			_unconscious_timer = UNCONSCIOUS_DURATION
+			if billboard and billboard.sprite:
+				billboard.sprite.modulate = Color(0.3, 0.3, 0.3)
+
 
 ## Override armor value
 func get_armor_value() -> int:
