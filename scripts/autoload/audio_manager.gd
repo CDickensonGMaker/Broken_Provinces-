@@ -50,6 +50,11 @@ const EVENTS := {
 	"undead_groan_1": "res://assets/audio/sfx/monsters/undead_1.wav",
 	"undead_groan_2": "res://assets/audio/sfx/monsters/undead_2.wav",
 
+	# Weapon fire (real files on disk)
+	"bow_fire": "res://assets/audio/sfx/weapons/bow_and_arrow_quick.wav",
+	"musket_fire": "res://assets/audio/sfx/weapons/musket_bang.wav",
+	"spell_chant": "res://assets/audio/sfx/weapons/magical_chanting_cast.wav",
+
 	# Projectile events
 	"projectile_fire": "res://assets/audio/sfx/projectile_fire.wav",
 	"projectile_hit": "res://assets/audio/sfx/projectile_hit.wav",
@@ -94,6 +99,7 @@ const EVENTS := {
 	"lever_pull": "res://assets/audio/sfx/lever_pull.wav",
 	"secret_found": "res://assets/audio/sfx/secret_found.wav",
 	"trap_trigger": "res://assets/audio/sfx/trap_trigger.wav",
+	"torch_extinguish": "res://assets/audio/sfx/torch_extinguish.wav",
 
 	# Footstep events (by terrain)
 	"footstep_stone": "res://assets/audio/sfx/footstep_stone.wav",
@@ -167,6 +173,97 @@ const EVENTS := {
 	"cooking_chop": "res://assets/audio/sfx/foraging and crafting and potion and enchanting/cooking/cooking_crafting_chop_prep.wav",
 }
 
+## Event names call sites use that are spelled differently from EVENTS.
+## Resolved before anything else, so an old spelling still finds its sound.
+const EVENT_ALIASES := {
+	"enemy_roar": "enemy_aggro",
+	"magic_attack": "spell_cast",
+	"gold_drop": "gold_pickup",
+	"npc_death": "enemy_death",
+	"guard_death": "enemy_death",
+	"secret_revealed": "secret_found",
+	"chest_revealed": "secret_found",
+	"ambush_alert": "enemy_alert",
+	"portal_open": "spell_impact",
+	"kraken_rumble": "monster_growl_low",
+	"hit": "enemy_hit",
+	"death": "enemy_death",
+}
+
+## Stand-ins for events whose own asset does not exist yet.
+## Value is an event name, or an array of event names to pick between.
+## EVERY entry here is also a row in docs/audits/art_replacement_manifest.md -
+## these are the sounds the game asks for and does not have, playing something
+## near enough that the moment is not silent.
+const EVENT_SUBSTITUTES := {
+	# Footsteps: one real file, every surface
+	"footstep_stone": "footstep_generic",
+	"footstep_wood": "footstep_generic",
+	"footstep_grass": "footstep_generic",
+	"footstep_water": "footstep_generic",
+	"footstep_metal": "footstep_generic",
+	"footstep_dirt": "footstep_generic",
+
+	# Impacts: the sword clanks
+	"player_hit": ["melee_hit_1", "melee_hit_2", "melee_hit_3"],
+	"enemy_hit": ["melee_hit_1", "melee_hit_2", "melee_hit_3"],
+	"projectile_hit": ["melee_hit_1", "melee_hit_2"],
+	"critical_hit": "melee_hit_3",
+	"block": "melee_hit_2",
+	"parry": "melee_hit_2",
+	"player_block": "melee_hit_2",
+	"player_parry": "melee_hit_2",
+
+	# Creatures
+	"enemy_alert": "monster_growl_mid",
+	"enemy_aggro": "monster_growl_low",
+
+	# Ranged
+	"projectile_fire": "bow_fire",
+	"projectile_explode": "musket_fire",
+
+	# Magic
+	"spell_cast": "spell_chant",
+
+	# UI, journal and save: the one click we own
+	"menu_select": "ui_accept",
+	"menu_confirm": "ui_accept",
+	"menu_open": "ui_accept",
+	"menu_close": "ui_accept",
+	"menu_cancel": "ui_accept",
+	"menu_hover": "ui_accept",
+	"menu_error": "ui_accept",
+	"quest_start": "ui_accept",
+	"quest_complete": "ui_accept",
+	"objective_complete": "ui_accept",
+	"save_game": "ui_accept",
+	"load_game": "ui_accept",
+
+	# Handling things
+	"item_pickup": "bush_pick_1",
+	"item_use": "bush_pick_2",
+	"gold_pickup": "alchemy_clink",
+	"chest_open": "tongs_handle_1",
+}
+
+## Events with no asset and no honest stand-in. They stay silent, warn once,
+## and are listed in docs/audits/art_replacement_manifest.md.
+## tools/check_audio_events.tscn fails if an entry here is not in that file,
+## or if an event is missing from disk and named in neither table.
+const MISSING_SFX: Array[String] = [
+	"player_attack", "player_death", "player_dodge", "player_stagger",
+	"player_heal", "player_level_up",
+	"enemy_attack", "enemy_death", "enemy_stagger", "enemy_spawn",
+	"projectile_miss", "miss",
+	"item_drop", "item_equip", "item_unequip", "item_break",
+	"spell_fail", "spell_impact",
+	"door_open", "door_close", "door_locked", "door_unlock",
+	"lever_pull", "secret_found", "trap_trigger", "torch_extinguish",
+	"effect_poison", "effect_burn", "effect_freeze", "effect_stun",
+	"effect_bleed", "effect_cure",
+	"quest_fail",
+]
+
 ## Background music tracks
 const MUSIC := {
 	"menu": "res://assets/audio/background music/game_menu_intro_3min_medieval_trumpets_war_drums.wav",
@@ -212,6 +309,9 @@ var is_fading: bool = false
 
 ## Sound cache
 var sound_cache: Dictionary = {}
+
+## Names already warned about, so a missing sound says so once, not every frame
+var _warned_missing: Dictionary = {}
 
 ## Global creature sound limit to prevent audio stacking
 const MAX_CONCURRENT_CREATURE_SOUNDS: int = 4
@@ -616,46 +716,53 @@ func set_ambient_volume(value: float) -> void:
 	ambient_volume = clamp(value, 0.0, 1.0)
 	ambient_player.volume_db = _linear_to_db(ambient_volume)
 
-## Common sound effect shortcuts
+## Common sound effect shortcuts.
+## These name events, not files - the file each one ends up at is
+## resolve_event_path()'s business, and only it knows what is on disk.
 func play_hit_sound(is_critical: bool = false) -> void:
 	if is_critical:
-		play_sfx("res://assets/audio/sfx/hit_critical.wav", 3.0, 0.1)
+		play_sfx("critical_hit", 3.0, 0.1)
 	else:
-		play_sfx("res://assets/audio/sfx/hit.wav", 0.0, 0.15)
+		play_sfx("enemy_hit", 0.0, 0.15)
 
 func play_miss_sound() -> void:
-	play_sfx("res://assets/audio/sfx/whoosh.wav", -3.0, 0.1)
+	play_sfx("miss", -3.0, 0.1)
 
 func play_block_sound() -> void:
-	play_sfx("res://assets/audio/sfx/block.wav", 0.0, 0.1)
+	play_sfx("block", 0.0, 0.1)
 
 func play_death_sound() -> void:
-	play_sfx("res://assets/audio/sfx/death.wav", 0.0, 0.0)
+	play_sfx("enemy_death", 0.0, 0.0)
 
 func play_footstep() -> void:
-	play_sfx("res://assets/audio/sfx/walking and movement/footstep_1.wav", -6.0, 0.15)
+	play_sfx("footstep_generic", -6.0, 0.15)
+
+## Play a footstep for a named surface - "stone", "wood", "grass", "water",
+## "metal", "dirt". An unknown surface falls back to the generic step; the
+## absence of a surface match must never mean silence.
+func play_footstep_surface(surface: String, volume_db: float = -6.0) -> void:
+	var event_name: String = "footstep_%s" % surface
+	if not EVENTS.has(event_name):
+		event_name = "footstep_generic"
+	play_sfx(event_name, volume_db, 0.15)
 
 func play_ui_select() -> void:
-	play_sfx("res://assets/audio/sfx/ui_select.wav", -3.0, 0.0)
+	play_sfx("menu_select", -3.0, 0.0)
 
 func play_ui_confirm() -> void:
 	# Use the accepting click noise for UI confirmations
-	play_sfx("res://assets/audio/sfx/ui/Accepting_Click_Noise.wav", -3.0, 0.0)
+	play_sfx("ui_accept", -3.0, 0.0)
 
 func play_ui_cancel() -> void:
-	play_sfx("res://assets/audio/sfx/ui_cancel.wav", -3.0, 0.0)
+	play_sfx("menu_cancel", -3.0, 0.0)
 
 ## Play a random melee weapon hit sound (sword clanks)
 func play_melee_hit_sound() -> void:
-	var sound_index := randi_range(1, 3)
-	var sound_path := "res://assets/audio/sfx/weapons/sword_clank_%d.wav" % sound_index
-	play_sfx(sound_path, 0.0, 0.1)
+	play_sfx("melee_hit_%d" % randi_range(1, 3), 0.0, 0.1)
 
 ## Play a random melee weapon hit sound at a 3D position
 func play_melee_hit_sound_3d(position: Vector3) -> void:
-	var sound_index := randi_range(1, 3)
-	var sound_path := "res://assets/audio/sfx/weapons/sword_clank_%d.wav" % sound_index
-	play_sfx_3d(sound_path, position, 0.0)
+	play_sfx_3d("melee_hit_%d" % randi_range(1, 3), position, 0.0)
 
 ## Play a sound named from data - the PLAY_SOUND dialogue action's param_string.
 ## Accepts a res:// path, an EVENTS key, or one of the named UI wrappers.
@@ -689,41 +796,81 @@ func play_ui_sound(sound_name: String) -> void:
 
 
 func play_ui_open() -> void:
-	play_sfx("res://assets/audio/sfx/ui_open.wav", -3.0, 0.0)
+	play_sfx("menu_open", -3.0, 0.0)
 
 func play_ui_close() -> void:
-	play_sfx("res://assets/audio/sfx/ui_close.wav", -3.0, 0.0)
+	play_sfx("menu_close", -3.0, 0.0)
 
 func play_item_pickup() -> void:
-	play_sfx("res://assets/audio/sfx/item_pickup.wav", 0.0, 0.1)
+	play_sfx("item_pickup", 0.0, 0.1)
 
 func play_gold_pickup() -> void:
-	play_sfx("res://assets/audio/sfx/gold.wav", 0.0, 0.05)
+	play_sfx("gold_pickup", 0.0, 0.05)
 
 func play_spell_cast(spell_school: Enums.SpellSchool) -> void:
 	# Play magical chanting sound for all spell casts
-	play_sfx("res://assets/audio/sfx/weapons/magical_chanting_cast.wav", -3.0, 0.05)
-	# Then play school-specific sound
-	match spell_school:
-		Enums.SpellSchool.EVOCATION:
-			play_sfx("res://assets/audio/sfx/spell_fire.wav", 0.0, 0.1)
-		Enums.SpellSchool.RESTORATION:
-			play_sfx("res://assets/audio/sfx/spell_heal.wav", 0.0, 0.1)
-		Enums.SpellSchool.NECROMANCY:
-			play_sfx("res://assets/audio/sfx/spell_dark.wav", 0.0, 0.1)
-		_:
-			play_sfx("res://assets/audio/sfx/spell_generic.wav", 0.0, 0.1)
+	play_sfx("spell_chant", -3.0, 0.05)
+	# School-specific layers have no assets yet - see the art manifest. The
+	# chant above is what a cast sounds like until they land.
 
-## Helper: Load and cache sound
+## Resolve an event name to a file on disk.
+##
+## Order: alias -> the event's own asset -> a declared substitute -> nothing.
+## Returns "" when the sound genuinely does not exist, and warns once so a
+## silent event is visible in a log without drowning it.
+func resolve_event_path(event_name: String) -> String:
+	var name: String = EVENT_ALIASES.get(event_name, event_name)
+
+	var own_path: String = EVENTS.get(name, "")
+	if not own_path.is_empty() and ResourceLoader.exists(own_path):
+		return own_path
+
+	if EVENT_SUBSTITUTES.has(name):
+		var sub: Variant = EVENT_SUBSTITUTES[name]
+		var candidates: Array = (sub as Array).duplicate() if sub is Array else [sub]
+		candidates.shuffle()
+		for candidate: Variant in candidates:
+			var sub_path: String = EVENTS.get(str(candidate), "")
+			if not sub_path.is_empty() and ResourceLoader.exists(sub_path):
+				return sub_path
+
+	_warn_once(name, own_path)
+	return ""
+
+
+## Warn about a sound the game asks for and does not have - once per name.
+func _warn_once(event_name: String, intended_path: String) -> void:
+	if _warned_missing.has(event_name):
+		return
+	_warned_missing[event_name] = true
+	if EVENTS.has(event_name):
+		push_warning("AudioManager: no asset for event '%s' (wants %s) - see docs/audits/art_replacement_manifest.md" % [event_name, intended_path])
+	else:
+		push_warning("AudioManager: unknown sound '%s' - not an EVENTS key, an alias, or a res:// path" % event_name)
+
+
+## Helper: Load and cache sound.
+## Accepts a res:// path or an event name - gameplay code has always spoken
+## the event vocabulary from CLAUDE.md, and until now nothing understood it.
 func _load_sound(path: String) -> AudioStream:
 	if sound_cache.has(path):
 		return sound_cache[path]
 
-	if not ResourceLoader.exists(path):
-		push_warning("Sound not found: " + path)
+	var resolved: String = path
+	if not path.begins_with("res://"):
+		resolved = resolve_event_path(path)
+		if resolved.is_empty():
+			return null
+
+	if not ResourceLoader.exists(resolved):
+		# A hardcoded res:// path that is not on disk is a code bug, not a
+		# missing asset request - it can never be substituted for.
+		if not _warned_missing.has(resolved):
+			_warned_missing[resolved] = true
+			push_error("AudioManager: sound file not found: " + resolved)
 		return null
 
-	var stream: AudioStream = load(path)
+	var stream: AudioStream = load(resolved)
 	sound_cache[path] = stream
 	return stream
 
@@ -783,27 +930,28 @@ func load_settings(data: Dictionary) -> void:
 ## Play a sound by event name from EVENTS dictionary
 ## Returns false if event not found
 func play_event(event_name: String, volume_db: float = 0.0, pitch_variance: float = 0.1) -> bool:
-	if not EVENTS.has(event_name):
-		push_warning("AudioManager: Unknown event '%s'" % event_name)
+	var path: String = resolve_event_path(event_name)
+	if path.is_empty():
 		return false
 
-	play_sfx(EVENTS[event_name], volume_db, pitch_variance)
+	play_sfx(path, volume_db, pitch_variance)
 	return true
 
 ## Play a sound by event name at a 3D position
 ## Returns false if event not found
 func play_event_3d(event_name: String, position: Vector3, volume_db: float = 0.0) -> bool:
-	if not EVENTS.has(event_name):
-		push_warning("AudioManager: Unknown event '%s'" % event_name)
+	var path: String = resolve_event_path(event_name)
+	if path.is_empty():
 		return false
 
-	play_sfx_3d(EVENTS[event_name], position, volume_db)
+	play_sfx_3d(path, position, volume_db)
 	return true
 
 ## Check if an event exists
 func has_event(event_name: String) -> bool:
 	return EVENTS.has(event_name)
 
-## Get the file path for an event (for custom handling)
+## Get the file path for an event (for custom handling).
+## This is what will actually play - substitutes included.
 func get_event_path(event_name: String) -> String:
-	return EVENTS.get(event_name, "")
+	return resolve_event_path(event_name)

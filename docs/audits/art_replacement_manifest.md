@@ -135,3 +135,65 @@ altar dressing, no rope and no cell around them.
 | `hostage_wizard_apprentice` | `cult_hideout` | (4, 0, -8) | The cultists are draining him - a ritual frame, chalk, candles |
 | `hostage_missing_child` | `cultist_temple` | (0, 1, -6) | A locked room |
 | `hostage_sacrifice_victim` | `cultist_temple_2` | (0, 0.2, -6) | She is on the stone when you arrive. There is no stone |
+
+## Sound events with no asset (8/1, batch 4)
+
+`AudioManager.EVENTS` names ~117 sounds. 49 real .wav files exist, all of them
+one directory below `assets/audio/sfx/` where the table was pointing, so until
+today **no hit, death, menu, item, door or footstep sound had ever played** and
+nothing crashed to say so. Batch 4 repointed the loader at the real files and
+gave the events with no asset a declared stand-in where an honest one exists
+(`AudioManager.EVENT_SUBSTITUTES`).
+
+The rows below are the events with **no asset and no honest stand-in**. They are
+silent on purpose, they warn once, and they are named in
+`AudioManager.MISSING_SFX`. `tools/check_audio_events.tscn` fails if an entry
+there has no row here, and fails again if a row here starts resolving - so this
+table cannot rot in either direction.
+
+| Event | What it is | Where it fires | Suggested replacement |
+|---|---|---|---|
+| `player_attack` | The player's swing through empty air | `player_controller._do_light_attack` | A short cloth/steel whoosh, 2-3 variations |
+| `player_death` | The player dying | `hud._on_death`, `game_manager` | One long human death cry |
+| `player_dodge` | Dodge roll | `player_controller` dodge | A cloth roll / scuff |
+| `player_stagger` | Player staggered by a hit | `player_controller.apply_stagger` | A grunt plus a stumble |
+| `player_heal` | Healing spell or potion landing on the player | `spell_caster`, `inventory_manager` | A warm rising chime |
+| `player_level_up` | Level threshold crossed | `character_data.add_ip` path | A short fanfare |
+| `enemy_attack` | A generic enemy swing (creatures use their own data-driven sounds) | `gladiator_npc`, arena and NPC combat | A swing whoosh, coarser than the player's |
+| `enemy_death` | A humanoid NPC dying (again, creatures have their own) | seven NPC scripts | Two or three human death cries |
+| `enemy_stagger` | Enemy staggered | `enemy_base.apply_stagger` | A grunt |
+| `enemy_spawn` | An enemy appearing | encounter spawners | A low swell, or nothing |
+| `projectile_miss` | An arrow going past | `projectile_base` | A passing whoosh |
+| `miss` | A melee swing that connects with nothing | `AudioManager.play_miss_sound` | Same family as `player_attack` |
+| `item_drop` | Dropping an item | `inventory_manager` | A soft thud |
+| `item_equip` / `item_unequip` | Putting gear on and taking it off | `inventory_manager` | Leather and buckle |
+| `item_break` | Durability reaching zero | `inventory_manager.degrade_*` | A snap |
+| `spell_fail` | A failed cast | `spell_caster` | A dead fizzle |
+| `spell_impact` | A spell landing | `spell_caster`, `spell_projectile` | Per school ideally; one generic will do |
+| `door_open` / `door_close` | Doors | `zone_door`, level scripts | Wood on stone, two variations |
+| `door_locked` | A locked door refusing | `zone_door` | A rattle |
+| `door_unlock` | A lock giving | `zone_door`, lockpicking | A click and a rattle |
+| `lever_pull` | Levers and switches | `puzzle_element` | A ratchet |
+| `secret_found` | A hidden chest or secret wall revealing | `hidden_chest`, `secret_wall` | A short reveal sting |
+| `trap_trigger` | A trap firing | `triggered_trap` | A snap and a whoosh |
+| `torch_extinguish` | A torch going out | `torch_light` | A wet snuff |
+| `effect_poison`, `effect_burn`, `effect_freeze`, `effect_stun`, `effect_bleed`, `effect_cure` | The six condition applications | `combat_manager.apply_condition` | Six short stingers; they are also the only feedback that a condition landed |
+| `quest_fail` | A quest failing | `quest_manager.fail_quest` | A falling two-note sting |
+
+**Substitutes currently standing in** (these do play, but they are not the
+sound the game is asking for): every footstep surface plays the one real
+footstep; hits, blocks, parries and crits play the sword clanks; every menu
+sound, quest notification and save plays the accept click; `item_pickup` plays
+a bush rustle and `gold_pickup` a glass clink; `chest_open` plays blacksmith
+tongs. Each is one line in `AudioManager.EVENT_SUBSTITUTES` and disappears the
+moment a real file lands at the event's own path.
+
+### Biome ambience - no assets at all
+
+`scripts/audio/ambient_soundscape.gd` wants 7 biomes x day/night x 3 layers =
+36 loops under `assets/audio/ambient/`. That directory does not exist; the real
+one is `assets/audio/Ambiance/` and holds **four** files (a town murmur, a port
+city, a ruins ambience and two arena beds). Nothing in the biome table has an
+asset. Wanted, in rough priority order: forest day, forest night, plains/road
+day, highlands wind, swamp, coast waves, cave drips. Base layers first - the
+accent layers can stay empty.
