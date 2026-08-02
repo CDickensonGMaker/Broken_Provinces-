@@ -414,6 +414,11 @@ func _add_shop_item(item_id: String, base_price: int, quantity: int, quality: En
 
 ## Called by player interaction system
 func interact(_interactor: Node) -> void:
+	# A sleeping keeper does not answer, and says so rather than doing nothing.
+	if not NPCScheduler.is_awake(get_npc_id()):
+		NPCScheduler.announce_asleep(self, merchant_name)
+		return
+
 	# Check faction reputation first - refuse trade at HOSTILE/HATED
 	if should_refuse_trade():
 		_show_refuse_trade_message()
@@ -551,6 +556,9 @@ func get_npc_id() -> String:
 
 ## Get display name for interaction prompt
 func get_interaction_prompt() -> String:
+	var note: String = NPCScheduler.interaction_note(get_npc_id())
+	if not note.is_empty():
+		return "%s - %s" % [merchant_name, note]
 	return "Talk to " + merchant_name
 
 func _open_shop_ui() -> void:

@@ -925,6 +925,16 @@ func _style_button(btn: Button) -> void:
 ## own Control, CanvasLayer and pause handling.
 ## Open the shop for a merchant-like node, creating the shared instance if needed
 static func open_for(merchant_node: Node) -> ShopUI:
+	# THE shop gate, and the only one. Every path that opens a shop - the
+	# OPEN_SHOP dialogue action, Merchant.interact, QuestGiver._open_shop_ui,
+	# the innkeeper - arrives here, so the presence test lives here and nowhere
+	# else. A shop is open when its keeper is in the world, working, and at the
+	# counter rather than at their dinner. There is no `is_open` boolean to
+	# drift out of step with where the keeper is standing.
+	if not NPCScheduler.can_open_shop(merchant_node):
+		NPCScheduler.announce_shop_closed(merchant_node)
+		return null
+
 	var instance: ShopUI = UIManager.get_or_create("ShopUI", ShopUI) as ShopUI
 	if instance == null:
 		return null

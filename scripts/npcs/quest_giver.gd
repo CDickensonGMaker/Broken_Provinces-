@@ -297,6 +297,12 @@ func interact(_interactor: Node) -> void:
 		_is_interacting = false
 		return
 
+	# A sleeping NPC does not answer, and says so rather than doing nothing.
+	if not NPCScheduler.is_awake(npc_id if not npc_id.is_empty() else name):
+		_is_interacting = false
+		NPCScheduler.announce_asleep(self, display_name)
+		return
+
 	_update_quest_state()
 	# Notify quest system that player talked to this NPC (for "talk" objectives)
 	QuestManager.on_npc_talked(npc_id)
@@ -341,6 +347,9 @@ func _open_conversation() -> void:
 	ConversationSystem.start_conversation(self, profile)
 
 func get_interaction_prompt() -> String:
+	var note: String = NPCScheduler.interaction_note(npc_id if not npc_id.is_empty() else name)
+	if not note.is_empty():
+		return "%s - %s" % [display_name, note]
 	_update_quest_state()
 	match quest_state:
 		QuestState.NOT_STARTED:

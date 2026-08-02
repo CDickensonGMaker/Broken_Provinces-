@@ -293,6 +293,11 @@ func _create_interaction_area() -> void:
 
 ## Called by player interaction system
 func interact(_interactor: Node) -> void:
+	# A sleeping NPC does not answer, and says so rather than doing nothing.
+	if not NPCScheduler.is_awake(npc_id if not npc_id.is_empty() else name):
+		NPCScheduler.announce_asleep(self, npc_name)
+		return
+
 	# Check faction reputation before allowing conversation
 	var town_faction: String = FactionManager.get_town_faction()
 	if not town_faction.is_empty():
@@ -350,6 +355,9 @@ func get_npc_id() -> String:
 
 ## Get display name for interaction prompt
 func get_interaction_prompt() -> String:
+	var note: String = NPCScheduler.interaction_note(npc_id if not npc_id.is_empty() else name)
+	if not note.is_empty():
+		return "%s - %s" % [npc_name, note]
 	return "Talk to " + npc_name
 
 
@@ -372,8 +380,10 @@ func get_disposition_status() -> DispositionCalculator.DispositionStatus:
 	return DispositionCalculator.get_disposition_status(disp)
 
 
-## Check if NPC will interact with player (not hostile)
+## Check if NPC will interact with player (not hostile, and awake)
 func will_interact() -> bool:
+	if not NPCScheduler.is_awake(npc_id if not npc_id.is_empty() else name):
+		return false
 	return get_disposition_status() != DispositionCalculator.DispositionStatus.HOSTILE
 
 

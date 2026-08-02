@@ -265,6 +265,71 @@ func is_open_for_business(npc_id: String, hour: int) -> bool:
 	return block.get("station", "") == "work"
 
 
+## ============================================================================
+## AVAILABILITY - what the rest of the game asks
+## ============================================================================
+
+## Called from ShopUI.open_for, and from nowhere else. A keeper the scheduler
+## has never heard of keeps whatever hours they always did.
+func can_open_shop(keeper: Node) -> bool:
+	if not is_instance_valid(keeper):
+		return false
+	var npc_id: String = _id_of(keeper)
+	if not has_record(npc_id):
+		return true
+	return is_open_for_business(npc_id, current_hour())
+
+
+## A shut door says so. A locked door that says nothing is the bug the scout
+## warns about - the player cannot tell it from a broken one.
+func announce_shop_closed(keeper: Node) -> void:
+	var hud: Node = get_tree().get_first_node_in_group("hud") if is_inside_tree() else null
+	if hud and hud.has_method("show_notification"):
+		hud.show_notification(closed_prompt(_id_of(keeper)))
+
+
+## The line a closed shop shows, in the keeper's own hours.
+func closed_prompt(npc_id: String) -> String:
+	var hour: int = current_hour()
+	if not is_present(npc_id, hour):
+		return "Closed - come back in the morning."
+	if action_for(npc_id, hour) == &"sleep":
+		return "Asleep."
+	return "Closed - the keeper is not at the counter."
+
+
+## Whether this NPC will answer at all right now. An NPC the scheduler has never
+## heard of always answers - the schedule adds a reason to refuse, it does not
+## take away the default.
+func is_awake(npc_id: String) -> bool:
+	if not has_record(npc_id):
+		return true
+	return action_for(npc_id, current_hour()) != &"sleep"
+
+
+## Say so. A prompt that stops working and explains nothing is the bug.
+func announce_asleep(node: Node, display_name: String) -> void:
+	if not is_inside_tree():
+		return
+	var hud: Node = get_tree().get_first_node_in_group("hud")
+	if hud and hud.has_method("show_notification"):
+		hud.show_notification("%s is asleep." % display_name)
+	# Nothing is talking to them, so nothing may be holding them either.
+	if ConversationSystem.current_npc == node:
+		ConversationSystem.current_npc = null
+
+
+## The word an interaction prompt should carry, or "" when there is nothing
+## unusual to say. Prompts are the only place presence is ever explained.
+func interaction_note(npc_id: String) -> String:
+	var hour: int = current_hour()
+	if not has_record(npc_id):
+		return ""
+	if action_for(npc_id, hour) == &"sleep":
+		return "Asleep"
+	return ""
+
+
 ## Everyone stationed in this cell at this hour. The roster.
 func npcs_in_cell(cell: Vector2i, hour: int) -> Array[String]:
 	var found: Array[String] = []
