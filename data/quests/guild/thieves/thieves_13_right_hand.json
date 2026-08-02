@@ -33,8 +33,11 @@
     },
     {
       "id": "obj_execute_heist",
-      "type": "heist_event",
-      "description": "Execute the convoy heist"
+      "type": "interact",
+      "target": "treasure_convoy",
+      "required_count": 1,
+      "description": "Execute the convoy heist",
+      "notes": "QuestInteractable treasure_convoy on the chosen ambush site; the phases in heist_execution below are its skill checks"
     },
     {
       "id": "obj_escape_with_loot",
@@ -57,6 +60,17 @@
   "turn_in_zone": "dalhurst",
   "next_quest": "thieves_repeatable_jobs",
   "flags_set": ["thieves_rank_guildmaster_hand", "thieves_questline_complete", "thieves_legendary_thief"],
+  "choice_consequences": {
+    "elder_moor_crossroads": {
+      "flags_to_set": ["heist_site_crossroads"]
+    },
+    "forest_narrows": {
+      "flags_to_set": ["heist_site_forest_narrows"]
+    },
+    "bridge_crossing": {
+      "flags_to_set": ["heist_site_bridge"]
+    }
+  },
   "planning_phase": {
     "ambush_locations": [
       {

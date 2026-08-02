@@ -169,6 +169,46 @@ unblocked in this pass, because their turn-in NPCs now exist: `sailors_debt`,
 `wizard_stolen_pages` and the three `morthane_*` quests whose giver now has a
 tree to hang nodes on. That is the cheapest next wave of content work.
 
+### 2i. `variable` — what a repeatable research assignment *is* (1 objective)
+
+`mage_repeatable_research` is the Arcane Circle's post-capstone loop. Its middle
+objective is `{"type": "variable", "target": "assignment_variable"}`, with the
+note *"Could be: collect reagents, kill magical creatures, explore ruins,
+deliver items"*.
+
+Task 46 implemented or converted the other nine unhandled objective types. This
+one is not an engine gap: nothing is missing from `QuestManager` that a handler
+would supply. The question is a design one — **what does a randomly generated
+guild assignment actually consist of, and who generates it?** `BountyManager`
+already generates bounties from a region and hands them to `QuestManager`, so
+the machinery for "a quest whose objective is chosen at runtime" exists; whether
+the Arcane Circle's repeatable is that, a fixed rotation of four hand-written
+assignments, or something else is Caleb's call.
+
+Until it is answered, `variable` is named in
+`QuestManager.DEFERRED_OBJECTIVE_TYPES` with this reason, and
+`tools/check_quest_engine.tscn` **fails if the entry loses its reason, and fails
+if the type stops shipping and the excuse is left behind.** The quest itself
+stays uncompletable; it is repeatable content behind a capstone that is now
+finishable, so it blocks no ladder.
+
+### 2j. Warnings task 46 deliberately created (9)
+
+Making the guild capstones completable added nine warnings, and all nine are the
+validator correctly asking for content that does not exist yet:
+
+- **7 × QUEST_CHOICE.** `thieves_09_informant` (4 branches) and
+  `thieves_13_right_hand` (3 ambush sites) now carry real `choice_consequences`
+  instead of `choice_paths`, a key the engine has never read. Their `choice`
+  objectives could not settle at all before — `apply_choice_consequence` returns
+  early when the branch id is not in `choice_consequences`. The branches are
+  executable now and nothing calls them, which is exactly what §2h tracks: they
+  need a dialogue node. This is the cheapest content work in the file.
+- **2 × QUEST_ENEMY.** `rogue_mage_thaddeus` (`mage_05_rogue_mage`) and
+  `guild_high_traitor` (`thieves_12_guild_traitor`) are now `kill` objectives
+  inside OR groups, so the validator can finally see them. Both need a stat
+  block — see §2g.
+
 ---
 
 ## 3. Eye-check list — what to look at in the running game

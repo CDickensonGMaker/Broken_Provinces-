@@ -15,8 +15,11 @@
     },
     {
       "id": "obj_solve_entry_puzzle",
-      "type": "puzzle",
-      "description": "Solve the ancient puzzle lock at the entrance"
+      "type": "solve_puzzle",
+      "target": "entry_riddle",
+      "required_count": 1,
+      "description": "Solve the ancient puzzle lock at the entrance",
+      "notes": "PuzzleRoomController completion flag; see puzzle_challenges[entry_riddle] below"
     },
     {
       "id": "obj_navigate_traps",
@@ -26,8 +29,11 @@
     },
     {
       "id": "obj_solve_vault_puzzle",
-      "type": "puzzle",
-      "description": "Solve the master vault puzzle (combination of logic, riddles, and mechanism)"
+      "type": "solve_puzzle",
+      "target": "master_vault_mechanism",
+      "required_count": 1,
+      "description": "Solve the master vault puzzle (combination of logic, riddles, and mechanism)",
+      "notes": "PuzzleRoomController completion flag; see puzzle_challenges[master_vault_mechanism] below"
     },
     {
       "id": "obj_claim_treasure",

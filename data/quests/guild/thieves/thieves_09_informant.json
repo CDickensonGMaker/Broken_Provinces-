@@ -15,8 +15,11 @@
     },
     {
       "id": "obj_investigate_suspects",
-      "type": "investigate",
-      "description": "Investigate three suspects: Felix the Fence, Mara the Smuggler, and Tobin the Pickpocket"
+      "type": "interact",
+      "target": "informant_suspect_clue",
+      "required_count": 3,
+      "description": "Investigate three suspects: Felix the Fence, Mara the Smuggler, and Tobin the Pickpocket",
+      "notes": "Three QuestInteractables share object_id informant_suspect_clue, one per clue_location in investigation_clues below"
     },
     {
       "id": "obj_find_evidence",
@@ -50,6 +53,24 @@
   "turn_in_zone": "dalhurst",
   "next_quest": "thieves_10_government_job",
   "flags_set": ["thieves_rank_shadowmaster", "thieves_informant_handled"],
+  "choice_consequences": {
+    "execute_traitor": {
+      "flags_to_set": ["thieves_executed_tobin"],
+      "reputation_changes": {"thieves_guild": 35}
+    },
+    "turn_double_agent": {
+      "flags_to_set": ["thieves_turned_tobin"],
+      "reputation_changes": {"thieves_guild": 30}
+    },
+    "exile_traitor": {
+      "flags_to_set": ["thieves_exiled_tobin"],
+      "reputation_changes": {"thieves_guild": 20}
+    },
+    "let_them_go": {
+      "flags_to_set": ["thieves_pardoned_tobin"],
+      "reputation_changes": {"thieves_guild": 10}
+    }
+  },
   "investigation_clues": [
     {
       "suspect": "felix_fence",

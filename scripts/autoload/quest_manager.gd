@@ -16,6 +16,49 @@ signal follower_recruited(follower_id: String, quest_id: String)  # Follower rec
 signal soulstone_delivered(soulstone_id: String, npc_id: String, quest_id: String)  # Soulstone turned in
 signal puzzle_solved(puzzle_id: String, quest_id: String)  # Puzzle completed
 
+## THE OBJECTIVE VOCABULARY.
+##
+## Every objective `type` a driver in this file can settle. `update_progress`
+## matches on the type string alone, so an unlisted type is not rejected - it
+## simply sits there forever because nothing ever calls update_progress with it.
+## That is how ten types reached a milestone build with four Thieves Guild
+## quests and two Mage capstones structurally uncompletable, blocking both rank
+## ladders, without a single error line.
+##
+## This list is the single source of truth for the type vocabulary. It is read
+## by tools/check_quest_engine.gd, which drives each type end to end and fails
+## if one cannot be settled, and by tools/validate_content.gd, which fails on
+## any type in data/quests/ that appears in neither this list nor
+## DEFERRED_OBJECTIVE_TYPES.
+##
+## Add a type here only when a driver for it exists.
+const HANDLED_OBJECTIVE_TYPES: Array[String] = [
+	"kill",               # on_enemy_killed
+	"collect",            # on_item_collected + inventory poll on start
+	"has_item",           # refresh_has_item_objectives (poll, not a count)
+	"talk",               # on_npc_talked
+	"reach",              # on_location_reached
+	"explore",            # on_location_explored
+	"interact",           # on_interact, incl. QuestInteractable
+	"choice",             # apply_choice_consequence
+	"craft",              # update_progress("craft", ...) from the crafting UI
+	"escort",             # on_escort_arrived / on_escort_died
+	"duel_win",           # DuelManager
+	"deliver_soulstone",  # on_soulstone_delivered
+	"solve_puzzle",       # on_puzzle_solved, off PuzzleRoomController's flags
+	"recruit_follower",   # on_follower_recruited
+	"wave_defense",       # on_wave_defense_progress / _complete
+	"wave_defense_complete",
+]
+
+## Types that ship in data/quests/ with no driver, deliberately, because
+## implementing one would mean inventing a design decision Caleb has not made.
+## Each needs a row in docs/audits/wave_b_dispositions.md naming the question.
+## Nothing goes on this list to make a check quiet.
+const DEFERRED_OBJECTIVE_TYPES: Dictionary = {
+	"variable": "mage_repeatable_research: what a randomly-generated research assignment IS is unbuilt quest design, see wave_b_dispositions.md 2i",
+}
+
 ## Quest data structure
 class Quest:
 	var id: String
@@ -91,7 +134,7 @@ class Quest:
 class Objective:
 	var id: String
 	var description: String
-	var type: String  # "kill", "collect", "talk", "reach", "explore", "interact", "choice", "deliver_soulstone", "solve_puzzle", "recruit_follower", "wave_defense"
+	var type: String  # one of QuestManager.HANDLED_OBJECTIVE_TYPES
 	var target: String  # Enemy ID, item ID, NPC ID, location ID, soulstone ID, puzzle flag, follower ID, wave_spawner_id
 	var target_zone: String = ""  # Zone where target is located (for cross-zone markers)
 	var required_count: int = 1
@@ -1232,9 +1275,39 @@ func refresh_objective_locations(quest_id: String) -> void:
 	_cache_objective_locations(quest_id)
 
 
+## Settle "has_item" objectives against what the player is carrying right now.
+##
+## "collect" counts pickups; "has_item" asks a question about the pack. The
+## difference matters for a quest that wants a Greater Soulstone the player may
+## have owned for twenty hours before the noble ever asked - counting pickups
+## would never see it. Polled when the quest is offered and again on every
+## pickup, which are the only two moments the answer can change from no to yes.
+func refresh_has_item_objectives(quest: Quest) -> void:
+	var settled: bool = false
+
+	for obj: Objective in quest.objectives:
+		if obj.type != "has_item" or obj.is_satisfied():
+			continue
+		var held: int = InventoryManager.get_item_count(obj.target)
+		if held < obj.required_count:
+			continue
+		obj.current_count = obj.required_count
+		obj.is_completed = true
+		obj.completion_method = "carried"
+		settled = true
+		quest_updated.emit(quest.id, obj.id)
+		objective_completed.emit(quest.id, obj.id)
+
+	if settled:
+		_settle_objective_groups(quest)
+		_check_quest_completion(quest.id)
+
+
 ## Check existing inventory for "collect" objectives when quest starts
 ## This allows pre-collected items to count toward quest progress
 func _check_existing_inventory_for_quest(quest: Quest) -> void:
+	refresh_has_item_objectives(quest)
+
 	for obj in quest.objectives:
 		if obj.type == "collect" and not obj.is_completed:
 			# Check if player already has items in inventory
@@ -1309,6 +1382,12 @@ func on_enemy_killed(enemy_id: String) -> void:
 ## Track item collection
 func on_item_collected(item_id: String, count: int = 1) -> void:
 	update_progress("collect", item_id, count)
+
+	# A pickup is the one moment a "has_item" question can change answer.
+	for quest_id: String in quests:
+		var quest: Quest = quests[quest_id]
+		if quest.state == Enums.QuestState.ACTIVE:
+			refresh_has_item_objectives(quest)
 
 ## Track NPC interaction
 func on_npc_talked(npc_id: String) -> void:

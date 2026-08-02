@@ -26,10 +26,10 @@
 		{
 			"id": "duel_elara",
 			"description": "Duel Archmage Elara Moonweave",
-			"type": "special_combat",
+			"type": "duel_win",
 			"target": "archmage_elara_duel",
 			"required_count": 1,
-			"notes": "Non-lethal duel, defeat by reducing HP to 25%. Elara uses all schools of magic."
+			"notes": "Non-lethal duel via DuelManager.start_duel(\"archmage_elara_duel\", yield_threshold 0.25). Elara uses all schools of magic."
 		},
 		{
 			"id": "join_council",

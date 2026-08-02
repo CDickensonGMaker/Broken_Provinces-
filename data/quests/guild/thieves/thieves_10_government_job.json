@@ -21,10 +21,12 @@
     },
     {
       "id": "obj_bypass_vault",
-      "type": "lockpick",
+      "type": "interact",
       "target": "magistrate_vault",
-      "dc": 18,
-      "description": "Bypass the vault's complex lock"
+      "required_count": 1,
+      "lock_dc": 18,
+      "description": "Bypass the vault's complex lock",
+      "notes": "QuestInteractable magistrate_vault with lock_dc 18; a failed pick costs the attempt, never the quest"
     },
     {
       "id": "obj_steal_documents",

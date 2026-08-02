@@ -8,6 +8,12 @@
 	"giver_npc_type": "quest_giver",
 	"giver_region": "dalhurst",
 	"faction": "arcane_circle",
+	"objective_groups": {
+		"settle_the_rogue": {
+			"description": "Settle the rogue mage, however you like",
+			"required": 1
+		}
+	},
 	"objectives": [
 		{
 			"id": "investigate_millbrook",
@@ -33,11 +39,21 @@
 		},
 		{
 			"id": "confront_rogue",
-			"description": "Confront the rogue mage (Combat or Persuasion)",
-			"type": "kill_or_persuade",
+			"description": "Kill the rogue mage",
+			"type": "kill",
 			"target": "rogue_mage_thaddeus",
 			"required_count": 1,
-			"notes": "Can fight or persuade them to stop (skill check DC 15)"
+			"group": "settle_the_rogue"
+		},
+		{
+			"id": "persuade_rogue",
+			"description": "Persuade the rogue mage to give up the forbidden arts",
+			"type": "interact",
+			"target": "rogue_mage_parley",
+			"required_count": 1,
+			"group": "settle_the_rogue",
+			"lock_dc": 15,
+			"notes": "QuestInteractable rogue_mage_parley at the forest camp; skill check DC 15"
 		},
 		{
 			"id": "report_outcome",

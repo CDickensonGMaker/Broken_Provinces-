@@ -18,6 +18,13 @@ extends StaticBody3D
 @export var world_flag: String = ""
 ## Optional flag that must be set on FlagManager before this can be used.
 @export var required_flag: String = ""
+## Optional lockpicking DC. Above zero, using this rolls a real
+## DiceManager.lockpick_check and only settles the objective on a success - the
+## machinery Chest and LockableDoor already use. A failure costs nothing but
+## the attempt, so a locked quest object can never dead-end a quest.
+@export var lock_dc: int = 0
+## Line shown when the lock beats the player.
+@export_multiline var lock_failed_message: String = "The lock holds."
 ## Line shown when required_flag is missing.
 @export_multiline var locked_message: String = "Not yet."
 ## Whether using it consumes it.
@@ -81,6 +88,9 @@ func interact(_interactor: Node) -> void:
 		_notify(locked_message)
 		return
 
+	if lock_dc > 0 and not _pick_the_lock():
+		return
+
 	used = true
 
 	if not object_id.is_empty() and QuestManager:
@@ -106,6 +116,27 @@ func interact(_interactor: Node) -> void:
 
 	if one_shot and mesh_instance:
 		mesh_instance.visible = false
+
+
+## Rolls the player's lockpicking against lock_dc. Returns true on a success.
+## Deliberately does not consume a lockpick or break one - this is a quest
+## object, not a loot container, and a broken pick must never strand a quest.
+func _pick_the_lock() -> bool:
+	var char_data: Object = GameManager.player_data
+	if char_data == null:
+		return true
+
+	var result: Dictionary = DiceManager.lockpick_check(
+		char_data.get_effective_stat(Enums.Stat.AGILITY),
+		char_data.get_skill(Enums.Skill.LOCKPICKING),
+		lock_dc
+	)
+
+	if bool(result.get("success", false)):
+		return true
+
+	_notify(lock_failed_message)
+	return false
 
 
 func _notify(message: String) -> void:

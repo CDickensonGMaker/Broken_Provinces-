@@ -86,6 +86,8 @@ func _run() -> void:
 	_check_world_pre_completion()
 	_check_world_state_round_trip()
 	_check_manager_member_survival()
+	_check_objective_type_coverage()
+	_check_shipping_data_types()
 
 	print("")
 	print("Checks run: %d" % _checks)
@@ -494,6 +496,152 @@ func _check_manager_member_survival() -> void:
 
 	QuestManager.reset_for_new_game()
 	QuestManager.quest_database.erase(quest_id)
+
+
+# =============================================================================
+# 6. OBJECTIVE TYPE COVERAGE
+# =============================================================================
+#
+# The batch-3 headline: ten objective types authored in data/quests/ had no
+# handler at all. Nothing threw, because update_progress matches on the type
+# string and simply never gets called with an unknown one - the objective sits
+# at 0/1 forever. Four Thieves Guild quests and two Mage capstones were
+# structurally uncompletable, blocking both rank ladders, and the only symptom
+# was a player who could not finish them.
+#
+# Two assertions close that class.
+#
+# A. Every type QuestManager.HANDLED_OBJECTIVE_TYPES claims is driven end to
+#    end here, through the same public entry point the game uses. A type on the
+#    list with no driver below fails: adding to the list is a claim, and the
+#    claim has to be paid for.
+# B. Every type that appears in shipping quest JSON is either on that list or
+#    on DEFERRED_OBJECTIVE_TYPES with a written reason.
+
+## An item id that certainly exists, for the "has_item" driver.
+const REAL_ITEM_ID := "lockpick"
+
+
+func _check_objective_type_coverage() -> void:
+	for type: String in QuestManager.HANDLED_OBJECTIVE_TYPES:
+		_drive_one_type(type)
+
+
+## Builds a one-objective auto-complete quest of the given type and settles it
+## the way the game would. Fails if the objective does not end up satisfied.
+func _drive_one_type(type: String) -> void:
+	var quest_id := "_type_check_" + type
+	var target := "_type_target_" + type
+
+	var objective: Dictionary = {"id": "_obj", "type": type, "target": target, "required_count": 1}
+	if type == "has_item":
+		objective["target"] = REAL_ITEM_ID
+		target = REAL_ITEM_ID
+
+	var definition: Dictionary = {
+		"id": quest_id,
+		"title": "Type check: " + type,
+		"turn_in_type": "auto_complete",
+		"objectives": [objective],
+	}
+	if type == "choice":
+		definition["choice_consequences"] = {"_branch": {"flags_to_set": ["_type_check_branch"]}}
+
+	QuestManager.quest_database[quest_id] = QuestManager._parse_quest(definition)
+	if not QuestManager.start_quest(quest_id):
+		_fail("the '%s' type-check quest would not start" % type)
+		return
+
+	var quest: Object = QuestManager.quests[quest_id]
+
+	match type:
+		"kill":
+			QuestManager.on_enemy_killed(target)
+		"collect":
+			QuestManager.on_item_collected(target, 1)
+		"has_item":
+			InventoryManager.add_item(REAL_ITEM_ID, 1)
+			QuestManager.refresh_has_item_objectives(quest)
+		"talk":
+			QuestManager.on_npc_talked(target)
+		"reach":
+			QuestManager.on_location_reached(target)
+		"explore":
+			QuestManager.on_location_explored(target)
+		"interact":
+			QuestManager.on_interact(target)
+		"choice":
+			QuestManager.apply_choice_consequence(quest_id, "_branch")
+		"craft":
+			# crafting_manager.gd:23
+			QuestManager.update_progress("craft", target, 1)
+		"escort":
+			QuestManager.on_escort_arrived(target, "")
+		"duel_win":
+			# duel_manager.gd:405
+			QuestManager.update_progress("duel_win", target, 1)
+		"deliver_soulstone":
+			QuestManager.on_soulstone_delivered(target, "_type_check_npc")
+		"solve_puzzle":
+			QuestManager.on_puzzle_solved(target)
+		"recruit_follower":
+			QuestManager.on_follower_recruited(target)
+		"wave_defense", "wave_defense_complete":
+			# wave_spawner.gd:396
+			QuestManager.on_wave_defense_complete(target)
+		_:
+			_fail(
+				"objective type '%s' is listed in QuestManager.HANDLED_OBJECTIVE_TYPES but this guard knows no driver for it - either wire one here or take it off the list"
+				% type
+			)
+			QuestManager.quests.erase(quest_id)
+			QuestManager.quest_database.erase(quest_id)
+			return
+
+	_expect(
+		quest.objectives[0].is_satisfied(),
+		"objective type '%s' has no working handler: driving it the way the game does left it at %d/%d"
+			% [type, quest.objectives[0].current_count, quest.objectives[0].required_count]
+	)
+
+	QuestManager.quests.erase(quest_id)
+	QuestManager.quest_database.erase(quest_id)
+	if type == "has_item":
+		InventoryManager.remove_item(REAL_ITEM_ID, 1)
+
+
+## Every type shipping in data/quests/ must be claimed or deferred with a reason.
+func _check_shipping_data_types() -> void:
+	var seen: Dictionary = {}
+	for quest: Object in QuestManager.quest_database.values():
+		for obj: Object in quest.objectives:
+			if obj.type.is_empty():
+				_fail("quest '%s' objective '%s' has no type at all" % [quest.id, obj.id])
+				continue
+			if not seen.has(obj.type):
+				seen[obj.type] = []
+			seen[obj.type].append("%s:%s" % [quest.id, obj.id])
+
+	for type: String in seen:
+		if QuestManager.HANDLED_OBJECTIVE_TYPES.has(type):
+			continue
+		if QuestManager.DEFERRED_OBJECTIVE_TYPES.has(type):
+			_expect(
+				not String(QuestManager.DEFERRED_OBJECTIVE_TYPES[type]).is_empty(),
+				"objective type '%s' is deferred with no reason written down" % type
+			)
+			continue
+		_fail(
+			"objective type '%s' ships in quest data (%s) and no handler exists: it can never be completed. Implement it, convert the data, or defer it in QuestManager.DEFERRED_OBJECTIVE_TYPES with a reason"
+				% [type, ", ".join(seen[type])]
+		)
+
+	# And the reverse: a deferred type that no longer ships is a stale excuse.
+	for type: String in QuestManager.DEFERRED_OBJECTIVE_TYPES:
+		_expect(
+			seen.has(type),
+			"objective type '%s' is deferred in QuestManager but no quest uses it any more - delete the entry" % type
+		)
 
 
 ## Script-declared members on the QuestManager singleton.

@@ -12,7 +12,7 @@
             "id": "find_greater_soulstone",
             "description": "Obtain a Greater Soulstone (tier 4 or higher)",
             "type": "has_item",
-            "target": "soulstone_greater",
+            "target": "soulstone_greater_filled",
             "required_count": 1
         },
         {

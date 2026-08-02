@@ -6,20 +6,32 @@
   "giver_region": "dalhurst",
   "faction": "thieves_guild",
   "rank_required": 3,
+  "objective_groups": {
+    "confront_the_traitor": {
+      "description": "Settle with the traitor, however you like",
+      "required": 1
+    }
+  },
   "objectives": [
     {
       "id": "obj_investigate_vex",
-      "type": "investigate",
+      "type": "interact",
+      "target": "meeting_logs_with_guards",
+      "required_count": 1,
       "description": "Investigate Shadowmaster Vex's activities"
     },
     {
       "id": "obj_investigate_raven",
-      "type": "investigate",
+      "type": "interact",
+      "target": "suspicious_letters",
+      "required_count": 1,
       "description": "Investigate Raven's recent contacts"
     },
     {
       "id": "obj_investigate_magnus",
-      "type": "investigate",
+      "type": "interact",
+      "target": "coded_messages_to_magistrate",
+      "required_count": 1,
       "description": "Investigate Magnus the Fence's dealings"
     },
     {
@@ -31,14 +43,28 @@
     },
     {
       "id": "obj_uncover_truth",
-      "type": "revelation",
-      "description": "Discover the true traitor's identity"
+      "type": "interact",
+      "target": "magnus_hidden_ledger",
+      "required_count": 1,
+      "description": "Discover the true traitor's identity",
+      "notes": "The revelation is finding the ledger; see revelation_trigger below (magnus_safehouse_willow_dale)"
     },
     {
       "id": "obj_confront_traitor",
-      "type": "combat_or_talk",
+      "type": "kill",
       "target": "guild_high_traitor",
-      "description": "Confront the traitor"
+      "required_count": 1,
+      "group": "confront_the_traitor",
+      "description": "Cut the traitor down"
+    },
+    {
+      "id": "obj_parley_traitor",
+      "type": "interact",
+      "target": "magnus_parley",
+      "required_count": 1,
+      "group": "confront_the_traitor",
+      "description": "Face the traitor without drawing steel",
+      "notes": "QuestInteractable magnus_parley; carries the persuade-surrender and accept-bribe roads in confrontation_options"
     }
   ],
   "rewards": {
