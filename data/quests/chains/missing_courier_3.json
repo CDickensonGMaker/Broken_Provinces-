@@ -7,7 +7,7 @@
 	"giver_npc_id": "",
 	"giver_npc_type": "",
 	"giver_region": "",
-	"faction": "merchants_guild",
+	"faction": "merchant_guild",
 	"objectives": [
 		{
 			"id": "deliver_letter",
@@ -26,7 +26,7 @@
 		"xp": 225,
 		"items": [],
 		"faction_reputation": {
-			"merchants_guild": 20
+			"merchant_guild": 20
 		}
 	},
 	"prerequisites": ["missing_courier_2"],

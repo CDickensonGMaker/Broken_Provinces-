@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "hunters_guild"
+display_name = "Hunters' Lodge"
+description = "The trappers, wolf-takers and beast-hunters who work the treelines the town guard will not enter. Less a guild than a lodge with a board on the wall and a bounty box under it: bring the ears, take the coin, sign the book. What they teach they teach by letting you follow."
+parent_faction = ""
+allies = ["common_folk", "elder_moor", "adventurers_guild"]
+enemies = []
+neutrals = ["merchant_guild", "town_guard", "church_of_gaela"]
+alignment = 10
+ranks = [{"name": "Poacher", "min_reputation": -100, "benefits": []}, {"name": "Outsider", "min_reputation": -30, "benefits": []}, {"name": "Tagalong", "min_reputation": 0, "benefits": []}, {"name": "Trapper", "min_reputation": 25, "benefits": ["bounty_board_access"]}, {"name": "Wolf-Taker", "min_reputation": 50, "benefits": ["bounty_board_access", "reduced_prices"]}, {"name": "Master Hunter", "min_reputation": 75, "benefits": ["bounty_board_access", "reduced_prices", "rare_pelts"]}, {"name": "Lodge Master", "min_reputation": 95, "benefits": ["bounty_board_access", "reduced_prices", "rare_pelts", "great_hunt"]}]
+default_reputation = 0
+joinable = true
+join_threshold = 25
+is_hidden = false
+faction_color = Color(0.35, 0.45, 0.25, 1.0)

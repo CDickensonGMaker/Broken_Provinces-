@@ -27,7 +27,7 @@
 		"items": [],
 		"faction_reputation": {
 			"human_empire": 30,
-			"merchants_guild": 15
+			"merchant_guild": 15
 		}
 	},
 	"prerequisites": ["road_safety_2"],

@@ -7,7 +7,7 @@
 	"giver_npc_id": "bounty_board",
 	"giver_npc_type": "bounty_board",
 	"giver_region": "dalhurst",
-	"faction": "merchants_guild",
+	"faction": "merchant_guild",
 	"objectives": [
 		{
 			"id": "kill_spiders",
@@ -25,7 +25,7 @@
 		"xp": 220,
 		"items": [],
 		"faction_reputation": {
-			"merchants_guild": 15
+			"merchant_guild": 15
 		}
 	},
 	"cooldown_days": 5,

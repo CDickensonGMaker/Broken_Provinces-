@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "scholars_guild"
+display_name = "The Athenaeum"
+description = "The keepers of the province's libraries - copyists, translators and antiquarians who catalogue what the arcane circle would rather use and the church would rather burn. They pay for books, they pay more for books nobody else has, and they ask no questions until after the receipt is signed."
+parent_faction = ""
+allies = ["arcane_circle", "the_keepers"]
+enemies = []
+neutrals = ["church_of_three", "church_of_chronos", "nobility", "merchant_guild"]
+alignment = 15
+ranks = [{"name": "Banned", "min_reputation": -100, "benefits": []}, {"name": "Unlettered", "min_reputation": -30, "benefits": []}, {"name": "Reader", "min_reputation": 0, "benefits": ["library_access"]}, {"name": "Copyist", "min_reputation": 25, "benefits": ["library_access", "reduced_prices"]}, {"name": "Antiquarian", "min_reputation": 50, "benefits": ["library_access", "reduced_prices", "restricted_shelves"]}, {"name": "Lector", "min_reputation": 75, "benefits": ["library_access", "reduced_prices", "restricted_shelves", "research_grants"]}, {"name": "Athenaeum Fellow", "min_reputation": 95, "benefits": ["library_access", "reduced_prices", "restricted_shelves", "research_grants", "forbidden_lore"]}]
+default_reputation = 0
+joinable = true
+join_threshold = 25
+is_hidden = false
+faction_color = Color(0.35, 0.4, 0.6, 1.0)

@@ -7,7 +7,7 @@
 	"giver_npc_id": "bounty_board",
 	"giver_npc_type": "bounty_board",
 	"giver_region": "dalhurst",
-	"faction": "merchants_guild",
+	"faction": "merchant_guild",
 	"objectives": [
 		{
 			"id": "kill_rats",
@@ -25,7 +25,7 @@
 		"xp": 100,
 		"items": [],
 		"faction_reputation": {
-			"merchants_guild": 10
+			"merchant_guild": 10
 		}
 	},
 	"cooldown_days": 5,

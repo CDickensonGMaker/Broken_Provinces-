@@ -26,7 +26,7 @@ var npc_type: String = "quest_giver"  # Can be overridden for specific NPC types
 ## If empty, will auto-detect available quests from QuestManager
 @export var quest_ids: Array[String] = []
 
-## Faction affiliation (e.g., "human_empire", "the_keepers", "merchants_guild")
+## Faction affiliation (e.g., "human_empire", "the_keepers", "merchant_guild")
 ## Used for quest tracking and faction reputation
 @export var faction_id: String = "human_empire"
 

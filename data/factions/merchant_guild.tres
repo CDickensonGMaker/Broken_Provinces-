@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "merchant_guild"
+display_name = "Merchant Guild"
+description = "The chartered traders of the province - the caravan masters, stallholders and warehouse men who keep goods moving on roads the empire no longer patrols. They do not care who rules, only that the roads are open and the ledgers balance. A man who protects a shipment is worth ten who protect a principle."
+parent_faction = ""
+allies = ["human_empire", "dalhurst", "thornfield", "town_guard"]
+enemies = ["bandits", "thieves_guild"]
+neutrals = ["nobility", "adventurers_guild"]
+alignment = 5
+ranks = [{"name": "Blacklisted", "min_reputation": -100, "benefits": []}, {"name": "Unknown", "min_reputation": -30, "benefits": []}, {"name": "Customer", "min_reputation": 0, "benefits": ["basic_services"]}, {"name": "Trusted Hand", "min_reputation": 25, "benefits": ["basic_services", "reduced_prices"]}, {"name": "Factor", "min_reputation": 50, "benefits": ["basic_services", "reduced_prices", "caravan_contracts"]}, {"name": "Guild Partner", "min_reputation": 75, "benefits": ["basic_services", "reduced_prices", "caravan_contracts", "warehouse_access"]}, {"name": "Guild Master", "min_reputation": 95, "benefits": ["basic_services", "reduced_prices", "caravan_contracts", "warehouse_access", "trade_charter"]}]
+default_reputation = 0
+joinable = true
+join_threshold = 25
+is_hidden = false
+faction_color = Color(0.75, 0.6, 0.25, 1.0)

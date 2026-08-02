@@ -7,7 +7,7 @@
 	"giver_npc_id": "",
 	"giver_npc_type": "",
 	"giver_region": "",
-	"faction": "merchants_guild",
+	"faction": "merchant_guild",
 	"objectives": [
 		{
 			"id": "return_ledger",
@@ -26,7 +26,7 @@
 		"xp": 250,
 		"items": [],
 		"faction_reputation": {
-			"merchants_guild": 25
+			"merchant_guild": 25
 		}
 	},
 	"prerequisites": ["stolen_ledger_2"],

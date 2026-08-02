@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "shadowed_hand_cult"
+display_name = "The Shadowed Hand"
+description = "A cult that meets in cellars and old barrows and does not name what it serves out loud. They buy relics, they take the desperate in, and the province notices them only as missing people and a mark chalked on a doorframe. Nobody agrees on what they want; everybody agrees they are getting it."
+parent_faction = ""
+allies = []
+enemies = ["the_keepers", "church_of_three", "church_of_morthane", "town_guard"]
+neutrals = ["thieves_guild", "bandits"]
+alignment = -70
+ranks = [{"name": "Hunted", "min_reputation": -100, "benefits": []}, {"name": "Marked", "min_reputation": -40, "benefits": []}, {"name": "Unseen", "min_reputation": 0, "benefits": []}, {"name": "Hand", "min_reputation": 30, "benefits": ["cult_safehouses"]}, {"name": "Veiled Hand", "min_reputation": 60, "benefits": ["cult_safehouses", "cult_reagents"]}, {"name": "Black Hand", "min_reputation": 90, "benefits": ["cult_safehouses", "cult_reagents", "cult_rites"]}]
+default_reputation = -20
+joinable = false
+join_threshold = 0
+is_hidden = true
+faction_color = Color(0.2, 0.1, 0.2, 1.0)

@@ -7,7 +7,7 @@
 	"giver_npc_id": "millbrook_merchant",
 	"giver_npc_type": "merchant",
 	"giver_region": "millbrook",
-	"faction": "merchants_guild",
+	"faction": "merchant_guild",
 	"objectives": [
 		{
 			"id": "question_witness1",

@@ -7,7 +7,7 @@
 	"giver_npc_id": "bounty_board",
 	"giver_npc_type": "bounty_board",
 	"giver_region": "dalhurst",
-	"faction": "merchants_guild",
+	"faction": "merchant_guild",
 	"objectives": [
 		{
 			"id": "kill_basilisk",
@@ -25,7 +25,7 @@
 		"xp": 475,
 		"items": [],
 		"faction_reputation": {
-			"merchants_guild": 30
+			"merchant_guild": 30
 		}
 	},
 	"cooldown_days": 5,

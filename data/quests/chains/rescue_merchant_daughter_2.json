@@ -7,7 +7,7 @@
 	"giver_npc_id": "",
 	"giver_npc_type": "",
 	"giver_region": "",
-	"faction": "merchants_guild",
+	"faction": "merchant_guild",
 	"objectives": [
 		{
 			"id": "kill_bandits",

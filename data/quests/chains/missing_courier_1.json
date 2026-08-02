@@ -7,7 +7,7 @@
 	"giver_npc_id": "dalhurst_merchant",
 	"giver_npc_type": "merchant",
 	"giver_region": "dalhurst",
-	"faction": "merchants_guild",
+	"faction": "merchant_guild",
 	"objectives": [
 		{
 			"id": "ask_innkeeper",

@@ -811,7 +811,7 @@ const SECRET_FACTION_LORE: Dictionary = {
 	"church_of_three": ["church_secrets"],      # Ancient truths about the Three Gods
 	"mages_guild": ["mages_guild_secrets"],     # Hidden magical knowledge
 	"fighters_guild": ["fighters_guild_secrets"], # Guild's darker history
-	"merchants_guild": ["merchants_guild_secrets"], # Trade secrets and conspiracies
+	"merchant_guild": ["merchants_guild_secrets"], # Trade secrets and conspiracies
 }
 
 

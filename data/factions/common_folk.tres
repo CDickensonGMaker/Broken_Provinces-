@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "common_folk"
+display_name = "The Common Folk"
+description = "Not an organisation - the farmers, widows, shepherds and fishermen of the province, and what they say about you over a fence. There is no hall to join and no badge to wear. Word travels between hamlets faster than any courier, and a man the common folk trust eats cheaper, sleeps warmer and hears things first."
+parent_faction = ""
+allies = ["elder_moor", "millbrook", "thornfield", "dalhurst", "church_of_three"]
+enemies = ["bandits", "goblins"]
+neutrals = ["nobility", "town_guard", "thieves_guild"]
+alignment = 20
+ranks = [{"name": "Feared", "min_reputation": -100, "benefits": []}, {"name": "Distrusted", "min_reputation": -50, "benefits": []}, {"name": "A Stranger", "min_reputation": 0, "benefits": []}, {"name": "Well Spoken Of", "min_reputation": 25, "benefits": ["free_directions"]}, {"name": "Neighbour", "min_reputation": 50, "benefits": ["free_directions", "reduced_prices"]}, {"name": "Local Hero", "min_reputation": 75, "benefits": ["free_directions", "reduced_prices", "free_lodging"]}, {"name": "The Province's Own", "min_reputation": 95, "benefits": ["free_directions", "reduced_prices", "free_lodging", "town_champion"]}]
+default_reputation = 0
+joinable = false
+join_threshold = 0
+is_hidden = false
+faction_color = Color(0.55, 0.5, 0.35, 1.0)

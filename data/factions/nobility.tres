@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "nobility"
+display_name = "The Noble Houses"
+description = "The landed houses of the crumbling empire. With the throne empty twenty years they have stopped waiting for orders and started keeping their own soldiers, their own courts and their own quarrels. They pay well, they pay late, and they remember an insult longer than a debt."
+parent_faction = "human_empire"
+allies = ["human_empire", "town_guard", "iron_company"]
+enemies = ["thieves_guild", "bandits"]
+neutrals = ["merchant_guild", "arcane_circle", "church_of_three"]
+alignment = -5
+ranks = [{"name": "Attainted", "min_reputation": -100, "benefits": []}, {"name": "Beneath Notice", "min_reputation": -40, "benefits": []}, {"name": "Commoner", "min_reputation": 0, "benefits": []}, {"name": "Retained", "min_reputation": 30, "benefits": ["noble_contracts"]}, {"name": "Sworn Sword", "min_reputation": 55, "benefits": ["noble_contracts", "court_access"]}, {"name": "House Favourite", "min_reputation": 80, "benefits": ["noble_contracts", "court_access", "reduced_prices"]}, {"name": "Landed", "min_reputation": 95, "benefits": ["noble_contracts", "court_access", "reduced_prices", "estate_income"]}]
+default_reputation = -10
+joinable = false
+join_threshold = 0
+is_hidden = false
+faction_color = Color(0.5, 0.25, 0.55, 1.0)
