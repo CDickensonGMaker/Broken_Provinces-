@@ -1,7 +1,7 @@
 {
 	"id": "starving_south",
 	"title": "The Starving South",
-	"description": "Larton is in crisis. A blight has destroyed the autumn harvest, and the winter stores are nearly depleted. The Trade Master fears that without intervention, people will starve before spring. He needs someone to travel north and petition the Human Empire for emergency food supplies - but the Empire's bureaucracy moves slowly, and Larton cannot wait.",
+	"description": "The blight took the autumn harvest, the ghost pirates have held the bay for two months, and now bandits have the harbor warehouses too - Larton's stores are down to what a few hundred people can stretch across maybe six weeks. The Trade Master doesn't have six weeks to wait on Rotherhine's bureaucracy, but he doesn't have another road either. Petition the Empire, and bring back everything you can carry regardless of what they promise.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "trade_master_larton",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "assess_situation",
-			"description": "Speak with the Trade Master about the food crisis",
+			"description": "Hear the numbers from the Trade Master - what's left, and how long it lasts",
 			"type": "talk",
 			"target": "trade_master_larton",
 			"required_count": 1
@@ -31,14 +31,14 @@
 		},
 		{
 			"id": "gather_supplies",
-			"description": "Gather emergency supplies (grain sacks: 0/5)",
+			"description": "Gather what grain the petition actually buys (0/5)",
 			"type": "collect",
 			"target": "grain_sack",
 			"required_count": 5
 		},
 		{
 			"id": "return_larton",
-			"description": "Deliver the supplies to Larton",
+			"description": "Get the grain back to Larton before the stores run out",
 			"type": "talk",
 			"target": "trade_master_larton",
 			"required_count": 1
@@ -56,5 +56,6 @@
 		}
 	},
 	"prerequisites": [],
-	"next_quest": "aberdeen_relief"
+	"next_quest": "aberdeen_relief",
+	"notes": "Threat: Larton's stores estimated at six weeks for a few hundred people (invented for texture, no bible basis). Ties to retake_harbor (the warehouses just lost to bandits) and ghost_pirate_investigation (the blockade that started the shortage) - read together as one regional crisis from four desks; see aberdeen_relief and supply_line_crisis for Aberdeen's side of it."
 }

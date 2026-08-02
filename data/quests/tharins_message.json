@@ -1,7 +1,7 @@
 {
 	"id": "tharins_message",
 	"title": "A Message for Thornfield",
-	"description": "Tharin Ironbeard has asked you to deliver a message to Elder Vorn in Thornfield. The message concerns timber shipments and trade agreements between the two settlements. A simple errand, but one that will help Tharin see if you can be trusted with more important tasks. Return to Tharin after delivering the message.",
+	"description": "Elder Moor cuts more timber than it can sell on its own, and Thornfield's mill is the only buyer close enough to matter before the roads freeze. Tharin's last letter to Elder Vorn went unanswered, and he won't send another logger to ask twice - not when there's a stranger in camp worth testing instead. Carry this one yourself. If Vorn signs with someone else before it reaches him, Elder Moor spends the winter with a woodpile nobody wants.",
 	"is_main_quest": true,
 	"quest_source": "story",
 	"giver_npc_id": "tharin_ironbeard",
@@ -10,14 +10,14 @@
 	"objectives": [
 		{
 			"id": "travel_thornfield",
-			"description": "Travel to Thornfield",
+			"description": "Travel to Thornfield before Elder Vorn looks elsewhere for his timber",
 			"type": "reach",
 			"target": "thornfield",
 			"required_count": 1
 		},
 		{
 			"id": "deliver_message",
-			"description": "Deliver the message to Elder Vorn",
+			"description": "Put the letter in Elder Vorn's hands, not a clerk's",
 			"type": "talk",
 			"target": "elder_vorn_thornfield",
 			"required_count": 1
@@ -41,5 +41,6 @@
 	"prerequisites": [],
 	"next_quest": "tharins_supplies",
 	"unlocks_quests": ["tharins_supplies"],
-	"on_accept_items": ["tharins_trade_message"]
+	"on_accept_items": ["tharins_trade_message"],
+	"notes": "Threat: Elder Moor's timber contract with Thornfield lapses if the letter arrives late or not at all. Giver motive: first of four trust tests Tharin runs on a stranger before the Keepers' letter (see tharins_supplies, tharins_wolf_problem, the_letter). Consequence: unwired - a late delivery has no mechanical effect; recorded here for a later pass to gate reputation or a world flag on it."
 }

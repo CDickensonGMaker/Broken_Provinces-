@@ -1,7 +1,7 @@
 {
 	"id": "wolf_pack_menace",
 	"title": "Wolf Pack Menace",
-	"description": "Marek the Hunter reports that a particularly aggressive wolf pack has been terrorizing the outskirts of Thornfield. Led by a massive dire wolf, the pack has killed livestock and even attacked travelers on the road. Marek needs help tracking down and eliminating the threat.",
+	"description": "Old Yarrow lost four sheep in one night to something that worked the pen latch open instead of breaking it - wolves don't usually bother figuring out latches. Marek's tracked the pack to a leader bigger and smarter than anything he's hunted before, working the farms on Thornfield's southern edge while the loggers to the east deal with a problem of their own. Marek's good, but not stupid enough to go after a pack like this alone.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "marek_hunter",
@@ -10,21 +10,21 @@
 	"objectives": [
 		{
 			"id": "track_wolves",
-			"description": "Follow the wolf tracks into the eastern forest",
+			"description": "Follow the tracks to the pack's ground south of Thornfield",
 			"type": "reach",
 			"target": "wolf_den_forest",
 			"required_count": 1
 		},
 		{
 			"id": "kill_wolves",
-			"description": "Kill the wolf pack members",
+			"description": "Kill the wolf pack members (0/5)",
 			"type": "kill",
 			"target": "wolf",
 			"required_count": 5
 		},
 		{
 			"id": "kill_alpha",
-			"description": "Defeat the dire wolf pack leader",
+			"description": "Defeat the dire wolf that's been working the latches",
 			"type": "kill",
 			"target": "dire_wolf",
 			"required_count": 1
@@ -47,5 +47,6 @@
 		"items": ["hunters_bow"]
 	},
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: named farmer Yarrow (invented for this quest only, prose colour) loses stock to a pack working farms south of Thornfield. Distinct from eastern_wolves (loggers, east side, encroachment cause) and tharins_wolf_problem (Elder Moor road, trust test): this pack is smarter and organized, targeting pens specifically."
 }

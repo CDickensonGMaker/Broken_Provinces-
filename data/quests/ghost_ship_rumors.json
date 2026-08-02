@@ -1,7 +1,7 @@
 {
 	"id": "ghost_ship_rumors",
 	"title": "Ghost Ship Rumors",
-	"description": "Fishermen at Dalhurst harbor speak in hushed tones about a phantom vessel seen drifting through the morning mist. The ship appears at dawn, crewless and silent, then vanishes before anyone can get close. The Harbor Master wants answers - is it a smuggler's trick, pirates playing games, or something far more sinister from beneath the waves?",
+	"description": "Three boats haven't come back to Dalhurst harbor since the mist ship started showing at dawn - the last one, the Merrow's Kiss, went out with two brothers aboard and neither's been seen since. The Harbor Master needs to know if he's looking at smugglers using a ghost story for cover, or something that actually took those men, before he loses a fourth boat to it.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "harbor_master_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "talk_fishermen",
-			"description": "Question the fishermen about their sightings",
+			"description": "Ask the fishermen what they saw before the boats stopped coming back",
 			"type": "talk",
 			"target": "old_fisherman_dalhurst",
 			"required_count": 1
@@ -38,7 +38,7 @@
 		},
 		{
 			"id": "report_findings",
-			"description": "Report your findings to the Harbor Master",
+			"description": "Tell the Harbor Master what happened to the Merrow's Kiss",
 			"type": "talk",
 			"target": "harbor_master_dalhurst",
 			"required_count": 1
@@ -54,5 +54,5 @@
 	},
 	"prerequisites": [],
 	"next_quest": "harbor_ghost_ship",
-	"notes": "This quest leads into the existing harbor_ghost_ship quest, providing setup and context."
+	"notes": "Threat: two named brothers lost with the Merrow's Kiss, third boat missing overall (invented for this quest only, prose colour, no bible basis). Leads into harbor_ghost_ship - the lighthouse investigation follows directly from what's found here."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "willow_dale_investigation",
 	"title": "Missing Caravan",
-	"description": "A worried merchant in Dalhurst reports that his trade caravan went missing near the old Willow Dale ruins. The caravan was carrying valuable goods and the merchant fears bandits or worse. He offers a reward to anyone who can find out what happened to his goods and his men.",
+	"description": "A worried merchant in Dalhurst reports that his trade caravan went missing near the old Willow Dale ruins. The caravan was carrying valuable goods and the merchant fears bandits or worse. His manifest lists everything the caravan carried, down to the crate - except one line he goes quiet on when you ask about it: 'one case, sealed, no description.' He offers a reward to anyone who can find out what happened to his goods and his men.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "worried_merchant_dalhurst",
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "recover_goods",
-			"description": "Recover the stolen trade goods",
+			"description": "Recover the stolen trade goods - and check them against the manifest (0/3)",
 			"type": "collect",
 			"target": "merchant_goods",
 			"required_count": 3
@@ -47,5 +47,6 @@
 		"items": []
 	},
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Soulstone-thread touchpoint per docs/design/quest_web.md row 10 (Tell 1): manifest tallies crate for crate except one sealed, undescribed case; the merchant won't discuss that line. Never named, never explained. Rule 4 respected: gates nothing, no new flag/objective/reward."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "ghost_pirate_investigation",
 	"title": "The Ghost Pirate Menace",
-	"description": "Mayor Kendrick of Larton has asked you to investigate the ghost pirates that have been blockading the port. Their stronghold is said to be on an island in the bay. Old Willem the fisherman knows where the ghost ship makes its lair.",
+	"description": "Larton hasn't seen open water in two months. The ghost pirates hold the bay from an island stronghold, and every week the blockade holds is a week less grain in Larton's stores before what's left has to last the whole winter. Mayor Kendrick needs the water open again before hunger does what the pirates haven't - Old Willem knows the bay in the dark and can get you to a stronghold nobody else has come back from.",
 	"is_main_quest": true,
 	"quest_source": "story",
 	"giver_npc_id": "mayor_aldric_larton",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "talk_willem",
-			"description": "Speak with Old Willem about the Ghost Ship location",
+			"description": "Ask Old Willem where the ghost ship makes its lair",
 			"type": "talk",
 			"target": "old_salt_willem",
 			"required_count": 1
@@ -31,7 +31,7 @@
 		},
 		{
 			"id": "return_to_mayor",
-			"description": "Report your success to Mayor Kendrick",
+			"description": "Tell Mayor Kendrick the bay is open",
 			"type": "talk",
 			"target": "mayor_aldric_larton",
 			"required_count": 1
@@ -50,5 +50,6 @@
 	},
 	"prerequisites": [],
 	"next_quest": null,
-	"on_complete_flags": ["ghost_pirates_defeated", "larton_blockade_lifted"]
+	"on_complete_flags": ["ghost_pirates_defeated", "larton_blockade_lifted"],
+	"notes": "Root cause of the Larton/Aberdeen supply crisis carried through starving_south, retake_harbor, supply_line_crisis and aberdeen_relief - the blockade this quest lifts is why Larton was starving and thin-guarded enough for bandits to take the harbor warehouses. The cross-reference is prose only; on_complete_flags unchanged."
 }

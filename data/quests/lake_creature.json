@@ -1,7 +1,7 @@
 {
 	"id": "lake_creature",
 	"title": "Terror in the Lake",
-	"description": "Something lurks beneath the waters of Millbrook Lake. Fishing nets are being torn apart, boats damaged, and the fishermen are too afraid to venture out. The village depends on the lake for food and trade - someone must discover what creature haunts these waters and put an end to it.",
+	"description": "Old Pell hasn't taken his boat out in a week - not since something tore his net in half and left tooth marks in the hull he won't describe twice. Millbrook Lake feeds half the village's tables, and the fishermen who haven't quit yet are one bad morning from joining him on the dock instead of the water. Someone needs to find what's down there before the whole fleet sits idle into winter.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "millbrook_elder",
@@ -10,14 +10,14 @@
 	"objectives": [
 		{
 			"id": "talk_fishermen",
-			"description": "Speak with the fishermen about the attacks",
+			"description": "Speak with the fishermen still willing to talk about it (0/2)",
 			"type": "talk",
 			"target": "millbrook_fisherman",
 			"required_count": 2
 		},
 		{
 			"id": "investigate_dock",
-			"description": "Examine the damaged fishing equipment at the dock",
+			"description": "Examine what's left of Old Pell's net and hull",
 			"type": "reach",
 			"target": "millbrook_fishing_dock",
 			"required_count": 1
@@ -46,5 +46,6 @@
 		"items": ["fish_oil"]
 	},
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Named fisherman (Old Pell, invented for this quest only, prose colour) replaces abstract fear. Not connected to the soulstone thread - no touchpoint assignment for this quest in docs/design/quest_web.md."
 }

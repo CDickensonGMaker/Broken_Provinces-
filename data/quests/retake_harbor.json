@@ -1,7 +1,7 @@
 {
 	"id": "retake_harbor",
 	"title": "Retake the Harbor",
-	"description": "Bandits have taken advantage of Larton's weakened state and occupied the harbor warehouses. Mayor Kendrick needs someone to clear them out so the survivors can reclaim their supplies and fortify their position.",
+	"description": "The bandits didn't take gold or weapons - they took the warehouses holding what was left of Larton's grain after the blight, moving in the same week the town's guards were stretched thin watching the bay for ghost ships instead of the docks. Captain Harken's survivors know exactly what's behind those doors. Clear the bandits out before they figure out what they're actually sitting on and decide to sell it back.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "mayor_aldric_larton",
@@ -10,14 +10,14 @@
 	"objectives": [
 		{
 			"id": "clear_warehouse_1",
-			"description": "Clear bandits from the occupied warehouse",
+			"description": "Clear bandits from the occupied warehouse (0/4)",
 			"type": "kill",
 			"target": "human_bandit",
 			"required_count": 4
 		},
 		{
 			"id": "kill_bandit_leader",
-			"description": "Defeat the Bandit Lieutenant",
+			"description": "Defeat the Bandit Lieutenant holding the grain",
 			"type": "kill",
 			"target": "bandit_captain",
 			"required_count": 1
@@ -43,5 +43,6 @@
 	},
 	"prerequisites": [],
 	"next_quest": null,
-	"on_complete_flags": ["larton_harbor_cleared"]
+	"on_complete_flags": ["larton_harbor_cleared"],
+	"notes": "Threat named as Larton's post-blight grain, taken while the town's guard was watching the bay instead of the docks. Same regional crisis as starving_south, supply_line_crisis, aberdeen_relief - this is why Larton had nothing to send south. on_complete_flags unchanged."
 }

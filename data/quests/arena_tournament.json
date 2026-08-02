@@ -1,7 +1,7 @@
 {
 	"id": "arena_novice_tournament",
 	"title": "Trial of the Newcomer",
-	"description": "Prove yourself worthy at the Bloodsand Arena by completing the novice tournament. Defeat three waves of opponents to earn fame and gold.",
+	"description": "Nine names on Gormund's board tonight, and you're fighting all of them before the sand's done with you. Half are drifters chasing the same purse you are. The other half owe somebody money, and the pit's the fastest way to clear a debt. Gormund takes his cut off the house either way - win or lose, yours or theirs.",
 	"is_main_quest": false,
 	"quest_source": "arena",
 	"giver_npc_id": "arena_master_bloodsand",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "reach_arena",
-			"description": "Travel to the Bloodsand Arena",
+			"description": "Travel to the Bloodsand Arena, south of Elder Moor",
 			"type": "reach",
 			"target": "bloodsand_arena",
 			"required_count": 1
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "win_tournament",
-			"description": "Defeat arena opponents (0/9)",
+			"description": "Win your bouts in the novice bracket (0/9)",
 			"type": "kill",
 			"target": "arena_gladiator",
 			"required_count": 9
@@ -39,5 +39,6 @@
 		"items": []
 	},
 	"prerequisites": [],
-	"next_quest": "arena_veteran_tournament"
+	"next_quest": "arena_veteran_tournament",
+	"notes": "Threat absent by design (audit); giver motive supplied - Gormund profits regardless of outcome, and opponents are drifters and debtors, not monsters, per spec's instruction to make the fighters people. No new NPC ids introduced, prose only."
 }

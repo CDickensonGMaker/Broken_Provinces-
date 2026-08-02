@@ -1,7 +1,7 @@
 {
 	"id": "tharins_supplies",
 	"title": "Supply Run to Dalhurst",
-	"description": "Tharin needs someone to pick up a shipment of specialized tools and supplies from Halvard the Supplier in Dalhurst. The port city is further west, past the Crossroads. Retrieve the supplies and bring them back to Tharin.",
+	"description": "Half the camp's saws are past sharpening and Tharin's own smith can't spare the steel to forge more, not this deep into the season. Halvard the Supplier in Dalhurst has held a tool shipment since summer, waiting on payment Tharin only now has the coin for. Bring it back before the felling crews start swinging dull blades out of frustration - or keep swinging them anyway and lose fingers to it.",
 	"is_main_quest": true,
 	"quest_source": "story",
 	"giver_npc_id": "tharin_ironbeard",
@@ -10,21 +10,21 @@
 	"objectives": [
 		{
 			"id": "travel_dalhurst",
-			"description": "Travel to Dalhurst",
+			"description": "Travel west to Dalhurst, past the Crossroads",
 			"type": "reach",
 			"target": "dalhurst",
 			"required_count": 1
 		},
 		{
 			"id": "get_supplies",
-			"description": "Collect supplies from Halvard",
+			"description": "Collect the tool shipment from Halvard - it's already paid for, so don't lose it",
 			"type": "talk",
 			"target": "halvard_supplier_dalhurst",
 			"required_count": 1
 		},
 		{
 			"id": "return_supplies",
-			"description": "Return the supplies to Tharin",
+			"description": "Get the tools back to Tharin before the crews run out of sharp ones",
 			"type": "talk",
 			"target": "tharin_ironbeard",
 			"required_count": 1
@@ -40,5 +40,6 @@
 	},
 	"prerequisites": ["tharins_message"],
 	"next_quest": "tharins_wolf_problem",
-	"unlocks_quests": ["tharins_wolf_problem"]
+	"unlocks_quests": ["tharins_wolf_problem"],
+	"notes": "Threat: Elder Moor's felling crews working dull tools toward an accident. Giver motive: second of Tharin's four trust tests - sending a stranger to collect a paid-for shipment from a stranger in Dalhurst. Consequence unwired; recorded for a later pass."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "eastern_wolves",
 	"title": "The Eastern Wolf Pack",
-	"description": "A large pack of wolves has moved into the eastern forest near Thornfield, threatening loggers and travelers alike. Elric Thornwood needs someone to thin their numbers before they grow bold enough to attack the village itself. Greta Wolfsbane at the Hunter's Lodge can provide tracking advice.",
+	"description": "Thornfield's crews pushed the cut east this season, past the old boundary markers, and whatever den was back there isn't taking it well. Three loggers have quit the eastern lots outright since the attacks started, and Elric Thornwood can't make quota short-handed. Greta Wolfsbane knows that ground better than anyone in Thornfield - find her before the pack does.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "elric_thornwood",
@@ -10,21 +10,21 @@
 	"objectives": [
 		{
 			"id": "speak_greta",
-			"description": "Speak with Greta Wolfsbane at the Hunter's Lodge",
+			"description": "Speak with Greta Wolfsbane about the ground you're walking into",
 			"type": "talk",
 			"target": "greta_wolfsbane",
 			"required_count": 1
 		},
 		{
 			"id": "kill_wolves",
-			"description": "Kill wolves in the eastern forest",
+			"description": "Kill wolves denned in the eastern cut (0/8)",
 			"type": "kill",
 			"target": "wolf",
 			"required_count": 8
 		},
 		{
 			"id": "kill_pack_leader",
-			"description": "Kill the dire wolf pack leader",
+			"description": "Kill the dire wolf holding the den",
 			"type": "kill",
 			"target": "dire_wolf",
 			"required_count": 1
@@ -55,5 +55,6 @@
 		}
 	},
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: three named-as-a-group loggers quit the eastern lots; Elric can't make quota. Cause distinct from tharins_wolf_problem (Elder Moor, ordinary wolves on the road, a trust test) and wolf_pack_menace (Thornfield, livestock loss at the farms south of town, a smarter pack, not the timber lots): this pack turned aggressive because Thornfield's own cut pushed into their den this season. Consequence (lost quota) unwired, recorded for later."
 }

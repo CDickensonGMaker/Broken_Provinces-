@@ -1,7 +1,7 @@
 {
 	"id": "tutorial_crafting",
 	"title": "The Smith's Apprentice",
-	"description": "Grom the Smith has offered to teach you the basics of blacksmithing. He's provided you with some iron ingots and asks that you craft an iron dagger at his anvil to prove you understand the process.",
+	"description": "Grom is the only smith Elder Moor has, and between saw blades and axe heads and whatever the logging crews break next, he's behind on his own work before midday most days. He'll teach a stranger the anvil if it means fewer people standing in his doorway waiting on repairs he hasn't gotten to. He's provided you with iron ingots and asks that you craft an iron dagger to prove you understand the process.",
 	"is_main_quest": false,
 	"quest_source": "tutorial",
 	"giver_npc_id": "grom_the_smith",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "talk_to_grom",
-			"description": "Speak with Grom the Smith",
+			"description": "Speak with Grom about why he's teaching a stranger",
 			"type": "talk",
 			"target": "grom_the_smith",
 			"required_count": 1
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "return_to_grom",
-			"description": "Return to Grom the Smith",
+			"description": "Show Grom what you made",
 			"type": "talk",
 			"target": "grom_the_smith",
 			"required_count": 1
@@ -45,5 +45,6 @@
 	],
 	"prerequisites": [],
 	"next_quest": "",
-	"is_tutorial": true
+	"is_tutorial": true,
+	"notes": "Tutorial; no threat by design per spec. Giver motive supplied: Grom is one smith for a whole logging operation and is behind on repairs. No bible basis, local colour."
 }

@@ -38,7 +38,7 @@
 		},
 		{
 			"id": "negotiate_selene",
-			"description": "Negotiate with Selene about her debt",
+			"description": "Negotiate with Selene about her debt - though it's already paid. Cleared in one lump three weeks back, and she lives exactly as she lived before. She sold something. She won't say what, and she won't say to whom.",
 			"type": "talk",
 			"target": "debtor_selene",
 			"required_count": 1
@@ -74,5 +74,6 @@
 		}
 	},
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Soulstone-thread touchpoint per docs/design/quest_web.md row 12 (Tell 2): Selene's debt cleared in one unexplained lump sum. Never named, never explained, gates nothing. Touchpoint-only edit; rest of quest left as originally written (already STORIED)."
 }

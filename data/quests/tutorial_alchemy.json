@@ -1,7 +1,7 @@
 {
 	"id": "tutorial_alchemy",
 	"title": "Herbalism Basics",
-	"description": "Old Sage Brennan is the village herbalist and healer. He has offered to teach you the fundamentals of alchemy - the art of brewing potions from herbs. He has provided you with the ingredients to brew your first health potion.",
+	"description": "Sage Brennan has kept Elder Moor's cuts and fevers tended for thirty years, and this deep into autumn his hands shake too badly some mornings to grind herbs fine. He's not looking to be replaced - just to have one more set of hands in camp who knows red herb from rot before the wolves or the roads put someone bleeding in his doorway. He's given you what you need for a first potion.",
 	"is_main_quest": false,
 	"quest_source": "tutorial",
 	"giver_npc_id": "sage_brennan",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "talk_to_brennan",
-			"description": "Speak with Old Sage Brennan",
+			"description": "Speak with Sage Brennan about why he's teaching a stranger",
 			"type": "talk",
 			"target": "sage_brennan",
 			"required_count": 1
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "return_to_brennan",
-			"description": "Return to Old Sage Brennan",
+			"description": "Show Brennan what you made",
 			"type": "talk",
 			"target": "sage_brennan",
 			"required_count": 1
@@ -47,5 +47,6 @@
 	],
 	"prerequisites": [],
 	"next_quest": "",
-	"is_tutorial": true
+	"is_tutorial": true,
+	"notes": "Tutorial; no threat by design per spec. Giver motive supplied: Brennan is aging and short-handed for winter. Brennan's shaking hands invented for this quest only - no bible basis, local colour."
 }

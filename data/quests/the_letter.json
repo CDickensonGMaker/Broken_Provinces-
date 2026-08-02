@@ -1,7 +1,7 @@
 {
 	"id": "keepers_letter_delivery",
 	"title": "A Letter for Dalhurst",
-	"description": "Tharin Ironbeard has asked you to deliver a sealed letter to his contact in Dalhurst, a man named Severin Vane who runs a curiosities shop. The dwarf spoke with unusual gravity, hinting that this concerns 'matters that predate the Empire itself.' The wax seal bears a symbol you've never seen - an eye within a circle of stars, marking it as correspondence of some secret society. Tharin mentioned that Severin collects ancient artifacts and forbidden knowledge - the sort of man who knows things others have forgotten. Whatever truth this letter contains, it seems you've stumbled into something larger than yourself.",
+	"description": "Tharin Ironbeard has asked you to deliver a sealed letter to his contact in Dalhurst, a man named Severin Vane who runs a curiosities shop. The dwarf spoke with unusual gravity, hinting that this concerns 'matters that predate the Empire itself.' The wax seal bears a symbol you've never seen - an eye within a circle of stars, marking it as correspondence of some secret society. Tharin mentioned that Severin collects ancient artifacts and forbidden knowledge - the sort of man who knows things others have forgotten. Three errands in, this is the one Tharin hasn't explained. He told you not to break the seal, and he didn't say what happens if you do - only that you needn't come back to Elder Moor to find out.",
 	"is_main_quest": true,
 	"quest_source": "story",
 	"giver_npc_id": "tharin_ironbeard",
@@ -17,7 +17,7 @@
 		},
 		{
 			"id": "deliver_letter",
-			"description": "Deliver the letter to Severin Vane",
+			"description": "Put the letter in Severin Vane's hands - sealed",
 			"type": "talk",
 			"target": "aldric_vane",
 			"required_count": 1
@@ -33,5 +33,6 @@
 	},
 	"prerequisites": ["tharins_wolf_problem"],
 	"next_quest": "",
-	"unlocks_quests": ["keepers_initiation"]
+	"unlocks_quests": ["keepers_initiation"],
+	"notes": "Fourth and last of Tharin's trust tests (after tharins_message, tharins_supplies, tharins_wolf_problem). File is named the_letter.json but its id is keepers_letter_delivery - unchanged per hard limits. Threat/consequence: implied banishment from Elder Moor if the seal is broken or the letter doesn't arrive; unwired, no flag or check enforces it, recorded for a later pass. Giver motive and prose were already strong; only the stake was missing."
 }

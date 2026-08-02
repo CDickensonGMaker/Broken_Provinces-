@@ -1,7 +1,7 @@
 {
 	"id": "watermill_curse",
 	"title": "The Silent Mill",
-	"description": "Millbrook's watermill has mysteriously stopped working. Miller Oswin swears the gears are sound and the water flows true, yet the great wheel refuses to turn. The village fears some dark magic is at work, and without the mill, they cannot grind their grain before winter.",
+	"description": "Millbrook's watermill has mysteriously stopped working. Miller Oswin swears the gears are sound and the water flows true, yet the great wheel refuses to turn. Forty-one people live in Millbrook and this is the only mill any of them have - no wheel means no flour, and no flour before the passes close means a winter spent on whatever the hunters bring in instead of bread.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "miller_oswin",
@@ -24,14 +24,14 @@
 		},
 		{
 			"id": "discover_cause",
-			"description": "Discover what is blocking the flow",
+			"description": "Find what's blocking the flow",
 			"type": "collect",
 			"target": "river_spirit_totem",
 			"required_count": 1
 		},
 		{
 			"id": "resolve_curse",
-			"description": "Remove or appease the obstruction",
+			"description": "Break the totem or make peace with what's behind it - either way, get the wheel turning before first snow",
 			"type": "interact",
 			"target": "cursed_totem",
 			"required_count": 1
@@ -46,5 +46,6 @@
 		"items": ["bread"]
 	},
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat made concrete using millbrook_elder.json's canon figure (forty-one people, one mill). Consequence stated in the last objective: the wheel has to turn before first snow or the town grinds no flour all winter. resolve_curse is a single interact objective, not a branch, so both readings (removing vs. appeasing the obstruction) share the same outcome text: the mill runs again. No new objective, flag or choice_consequences added."
 }

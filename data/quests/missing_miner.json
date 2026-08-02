@@ -17,7 +17,7 @@
 		},
 		{
 			"id": "search_mine",
-			"description": "Search the mine for signs of Erik",
+			"description": "Search the mine for signs of Erik - his tools are still where he left them, his stake still driven, and someone's cut four short scratches into the shaft post, close together",
 			"type": "interact",
 			"target": "erik_journal",
 			"required_count": 1
@@ -47,5 +47,6 @@
 		"items": []
 	},
 	"prerequisites": [],
-	"next_quest": null
+	"next_quest": null,
+	"notes": "Soulstone-thread touchpoint per docs/design/quest_web.md row 9 (Tell 1 + Tell 3): the claim was worked over by somebody careful, not robbed - tools and stake left, only the scratches added. Never named, never explained, no NPC reacts. Rule 4 respected: gates nothing, no new flag/objective/reward."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "sailors_debt",
 	"title": "The Sailor's Debt",
-	"description": "A contact in the Thieves Guild has a job for you. A sailor named Brennan owes a substantial debt to certain parties in Dalhurst. He's been avoiding payment for weeks now, drinking away his earnings at the Rusty Anchor. The Guild wants you to collect - by persuasion or force. Just don't make a scene that draws the guard's attention.",
+	"description": "A contact in the Thieves Guild has a job for you. A sailor named Brennan owes a substantial debt to certain parties in Dalhurst. He's been avoiding payment for weeks now, drinking away his earnings at the Rusty Anchor. Strange thing is, Brennan had money a fortnight ago and drank the whole of it - he didn't steal it, and he won't say who gave it to him, only that the man doing the buying wasn't the man doing the paying. The Guild wants you to collect - by persuasion or force. Just don't make a scene that draws the guard's attention.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "thieves_guild_fence",
@@ -63,5 +63,6 @@
 		}
 	},
 	"prerequisites": ["thieves_guild_initiation"],
-	"next_quest": "thieves_guild_heist"
+	"next_quest": "thieves_guild_heist",
+	"notes": "Soulstone-thread touchpoint per docs/design/quest_web.md row 11 (Tell 2): Brennan's unexplained money and the buyer who wasn't the payer. Never named, never explained, gates nothing. Touchpoint-only edit; rest of quest left as originally written (already STORIED)."
 }

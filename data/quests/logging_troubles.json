@@ -1,7 +1,7 @@
 {
 	"id": "logging_troubles",
 	"title": "Wolves in the Wood",
-	"description": "Elder Moor's logging operations have ground to a halt. A pack of dire wolves has moved into the western forest, and they've already killed two woodsmen. Tharin Ironbeard can't afford to lose more workers, but someone needs to deal with the wolf threat before the settlement runs out of timber for winter.",
+	"description": "Elder Moor's western logging camp has stopped cutting. A pack of dire wolves moved into the forest three weeks ago and has already killed two woodsmen - one of them, Corin Talbot, left a wife and a half-cut quota nobody's finished since. Tharin can't afford to lose the men he has left, and the camp doesn't have enough timber banked to make it through winter at this rate.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "tharin_ironbeard",
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "investigate_attacks",
-			"description": "Investigate the sites of the wolf attacks",
+			"description": "Investigate the sites where Corin Talbot and the other woodsman died (0/2)",
 			"type": "interact",
 			"target": "wolf_attack_site",
 			"required_count": 2
@@ -70,5 +70,6 @@
 		}
 	},
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Named one of the two dead woodsmen (Corin Talbot, invented for this quest only, prose colour). Distinct from tharins_wolf_problem (ordinary wolves, the road, a trust test) by threat, cause and location - dire wolves, a den in the western forest, fatalities already happened here."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "supply_line_crisis",
 	"title": "Supply Line Crisis",
-	"description": "Aberdeen is slowly starving. The trade routes to Larton have been cut off by goblin activity at Kazer-Dun, and the town's warehouses stand empty. Mayor Bjorn desperately needs someone to either clear the goblin threat or find an alternative supply route through the dangerous swamplands.",
+	"description": "Bjorn isn't waiting on Larton to sort out its own troubles - Aberdeen's warehouses are already empty and the goblins at Kazer-Dun have owned the north road for weeks. Fix it from this end: break the blockade, or find the smugglers' route through the swamp nobody's used since before the goblins came. Either way, get word to Larton's Trade Master that Aberdeen can still take a shipment when one exists.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "mayor_bjorn_aberdeen",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "speak_mayor",
-			"description": "Learn about Aberdeen's supply crisis from Mayor Bjorn",
+			"description": "Hear Bjorn's numbers - what's left in Aberdeen's warehouses, and how long",
 			"type": "talk",
 			"target": "mayor_bjorn_aberdeen",
 			"required_count": 1
@@ -45,7 +45,7 @@
 		},
 		{
 			"id": "contact_larton",
-			"description": "Reach Larton and speak with the Trade Master about resuming supplies",
+			"description": "Reach Larton and tell the Trade Master Aberdeen can take a shipment",
 			"type": "talk",
 			"target": "trade_master_larton",
 			"required_count": 1
@@ -65,5 +65,5 @@
 	},
 	"prerequisites": [],
 	"next_quest": null,
-	"notes": "This quest establishes the connection between Aberdeen and Larton, and introduces the Kazer-Dun goblin threat. The choice allows players to either fight through or find a sneaky alternative."
+	"notes": "Threat: Aberdeen's warehouses already empty. Giver motive: Bjorn acting on Aberdeen's own initiative rather than waiting on Larton's relief effort (see aberdeen_relief, starving_south). The swamp path here and the route aberdeen_relief marks afterward are the same problem attacked from opposite ends - read as one regional crisis across four quests, four desks (starving_south, retake_harbor, supply_line_crisis, aberdeen_relief). The choice objective allows players to either fight through or find a sneaky alternative; data unchanged."
 }

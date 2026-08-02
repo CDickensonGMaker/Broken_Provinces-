@@ -1,7 +1,7 @@
 {
 	"id": "tutorial_cooking",
 	"title": "A Warm Meal",
-	"description": "Martha the cook has noticed you look hungry after your travels. She's offered to teach you how to prepare a simple meal over the cooking fire. Cook some meat and you'll have learned a valuable survival skill.",
+	"description": "Martha cooks for most of Elder Moor, and the stores are already thinner than she'd like this early in the season. She's not looking for help at the fire - she's looking for people who won't come to her hungry every time the meat's raw and the bread's out. Cook something yourself, and she'll worry about one less mouth.",
 	"is_main_quest": false,
 	"quest_source": "tutorial",
 	"giver_npc_id": "martha_cook",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "talk_to_martha",
-			"description": "Speak with Martha the Cook",
+			"description": "Speak with Martha about why she's teaching a stranger",
 			"type": "talk",
 			"target": "martha_cook",
 			"required_count": 1
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "return_to_martha",
-			"description": "Return to Martha",
+			"description": "Show Martha what you made",
 			"type": "talk",
 			"target": "martha_cook",
 			"required_count": 1
@@ -45,5 +45,6 @@
 	],
 	"prerequisites": [],
 	"next_quest": "",
-	"is_tutorial": true
+	"is_tutorial": true,
+	"notes": "Tutorial; no threat by design per spec. Giver motive supplied: Martha is stretched thin cooking for the camp with thin winter stores. No bible basis, local colour."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "tharins_wolf_problem",
 	"title": "The Wolf Problem",
-	"description": "Wolves have been attacking the logging teams and making the roads around Elder Moor dangerous. Tharin wants you to thin out the wolf population by killing several of them. This will prove you can handle yourself in a fight before he trusts you with more sensitive work.",
+	"description": "Wolves have gotten bold enough to walk the logging roads in daylight, and one of them caught a woodsman named Aldous Fenn by the leg two days ago. He lived, but he won't go back out with the felling crews, and that's one more man Tharin can't afford to lose before winter. He's watched you carry a letter and carry a shipment without losing either. Now he wants to see if you can carry a blade.",
 	"is_main_quest": true,
 	"quest_source": "story",
 	"giver_npc_id": "tharin_ironbeard",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "kill_wolves",
-			"description": "Kill wolves near Elder Moor (0/5)",
+			"description": "Kill wolves prowling the logging roads (0/5)",
 			"type": "kill",
 			"target": "wolf",
 			"required_count": 5
@@ -26,5 +26,6 @@
 	},
 	"prerequisites": ["tharins_supplies"],
 	"next_quest": "keepers_letter_delivery",
-	"unlocks_quests": ["keepers_letter_delivery"]
+	"unlocks_quests": ["keepers_letter_delivery"],
+	"notes": "Threat: a named woodsman (Aldous Fenn, invented for this quest only, prose colour) mauled and unwilling to return to work; the roads unsafe before the winter cut. Giver motive: third of Tharin's four trust tests, the combat one, before he trusts the player with the Keepers' letter (see the_letter.json / id keepers_letter_delivery). Distinct from logging_troubles (dire wolves, western camp, two woodsmen already dead, a den to clear) and from Thornfield's eastern_wolves / wolf_pack_menace - this is ordinary wolves on the open road, about trust, not a hunt."
 }

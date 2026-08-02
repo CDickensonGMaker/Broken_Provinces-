@@ -1,7 +1,7 @@
 {
 	"id": "elven_ambassador",
 	"title": "The Elven Embassy",
-	"description": "The Keepers have received troubling news: an Elven ambassador from Silvanost was last seen traveling toward Dalhurst, carrying a treaty that could reshape relations between the races. She never arrived. Severin Vane believes dark forces may have intercepted her. Find the ambassador - and the treaty - before the delicate peace between humans and elves collapses.",
+	"description": "Ambassador Liraethel was riding to Dalhurst to put her seal on a treaty that would let elven traders use the human roads without an escort, and let elven law govern elven people in a human court - the first arrangement of its kind since Silvanost closed its gates to human traffic a generation ago. She never arrived. Severin Vane thinks somebody wanted the treaty dead more than they wanted her dead, which is worse: elves don't forgive an insult delivered by silence, and the Keepers can't afford another decade of a border nobody crosses in either direction.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "aldric_vane",
@@ -45,7 +45,7 @@
 		},
 		{
 			"id": "recover_treaty",
-			"description": "Recover the stolen treaty",
+			"description": "Recover the treaty - unsigned is as bad as destroyed",
 			"type": "collect",
 			"target": "elven_treaty",
 			"required_count": 1
@@ -72,5 +72,6 @@
 		}
 	},
 	"prerequisites": ["keepers_initiation"],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Improved threat, giver motive and consequence without touching bible [OPEN]s: did not place Silvanost geographically beyond what's already shipped (harbor_master_dalhurst.json already names it the elven city reachable by boat), did not touch the elixir, the missing king, or the elf claimant and her son. Treaty content invented as road-access and legal-jurisdiction terms - deliberately not the elixir or the succession, to stay clear of those opens. Consequence stated in prose: elves read a silent failure as an insult, not an accident, and the peace resets by a generation. This remains a single linear kill-and-retrieve quest with no branch - the audit's other complaint about the missing consequence data is out of scope for a description-only pass."
 }

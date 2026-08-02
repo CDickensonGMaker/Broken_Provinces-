@@ -1,7 +1,7 @@
 {
 	"id": "bandit_trouble",
 	"title": "Bandit Trouble",
-	"description": "Travelers on the road between Elder Moor and Dalhurst have been attacked by bandits. The brigands have made camp somewhere in the hills north of the road. Someone needs to deal with them before more innocent blood is spilled.",
+	"description": "A carter named Oswald Pell took an arrow through the shoulder on the Elder Moor road last week and hasn't worked since - one of six attacks the guard has logged this month. The bandits camped in the northern hills aren't slowing down, and every cart that stops running is goods that don't reach Dalhurst's shelves. Someone needs to clear the camp before the road empties out entirely.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -17,7 +17,7 @@
 		},
 		{
 			"id": "kill_bandits",
-			"description": "Clear out the bandits",
+			"description": "Clear out the bandits (0/8)",
 			"type": "kill",
 			"target": "human_bandit",
 			"required_count": 8
@@ -39,5 +39,6 @@
 		"items": []
 	},
 	"prerequisites": [],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Named victim (Oswald Pell, invented for this quest only, prose colour) replaces the abstract 'innocent blood'. Bounty board quest; giver has no voice by design (board posting). Consequence stated: goods not reaching Dalhurst's shelves."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "dwarf_messenger",
 	"title": "Iron Words",
-	"description": "A dwarf named Borin Stonehammer has arrived in Elder Moor bearing urgent news from Kazer-Dun. The message must reach the Dwarf King, but Borin was wounded on the journey and cannot continue. He needs someone trustworthy to carry the sealed letter through the dangerous mountain passes to the gates of Kazer-Dun. The fate of dwarf-human relations may depend on it.",
+	"description": "A dwarf named Borin Stonehammer has arrived in Elder Moor bearing urgent news from Kazer-Dun. He was wounded on the journey and cannot continue - the message has to reach the gate under his own seal, carried by someone who won't be tempted to read it or sell it. What it says, in outline: how far the goblins have pushed past the passes, and what Kazer-Dun still needs from the old human alliance if the line is going to hold. Borin doesn't know what waits at the gate to receive it, only that it has to be someone who still remembers the alliance means something.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "borin_stonehammer",
@@ -31,7 +31,7 @@
 		},
 		{
 			"id": "deal_with_goblins",
-			"description": "Deal with the goblin patrol blocking the path",
+			"description": "Deal with the goblin patrol blocking the path (0/4)",
 			"type": "kill",
 			"target": "goblin_soldier",
 			"required_count": 4
@@ -45,7 +45,7 @@
 		},
 		{
 			"id": "deliver_message",
-			"description": "Deliver the letter to the Dwarf Gate Warden",
+			"description": "Deliver the letter to the Dwarf Gate Warden - unopened",
 			"type": "talk",
 			"target": "dwarf_gate_warden",
 			"required_count": 1
@@ -65,5 +65,5 @@
 	"on_accept_items": ["sealed_dwarf_letter"],
 	"prerequisites": [],
 	"next_quest": "",
-	"notes": "This quest introduces players to Kazer-Dun and builds dwarf reputation. The seal of passage may be useful for future dwarf-related content."
+	"notes": "This quest introduces players to Kazer-Dun and builds dwarf reputation. The seal of passage may be useful for future dwarf-related content. Threat stated in outline only (goblins pushing past the passes, Kazer-Dun needs aid) without naming the dwarf king or resolving who currently holds the gate - deliberately left agnostic so it doesn't contradict the separate kazan_dun_* succession arc, whose bible content (the king's death, the regency, the soulstones, the goblin king mechanism) stays untouched. 'Kazer-Dun' spelling matches this file's existing usage, not reconciled with 'Kazan-Dun' elsewhere - out of scope. Consequence stated in prose: a botched delivery reads to the dwarves as humans no longer honoring the old alliance. Unwired mechanically."
 }

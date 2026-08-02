@@ -1,7 +1,7 @@
 {
 	"id": "arena_tier_1",
 	"title": "First Blood",
-	"description": "You've proven yourself to Gormund the Pitmaster, and now it's time to enter the arena proper. Your first challenge: survive the Bloodsand Gauntlet. Three rounds of combat against increasingly dangerous opponents. Victory brings gold and glory. Defeat brings... well, let's not think about that.",
+	"description": "You've proven yourself to Gormund, which means he's decided you're worth more to him alive and fighting than dead in round one. Three rounds: pit fighters same as you, a beast handler's stock that's cheaper to lose than a fighter, then whoever's holding the tier-one belt and has no intention of handing it over. Gormund sells tickets to all three either way.",
 	"is_main_quest": false,
 	"quest_source": "arena",
 	"giver_npc_id": "arena_master_bloodsand",
@@ -31,14 +31,14 @@
 		},
 		{
 			"id": "round_3",
-			"description": "Survive Round 3: The Champion's Challenge",
+			"description": "Survive Round 3: take the belt off whoever's holding it",
 			"type": "kill",
 			"target": "arena_champion_tier1",
 			"required_count": 1
 		},
 		{
 			"id": "claim_victory",
-			"description": "Claim your victory from Gormund",
+			"description": "Collect what Gormund owes you",
 			"type": "talk",
 			"target": "arena_master_bloodsand",
 			"required_count": 1
@@ -54,5 +54,5 @@
 	},
 	"prerequisites": ["arena_novice_tournament"],
 	"next_quest": "",
-	"notes": "First tier arena combat quest. Unlocks after completing the novice tournament."
+	"notes": "First tier arena combat quest. Unlocks after completing the novice tournament. Keeps Gormund's profit motive consistent across the arena three (meet_the_arena_master, arena_tournament, arena_tier_1) and frames opponents as people with their own stakes in the pit, per spec, rather than a scoreboard."
 }

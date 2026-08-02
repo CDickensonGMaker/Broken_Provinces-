@@ -1,7 +1,7 @@
 {
 	"id": "aberdeen_relief",
 	"title": "Aberdeen Relief",
-	"description": "With Larton stabilized, word has reached you that Aberdeen faces similar troubles. The swamp town has been cut off by flooding and goblin activity, and their supplies are running dangerously low. Mayor Bjorn has sent desperate messages asking for aid. Someone needs to brave the treacherous path and bring them hope.",
+	"description": "Larton has grain again, finally, and Aberdeen wants to know why none of it has reached them. Mayor Bjorn's messages have gotten shorter each time - the last one didn't ask for help so much as state that the swamp town has maybe a month left and the goblins at Kazer-Dun still own the only road anyone's tried. Someone needs to get supplies through the swamp itself, since the road isn't opening in time.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "trade_master_larton",
@@ -10,35 +10,35 @@
 	"objectives": [
 		{
 			"id": "obtain_supplies",
-			"description": "Purchase or gather supplies for Aberdeen (ration packs: 0/10)",
+			"description": "Load the ration packs Larton can spare (0/10)",
 			"type": "collect",
 			"target": "ration_pack",
 			"required_count": 10
 		},
 		{
 			"id": "travel_aberdeen",
-			"description": "Travel through the swamps to Aberdeen",
+			"description": "Get the supplies through the swamp to Aberdeen",
 			"type": "reach",
 			"target": "aberdeen",
 			"required_count": 1
 		},
 		{
 			"id": "clear_road",
-			"description": "Clear the swamp creatures blocking the supply route",
+			"description": "Clear what's blocking the supply route (0/8)",
 			"type": "kill",
 			"target": "giant_rat",
 			"required_count": 8
 		},
 		{
 			"id": "deliver_supplies",
-			"description": "Deliver the supplies to Mayor Bjorn",
+			"description": "Put the supplies in Mayor Bjorn's hands, not a warehouse",
 			"type": "talk",
 			"target": "mayor_bjorn_aberdeen",
 			"required_count": 1
 		},
 		{
 			"id": "establish_route",
-			"description": "Mark the safe path for future supply caravans",
+			"description": "Mark a path caravans can use without a guide next time (0/3)",
 			"type": "interact",
 			"target": "route_marker",
 			"required_count": 3
@@ -56,5 +56,6 @@
 		}
 	},
 	"prerequisites": ["starving_south"],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: Aberdeen down to roughly a month of stores (invented for texture, no bible basis). Continues starving_south's relief past Larton to Aberdeen; the swamp route this quest marks is the same problem supply_line_crisis tries to solve from Aberdeen's own side, in parallel and without waiting on Larton. Read together as one regional crisis, four desks: starving_south (Larton's own shortage), retake_harbor (why Larton had nothing to spare), supply_line_crisis (Aberdeen's own gambit), aberdeen_relief (Larton's answer once it has something to send)."
 }
