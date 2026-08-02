@@ -87,7 +87,7 @@ under `data/` or `scripts/levels/`**:
 powershell -ExecutionPolicy Bypass -File tools/validate.ps1
 ```
 
-Or run every gate at once - the validator plus all twelve `check_*.tscn`
+Or run every gate at once - the validator plus all seventeen `check_*.tscn`
 probes, one verdict, non-zero exit on any failure:
 
 ```powershell
@@ -124,6 +124,51 @@ blame your own work.
 Never invent content to make the validator quiet. If a phantom reference cannot
 be fixed from data that already exists, add a row to the disposition table
 instead.
+
+### EVERY res:// PATH RESOLVES
+
+```powershell
+& $godot47 --headless --path . res://tools/check_no_broken_paths.tscn
+```
+
+Added 8/2 alongside the layout reorganisation, and permanent. It reads every
+file that can carry a path, pulls out every `res://` literal, and demands the
+target exist on disk. It exists because Godot resolves scenes by **uid** first:
+a `.tscn` whose `path=` has rotted keeps working right up until the uid cache is
+rebuilt, and a `load()` of a dead path in a branch nobody walked that session
+prints one line and returns null. Both survive a green check suite.
+
+**It ratchets; it does not demand zero.** 191 paths are already dead - sprites
+named in blueprints that were never drawn, cave GLBs that were never modelled -
+and that is art work, not a typo. `tools/fixtures/broken_paths_baseline.txt` is
+the committed list; anything outside it fails, and **a baseline line that starts
+resolving also fails**, so the list cannot rot into a hiding place. When an
+asset lands, delete its line. When you deliberately move things:
+
+```powershell
+& $godot47 --headless --path . res://tools/check_no_broken_paths.tscn -- --write-baseline
+```
+
+and read the diff - that diff is the damage report.
+
+A file may opt out with `## check_no_broken_paths: skip - <reason>`. There is
+exactly one legitimate use and `SaveManager` is it: its layout remap table's job
+is to know what a path *used to be*.
+
+### WHERE THINGS LIVE
+
+The project was reorganised on 8/2. `scripts/` is by domain
+(`core/ world/ characters/ systems/ generation/ levels/ ui/ data/`), an autoload
+lives with its domain rather than in one bucket, every billboard sprite is under
+`assets/sprites/legacy/`, and `data/dialogue/` has three children instead of
+three sibling directories.
+
+**`docs/design/PROJECT_LAYOUT.md` is the map** - the shape, the reasoning, the
+complete old -> new table, and a proof of death beside every deletion. The
+machine-readable form is `tools/layout_rules.json` and `tools/layout_moves.tsv`.
+
+Old saves still load: `SaveManager._remap_layout_paths` rewrites every `res://`
+string it reads out of a save, on both code paths that parse one.
 
 ### THE GROUNDING LAW
 

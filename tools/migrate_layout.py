@@ -89,6 +89,20 @@ def base_of(rel):
 
 
 def plan():
+    """Expand the rules into individual file moves.
+
+    Run ONCE, before the move. Running it again afterwards regenerates the
+    map against the already-moved tree and produces nonsense - the committed
+    layout_moves.tsv is a historical record, not a derived artefact - so it
+    refuses unless the old tree is still there to plan against.
+    """
+    if not os.path.isdir(os.path.join(ROOT, "scripts", "autoload")):
+        raise SystemExit(
+            "scripts/autoload/ is gone, so this tree has already been moved. "
+            "tools/layout_moves.tsv is the record of that move; regenerating "
+            "it here would overwrite the record with a plan for a tree that no "
+            "longer exists. Restore it with: git checkout HEAD -- "
+            "tools/layout_moves.tsv tools/layout_deletes.tsv")
     rules = load_rules()
     files = walk_files(MOVE_SKIP_DIRS)
 

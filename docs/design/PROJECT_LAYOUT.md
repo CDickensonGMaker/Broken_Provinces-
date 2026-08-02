@@ -1,6 +1,7 @@
 # Project layout
 
-*Written 2026-08-02, ahead of the clean-room reorganisation it describes.*
+*Written 2026-08-02, ahead of the clean-room reorganisation it describes, and
+completed with what actually happened once it was done.*
 
 Caleb twice proposed restarting Broken Provinces from scratch, both times naming
 file organisation as the reason. The ruling was: no restart. Instead, move the
@@ -236,7 +237,7 @@ path-unreferenced while still being loaded.
 | `resources/projectiles/goblin_bolt.tres` | 0 hits by filename and by stem. Its header carries no `uid=` at all, so there is no uid path either. The other four projectiles in that directory are live and moved to `data/projectiles/`. |
 | `README.txt`, `README broken provinces.txt` | Byte-identical to each other (md5-verified), referenced by nothing, superseded by `README.md`. |
 
-### Two things that moved rather than died, and one that changed shape
+### Three things that moved rather than died
 
 `project.godot`'s `[editor] movie_writer/movie_file` pointed into
 `Gameplay footage/`. Godot does not create the parent directory for that file,
@@ -335,6 +336,25 @@ into it rather than a hand-built dictionary: the save-select path returns a live
 scene that exists on disk, the load succeeds, a nested sprite path and a path
 inside an array are both rewritten, a non-path string is left alone, and running
 the remap twice changes nothing.
+
+## What to expect the first time you open this
+
+**Godot will reimport the whole project, once.** `.godot/imported/` is keyed by
+a hash of each asset's `res://` path, so renaming a directory invalidates every
+entry under it. Roughly two thousand files come back; it takes a few minutes and
+then never happens again.
+
+**Do not skip it and go straight to running a scene.** A half-built
+`uid_cache.bin` makes every scene warn `ext_resource, invalid UID - using text
+path instead`, on assets that never moved as well as ones that did. It looks
+exactly like the migration broke the uids and it is only a cold cache. This
+happened here: the first post-move boot sweep read 10 to 27 warning lines per
+scene against a baseline of one or two, and a clean
+`godot --headless --path . --import` returned it to the baseline. The uids
+themselves are fine, and they are fine because the `.gd.uid` and `.import`
+sidecars travelled with their files.
+
+---
 
 ## What this document does not cover
 
