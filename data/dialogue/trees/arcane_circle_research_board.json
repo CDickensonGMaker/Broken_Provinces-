@@ -107,7 +107,7 @@
     {
       "id": "reagent_details",
       "speaker": "Research Board",
-      "text": "[Reagent Gathering Request]\n\nLocation: Elder Moor\nTarget: Moonpetal flowers, Shadowroot, Glowcap mushrooms\nQuantity: 5 of each type\nDifficulty: Easy\nReward: 125 gold, 200 XP, +5 Circle reputation\n\nNote: Moonpetals only bloom at night\n\n[Accept this request?]",
+      "text": "[Reagent Gathering]\n\nElder Moor. Five each of moonpetal, shadowroot and glowcap. The moonpetals only open after dark.\n\n[Accept this request?]",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -137,7 +137,7 @@
     {
       "id": "specimen_details",
       "speaker": "Research Board",
-      "text": "[Specimen Recovery Request]\n\nTarget: Giant spider venom glands, wolf hearts, bear claws\nLocation: Various wilderness areas\nQuantity: 3 specimens of any type\nDifficulty: Medium\nReward: 175 gold, 275 XP, +8 Circle reputation\n\nNote: Fresh specimens preferred - within 24 hours of kill\n\n[Accept this request?]",
+      "text": "[Specimen Recovery]\n\nThree specimens off anything the wilderness offers - venom glands, hearts, claws. Fresh. Old meat tells the analysts nothing.\n\n[Accept this request?]",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -167,7 +167,7 @@
     {
       "id": "artifact_details",
       "speaker": "Research Board",
-      "text": "[Artifact Investigation Request]\n\nLocation: Reported magical disturbance near Crossroads\nObjective: Survey site, document findings, retrieve any artifacts\nDifficulty: Medium\nReward: 200 gold, 325 XP, +10 Circle reputation\n\nWarning: Residual magical effects may be hazardous\n\n[Accept this request?]",
+      "text": "[Artifact Investigation]\n\nA disturbance reported near the Crossroads. Survey it, write down what you see, bring back anything you can carry. The residue may still be live.\n\n[Accept this request?]",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -197,7 +197,7 @@
     {
       "id": "rune_details",
       "speaker": "Research Board",
-      "text": "[Rune Transcription Request]\n\nLocation: Willow Dale ruins\nObjective: Find and accurately transcribe ancient runes\nQuantity: At least 10 distinct rune sequences\nDifficulty: Easy\nReward: 150 gold, 250 XP, +7 Circle reputation\n\nNote: Accuracy is critical - incomplete transcriptions rejected\n\n[Accept this request?]",
+      "text": "[Rune Transcription]\n\nWillow Dale. Ten distinct rune sequences, copied exactly. A sequence copied wrong is worse than none.\n\n[Accept this request?]",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -227,7 +227,7 @@
     {
       "id": "enchant_details",
       "speaker": "Research Board",
-      "text": "[Enchantment Field Test Request]\n\nTask: Test experimental enchanted weapon against various enemies\nTargets: Kill 5 enemies using only the test weapon\nDifficulty: Medium-Hard\nReward: 225 gold, 375 XP, +12 Circle reputation\nRequires: Adept rank\n\nBonus: Detailed combat notes earn extra reputation\n\n[Accept this request?]",
+      "text": "[Enchantment Field Test]\n\nAn experimental weapon, five real fights, and an honest account of how it behaved. Adept rank.\n\n[Accept this request?]",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -257,7 +257,7 @@
     {
       "id": "planar_details",
       "speaker": "Research Board",
-      "text": "[Ley Line Survey Request]\n\nLocation: Anomaly detected between Elder Moor and Kazer-Dun\nObjective: Investigate, measure magical flux, document phenomena\nDifficulty: Hard\nReward: 300 gold, 500 XP, +15 Circle reputation\nRequires: Adept rank\n\nWarning: Planar instability possible - prepare accordingly\n\n[Accept this request?]",
+      "text": "[Ley Line Survey]\n\nAn anomaly between Elder Moor and Kazer-Dun. Measure the flux and write down the phenomena. Adept rank. The ground there may not stay where you left it.\n\n[Accept this request?]",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -287,7 +287,7 @@
     {
       "id": "accept_reagent",
       "speaker": "Research Board",
-      "text": "[Request Accepted]\n\nReagent collection kit provided. Travel to Elder Moor, collect the specified plants. Return samples to this board for analysis. Remember: Moonpetals only bloom at night.",
+      "text": "[Request Accepted]\n\nCollection kit issued. Elder Moor. Remember the moonpetals wait for dark.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -295,7 +295,7 @@
     {
       "id": "accept_specimen",
       "speaker": "Research Board",
-      "text": "[Request Accepted]\n\nSpecimen preservation jar provided. Hunt the specified creatures, harvest required parts. Fresh specimens (under 24 hours) provide better research data. Submit to this board.",
+      "text": "[Request Accepted]\n\nPreservation jar issued. Bring the specimens back before they turn.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -303,7 +303,7 @@
     {
       "id": "accept_artifact",
       "speaker": "Research Board",
-      "text": "[Request Accepted]\n\nSurvey equipment provided. Travel to the disturbance site near Crossroads. Document all magical phenomena, retrieve any artifacts. Exercise caution around residual energies.",
+      "text": "[Request Accepted]\n\nSurvey equipment issued. Mind the residual energies at the site.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -311,7 +311,7 @@
     {
       "id": "accept_rune",
       "speaker": "Research Board",
-      "text": "[Request Accepted]\n\nTranscription materials provided. Enter Willow Dale, locate ancient rune inscriptions. Copy at least 10 distinct sequences accurately. Incomplete or inaccurate work will be rejected.",
+      "text": "[Request Accepted]\n\nTranscription materials issued. Ten sequences, exact, or the work is rejected.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -319,7 +319,7 @@
     {
       "id": "accept_enchant",
       "speaker": "Research Board",
-      "text": "[Request Accepted]\n\nExperimental weapon provided. Test against exactly 5 enemies in actual combat. Note effectiveness, unusual behaviors, and any malfunctions. Return weapon and observations.",
+      "text": "[Request Accepted]\n\nTest weapon issued. Five fights, then bring back the weapon and what you noticed.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -327,7 +327,7 @@
     {
       "id": "accept_planar",
       "speaker": "Research Board",
-      "text": "[Request Accepted]\n\nLey line detection equipment provided. Travel to the anomaly zone. Document all planar phenomena, measure magical flux levels. Warning: unstable magic may cause unexpected effects.",
+      "text": "[Request Accepted]\n\nDetection equipment issued. Unstable magic does what it likes; record it anyway.",
       "is_end": true,
       "auto_continue": "",
       "choices": []

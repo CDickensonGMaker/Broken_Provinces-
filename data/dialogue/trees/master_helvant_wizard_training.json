@@ -93,7 +93,7 @@
 		{
 			"id": "offer_trials",
 			"speaker": "Master Helvant",
-			"text": "Very well. I will test your aptitude through three simple tasks. First, you must find a moonpetal flower from the shrine at the Crossroads - a test of your awareness. Second, you must collect silver dust from a defeated undead creature - a test of your will to face supernatural threats. Complete these, and we shall see if you have potential.",
+			"text": "Two things, then. A moonpetal from the shrine at the Crossroads, and silver dust off something undead. One asks whether you can see; the other asks whether you can stand still while it comes at you.",
 			"is_end": false,
 			"auto_continue": "",
 			"choices": [
@@ -116,7 +116,7 @@
 		{
 			"id": "accept_aptitude",
 			"speaker": "Master Helvant",
-			"text": "Good. The moonpetal grows near ancient shrines where magic lingers. The silver dust can be harvested from undead - their corrupted essence crystallizes into the substance. Return when you have both.",
+			"text": "Moonpetal grows where magic has settled and stayed - the old shrines. The dust crystallises out of the undead themselves. Come back with both.",
 			"is_end": true,
 			"auto_continue": "",
 			"choices": []
@@ -139,7 +139,7 @@
 		{
 			"id": "first_lesson_intro",
 			"speaker": "Master Helvant",
-			"text": "All magic stems from the four primal elements: Fire, Water, Earth, and Air. To master magic, you must first understand these foundations. I want you to gather pure samples of each element's essence and attune yourself to them. Only then will you grasp the fundamental truth of the arcane.",
+			"text": "Fire, water, earth, air. You will not get a spell out of me until you have stood in front of each one and felt what it wants. Bring me an essence of all four.",
 			"is_end": false,
 			"auto_continue": "",
 			"choices": [
@@ -179,7 +179,7 @@
 		{
 			"id": "accept_lesson_one",
 			"speaker": "Master Helvant",
-			"text": "Remember - you are not merely collecting materials. You are forging a connection to the elemental forces that underpin all existence. Open your mind and let the magic flow through you.",
+			"text": "You are not collecting reagents. You are introducing yourself. Let them answer.",
 			"is_end": true,
 			"auto_continue": "",
 			"choices": []
@@ -202,7 +202,7 @@
 		{
 			"id": "field_test_intro",
 			"speaker": "Master Helvant",
-			"text": "Theory without practice is useless. Magic exists to serve - to protect, to heal, to solve problems beyond mundane means. I've arranged for you to help several villagers using your newfound abilities. Prove that you can apply magic to real challenges, not just dusty academic exercises.",
+			"text": "Theory is cheap and I have forty years of it. There are four people out there with problems that magic can solve and no mage to solve them. Go and be the mage.",
 			"is_end": false,
 			"auto_continue": "",
 			"choices": [
@@ -242,7 +242,7 @@
 		{
 			"id": "accept_field_test",
 			"speaker": "Master Helvant",
-			"text": "Excellent. The people will remember what you do for them. Magic should inspire hope, not fear. Go forth and show them what a wizard can accomplish.",
+			"text": "They will remember what you do for them. Magic ought to make people hopeful. See that yours does.",
 			"is_end": true,
 			"auto_continue": "",
 			"choices": []
@@ -265,7 +265,7 @@
 		{
 			"id": "grimoire_quest_intro",
 			"speaker": "Master Helvant",
-			"text": "Now we reach the heart of your training. There is a grimoire - my own master's spellbook - lost long ago in the ruins of Willow Dale. It contains advanced techniques that could accelerate your learning beyond anything I could teach through mere words.",
+			"text": "There is a spellbook in the Willow Dale ruins. It was my master's, and I have wanted it back for longer than you have been alive. My legs will not carry me there.",
 			"is_end": false,
 			"auto_continue": "",
 			"choices": [
@@ -288,7 +288,7 @@
 		{
 			"id": "explain_grimoire_quest",
 			"speaker": "Master Helvant",
-			"text": "Willow Dale is treacherous - filled with undead and magical traps laid by long-dead wizards. The grimoire is hidden deep within, likely in the old library chamber. A magical guardian was summoned to protect it. I warn you: some pages may be missing, stolen by scavengers over the decades. But what remains will be invaluable.",
+			"text": "Willow Dale is undead and old traps. The book will be deep in, near the library chamber, and something was summoned to sit on it. Pages may be gone - scavengers have had decades.",
 			"is_end": false,
 			"auto_continue": "",
 			"choices": [
@@ -311,7 +311,7 @@
 		{
 			"id": "accept_grimoire_quest",
 			"speaker": "Master Helvant",
-			"text": "Be cautious. The guardian will not hesitate to destroy intruders. Use everything you've learned - elemental magic, combat strategy, and cunning. The grimoire must be preserved at all costs.",
+			"text": "The guardian will not hesitate. Use everything I have taught you, and bring the book out whole.",
 			"is_end": true,
 			"auto_continue": "",
 			"choices": []
@@ -497,7 +497,7 @@
 		{
 			"id": "explain_final_trial",
 			"speaker": "Master Helvant",
-			"text": "Beneath my tower lies a chamber I've prepared. Within, you will face summoned elemental guardians, solve arcane puzzles, and finally... duel me. A non-lethal contest, of course. I want to see the full measure of your power. Succeed, and you will be recognized as an Adept - a true practitioner worthy of advanced magical knowledge.",
+			"text": "There is a chamber under this tower I have kept ready for years. Guardians, puzzles, and then me - a friendly bout, no blood. I want to see all of it before I call you an Adept.",
 			"is_end": false,
 			"auto_continue": "",
 			"choices": [
@@ -520,7 +520,7 @@
 		{
 			"id": "accept_final_trial",
 			"speaker": "Master Helvant",
-			"text": "The chamber awaits. Enter when you're ready. Remember - this is not a test of raw power alone, but of control, strategy, and understanding. Show me the wizard you've become.",
+			"text": "The chamber is open. Go in when you are ready. Control first, power second - that is the whole of it.",
 			"is_end": true,
 			"auto_continue": "",
 			"choices": []

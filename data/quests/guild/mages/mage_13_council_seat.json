@@ -1,7 +1,7 @@
 {
 	"id": "mage_13_council_seat",
 	"title": "The Inner Circle",
-	"description": "Two Magisters voted against sponsoring you, and Elara spent more of her own standing than she strictly had to getting you this far anyway. The ceremonial duel is the price of the seat: beat her cleanly enough that even the two who voted no cannot call it a gift, and it is yours. Beat her badly, or barely, and it will read as charity for years.",
+	"description": "Two Magisters voted against sponsoring you, and I spent more of my own standing than I had to. The duel is the price of the seat. Beat me cleanly enough that neither of them can call it a gift.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,21 +11,21 @@
 	"objectives": [
 		{
 			"id": "prepare_for_duel",
-			"description": "Hear from Elara what the two dissenting votes will be watching for",
+			"description": "Hear what the dissenting votes will be watching for",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
 		},
 		{
 			"id": "enter_dueling_arena",
-			"description": "Enter the Circle's dueling arena in front of the council",
+			"description": "Enter the Circle's dueling arena",
 			"type": "reach",
 			"target": "dueling_arena_dalhurst",
 			"required_count": 1
 		},
 		{
 			"id": "duel_elara",
-			"description": "Duel Archmage Elara Moonweave - a yield only counts if it's earned",
+			"description": "Defeat Archmage Elara Moonweave in the ceremonial duel",
 			"type": "duel_win",
 			"target": "archmage_elara_duel",
 			"required_count": 1,
@@ -33,7 +33,7 @@
 		},
 		{
 			"id": "join_council",
-			"description": "Take the seat Elara spent her own standing to get you",
+			"description": "Take the seat",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1

@@ -1,7 +1,7 @@
 {
 	"id": "mage_06_artifact_recovery",
 	"title": "Lost Knowledge",
-	"description": "The Circle has wanted the Amulet of Arcane Sight out of Willow Dale for three Archmages running, and Elara has never been the one to bring it home. She has heard, from a source she won't name, that somebody outside the Circle has started asking after Willow Dale too. Whoever reaches the amulet first keeps the credit - and if it isn't the Circle, that is a decades-long failure landing on Elara's watch specifically.",
+	"description": "Three Archmages before me have wanted the Amulet of Arcane Sight out of Willow Dale. Someone outside the Circle has started asking after that ruin, and I will not be the fourth. Go and take it first.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "travel_willow_dale",
-			"description": "Get to Willow Dale before anyone else does",
+			"description": "Reach Willow Dale",
 			"type": "reach",
 			"target": "willow_dale",
 			"required_count": 1
 		},
 		{
 			"id": "navigate_traps",
-			"description": "Get through the trap gauntlet three Archmages' searchers never cleared",
+			"description": "Get through the traps to the inner sanctum",
 			"type": "reach",
 			"target": "willow_dale_inner_sanctum",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "defeat_guardians",
-			"description": "Put down the guardians still standing watch over it",
+			"description": "Put down the three arcane guardians",
 			"type": "kill",
 			"target": "arcane_guardian",
 			"required_count": 3,
@@ -34,14 +34,14 @@
 		},
 		{
 			"id": "retrieve_amulet",
-			"description": "Take the Amulet of Arcane Sight before whoever else is asking gets there",
+			"description": "Take the Amulet of Arcane Sight",
 			"type": "collect",
 			"target": "amulet_arcane_sight",
 			"required_count": 1
 		},
 		{
 			"id": "return_artifact",
-			"description": "Bring it to Elara before anyone can say the Circle lost the race",
+			"description": "Bring the amulet to Elara",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1

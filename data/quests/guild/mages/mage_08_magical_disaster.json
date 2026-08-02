@@ -1,7 +1,7 @@
 {
 	"id": "mage_08_magical_disaster",
 	"title": "Containment",
-	"description": "A Novice's warding experiment tore loose in the Athenaeum basement less than an hour ago. Two archivists were dragged out with their arms scorched black before anyone got the stairwell sealed, and the tear they left behind is still widening. A dozen more of the Circle's own are working the stacks directly above it. Get down there and close it before it reaches the floor they're standing on.",
+	"description": "A Novice's warding experiment tore loose in the basement an hour ago. Two archivists came out with their arms burned black and it is still widening. A dozen of us are working the stacks directly above it.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "wizard_dalhurst",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "assess_situation",
-			"description": "Get down to the basement before the tear reaches the stairs",
+			"description": "Get down to the Athenaeum basement",
 			"type": "reach",
 			"target": "athenaeum_basement",
 			"required_count": 1
 		},
 		{
 			"id": "stabilize_ley_node",
-			"description": "Force the corrupted ley node back into shape before it burns anyone else",
+			"description": "Force the corrupted ley node back into shape",
 			"type": "interact",
 			"target": "corrupted_ley_node",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "defeat_anomalies",
-			"description": "Cut down what the corruption spat out before it reaches the stacks above",
+			"description": "Cut down eight anomalies before they reach the stacks",
 			"type": "kill",
 			"target": "magic_anomaly",
 			"required_count": 8,
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "seal_breach",
-			"description": "Close the breach while it's still small enough to close",
+			"description": "Close the breach while it is still small",
 			"type": "interact",
 			"target": "dimensional_breach",
 			"required_count": 1,
@@ -42,7 +42,7 @@
 		},
 		{
 			"id": "report_containment",
-			"description": "Tell Elara what it took to hold the line, and who got burned doing it",
+			"description": "Tell Elara who got burned",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1

@@ -1,7 +1,7 @@
 {
 	"id": "mage_01_entrance_exam",
 	"title": "The Entrance Exam",
-	"description": "The Circle does not take students on faith. Every apprentice Elara accepts is boarded, taught and fed out of the Athenaeum's own purse, and half of last year's intake left before they earned a copper of it back. She will not spend more of that coin on you until she has seen something. Go to the Crossroads shrine, draw arcane essence with the one spell she taught you, and come back and do it again where she can watch.",
+	"description": "The Circle boards and feeds every student it takes, and half of last year's intake left owing us. Go to the Crossroads shrine and draw essence with the spell I taught you. Then do it again where I can watch.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "speak_with_elara",
-			"description": "Tell Archmage Elara why the Circle should spend on you",
+			"description": "Tell Elara why the Circle should spend on you",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
 		},
 		{
 			"id": "collect_arcane_essence",
-			"description": "Draw arcane essence at the Crossroads shrine, three times over, to prove the lesson took",
+			"description": "Draw arcane essence at the Crossroads shrine, three times",
 			"type": "collect",
 			"target": "arcane_essence",
 			"required_count": 3,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "test_spell_knowledge",
-			"description": "Do it again in front of Elara, without anyone walking you through it",
+			"description": "Draw it again in front of Elara",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1

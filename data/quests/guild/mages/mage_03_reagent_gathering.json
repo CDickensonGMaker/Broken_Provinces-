@@ -1,7 +1,7 @@
 {
 	"id": "mage_03_reagent_gathering",
 	"title": "Essence Collection",
-	"description": "The Athenaeum's reagent stock is thinner than it should be. Elara says only, tightly, that the stone-cutter the Circle has always bought from won't sell to them anymore - somebody else is paying triple and taking the whole cut, and she is not going to explain that to a Novice. Whatever the reason, the Circle still needs what it needs, so a Novice goes into Elder Moor's woods with a basket and does by hand what used to arrive already cut. This is your last test before Apprentice: come back with all of it.",
+	"description": "Our cutter will not sell to the Circle anymore. Someone pays him triple and takes the whole cut, and I will not discuss it further. Take a basket to the Elder Moor woods.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "collect_moonpetals",
-			"description": "Pick moonpetal flowers in Elder Moor's forest, by hand",
+			"description": "Pick five moonpetal flowers in the Elder Moor woods",
 			"type": "collect",
 			"target": "moonpetal_flower",
 			"required_count": 5,
@@ -19,7 +19,7 @@
 		},
 		{
 			"id": "collect_mana_crystals",
-			"description": "Cut mana crystals near the Crossroads shrine yourself - the Circle's usual cutter has stopped selling to them",
+			"description": "Cut mana crystals yourself near the Crossroads shrine",
 			"type": "collect",
 			"target": "mana_crystal",
 			"required_count": 3,
@@ -27,7 +27,7 @@
 		},
 		{
 			"id": "collect_spirit_essence",
-			"description": "Harvest spirit essence from undead in the wilderness - grim work, but it costs the Circle nothing to send you instead of buying it",
+			"description": "Harvest spirit essence from undead in the wilderness",
 			"type": "collect",
 			"target": "spirit_essence",
 			"required_count": 5,
@@ -35,7 +35,7 @@
 		},
 		{
 			"id": "return_reagents",
-			"description": "Bring everything back to Elara and let her stop counting coppers for a day",
+			"description": "Bring the reagents to Elara",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1

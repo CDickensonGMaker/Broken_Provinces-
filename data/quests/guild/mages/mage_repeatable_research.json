@@ -1,7 +1,7 @@
 {
 	"id": "mage_repeatable_research",
 	"title": "Guild Assignments",
-	"description": "A Magister's seat comes with a standing bill. The Circle keeps a running list of what it needs - reagents, recovered artifacts, phenomena somebody has to go and look at - and expects its own to work it down instead of drawing a stipend for nothing. Take the next assignment off Elara's list and clear it.",
+	"description": "The Circle keeps a standing list of what it needs, and expects its own to work it down rather than draw a stipend for nothing. Take the next thing off it.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -12,7 +12,7 @@
 	"objectives": [
 		{
 			"id": "accept_assignment",
-			"description": "Take the next assignment off the Circle's standing list",
+			"description": "Take the next assignment off the Circle's list",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1,
@@ -20,7 +20,7 @@
 		},
 		{
 			"id": "complete_task",
-			"description": "Bring back the arcane essence the assignment is written against",
+			"description": "Bring back the arcane essence the assignment asks for",
 			"type": "has_item",
 			"target": "arcane_essence",
 			"required_count": 1,
@@ -28,7 +28,7 @@
 		},
 		{
 			"id": "report_completion",
-			"description": "Report back to Elara that the list is one shorter",
+			"description": "Tell Elara the list is one shorter",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1

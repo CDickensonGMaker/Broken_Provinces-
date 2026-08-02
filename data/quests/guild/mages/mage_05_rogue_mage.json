@@ -1,7 +1,7 @@
 {
 	"id": "mage_05_rogue_mage",
 	"title": "Unsanctioned Magic",
-	"description": "Reports have reached the Arcane Circle of a rogue mage practicing forbidden magic near Millbrook. The guild cannot tolerate unsanctioned practitioners, especially those dabbling in dangerous arts. Track down this rogue mage and bring them to justice - or help them see the error of their ways.",
+	"description": "Someone is practising forbidden magic in the woods outside Millbrook, and it is the Circle that will be blamed for it. Find him. Kill him or talk him out of it - I care about the result.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -17,14 +17,14 @@
 	"objectives": [
 		{
 			"id": "investigate_millbrook",
-			"description": "Investigate magical disturbances near Millbrook",
+			"description": "Go to Millbrook",
 			"type": "reach",
 			"target": "millbrook",
 			"required_count": 1
 		},
 		{
 			"id": "question_witnesses",
-			"description": "Question townspeople about the rogue mage",
+			"description": "Ask the Millbrook innkeeper about the strange lights",
 			"type": "talk",
 			"target": "millbrook_innkeeper",
 			"required_count": 1,
@@ -32,7 +32,7 @@
 		},
 		{
 			"id": "find_rogue_hideout",
-			"description": "Locate the rogue mage's hideout in the forest",
+			"description": "Find the rogue mage's camp in the forest",
 			"type": "reach",
 			"target": "rogue_mage_camp",
 			"required_count": 1
@@ -47,7 +47,7 @@
 		},
 		{
 			"id": "persuade_rogue",
-			"description": "Persuade the rogue mage to give up the forbidden arts",
+			"description": "Talk the rogue mage off the forbidden arts",
 			"type": "interact",
 			"target": "rogue_mage_parley",
 			"required_count": 1,
@@ -57,7 +57,7 @@
 		},
 		{
 			"id": "report_outcome",
-			"description": "Report the outcome to Archmage Elara",
+			"description": "Tell Elara how it ended",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1

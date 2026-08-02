@@ -1,7 +1,7 @@
 {
 	"id": "mage_11_planar_breach",
 	"title": "Beyond the Veil",
-	"description": "The tear opened directly over the shrine at the Crossroads, where the Dalhurst road meets the Millbrook road and every caravan on either one stops to water its horses. Two guards riding with the last wagon through are already missing, dragged through or worse before anyone got the road closed off. Elara needs it sealed before the next caravan comes through blind - and there is always a next caravan on that road.",
+	"description": "The tear opened over the shrine at the Crossroads, where every caravan between Dalhurst and Millbrook stops to water its horses. Two guards off the last wagon through are already gone. Seal it before the next one comes down that road blind.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "assess_breach",
-			"description": "See what's coming through at the Crossroads shrine, and who's already caught in it",
+			"description": "See what is coming through at the Crossroads",
 			"type": "reach",
 			"target": "dimensional_breach_crossroads",
 			"required_count": 1
 		},
 		{
 			"id": "gather_sealing_components",
-			"description": "Take what the sealing ritual needs off the things it dragged through",
+			"description": "Take five binding reagents off the things coming through",
 			"type": "collect",
 			"target": "planar_binding_reagent",
 			"required_count": 5,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "defeat_planar_entities",
-			"description": "Clear the road of what's come through, before another wagon rolls into it blind",
+			"description": "Clear ten planar entities off the road",
 			"type": "kill",
 			"target": "planar_entity",
 			"required_count": 10,
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "empower_ley_anchors",
-			"description": "Charge the four anchor stones ringing the shrine",
+			"description": "Charge the four anchor stones around the shrine",
 			"type": "interact",
 			"target": "ley_anchor",
 			"required_count": 4,
@@ -42,7 +42,7 @@
 		},
 		{
 			"id": "seal_breach",
-			"description": "Hold the ritual until the tear closes, whatever comes through while you do",
+			"description": "Hold the ritual until the tear closes",
 			"type": "interact",
 			"target": "dimensional_breach_center",
 			"required_count": 1,
@@ -50,7 +50,7 @@
 		},
 		{
 			"id": "report_success",
-			"description": "Tell Elara the Crossroads road is a road again",
+			"description": "Tell Elara the road is a road again",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1

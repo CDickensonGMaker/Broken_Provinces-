@@ -1,7 +1,7 @@
 {
 	"id": "mage_10_forbidden_tome",
 	"title": "The Locked Section",
-	"description": "The Locked Section holds what the Circle decided nobody should carry alone. Elara is granting you one shelf: a necromancer's ledgers, a blood-rite transcript, or a dimensional traveler's diary that ends mid-sentence. Whatever you choose leaves something behind - a stammer, a taste you can't place, a name you find yourself answering to before you notice - and the Circle will want to know what's left of you when you're done.",
+	"description": "The Locked Section holds what the Circle decided nobody should carry alone. You may have one shelf: a necromancer's ledgers, a blood-rite transcript, or a diary that ends mid-sentence. Each of them takes something, and I will want to see what is left.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "receive_vault_key",
-			"description": "Take the vault key from Elara, and her warning with it",
+			"description": "Take the vault key from Elara",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
@@ -25,7 +25,7 @@
 		},
 		{
 			"id": "choose_forbidden_topic",
-			"description": "Pick the one shelf you're allowed - necromancy, blood magic, or the traveler's diary",
+			"description": "Choose your one shelf at the forbidden bookshelf",
 			"type": "interact",
 			"target": "forbidden_bookshelf",
 			"required_count": 1,
@@ -33,14 +33,14 @@
 		},
 		{
 			"id": "study_forbidden_knowledge",
-			"description": "Read what the Circle locked away, and feel what it takes out of you",
+			"description": "Read what the Circle locked away",
 			"type": "interact",
 			"target": "study_desk",
 			"required_count": 1
 		},
 		{
 			"id": "field_test",
-			"description": "Try what you learned somewhere it can only reach you",
+			"description": "Try it where it can only reach you",
 			"type": "reach",
 			"target": "testing_grounds_elder_moor",
 			"required_count": 1,
@@ -48,7 +48,7 @@
 		},
 		{
 			"id": "moral_choice",
-			"description": "Tell Elara what you'll do with it, now that you know what it costs",
+			"description": "Tell Elara what you will do with it",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1,

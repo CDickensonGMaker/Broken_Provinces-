@@ -1,7 +1,7 @@
 {
 	"id": "mage_02_library_duty",
 	"title": "Cataloging the Arcane",
-	"description": "Library duty is where the Circle puts every new Novice, not to teach you the schools of magic but to see whether you can be trusted around them unsupervised. A necromancy tome has been sitting on an open shelf for who knows how long - any patron touring the Athenaeum, or worse, any Magister with a grudge against Elara, could have found it there first. Shelve it properly and get it into the vault before somebody else notices what she missed.",
+	"description": "A necromancy tome has been sitting on an open shelf. Any visitor could have reached it, and I would rather nobody learn how long it sat there. Shelve the cases, then get it into the vault.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "organize_texts",
-			"description": "Shelve the Athenaeum's texts properly, five cases of them",
+			"description": "Shelve five cases of the Athenaeum's texts",
 			"type": "interact",
 			"target": "library_bookshelf_01",
 			"required_count": 5,
@@ -19,7 +19,7 @@
 		},
 		{
 			"id": "find_dangerous_tome",
-			"description": "Find the necromancy tome shelved where any visitor could reach it",
+			"description": "Find the necromancy tome on the open shelf",
 			"type": "collect",
 			"target": "forbidden_tome_necromancy",
 			"required_count": 1,
@@ -27,14 +27,14 @@
 		},
 		{
 			"id": "secure_tome",
-			"description": "Get it into the restricted vault before anyone else sees where it was",
+			"description": "Get the tome into the restricted vault",
 			"type": "interact",
 			"target": "restricted_vault",
 			"required_count": 1
 		},
 		{
 			"id": "report_to_elara",
-			"description": "Tell Elara what you found and where it was sitting",
+			"description": "Tell Elara where it was sitting",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1

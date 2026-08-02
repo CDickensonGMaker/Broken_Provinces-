@@ -1,7 +1,7 @@
 {
 	"id": "mage_04_enchantment_task",
 	"title": "First Enchantment",
-	"description": "This ring is not a lesson piece. A Dalhurst merchant has already paid the Circle for a ring of minor protection, and the coin is spent whether or not the enchantment holds. The Circle's enchanter needs a second set of hands to gather what the ritual takes and see it through - your first real enchantment, on a deadline a paying customer is watching.",
+	"description": "A Dalhurst merchant has already paid for a ring of minor protection, and the coin is spent whether the enchantment holds or not. I need a second pair of hands to gather what the ritual takes. Be here for it.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "wizard_dalhurst",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "speak_with_aldric",
-			"description": "Learn what the paying customer's ring actually needs",
+			"description": "Ask what the ring's enchantment needs",
 			"type": "talk",
 			"target": "wizard_dalhurst",
 			"required_count": 1
 		},
 		{
 			"id": "gather_silver_ingot",
-			"description": "Buy a silver ingot from a blacksmith - out of Circle funds, not the merchant's",
+			"description": "Buy a silver ingot from a blacksmith",
 			"type": "collect",
 			"target": "silver_ingot",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "gather_enchanting_dust",
-			"description": "Collect enchanting dust before the ritual window closes",
+			"description": "Collect three measures of enchanting dust",
 			"type": "collect",
 			"target": "enchanting_dust",
 			"required_count": 3,
@@ -34,14 +34,14 @@
 		},
 		{
 			"id": "perform_enchantment",
-			"description": "Hold the ritual steady while the ring takes the enchantment",
+			"description": "Hold the ritual steady at the enchanting altar",
 			"type": "interact",
 			"target": "enchanting_altar",
 			"required_count": 1
 		},
 		{
 			"id": "report_success",
-			"description": "Tell Elara the customer's ring is finished and worth what he paid",
+			"description": "Tell Elara the ring is finished",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1

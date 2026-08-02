@@ -1,7 +1,7 @@
 {
 	"id": "mage_09_rival_circle",
 	"title": "The Shadow Circle",
-	"description": "A courier the Circle trusted with a restricted delivery turned up dead near the Bandit Hideout, a Shadow Circle sigil branded into his collarbone. The reagents he carried were already sold and paid for by a Dalhurst patron who is still waiting on them. If a rival order can rob the Circle's own courier and service its patrons instead, three Magisters have already told Elara they want to know how she let it happen. Find the Shadow Circle's base, take back what's owed, and end this before the patron looks elsewhere.",
+	"description": "A courier of ours turned up dead near the Bandit Hideout with a Shadow Circle sigil burned into his collarbone. The reagents he carried were already paid for by a patron who is still waiting. Find their base and take it back.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "gather_intelligence",
-			"description": "Learn from the Crossroads informant what the Shadow Circle wanted with a dead courier",
+			"description": "Meet the informant at the Crossroads shrine",
 			"type": "talk",
 			"target": "informant_crossroads",
 			"required_count": 1,
@@ -19,14 +19,14 @@
 		},
 		{
 			"id": "infiltrate_hideout",
-			"description": "Find the Shadow Circle's base near the Bandit Hideout",
+			"description": "Find the Shadow Circle base near the Bandit Hideout",
 			"type": "reach",
 			"target": "shadow_circle_base",
 			"required_count": 1
 		},
 		{
 			"id": "steal_research_notes",
-			"description": "Take their notes - proof of what they took and why",
+			"description": "Take the Shadow Circle's research notes",
 			"type": "collect",
 			"target": "shadow_circle_research",
 			"required_count": 1,
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "disrupt_ritual",
-			"description": "Break the ritual before they finish whatever the reagents were for",
+			"description": "Break the summoning circle before the ritual finishes",
 			"type": "interact",
 			"target": "summoning_circle",
 			"required_count": 1,
@@ -42,7 +42,7 @@
 		},
 		{
 			"id": "defeat_shadow_mages",
-			"description": "Put down the mages guarding the base",
+			"description": "Put down five shadow mages",
 			"type": "kill",
 			"target": "shadow_mage",
 			"required_count": 5,
@@ -50,7 +50,7 @@
 		},
 		{
 			"id": "report_findings",
-			"description": "Bring Elara what you found, and what it costs the Circle if it happens again",
+			"description": "Bring Elara the notes",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1

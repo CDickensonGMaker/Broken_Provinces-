@@ -7,7 +7,7 @@
     {
       "id": "greeting",
       "speaker": "Archmage Elara",
-      "text": "Welcome to the Athenaeum. I am Elara Moonweave, keeper of this repository of arcane knowledge. Few seek audience with me directly. What brings you to my study?",
+      "text": "The Athenaeum. I am Elara Moonweave, and I keep it. Most who climb this far want a text copied or a charm blessed, and I send them back down to the second floor. Which are you?",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -89,7 +89,7 @@
     {
       "id": "greeting_apprentice",
       "speaker": "Archmage Elara",
-      "text": "Ah, one of our apprentices. Your progress has been noted. The Circle has work that requires capable hands. Have you come to serve the advancement of magical knowledge?",
+      "text": "One of ours. The lower stacks are yours now; the third floor is not, and I will know. What do you need?",
       "is_end": false,
       "auto_continue": "",
       "conditions": [
@@ -123,7 +123,7 @@
     {
       "id": "greeting_magus",
       "speaker": "Archmage Elara",
-      "text": "Magus. Your dedication to the Circle has been exemplary. The council speaks highly of your contributions. What brings you to my chambers?",
+      "text": "Magus. Two of the council still spell your name wrong in the minutes, which is how I know they have started reading them. What brings you up?",
       "is_end": false,
       "auto_continue": "",
       "conditions": [
@@ -301,7 +301,7 @@
     {
       "id": "entrance_exam_offer",
       "speaker": "Archmage Elara",
-      "text": "Very well. Your entrance examination: the ruins of Velkyr's Tower, southeast of Dalhurst. A rogue mage once practiced forbidden arts there. His wards remain active, his experiments corrupt the land. Navigate his defenses, retrieve the grimoire from his sanctum, and return it to me.",
+      "text": "Then here is what I want. Velkyr's tower stands southeast of Dalhurst, and his wards are still live in it after all this time. His grimoire is still in it too. Bring me the grimoire.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -437,7 +437,7 @@
     {
       "id": "accept_exam",
       "speaker": "Archmage Elara",
-      "text": "Velkyr's Tower lies in the hills southeast of Dalhurst, past the old miller's road. The grimoire will be in his study at the tower's apex. Do not read from it - the incantations retain their power. Return it unopened, and you will have earned your place among us.",
+      "text": "Southeast of Dalhurst, past the old miller's road. The grimoire is in the study at the top. Do not open it - the incantations still hold.",
       "is_end": true,
       "auto_continue": "",
       "choices": []

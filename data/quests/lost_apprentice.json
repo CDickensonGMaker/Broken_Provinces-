@@ -1,7 +1,7 @@
 {
 	"id": "lost_apprentice",
 	"title": "The Lost Apprentice",
-	"description": "A wizard in Dalhurst is frantic - his young apprentice ventured into the ruins of Willow Dale seeking rare magical components and hasn't returned. The boy was foolish and overconfident. The wizard fears the worst but holds out hope someone can find him before it's too late.",
+	"description": "Marcus went into the Willow Dale ruins for components I twice told him he was not ready to gather. That was four days ago. Bring him back to me, whatever state he is in.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "wizard_dalhurst",
@@ -10,35 +10,35 @@
 	"objectives": [
 		{
 			"id": "travel_willow_dale",
-			"description": "Travel to the Willow Dale ruins",
+			"description": "Reach the Willow Dale ruins",
 			"type": "reach",
 			"target": "willow_dale",
 			"required_count": 1
 		},
 		{
 			"id": "search_ruins",
-			"description": "Search the upper ruins for signs of the apprentice",
+			"description": "Find Marcus's belongings in the upper ruins",
 			"type": "interact",
 			"target": "apprentice_belongings",
 			"required_count": 1
 		},
 		{
 			"id": "descend_dungeon",
-			"description": "Descend into the dungeon depths",
+			"description": "Descend into the depths",
 			"type": "reach",
 			"target": "willow_dale_depths",
 			"required_count": 1
 		},
 		{
 			"id": "solve_crystal_puzzle",
-			"description": "Solve the Crystal Hearts puzzle to free the apprentice",
+			"description": "Solve the Crystal Hearts puzzle to free Marcus",
 			"type": "solve_puzzle",
 			"target": "crystal_hearts_puzzle",
 			"required_count": 1
 		},
 		{
 			"id": "decide_marcus_fate",
-			"description": "Decide Marcus's fate",
+			"description": "Decide what becomes of Marcus",
 			"type": "interact",
 			"target": "apprentice_marcus",
 			"required_count": 1
