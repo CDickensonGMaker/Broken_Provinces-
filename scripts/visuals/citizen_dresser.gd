@@ -34,6 +34,17 @@ const FACE_COLS: int = 8
 const FACE_ROWS: int = 4
 const CELL_STRIDE: Vector2 = Vector2(0.125, 0.25)
 
+## The garb atlas grid, per EQ_TECHNIQUE sec 3.B and the GARB ATLAS CONTRACT in
+## tools/citizens/citizen_common.py: 512², 4 columns x 4 rows of 128 px PAGES,
+## four 64 px zones per page. Page 0 is the bottom-left, so page index maps to
+## uv1_offset (col * 0.25, prow * 0.25) with prow counting UP - the same
+## arithmetic garb_page_uv_offset() does on the Blender side. The two must
+## agree; if they ever disagree, citizens wear the page nobody painted.
+## Resolution-independent - a 1024² atlas needs no change here.
+const GARB_COLS: int = 4
+const GARB_ROWS: int = 4
+const GARB_STRIDE: Vector2 = Vector2(0.25, 0.25)
+
 ## The merged head+skin material. Matched by texture first (law 3); this list is
 ## only the fallback for a material carrying no texture at all.
 const FACE_MATERIALS: Array[String] = ["face_atlas_mat", "face_atlas", "grunt_face_skin"]
@@ -53,12 +64,91 @@ const HAIR_PALETTE_PATH: String = "res://assets/models/citizens/textures/citizen
 const GARB_PREFIX: String = "garb_"
 const HAIR_PREFIX: String = "hair_"
 
-const VESTS: Array[String] = ["garb_vest_plain", "garb_vest_laced"]
+## There is exactly ONE vest and there always will be. `garb_vest_laced` was
+## deleted at the mesh level - against the sky it was the plain vest, so it was
+## 68 tris buying nothing (EQ_TECHNIQUE Rule 3). Laces are a painted page now.
+const VESTS: Array[String] = ["garb_vest_plain"]
 const SLEEVES: Array[String] = ["garb_sleeve_long", "garb_sleeve_rolled", "garb_sleeve_none"]
 const PANTS: String = "garb_pants"
 const SKIRT: String = "garb_skirt"
 const APRON: String = "garb_apron"
 const HOOD: String = "garb_hood"
+
+## The robe REPLACES vest and legs rather than layering over them - it is a
+## single shoulder-to-shin tube, and the one silhouette paint cannot fake.
+const ROBE: String = "garb_robe"
+
+## Trades that wear a robe instead of a vest and trousers. Everyone else can
+## have their cassock painted on; these are the outlines a page cannot make.
+const ROBE_ARCHETYPES: Array[String] = ["priest", "acolyte", "mage", "revenant"]
+
+## Which garb page a trade wears. This is EQEmu's `npc_types.texture` field
+## restated in GDScript (EQ_TECHNIQUE sec 1.5): the archetype decides the PAGE,
+## the seed decides the TINT. A smith's page is not random; his colour is.
+##
+## An archetype not named here draws a page from COMMONER_PAGES on its seed, so
+## an unlisted trade is a varied townsman rather than a clone of page 0.
+const ARCHETYPE_PAGE: Dictionary = {
+	"townsfolk": 0,
+	"laborer": 1, "farmer": 1, "shepherd": 1, "fisherman": 1, "sailor": 1, "hunter": 1,
+	"shopkeeper": 2, "innkeeper": 2, "barmaid": 2, "merchant": 2, "official": 2,
+	"guard": 3, "night_watch": 3,
+	"priest": 8, "acolyte": 8,
+	"healer": 9,
+	"revenant": 10,
+	"scholar": 11,
+	"beggar": 12, "crook": 12,
+	"bard": 13,
+	"mage": 14, "noble": 14,
+}
+
+## Pages 8-10 are the three priesthoods, and a priest's page is his GOD's, not
+## his trade's - the schedule record only says "priest". The deity is read off
+## the npc_id, which is where the world actually records it
+## (`priest_chronos_dalhurst`, `acolyte_morthane_dalhurst`).
+const DEITY_PAGE: Dictionary = {"chronos": 8, "gaela": 9, "morthane": 10}
+
+## The seeded fallback range: page 0 plus every neutral variant. Deliberately
+## NOT pages 1-3 or 8-10, because those read as a trade and an unlisted NPC has
+## not claimed one.
+const COMMONER_PAGES: Array[int] = [0, 4, 5, 6, 7, 11, 12, 13, 15]
+
+## Per-instance dye, multiplied over the page (`albedo_color`). This is EQEmu's
+## `npc_types_tint`, and it is where N painted pages become N x 14 looks.
+##
+## Every one is a MULTIPLIER, so they are all near-white and mildly hued: the
+## pages are already painted desaturated and mid-value precisely so a tint
+## lands where intended. A saturated dye here would crush the painted light out
+## of the page and put a neon townsman in a world of earth and stone.
+const DYES: Array[Color] = [
+	Color(1.00, 0.98, 0.94),  # undyed
+	Color(1.00, 0.80, 0.76),  # madder red
+	Color(1.02, 0.96, 0.74),  # weld yellow
+	Color(0.78, 0.86, 1.00),  # woad blue
+	Color(0.92, 0.82, 0.70),  # walnut
+	Color(0.84, 0.94, 0.78),  # lichen
+	Color(0.86, 0.86, 0.88),  # iron grey
+	Color(1.00, 0.90, 0.72),  # onion gold
+	Color(0.72, 0.70, 0.72),  # oak black
+	Color(0.96, 0.88, 0.76),  # bark tan
+	Color(0.90, 0.84, 0.94),  # heather
+	Color(0.82, 0.90, 0.76),  # moss
+	Color(0.98, 0.84, 0.72),  # rust
+	Color(0.80, 0.84, 0.90),  # slate
+]
+
+## Garb is dyed in TWO slots, not one. EQ tinted per slot (sec 1.5), and one
+## material means a citizen's shirt and trousers always tint together, which is
+## the least convincing thing a crowd can do.
+##
+## MEASURED before adopting, because the tri-budget law says draw calls are what
+## matter and this deserved a number: the split costs ZERO extra draw calls. The
+## premise that it costs one was wrong - vest, pants, sleeves and apron are
+## already separate MeshInstance3Ds and therefore already separate surfaces, so
+## giving the upper and lower meshes different materials changes no surface
+## count at all. It costs one extra duplicated material per citizen and nothing
+## else. check_character_visual records the measurement.
+const GARB_LOWER: Array[String] = ["garb_pants", "garb_skirt", "garb_apron"]
 
 ## Only these masters carry a skirt mesh at all, and only they may wear one.
 ## Asked of a model without one the choice silently becomes trousers, which is
@@ -83,10 +173,12 @@ const HOOD_CHANCE: float = 0.18
 ## once per citizen.
 static var _warned: Dictionary = {}
 
-## The garb and hair palettes carry no per-instance state, so they are bound to
-## one shared material each for the whole game rather than duplicated per body.
-## The FACE material is duplicated per body and always will be - that is law 2.
-static var _shared_garb: BaseMaterial3D = null
+## The hair palette carries no per-instance state yet, so it is bound to one
+## shared material for the whole game. THE GARB MATERIAL IS NOT - it was, and
+## that is the bug this file was rewritten to kill: `_shared_garb` was one
+## BaseMaterial3D for the entire game, so every citizen in Broken Provinces wore
+## the same four colours and no page or dye could ever move independently. Law 2
+## applies to garb exactly as it applies to the face, and for the same reason.
 static var _shared_hair: BaseMaterial3D = null
 
 
@@ -121,22 +213,39 @@ static func dress(root: Node3D, model_id: String, npc_id: String,
 	_set_visible_by_prefix(meshes, GARB_PREFIX, false)
 	_set_visible_by_prefix(meshes, HAIR_PREFIX, false)
 
-	# --- 1. VEST: exactly one, always ---
-	var vest: String = _pick(VESTS, present, rng)
-	if vest.is_empty():
-		_warn_once(model_id, "carries no vest mesh - this citizen goes bare-chested")
-	else:
-		_set_visible_by_name(meshes, vest, true)
-		out["vest"] = vest
+	# The trade an NPC keeps. Passed in where the caller knows it; otherwise read
+	# off the schedule record, which is where the world actually records it, so
+	# every citizen gets his archetype's page without a call site being touched.
+	var trade: String = archetype.to_lower()
+	if trade.is_empty():
+		trade = String(NPCScheduler.archetype_of(npc_id)).to_lower()
 
-	# --- 2. LEGS: pants XOR skirt, and a skirt only where there is one ---
-	var wants_skirt: bool = SKIRT_MODELS.has(model_id) and rng.randf() < SKIRT_CHANCE
-	var legs: String = SKIRT if (wants_skirt and present.has(SKIRT)) else PANTS
-	if not present.has(legs):
-		_warn_once(model_id, "carries neither '%s' nor '%s'" % [PANTS, SKIRT])
+	# --- 1-2. TORSO AND LEGS: a robe, or a vest and one leg garment ---
+	# The robe is a single shoulder-to-shin tube and REPLACES both, so it is
+	# decided before either of them.
+	var wants_robe: bool = bool(opts.get("robe", ROBE_ARCHETYPES.has(trade)))
+	if wants_robe and not present.has(ROBE):
+		_warn_once(model_id, "carries no '%s' - its priests and mages work in shirtsleeves" % ROBE)
+		wants_robe = false
+
+	if wants_robe:
+		_set_visible_by_name(meshes, ROBE, true)
+		out["robe"] = ROBE
 	else:
-		_set_visible_by_name(meshes, legs, true)
-		out["legs"] = legs
+		var vest: String = _pick(VESTS, present, rng)
+		if vest.is_empty():
+			_warn_once(model_id, "carries no vest mesh - this citizen goes bare-chested")
+		else:
+			_set_visible_by_name(meshes, vest, true)
+			out["vest"] = vest
+
+		var wants_skirt: bool = SKIRT_MODELS.has(model_id) and rng.randf() < SKIRT_CHANCE
+		var legs: String = SKIRT if (wants_skirt and present.has(SKIRT)) else PANTS
+		if not present.has(legs):
+			_warn_once(model_id, "carries neither '%s' nor '%s'" % [PANTS, SKIRT])
+		else:
+			_set_visible_by_name(meshes, legs, true)
+			out["legs"] = legs
 
 	# --- 3. SLEEVES: exactly one style ---
 	var sleeve: String = _pick(SLEEVES, present, rng)
@@ -171,8 +280,7 @@ static func dress(root: Node3D, model_id: String, npc_id: String,
 			out.erase("hair")
 
 	# --- 5. APRON: the trade decides, not the seed ---
-	var wants_apron: bool = bool(opts.get("apron",
-		APRON_ARCHETYPES.has(archetype.to_lower())))
+	var wants_apron: bool = bool(opts.get("apron", APRON_ARCHETYPES.has(trade)))
 	if wants_apron:
 		if present.has(APRON):
 			_set_visible_by_name(meshes, APRON, true)
@@ -184,6 +292,21 @@ static func dress(root: Node3D, model_id: String, npc_id: String,
 	out["face"] = int(opts.get("face", rng.randi() % (FACE_COLS * FACE_ROWS)))
 	_bind_palettes(meshes)
 	out["face_offset"] = _set_face(meshes, int(out["face"]), model_id)
+
+	# --- 7. THE CLOTHES' COLOUR: archetype picks the page, seed picks the dye ---
+	# Drawn from its OWN seeded stream rather than the outfit's, so an `opts`
+	# override upstream (a forced face, a forced hood) cannot shift a citizen's
+	# colour. His dye is his and does not move.
+	var garb_rng := RandomNumberGenerator.new()
+	garb_rng.seed = garb_seed_for(npc_id)
+
+	out["garb_page"] = int(opts.get("garb_page", page_for(trade, npc_id)))
+	out["garb_offset"] = garb_page_offset(int(out["garb_page"]))
+	var upper: Color = DYES[garb_rng.randi() % DYES.size()]
+	var lower: Color = DYES[garb_rng.randi() % DYES.size()]
+	out["garb_tint"] = upper
+	out["garb_tint_lower"] = lower
+	_set_garb(meshes, int(out["garb_page"]), upper, lower, model_id)
 
 	return out
 
@@ -202,6 +325,46 @@ static func face_offset(index: int) -> Vector3:
 	var col: int = i % FACE_COLS
 	var row: int = (i / FACE_COLS) % FACE_ROWS
 	return Vector3(col * CELL_STRIDE.x, row * CELL_STRIDE.y, 0.0)
+
+
+## The seed a citizen's CLOTHES are coloured from. A separate stream from the
+## outfit seed on purpose: an opts override that changes how many numbers the
+## outfit draws must not repaint the man.
+static func garb_seed_for(npc_id: String) -> int:
+	return hash("citizen_dresser_garb|" + npc_id)
+
+
+## The atlas offset for a garb page, mirroring face_offset(). Public so a gate
+## can compute the expectation without duplicating the arithmetic it is
+## checking. Page 0 is the bottom-left and the page row counts UP, which is the
+## same convention garb_page_uv_offset() paints to in citizen_common.py.
+static func garb_page_offset(index: int) -> Vector3:
+	var pages: int = GARB_COLS * GARB_ROWS
+	var i: int = posmod(index, pages)
+	var col: int = i % GARB_COLS
+	var row: int = (i / GARB_COLS) % GARB_ROWS
+	return Vector3(col * GARB_STRIDE.x, row * GARB_STRIDE.y, 0.0)
+
+
+## The page a trade wears. Public because it is a design statement, not an
+## implementation detail: a guard is page 3 in every town, forever.
+##
+## A priest's page is his GOD's - the schedule record only ever says "priest",
+## and the deity is recorded in the npc_id, which is the only place the world
+## writes it down.
+static func page_for(archetype: String, npc_id: String) -> int:
+	var trade: String = archetype.to_lower()
+	if trade == "priest" or trade == "acolyte":
+		var lowered: String = npc_id.to_lower()
+		for deity: String in DEITY_PAGE.keys():
+			if lowered.contains(deity):
+				return int(DEITY_PAGE[deity])
+	if ARCHETYPE_PAGE.has(trade):
+		return int(ARCHETYPE_PAGE[trade])
+	# Unlisted: a varied townsman, not a clone of page 0.
+	var rng := RandomNumberGenerator.new()
+	rng.seed = garb_seed_for(npc_id)
+	return COMMONER_PAGES[rng.randi() % COMMONER_PAGES.size()]
 
 
 ## ============================================================================
@@ -248,6 +411,55 @@ static func _set_face(meshes: Array[MeshInstance3D], index: int, model_id: Strin
 	return offset
 
 
+## Slide every garb surface to its page and dye it. Two materials per citizen,
+## upper and lower, both duplicated per instance (law 2) - share them and the
+## whole town changes clothes together, which is the state this file shipped in.
+##
+## The two materials are built lazily and reused across the meshes in each slot,
+## so a citizen carries exactly two garb materials no matter how many garments
+## he wears, and every upper piece is guaranteed the same dye as every other.
+static func _set_garb(meshes: Array[MeshInstance3D], page: int, upper: Color,
+		lower: Color, model_id: String) -> Vector3:
+	var offset: Vector3 = garb_page_offset(page)
+	var made: Dictionary = {}
+	var slid: int = 0
+
+	for mi: MeshInstance3D in meshes:
+		var mesh: Mesh = mi.mesh
+		if mesh == null:
+			continue
+		for surface: int in mesh.get_surface_count():
+			var material: Material = mi.get_active_material(surface)
+			if material == null:
+				material = mesh.surface_get_material(surface)
+			var base := material as BaseMaterial3D
+			if base == null or not _rides_garb_atlas(base):
+				continue
+			var slot: String = "lower" if GARB_LOWER.has(String(mi.name)) else "upper"
+			if not made.has(slot):
+				var mine := base.duplicate() as BaseMaterial3D
+				mine.uv1_offset = offset
+				mine.albedo_color = lower if slot == "lower" else upper
+				mine.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+				made[slot] = mine
+			mi.set_surface_override_material(surface, made[slot] as BaseMaterial3D)
+			slid += 1
+
+	if slid == 0:
+		_warn_once(model_id, "no garb surface found to slide - every citizen on it wears one page")
+	return offset
+
+
+## Does this material sample the garb atlas? Texture identity first, exactly as
+## the face is matched, and for the same reason (law 3): the name drifts and the
+## pixels decide.
+static func _rides_garb_atlas(material: BaseMaterial3D) -> bool:
+	var texture: Texture2D = material.albedo_texture
+	if texture != null:
+		return texture.resource_path.contains("garb")
+	return material.resource_name.begins_with("garb")
+
+
 ## Does this material sample the face atlas? Texture identity, not resource
 ## name: the name is what drifts, and the pixels are what decide the skin.
 static func _rides_face_atlas(material: BaseMaterial3D) -> bool:
@@ -266,10 +478,17 @@ static func _is_face_material(material: Material) -> bool:
 	return false
 
 
-## Bind the three palettes the glTF export left off. Face gets its atlas so the
-## per-instance offset has pixels to move; garb and hair share one material each
-## because neither carries per-instance state in v1.
+## Bind the three palettes the glTF export left off, so the per-instance offsets
+## have pixels to move. Garb is bound but NOT shared - `_set_garb` duplicates it
+## per citizen straight afterwards, the same two-step the face already used.
 static func _bind_palettes(meshes: Array[MeshInstance3D]) -> void:
+	if _load_texture(GARB_PALETTE_PATH) == null:
+		# THE CAPABILITY-DEGRADATION LAW. Sixteen painted pages and fourteen dyes
+		# collapse to one flat colour with no atlas bound, and a citizen silently
+		# wearing page 0 forever is the fifteen-unused-helmets bug again.
+		_warn_once("garb_atlas", ("no garb atlas at %s - every citizen wears one flat "
+			+ "colour and neither page nor dye can be seen") % GARB_PALETTE_PATH)
+
 	for mi: MeshInstance3D in meshes:
 		var mesh: Mesh = mi.mesh
 		if mesh == null:
@@ -284,9 +503,9 @@ static func _bind_palettes(meshes: Array[MeshInstance3D]) -> void:
 			var name: String = base.resource_name
 
 			if name.begins_with("garb"):
-				mi.set_surface_override_material(surface, _palette(base, GARB_PALETTE_PATH, true))
+				mi.set_surface_override_material(surface, _garb_bound(base))
 			elif name.begins_with("hair"):
-				mi.set_surface_override_material(surface, _palette(base, HAIR_PALETTE_PATH, false))
+				mi.set_surface_override_material(surface, _palette(base, HAIR_PALETTE_PATH))
 			elif base.albedo_texture == null and _is_face_material(base):
 				# Per-instance: _set_face duplicates again on top of this, which
 				# is deliberate - the atlas must never be shared.
@@ -298,10 +517,27 @@ static func _bind_palettes(meshes: Array[MeshInstance3D]) -> void:
 					mi.set_surface_override_material(surface, mine)
 
 
-static func _palette(source: BaseMaterial3D, path: String, is_garb: bool) -> BaseMaterial3D:
-	var cached: BaseMaterial3D = _shared_garb if is_garb else _shared_hair
-	if cached != null:
-		return cached
+## Give the garb material its atlas. Per-instance, never cached: `_set_garb`
+## duplicates on top of this to apply the page and the dye, and a shared
+## material underneath would be one more chance for two citizens to end up
+## holding the same one.
+static func _garb_bound(source: BaseMaterial3D) -> BaseMaterial3D:
+	if source.albedo_texture != null:
+		return source
+	var texture: Texture2D = _load_texture(GARB_PALETTE_PATH)
+	if texture == null:
+		return source
+	var made := source.duplicate() as BaseMaterial3D
+	made.albedo_texture = texture
+	made.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	return made
+
+
+## Hair still shares one material for the whole game. It carries no per-instance
+## state yet; when hair colour becomes a roll it must follow garb, not stay here.
+static func _palette(source: BaseMaterial3D, path: String) -> BaseMaterial3D:
+	if _shared_hair != null:
+		return _shared_hair
 	if source.albedo_texture != null:
 		return source
 	var texture: Texture2D = _load_texture(path)
@@ -310,10 +546,7 @@ static func _palette(source: BaseMaterial3D, path: String, is_garb: bool) -> Bas
 	var made := source.duplicate() as BaseMaterial3D
 	made.albedo_texture = texture
 	made.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-	if is_garb:
-		_shared_garb = made
-	else:
-		_shared_hair = made
+	_shared_hair = made
 	return made
 
 
