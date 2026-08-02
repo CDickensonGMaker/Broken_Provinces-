@@ -1103,6 +1103,159 @@ because every deletion here is safer once the earlier batches have proved what i
 actually load-bearing. It ends on CLAUDE.md, which should be rewritten only after
 the code it describes has stopped moving.
 
+> **BATCH 5 DONE 8/2. The 50-task run is CLOSED.** All eight tasks landed,
+> nine commits (68 carries a deferred Batch 2 deletion in its own commit, and
+> the CLAUDE.md pass is the ninth). Validator held at **0 errors / 179
+> warnings**; all twelve check scenes green, including a new
+> `check_groups.tscn`; real headless boot to the title screen clean; a
+> hand-built pre-batch save loads.
+>
+> **Three of the eight were misdiagnosed, and the misdiagnosis was always in
+> the project's favour** - the thing the audit called broken was fine, and the
+> thing beside it was dead.
+>
+> **68, the headline, was right and CLAUDE.md was wrong about *why*.** Fog of
+> war is a live feature - it is `PlayerGPS.discovered_cells`, re-synced onto
+> `WorldGrid.CellInfo.discovered` when `scripts/ui/world_map.gd` opens.
+> `MapFogOfWar` had nothing to do with it: zero references repo-wide, no
+> script, scene, `.tres` or data file naming the class or its path, both
+> SaveManager hooks `pass` under a comment saying so, and `SaveData` still
+> allocating a `FogOfWarSaveData` to write `"fog_of_war": {}` into every save.
+> The class is deleted and the docs corrected to describe the map that exists.
+> **SAVE_VERSION 8 -> 9**, with a migration that erases the dead key rather
+> than carrying it, verified against a hand-written version-8 save: it loads,
+> does not crash, and re-saves without it.
+>
+> **The deferred Batch 2 deletion went with it.** `SaveManager.world_flags`
+> had five writers and zero readers. Each writer was resolved rather than
+> dropped blind: two were exact duplicates of a `DialogueManager.set_flag`
+> call on the same line, one (`_spawn_consequence_enemy`, whose comment says
+> "for level scripts to check") moved to WorldState where a level script can
+> actually see it, and one moved to FlagManager. `world.flags` is dropped by
+> the same 8 -> 9 migration. Five always-true guards went with the lines they
+> wrapped; the ratchet ceiling drops 304 -> 299.
+>
+> **69's "one string" was the wrong string.** The audit said to repoint the
+> minimap at `"doors"` and check the other direction; checking it changed the
+> fix. `"doors"` is also joined by `LockableDoor`, a house door, so the
+> repoint would have put portal icons on every lockable door in every town.
+> `ZoneDoor` joins `"zone_doors"` instead.
+>
+> **70 was wrong twice.** "The quest waypoint points at the world origin"
+> cannot happen - every caller already guards `if pos != Vector3.ZERO`. And
+> the subsystem those helpers belong to, `QuestNavigation` /
+> `get_tracked_quest_navigation` / `get_active_quests_with_positions`, has
+> **zero callers anywhere**; the live compass is
+> `hud_navigation._update_compass_quest_marker`, which resolves positions
+> itself and hides the marker when it finds nothing. 275 lines deleted.
+>
+> **71 is the batch's real deliverable.** Six dead group lookups, each fixed
+> by what the read was for rather than by reflex: `gladiators`, `game_menu`
+> and `guilds` got their joiners (the last via a QuestGiver setter, because
+> level scripts assign `faction_id` *after* spawn, so a line in `_ready()`
+> would have seen the default); `containers` was deleted as dead twice over
+> (no joiner, and no class implements the `has_item()` its branch requires);
+> `shrines` and `fast_travel` were dead aliases of rows already in the same
+> table; `portals` got two joiners.
+>
+> **And the day/night light, which is the largest silent behaviour change in
+> the batch.** `_get_light_level()` was a three-step fallback chain with all
+> three steps dead - `has_method("get_time_of_day_light")` on a method that
+> did not exist, then the `"sun"` group nothing joined, then a hardcoded 0.5.
+> **Enemy detection has never reflected the hour, at any hour: stealth at
+> midnight played exactly like noon.** DayNightCycle's light joins `"sun"`,
+> GameManager gained a real `get_time_of_day_light()` whose curve is
+> DayNightCycle's own energies normalised against noon, and the chain is
+> reordered so the sun group means "outdoors" rather than being a value
+> source - a cave at noon stays a cave.
+>
+> **`tools/check_groups.tscn` closes the class.** 566 files, 61 group names
+> read, 153 joined; any read with no joiner fails. It reproduced all six of
+> this batch's dead lookups before they were fixed, and a
+> `KNOWN_EXTERNAL_JOINS` entry that stops being needed fails as a stale
+> excuse. The rule is written down once in CLAUDE.md.
+>
+> **72, four orphans deleted.** The panels directory made the case: GameMenu
+> builds five tabs, two of which instantiate the class in `scripts/ui/panels/`
+> while Codex, Stats and Magic are hand-built inline - so three of the five
+> panel classes were the superseded half of a pair. `npc_dialogue_ui` is the
+> same shape against `dialogue_box.tscn`. Per the audit's own rule, the inline
+> versions stay.
+>
+> **73 is the one thing in this batch a player will feel.** Nine consumable
+> effects wrote a tooltip and applied nothing - `blessing_of_gaela` is 250
+> gold for "+3 Grit for 600s" and did nothing at all. CharacterData gained a
+> timed-buff container on the same clock as `conditions`; each buff lands in
+> the code that already does that job (stats through `get_effective_stat`,
+> armour through `get_total_armor_value`, damage in `apply_melee_damage`, the
+> resistances in the player's `take_damage`, invisibility as a stealth
+> multiplier). It serialises, the HUD shows it, and a probe drinks all six
+> shipped buff items through the real `use_item` path: Grit 4 -> 7, six of
+> six.
+>
+> **74 deleted five ItemData fields and 850 lines of data.** The literacy gate
+> is not "commented out pending a decision" - the block is labelled *"REMOVED:
+> Arcana Lore skill check - scrolls can now be read without skill
+> requirements"*, a decision already taken, so the fields go with it.
+> `shop_bundle_size` is superseded, not unbuilt: ShopUI already gives every row
+> a quantity spinner. A `.tres` carrying a property its script no longer
+> declares errors on load, so all 185 ItemData resources were stripped too;
+> verified by loading all 208 item resources headless.
+>
+> **75 was worse than the audit found.** It is not only that options were
+> inline and mid-game-only - the only settings that survived a restart were
+> the three volumes, and they survived by riding in the **save file**, via
+> `SaveData.audio_settings`. A player who set the volume on the title screen
+> lost it; a player with no save had no settings at all. `GameSettings` now
+> keeps preferences in `user://settings.cfg`, applied at boot in two phases
+> (GameManager is the first autoload and cannot see AudioManager or
+> DiceManager in its own `_ready()`). `OptionsMenu` is a BasePopupUI popup
+> opened from both the title's main menu and the pause menu, with display,
+> interface, audio, gameplay and a rebinding panel over the thirteen input
+> actions the game actually reads.
+>
+> **CLAUDE.md, last as planned.** Every section the audit listed as stale, in
+> its own commit: the "All Complete" systems table (now saying what a green
+> row means, which is "boots and passes its gate", never "is good"), the
+> Investigation TODO that had been done for some time, the agent table that
+> named five agents no loadable definition declares, and the Beads section
+> that mandated `bd` while seventy commits of audit work were tracked in
+> `production/`. Three new sections for what this batch built.
+>
+> **`.claude/hooks.json` was NOT touched, as instructed.** It is inert prose
+> naming six agents that do not exist, in a format Claude Code does not
+> execute - and it is Caleb's configuration. Same for `settings.json`'s
+> `auto_validate_on_edit` and `proactive_agents` keys, which are not schema
+> Claude Code reads. All three are now *described* accurately in CLAUDE.md so
+> nobody trusts them again, and none is changed.
+>
+> **One thing landed in this repo that was not this batch's work.** Commit
+> `a4e4bbd` "Adopt Godot 4.7 as the project engine version" was authored by a
+> concurrent session at 00:34, between task 72 and task 73, and flips
+> `config/features` from 4.5 to 4.7. It was left alone rather than reverted.
+> Every gate in this batch, before and after it, was run with the **4.5**
+> binary at `_tools\godot45` per the standing rule, and 4.5 still opens the
+> project - but this run has verified nothing about 4.7, and the standing rule
+> and that commit now disagree. **It needs Caleb's decision.**
+>
+> **Eye gate outstanding, as for every batch.** Nothing here was played. In
+> order of how differently the game behaves:
+> 1. **Stealth finally has a day and a night.** Every impression of detection,
+>    sneaking or enemy awareness formed before today was formed at a constant
+>    half light, at every hour, outdoors and in.
+> 2. **Buff potions work.** Six shipped items, including four blessings at
+>    250 gold, went from inert to real. Three numbers in that system were
+>    invented and are labelled in the source: the 50% resistance reduction, the
+>    0.15 invisibility multiplier, and clearing buffs on sleep.
+> 3. **The options screen exists and is reachable from the title**, so the
+>    window size, the volume and the keys are the player's for the first time.
+>    Nobody has clicked a single control in it.
+> 4. Minimap portal and guild icons appear where they never did; arena hazards
+>    can hit gladiators; companion hotkeys stop firing into an open menu.
+> 5. **The save format is version 9.** Saves from the milestone build load and
+>    migrate, proved headless - but proved by a probe, not by a player loading
+>    his own game.
+
 ### 68. `MapFogOfWar` is an orphan, and the save writes an empty dict for it — **S**
 - **System:** `scripts/map/map_fog_of_war.gd`, `save_manager.gd:1043-1053`,
   `scripts/data/save_data.gd:55,118,153`
@@ -1279,3 +1432,56 @@ list rather than an instinct:
 - **The Beads section** mandates `bd` for all task tracking. `.beads/` and the
   `bd` binary both exist, but this run's work was tracked in
   `production/` documents. Reconcile or retire the section.
+
+---
+
+## The 50-task run is CLOSED (8/2)
+
+All fifty tasks, 26 through 75, across five batches and roughly fifty commits
+in about thirty hours. Honestly:
+
+**What shipped.** Nine nonexistent-method call sites that reached a milestone
+build now resolve, and `check_autoload_api.tscn` resolves all 3,961 autoload
+member references so a tenth cannot ship. Every level in the game baked a
+navmesh with **zero** polygons before batch 1; every level that assigns one now
+bakes a real one, so enemies can path for the first time. The save file carries
+what the player earned - `total_ip_earned`, the crime return point, quest
+timers, three whole autoloads, follower state, flags and their context
+variables - and `check_serialization.tscn` round-trips 436 assertions through
+the real SaveManager pair on disk, because every save bug found was a class
+with a perfectly correct `to_dict` that SaveManager never called. Both guild
+ladders are completable, 67 dialogue conditions that silently passed now gate,
+two quests came back from the dead with the right givers, and the validator is
+a real pre-commit hook rather than honour-system. Melee routes through the
+combat system, so swords have crits, damage numbers and - for the first time -
+XP. The game makes noise: 84 of 117 audio events resolve and the other 33 are
+declared silent with manifest rows. And this batch deleted the fog-of-war
+system, the quest-navigation subsystem, four orphan UI classes, a fourth flag
+store and five ItemData fields, none of which anything referenced.
+
+**What was deferred, and where.** Design and story calls went to
+`docs/audits/wave_b_dispositions.md` - the melee damage retune batch 4's
+routing implies (3a), whether AmbientSoundscape is wired or deleted (3d), the
+two invented combat numbers (3e, 3f), whether death should offer a respawn, the
+`variable` objective type, and the consequences of a failed Deception. Content
+an agent must not invent stayed in `docs/audits/invention_manifest.md` - 27
+quests and 70 branches. Every asset routed around is a row in
+`docs/audits/art_replacement_manifest.md`. Inside the code, the things left
+undone are named where they live: 299 always-true `if Autoload:` guards behind
+a ratchet that can only fall, five levels that assign no navmesh at all, a
+quest chest from `spawn_on_accept` that is not respawned after a load, and
+`_quest_spawns` declared transient with its reason. `.claude/hooks.json` and
+two `settings.json` keys are inert and were left inert on purpose - they are
+Caleb's configuration, now accurately described rather than quietly rewritten.
+
+**What this run cannot tell you.** Every one of the fifty tasks was closed
+against a headless check, a validator or an instrumented boot. **Not one was
+closed against a person playing the game.** Five batches of findings say the
+project believed things about itself that were not true; the same caution
+applies to this document. Headless proof that a system loads, round-trips and
+fires its signals is not evidence that combat feels good, that the stealth that
+now has a night is fun at night, that 250-gold blessings are worth 250 gold, or
+that an open world with pathing enemies plays the way the last two months of
+work assumed. The single most important outstanding item in this project is
+still Caleb sitting down with a build and forming his own opinion - and it now
+matters more than it did on 8/1, because far more has changed underneath him.
