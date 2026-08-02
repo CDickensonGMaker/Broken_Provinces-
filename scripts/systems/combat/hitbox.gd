@@ -142,6 +142,11 @@ func _apply_hit(target: Node) -> void:
 		_apply_knockback(target)
 		return
 
+	# The unarmed/enemy path does not go through CombatManager, so it tests the
+	# hit line itself. An overlapping Area3D is not a clear swing.
+	if not CombatManager.has_hit_line(owner_entity, target):
+		return
+
 	# Calculate final damage (may be modified by backstab)
 	var final_damage: int = _calculate_backstab_damage(damage, owner_entity, target)
 

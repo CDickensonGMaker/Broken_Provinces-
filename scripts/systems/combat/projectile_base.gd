@@ -385,6 +385,12 @@ func _apply_aoe_damage() -> void:
 		if not enemy is Node3D:
 			continue
 
+		# get_enemies_in_range is a pure distance loop over the active list, so a
+		# blast damaged everything within the radius including whatever was on
+		# the far side of the wall it went off against.
+		if not CombatManager.has_hit_line(self, enemy):
+			continue
+
 		var dist := global_position.distance_to((enemy as Node3D).global_position)
 		var damage := base_damage
 

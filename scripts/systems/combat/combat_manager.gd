@@ -25,6 +25,13 @@ const CLEANUP_INTERVAL: float = 5.0
 ## PERFORMANCE: Raycast budget system - limit expensive LOS checks per frame
 const MAX_RAYCASTS_PER_FRAME := 5
 const LOS_MAX_RANGE := 50.0  # Skip raycasts for targets beyond this distance
+## Where the hit line is drawn from and to, in world units above each body's
+## origin. Chest height on a 1.6-unit capsule.
+const HIT_LINE_HEIGHT: float = 1.0
+
+## Below this separation the line is not tested at all. See has_hit_line.
+const HIT_LINE_MIN_RANGE: float = 1.5
+
 var _raycast_count_this_frame: int = 0
 var _last_known_los: Dictionary = {}  # Cache LOS results: "from_id:to_id" -> bool
 
@@ -179,6 +186,11 @@ func apply_melee_damage(
 	if randf() < crit_chance:
 		total_damage = int(total_damage * weapon.crit_multiplier)
 		critical_hit.emit(attacker, target)
+
+	# A swing through a wall is not a swing. Tested here rather than in the
+	# hitbox so every route into apply_melee_damage pays it.
+	if not has_hit_line(attacker, target):
+		return 0
 
 	# Check if attacker is BLINDED (-50% accuracy)
 	if _has_condition(attacker, Enums.Condition.BLINDED):
@@ -865,6 +877,57 @@ func has_line_of_sight(from_node: Node3D, to_node: Node3D) -> bool:
 	# Cache the result
 	_last_known_los[cache_key] = has_los
 	return has_los
+
+## THE HIT LINE. A blow only lands if there is unobstructed world between the
+## attacker and what it is hitting.
+##
+## Melee resolved purely by Area3D overlap plus, for enemies, a bare distance
+## comparison. A hitbox is a 1.5 x 1.0 x 2.5 box and a wall can be half a metre
+## thick, so an enemy standing inside a ruin wall hit the player through it, and
+## the player hit back through it. Caleb met both in the same fight.
+##
+## This is deliberately NOT has_line_of_sight(): that one is for AI, it caches,
+## and past MAX_RAYCASTS_PER_FRAME it returns a stale answer defaulting to false.
+## A budget that silently reports "no line" is fine for deciding whether to walk
+## somewhere and catastrophic for deciding whether a swing landed - in a busy
+## fight every hit after the fifth would evaporate. Damage always pays for its
+## own ray.
+##
+## Chest height on both ends, so a hip-high crate does not stop a sword and the
+## ground never does. Both bodies are excluded, so the attacker's own collider
+## and the target's cannot block the line into itself.
+func has_hit_line(attacker: Node, target: Node) -> bool:
+	var from_node := attacker as Node3D
+	var to_node := target as Node3D
+	if from_node == null or to_node == null:
+		return true  # Nothing positional to test; do not invent a miss.
+	if not is_instance_valid(from_node) or not is_instance_valid(to_node):
+		return false
+	if not from_node.is_inside_tree() or not to_node.is_inside_tree():
+		return true
+
+	var world: World3D = from_node.get_world_3d()
+	if world == null or world.direct_space_state == null:
+		return true
+
+	# Bodies this close are touching, and on sloping ground a chest-height ray
+	# over a short span can clip the hill they are both standing on. Nothing
+	# thick enough to matter fits between them at this range.
+	if from_node.global_position.distance_squared_to(to_node.global_position) 			< HIT_LINE_MIN_RANGE * HIT_LINE_MIN_RANGE:
+		return true
+
+	var lift := Vector3(0.0, HIT_LINE_HEIGHT, 0.0)
+	var query: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(
+		from_node.global_position + lift,
+		to_node.global_position + lift,
+		1  # Static world geometry only
+	)
+	query.exclude = [from_node.get_rid()] if from_node is CollisionObject3D else []
+	if to_node is CollisionObject3D:
+		query.exclude = query.exclude + [to_node.get_rid()]
+	query.collide_with_areas = false
+	return world.direct_space_state.intersect_ray(query).is_empty()
+
 
 ## Spawn a projectile from the pool
 func spawn_projectile(data: ProjectileData, source: Node, spawn_position: Vector3, direction: Vector3, target: Node3D = null) -> ProjectileBase:

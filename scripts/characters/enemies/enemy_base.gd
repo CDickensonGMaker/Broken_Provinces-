@@ -2286,10 +2286,18 @@ func _direct_hit_check(target: Node3D, dmg: int, dmg_type: Enums.DamageType) -> 
 
 	var distance := global_position.distance_to(target.global_position)
 
-	if distance <= hit_range:
-		hitbox.hit_targets.append(target)
-		if target.has_method("take_damage"):
-			target.take_damage(dmg, dmg_type, self)
+	if distance > hit_range:
+		return
+
+	# The comment above calls this the primary damage delivery method, and it was
+	# a bare distance comparison: an enemy on the far side of a half-metre wall,
+	# or one floor up, hit the player through it.
+	if not CombatManager.has_hit_line(self, target):
+		return
+
+	hitbox.hit_targets.append(target)
+	if target.has_method("take_damage"):
+		target.take_damage(dmg, dmg_type, self)
 
 func _end_attack() -> void:
 	is_attacking = false
@@ -2925,6 +2933,122 @@ func _apply_rat_direction_sprite() -> void:
 	# Apply horizontal flip
 	billboard_sprite.sprite.flip_h = flip_h
 
+## THE SPAWN SAFETY CONTRACT.
+##
+## Every enemy in the game arrives through one of the three factories below, and
+## until 8/2 none of them asked whether the position they were handed was inside
+## anything. The strongest test in the project was WildernessRoom's six-metre
+## spacing against sibling spawns and a ten-metre radius around a ruin's ORIGIN -
+## and a ruin is a scatter of CSG walls up to eight metres from its origin, so
+## skeletons stood inside them. Cursed totems place skeletons by blind polar
+## offset; encounters place them by walking a random bearing from the player;
+## hand-built levels use a marker or a hard-coded literal. All of it went in
+## untested, which is why Caleb met skeletons standing in walls and hit them
+## through the wall they were standing in.
+##
+## The body is a capsule of radius 0.5 and height 1.6, scaled by EnemyData.scale.
+## Static world geometry is collision layer 1 and nothing else is, so one shape
+## query answers the whole question.
+##
+## The search is bounded and DETERMINISTIC - no RNG, so a cell that streams twice
+## puts its enemies in the same places both times:
+##   1. the position as given;
+##   2. pushed out along the contact normal;
+##   3. eight compass bearings at 1.5, 3.0 and 5.0 units;
+##   4. lifted 1.0 and 2.0 units, in case the floor is what it is inside.
+## If none of the twenty-seven candidates is clear the enemy is NOT spawned, and
+## the caller is told why. An enemy that does not exist is a smaller bug than an
+## enemy embedded in a wall.
+const SPAWN_BODY_RADIUS: float = 0.5
+const SPAWN_BODY_HEIGHT: float = 1.6
+const SPAWN_NUDGE_RADII: Array[float] = [1.5, 3.0, 5.0]
+const SPAWN_LIFTS: Array[float] = [1.0, 2.0]
+const WORLD_COLLISION_LAYER: int = 1
+
+
+## Find a position near `local_pos` (in `parent`'s space) whose body capsule does
+## not overlap static world geometry. Returns the input unchanged when no physics
+## space is reachable, and Vector3.INF when nothing within reach is clear.
+static func find_safe_spawn(parent: Node, local_pos: Vector3, body_scale: float = 1.0) -> Vector3:
+	var parent_3d := parent as Node3D
+	if parent_3d == null or not parent_3d.is_inside_tree():
+		return local_pos
+	var world := parent_3d.get_world_3d()
+	if world == null:
+		return local_pos
+	var space: PhysicsDirectSpaceState3D = world.direct_space_state
+	if space == null:
+		return local_pos
+
+	var radius: float = SPAWN_BODY_RADIUS * body_scale
+	var shape := CapsuleShape3D.new()
+	shape.radius = radius
+	shape.height = maxf(SPAWN_BODY_HEIGHT * body_scale, radius * 2.0 + 0.01)
+
+	var query := PhysicsShapeQueryParameters3D.new()
+	query.shape = shape
+	query.collision_mask = WORLD_COLLISION_LAYER
+	query.collide_with_bodies = true
+	query.collide_with_areas = false
+
+	# The capsule's origin is its middle; the spawn position is the enemy's feet.
+	var centre_lift := Vector3(0.0, shape.height * 0.5, 0.0)
+	var to_global: Transform3D = parent_3d.global_transform
+
+	if _spawn_is_clear(space, query, to_global * (local_pos + centre_lift)):
+		return local_pos
+
+	# 2. Push out along the contact normal. One step of 2r clears a thin wall.
+	query.transform = Transform3D(Basis(), to_global * (local_pos + centre_lift))
+	var rest: Dictionary = space.get_rest_info(query)
+	if not rest.is_empty():
+		var normal: Vector3 = rest.get("normal", Vector3.ZERO)
+		normal.y = 0.0
+		if normal.length_squared() > 0.0001:
+			var pushed: Vector3 = local_pos + normal.normalized() * (radius * 4.0)
+			if _spawn_is_clear(space, query, to_global * (pushed + centre_lift)):
+				return pushed
+
+	# 3. Eight bearings, nearest ring first.
+	for ring: float in SPAWN_NUDGE_RADII:
+		for step: int in range(8):
+			var angle: float = float(step) * TAU / 8.0
+			var candidate: Vector3 = local_pos + Vector3(cos(angle), 0.0, sin(angle)) * ring
+			if _spawn_is_clear(space, query, to_global * (candidate + centre_lift)):
+				return candidate
+
+	# 4. Straight up, for the enemy that was placed under the floor.
+	for lift: float in SPAWN_LIFTS:
+		var candidate: Vector3 = local_pos + Vector3(0.0, lift, 0.0)
+		if _spawn_is_clear(space, query, to_global * (candidate + centre_lift)):
+			return candidate
+
+	return Vector3.INF
+
+
+static func _spawn_is_clear(
+	space: PhysicsDirectSpaceState3D,
+	query: PhysicsShapeQueryParameters3D,
+	global_centre: Vector3
+) -> bool:
+	query.transform = Transform3D(Basis(), global_centre)
+	return space.intersect_shape(query, 1).is_empty()
+
+
+## Resolve a spawn position or refuse the spawn. Returns Vector3.INF to refuse.
+static func _resolve_spawn(parent: Node, pos: Vector3, data: EnemyData, who: String) -> Vector3:
+	var body_scale: float = 1.0
+	if data and data.scale > 0.0:
+		body_scale = data.scale
+	var safe: Vector3 = find_safe_spawn(parent, pos, body_scale)
+	if safe == Vector3.INF:
+		push_warning("[EnemyBase] %s not spawned: no clear ground within 5 units of %s" % [who, pos])
+		return Vector3.INF
+	if safe != pos:
+		print("[EnemyBase] %s nudged out of geometry: %s -> %s" % [who, pos, safe])
+	return safe
+
+
 ## Static helper to spawn a billboard sprite enemy
 ## Returns the enemy instance with billboard sprite configured
 ## zone_danger: Zone danger level for stat scaling (1-10, default 1)
@@ -2948,7 +3072,11 @@ static func spawn_billboard_enemy(parent: Node, pos: Vector3, enemy_data_path: S
 	# IMPORTANT: Set position BEFORE add_child so _ready() gets the correct spawn_position
 	# This fixes the bug where enemies would walk back to (0,0,0) because spawn_position
 	# was being set to the wrong value
-	enemy.position = pos
+	var safe_pos: Vector3 = _resolve_spawn(parent, pos, data, "billboard enemy")
+	if safe_pos == Vector3.INF:
+		enemy.queue_free()
+		return null
+	enemy.position = safe_pos
 
 	# Add to scene (required for _ready to run)
 	parent.add_child(enemy)
@@ -2991,7 +3119,11 @@ static func spawn_mesh_enemy(parent: Node, pos: Vector3, enemy_data_path: String
 	enemy.zone_danger = p_zone_danger
 
 	# IMPORTANT: Set position BEFORE add_child so _ready() gets the correct spawn_position
-	enemy.position = pos
+	var safe_pos: Vector3 = _resolve_spawn(parent, pos, data, "mesh enemy")
+	if safe_pos == Vector3.INF:
+		enemy.queue_free()
+		return null
+	enemy.position = safe_pos
 
 	# Add to scene (mesh stays visible - no billboard sprite setup)
 	parent.add_child(enemy)
@@ -3033,7 +3165,11 @@ static func spawn_skeleton_enemy(parent: Node, pos: Vector3, enemy_data_path: St
 	enemy.zone_danger = p_zone_danger
 
 	# IMPORTANT: Set position BEFORE add_child so _ready() gets the correct spawn_position
-	enemy.position = pos
+	var safe_pos: Vector3 = _resolve_spawn(parent, pos, data, "skeleton")
+	if safe_pos == Vector3.INF:
+		enemy.queue_free()
+		return null
+	enemy.position = safe_pos
 
 	# Add to scene (required for _ready to run)
 	parent.add_child(enemy)

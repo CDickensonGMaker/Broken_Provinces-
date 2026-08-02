@@ -54,6 +54,11 @@ func _on_area_entered(area: Area3D) -> void:
 	if attacker == owner_entity:
 		return
 
+	# The hurtbox is a second, independent door into take_damage, so it tests the
+	# hit line too - otherwise blocking one path leaves the other open.
+	if not CombatManager.has_hit_line(attacker, owner_entity):
+		return
+
 	# Emit signal for UI/VFX purposes
 	hurt.emit(damage, damage_type, attacker)
 

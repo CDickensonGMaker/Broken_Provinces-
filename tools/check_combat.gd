@@ -14,6 +14,8 @@ extends Node
 ##       stamina is spent per blocked hit and the guard breaks at zero
 ##   C4  the verbs the combat identity ruling removed stay removed - no dodge,
 ##       no lock-on. The identity is Skyrim/Daggerfall, not Souls (Caleb, 8/2)
+##   C5  a blow does not pass through a wall, on either side of the fight
+##   C6  an enemy is never spawned inside static geometry
 ##
 ## C1 exists because melee paid armour twice for the whole of batch 4 - once in
 ## `apply_melee_damage` (honouring `armor_pierce`) and again in the receiver's
@@ -53,6 +55,10 @@ func _run() -> void:
 	_check_block()
 	await _settle()
 	_check_removed_verbs()
+	await _settle()
+	await _check_hit_line()
+	await _settle()
+	await _check_spawn_safety()
 
 	print("")
 	print("Checks run: %d" % _checks)
@@ -70,6 +76,7 @@ func _run() -> void:
 func _settle() -> void:
 	for _i: int in 3:
 		await get_tree().process_frame
+		await get_tree().physics_frame
 
 
 func _expect(condition: bool, message: String) -> void:
@@ -347,3 +354,105 @@ func _spawn_player() -> PlayerController:
 		return null
 	add_child(player)
 	return player
+
+
+## ============================================================================
+## C5. THE WALL
+## ============================================================================
+
+## A static box on the world layer, between the two of them.
+func _wall(at: Vector3, size: Vector3 = Vector3(0.6, 4.0, 8.0)) -> StaticBody3D:
+	var body := StaticBody3D.new()
+	body.collision_layer = 1
+	body.collision_mask = 0
+	var shape := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = size
+	shape.shape = box
+	body.add_child(shape)
+	add_child(body)
+	body.global_position = at
+	return body
+
+
+## Melee resolved by Area3D overlap and, for enemies, a bare distance check.
+## Both pass straight through a wall. Caleb was hit through one and hit back
+## through it in the same fight.
+func _check_hit_line() -> void:
+	var attacker := _probe_attacker()
+	var enemy := _probe_enemy(0)
+	var weapon := _flat_weapon(50)
+
+	attacker.global_position = Vector3(0, 0, 0)
+	enemy.global_position = Vector3(2.0, 0, 0)
+
+	var clear_damage: int = CombatManager.apply_melee_damage(
+		attacker, enemy, weapon, Enums.ItemQuality.AVERAGE)
+	_expect(clear_damage > 0, "C5: an unobstructed swing lands (got %d)" % clear_damage)
+	_expect(CombatManager.has_hit_line(attacker, enemy),
+		"C5: has_hit_line is true across open ground")
+
+	var wall := _wall(Vector3(1.0, 0, 0))
+	await _settle()
+	_expect(not CombatManager.has_hit_line(attacker, enemy),
+		"C5: has_hit_line is false through a wall")
+	var blocked_damage: int = CombatManager.apply_melee_damage(
+		attacker, enemy, weapon, Enums.ItemQuality.AVERAGE)
+	_expect(blocked_damage == 0,
+		"C5: a swing through a wall does nothing (got %d)" % blocked_damage)
+
+	# And the same wall in the other direction: fairness cuts both ways.
+	_expect(not CombatManager.has_hit_line(enemy, attacker),
+		"C5: the wall blocks the enemy's swing too")
+
+	wall.queue_free()
+	attacker.queue_free()
+	enemy.queue_free()
+
+
+## ============================================================================
+## C6. NOTHING SPAWNS INSIDE A WALL
+## ============================================================================
+
+func _check_spawn_safety() -> void:
+	var room := Node3D.new()
+	add_child(room)
+	await _settle()
+
+	# A pillar three units across, centred on the origin of the room - the shape
+	# a ruin wall or a totem actually is.
+	var slab := _wall(Vector3.ZERO, Vector3(3.0, 6.0, 3.0))
+	slab.reparent(room)
+	slab.position = Vector3.ZERO
+	await _settle()
+
+	var inside: Vector3 = EnemyBase.find_safe_spawn(room, Vector3.ZERO, 1.0)
+	_expect(inside != Vector3.ZERO,
+		"C6: a position inside a slab is not returned unchanged")
+	_expect(inside != Vector3.INF,
+		"C6: a way out of a 3-unit pillar is found (got %s)" % inside)
+
+	var enemy: EnemyBase = EnemyBase.spawn_skeleton_enemy(room, Vector3.ZERO)
+	_expect(enemy != null, "C6: the skeleton still spawns")
+	if enemy != null:
+		_expect(enemy.position != Vector3.ZERO,
+			"C6: the skeleton is not left standing in the slab (at %s)" % enemy.position)
+		enemy.queue_free()
+
+	# A slab wider than the whole search refuses the spawn rather than burying it.
+	var vault := _wall(Vector3(200.0, 0, 200.0), Vector3(40.0, 8.0, 40.0))
+	vault.reparent(room)
+	vault.position = Vector3(200.0, 0.0, 200.0)
+	await _settle()
+	_expect(EnemyBase.find_safe_spawn(room, Vector3(200.0, 0.0, 200.0), 1.0) == Vector3.INF,
+		"C6: a position with no way out refuses rather than spawning embedded")
+	_expect(EnemyBase.spawn_skeleton_enemy(room, Vector3(200.0, 0.0, 200.0)) == null,
+		"C6: and the factory returns null rather than a buried enemy")
+
+	# Open ground is left exactly alone - the safety net must not drift a spawn
+	# that was already fine, or hand-placed markers stop meaning anything.
+	var clear_spot := Vector3(40.0, 0.0, 40.0)
+	_expect(EnemyBase.find_safe_spawn(room, clear_spot, 1.0) == clear_spot,
+		"C6: a clear position is returned unchanged")
+
+	room.queue_free()
