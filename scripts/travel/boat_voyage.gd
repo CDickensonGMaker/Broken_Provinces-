@@ -461,7 +461,7 @@ func _update_ghost_growls(delta: float) -> void:
 				"res://assets/audio/sfx/monsters/mid_growl.wav"
 			]
 			var sound_path: String = growl_sounds[randi() % growl_sounds.size()]
-			AudioManager.play_sound_3d(sound_path, growler.global_position, -5.0)
+			AudioManager.play_sfx_3d(sound_path, growler.global_position, -5.0)
 
 
 ## Update kraken/sea monster ambient sounds
@@ -483,7 +483,7 @@ func _update_kraken_sounds(delta: float) -> void:
 		if tentacle.enemy_data and not tentacle.enemy_data.idle_sounds.is_empty():
 			AudioManager.play_enemy_sound(tentacle.enemy_data.idle_sounds, tentacle.global_position, 0.0)
 		else:
-			AudioManager.play_sound_3d("res://assets/audio/sfx/monsters/low_growl.wav", tentacle.global_position, -3.0)
+			AudioManager.play_sfx_3d("res://assets/audio/sfx/monsters/low_growl.wav", tentacle.global_position, -3.0)
 
 
 func _input(event: InputEvent) -> void:
@@ -1829,7 +1829,7 @@ func _tentacle_sweep_attack(tentacle: EnemyBase) -> void:
 	if tentacle.enemy_data and not tentacle.enemy_data.attack_sounds.is_empty():
 		AudioManager.play_enemy_sound(tentacle.enemy_data.attack_sounds, tentacle.global_position, 3.0)
 	else:
-		AudioManager.play_sound_3d("res://assets/audio/sfx/monsters/mid_growl.wav", tentacle.global_position, 0.0)
+		AudioManager.play_sfx_3d("res://assets/audio/sfx/monsters/mid_growl.wav", tentacle.global_position, 0.0)
 
 	# Wind-up: visual pulse on the sprite child
 	if tentacle.has_node("BillboardSprite"):
@@ -1870,7 +1870,7 @@ func _tentacle_lunge_attack(tentacle: EnemyBase) -> void:
 	if tentacle.enemy_data and not tentacle.enemy_data.attack_sounds.is_empty():
 		AudioManager.play_enemy_sound(tentacle.enemy_data.attack_sounds, tentacle.global_position, 3.0)
 	else:
-		AudioManager.play_sound_3d("res://assets/audio/sfx/monsters/low_growl.wav", tentacle.global_position, 0.0)
+		AudioManager.play_sfx_3d("res://assets/audio/sfx/monsters/low_growl.wav", tentacle.global_position, 0.0)
 
 	var original_pos: Vector3 = tentacle.global_position
 	var target_pos: Vector3 = player.global_position

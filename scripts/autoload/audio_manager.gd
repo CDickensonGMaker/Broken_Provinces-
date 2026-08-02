@@ -657,6 +657,37 @@ func play_melee_hit_sound_3d(position: Vector3) -> void:
 	var sound_path := "res://assets/audio/sfx/weapons/sword_clank_%d.wav" % sound_index
 	play_sfx_3d(sound_path, position, 0.0)
 
+## Play a sound named from data - the PLAY_SOUND dialogue action's param_string.
+## Accepts a res:// path, an EVENTS key, or one of the named UI wrappers.
+func play_ui_sound(sound_name: String) -> void:
+	if sound_name.is_empty():
+		return
+
+	if sound_name.begins_with("res://"):
+		play_sfx(sound_name)
+		return
+
+	match sound_name:
+		"select", "menu_select", "ui_select":
+			play_ui_select()
+			return
+		"confirm", "accept", "menu_confirm", "ui_accept":
+			play_ui_confirm()
+			return
+		"cancel", "menu_cancel":
+			play_ui_cancel()
+			return
+		"open", "menu_open":
+			play_ui_open()
+			return
+		"close", "menu_close":
+			play_ui_close()
+			return
+
+	if not play_event(sound_name):
+		push_warning("AudioManager: play_ui_sound could not resolve '%s'" % sound_name)
+
+
 func play_ui_open() -> void:
 	play_sfx("res://assets/audio/sfx/ui_open.wav", -3.0, 0.0)
 
