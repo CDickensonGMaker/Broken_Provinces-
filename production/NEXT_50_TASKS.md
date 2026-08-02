@@ -143,6 +143,63 @@ this list can be trusted until the boot and the basic verbs stop throwing —
 Batch 4's combat work in particular is unmeasurable while the nav regions in 14
 levels are rejected.
 
+> **BATCH 1 DONE 8/1.** All ten tasks landed, ten commits. Validator held at
+> 0 errors / 228 warnings; all seven pre-existing check scenes green, plus two
+> new ones (`check_navmesh.tscn`, `check_autoload_api.tscn`).
+>
+> **26–32, the broken calls.** Nine sites across seven files repaired against
+> the real APIs: `InventoryManager.gold` for the three gold gates,
+> `make_check`/`speech_check` for the four dice sites, `change_scene` and
+> `return_to_wilderness` for the two SceneManager sites,
+> `PlayerGPS.current_location_id` for the escort, `FlagManager.set_flag` for
+> the betrayal record, `play_sfx_3d` for the four sea-monster growls (whose
+> files do exist on disk, so they go from throwing to audible). Two members
+> genuinely had to be written: `ConversationSystem.get_last_scripted_choice_index()`
+> and `AudioManager.play_ui_sound()`.
+>
+> **28 was misdiagnosed.** The audit expected ConversationSystem to already
+> hold the choice index. It holds the LINE index, and `_end_scripted_dialogue()`
+> zeroes it before the callback runs, so a real field was needed. Worse, all
+> three jail doors were comparing the getter's result against their choices'
+> `next_index` values rather than the ordinal the UI passes — a working getter
+> alone would have picked the lock when the player asked to examine it. The
+> call sites were corrected too.
+>
+> **33 was misdiagnosed in the project's favour and against it at once.** The
+> `cell_size` mismatch was real and is fixed — sunken_crypt boots with zero
+> `nav_region_3d.cpp` error lines where it had two. But fixing it did not make
+> one of those fourteen levels pathable, and the thirty-two the audit called
+> correct were not pathable either. Measured by booting all 51 level scenes and
+> reading the baked mesh back: **before this batch every level in the game baked
+> polygons = 0.** Two further causes, both proven by instrumented boot: all 45
+> level scripts leave `geometry_source_geometry_mode` at ROOT_NODE_CHILDREN,
+> which parses the region's own children, of which every region in this project
+> has none; and the four CSG-built levels plus falkenhaften bake before their
+> geometry exists. Elder Moor went 0 → 1998 polygons on the first fix alone.
+> Every level that assigns a navmesh now bakes a real one. Five assign none at
+> all (bandit_hideout_level_1/2, cultist_ruins_corner, cultist_temple,
+> cultist_temple_2) — a different bug, recorded, not invented around.
+>
+> **35 found two more of the same class the audit missed**, both under an
+> always-true guard: `QuestManager.active_quests` (the harbour route list) and
+> `TournamentManager.end_tournament` (dev scene). It resolves 3,797 autoload
+> member references and skips the ten that sit behind a correct
+> `has_method`/`has_signal` test.
+>
+> **34 was not executed as written.** 313 always-true guards remain. Dedenting
+> 313 blocks across 117 files, several with `else:` fallbacks, unplayed, is a
+> worse risk than the no-ops it removes. The rule is written down once in
+> CLAUDE.md and the count is ratcheted in `check_autoload_api.tscn` — it can
+> fall, never rise.
+>
+> **Eye gate outstanding.** Not one line of this was played. Specifically:
+> enemies can path in these levels for the first time, so any impression of AI
+> or difficulty formed before today was formed with pathing switched off. And
+> `crossroads_ruins` now emits a "more than 2 edges occupy the same
+> rasterization space" navmesh-quality error — a complaint about overlapping
+> level geometry that could only appear once a navmesh existed. It wants a
+> geometry pass, not a nav pass.
+
 ### 26. `InventoryManager.get_gold()` does not exist — 3 call sites — **S**
 - **System:** `scripts/autoload/boat_travel_manager.gd:659`,
   `scripts/autoload/fast_travel_manager.gd:408`,
