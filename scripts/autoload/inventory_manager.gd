@@ -662,21 +662,6 @@ func _use_scroll(item: ItemData) -> bool:
 				hud.show_notification("You already know this spell!")
 			return false
 
-	# REMOVED: Arcana Lore skill check - scrolls can now be read without skill requirements
-	# var player_data := GameManager.player_data
-	# if player_data:
-	# 	var arcana_lore: int = player_data.get_skill(Enums.Skill.ARCANA_LORE)
-	# 	# Simple check: arcana_lore must be >= literacy_dc / 5 (scaled down)
-	# 	@warning_ignore("integer_division")
-	# 	var required_skill := item.literacy_dc / 5
-	# 	if arcana_lore < required_skill:
-	# 		push_warning("Insufficient Arcana Lore to read scroll. Need: %d, Have: %d" % [required_skill, arcana_lore])
-	# 		# Show notification for insufficient skill
-	# 		var hud = GameManager.get_tree().get_first_node_in_group("hud")
-	# 		if hud and hud.has_method("show_notification"):
-	# 			hud.show_notification("You lack the Arcana Lore to read this scroll!")
-	# 		return false
-
 	# Learn the spell
 	if spell_caster.learn_spell_by_id(item.teaches_spell_id):
 		# Show notification for new spell learned

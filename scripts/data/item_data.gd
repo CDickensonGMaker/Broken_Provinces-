@@ -88,7 +88,6 @@ enum ConsumableEffect {
 @export var item_type: ItemType = ItemType.CONSUMABLE
 @export var is_stackable: bool = true
 @export var max_stack: int = 99
-@export var shop_bundle_size: int = 1  # How many you get when buying from a shop
 
 @export_group("Consumable Effects")
 @export var consumable_effect: ConsumableEffect = ConsumableEffect.NONE
@@ -98,8 +97,6 @@ enum ConsumableEffect {
 
 @export_group("Scroll Properties")
 @export var teaches_spell_id: String = ""  # For spell scrolls
-@export var requires_literacy: bool = true
-@export var literacy_dc: int = 10  # Difficulty check to read
 
 @export_group("Repair Kit Properties")
 @export var repair_amount: int = 30  # How much durability to restore
@@ -118,9 +115,7 @@ enum ConsumableEffect {
 @export var weight: float = 0.1
 
 @export_group("Visuals")
-@export var icon_path: String = ""
 @export var mesh_path: String = ""
-@export var use_sound: String = ""
 
 ## Roll effect value (for potions etc.)
 func roll_effect() -> int:
