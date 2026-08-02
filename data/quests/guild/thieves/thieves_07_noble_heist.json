@@ -32,9 +32,18 @@
       "target": "emberlyn_suspicious_guest",
       "required_count": 1,
       "is_optional": true,
-      "skill_check": {"skill": "deception", "dc": 14},
+      "skill_check": {
+        "skill": "deception",
+        "dc": 14,
+        "lied_to": "emberlyn_suspicious_guest",
+        "failure": {
+          "disposition": 30,
+          "flags": ["thieves_emberlyn_enemy"],
+          "message": "The guest's smile goes flat. They have your face now, and your story."
+        }
+      },
       "description": "Talk your way past a guest who's noticed you",
-      "notes": "The challenge.skill_checks phase \"if_questioned\", made real. Optional, so a failed lie never strands the heist."
+      "notes": "The challenge.skill_checks phase \"if_questioned\", made real. Optional, so a failed lie never strands the heist. The failure block honours challenge.detection_consequences (\"Identified as thief, bounty placed, quest failure\") as far as it can be honoured without stranding the quest: double the default disposition hit, and the Emberlyn enmity flag the quest already declares. Quest failure is deliberately NOT honoured - the objective is optional for exactly that reason. The bounty half is unwired, and needs a ruling on whether a blown lie at a party is a witnessed crime."
     },
     {
       "id": "obj_steal_sapphire",

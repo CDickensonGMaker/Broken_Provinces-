@@ -60,6 +60,18 @@ const DISPOSITION_WARM: int = 60
 const DISPOSITION_FRIENDLY: int = 75
 const DISPOSITION_ALLIED: int = 90
 
+## Prefix of the flag raised when an NPC catches the player in a lie. The full
+## flag is `caught_lying_<npc_id>`, and it lives on ConversationSystem's own
+## flags - so `FLAG_SET` dialogue conditions and this file's greeting selection
+## can both read it, and it rides the save with every other conversation flag.
+const CAUGHT_LYING_FLAG_PREFIX: String = "caught_lying_"
+
+## Default disposition a caught lie costs. One full disposition category: a
+## neutral NPC (50) drops to "cool" (35), a warm one loses their warmth. Large
+## enough that the player feels the door close, small enough that two bad lies
+## do not make an NPC permanently hostile. Quests may author a harsher number.
+const CAUGHT_LYING_DISPOSITION_PENALTY: int = 15
+
 ## Maps a lowercase archetype token (parsed from career_greetings/career_topics
 ## response_ids) to its NPCKnowledgeProfile.Archetype value. Used to route that
 ## content into archetype_pools / tag it with required_archetype at load time.
@@ -964,6 +976,14 @@ func get_greeting() -> String:
 	var profile: NPCKnowledgeProfile = current_context.npc_profile
 	var disposition: int = current_context.disposition
 
+	# An NPC who caught the player lying opens on that, every time, before any
+	# pooled small talk. This is where a failed Deception check becomes visible.
+	var npc_id: String = ""
+	if is_instance_valid(current_npc):
+		npc_id = _get_npc_id(current_npc)
+	if was_caught_lying(npc_id):
+		return _get_caught_lying_greeting(disposition)
+
 	# Filter greetings by disposition
 	var filtered := _filter_responses(greeting_pool, profile, disposition)
 	if filtered.is_empty():
@@ -990,6 +1010,18 @@ func _get_fallback_greeting(disposition: int) -> String:
 		return "What do you want?"
 	else:
 		return "Make it quick."
+
+
+## Greeting from an NPC who has caught the player lying. Written flat rather
+## than pooled because it must fire for any NPC, including one with no unique
+## content of their own.
+func _get_caught_lying_greeting(disposition: int) -> String:
+	if disposition < DISPOSITION_UNFRIENDLY:
+		return "You've a nerve bringing that face back here. I know what comes out of your mouth."
+	elif disposition < DISPOSITION_NEUTRAL:
+		return "You. I remember the story you told me. Say your piece, and keep it short."
+	else:
+		return "I know you lied to me. Speak plainly this time."
 
 
 ## Get a farewell based on current context (disposition, personality)
@@ -1082,6 +1114,34 @@ func set_disposition(npc_id: String, value: int) -> void:
 	var clamped := clampi(value, MIN_DISPOSITION, MAX_DISPOSITION)
 	var flag_key := "disposition:" + npc_id
 	set_flag(flag_key, clamped)
+
+
+## Record that `npc_id` caught the player lying to them.
+##
+## The consequence of a failed Deception check, ruled 8/2: the NPC thinks less
+## of the player, and remembers. `penalty` is a magnitude - the sign is ignored,
+## because this never raises disposition.
+func record_caught_lying(npc_id: String, penalty: int = CAUGHT_LYING_DISPOSITION_PENALTY) -> void:
+	if npc_id.is_empty():
+		return
+
+	modify_disposition(npc_id, -absi(penalty))
+	set_flag(CAUGHT_LYING_FLAG_PREFIX + npc_id, true)
+
+
+## Has this NPC caught the player in a lie?
+func was_caught_lying(npc_id: String) -> bool:
+	if npc_id.is_empty():
+		return false
+	return has_flag(CAUGHT_LYING_FLAG_PREFIX + npc_id)
+
+
+## Forget a caught lie. Nothing calls this yet - it exists so a quest or an
+## apology can clear the mark without reaching into the flag name by hand.
+func clear_caught_lying(npc_id: String) -> void:
+	if npc_id.is_empty():
+		return
+	clear_flag(CAUGHT_LYING_FLAG_PREFIX + npc_id)
 
 
 ## Get disposition category name for an NPC

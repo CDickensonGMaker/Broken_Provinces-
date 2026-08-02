@@ -2137,7 +2137,12 @@ FactionManager.add_ongoing_effect("millbrook_extortion", {
     "faction": "millbrook",                # required except for "gold"
     "amount": 25,                          # applied every day, sign matters
     "reason_display": "The camp's share",  # for notifications and UI
-    "source": "bandit_boss"                # tag so one arrangement clears together
+    "source": "bandit_boss",               # tag so one arrangement clears together
+    "days": 7                              # optional: a sentence, not a standing
+                                           # debt. Retires itself after the last
+                                           # day it is felt. Omit for "forever",
+                                           # which is what every effect written
+                                           # before 8/2 does.
 }) -> bool                                 # false if malformed; nothing half-registers
 
 FactionManager.clear_ongoing_effect(effect_id) -> bool
@@ -3013,10 +3018,44 @@ These features are deferred until after initial playtest release:
 - Still unbuilt: hidden chests in *wilderness* cells (hand-placed ones work).
 
 **Deception (HIGH RISK/REWARD):**
-- Deception skill checks should have CONSEQUENCES for failure
-- Higher rewards for successful deception checks
-- TODO: Implement failure consequences (hostility, combat, reputation loss)
-- TODO: Implement success rewards (extra gold, better info, exclusive options)
+
+**Failure now costs something (ruled and built 8/2).** A failed Deception check
+made through a `QuestInteractable` drops the lied-to NPC's disposition by
+`ConversationSystem.CAUGHT_LYING_DISPOSITION_PENALTY` (15 - one full
+disposition category) and raises `caught_lying_<npc_id>` on ConversationSystem.
+Every other skill still costs the attempt and nothing more.
+
+The flag is visible in two places, both of which already existed: that NPC's
+greeting opens on the lie from then on (`ConversationSystem.get_greeting()`),
+and `FLAG_SET` dialogue conditions can read the flag by name. The mark rides
+the save with the rest of the conversation flags.
+
+```gdscript
+ConversationSystem.record_caught_lying(npc_id, penalty := 15)
+ConversationSystem.was_caught_lying(npc_id) -> bool
+ConversationSystem.clear_caught_lying(npc_id)
+```
+
+Who was lied to: the objective's authored `lied_to`, else the interactable's
+`lied_to_npc` export, else `object_id` - a social check's object is named for
+the person by convention. A quest may author something harsher in the
+objective's `skill_check`:
+
+```json
+"skill_check": {"skill": "deception", "dc": 14,
+                "lied_to": "emberlyn_suspicious_guest",
+                "failure": {"disposition": 30,
+                            "flags": ["thieves_emberlyn_enemy"],
+                            "message": "The guest's smile goes flat."}}
+```
+
+Objectives carrying a skill check stay `is_optional`, so a blown lie can never
+strand a quest - which is why `thieves_07_noble_heist`'s authored
+"quest failure" on detection is deliberately not honoured.
+
+- Still open: success rewards (extra gold, better info, exclusive options)
+- Still open: Deception outside `QuestInteractable` - dialogue skill checks
+  route through DialogueManager and do not mark the liar
 
 ---
 

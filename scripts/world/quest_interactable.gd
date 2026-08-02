@@ -28,6 +28,11 @@ extends StaticBody3D
 @export var check_skill: Enums.Skill = Enums.Skill.LOCKPICKING
 ## Line shown when the check beats the player.
 @export_multiline var check_failed_message: String = "It holds."
+## Who the player is lying to, when the check is a Deception check. Left empty,
+## the object falls back to the objective's authored `lied_to`, then to
+## `object_id` - because an object a lie is told at is named for the person by
+## convention ("emberlyn_suspicious_guest"), not for a lever.
+@export var lied_to_npc: String = ""
 ## Line shown when required_flag is missing.
 @export_multiline var locked_message: String = "Not yet."
 ## Whether using it consumes it.
@@ -125,16 +130,18 @@ func interact(_interactor: Node) -> void:
 ## is none, or when the player beats it.
 ##
 ## Deliberately does not consume or break a lockpick - this is a quest object,
-## not a loot container, and a broken pick must never strand a quest. A failure
-## costs the attempt and nothing else, for the same reason.
+## not a loot container, and a broken pick must never strand a quest. A failed
+## check costs the attempt and nothing else - except a failed LIE, which the
+## 8/2 ruling gave teeth; see `_on_check_failed`.
 func _pass_skill_check() -> bool:
 	var skill: Enums.Skill = check_skill
 	var dc: int = check_dc
+	var authored: Dictionary = {}
 
 	# No DC on the object? Ask the quest. This is the path that makes a quest's
 	# authored skill_check real without anyone editing a scene.
 	if dc <= 0 and not object_id.is_empty() and QuestManager:
-		var authored: Dictionary = QuestManager.get_objective_skill_check("interact", object_id)
+		authored = QuestManager.get_objective_skill_check("interact", object_id)
 		if not authored.is_empty():
 			dc = int(authored.get("dc", 0))
 			var named: int = DiceManager.skill_from_string(String(authored.get("skill", "")))
@@ -164,8 +171,61 @@ func _pass_skill_check() -> bool:
 	if bool(result.get("success", false)):
 		return true
 
-	_notify(check_failed_message)
+	_on_check_failed(skill, authored)
 	return false
+
+
+## What a failed check costs.
+##
+## Every skill but one costs the attempt and nothing else. DECEPTION is the
+## exception, ruled 8/2: the NPC lied to thinks less of the player and remembers
+## it, so the anti-repeat/greeting path in ConversationSystem can surface the
+## mark. The objective stays optional, so no lie can strand a quest.
+##
+## A quest may author something harsher in its objective's `skill_check`:
+##
+##     "skill_check": {"skill": "deception", "dc": 14,
+##                     "lied_to": "emberlyn_suspicious_guest",
+##                     "failure": {"disposition": 30,
+##                                 "flags": ["thieves_heist_identified"],
+##                                 "message": "The guest's smile goes flat."}}
+##
+## `disposition` is a magnitude, `flags` land on FlagManager where a quest's
+## other paperwork lives, and `message` replaces `check_failed_message`.
+func _on_check_failed(skill: Enums.Skill, authored: Dictionary) -> void:
+	if skill != Enums.Skill.DECEPTION:
+		_notify(check_failed_message)
+		return
+
+	var failure: Dictionary = {}
+	var authored_failure: Variant = authored.get("failure", {})
+	if authored_failure is Dictionary:
+		failure = authored_failure
+
+	var npc_id: String = _resolve_lied_to_npc(authored)
+	var penalty: int = int(failure.get("disposition", ConversationSystem.CAUGHT_LYING_DISPOSITION_PENALTY))
+	ConversationSystem.record_caught_lying(npc_id, penalty)
+
+	var authored_flags: Variant = failure.get("flags", [])
+	if authored_flags is Array:
+		for entry: Variant in authored_flags as Array:
+			var flag_name: String = String(entry).strip_edges()
+			if not flag_name.is_empty():
+				FlagManager.set_flag(flag_name)
+
+	_notify(String(failure.get("message", check_failed_message)))
+
+
+## Who the lie was told to: the quest's authored `lied_to`, this object's
+## exported override, or the object's own id - which by convention names the
+## person a social check stands in front of.
+func _resolve_lied_to_npc(authored: Dictionary) -> String:
+	var authored_id: String = String(authored.get("lied_to", "")).strip_edges()
+	if not authored_id.is_empty():
+		return authored_id
+	if not lied_to_npc.is_empty():
+		return lied_to_npc
+	return object_id
 
 
 func _notify(message: String) -> void:
