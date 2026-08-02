@@ -66,6 +66,12 @@ func _ready() -> void:
 		CellStreamer.cell_loaded.connect(_on_cell_loaded)
 	if not GameManager.is_connected("game_resumed", _on_game_resumed):
 		GameManager.game_resumed.connect(_on_game_resumed)
+	if not SceneManager.scene_load_started.is_connected(_on_scene_load_started):
+		SceneManager.scene_load_started.connect(_on_scene_load_started)
+
+
+func _on_scene_load_started(_scene_path: String) -> void:
+	_tracked.clear()
 
 
 ## ============================================================================
@@ -522,8 +528,12 @@ func refresh_all(hour: int = -1) -> void:
 	# NPCs already taken out of the world are no longer in the "npcs" group, so
 	# the sweep above cannot bring them back. Walk the tracked set for those.
 	for npc_id: String in _tracked.keys():
-		var node: Node3D = _tracked[npc_id] as Node3D
-		if not is_instance_valid(node):
+		var raw: Variant = _tracked[npc_id]
+		if not is_instance_valid(raw):
+			_tracked.erase(npc_id)
+			continue
+		var node: Node3D = raw as Node3D
+		if node == null:
 			_tracked.erase(npc_id)
 			continue
 		if not node.visible:
