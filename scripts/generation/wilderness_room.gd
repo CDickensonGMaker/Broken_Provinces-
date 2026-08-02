@@ -1391,6 +1391,7 @@ func _spawn_environment() -> void:
 	var fallen_tree_count := 0
 	var hillcross_count := 0
 	var mushroom_count := 0  # Harvestable mushrooms
+	var cliff_count := 0     # Large static outcrops, rocky biomes only
 
 	match biome:
 		Biome.FOREST:
@@ -1423,6 +1424,7 @@ func _spawn_environment() -> void:
 			grass_count = rng.randi_range(15, 22) # Moderate grass
 			mushroom_count = rng.randi_range(3, 7)   # Some mushrooms in shaded areas
 			hillcross_count = 1 if rng.randf() < 0.06 else 0  # 6% chance - hilltop crosses (reduced)
+			cliff_count = 1 if rng.randf() < 0.35 else 0   # An outcrop breaks a hill line
 		Biome.ROCKY:
 			tree_count = rng.randi_range(2, 5)    # Very sparse
 			bush_count = rng.randi_range(5, 10)   # Few bushes
@@ -1430,6 +1432,7 @@ func _spawn_environment() -> void:
 			grass_count = rng.randi_range(5, 10)  # Very sparse grass
 			mushroom_count = rng.randi_range(1, 3)   # Very few mushrooms
 			hillcross_count = 1 if rng.randf() < 0.04 else 0  # 4% chance - rare mountain memorial (reduced)
+			cliff_count = rng.randi_range(2, 4)   # The biome's silhouette
 		Biome.DESERT:
 			tree_count = rng.randi_range(3, 7)    # Cacti stand alone
 			bush_count = rng.randi_range(4, 9)    # Dry scrub
@@ -1451,6 +1454,7 @@ func _spawn_environment() -> void:
 			grass_count = rng.randi_range(8, 14)
 			mushroom_count = rng.randi_range(4, 9)
 			hillcross_count = 1 if rng.randf() < 0.05 else 0
+			cliff_count = rng.randi_range(1, 3)   # Outcrops through the canopy
 		Biome.ROCKY_PLAINS:
 			tree_count = rng.randi_range(4, 9)
 			bush_count = rng.randi_range(6, 12)
@@ -1458,6 +1462,7 @@ func _spawn_environment() -> void:
 			grass_count = rng.randi_range(12, 20)
 			mushroom_count = rng.randi_range(1, 4)
 			hillcross_count = 1 if rng.randf() < 0.06 else 0
+			cliff_count = rng.randi_range(1, 3)   # Tors standing out of open ground
 		Biome.ROCKY_WINTER:
 			tree_count = rng.randi_range(6, 12)   # Treeline thins with altitude
 			bush_count = rng.randi_range(2, 6)
@@ -1465,6 +1470,7 @@ func _spawn_environment() -> void:
 			grass_count = rng.randi_range(1, 4)
 			mushroom_count = 0
 			hillcross_count = 1 if rng.randf() < 0.05 else 0
+			cliff_count = rng.randi_range(2, 4)   # Bare rock above the treeline
 		Biome.ROCKY_DESERT:
 			tree_count = rng.randi_range(1, 4)
 			bush_count = rng.randi_range(2, 6)
@@ -1472,6 +1478,7 @@ func _spawn_environment() -> void:
 			grass_count = rng.randi_range(1, 4)
 			mushroom_count = 0
 			hillcross_count = 1 if rng.randf() < 0.04 else 0
+			cliff_count = rng.randi_range(2, 4)   # Mesa and butte silhouettes
 
 	# Reduce prop density on road cells
 	if is_road_cell:
@@ -1482,6 +1489,7 @@ func _spawn_environment() -> void:
 		mushroom_count = int(mushroom_count * road_prop_density_multiplier)
 		swamp_tree_count = int(swamp_tree_count * road_prop_density_multiplier)
 		fallen_tree_count = int(fallen_tree_count * road_prop_density_multiplier)
+		cliff_count = int(cliff_count * road_prop_density_multiplier)
 		# Hillcrosses can appear near roads (roadside memorials are thematic)
 
 	# Spawn trees
@@ -1493,6 +1501,15 @@ func _spawn_environment() -> void:
 		tree.position = tree_pos
 		add_child(tree)
 		props.append(tree)
+
+	# Spawn cliff outcrops. Content positions, not prop positions: an outcrop is
+	# 9-17 m across and one placed on a cell edge would grow out of the seam
+	# into the neighbouring cell.
+	for i in range(cliff_count):
+		var cliff := _create_cliff()
+		cliff.position = _get_random_content_position()
+		add_child(cliff)
+		props.append(cliff)
 
 	# Spawn rocks
 	for i in range(rock_count):
@@ -2714,6 +2731,69 @@ func _create_driftwood() -> Node3D:
 	return wood
 
 
+## Cliff outcrops for the rocky biome family. The two meshes came over with the
+## terrain engine port and were never given a spawner.
+const CLIFF_MODEL_PATHS: Array[String] = [
+	"res://assets/models/rocks/Cliff_01.obj",
+	"res://assets/models/rocks/Cliff_02.obj",
+]
+
+const CLIFF_TEXTURE_PATH := "res://assets/textures/environment/walls/impass_rock.png"
+
+## Height an outcrop is scaled to, in metres. The source meshes stand 22 m and
+## 36 m tall around their own centre; at native size two of them would swallow a
+## 100 m cell.
+const CLIFF_HEIGHT_MIN := 9.0
+const CLIFF_HEIGHT_MAX := 17.0
+
+## How much of the outcrop is buried, as a fraction of its height, so it reads
+## as bedrock coming up through the hill rather than a prop set on top of it.
+const CLIFF_SINK_FRACTION := 0.12
+
+
+## Create a cliff outcrop: a large static rock formation, not harvestable.
+func _create_cliff() -> Node3D:
+	var cliff := Node3D.new()
+	cliff.name = "CliffOutcrop"
+
+	var model_path: String = CLIFF_MODEL_PATHS[rng.randi() % CLIFF_MODEL_PATHS.size()]
+	if not ResourceLoader.exists(model_path):
+		push_warning("[WildernessRoom] Cliff model not found: %s" % model_path)
+		return cliff
+
+	var mesh: Mesh = load(model_path)
+	if mesh == null:
+		push_warning("[WildernessRoom] Failed to load cliff model: %s" % model_path)
+		return cliff
+
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = "CliffMesh"
+	mesh_instance.mesh = mesh
+	mesh_instance.material_override = _get_cliff_material()
+
+	# Scale is read off the mesh rather than guessed: the two cliffs differ in
+	# height by half again, so one hardcoded factor would give two sizes.
+	var bounds: AABB = mesh.get_aabb()
+	var native_height: float = maxf(bounds.size.y, 0.001)
+	var target_height: float = rng.randf_range(CLIFF_HEIGHT_MIN, CLIFF_HEIGHT_MAX)
+	var mesh_scale: float = target_height / native_height
+	mesh_instance.scale = Vector3.ONE * mesh_scale
+
+	# The meshes are centred on their origin, so half of each sits below the
+	# ground line. Lift the base to the prop origin, then sink it back a little.
+	var base_lift: float = -bounds.position.y * mesh_scale
+	mesh_instance.position.y = base_lift - target_height * CLIFF_SINK_FRACTION
+
+	cliff.add_child(mesh_instance)
+	cliff.rotation_degrees.y = rng.randf_range(0.0, 360.0)
+
+	# Under 200 triangles and never moves, so a trimesh body costs nothing and
+	# keeps the overhangs open instead of sealing them inside a convex hull.
+	mesh_instance.create_trimesh_collision()
+
+	return cliff
+
+
 ## Rock textures for impassable mountain terrain
 const MOUNTAIN_ROCK_TEXTURES := [
 	"res://assets/textures/environment/walls/impass_rock.png",
@@ -2726,6 +2806,28 @@ const MOUNTAIN_ROCK_TEXTURES := [
 static var _coastal_rock_material: StandardMaterial3D = null
 static var _driftwood_material: StandardMaterial3D = null
 static var _mountain_materials: Array[StandardMaterial3D] = []
+static var _cliff_material: StandardMaterial3D = null
+
+
+## Shared by every cliff outcrop in the world. Rocky cells carry the most
+## geometry of any biome, so they are the last place to hand out a material per
+## prop; the outcrops read as one rock formation instead of a tinted set.
+static func _get_cliff_material() -> StandardMaterial3D:
+	if _cliff_material == null:
+		var mat := StandardMaterial3D.new()
+		mat.roughness = 0.95
+		mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		mat.albedo_color = Color(0.62, 0.60, 0.57)
+		# The source .obj names a Cliff_01.mtl that was never shipped with it, so
+		# the mesh arrives untextured. Triplanar rather than the mesh UVs: the
+		# outcrops are scaled anywhere from 0.25x to 0.8x and the authored UVs
+		# would stretch with them.
+		if ResourceLoader.exists(CLIFF_TEXTURE_PATH):
+			mat.albedo_texture = load(CLIFF_TEXTURE_PATH)
+			mat.uv1_triplanar = true
+			mat.uv1_scale = Vector3(0.12, 0.12, 0.12)
+		_cliff_material = mat
+	return _cliff_material
 
 
 static func _get_coastal_rock_material() -> StandardMaterial3D:
