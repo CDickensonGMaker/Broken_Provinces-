@@ -95,6 +95,13 @@ OVERRIDES = {
     "caravan_survivor": "beggar",
 }
 
+# Ambient townsfolk who drew the same pooled name in both census boots by luck,
+# so the two-boot stability test kept them. A third boot names someone else.
+# tools/check_living_world.tscn is the permanent guard: it boots every town and
+# fails on any record nobody spawns.
+LUCKY_COLLISIONS = {"colm_thornfield"}
+
+
 # One of these per town works the other half of the watch rota, so a town at
 # 03:00 is not simply an empty one.
 NIGHT_WATCH = {"guard_elder_moor_1", "guard_dalhurst_1", "marius_thornfield",
@@ -178,6 +185,9 @@ def main(census_path, census_path_b):
                 continue
             if re.match(r"^(thief|guard)_\d{6,}$", nid) or "@" in nid:
                 skipped.append((zone, nid, "id not stable across boots"))
+                continue
+            if nid in LUCKY_COLLISIONS:
+                skipped.append((zone, nid, "pooled name that collided across boots"))
                 continue
             if nid in seen:
                 dupes.append((zone, nid, r["name"]))

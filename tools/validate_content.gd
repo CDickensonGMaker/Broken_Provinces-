@@ -106,10 +106,14 @@ func _initialize() -> void:
 	_collect_faction_ids()
 	_collect_invoked_choices()
 
+	_load_schedules()
+
 	_check_quests()
 	_check_encounter_tables()
 	_check_enemy_sprites()
 	_check_dialogue_actions()
+	_check_schedules()
+	_check_quest_npc_daytime_reachability()
 
 	var failed: bool = _write_report()
 	quit(1 if failed else 0)
@@ -602,6 +606,196 @@ func _harvest_types(value: Variant, under: String, inside: bool = false) -> Arra
 	return found
 
 
+# --- schedules ---------------------------------------------------------------
+
+const SCHEDULE_ARCHETYPE_DIR := "res://data/schedules/archetypes"
+const SCHEDULE_RECORDS := "res://data/npc_schedules.json"
+const SCHEDULE_ACTIONS: Array[String] = ["sleep", "travel", "work", "eat", "socialise", "idle"]
+
+## The hours a player can reasonably expect a town to be doing business. The
+## no-soft-lock rule is written against this band; night is flavour.
+const SCHEDULE_DAY_FIRST := 9
+const SCHEDULE_DAY_LAST := 17
+
+## Half-extents per streaming cell, in world units, from WorldGrid's LOCATIONS
+## `scene_size` where it declares one and 100x100 where it does not. Stations
+## outside these were placed somewhere the cell does not reach.
+##
+## Dalhurst's declared 160x172 is narrower than Dalhurst's own content - the
+## Seabreeze Armory stands at local x=86 against a declared half-width of 80 -
+## so the bound carries a 20% tolerance and the discrepancy is a level-design
+## row in wave_b_dispositions.md rather than something this validator invents a
+## fix for.
+const SCHEDULE_BOUNDS_TOLERANCE := 1.2
+
+var schedule_archetypes: Dictionary = {}
+var schedule_records: Dictionary = {}
+var schedule_cell_bounds: Dictionary = {}
+
+
+func _load_schedules() -> void:
+	for path: String in _walk(SCHEDULE_ARCHETYPE_DIR, ".json"):
+		var data: Dictionary = _read_json(path)
+		if data.is_empty():
+			continue
+		schedule_archetypes[data.get("id", path.get_file().get_basename())] = data
+
+	var doc: Dictionary = _read_json(SCHEDULE_RECORDS)
+	var npcs: Variant = doc.get("npcs", {})
+	if npcs is Dictionary:
+		schedule_records = npcs
+
+	# Cell half-extents, read off WorldGrid rather than restated here.
+	var grid_text: String = _read_text("res://scripts/data/world_grid.gd")
+	var re := RegEx.new()
+	# (?s) so `.` crosses newlines: a LOCATIONS entry puts scene_size on the
+	# line after the coordinates, and without it every town read as 100x100.
+	re.compile('(?s)\\{"id":\\s*"([a-z_]+)".*?"x":\\s*(-?\\d+),\\s*"y":\\s*(-?\\d+),.*?(?:"scene_size":\\s*\\[(\\d+),\\s*(\\d+)\\],)?\\s*"description"')
+	for m: RegExMatch in re.search_all(grid_text):
+		var width: float = float(m.get_string(4)) if not m.get_string(4).is_empty() else 100.0
+		var depth: float = float(m.get_string(5)) if not m.get_string(5).is_empty() else 100.0
+		schedule_cell_bounds[Vector2i(int(m.get_string(2)), int(m.get_string(3)))] = Vector2(width, depth)
+
+
+## Rule 1: every archetype a record names resolves.
+## Rule 2: every archetype's day covers 24 hours exactly once with real actions.
+## Rule 3: every scheduled npc_id is an NPC something actually spawns.
+## Rule 4: every station sits inside the bounds of the cell it claims.
+func _check_schedules() -> void:
+	if schedule_records.is_empty():
+		_warn("SCHEDULE", SCHEDULE_RECORDS, "npc_schedules", "no schedule records were loaded")
+		return
+
+	for id: String in schedule_archetypes.keys():
+		var blocks: Array = (schedule_archetypes[id] as Dictionary).get("blocks", [])
+		var covered: Array[int] = []
+		covered.resize(24)
+		for block: Variant in blocks:
+			if not block is Dictionary:
+				continue
+			var b: Dictionary = block
+			var action: String = b.get("action", "")
+			if not SCHEDULE_ACTIONS.has(action):
+				_fail("SCHEDULE_ARCHETYPE", SCHEDULE_ARCHETYPE_DIR, id,
+						"block names action '%s', which no scheduler action matches" % action)
+			var from: int = int(b.get("from", 0))
+			var to: int = int(b.get("to", 0))
+			for h: int in range(24):
+				var inside: bool = (from <= h and h < to) if from < to else (h >= from or h < to)
+				if inside:
+					covered[h] += 1
+		for h: int in range(24):
+			if covered[h] != 1:
+				_fail("SCHEDULE_ARCHETYPE", SCHEDULE_ARCHETYPE_DIR, id,
+						"hour %02d is covered %d times - a gap silently becomes idle-at-work" % [h, covered[h]])
+
+	for npc_id: String in schedule_records.keys():
+		var rec: Dictionary = schedule_records[npc_id]
+
+		var archetype: String = rec.get("archetype", "")
+		if not schedule_archetypes.has(archetype):
+			_fail("SCHEDULE_NPC", SCHEDULE_RECORDS, npc_id,
+					"names archetype '%s', which has no file in %s" % [archetype, SCHEDULE_ARCHETYPE_DIR])
+
+		# "Every scheduled npc_id spawns somewhere" is NOT checked here. This
+		# validator reads source text, and twenty of the ids in the table are
+		# spawned in ways no regex can see - Merchant.spawn_merchant assigns
+		# merchant_id after construction, the Dalhurst guards are built with
+		# "guard_dalhurst_%d". Asserting it from here reports twenty NPCs the
+		# player can walk up to as dead data. The rule lives in
+		# tools/check_living_world.tscn instead, which boots the five towns and
+		# counts the nodes.
+
+		var stations: Dictionary = rec.get("stations", {})
+		if not stations.has("work"):
+			_fail("SCHEDULE_NPC", SCHEDULE_RECORDS, npc_id,
+					"has no work station, so there is nothing to fall back to")
+
+		for key: String in stations.keys():
+			var station: Dictionary = stations[key]
+			var cell_arr: Array = station.get("cell", [])
+			if cell_arr.size() < 2:
+				_fail("SCHEDULE_STATION", SCHEDULE_RECORDS, npc_id,
+						"station '%s' names no cell" % key)
+				continue
+			var cell := Vector2i(int(cell_arr[0]), int(cell_arr[1]))
+			if not schedule_cell_bounds.has(cell):
+				_warn("SCHEDULE_STATION", SCHEDULE_RECORDS, npc_id,
+						"station '%s' sits in cell %s, which WorldGrid does not name" % [key, cell])
+				continue
+
+			var pos: Array = station.get("pos", [])
+			if pos.size() < 3:
+				_fail("SCHEDULE_STATION", SCHEDULE_RECORDS, npc_id,
+						"station '%s' has no position" % key)
+				continue
+
+			var half: Vector2 = (schedule_cell_bounds[cell] as Vector2) * 0.5 * SCHEDULE_BOUNDS_TOLERANCE
+			var local_x: float = float(pos[0]) - float(cell.x) * 100.0
+			var local_z: float = float(pos[2]) - float(cell.y) * 100.0
+			if absf(local_x) > half.x or absf(local_z) > half.y:
+				_fail("SCHEDULE_STATION", SCHEDULE_RECORDS, npc_id,
+						"station '%s' stands at (%.0f, %.0f) inside cell %s, which reaches only (%.0f, %.0f)"
+						% [key, local_x, local_z, cell, half.x, half.y])
+
+
+## Rule 5, the schedule-era version of the giver/receiver law: no quest may be
+## soft-locked by an NPC being in bed. Every giver, turn-in and talk target with
+## a schedule must be present and awake through the whole day band.
+func _check_quest_npc_daytime_reachability() -> void:
+	if schedule_records.is_empty():
+		return
+
+	var quest_npcs: Dictionary = {}
+	for path: String in _walk(QUEST_DIR, ".json", true):
+		var quest: Dictionary = _read_json(path)
+		if quest.is_empty():
+			continue
+		for id: Variant in [quest.get("giver_npc_id", ""), quest.get("turn_in_target", "")]:
+			if not String(id).is_empty():
+				quest_npcs[String(id)] = path
+		for obj: Variant in quest.get("objectives", []) as Array:
+			if not obj is Dictionary:
+				continue
+			if (obj as Dictionary).get("type", "") == "talk":
+				var target: String = (obj as Dictionary).get("target", "")
+				if not target.is_empty():
+					quest_npcs[target] = path
+
+	for npc_id: String in quest_npcs.keys():
+		if not schedule_records.has(npc_id):
+			continue
+		var rec: Dictionary = schedule_records[npc_id]
+		var blocks: Array = (schedule_archetypes.get(rec.get("archetype", ""), {}) as Dictionary).get("blocks", [])
+		var stations: Dictionary = rec.get("stations", {})
+
+		for hour: int in range(SCHEDULE_DAY_FIRST, SCHEDULE_DAY_LAST + 1):
+			var action: String = "idle"
+			var station_key: String = "work"
+			for block: Variant in blocks:
+				if not block is Dictionary:
+					continue
+				var b: Dictionary = block
+				var from: int = int(b.get("from", 0))
+				var to: int = int(b.get("to", 0))
+				var inside: bool = (from <= hour and hour < to) if from < to else (hour >= from or hour < to)
+				if inside:
+					action = b.get("action", "idle")
+					station_key = b.get("station", "work")
+					break
+
+			if action == "sleep":
+				_fail("SCHEDULE_QUEST", quest_npcs[npc_id], npc_id,
+						"is asleep at %02d:00, inside the hours a player expects to find them" % hour)
+				break
+
+			var station: Dictionary = stations.get(station_key, stations.get("work", {}))
+			if station.get("interior", false):
+				_fail("SCHEDULE_QUEST", quest_npcs[npc_id], npc_id,
+						"is behind an unmodelled door at %02d:00, so the quest cannot be started or turned in" % hour)
+				break
+
+
 # --- expectations ------------------------------------------------------------
 
 func _expect_npc(id: String, path: String, where: String) -> void:
@@ -665,6 +859,8 @@ func _write_report() -> bool:
 	lines.append("| Interactable ids whitelisted | %d |" % INTERACTABLE_IDS.size())
 	lines.append("| Lore-only ids whitelisted | %d |" % LORE_ONLY_IDS.size())
 	lines.append("| Staging quests not gated (`_future/`) | %d |" % staging_quest_count)
+	lines.append("| Schedule archetypes | %d |" % schedule_archetypes.size())
+	lines.append("| NPCs with a schedule record | %d |" % schedule_records.size())
 	lines.append("| Errors | %d |" % errors.size())
 	lines.append("| Warnings | %d |" % warnings.size())
 	lines.append("")

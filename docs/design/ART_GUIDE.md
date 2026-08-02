@@ -1,26 +1,26 @@
-# Broken Provinces — Master Art Guide & Tracker
-*2026-08-02, Wyrm, from a full inventory of the repo + manifests. This is THE tracking doc for all art production — check items off as they land, and keep it honest: an unchecked box is a fact, not a failure. Companion docs: `docs/audits/art_replacement_manifest.md` (broken/routed assets), `docs/audits/sprite_audit.md` (measured spec reality).*
+# Broken Provinces — Master Art Guide & Tracker (v2 — PSX 3D)
+*2026-08-02, Wyrm. **v2 REWRITE per Caleb's pivot ruling: the game becomes a PSX 3D RPG — full 3D characters, not billboards.** The 2D pipeline was a skill-gap compromise; the skill now exists (the RECON stack). Every character item below is a MODEL, not a sheet. Existing sprites serve as placeholders until their model lands, then phase out (art rule: never repair a billboard). The wave lists below are unchanged — only the medium changed. Companion docs: `docs/audits/art_replacement_manifest.md`, `docs/audits/sprite_audit.md` (now legacy-2D reference).*
 
-## THE SPEC (every new sheet follows this — non-negotiable)
-- **Frame: 48×96 px** (the house format — CLAUDE.md's old 32×64 table is dead). Larger characters scale the FRAME (e.g. 64×128 ogre-class, 96×160 Khan-class) but keep the ratio discipline.
-- **Poses left-to-right with a fully transparent gutter column between each** — `check_sprites.tscn` finds poses by alpha gutters and cross-checks even division. Sheet width MUST divide evenly by pose count. (The unfixable sheets — dwarf_1, lady_in_red — are the ones that broke this.)
-- **Pose counts:** minimum 2 (idle sway), standard **5** (idle/walk cycle), combat NPCs add attack/hurt rows as separate sheets (the guard front/back/attack convention).
-- Scale is DERIVED in code (`BillboardSprite.humanoid_pixel_size(frame_height)`, anchor 2.4576 m @ 96 px; dwarves 1.8528 m) — never hand-pick pixel_size again.
-- PS1 palette discipline: limited hand-picked palette per race (see Randomizer §), nearest-neighbor, no anti-aliasing.
+## THE SPEC (every character model — non-negotiable)
+- **PSX fidelity:** low-poly (300–800 tris for humanoids, boss-class up to ~1,500), single 128² or 256² texture per character, palette-limited hand-painted look, nearest-neighbor filtering, no normal maps. Vertex-lit look; affine/jitter comes from the game's existing PS1 shaders.
+- **Rig: the PSX humanoid rig, Mixamo-compatible bone names** — the RECON PSXRig discipline. Mixamo clips are DROP-IN (no retarget). NEVER rename or restructure bones on any variant rig.
+- **Scale anchors (unchanged in meters):** humanoid 2.46 m eye-consistent scale class → real ~1.8 m model; dwarf ~1.4 m; Khan-class ~2.4 m+. Scale is set on the MODEL at export, never fudged per-instance.
+- **Export:** GLB via `blender -b` batch scripts only (the RECON export law); one master GLB per race/sex + garb variants as visibility-toggled meshes IN the master (not separate files) + per-variant props (hats etc.) as socketed GLBs with the stock item as placement datum.
+- **Animation set per character class:** civilians — idle, walk, sit, sleep, work-generic, talk; combat — + attack ×2, hurt, death, block-pose. Source: Mixamo (drop-in) + RECON's 19 CC0 clips + RECON civilian clips (walk/idle/sit/sleep are setting-agnostic). Clips live in a shared library; characters share the library (one skeleton = one library).
 
-## THE PIPELINE (build once, feeds every wave)
-**Port RECON's dormant sprite pipeline — it's complete and character-grade, retained on disk after ADR-001:**
-`RECONgame\tools\unit_registry.py` (unit→rig/mesh/actions table) → `build_sprite_stage.py` (stage .blend with SpriteRig+SpriteCam) → `render_sprite_sheets.py` (batch: 8 dirs × every action, EEVEE ortho, transparent, frame cache, **metadata sidecar: ground_row + m_per_px + fps/loop**) → `assemble_sheets.py` (24-color palette quantize, strips + JSON manifest).
-CoG adaptation: 1 direction (billboards) or 2 (front/back for guards), 48×96 output, per-race palettes, and the metadata sidecar kills the pixel_size guesswork forever. CoG's own `dev\tools\sprite_sheet_generator.gd` is a prop-swinger — ignore it for characters.
+## THE MIGRATION (dual-support law — the game stays playable at every commit)
+**Phase 0 (code, agent-buildable now): `CharacterVisual` abstraction.** One interface behind CivilianNPC + EnemyBase: `set_action(action)`, `set_moving(bool)`, `set_facing(dir)`, `play_attack/hurt/death()`. Two implementations: `BillboardVisual` (wraps today's BillboardSprite — default) and `RiggedVisual` (AnimationPlayer/StateMachine on a GLB). A per-character `model_path` in the registry flips each character to 3D the day its model lands. Living-world actions (sit/sleep/work) map to real animations in RiggedVisual and to the old facing/sit flags in BillboardVisual. NO big-bang: 3D and billboard characters coexist in the same town indefinitely.
+**Phase 1 (Caleb's Blender + agent staging): the fantasy PSX masters.** Male + female human civilian base on the PSXRig — THE two most leveraged models in the project (they carry ~55 characters via the dresser). Then the shared animation library wired.
+**Phases 2-5: the waves below, in order.** Each wave = master(s) + dresser variants + named uniques.
 
-## THE RANDOMIZER (design ratified from RECON's grunt_dresser)
-RECON's four laws, ported to the Blender side of the sprite pipeline:
-1. **Face+skin are the same pixels** — head/neck/hands UV'd into ONE atlas cell sharing ONE material; slide `uv1_offset` and they move together (mismatched skin becomes impossible). `merge_face_skin_material.py` is the enforcing step.
-2. **Match materials by texture identity, not name** (names drift; the 7/29 black-head bug).
-3. **Duplicate the material per instance** or every villager rerolls the same face ("a fireteam of octuplets").
-4. **Capability gating that WARNS when it degrades** — a variant that can't apply says so by name, once.
-CoG build: PSX humanoid master + face/skin atlas (10×7 grid) + garb variants (mesh visibility toggles: hood, apron, pack, hat — the "helmet" pattern with the stock item as placement datum) + per-race palette swap → batch-render through the pipeline → dozens of distinct 48×96 townsfolk per master. Deterministic per-npc_id seed (RECON: `name.hash()` — same man, same face, every session).
-**Build order: pipeline first, randomizer second, THEN the human wave** — hand-drawing 55 townsfolk without it is the trap.
+## THE RANDOMIZER (RECON's grunt_dresser, now used DIRECTLY — no sprite rendering step)
+This is the piece that makes 3D *cheaper* than 2D ever was: the dresser runs at RUNTIME in Godot, exactly like RECON.
+1. **Face+skin are the same pixels** — head/neck/hands UV'd into ONE atlas cell sharing ONE material; `uv1_offset` slides both together (mismatch impossible). `merge_face_skin_material.py` ports as-is.
+2. **Match materials by texture identity, not name** (the 7/29 black-head bug).
+3. **Duplicate the material per instance** ("a fireteam of octuplets" otherwise).
+4. **Capability gating that WARNS when it degrades**, once per unit.
+CoG build: face/skin atlas (10×7 = 70 faces) per race + garb visibility toggles (hood, apron, pack, hat — socketed props use the stock-item placement datum) + palette variants. Deterministic per-npc_id seed: same villager, same face, every session, forever. **One male + one female master ⇒ the entire human townsfolk population.**
+**Build order: Phase 0 abstraction → masters → dresser → waves.** Modeling 55 individual townsfolk is the trap; two masters + the dresser is the road.
 
 ## RIG RECIPES PER RACE (the dwarf/goblin worry, answered)
 - **Dwarf:** CLONE the PSX humanoid rig; in edit mode shorten thigh/shin/spine segments (~75% height → 1.85 m anchor already exists in code); keep head + hands near full size (oversized extremities ARE the stocky read); re-fit mesh; **never rename or restructure bones** — the whole animation library then retargets 1:1 (clone-don't-rebuild law).
