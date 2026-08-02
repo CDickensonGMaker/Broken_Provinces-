@@ -523,6 +523,15 @@ func _complete_journey() -> void:
 	_reset_journey_state()
 
 
+## Human-readable name for an Enums.Skill value, for dice-roll display
+func _skill_display_name(skill_enum: int) -> String:
+	var keys: Array = Enums.Skill.keys()
+	if skill_enum < 0 or skill_enum >= keys.size():
+		return "Skill"
+	var raw: String = keys[skill_enum]
+	return raw.replace("_", " ").capitalize()
+
+
 ## Attempt to flee from current encounter
 ## Returns true if flee successful
 func attempt_flee() -> bool:
@@ -533,24 +542,24 @@ func attempt_flee() -> bool:
 		return false
 
 	# Use AGILITY + ATHLETICS for flee check
-	var flee_skill: int = 0
+	var agility: int = 0
+	var athletics: int = 0
 	if GameManager and GameManager.player_data:
-		var agility: int = GameManager.player_data.get_effective_stat(Enums.Stat.AGILITY)
-		var athletics: int = GameManager.player_data.get_skill(Enums.Skill.ATHLETICS)
-		flee_skill = agility + athletics
+		agility = GameManager.player_data.get_effective_stat(Enums.Stat.AGILITY)
+		athletics = GameManager.player_data.get_skill(Enums.Skill.ATHLETICS)
 
-	# Roll flee check using DiceManager if available
-	var success: bool = false
-	if DiceManager:
-		var result: Dictionary = DiceManager.skill_check(
-			flee_skill,
-			pending_encounter.flee_difficulty * 2  # Convert 1-10 to DC
-		)
-		success = result.get("success", false)
-	else:
-		# Fallback simple roll
-		var roll: int = randi_range(1, 20) + flee_skill
-		success = roll >= pending_encounter.flee_difficulty * 2
+	var flee_dc: int = pending_encounter.flee_difficulty * 2  # Convert 1-10 to DC
+	var result: Dictionary = DiceManager.make_check(
+		"FLEE CHECK",
+		agility,
+		"Agility",
+		athletics,
+		"Athletics",
+		flee_dc,
+		[],
+		true  # Active roll - the player chose to run
+	)
+	var success: bool = result.get("success", false)
 
 	if success:
 		resolve_encounter(EncounterResult.FLED)
@@ -569,20 +578,19 @@ func attempt_peaceful_resolution() -> bool:
 
 	# Get the skill for peaceful resolution
 	var skill_value: int = 0
+	var speech_stat: int = 0
 	if GameManager and GameManager.player_data:
 		skill_value = GameManager.player_data.get_skill(pending_encounter.peaceful_skill)
+		speech_stat = GameManager.player_data.get_effective_stat(Enums.Stat.SPEECH)
 
-	# Roll skill check
-	var success: bool = false
-	if DiceManager:
-		var result: Dictionary = DiceManager.skill_check(
-			skill_value,
-			pending_encounter.peaceful_skill_dc
-		)
-		success = result.get("success", false)
-	else:
-		var roll: int = randi_range(1, 20) + skill_value
-		success = roll >= pending_encounter.peaceful_skill_dc
+	# Talking a crew down is a speech check
+	var result: Dictionary = DiceManager.speech_check(
+		speech_stat,
+		skill_value,
+		_skill_display_name(pending_encounter.peaceful_skill),
+		pending_encounter.peaceful_skill_dc
+	)
+	var success: bool = result.get("success", false)
 
 	if success:
 		resolve_encounter(EncounterResult.PEACEFUL)

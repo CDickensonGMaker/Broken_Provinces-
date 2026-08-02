@@ -594,8 +594,13 @@ func _handle_intimidate() -> void:
 	const INTIMIDATE_DC := 14
 
 	# Roll intimidation check (uses DiceManager)
-	var roll_result: Dictionary = DiceManager.skill_check(
-		strength, intimidate_skill, INTIMIDATE_DC, 1.0
+	var roll_result: Dictionary = DiceManager.make_check(
+		"INTIMIDATION CHECK",
+		strength, "Grit",
+		intimidate_skill, "Intimidation",
+		INTIMIDATE_DC,
+		[],
+		true  # Active roll
 	)
 
 	if roll_result.get("success", false):
@@ -647,8 +652,8 @@ func _handle_negotiate() -> void:
 	const NEGOTIATE_DC := 12
 
 	# Roll persuasion check
-	var roll_result: Dictionary = DiceManager.skill_check(
-		charisma, persuade_skill, NEGOTIATE_DC, 1.0
+	var roll_result: Dictionary = DiceManager.speech_check(
+		charisma, persuade_skill, "Persuasion", NEGOTIATE_DC
 	)
 
 	if roll_result.get("success", false):
