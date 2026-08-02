@@ -13,9 +13,12 @@ signal station_closed
 const MIN_ARCANA_LORE: int = 3
 
 ## Visual components
-@onready var mesh: MeshInstance3D = $Mesh
-@onready var interaction_area: Area3D = $InteractionArea
-@onready var particle_effect: GPUParticles3D = $ParticleEffect
+## Looked up rather than asserted: the station is built with new() from
+## dalhurst.gd and has no children at all, so $Mesh logged an engine error
+## three times before _ready got to the code that creates them.
+@onready var mesh: MeshInstance3D = get_node_or_null("Mesh")
+@onready var interaction_area: Area3D = get_node_or_null("InteractionArea")
+@onready var particle_effect: GPUParticles3D = get_node_or_null("ParticleEffect")
 
 ## UI reference (created when opened)
 var enchanting_ui: EnchantingUI = null

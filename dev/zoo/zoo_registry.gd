@@ -181,7 +181,7 @@ static var ENEMIES: Array[Dictionary] = [
 		"name": "Goblin Archer",
 		"category": "enemy",
 		"subcategory": "goblin",
-		"sprite_path": "res://assets/sprites/goblin_archer_Fixed.png",
+		"sprite_path": "res://assets/sprites/enemies/goblins/goblin_archer.png",
 		"h_frames": 1, "v_frames": 1,
 		"pixel_size": PIXEL_SIZE_ENEMY,
 		"offset_y": 0.0,

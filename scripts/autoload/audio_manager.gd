@@ -394,7 +394,7 @@ func _play_enemy_sound_internal(sound_path: String, position: Vector3, volume_db
 
 
 ## Callback when a creature sound finishes playing
-func _on_creature_sound_finished(player: AudioStreamPlayer, sound_path: String = "") -> void:
+func _on_creature_sound_finished(player: AudioStreamPlayer3D, sound_path: String = "") -> void:
 	_active_creature_sounds = maxi(0, _active_creature_sounds - 1)
 
 	# Decrement per-sound instance count

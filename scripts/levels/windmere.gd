@@ -26,7 +26,13 @@ func _ready() -> void:
 
 ## Setup the WorldEnvironment with smoky atmosphere
 func _setup_environment() -> void:
-	var world_env: WorldEnvironment = $WorldEnvironment
+	# The scene carries no WorldEnvironment node, so $WorldEnvironment logged
+	# an error and Windmere went without its smoke entirely.
+	var world_env: WorldEnvironment = get_node_or_null("WorldEnvironment")
+	if world_env == null:
+		world_env = WorldEnvironment.new()
+		world_env.name = "WorldEnvironment"
+		add_child(world_env)
 	if world_env:
 		var env := Environment.new()
 		env.background_mode = Environment.BG_COLOR
