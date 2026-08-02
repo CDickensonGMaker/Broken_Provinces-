@@ -54,6 +54,7 @@ var death_load_autosave_button: Button
 var death_load_save_button: Button
 var death_restart_button: Button
 var death_main_menu_button: Button
+var death_no_save_label: Label
 var death_save_select_panel: Control
 var death_load_failure_count: int = 0  # Track consecutive load failures
 
@@ -1254,6 +1255,19 @@ func _setup_death_screen() -> void:
 	death_main_menu_button.pressed.connect(_on_death_main_menu)
 	button_container.add_child(death_main_menu_button)
 
+	# The honest line for a player with nothing to load
+	death_no_save_label = Label.new()
+	death_no_save_label.name = "NoSaveLabel"
+	death_no_save_label.text = "No save exists yet - this run started less than an autosave ago."
+	death_no_save_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	death_no_save_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	death_no_save_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
+	death_no_save_label.add_theme_font_size_override("font_size", 12)
+	death_no_save_label.size = Vector2(400, 40)
+	death_no_save_label.position = Vector2((DESIGN_WIDTH - 400) / 2, (DESIGN_HEIGHT / 2) + 170)
+	death_no_save_label.visible = false
+	death_screen.add_child(death_no_save_label)
+
 	# Create save select panel (hidden by default)
 	_setup_death_save_select()
 
@@ -1309,13 +1323,30 @@ func show_death_screen() -> void:
 		SaveManager.increment_death_count()
 
 		# Update autosave button availability - check both autosave slots
+		var has_autosave: bool = SaveManager.save_exists(SaveManager.AUTOSAVE_EXIT_SLOT) or SaveManager.save_exists(SaveManager.AUTOSAVE_PERIODIC_SLOT)
 		if death_load_autosave_button:
-			var has_autosave: bool = SaveManager.save_exists(SaveManager.AUTOSAVE_EXIT_SLOT) or SaveManager.save_exists(SaveManager.AUTOSAVE_PERIODIC_SLOT)
 			death_load_autosave_button.disabled = not has_autosave
 			if not has_autosave:
 				death_load_autosave_button.text = "No Autosave Found"
 			else:
 				death_load_autosave_button.text = "Load Last Autosave"
+
+		# ...and the manual saves. A player who dies inside the first thirty
+		# seconds has neither, and both Load buttons used to open onto nothing
+		# and bounce him straight back here with no explanation.
+		var has_manual_save: bool = false
+		for info: Dictionary in SaveManager.get_all_save_infos():
+			if not info.get("empty", false):
+				var slot: int = info.get("slot", -1)
+				if slot != SaveManager.AUTOSAVE_EXIT_SLOT and slot != SaveManager.AUTOSAVE_PERIODIC_SLOT:
+					has_manual_save = true
+					break
+		if death_load_save_button:
+			death_load_save_button.disabled = not has_manual_save
+			death_load_save_button.text = "Load Save..." if has_manual_save else "No Saves Found"
+
+		if death_no_save_label:
+			death_no_save_label.visible = not (has_autosave or has_manual_save)
 
 		death_screen.visible = true
 		if death_save_select_panel:
