@@ -1752,8 +1752,8 @@ func fail_quest(quest_id: String, reason: String = "") -> void:
 		FactionManager.modify_reputation(quest.faction, rep_loss, "failed quest: %s" % quest.title)
 
 		# Set betrayal flag if failed via temptation
-		if reason == "temptation" and DialogueManager:
-			DialogueManager.set_dialogue_flag("betrayed_%s" % quest.faction, true)
+		if reason == "temptation":
+			FlagManager.set_flag("betrayed_%s" % quest.faction, true)
 
 	# Clear any active timers for this quest
 	_clear_quest_timers(quest_id)
