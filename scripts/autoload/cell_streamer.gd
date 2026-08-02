@@ -365,7 +365,7 @@ func _generate_procedural_cell(coords: Vector2i, cell_info: WorldGrid.CellInfo) 
 		_wilderness_room_scene = load("res://scenes/generation/wilderness_room.tscn") as PackedScene
 
 	if _wilderness_room_scene:
-		var room: Node = _wilderness_room_scene.instantiate()
+		var room: Node3D = _wilderness_room_scene.instantiate() as Node3D
 
 		# Configure the room
 		if room.has_method("set_seamless_mode"):
@@ -374,12 +374,23 @@ func _generate_procedural_cell(coords: Vector2i, cell_info: WorldGrid.CellInfo) 
 		# Set biome - WildernessRoom has this as an @export
 		room.set("biome", WorldGrid.to_wilderness_biome(cell_info.biome))
 
+		# In the tree and standing at its final world position BEFORE generating,
+		# for the same reason the town path gives ("NPCs need the node in the
+		# tree"), and then some. Generating detached meant get_tree() was null
+		# through the whole of WildernessRoom.generate() - which silently killed
+		# enemy spawning outright - and every enemy read a global_transform of
+		# identity, so each one recorded a spawn_position it would later try to
+		# walk back to. _load_cell re-applies the same position afterwards and
+		# skips the add, so this is the same value arriving earlier.
+		_cell_container.add_child(room)
+		room.global_position = WorldGrid.cell_to_world(coords) - world_offset
+
 		# Generate with deterministic seed (world_seed ensures different worlds per playthrough)
 		var seed_value: int = GameManager.world_seed + (coords.x * 10000) + coords.y
 		if room.has_method("generate"):
 			room.call("generate", seed_value, coords)
 
-		return room as Node3D
+		return room
 
 	# Fallback: create a simple ground plane
 	return _create_simple_cell(coords, cell_info)
