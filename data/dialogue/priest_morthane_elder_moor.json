@@ -140,6 +140,24 @@
           "actions": []
         },
         {
+          "text": "I would ask a blessing before I go among the dead.",
+          "next": "blessing_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I am done. I want to give back Morthane's bond.",
+          "next": "renounce_inquiry",
+          "conditions": [
+            {
+              "type": "flag_set",
+              "param": "morthane_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
           "text": "Farewell, Priest.",
           "next": "farewell",
           "conditions": [],
@@ -824,6 +842,167 @@
           "value": 0
         }
       ]
+    },
+    {
+      "id": "blessing_offer",
+      "speaker": "Priest of Morthane",
+      "text": "You are going down somewhere, then. Good - most people who ask me for this are lying about where they are going, and you at least look tired in the right way.\n\nIt is salt, grave-oil and about ten minutes of my voice. What it does is narrow: it makes your weapons matter to things that are already dead, and it stops the fear getting a grip when you look at something wearing a face it should not have. It will not make you brave. It will make sure that not being brave does not kill you.\n\nA hundred gold, for the oil and the salt. My voice is free. Nobody else wants it.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll make the donation.",
+          "next": "blessing_granted_devotee",
+          "conditions": [
+            {
+              "type": "has_gold",
+              "param": "",
+              "value": 100
+            },
+            {
+              "type": "flag_set",
+              "param": "morthane_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I'll make the donation.",
+          "next": "blessing_granted",
+          "conditions": [
+            {
+              "type": "has_gold",
+              "param": "",
+              "value": 100
+            },
+            {
+              "type": "flag_not_set",
+              "param": "morthane_devotee",
+              "value": 0
+            }
+          ],
+          "actions": [],
+          "show_when_unavailable": true,
+          "unavailable_reason": "The rite wants a hundred gold in oil and salt. You do not have it."
+        },
+        {
+          "text": "Not today.",
+          "next": "blessing_declined",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "blessing_granted",
+      "speaker": "Priest of Morthane",
+      "text": "Hold still. Palms up. Do not answer anything I say during this, whatever it sounds like it is asking.\n\nDone. A day. If you are still down there when it lapses, come up. Do not decide you are nearly finished. Everyone I have buried was nearly finished.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "take_gold",
+          "param": "",
+          "value": 100
+        },
+        {
+          "type": "apply_buff",
+          "param": "undead_damage",
+          "value": 1440,
+          "dc": 0.3
+        },
+        {
+          "type": "apply_buff",
+          "param": "horror_ward",
+          "value": 1440,
+          "dc": 4.0
+        }
+      ]
+    },
+    {
+      "id": "blessing_granted_devotee",
+      "speaker": "Priest of Morthane",
+      "text": "Palms up, keeper. You have heard the words - do not mouth them along, it is not a song.\n\nTwo days for you, because the cycle already knows your name and does not need to be reintroduced. Same instruction as everybody else: when it lapses, come up. I would rather bless you again than bury you once.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "take_gold",
+          "param": "",
+          "value": 100
+        },
+        {
+          "type": "apply_buff",
+          "param": "undead_damage",
+          "value": 2880,
+          "dc": 0.3
+        },
+        {
+          "type": "apply_buff",
+          "param": "horror_ward",
+          "value": 2880,
+          "dc": 4.0
+        }
+      ]
+    },
+    {
+      "id": "blessing_declined",
+      "speaker": "Priest of Morthane",
+      "text": "As you like. The altar keeps no list.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
+    },
+    {
+      "id": "renounce_inquiry",
+      "speaker": "Priest of Morthane",
+      "text": "Sit down. Have some water. This is a longer conversation than you think and a shorter one than you are afraid of.\n\nYou want an ending. That is the one thing I am actually qualified to give, so let us not pretend it is a tragedy. Morthane is the god of things stopping. A man who comes to a death-priest and says this is over is not betraying the doctrine. He is reciting it.\n\nI will tell you what I told you when you knelt, because it was true then and it is more useful now: even a wrong choice teaches you who you are. You have learned something about yourself that you could not have learned any other way. It cost you a year and it cost this temple a devotee, and that is a fair trade for knowing.\n\nSo. Do you want it ended?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Yes. Undo it.",
+          "next": "renounce_confirmed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "No. I spoke too quickly.",
+          "next": "renounce_withdrawn",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "renounce_confirmed",
+      "speaker": "Priest of Morthane",
+      "text": "Ended.\n\nThat is all. No thunder. I have said those words over farmers and over a king's dog and they were the same words, and they are the same now.\n\nThere is a price and I will not soften it. This church will not look at you the way it did, and it will take years, and some of them will die still thinking of you as the one who left. That is grief and not malice, and you will have to carry it, because they should not have to.\n\nAnd wait seven days before you kneel anywhere else. Not a rule - a mercy. A man who ends one thing and begins another in the same week has not ended anything, he has changed the subject, and I have watched that go badly more often than I have watched it go well.\n\nThe graves are still yours to visit. The dead never cared which god sent you.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "renounce_devotion",
+          "param": "morthane",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "renounce_withdrawn",
+      "speaker": "Priest of Morthane",
+      "text": "Then nothing has happened and nothing was said. Stand up.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
     }
   ]
 }

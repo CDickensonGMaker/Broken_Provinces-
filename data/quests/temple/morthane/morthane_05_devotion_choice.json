@@ -73,6 +73,7 @@
   "faction": "church_of_morthane",
   "forbidden_flags": [
     "chronos_devotee",
-    "gaela_devotee"
+    "gaela_devotee",
+    "forsworn"
   ]
 }

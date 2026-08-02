@@ -96,6 +96,7 @@ signal block_broken_signal
 var can_attack: bool = true
 var current_interactable: Node = null  # Currently highlighted interactable
 var mana_regen_accumulator: float = 0.0  # Accumulates fractional mana regen
+var hp_regen_accumulator: float = 0.0    # Accumulates fractional HP regen (granted regen only)
 
 ## Buff VFX manager for visual effects on conditions
 var buff_vfx_manager: BuffVFXManager = null
@@ -324,6 +325,7 @@ func _physics_process(delta: float) -> void:
 
 	# --- Mana regeneration ---
 	_regenerate_mana(delta)
+	_regenerate_health(delta)
 
 	# --- Update conditions and apply DOT damage ---
 	_update_conditions(delta)
@@ -425,10 +427,12 @@ func _do_light_attack(is_heavy: bool = false) -> void:
 	else:
 		melee_hitbox.monitoring = false
 
-	# Cooldown before next attack
+	# Cooldown before next attack. Chronos's blessing shortens it.
 	var attack_cooldown: float = light_attack_cooldown
 	if is_heavy:
 		attack_cooldown *= heavy_attack_cooldown_multiplier
+	if GameManager.player_data:
+		attack_cooldown /= maxf(0.1, GameManager.player_data.get_attack_speed_multiplier())
 	await get_tree().create_timer(attack_cooldown).timeout
 	can_attack = true
 
@@ -1026,6 +1030,25 @@ func _current_footstep_surface() -> String:
 			return "stone"
 		_:
 			return "dirt"
+
+## Regenerate health over time. Base regen is zero - this game recovers through
+## potions and rest - so this only ever runs while something has granted it,
+## and today that something is Gaela's blessing.
+func _regenerate_health(delta: float) -> void:
+	var char_data := GameManager.player_data
+	if not char_data:
+		return
+
+	var regen_rate: float = char_data.get_hp_regen()
+	if regen_rate <= 0.0 or char_data.current_hp >= char_data.max_hp:
+		hp_regen_accumulator = 0.0
+		return
+
+	hp_regen_accumulator += regen_rate * delta
+	if hp_regen_accumulator >= 1.0:
+		var whole_hp := int(hp_regen_accumulator)
+		hp_regen_accumulator -= whole_hp
+		char_data.heal(whole_hp)
 
 ## Regenerate mana over time
 func _regenerate_mana(delta: float) -> void:

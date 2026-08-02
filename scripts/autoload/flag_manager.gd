@@ -145,6 +145,38 @@ func _connect_to_autoloads() -> void:
 			faction_mgr.rank_changed.connect(_on_faction_rank_changed)
 		if faction_mgr.has_signal("joined_faction") and not faction_mgr.joined_faction.is_connected(_on_joined_faction):
 			faction_mgr.joined_faction.connect(_on_joined_faction)
+		# The apostasy term ends when its daily penalty does, and nowhere else.
+		if faction_mgr.has_signal("ongoing_effect_cleared") \
+				and not faction_mgr.ongoing_effect_cleared.is_connected(_on_ongoing_effect_cleared):
+			faction_mgr.ongoing_effect_cleared.connect(_on_ongoing_effect_cleared)
+
+	# Taking the bond is watched here rather than written into each priest's
+	# dialogue, so all three doors - the ritual, `become_devotee()` and a raw
+	# `set_flag` from data - charge the same price.
+	if not devotee_status_changed.is_connected(_on_devotee_status_changed):
+		devotee_status_changed.connect(_on_devotee_status_changed)
+
+
+## A devotee term expiring reopens the other two temples.
+func _on_ongoing_effect_cleared(effect_id: String) -> void:
+	if not effect_id.begins_with("forsworn_"):
+		return
+	expire_forsworn(effect_id.trim_prefix("forsworn_"))
+
+
+## Serving one god costs standing with the other two. The three churches are
+## `neutrals` of each other, so no cascade does this - it has to be said here.
+func _on_devotee_status_changed(deity: String, is_devotee: bool) -> void:
+	if not is_devotee:
+		return
+
+	for other: String in DEITY_FACTIONS:
+		if other == deity:
+			continue
+		FactionManager.modify_reputation(
+			DEITY_FACTIONS[other], DEVOTION_RIVAL_CHURCH_COST,
+			"gave their devotion to %s" % deity.capitalize()
+		)
 
 
 ## Handle faction rank changes - update guild rank flags
@@ -277,6 +309,88 @@ func become_devotee(deity: String) -> bool:
 	set_flag(DEITY_FLAGS[deity_lower])
 
 	return true
+
+
+# =============================================================================
+# APOSTASY
+# =============================================================================
+# Every refusal in the game calls the bond "a sacred bond that cannot be
+# undone", and all three priests have a `devotee_regret` node warning that the
+# choice is permanent. Ruled 8/2: there IS a road back, and it costs. The
+# priests were not lying - they were telling the player what it would take, and
+# nobody had ever paid it.
+
+## The flag that closes every other devotion chain while the price is being
+## paid. Named on the three `*_05_devotion_choice` quests' `forbidden_flags`.
+const FLAG_FORSWORN := "forsworn"
+
+## What renouncing costs the church you are leaving.
+const APOSTASY_REPUTATION_COST: int = -50
+
+## How long the daily penalty runs, and therefore how long the other two
+## temples stay shut.
+const APOSTASY_PENALTY_DAYS: int = 7
+
+## What taking the bond costs the OTHER two churches. Serving one god has never
+## cost standing with the others - the three churches are `neutrals` of each
+## other, so the cascade moves nothing either way. Ruled 8/2: it costs, and it
+## costs less than apostasy, because choosing somebody is not the same as
+## leaving them.
+const DEVOTION_RIVAL_CHURCH_COST: int = -15
+
+
+## Renounce the bond. Clears the devotee flag, empties the church's regard,
+## and starts the forsworn term - during which no other devotion may be taken.
+##
+## Returns false if the player is not that god's devotee, so a dialogue branch
+## that somehow fires twice cannot charge twice.
+func renounce_devotion(deity: String) -> bool:
+	var deity_lower := deity.to_lower()
+	if not DEITY_FLAGS.has(deity_lower):
+		push_warning("[FlagManager] Unknown deity: %s" % deity)
+		return false
+	if not has_flag(DEITY_FLAGS[deity_lower]):
+		return false
+
+	clear_flag(DEITY_FLAGS[deity_lower])
+	set_flag(FLAG_FORSWORN)
+	set_flag("forsworn_%s" % deity_lower)
+
+	var church: String = DEITY_FACTIONS.get(deity_lower, "")
+	if not church.is_empty():
+		FactionManager.modify_reputation(
+			church, APOSTASY_REPUTATION_COST, "renounced the bond"
+		)
+		# A daily penalty that ends on its own. `expire_forsworn` is what the
+		# ticker calls when the term is served, which is also what reopens the
+		# other two temples - so the sentence and the lockout cannot drift apart.
+		FactionManager.add_ongoing_effect("forsworn_%s" % deity_lower, {
+			"type": "reputation",
+			"faction": church,
+			"amount": -2,
+			"reason_display": "Forsworn",
+			"source": "apostasy",
+			"days": APOSTASY_PENALTY_DAYS,
+		})
+
+	return true
+
+
+## Is the player serving out an apostasy term?
+func is_forsworn() -> bool:
+	return has_flag(FLAG_FORSWORN)
+
+
+## The term is served. Called by FactionManager when the daily penalty expires;
+## the other two temples open on this line and nowhere else.
+func expire_forsworn(deity: String) -> void:
+	clear_flag("forsworn_%s" % deity.to_lower())
+
+	for other: String in DEITY_FLAGS:
+		if has_flag("forsworn_%s" % other):
+			return
+
+	clear_flag(FLAG_FORSWORN)
 
 
 ## Check if player has chosen any devotee path

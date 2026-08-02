@@ -152,6 +152,24 @@
           "actions": []
         },
         {
+          "text": "I would ask a blessing of the Timekeeper.",
+          "next": "blessing_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I want to be released from the bond. I no longer serve Chronos.",
+          "next": "renounce_inquiry",
+          "conditions": [
+            {
+              "type": "flag_set",
+              "param": "chronos_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
           "text": "Farewell.",
           "next": "farewell",
           "conditions": [],
@@ -829,6 +847,167 @@
           "value": 0
         }
       ]
+    },
+    {
+      "id": "blessing_offer",
+      "speaker": "Priest of Chronos",
+      "text": "A blessing, then. Understand what you are asking for: not luck, and not protection. Chronos grants a half-second - the small margin between the blow arriving and the blow landing, in which a man who is already moving stays moving. The temple asks a hundred gold for the oil and the hourglass sand. It is a donation and not a price. I would give it to a beggar. I would also remember that he took it.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll make the donation.",
+          "next": "blessing_granted_devotee",
+          "conditions": [
+            {
+              "type": "has_gold",
+              "param": "",
+              "value": 100
+            },
+            {
+              "type": "flag_set",
+              "param": "chronos_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I'll make the donation.",
+          "next": "blessing_granted",
+          "conditions": [
+            {
+              "type": "has_gold",
+              "param": "",
+              "value": 100
+            },
+            {
+              "type": "flag_not_set",
+              "param": "chronos_devotee",
+              "value": 0
+            }
+          ],
+          "actions": [],
+          "show_when_unavailable": true,
+          "unavailable_reason": "Chronos asks a donation of 100 gold. You do not have it."
+        },
+        {
+          "text": "Not today.",
+          "next": "blessing_declined",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "blessing_granted",
+      "speaker": "Priest of Chronos",
+      "text": "Kneel. Watch the sand, and do not blink.\n\nThere. It will not feel like anything until the first time you are struck at and are already elsewhere. It runs a day, no longer. A blessing that never ended would be a gift, and Chronos gives no gifts - only loans.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "take_gold",
+          "param": "",
+          "value": 100
+        },
+        {
+          "type": "apply_buff",
+          "param": "move_speed",
+          "value": 1440,
+          "dc": 0.12
+        },
+        {
+          "type": "apply_buff",
+          "param": "attack_speed",
+          "value": 1440,
+          "dc": 0.15
+        }
+      ]
+    },
+    {
+      "id": "blessing_granted_devotee",
+      "speaker": "Priest of Chronos",
+      "text": "Kneel, devotee. You know what to watch.\n\nTwo days, for you. Not favour - resonance. The bond you took hums at the pitch of the rite, and a thing that hums together lasts longer. Go. And come back before it runs out; a man who lets his margin lapse in the field is a man Chronos has already finished with.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "take_gold",
+          "param": "",
+          "value": 100
+        },
+        {
+          "type": "apply_buff",
+          "param": "move_speed",
+          "value": 2880,
+          "dc": 0.12
+        },
+        {
+          "type": "apply_buff",
+          "param": "attack_speed",
+          "value": 2880,
+          "dc": 0.15
+        }
+      ]
+    },
+    {
+      "id": "blessing_declined",
+      "speaker": "Priest of Chronos",
+      "text": "As you like. The altar keeps no list.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
+    },
+    {
+      "id": "renounce_inquiry",
+      "speaker": "Priest of Chronos",
+      "text": "No.\n\nUnderstand me - that is not a refusal, it is an observation. There is no releasing. The bond is not a rope somebody tied and somebody can untie; it is a thing that happened, at an hour, and hours do not unhappen. What you are asking me for is not freedom. It is for the record to be corrected.\n\nAnd it can be. The Timekeeper does not forgive and has never needed to. He writes down what occurred. It will say that you came to this altar, and gave your soul, and took it back, and that sentence will be true forever. Every priest of every god will be able to read it.\n\nDo you still want it written?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Yes. Undo it.",
+          "next": "renounce_confirmed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "No. I spoke too quickly.",
+          "next": "renounce_withdrawn",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "renounce_confirmed",
+      "speaker": "Priest of Chronos",
+      "text": "Then it is written.\n\nThe sand does not care, and in the end neither do I. But there is a cost, and it is not a punishment - it is arithmetic. This temple gave you a place in it and you have vacated the place. That is a lifetime of goodwill spent in an afternoon, and it will show in every face here for as long as anyone alive remembers your name.\n\nAnd the other two will not take you. Not for seven days, and not out of spite: a soul that has just been unmade rings wrong, and Gaela and Morthane can both hear it. Wait for it to go quiet. Then go and be somebody else's, if that is what you are.\n\nYou may still pray here. Chronos does not turn away the punctual.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "renounce_devotion",
+          "param": "chronos",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "renounce_withdrawn",
+      "speaker": "Priest of Chronos",
+      "text": "Then nothing has happened and nothing was said. Stand up.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
     }
   ]
 }

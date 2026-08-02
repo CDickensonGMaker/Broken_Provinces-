@@ -77,7 +77,9 @@ enum ActionType {
 	RECRUIT_FOLLOWER,   ## Recruit an NPC as a follower (param_string = follower_id)
 	COMMAND_FOLLOWER,   ## Command active followers (param_string = "wait" or "follow")
 	SET_WORLD_FLAG,     ## Record a durable world fact (param_string = "flag" or "flag=value")
-	JOIN_FACTION        ## Join a faction (param_string = "faction_id", or "faction_id:force" / "faction_id:force:Rank Name")
+	JOIN_FACTION,       ## Join a faction (param_string = "faction_id", or "faction_id:force" / "faction_id:force:Rank Name")
+	APPLY_BUFF,         ## Apply a timed buff (param_string = "buff_id", param_int = magnitude, param_float = seconds)
+	RENOUNCE_DEVOTION   ## Renounce a god's bond (param_string = "chronos" | "gaela" | "morthane")
 }
 
 

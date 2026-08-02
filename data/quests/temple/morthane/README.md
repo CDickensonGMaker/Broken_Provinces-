@@ -113,8 +113,19 @@ Climactic quests with best rewards.
 - Access to exclusive high-tier quests
 - Acknowledged by other temple priests with unique dialogue
 - "One who walks with the cycle..." recognition
-- Does NOT lock out other temple quests (Chronos, Gaela)
+- Locks out the Chronos and Gaela BOND chains; their open service stays available
+- Costs Chronos's and Gaela's churches 15 reputation each
 - Other priests give different dialogue acknowledging your devotion
+
+**CORRECTED 8/2 — devotion IS exclusive.** All three priests say so out loud,
+in voice, and each has a written refusal for a rival god's devotee. Those speeches
+are older, player-facing and canon; these READMEs were agent-generated and
+bulk-added in one commit, and they were wrong. The lockout is wired: every bond
+quest carries `forbidden_flags` naming the other two devotee flags, and quests 1-4
+stay open to everyone, exactly as the priests promise ("you may always seek
+blessing here, offer prayers, and aid our temple in its works").
+
+There is now a road back — see "Apostasy" below. Do not restore the old claims.
 
 ### Declining Devotion
 - If player declines in Quest 5, sets `morthane_devotion_declined` flag
@@ -303,7 +314,9 @@ Priest should address player as "Champion" or "Deathwalker".
 All temple priests should have special dialogue for Morthane champions.
 
 ### Other Gods' Priests
-If player is Morthane devotee/champion, other priests (Chronos, Gaela) should acknowledge this in dialogue but NOT lock out their quests.
+If the player is a Morthane devotee, the other priests acknowledge it and route
+him to their `already_other_devotee` node, which refuses the bond in each god's
+own voice. Their quests 1-4 and their blessings remain open to him.
 
 ---
 
@@ -346,3 +359,14 @@ If player is Morthane devotee/champion, other priests (Chronos, Gaela) should ac
 - Rebirth: The beginning, the cycle renewed, transformation
 
 This makes Morthane devotees philosophical undead slayers, NOT dark cultists.
+
+## Apostasy (ruled 8/2)
+
+A devotee may renounce, at their own god's priest, in that priest's voice.
+It clears the devotee flag, costs **-50** reputation with that church, and starts
+a **seven-day** `forsworn_<god>` daily penalty. While the `forsworn` flag stands,
+no other devotion may be taken — the three `*_05_devotion_choice` quests forbid it.
+When the penalty expires the flag clears and the other two temples open.
+
+Taking the bond in the first place costs the **other two** churches **-15** each,
+fired on the devotee flag being set, wherever it is set from.

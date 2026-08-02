@@ -127,6 +127,12 @@ func _run() -> void:
 	_check_devotion_lockout()
 	await _settle()
 	_check_devotion_decline_ends_chain()
+	await _settle()
+	_check_devotion_costs_the_rivals()
+	await _settle()
+	_check_apostasy()
+	await _settle()
+	_check_blessings()
 
 	print("")
 	print("Checks run: %d" % _checks)
@@ -616,4 +622,190 @@ func _check_devotion_decline_ends_chain() -> void:
 				"'%s' does not require %s, so declining devotion still unlocks it" % [quest_id, chain["flag"]]
 			)
 
+	_reset()
+
+
+# =============================================================================
+# L11 - the price of the bond, and the price of breaking it
+# =============================================================================
+
+## Serving one god costs standing with the other two. The three churches are
+## `neutrals` of each other, so no cascade does this - FlagManager charges it
+## off the devotee flag, wherever that flag is set from.
+func _check_devotion_costs_the_rivals() -> void:
+	for deity: String in DEITIES:
+		_reset()
+
+		var own: String = FactionManager.get_church_for_deity(deity)
+		var rivals: Array[String] = []
+		for other: String in DEITIES:
+			if other != deity:
+				rivals.append(FactionManager.get_church_for_deity(other))
+
+		var before: Dictionary = {}
+		for rival: String in rivals:
+			before[rival] = FactionManager.get_reputation(rival)
+
+		FlagManager.set_flag("%s_devotee" % deity)
+
+		for rival: String in rivals:
+			_expect(
+				FactionManager.get_reputation(rival) < int(before[rival]),
+				"taking %s's bond cost %s nothing - serving one god is still free of the others"
+					% [deity, rival]
+			)
+
+		_expect(
+			not own.is_empty(),
+			"no church faction is mapped to '%s'" % deity
+		)
+
+	_reset()
+
+
+## The road back. Every refusal calls the bond unbreakable; ruled 8/2 that it
+## can be broken and what it costs. This proves the whole transaction, and that
+## the term actually ends rather than running forever.
+func _check_apostasy() -> void:
+	for deity: String in DEITIES:
+		_reset()
+
+		var church: String = FactionManager.get_church_for_deity(deity)
+		var flag: String = "%s_devotee" % deity
+
+		_expect(
+			not FlagManager.renounce_devotion(deity),
+			"a non-devotee could renounce %s - the price can be paid twice" % deity
+		)
+
+		FlagManager.set_flag(flag)
+		var before: int = FactionManager.get_reputation(church)
+
+		_expect(FlagManager.renounce_devotion(deity), "renouncing %s failed" % deity)
+		_expect(not FlagManager.has_flag(flag), "the %s devotee flag survived apostasy" % deity)
+		_expect(
+			FactionManager.get_reputation(church) <= before + FlagManager.APOSTASY_REPUTATION_COST,
+			"apostasy cost %s %d, not %d" % [
+				church, FactionManager.get_reputation(church) - before,
+				FlagManager.APOSTASY_REPUTATION_COST
+			]
+		)
+		_expect(FlagManager.is_forsworn(), "apostasy did not set the forsworn flag")
+		_expect(
+			FactionManager.has_ongoing_effect("forsworn_%s" % deity),
+			"apostasy started no daily penalty for %s" % deity
+		)
+
+		# While forsworn, no other god will take the bond.
+		for other: String in DEITIES:
+			if other == deity:
+				continue
+			var template: QuestManager.Quest = QuestManager.quest_database.get(
+				"%s_05_devotion_choice" % other
+			)
+			_expect(template != null, "'%s_05_devotion_choice' does not load" % other)
+			if template == null:
+				continue
+			_expect(
+				FlagManager.FLAG_FORSWORN in template.forbidden_flags,
+				"'%s_05_devotion_choice' does not forbid `forsworn`, so a man can renounce one god and kneel to another the same afternoon"
+					% other
+			)
+			_expect(
+				not QuestManager.is_quest_available("%s_05_devotion_choice" % other),
+				"a forsworn player is offered %s's bond immediately" % other
+			)
+
+		# Serve the term. The penalty must expire on its own and reopen the
+		# other two temples - nothing else clears the flag.
+		for day: int in range(1, FlagManager.APOSTASY_PENALTY_DAYS + 1):
+			FactionManager.process_ongoing_effects(GameManager.current_day + day)
+
+		_expect(
+			not FactionManager.has_ongoing_effect("forsworn_%s" % deity),
+			"the seven-day forsworn penalty for %s never expired - it runs forever" % deity
+		)
+		_expect(
+			not FlagManager.is_forsworn(),
+			"the term was served and the player is still forsworn - the other temples never reopen"
+		)
+		# Availability alone would also need quests 1-4 done; what the term
+		# gates is the forbidden-flag check, so that is what is asserted.
+		for other: String in DEITIES:
+			if other == deity:
+				continue
+			var reopened: QuestManager.Quest = QuestManager.quest_database.get(
+				"%s_05_devotion_choice" % other
+			)
+			if reopened == null:
+				continue
+			_expect(
+				FlagManager.check_forbidden_flags(reopened.forbidden_flags),
+				"%s's bond is still closed after the forsworn term ended" % other
+			)
+
+	_reset()
+
+
+## Every priest offers a blessing, repeatedly, and every bless choice in all
+## three files had `actions: []`. They apply real timed buffs now, and a buff id
+## nothing reads is the same lie one step further in - so this checks the
+## READERS, not just that the action fires.
+func _check_blessings() -> void:
+	_reset()
+
+	var data := CharacterData.new()
+	var previous: CharacterData = GameManager.player_data
+	GameManager.player_data = data
+
+	# Chronos - move and attack speed.
+	var base_speed: float = data.get_movement_speed_multiplier()
+	data.apply_buff(CharacterData.BUFF_MOVE_SPEED, 0.12, 60.0)
+	_expect(
+		data.get_movement_speed_multiplier() > base_speed,
+		"BUFF_MOVE_SPEED does not reach the movement speed multiplier"
+	)
+	data.apply_buff(CharacterData.BUFF_ATTACK_SPEED, 0.15, 60.0)
+	_expect(
+		data.get_attack_speed_multiplier() > 1.0,
+		"BUFF_ATTACK_SPEED does not reach the attack speed multiplier"
+	)
+
+	# Gaela - regeneration and carry weight.
+	_expect(data.get_hp_regen() == 0.0, "the player regenerates HP unblessed")
+	data.apply_buff(CharacterData.BUFF_HP_REGEN, 0.6, 60.0)
+	_expect(data.get_hp_regen() > 0.0, "BUFF_HP_REGEN does not reach get_hp_regen")
+
+	var base_carry: float = InventoryManager.get_max_carry_weight()
+	data.apply_buff(CharacterData.BUFF_CARRY_WEIGHT, 60.0, 60.0)
+	_expect(
+		InventoryManager.get_max_carry_weight() > base_carry,
+		"BUFF_CARRY_WEIGHT does not reach get_max_carry_weight"
+	)
+
+	# Morthane - the ward against horror. (The undead damage multiplier is
+	# exercised by check_combat, which owns apply_melee_damage.)
+	_expect(data.get_horror_ward() == 0, "the player is warded against horror unblessed")
+	data.apply_buff(CharacterData.BUFF_HORROR_WARD, 4.0, 60.0)
+	_expect(data.get_horror_ward() == 4, "BUFF_HORROR_WARD does not reach get_horror_ward")
+
+	# And the dialogue action that grants them all.
+	data.clear_buffs()
+	var action := DialogueAction.new()
+	action.type = DialogueData.ActionType.APPLY_BUFF
+	action.param_string = CharacterData.BUFF_MOVE_SPEED
+	action.param_float = 0.12
+	action.param_int = 1440
+	DialogueManager.execute_action(action)
+	_expect(
+		data.has_buff(CharacterData.BUFF_MOVE_SPEED),
+		"the apply_buff dialogue action granted nothing - every blessing choice is still empty"
+	)
+	_expect(
+		is_equal_approx(data.get_buff_remaining(CharacterData.BUFF_MOVE_SPEED), 1440.0),
+		"apply_buff read the duration from the wrong field: %.1f seconds, not 1440"
+			% data.get_buff_remaining(CharacterData.BUFF_MOVE_SPEED)
+	)
+
+	GameManager.player_data = previous
 	_reset()

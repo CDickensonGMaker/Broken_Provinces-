@@ -210,6 +210,8 @@ static func _parse_action_type(type_str: String) -> DialogueData.ActionType:
 		"command_follower": return DialogueData.ActionType.COMMAND_FOLLOWER
 		"set_world_flag": return DialogueData.ActionType.SET_WORLD_FLAG
 		"join_faction": return DialogueData.ActionType.JOIN_FACTION
+		"apply_buff": return DialogueData.ActionType.APPLY_BUFF
+		"renounce_devotion": return DialogueData.ActionType.RENOUNCE_DEVOTION
 		"": return DialogueData.ActionType.NONE
 		_:
 			# A hard error, not a warning. Actions fail closed already (NONE

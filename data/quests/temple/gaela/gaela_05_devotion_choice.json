@@ -61,6 +61,7 @@
   "next_quest": "gaela_06_blight_source",
   "forbidden_flags": [
     "chronos_devotee",
-    "morthane_devotee"
+    "morthane_devotee",
+    "forsworn"
   ]
 }

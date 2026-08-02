@@ -140,6 +140,24 @@
           "actions": []
         },
         {
+          "text": "I would ask the Mother's blessing.",
+          "next": "blessing_offer",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Mother - I am leaving Gaela's path. I want the bond undone.",
+          "next": "renounce_inquiry",
+          "conditions": [
+            {
+              "type": "flag_set",
+              "param": "gaela_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
           "text": "Farewell, Priestess.",
           "next": "farewell",
           "conditions": [],
@@ -781,6 +799,167 @@
           "value": 0
         }
       ]
+    },
+    {
+      "id": "blessing_offer",
+      "speaker": "Priestess of Gaela",
+      "text": "Of course, child. Sit while I mix it - honey, marrow-root and a little of the harvest ale, and it does exactly what it looks like it does. It feeds you. You will find your hurts knitting on the road instead of waiting for a bed, and your back easier under a load.\n\nThe temple asks a hundred gold. That is not for the honey. It goes to the almshouse, and I would rather you knew that than thought me holy.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "I'll make the donation.",
+          "next": "blessing_granted_devotee",
+          "conditions": [
+            {
+              "type": "has_gold",
+              "param": "",
+              "value": 100
+            },
+            {
+              "type": "flag_set",
+              "param": "gaela_devotee",
+              "value": 0
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "I'll make the donation.",
+          "next": "blessing_granted",
+          "conditions": [
+            {
+              "type": "has_gold",
+              "param": "",
+              "value": 100
+            },
+            {
+              "type": "flag_not_set",
+              "param": "gaela_devotee",
+              "value": 0
+            }
+          ],
+          "actions": [],
+          "show_when_unavailable": true,
+          "unavailable_reason": "The temple asks a hundred gold toward the almshouse. You do not have it."
+        },
+        {
+          "text": "Not today.",
+          "next": "blessing_declined",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "blessing_granted",
+      "speaker": "Priestess of Gaela",
+      "text": "Drink it warm. All of it - I will not have it wasted.\n\nGood. It will hold about a day. You will not notice it working, which is how the best of Gaela's work always goes: nobody stands in a wheat field feeling the wheat grow.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "take_gold",
+          "param": "",
+          "value": 100
+        },
+        {
+          "type": "apply_buff",
+          "param": "hp_regen",
+          "value": 1440,
+          "dc": 0.6
+        },
+        {
+          "type": "apply_buff",
+          "param": "carry_weight",
+          "value": 1440,
+          "dc": 60.0
+        }
+      ]
+    },
+    {
+      "id": "blessing_granted_devotee",
+      "speaker": "Priestess of Gaela",
+      "text": "Drink, child of the harvest. You know the taste by now.\n\nTwo days for you, and no, I will not pretend that is doctrine. You are mine. Mothers are unfair. Eat something that is not this before nightfall.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "take_gold",
+          "param": "",
+          "value": 100
+        },
+        {
+          "type": "apply_buff",
+          "param": "hp_regen",
+          "value": 2880,
+          "dc": 0.6
+        },
+        {
+          "type": "apply_buff",
+          "param": "carry_weight",
+          "value": 2880,
+          "dc": 60.0
+        }
+      ]
+    },
+    {
+      "id": "blessing_declined",
+      "speaker": "Priestess of Gaela",
+      "text": "As you like. The altar keeps no list.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
+    },
+    {
+      "id": "renounce_inquiry",
+      "speaker": "Priestess of Gaela",
+      "text": "Oh, child.\n\nSit down. No - sit down. I am not going to argue with you, I am going to look at you for a moment, which nobody has done in some while by the look of it.\n\nYou know what I have to say, because I said it to you on the day you knelt: you cannot unplant a seed. You can only tend what grows from it, or stop tending it and live with what that costs. This is the second one. It is allowed. Half the things I tend were planted by people who left.\n\nBut it will hurt, and not in the way you are braced for. Not the temple's anger - a temple is a building. What will hurt is that in a month you will smell cut hay and it will still mean me.\n\nAre you certain?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Yes. Undo it.",
+          "next": "renounce_confirmed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "No. I spoke too quickly.",
+          "next": "renounce_withdrawn",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "renounce_confirmed",
+      "speaker": "Priestess of Gaela",
+      "text": "Then let it go, and let me be the one who lets it go, so it is done kindly at least once today.\n\nThere. You are not Gaela's.\n\nThe fields do not close to you, and neither do I. But you have taken something out of this garden and the soil knows it. The people here will be cold with you a long while and I will not correct them, because they are not wrong. And the other two temples will not have you for seven days - a root pulled up cannot be pushed into new ground the same afternoon and take. Let it dry. Then plant it wherever you like, and I hope to the Mother it grows.\n\nCome back for the blessing when you need it. I will still mix it. Do not be strange about it.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "renounce_devotion",
+          "param": "gaela",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "renounce_withdrawn",
+      "speaker": "Priestess of Gaela",
+      "text": "Then nothing has happened and nothing was said. Stand up.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": []
     }
   ]
 }

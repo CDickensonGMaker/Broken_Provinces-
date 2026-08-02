@@ -159,7 +159,8 @@ These NPCs must exist and be spawned in their respective zones:
 
 **Cross-faction Effects:**
 - Other temple priests acknowledge Gaela devotion with unique dialogue
-- Does NOT lock out Chronos or Morthane quests
+- Locks out the Chronos and Morthane BOND chains (their quests 5-10); their open
+  service and blessings stay available
 - High Gaela reputation grants slight bonuses to nature/healing skill checks
 
 ---
@@ -176,11 +177,22 @@ These NPCs must exist and be spawned in their respective zones:
 5. Temple priests of other gods give different greetings
 
 **Player can still:**
-- Accept quests from Chronos and Morthane priests
+- Accept the OPEN-SERVICE quests (1-4) from Chronos and Morthane priests
+- Ask any priest for a blessing, and pray at any altar
 - Complete quests for other factions
-- Worship at other shrines
 
-**Devotion is NOT exclusive** - it's a dedication, not a hard lock.
+**Player can no longer:**
+- Take a second god's bond (quests 5-10 of the other two chains)
+
+**CORRECTED 8/2 — devotion IS exclusive.** All three priests say so out loud,
+in voice, and each has a written refusal for a rival god's devotee. Those speeches
+are older, player-facing and canon; these READMEs were agent-generated and
+bulk-added in one commit, and they were wrong. The lockout is wired: every bond
+quest carries `forbidden_flags` naming the other two devotee flags, and quests 1-4
+stay open to everyone, exactly as the priests promise ("you may always seek
+blessing here, offer prayers, and aid our temple in its works").
+
+There is now a road back — see "Apostasy" below. Do not restore the old claims.
 
 ---
 
@@ -332,3 +344,14 @@ Other priests (Chronos, Morthane) should acknowledge if player has `gaela_devote
 **Created:** 2026-04-06
 **Author:** Claude (Dialogue-Quest-Master Agent)
 **Version:** 1.0
+
+## Apostasy (ruled 8/2)
+
+A devotee may renounce, at their own god's priest, in that priest's voice.
+It clears the devotee flag, costs **-50** reputation with that church, and starts
+a **seven-day** `forsworn_<god>` daily penalty. While the `forsworn` flag stands,
+no other devotion may be taken — the three `*_05_devotion_choice` quests forbid it.
+When the penalty expires the flag clears and the other two temples open.
+
+Taking the bond in the first place costs the **other two** churches **-15** each,
+fired on the devotee flag being set, wherever it is set from.

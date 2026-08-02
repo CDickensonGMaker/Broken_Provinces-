@@ -95,6 +95,17 @@ const BUFF_RESIST_FROST := "resist_frost"
 const BUFF_RESIST_POISON := "resist_poison"
 const BUFF_INVISIBILITY := "invisibility"
 
+## The six a priest's blessing grants. Each has a reader, named beside it -
+## a buff id nothing reads ticks, saves and does nothing, which is exactly the
+## defect the blessings themselves were (every bless choice in all three
+## temples had `actions: []`).
+const BUFF_MOVE_SPEED := "move_speed"        # fraction; get_movement_speed_multiplier
+const BUFF_ATTACK_SPEED := "attack_speed"    # fraction; PlayerController attack cooldown
+const BUFF_HP_REGEN := "hp_regen"            # HP per second; get_hp_regen
+const BUFF_CARRY_WEIGHT := "carry_weight"    # flat; InventoryManager.get_max_carry_weight
+const BUFF_UNDEAD_DAMAGE := "undead_damage"  # fraction; CombatManager.apply_melee_damage
+const BUFF_HORROR_WARD := "horror_ward"      # flat roll bonus; CombatManager.trigger_horror_check
+
 ## Damage reduction a RESIST_* buff grants against its damage type.
 const RESIST_BUFF_REDUCTION: float = 0.5
 
@@ -377,7 +388,7 @@ func get_movement_multiplier() -> float:
 
 ## Get attack speed multiplier (uses effective stat)
 func get_attack_speed_multiplier() -> float:
-	return 1.0 + (get_effective_stat(Enums.Stat.AGILITY) * 0.03)
+	return 1.0 + (get_effective_stat(Enums.Stat.AGILITY) * 0.03) + get_buff(BUFF_ATTACK_SPEED)
 
 ## Get magic resistance (0.0 to ~0.5) (uses effective stat + RESIST skill)
 ## RESIST: +3% magic resistance per level (stacks with Will's 2% per point)
@@ -396,9 +407,11 @@ func get_stamina_drain_multiplier() -> float:
 	var reduction := (endurance_skill * 0.05) + (athletics_skill * 0.03)
 	return maxf(0.5, 1.0 - reduction)
 
-## Get HP regen per second (zero - recover via potions/rest only)
+## Get HP regen per second. Zero by default - the player recovers through
+## potions and rest - so any regen at all is something granted, and today that
+## is Gaela's blessing.
 func get_hp_regen() -> float:
-	return 0.0
+	return get_buff(BUFF_HP_REGEN)
 
 ## Get stamina regen per second (slow passive regen for movement) (uses effective stat)
 ## ATHLETICS: +0.3 stamina regen per level
@@ -418,7 +431,12 @@ func get_mana_regen() -> float:
 func get_movement_speed_multiplier() -> float:
 	var eff_agility := get_effective_stat(Enums.Stat.AGILITY)
 	var athletics_skill := get_skill(Enums.Skill.ATHLETICS)
-	return 1.0 + (eff_agility * 0.02) + (athletics_skill * 0.03)
+	return 1.0 + (eff_agility * 0.02) + (athletics_skill * 0.03) + get_buff(BUFF_MOVE_SPEED)
+
+
+## Roll bonus against a horror check, on top of Will + Bravery.
+func get_horror_ward() -> int:
+	return int(get_buff(BUFF_HORROR_WARD))
 
 ## Apply (or refresh) a timed buff. Takes the better amount and the longer
 ## remaining time, so a weaker potion never downgrades a stronger one.

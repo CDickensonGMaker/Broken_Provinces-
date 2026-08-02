@@ -85,7 +85,8 @@
       "serial_effect": {
         "type": "gold",
         "amount": 25,
-        "source": "serial"
+        "source": "serial",
+        "expires_on_day": 0
       }
     },
     "faction_hostility": {

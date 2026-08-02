@@ -36,12 +36,16 @@ var last_decay_day: Dictionary = {}
 ## of a standing arrangement. Debts bleed reputation, a camp under the player's
 ## thumb pays him, and a town that knows what he has become gets angrier.
 ##
-## Format: { effect_id: {type, faction, amount, reason_display, source} }
+## Format: { effect_id: {type, faction, amount, reason_display, source,
+##                        expires_on_day} }
 ##   type:           "reputation" | "gold" | "hostility"
 ##   faction:        which faction it concerns (unused by "gold")
 ##   amount:         applied every day; sign is meaningful for all three types
 ##   reason_display: human-readable, for notifications and UI
 ##   source:         optional tag so one arrangement's effects clear together
+##   expires_on_day: absolute day the effect retires itself; 0 = never, which
+##                   is every effect written before sentences existed. Pass
+##                   `days` to add_ongoing_effect() to count from today.
 var ongoing_effects: Dictionary = {}
 
 ## Standing hostility per faction (faction_id -> 0..100). Reputation is what a
@@ -215,12 +219,24 @@ func add_ongoing_effect(effect_id: String, config: Dictionary) -> bool:
 			push_warning("[FactionManager] Ongoing effect '%s' names no known faction: '%s'" % [effect_id, faction_id])
 			return false
 
+	# An arrangement that ends on a known day. Every effect before this one ran
+	# until something explicitly cleared it, which is right for a debt and wrong
+	# for a sentence: a penalty served for seven days needs somebody to remember
+	# to stop it, and nobody was going to. `days` is a count from today;
+	# `expires_on_day` is the absolute day. 0 means it never expires, which is
+	# every effect written before this field existed.
+	var expires_on_day: int = int(config.get("expires_on_day", 0))
+	var days: int = int(config.get("days", 0))
+	if expires_on_day <= 0 and days > 0:
+		expires_on_day = GameManager.current_day + days
+
 	var effect: Dictionary = {
 		"type": effect_type,
 		"faction": faction_id,
 		"amount": int(config.get("amount", 0)),
 		"reason_display": str(config.get("reason_display", effect_id)),
-		"source": str(config.get("source", ""))
+		"source": str(config.get("source", "")),
+		"expires_on_day": expires_on_day
 	}
 
 	ongoing_effects[effect_id] = effect
@@ -315,6 +331,24 @@ func process_ongoing_effects(_current_day: int = 0) -> void:
 
 	if gold_total != 0:
 		_pay_ongoing_gold(gold_total)
+
+	_expire_ongoing_effects(_current_day)
+
+
+## Retire every effect whose last day has passed. Runs AFTER the day's effects
+## are applied, so a seven-day penalty is felt on all seven of them.
+func _expire_ongoing_effects(current_day: int) -> void:
+	var day: int = current_day if current_day > 0 else GameManager.current_day
+	var expired: Array[String] = []
+
+	for effect_id: String in ongoing_effects:
+		var effect: Dictionary = ongoing_effects[effect_id]
+		var expires_on_day: int = int(effect.get("expires_on_day", 0))
+		if expires_on_day > 0 and day >= expires_on_day:
+			expired.append(effect_id)
+
+	for effect_id: String in expired:
+		clear_ongoing_effect(effect_id)
 
 
 ## Hand over (or take) the day's coin from standing arrangements.
@@ -843,7 +877,10 @@ func from_dict(data: Dictionary) -> void:
 	var saved_effects: Dictionary = data.get("ongoing_effects", {})
 	for effect_id: String in saved_effects:
 		var effect: Dictionary = (saved_effects[effect_id] as Dictionary).duplicate()
+		# JSON hands every number back as a float; both of these are counted in
+		# whole units and are compared with `==` further down.
 		effect["amount"] = int(effect.get("amount", 0))
+		effect["expires_on_day"] = int(effect.get("expires_on_day", 0))
 		ongoing_effects[effect_id] = effect
 
 	# Saves written before the ticker was generalized carry penalties in the
@@ -859,7 +896,8 @@ func from_dict(data: Dictionary) -> void:
 				"faction": faction_id,
 				"amount": int(penalty.get("amount", 0)),
 				"reason_display": str(penalty.get("reason_display", penalty_id)),
-				"source": "daily_penalty"
+				"source": "daily_penalty",
+				"expires_on_day": 0
 			}
 
 	# Ensure all factions have a reputation entry

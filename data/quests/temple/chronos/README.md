@@ -69,13 +69,22 @@ An extensive 10-quest chain (plus 1 repeatable) dedicated to Chronos, God of Tim
 **Declining Devotion:**
 - Sets flag: `chronos_path_declined`
 - Ends quest chain (no quests 6-10)
-- Does NOT lock out other temple quests (Gaela, Morthane)
-- Can still receive blessings and worship at temple
+- Declining does NOT lock out the other temples - only *accepting* does
+- Can still receive blessings and worship at any temple
 
-**Important Notes:**
-- This is a SOFT LOCK, not a hard lock
-- Players who decline can still engage with temple content
-- Accepting does NOT prevent worship of other gods
+**CORRECTED 8/2 — devotion IS exclusive.** All three priests say so out loud,
+in voice, and each has a written refusal for a rival god's devotee. Those speeches
+are older, player-facing and canon; these READMEs were agent-generated and
+bulk-added in one commit, and they were wrong. The lockout is wired: every bond
+quest carries `forbidden_flags` naming the other two devotee flags, and quests 1-4
+stay open to everyone, exactly as the priests promise ("you may always seek
+blessing here, offer prayers, and aid our temple in its works").
+
+There is now a road back — see "Apostasy" below. Do not restore the old claims.
+
+- Shallow service stays open to everybody: quests 1-4, blessings, prayer
+- Accepting the bond closes the other two temples' bond chains, and costs each
+  of them 15 reputation
 - Other priests give different dialogue to devotees ("Ah, a follower of the Timekeeper...")
 
 ---
@@ -586,7 +595,7 @@ Random rift events could spawn in the world for high-level players to close.
 **Design Philosophy:**
 - Escalating difficulty and rewards create sense of progression
 - Meaningful choices (Quests 4, 5, 7) give player agency
-- Devotee system creates commitment without hard-locking other content
+- Devotee system creates commitment by genuinely closing the other two doors
 - Lore is delivered through visions and environmental storytelling
 - Boss encounters feel epic and worthy of the challenge
 - Repeatable quest maintains engagement post-completion
@@ -602,3 +611,14 @@ Random rift events could spawn in the world for high-level players to close.
 **Created:** 2026-04-06
 **Version:** 1.0
 **Status:** Design Complete - Implementation Pending
+
+## Apostasy (ruled 8/2)
+
+A devotee may renounce, at their own god's priest, in that priest's voice.
+It clears the devotee flag, costs **-50** reputation with that church, and starts
+a **seven-day** `forsworn_<god>` daily penalty. While the `forsworn` flag stands,
+no other devotion may be taken — the three `*_05_devotion_choice` quests forbid it.
+When the penalty expires the flag clears and the other two temples open.
+
+Taking the bond in the first place costs the **other two** churches **-15** each,
+fired on the devotee flag being set, wherever it is set from.

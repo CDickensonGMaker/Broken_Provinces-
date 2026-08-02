@@ -61,6 +61,7 @@
   "notes": "DESIGN INTENT: THE CRITICAL SOFT-LOCK QUEST. This is where the player commits to the Chronos path or declines. Accepting sets the 'chronos_devotee' flag which unlocks quests 6-10+. Declining ends the quest chain but doesn't lock out temple worship or other god quests. The dialogue should make it clear this is a significant choice. The Chronos Amulet is a unique equipment piece with +Intuition and minor time-related effects. Massive reputation gain (50) for accepting devotion. Other temple priests will acknowledge the player as 'Acolyte of Time' if they accept.",
   "forbidden_flags": [
     "gaela_devotee",
-    "morthane_devotee"
+    "morthane_devotee",
+    "forsworn"
   ]
 }

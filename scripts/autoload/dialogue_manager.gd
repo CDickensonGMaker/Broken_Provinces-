@@ -743,7 +743,40 @@ func execute_action(action: DialogueAction) -> String:
 		DialogueData.ActionType.JOIN_FACTION:
 			_join_faction(action.param_string)
 
+		DialogueData.ActionType.APPLY_BUFF:
+			_apply_buff(action.param_string, action.param_float, action.param_int)
+
+		DialogueData.ActionType.RENOUNCE_DEVOTION:
+			FlagManager.renounce_devotion(action.param_string)
+
 	return ""
+
+
+## Apply a timed buff from dialogue - a priest's blessing, and anything else
+## that hands out an effect rather than an object.
+##
+## Until now the only way to give a timed buff was to give a consumable and
+## hope the player drank it, which is why every "seek blessing here" choice in
+## all three temples had `actions: []`. The buff machinery is the consumables'
+## (CharacterData.apply_buff, on the same clock, saved and cleared by sleep);
+## this is a second door into it, not a second implementation.
+##
+## The action dict has three slots, and a buff needs two numbers of different
+## kinds, so: `param` is the buff id, `dc` is the magnitude (a float, because
+## most of these are fractions), and `value` is the duration in whole seconds.
+## Buffs tick on real seconds, and 1 real second is 1 game minute, so a
+## game-day of blessing is 1440.
+func _apply_buff(buff_id: String, amount: float, duration_seconds: int) -> void:
+	if buff_id.is_empty():
+		return
+	if GameManager.player_data == null:
+		return
+	var duration: float = float(duration_seconds)
+	if duration <= 0.0:
+		push_warning("[DialogueManager] Buff '%s' has no duration - a zero-second buff is a data bug, not a free effect" % buff_id)
+		return
+
+	GameManager.player_data.apply_buff(buff_id, amount, duration)
 
 
 ## Join a faction from dialogue. "faction_id" uses the front door (joinable and

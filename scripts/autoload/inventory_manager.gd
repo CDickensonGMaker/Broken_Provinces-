@@ -1449,7 +1449,11 @@ func get_max_carry_weight() -> float:
 	if GameManager.player_data:
 		grit = GameManager.player_data.get_effective_stat(Enums.Stat.GRIT)
 
-	return base_weight + (grit * 10.0)
+	var blessing: float = 0.0
+	if GameManager.player_data:
+		blessing = GameManager.player_data.get_buff(CharacterData.BUFF_CARRY_WEIGHT)
+
+	return base_weight + (grit * 10.0) + blessing
 
 ## Check if player is overencumbered
 func is_overencumbered() -> bool:

@@ -140,6 +140,12 @@ func apply_melee_damage(
 		if damage_buff > 0.0:
 			total_damage = int(total_damage * (1.0 + damage_buff))
 
+	# Morthane's blessing bites the walking dead and nothing else.
+	if attacker_data and _is_undead(target):
+		var undead_buff: float = attacker_data.get_buff(CharacterData.BUFF_UNDEAD_DAMAGE)
+		if undead_buff > 0.0:
+			total_damage = int(total_damage * (1.0 + undead_buff))
+
 	# Backstab bonus (Stealth skill based)
 	if is_backstab and attacker_data:
 		var stealth_skill: int = attacker_data.get_skill(Enums.Skill.STEALTH)
@@ -484,7 +490,8 @@ func trigger_horror_check(source: Node, target: Node, difficulty: int) -> bool:
 	# Silent roll - no popup (game uses d10 system)
 	var roll_result: Dictionary = DiceManager.roll_d10()
 	var roll: int = roll_result.d10_roll
-	var modifier: int = will_score + bravery_skill
+	# Morthane's blessing is a ward against exactly this.
+	var modifier: int = will_score + bravery_skill + target_data.get_horror_ward()
 	var total: int = roll + modifier
 	var passed: bool = total >= difficulty or roll_result.is_crit
 
@@ -638,6 +645,17 @@ func is_player_valid() -> bool:
 ## target pays twice for the same swing.
 func is_armor_already_applied(target: Node) -> bool:
 	return _armor_paid_target != null and _armor_paid_target == target
+
+## Is this thing one of the walking dead? Read off `EnemyData.faction`, which
+## is the only place the game records it - `political_faction` is who a kill
+## angers, and an undead has nobody to anger.
+func _is_undead(target: Node) -> bool:
+	if not "enemy_data" in target:
+		return false
+	var data: EnemyData = target.get("enemy_data") as EnemyData
+	if data == null:
+		return false
+	return data.faction == Enums.Faction.UNDEAD or data.faction == Enums.Faction.ABOMINATION
 
 ## Get target's armor value
 func _get_target_armor(target: Node) -> int:
