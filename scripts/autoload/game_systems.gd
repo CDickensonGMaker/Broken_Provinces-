@@ -548,7 +548,7 @@ func attempt_persuasion(npc: Node, action_type: String) -> Dictionary:
 			var bribe_cost: int = 50 - disposition / 2  # 50 gold at 0 disp, 25 at 50, etc.
 			bribe_cost = maxi(10, bribe_cost)
 
-			if InventoryManager.get_gold() < bribe_cost:
+			if InventoryManager.gold < bribe_cost:
 				result["message"] = "You don't have enough gold (%d required)." % bribe_cost
 				return result
 

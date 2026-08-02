@@ -656,7 +656,7 @@ func start_sea_route_journey(route_id: String) -> bool:
 	var cost: int = route_data.get("base_cost", 50)
 
 	# Check player can afford
-	if InventoryManager and InventoryManager.get_gold() < cost:
+	if InventoryManager and InventoryManager.gold < cost:
 		journey_cancelled.emit(null, "Not enough gold (need %d)" % cost)
 		return false
 

@@ -405,7 +405,7 @@ func can_travel_by_caravan(from_location: String, to_location: String) -> Dictio
 		return {"allowed": false, "reason": "No caravan route available"}
 
 	var cost: int = calculate_caravan_cost(from_location, to_location)
-	if InventoryManager and InventoryManager.get_gold() < cost:
+	if InventoryManager and InventoryManager.gold < cost:
 		return {"allowed": false, "reason": "Not enough gold (need %d)" % cost}
 
 	return {"allowed": true, "reason": "", "cost": cost}
