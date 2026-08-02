@@ -556,6 +556,7 @@ func _collect_inventory_data(inv_data) -> void:
 ## Collect world data
 func _collect_world_data(world_data) -> void:
 	world_data.world_seed = GameManager.world_seed
+	world_data.active_goblin_camps = GameManager.active_goblin_camps.duplicate()
 	world_data.current_zone_id = current_zone_id
 	world_data.current_zone_name = current_zone_name
 	world_data.discovered_locations = discovered_locations.duplicate()
@@ -613,8 +614,11 @@ func _collect_time_data(time_data) -> void:
 	# Calculate total play time including current session
 	var current_session := Time.get_unix_time_from_system() - session_start_time
 	time_data.play_time = total_play_time + current_session
-	time_data.game_time = GameManager.game_time if GameManager else 8.0
-	time_data.current_day = GameManager.current_day if GameManager else 1
+	var clock: Dictionary = GameManager.to_dict()
+	time_data.game_time = clock.get("game_time", 8.0)
+	time_data.current_day = clock.get("current_day", 1)
+	time_data.schedules = clock.get("schedules", [])
+	time_data.fired_event_keys = clock.get("fired_event_keys", {})
 	time_data.rest_count = rest_count
 	time_data.death_count = death_count
 	time_data.session_start = session_start_time
@@ -951,6 +955,9 @@ func _apply_inventory_data(inv_data) -> void:
 ## Apply world data
 func _apply_world_data(world_data) -> void:
 	GameManager.world_seed = world_data.world_seed
+	GameManager.active_goblin_camps.clear()
+	for camp: Variant in world_data.active_goblin_camps:
+		GameManager.active_goblin_camps.append(String(camp))
 	current_zone_id = world_data.current_zone_id
 	current_zone_name = world_data.current_zone_name
 	discovered_locations = world_data.discovered_locations.duplicate()
@@ -996,14 +1003,16 @@ func _apply_quest_data(quest_data) -> void:
 ## Apply time data
 func _apply_time_data(time_data) -> void:
 	total_play_time = time_data.play_time
-	if GameManager:
-		GameManager.game_time = time_data.game_time
-		# Handle old saves that don't have current_day property
-		var day_value: int = 1
-		if "current_day" in time_data:
-			day_value = time_data.current_day
-		# Update time of day based on loaded time - use set_time to trigger updates
-		GameManager.set_time(GameManager.game_time, day_value)
+	# Handle old saves that don't have current_day property
+	var day_value: int = 1
+	if "current_day" in time_data:
+		day_value = time_data.current_day
+	GameManager.from_dict({
+		"game_time": time_data.game_time,
+		"current_day": day_value,
+		"schedules": time_data.schedules,
+		"fired_event_keys": time_data.fired_event_keys,
+	})
 	rest_count = time_data.rest_count
 	death_count = time_data.death_count
 
@@ -1727,6 +1736,13 @@ func _migrate_save_data(data: Dictionary, from_version: int) -> Dictionary:
 		if old_world is Dictionary:
 			(old_world as Dictionary).erase("flags")
 		migrated["version"] = 9
+
+	# Version 9 -> 10: the simulation clock is saved. Old saves carry no booked
+	# events and no fired keys, which is exactly what an empty book means, and
+	# no goblin-camp roll - a v9 save had none active either way, so the empty
+	# array is not a loss. Both default correctly, so this rung only stamps.
+	if migrated.get("version", 0) == 9:
+		migrated["version"] = 10
 
 	return migrated
 

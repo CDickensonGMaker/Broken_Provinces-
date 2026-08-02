@@ -17,11 +17,15 @@ extends Resource
 ##            WorldSaveData.flags deleted too - SaveManager.world_flags was a
 ##            fourth flag store with five writers and no readers. Both keys are
 ##            dropped on load.
+## Version 10: The simulation clock is saved - TimeSaveData carries GameManager's
+##            booked events and which have fired, so a curfew booked for a later
+##            day survives a save. WorldSaveData carries active_goblin_camps,
+##            which was rolled at new game and persisted nowhere.
 ##
 ## SaveManager reads this constant rather than keeping its own copy. It kept one
 ## for a long time, and the two drifted three versions apart, which left a live
 ## migration block that could never run.
-const SAVE_VERSION := 9
+const SAVE_VERSION := 10
 
 ## Metadata
 @export var version: int = SAVE_VERSION
@@ -446,6 +450,10 @@ class WorldSaveData:
 	## Global world seed for procedural generation
 	var world_seed: int = 0
 
+	## Which goblin camps this playthrough rolled. Rolled once at new game and
+	## saved nowhere until v10, so every loaded save had none of them active.
+	var active_goblin_camps: Array = []
+
 	## Current zone/scene info
 	var current_zone_id: String = ""
 	var current_zone_name: String = ""
@@ -492,6 +500,7 @@ class WorldSaveData:
 	func to_dict() -> Dictionary:
 		return {
 			"world_seed": world_seed,
+			"active_goblin_camps": active_goblin_camps,
 			"current_zone_id": current_zone_id,
 			"current_zone_name": current_zone_name,
 			"discovered_locations": discovered_locations,
@@ -507,6 +516,7 @@ class WorldSaveData:
 
 	func from_dict(data: Dictionary) -> void:
 		world_seed = data.get("world_seed", 0)
+		active_goblin_camps = data.get("active_goblin_camps", [])
 		current_zone_id = data.get("current_zone_id", "")
 		current_zone_name = data.get("current_zone_name", "")
 		discovered_locations = data.get("discovered_locations", {})
@@ -582,6 +592,14 @@ class TimeSaveData:
 	## Current in-game day
 	var current_day: int = 1
 
+	## Booked simulation events, [{day, hour, kind, payload}] - GameManager's
+	## schedule book. Saved because a curfew booked for day 12 has to survive
+	## being saved on day 11.
+	var schedules: Array = []
+
+	## Which of them have already fired, keyed "day-hour-index".
+	var fired_event_keys: Dictionary = {}
+
 	func to_dict() -> Dictionary:
 		return {
 			"play_time": play_time,
@@ -589,7 +607,9 @@ class TimeSaveData:
 			"rest_count": rest_count,
 			"death_count": death_count,
 			"session_start": session_start,
-			"current_day": current_day
+			"current_day": current_day,
+			"schedules": schedules,
+			"fired_event_keys": fired_event_keys
 		}
 
 	func from_dict(data: Dictionary) -> void:
@@ -599,6 +619,8 @@ class TimeSaveData:
 		death_count = data.get("death_count", 0)
 		session_start = data.get("session_start", 0.0)
 		current_day = data.get("current_day", 1)
+		schedules = data.get("schedules", [])
+		fired_event_keys = data.get("fired_event_keys", {})
 
 
 ## Crime/bounty save data structure

@@ -9,6 +9,35 @@
     "Vector2i {\"__vec2i\": [x, y]}. Typed arrays keep their element type: the",
     "checker builds the new array from the field's current value."
   ],
+  "GameManager": {
+    "game_time": 17.75,
+    "current_day": 6,
+    "_schedules": [
+      {
+        "day": -1,
+        "hour": 6,
+        "kind": "serial_market_opens",
+        "payload": {
+          "town": "serial_town"
+        }
+      },
+      {
+        "day": 9,
+        "hour": 21,
+        "kind": "serial_curfew",
+        "payload": {
+          "town": "serial_town",
+          "watch": 2
+        }
+      }
+    ],
+    "_fired_event_keys": {
+      "6-6-0": true
+    },
+    "active_goblin_camps": [
+      "goblin_camp_west"
+    ]
+  },
   "CrimeManager": {
     "bounties": {
       "serial_region": 640

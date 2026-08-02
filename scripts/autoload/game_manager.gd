@@ -8,6 +8,15 @@ signal day_changed(new_day: int)
 signal time_advanced(hours: float)  # Emitted when time is advanced via waiting/resting
 signal player_died
 
+## Emitted once for every whole in-game hour the clock crosses, in order, whether
+## the hour arrived by the second hand or by a night's sleep. Schedules hang off
+## this, so a listener that misses an hour puts an NPC in the wrong place.
+signal hour_advanced(hour: int)
+
+## A scheduled event coming due. `kind` is the event's name, `payload` whatever
+## the scheduler was handed when the entry was booked.
+signal sim_event(kind: StringName, payload: Dictionary)
+
 ## Current player character data
 var player_data: CharacterData
 
@@ -42,6 +51,25 @@ var dev_speed_multiplier: float = 1.0
 
 ## Global world seed for procedural generation (unique per playthrough)
 var world_seed: int = 0
+
+## ============================================================================
+## SIMULATION CLOCK
+## ============================================================================
+## GameManager already owned game_time, time_scale and current_day, so this is
+## the clock and there is no second one. What was missing was a way to hang work
+## off a particular (day, hour) and a single door every time skip goes through.
+##
+## Booked events: [{day: int, hour: int, kind: String, payload: Dictionary}].
+## `day == -1` means daily.
+var _schedules: Array = []
+
+## Fired-event keys, "day-hour-index". The index matters: three events booked for
+## the same hour under one kind-wide key silently drop two of them.
+var _fired_event_keys: Dictionary = {}
+
+## Whole hours since day 0 at the last tick, so a skip of any size replays the
+## hours it crossed instead of jumping over them. -1 until the first settle.
+var _last_absolute_hour: int = -1
 
 ## Active goblin camps for this playthrough (randomly selected on new game)
 ## Contains location_ids like "goblin_camp_southwest"
@@ -111,11 +139,113 @@ func _update_game_time(delta: float) -> void:
 		current_day += 1
 		day_changed.emit(current_day)
 
-	# Update time of day
+	_settle_time()
+
+
+## ============================================================================
+## THE ONE SETTLE PATH
+## ============================================================================
+## Everything that moves the clock ends here: the second hand, `advance()`, a
+## night's sleep, a loaded save. It refreshes the time of day and replays every
+## whole hour crossed since the last call, in order, so a listener that places
+## NPCs by the hour cannot be stepped over by an eight-hour rest.
+func _settle_time() -> void:
 	var new_time := _get_time_of_day()
 	if new_time != current_time_of_day:
 		current_time_of_day = new_time
 		time_of_day_changed.emit(current_time_of_day)
+
+	var absolute: int = current_day * 24 + floori(game_time)
+	if _last_absolute_hour < 0:
+		# First settle of the session (or straight after a load): adopt the hour
+		# without replaying the whole history that led to it.
+		_last_absolute_hour = absolute
+		_emit_hour(absolute)
+		return
+
+	if absolute <= _last_absolute_hour:
+		# Time never runs backwards for listeners. A save loaded to an earlier
+		# hour re-adopts rather than rewinding, which is what set_time does.
+		_last_absolute_hour = absolute
+		return
+
+	# A jump longer than a week is a story device, not a clock reading; replay
+	# only the final day so the roster lands right without 10,000 emissions.
+	var from: int = maxi(_last_absolute_hour, absolute - 24 * 7)
+	for h: int in range(from + 1, absolute + 1):
+		_last_absolute_hour = h
+		_emit_hour(h)
+
+
+func _emit_hour(absolute_hour: int) -> void:
+	var hour_of_day: int = ((absolute_hour % 24) + 24) % 24
+	hour_advanced.emit(hour_of_day)
+	_tick_schedules(absolute_hour / 24, hour_of_day)
+
+
+## Fire every booked event due at this (day, hour). The per-entry key is the
+## whole point: keying by kind alone drops all but the first of several events
+## booked for one hour.
+func _tick_schedules(sim_day: int, sim_hour: int) -> void:
+	for i: int in range(_schedules.size()):
+		var entry: Dictionary = _schedules[i]
+		var entry_day: int = entry.get("day", -1)
+		if entry_day != -1 and entry_day != sim_day:
+			continue
+		if int(entry.get("hour", -1)) != sim_hour:
+			continue
+
+		var key: String = "%d-%d-%d" % [sim_day, sim_hour, i]
+		if _fired_event_keys.has(key):
+			continue
+		_fired_event_keys[key] = true
+		sim_event.emit(StringName(entry.get("kind", "")), entry.get("payload", {}) as Dictionary)
+
+
+## Book an event. `day == -1` books it for that hour of every day.
+func schedule_event(day: int, hour: int, kind: StringName, payload: Dictionary = {}) -> void:
+	_schedules.append({
+		"day": day,
+		"hour": posmod(hour, 24),
+		"kind": String(kind),
+		"payload": payload,
+	})
+
+
+## Drop every booked event and the memory of what has fired.
+func clear_schedules() -> void:
+	_schedules.clear()
+	_fired_event_keys.clear()
+
+
+## THE time-skip door. Waiting, resting, jail, sea voyages and fast travel all
+## come through here, because this is the only path that replays the hours it
+## crossed. Setting `game_time` directly skips the world's day.
+func advance(hours: float) -> void:
+	if hours <= 0.0:
+		return
+
+	var old_day: int = current_day
+	game_time += hours
+	while game_time >= 24.0:
+		game_time -= 24.0
+		current_day += 1
+
+	if current_day != old_day:
+		day_changed.emit(current_day)
+
+	_settle_time()
+	time_advanced.emit(hours)
+
+
+## Advance the clock to a given hour of the day, rolling into tomorrow when that
+## hour has already passed. Returns the hours skipped.
+func advance_to_hour(target_hour: float) -> float:
+	var hours: float = target_hour - game_time
+	if hours <= 0.0:
+		hours += 24.0
+	advance(hours)
+	return hours
 
 func _get_time_of_day() -> Enums.TimeOfDay:
 	if game_time >= 5.0 and game_time < 7.0:
@@ -179,65 +309,28 @@ func get_time_of_day_light() -> float:
 func is_night() -> bool:
 	return current_time_of_day == Enums.TimeOfDay.NIGHT or current_time_of_day == Enums.TimeOfDay.MIDNIGHT
 
-## Advance time by a specific number of hours
+## Advance time by a specific number of hours.
+## The name every call site already uses; `advance()` is the implementation.
 func advance_time(hours: float) -> void:
-	var old_day := current_day
-	game_time += hours
-
-	# Handle day rollover
-	while game_time >= 24.0:
-		game_time -= 24.0
-		current_day += 1
-
-	# Emit day changed if day advanced
-	if current_day != old_day:
-		day_changed.emit(current_day)
-
-	# Update time of day
-	var new_time := _get_time_of_day()
-	if new_time != current_time_of_day:
-		current_time_of_day = new_time
-		time_of_day_changed.emit(current_time_of_day)
-
-	# Notify systems that time was advanced (for jail time, etc.)
-	time_advanced.emit(hours)
+	advance(hours)
 
 
 ## Rest until morning (6 AM) - returns hours slept
 func rest_until_morning() -> float:
-	var target_hour := 6.0  # Wake up at 6 AM
-	var hours_slept: float
+	return advance_to_hour(6.0)
 
-	if game_time < target_hour:
-		# Still same day, just advance to morning
-		hours_slept = target_hour - game_time
-	else:
-		# Sleep through to next morning
-		hours_slept = (24.0 - game_time) + target_hour
-		current_day += 1
-		day_changed.emit(current_day)
-
-	game_time = target_hour
-
-	# Update time of day
-	var new_time := _get_time_of_day()
-	if new_time != current_time_of_day:
-		current_time_of_day = new_time
-		time_of_day_changed.emit(current_time_of_day)
-
-	return hours_slept
-
-## Set time directly (for debugging or special events)
+## Set the clock without crossing the hours in between - boot, a loaded save and
+## tests only. It re-adopts the hour rather than replaying it, so nothing that
+## listens for `hour_advanced` sees the skipped day. Every in-game time jump
+## belongs in `advance()`.
 func set_time(hour: float, day: int = -1) -> void:
 	game_time = clampf(hour, 0.0, 23.99)
 	if day > 0:
 		current_day = day
 		day_changed.emit(current_day)
 
-	var new_time := _get_time_of_day()
-	if new_time != current_time_of_day:
-		current_time_of_day = new_time
-		time_of_day_changed.emit(current_time_of_day)
+	_last_absolute_hour = -1
+	_settle_time()
 
 ## Set weather.
 ## The `weather_changed` signal that used to fire here was a dead duplicate of
@@ -311,6 +404,9 @@ func reset_for_new_game() -> void:
 
 	# Reset game state
 	game_time = 8.0
+	current_day = 1
+	clear_schedules()
+	_last_absolute_hour = -1
 	current_time_of_day = Enums.TimeOfDay.MORNING
 	current_weather = Enums.Weather.CLEAR
 	is_paused = false
@@ -347,6 +443,43 @@ func _randomize_goblin_camps() -> void:
 ## Check if a goblin camp is active in this playthrough
 func is_goblin_camp_active(location_id: String) -> bool:
 	return location_id in active_goblin_camps
+
+
+## ============================================================================
+## SERIALIZATION
+## ============================================================================
+## The clock is world state, so it is saved. RECON's SimClock never was, and a
+## loaded save there woke every schedule at whatever hour the process happened
+## to be at. `active_goblin_camps` rides along because it was rolled once in
+## `reset_for_new_game` and saved nowhere: a loaded game had no camps active at
+## all, and `is_goblin_camp_active` answered false for every one of them.
+func to_dict() -> Dictionary:
+	return {
+		"game_time": game_time,
+		"current_day": current_day,
+		"schedules": _schedules.duplicate(true),
+		"fired_event_keys": _fired_event_keys.duplicate(true),
+		"active_goblin_camps": active_goblin_camps.duplicate(),
+	}
+
+
+func from_dict(data: Dictionary) -> void:
+	game_time = float(data.get("game_time", 8.0))
+	current_day = int(data.get("current_day", 1))
+	_schedules = (data.get("schedules", []) as Array).duplicate(true)
+	_fired_event_keys = (data.get("fired_event_keys", {}) as Dictionary).duplicate(true)
+
+	# Absent key means "leave the roll alone" - SaveManager applies the world
+	# block, which owns the camps, before it applies the clock.
+	if data.has("active_goblin_camps"):
+		active_goblin_camps.clear()
+		for camp: Variant in data["active_goblin_camps"] as Array:
+			active_goblin_camps.append(String(camp))
+
+	# Re-adopt the loaded hour rather than replaying every hour since the save
+	# was written, then let listeners place themselves for it.
+	_last_absolute_hour = -1
+	_settle_time()
 
 
 ## Create a new character

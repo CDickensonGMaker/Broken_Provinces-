@@ -50,6 +50,32 @@ const TEST_SLOT := 5
 ## pipeline     - false for classes SaveManager does not own directly.
 const REGISTRY: Array[Dictionary] = [
 	{
+		"name": "GameManager",
+		"script": "res://scripts/autoload/game_manager.gd",
+		"object": "GameManager",
+		"serialize": "to_dict", "deserialize": "from_dict",
+		"alias": {
+			"_schedules": "schedules",
+			"_fired_event_keys": "fired_event_keys",
+		},
+		"transient": {
+			"player_data": "CharacterData, saved and restored by the player block",
+			"time_scale": "tuning, authored on the script",
+			"current_time_of_day": "derived from game_time every time the clock settles",
+			"current_weather": "mirrors WeatherManager, which owns the weather and saves it",
+			"is_paused": "a runtime flag; a loaded game starts unpaused",
+			"is_in_menu": "a runtime flag; a loaded game starts out of menus",
+			"is_in_dialogue": "a runtime flag; a loaded game starts out of dialogue",
+			"is_in_combat": "a runtime flag; a loaded game starts out of combat",
+			"damage_multiplier": "difficulty tuning, authored on the script",
+			"enemy_hp_multiplier": "difficulty tuning, authored on the script",
+			"debug_mode": "a developer toggle, never persisted",
+			"dev_speed_multiplier": "a developer toggle, never persisted",
+			"world_seed": "saved and restored by the world block",
+			"_last_absolute_hour": "re-derived from game_time and current_day the moment the clock settles after a load",
+		},
+	},
+	{
 		"name": "CrimeManager",
 		"script": "res://scripts/autoload/crime_manager.gd",
 		"object": "CrimeManager",

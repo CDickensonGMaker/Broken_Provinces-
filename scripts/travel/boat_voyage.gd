@@ -1261,13 +1261,13 @@ func _debug_kill_player() -> void:
 func _debug_set_dawn() -> void:
 	_toggle_debug_menu()
 	if GameManager:
-		GameManager.set_time(6.0)
+		GameManager.advance_to_hour(6.0)
 
 
 func _debug_set_night() -> void:
 	_toggle_debug_menu()
 	if GameManager:
-		GameManager.set_time(22.0)
+		GameManager.advance_to_hour(22.0)
 
 
 ## Called when crew should help fight enemies
