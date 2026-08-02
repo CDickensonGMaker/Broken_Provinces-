@@ -128,6 +128,18 @@
           "actions": []
         },
         {
+          "text": "The wild grove past Elder Moor. It's decided, one way or another.",
+          "next": "grove_wilds_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "gaela_sacred_grove",
+              "value": 2
+            }
+          ],
+          "actions": []
+        },
+        {
           "text": "Farewell, Priestess.",
           "next": "farewell",
           "conditions": [],
@@ -678,6 +690,94 @@
         {
           "type": "complete_quest",
           "param": "gaela_04_sacred_grove",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "grove_wilds_turnin",
+      "speaker": "Mother Elara",
+      "text": "The old grove, the one nobody planted. Tell me what's left of it, and tell me plainly - I have heard enough of Garvek's plain to last me a year.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "It's over. Six of them won't be logging anywhere again.",
+          "next": "grove_wilds_violence",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "We talked our way to a line neither side will cross.",
+          "next": "grove_wilds_compromise",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I paid them to look somewhere else.",
+          "next": "grove_wilds_bribe",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "grove_wilds_violence",
+      "speaker": "Mother Elara",
+      "text": "Six men. ... The grove stands, and I will not pretend that isn't what I asked for, in the part of me that is only a priestess of growing things and not also a woman who has to live near their widows. Gaela does not weep for grown men who chose to swing an axe at sacred ground. I am less certain that I don't. Take the blessing. I have earned the silence after this one.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "gaela_sacred_grove:defend_grove_violence",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "gaela_sacred_grove",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "grove_wilds_compromise",
+      "speaker": "Mother Elara",
+      "text": "A line. Everyone eats, the grove keeps its heart, nobody has to bury anybody. This is the answer I say Gaela wants and mean it, not the one I say because the alternative is worse. Thank you - properly, this time. Both sides walked away fed.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "gaela_sacred_grove:negotiate_compromise",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "gaela_sacred_grove",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "grove_wilds_bribe",
+      "speaker": "Mother Elara",
+      "text": "You paid them. ... So the grove stands this season, and next season somebody else's grove pays for it, and the season after that these same men come back because the coin ran out and the trees didn't. You have not fed anyone. You have postponed a hungry man's decision and called it mercy. I will take it, because the trees are still standing today, but do not tell me you solved anything.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "gaela_sacred_grove:bribe_loggers",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "gaela_sacred_grove",
           "value": 0
         }
       ]

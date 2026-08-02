@@ -116,6 +116,18 @@
           "actions": []
         },
         {
+          "text": "I found the necromancer near Crossroads. I've made my judgement.",
+          "next": "necromancer_judgement_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "morthane_necromancer",
+              "value": 2
+            }
+          ],
+          "actions": []
+        },
+        {
           "text": "Farewell, Priest.",
           "next": "farewell",
           "conditions": [],
@@ -624,6 +636,94 @@
       "is_end": true,
       "auto_continue": "",
       "choices": []
+    },
+    {
+      "id": "necromancer_judgement_turnin",
+      "speaker": "Priest of Morthane",
+      "text": "Valdris. Say what you did, and say it exactly, because I will know if you are softening it for my sake.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Destroyed. The abomination is ended.",
+          "next": "necromancer_destroyed_node",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Spared. He swore an oath before Morthane's cycle, and I believed him.",
+          "next": "necromancer_spared_node",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I'm working with him now. He isn't wrong about everything.",
+          "next": "necromancer_allied_node",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "necromancer_destroyed_node",
+      "speaker": "Priest of Morthane",
+      "text": "Ended. Good. Whatever understanding he thought he had of the cycle, he chose to test it on trapped souls instead of asking a priest, and that is not scholarship, that is theft. The dead he held are free now. That is the only part of this I need to feel good about, and I do.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "morthane_necromancer:destroy_necromancer",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "morthane_necromancer",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "necromancer_spared_node",
+      "speaker": "Priest of Morthane",
+      "text": "An oath. Before the cycle, you said. ... I will hold him to it harder than I would hold you, because a man who has already proven he will bend the order to his own ends does not get the benefit of my patience twice. But an oath sworn is a door left open, and Morthane's whole doctrine is that doors get to stay open. You judged well. I would not have trusted myself to.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "morthane_necromancer:spare_with_oath",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "morthane_necromancer",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "necromancer_allied_node",
+      "speaker": "Priest of Morthane",
+      "text": "Working with him. ... No. I do not care what he is not wrong about. Undeath is not a research question, it is a wound in the cycle, and you have just told me you left it open because the man holding the knife made a persuasive argument. I will not pretend the temple's regard survives this the way it would the other two answers. Take what the quest owes you. It is less than it would have been.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "morthane_necromancer:help_necromancer",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "morthane_necromancer",
+          "value": 0
+        }
+      ]
     }
   ]
 }

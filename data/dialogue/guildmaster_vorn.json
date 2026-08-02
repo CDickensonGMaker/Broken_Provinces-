@@ -181,6 +181,18 @@
           "actions": []
         },
         {
+          "text": "The toll under the bridge is settled.",
+          "next": "quest_troll_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "guild_contract_troll",
+              "value": 2
+            }
+          ],
+          "actions": []
+        },
+        {
           "text": "Do you have any contracts available?",
           "next": "available_work",
           "conditions": [
@@ -2581,6 +2593,120 @@
         {
           "type": "apply_choice_consequence",
           "param": "adventurers_09_rival_guild:bribe_to_leave",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "quest_troll_turnin",
+      "speaker": "Guildmaster Vorn",
+      "text": "The bridge toll. How did you settle it?",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "Killed it. The bridge is clear.",
+          "next": "quest_troll_complete_killed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Intimidated it. It won't be back.",
+          "next": "quest_troll_complete_intimidated",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Paid it off. It's somebody else's toll now.",
+          "next": "quest_troll_complete_bribed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "Negotiated a fair toll. It collects, we watch.",
+          "next": "quest_troll_complete_negotiated",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "quest_troll_complete_killed",
+      "speaker": "Guildmaster Vorn",
+      "text": "Dead troll, clear bridge. That's the straightforward answer, and most of these contracts end there. Three hundred gold. The merchants will be loud about it so I don't have to be.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "guild_contract_troll:killed_troll",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "guild_contract_troll",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "quest_troll_complete_intimidated",
+      "speaker": "Guildmaster Vorn",
+      "text": "Talked it down without spending a coin. Not bad. Trolls remember fear longer than they remember gold, so it might even stay gone. Three hundred, and a bit more besides - the Guild likes a contract that costs nothing but nerve.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "guild_contract_troll:intimidated_troll",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "guild_contract_troll",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "quest_troll_complete_bribed",
+      "speaker": "Guildmaster Vorn",
+      "text": "Paid it. So there's a troll loose on somebody's road with a taste for coin now, same as that ogre. The merchants will hear you solved it with their money and they won't love that part. Three hundred, and don't expect me to call it clever twice.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "guild_contract_troll:bribed_troll",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "guild_contract_troll",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "quest_troll_complete_negotiated",
+      "speaker": "Guildmaster Vorn",
+      "text": "A toll it collects and we watch. That's the answer I'd have wanted and wouldn't have dared write into the contract. The merchants get a bridge they can cross for a fair price, and the troll gets to keep being a troll. Three hundred, and this is the one I'll tell people about.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "guild_contract_troll:negotiated_fair_toll",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "guild_contract_troll",
           "value": 0
         }
       ]

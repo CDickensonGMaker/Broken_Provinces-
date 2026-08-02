@@ -128,6 +128,30 @@
           "actions": []
         },
         {
+          "text": "The seer in Thornfield. I have an answer for you.",
+          "next": "thornfield_seer_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "chronos_false_prophet",
+              "value": 2
+            }
+          ],
+          "actions": []
+        },
+        {
+          "text": "The seer in Millbrook. I've made my judgement.",
+          "next": "millbrook_seer_turnin",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "param": "chronos_04_false_prophet",
+              "value": 2
+            }
+          ],
+          "actions": []
+        },
+        {
           "text": "Farewell.",
           "next": "farewell",
           "conditions": [],
@@ -652,6 +676,156 @@
         {
           "type": "complete_quest",
           "param": "chronos_07_paradox",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "thornfield_seer_turnin",
+      "speaker": "Priest of Chronos",
+      "text": "Thornfield. Say it. Whatever it is, I already knew it was coming - I did not need to see it, only to wait for you to arrive and say it out loud.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "He's a fraud. The visions are theater, nothing more.",
+          "next": "thornfield_seer_exposed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "He sees something real. I watched it happen.",
+          "next": "thornfield_seer_confirmed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "I've struck a deal with him. We split what the crowd pays.",
+          "next": "thornfield_seer_exploited",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "thornfield_seer_exposed",
+      "speaker": "Priest of Chronos",
+      "text": "A fraud, then. That was always the likelier hour, and I am not surprised to see it arrive on schedule. Thornfield will grieve the theater more than the truth - people like being told the future even when it is a lie. Tell them plainly, if you go back. It will hurt less coming from a stranger than from me.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "chronos_false_prophet:expose_fraud",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "chronos_false_prophet",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "thornfield_seer_confirmed",
+      "speaker": "Priest of Chronos",
+      "text": "Touched, then. I expected that answer as readily as the other - Chronos does not ration his gift by who deserves it, and a fragment finding an unlikely vessel is not news to anyone who has watched time work for thirty years. Watch him. A true gift handled carelessly does as much harm as a lie.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "chronos_false_prophet:confirm_gift",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "chronos_false_prophet",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "thornfield_seer_exploited",
+      "speaker": "Priest of Chronos",
+      "text": "You took a cut. ... That is the one hour I did not have written down for you. Whatever he is - fraud or vessel - you were sent to find the truth of him, and instead you found a business. That disappoints me, and I do not often permit myself the word. Take your reward. I will not pretend the temple is proud of how you earned it.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "chronos_false_prophet:exploit_seer",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "chronos_false_prophet",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "millbrook_seer_turnin",
+      "speaker": "Priest of Chronos",
+      "text": "Millbrook's seer. Two answers were ever possible and I have long since stopped guessing which one arrives with which traveler, because it does not change what I do next. Tell me.",
+      "is_end": false,
+      "auto_continue": "",
+      "choices": [
+        {
+          "text": "A fraud. Nothing more than a good act and a hungry purse.",
+          "next": "millbrook_seer_exposed",
+          "conditions": [],
+          "actions": []
+        },
+        {
+          "text": "There's truth in it. Something in her actually sees.",
+          "next": "millbrook_seer_genuine",
+          "conditions": [],
+          "actions": []
+        }
+      ],
+      "actions": []
+    },
+    {
+      "id": "millbrook_seer_exposed",
+      "speaker": "Priest of Chronos",
+      "text": "Exposed. Millbrook will be embarrassed and then relieved, in that order, the way people always are. I am neither. Chronos scatters false prophets across every generation the way rot scatters spores - it is not a surprise, it is weather. Here is the pendant we promised. Wear it, and remember what you learned about hunger dressed as prophecy.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "chronos_04_false_prophet:expose_fraud",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "chronos_04_false_prophet",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "millbrook_seer_genuine",
+      "speaker": "Priest of Chronos",
+      "text": "Genuine. Also unsurprising, though Millbrook will treat it as a miracle and build a shrine before winter. The common folk will love you for confirming her. I ask only that you remember a true gift and a comfortable lie feel the same from outside, and that you were right this time does not mean you will always be able to tell.",
+      "is_end": true,
+      "auto_continue": "",
+      "choices": [],
+      "actions": [
+        {
+          "type": "apply_choice_consequence",
+          "param": "chronos_04_false_prophet:accept_truth",
+          "value": 0
+        },
+        {
+          "type": "complete_quest",
+          "param": "chronos_04_false_prophet",
           "value": 0
         }
       ]
