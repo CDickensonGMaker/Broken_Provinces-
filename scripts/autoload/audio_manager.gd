@@ -189,20 +189,156 @@ const EVENT_ALIASES := {
 	"death": "enemy_death",
 }
 
+## Synthesised placeholders for events that resolved to nothing at all.
+##
+## Every path here is under assets/audio/generated/ and was written by
+## tools/gen_audio.py - procedural synthesis, PS1-era on purpose. They are
+## PLACEHOLDER-CLASS: each has a row in docs/audits/art_replacement_manifest.md
+## saying so, and Caleb may replace any of them.
+##
+## **Resolution order puts them BELOW the event's own asset**, so the day a
+## real recording lands at `EVENTS[name]` the placeholder steps aside on its
+## own and nothing here has to be edited. The wiring survives replacement
+## because the event name never moves.
+##
+## A list is a variant list: one is picked at random per play. Anything that
+## fires often gets 2-5, because the same file twice in a row is the second
+## loudest tell that a sound was generated.
+const EVENT_VARIANTS := {
+	# Swings, misses and the arrows that go past
+	"player_attack": [
+		"res://assets/audio/generated/sfx/combat/player_attack_1.wav",
+		"res://assets/audio/generated/sfx/combat/player_attack_2.wav",
+		"res://assets/audio/generated/sfx/combat/player_attack_3.wav",
+	],
+	"enemy_attack": [
+		"res://assets/audio/generated/sfx/combat/enemy_attack_1.wav",
+		"res://assets/audio/generated/sfx/combat/enemy_attack_2.wav",
+		"res://assets/audio/generated/sfx/combat/enemy_attack_3.wav",
+	],
+	"miss": [
+		"res://assets/audio/generated/sfx/combat/miss_1.wav",
+		"res://assets/audio/generated/sfx/combat/miss_2.wav",
+	],
+	"projectile_miss": [
+		"res://assets/audio/generated/sfx/combat/projectile_miss_1.wav",
+		"res://assets/audio/generated/sfx/combat/projectile_miss_2.wav",
+	],
+	"enemy_spawn": ["res://assets/audio/generated/sfx/combat/enemy_spawn.wav"],
+
+	# Stylised combat vocalisations - pitched tones and breath, not attempted
+	# realism. Realism half-done reads worse than a stylisation done on purpose.
+	"player_stagger": [
+		"res://assets/audio/generated/sfx/voice/player_hurt_1.wav",
+		"res://assets/audio/generated/sfx/voice/player_hurt_2.wav",
+		"res://assets/audio/generated/sfx/voice/player_hurt_3.wav",
+	],
+	"enemy_stagger": [
+		"res://assets/audio/generated/sfx/voice/enemy_hurt_1.wav",
+		"res://assets/audio/generated/sfx/voice/enemy_hurt_2.wav",
+		"res://assets/audio/generated/sfx/voice/enemy_hurt_3.wav",
+	],
+	"player_death": ["res://assets/audio/generated/sfx/voice/player_death.wav"],
+	"enemy_death": [
+		"res://assets/audio/generated/sfx/voice/enemy_death_1.wav",
+		"res://assets/audio/generated/sfx/voice/enemy_death_2.wav",
+		"res://assets/audio/generated/sfx/voice/enemy_death_3.wav",
+		"res://assets/audio/generated/sfx/voice/death_exhale_1.wav",
+		"res://assets/audio/generated/sfx/voice/death_exhale_2.wav",
+	],
+
+	# Good news
+	"player_heal": ["res://assets/audio/generated/sfx/ui/player_heal.wav"],
+	"player_level_up": ["res://assets/audio/generated/sfx/ui/player_level_up.wav"],
+	"quest_fail": ["res://assets/audio/generated/sfx/ui/quest_fail.wav"],
+
+	# Handling things
+	"item_drop": [
+		"res://assets/audio/generated/sfx/items/item_drop_1.wav",
+		"res://assets/audio/generated/sfx/items/item_drop_2.wav",
+	],
+	"item_equip": ["res://assets/audio/generated/sfx/items/item_equip.wav"],
+	"item_unequip": ["res://assets/audio/generated/sfx/items/item_unequip.wav"],
+	"item_break": ["res://assets/audio/generated/sfx/items/item_break.wav"],
+
+	# Magic
+	"spell_fail": ["res://assets/audio/generated/sfx/magic/spell_fail.wav"],
+	"spell_impact": [
+		"res://assets/audio/generated/sfx/magic/spell_impact_1.wav",
+		"res://assets/audio/generated/sfx/magic/spell_impact_2.wav",
+	],
+
+	# Doors, locks, levers, traps
+	"door_open": [
+		"res://assets/audio/generated/sfx/world/door_open_1.wav",
+		"res://assets/audio/generated/sfx/world/door_open_2.wav",
+	],
+	"door_close": [
+		"res://assets/audio/generated/sfx/world/door_close_1.wav",
+		"res://assets/audio/generated/sfx/world/door_close_2.wav",
+	],
+	"door_locked": ["res://assets/audio/generated/sfx/world/door_locked.wav"],
+	"door_unlock": ["res://assets/audio/generated/sfx/world/door_unlock.wav"],
+	"lever_pull": ["res://assets/audio/generated/sfx/world/lever_pull.wav"],
+	"secret_found": ["res://assets/audio/generated/sfx/world/secret_found.wav"],
+	"trap_trigger": ["res://assets/audio/generated/sfx/world/trap_trigger.wav"],
+	"torch_extinguish": ["res://assets/audio/generated/sfx/world/torch_extinguish.wav"],
+
+	# The six conditions - the only feedback that a condition landed at all
+	"effect_poison": ["res://assets/audio/generated/sfx/effects/effect_poison.wav"],
+	"effect_burn": ["res://assets/audio/generated/sfx/effects/effect_burn.wav"],
+	"effect_freeze": ["res://assets/audio/generated/sfx/effects/effect_freeze.wav"],
+	"effect_stun": ["res://assets/audio/generated/sfx/effects/effect_stun.wav"],
+	"effect_bleed": ["res://assets/audio/generated/sfx/effects/effect_bleed.wav"],
+	"effect_cure": ["res://assets/audio/generated/sfx/effects/effect_cure.wav"],
+
+	# Footsteps per surface. These had an honest stand-in - the one real
+	# footstep, on every surface - and now have shaped ones per material.
+	# The real file is untouched and still answers `footstep_generic`.
+	"footstep_stone": [
+		"res://assets/audio/generated/sfx/footsteps/footstep_stone_1.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_stone_2.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_stone_3.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_stone_4.wav",
+	],
+	"footstep_wood": [
+		"res://assets/audio/generated/sfx/footsteps/footstep_wood_1.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_wood_2.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_wood_3.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_wood_4.wav",
+	],
+	"footstep_grass": [
+		"res://assets/audio/generated/sfx/footsteps/footstep_grass_1.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_grass_2.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_grass_3.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_grass_4.wav",
+	],
+	"footstep_water": [
+		"res://assets/audio/generated/sfx/footsteps/footstep_water_1.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_water_2.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_water_3.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_water_4.wav",
+	],
+	"footstep_metal": [
+		"res://assets/audio/generated/sfx/footsteps/footstep_metal_1.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_metal_2.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_metal_3.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_metal_4.wav",
+	],
+	"footstep_dirt": [
+		"res://assets/audio/generated/sfx/footsteps/footstep_dirt_1.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_dirt_2.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_dirt_3.wav",
+		"res://assets/audio/generated/sfx/footsteps/footstep_dirt_4.wav",
+	],
+}
+
 ## Stand-ins for events whose own asset does not exist yet.
 ## Value is an event name, or an array of event names to pick between.
 ## EVERY entry here is also a row in docs/audits/art_replacement_manifest.md -
 ## these are the sounds the game asks for and does not have, playing something
 ## near enough that the moment is not silent.
 const EVENT_SUBSTITUTES := {
-	# Footsteps: one real file, every surface
-	"footstep_stone": "footstep_generic",
-	"footstep_wood": "footstep_generic",
-	"footstep_grass": "footstep_generic",
-	"footstep_water": "footstep_generic",
-	"footstep_metal": "footstep_generic",
-	"footstep_dirt": "footstep_generic",
-
 	# Impacts: the sword clanks
 	"player_hit": ["melee_hit_1", "melee_hit_2", "melee_hit_3"],
 	"enemy_hit": ["melee_hit_1", "melee_hit_2", "melee_hit_3"],
@@ -249,19 +385,11 @@ const EVENT_SUBSTITUTES := {
 ## and are listed in docs/audits/art_replacement_manifest.md.
 ## tools/check_audio_events.tscn fails if an entry here is not in that file,
 ## or if an event is missing from disk and named in neither table.
-const MISSING_SFX: Array[String] = [
-	"player_attack", "player_death", "player_stagger",
-	"player_heal", "player_level_up",
-	"enemy_attack", "enemy_death", "enemy_stagger", "enemy_spawn",
-	"projectile_miss", "miss",
-	"item_drop", "item_equip", "item_unequip", "item_break",
-	"spell_fail", "spell_impact",
-	"door_open", "door_close", "door_locked", "door_unlock",
-	"lever_pull", "secret_found", "trap_trigger", "torch_extinguish",
-	"effect_poison", "effect_burn", "effect_freeze", "effect_stun",
-	"effect_bleed", "effect_cure",
-	"quest_fail",
-]
+##
+## **It is empty.** The 32 events that stood here on 8/2 - every swing, death,
+## door, lock, condition and level-up in the game - now resolve to synthesised
+## placeholders in EVENT_VARIANTS. Nothing this game names is silent.
+const MISSING_SFX: Array[String] = []
 
 ## Background music tracks
 const MUSIC := {
@@ -841,15 +969,26 @@ func play_spell_cast(spell_school: Enums.SpellSchool) -> void:
 
 ## Resolve an event name to a file on disk.
 ##
-## Order: alias -> the event's own asset -> a declared substitute -> nothing.
-## Returns "" when the sound genuinely does not exist, and warns once so a
-## silent event is visible in a log without drowning it.
+## Order: alias -> the event's own asset -> a synthesised variant -> a declared
+## substitute -> nothing. Returns "" when the sound genuinely does not exist,
+## and warns once so a silent event is visible in a log without drowning it.
+##
+## The event's own asset comes first on purpose: dropping a real recording at
+## `EVENTS[name]` retires its placeholder without anyone editing a table.
 func resolve_event_path(event_name: String) -> String:
 	var name: String = EVENT_ALIASES.get(event_name, event_name)
 
 	var own_path: String = EVENTS.get(name, "")
 	if not own_path.is_empty() and ResourceLoader.exists(own_path):
 		return own_path
+
+	if EVENT_VARIANTS.has(name):
+		var variants: Array = (EVENT_VARIANTS[name] as Array).duplicate()
+		variants.shuffle()
+		for variant: Variant in variants:
+			var variant_path: String = str(variant)
+			if ResourceLoader.exists(variant_path):
+				return variant_path
 
 	if EVENT_SUBSTITUTES.has(name):
 		var sub: Variant = EVENT_SUBSTITUTES[name]
@@ -878,15 +1017,19 @@ func _warn_once(event_name: String, intended_path: String) -> void:
 ## Helper: Load and cache sound.
 ## Accepts a res:// path or an event name - gameplay code has always spoken
 ## the event vocabulary from CLAUDE.md, and until now nothing understood it.
+## The cache is keyed on the RESOLVED path, never on the name that asked for
+## it. Keying on the name froze the first random pick forever, so a variant
+## list - and every shuffled substitute already in the tables - would have
+## played exactly one file for the life of the process.
 func _load_sound(path: String) -> AudioStream:
-	if sound_cache.has(path):
-		return sound_cache[path]
-
 	var resolved: String = path
 	if not path.begins_with("res://"):
 		resolved = resolve_event_path(path)
 		if resolved.is_empty():
 			return null
+
+	if sound_cache.has(resolved):
+		return sound_cache[resolved]
 
 	if not ResourceLoader.exists(resolved):
 		# A hardcoded res:// path that is not on disk is a code bug, not a
@@ -897,7 +1040,7 @@ func _load_sound(path: String) -> AudioStream:
 		return null
 
 	var stream: AudioStream = load(resolved)
-	sound_cache[path] = stream
+	sound_cache[resolved] = stream
 	return stream
 
 ## Helper: Get available SFX player from pool

@@ -136,63 +136,77 @@ altar dressing, no rope and no cell around them.
 | `hostage_missing_child` | `cultist_temple` | (0, 1, -6) | A locked room |
 | `hostage_sacrifice_victim` | `cultist_temple_2` | (0, 0.2, -6) | She is on the stone when you arrive. There is no stone |
 
-## Sound events with no asset (8/1, batch 4)
+## Sound events (8/1 batch 4, filled 8/2)
 
 `AudioManager.EVENTS` names ~117 sounds. 49 real .wav files exist, all of them
 one directory below `assets/audio/sfx/` where the table was pointing, so until
-today **no hit, death, menu, item, door or footstep sound had ever played** and
-nothing crashed to say so. Batch 4 repointed the loader at the real files and
-gave the events with no asset a declared stand-in where an honest one exists
-(`AudioManager.EVENT_SUBSTITUTES`).
+batch 4 **no hit, death, menu, item, door or footstep sound had ever played**
+and nothing crashed to say so. Batch 4 repointed the loader at the real files
+and gave the events with no asset a declared stand-in where an honest one
+exists (`AudioManager.EVENT_SUBSTITUTES`). **32 events had no asset and no
+honest stand-in and stayed silent.**
 
-The rows below are the events with **no asset and no honest stand-in**. They are
-silent on purpose, they warn once, and they are named in
-`AudioManager.MISSING_SFX`. `tools/check_audio_events.tscn` fails if an entry
-there has no row here, and fails again if a row here starts resolving - so this
-table cannot rot in either direction.
+**8/2: they were synthesised.** `tools/gen_audio.py` writes procedural
+placeholders into `assets/audio/generated/` and nowhere else - it cannot reach
+a real recording, and the gate
+(`tools/check_audio_events.tscn`) fails if a wired variant path leaves that
+directory. `AudioManager.MISSING_SFX` is now **empty**.
 
-| Event | What it is | Where it fires | Suggested replacement |
-|---|---|---|---|
-| `player_attack` | The player's swing through empty air | `player_controller._do_light_attack` | A short cloth/steel whoosh, 2-3 variations |
-| `player_death` | The player dying | `hud._on_death`, `game_manager` | One long human death cry |
-| `player_stagger` | Player staggered by a hit | `player_controller.apply_stagger` | A grunt plus a stumble |
-| `player_heal` | Healing spell or potion landing on the player | `spell_caster`, `inventory_manager` | A warm rising chime |
-| `player_level_up` | Level threshold crossed | `character_data.add_ip` path | A short fanfare |
-| `enemy_attack` | A generic enemy swing (creatures use their own data-driven sounds) | `gladiator_npc`, arena and NPC combat | A swing whoosh, coarser than the player's |
-| `enemy_death` | A humanoid NPC dying (again, creatures have their own) | seven NPC scripts | Two or three human death cries |
-| `enemy_stagger` | Enemy staggered | `enemy_base.apply_stagger` | A grunt |
-| `enemy_spawn` | An enemy appearing | encounter spawners | A low swell, or nothing |
-| `projectile_miss` | An arrow going past | `projectile_base` | A passing whoosh |
-| `miss` | A melee swing that connects with nothing | `AudioManager.play_miss_sound` | Same family as `player_attack` |
-| `item_drop` | Dropping an item | `inventory_manager` | A soft thud |
-| `item_equip` / `item_unequip` | Putting gear on and taking it off | `inventory_manager` | Leather and buckle |
-| `item_break` | Durability reaching zero | `inventory_manager.degrade_*` | A snap |
-| `spell_fail` | A failed cast | `spell_caster` | A dead fizzle |
-| `spell_impact` | A spell landing | `spell_caster`, `spell_projectile` | Per school ideally; one generic will do |
-| `door_open` / `door_close` | Doors | `zone_door`, level scripts | Wood on stone, two variations |
-| `door_locked` | A locked door refusing | `zone_door` | A rattle |
-| `door_unlock` | A lock giving | `zone_door`, lockpicking | A click and a rattle |
-| `lever_pull` | Levers and switches | `puzzle_element` | A ratchet |
-| `secret_found` | A hidden chest or secret wall revealing | `hidden_chest`, `secret_wall` | A short reveal sting |
-| `trap_trigger` | A trap firing | `triggered_trap` | A snap and a whoosh |
-| `torch_extinguish` | A torch going out | `torch_light` | A wet snuff |
-| `effect_poison`, `effect_burn`, `effect_freeze`, `effect_stun`, `effect_bleed`, `effect_cure` | The six condition applications | `combat_manager.apply_condition` | Six short stingers; they are also the only feedback that a condition landed |
-| `quest_fail` | A quest failing | `quest_manager.fail_quest` | A falling two-note sting |
+### THE PLACEHOLDER-CLASS RULE
 
-**Substitutes currently standing in** (these do play, but they are not the
-sound the game is asking for): every footstep surface plays the one real
-footstep; hits, blocks, parries and crits play the sword clanks; every menu
-sound, quest notification and save plays the accept click; `item_pickup` plays
-a bush rustle and `gold_pickup` a glass clink; `chest_open` plays blacksmith
-tongs. Each is one line in `AudioManager.EVENT_SUBSTITUTES` and disappears the
-moment a real file lands at the event's own path.
+Everything under `assets/audio/generated/` is **PLACEHOLDER-CLASS**: written by
+a synthesiser, PS1-era on purpose (22050 Hz, mono, deliberately crunchy), and
+Caleb may replace any of it.
 
-### Biome ambience - no assets at all
+**Replacing one takes no code change.** `resolve_event_path()` checks the
+event's *own* asset before it checks `EVENT_VARIANTS`, so dropping a real file
+at the path in the `EVENTS` column retires its placeholder the moment it lands.
+The wiring survives replacement because the event name never moves.
 
-`scripts/audio/ambient_soundscape.gd` wants 7 biomes x day/night x 3 layers =
-36 loops under `assets/audio/ambient/`. That directory does not exist; the real
-one is `assets/audio/Ambiance/` and holds **four** files (a town murmur, a port
-city, a ruins ambience and two arena beds). Nothing in the biome table has an
-asset. Wanted, in rough priority order: forest day, forest night, plains/road
-day, highlands wind, swamp, coast waves, cave drips. Base layers first - the
-accent layers can stay empty.
+Regenerate the whole set with `python tools/gen_audio.py all` (needs numpy and
+ffmpeg). It is deterministic - the same seeds give the same files.
+
+| Event | What it is | Generated placeholder | Variants | What a real one would be |
+|---|---|---|---|---|
+| `player_attack` | The player's swing through empty air | `sfx/combat/player_attack_*.wav` | 3 | A cloth/steel whoosh |
+| `enemy_attack` | A generic enemy swing | `sfx/combat/enemy_attack_*.wav` | 3 | A coarser swing whoosh |
+| `miss` | A melee swing that connects with nothing | `sfx/combat/miss_*.wav` | 2 | Same family as `player_attack` |
+| `projectile_miss` | An arrow going past | `sfx/combat/projectile_miss_*.wav` | 2 | A passing whoosh with real doppler |
+| `enemy_spawn` | An enemy appearing | `sfx/combat/enemy_spawn.wav` | 1 | A low swell, or nothing |
+| `player_stagger` | Player staggered by a hit | `sfx/voice/player_hurt_*.wav` | 3 | A recorded grunt plus a stumble |
+| `enemy_stagger` | Enemy staggered | `sfx/voice/enemy_hurt_*.wav` | 3 | A recorded grunt |
+| `player_death` | The player dying | `sfx/voice/player_death.wav` | 1 | One long human death cry |
+| `enemy_death` | A humanoid NPC dying | `sfx/voice/enemy_death_*.wav`, `sfx/voice/death_exhale_*.wav` | 5 | Two or three human death cries |
+| `player_heal` | Healing landing on the player | `sfx/ui/player_heal.wav` | 1 | A warm rising chime |
+| `player_level_up` | Level threshold crossed | `sfx/ui/player_level_up.wav` | 1 | A short fanfare |
+| `quest_fail` | A quest failing | `sfx/ui/quest_fail.wav` | 1 | A falling two-note sting |
+| `item_drop` | Dropping an item | `sfx/items/item_drop_*.wav` | 2 | A soft thud |
+| `item_equip` / `item_unequip` | Putting gear on and taking it off | `sfx/items/item_equip.wav`, `item_unequip.wav` | 1 each | Leather and buckle |
+| `item_break` | Durability reaching zero | `sfx/items/item_break.wav` | 1 | A snap |
+| `spell_fail` | A failed cast | `sfx/magic/spell_fail.wav` | 1 | A dead fizzle |
+| `spell_impact` | A spell landing | `sfx/magic/spell_impact_*.wav` | 2 | Per school ideally; one generic will do |
+| `door_open` / `door_close` | Doors | `sfx/world/door_open_*.wav`, `door_close_*.wav` | 2 each | Wood on stone |
+| `door_locked` | A locked door refusing | `sfx/world/door_locked.wav` | 1 | A rattle |
+| `door_unlock` | A lock giving | `sfx/world/door_unlock.wav` | 1 | A click and a rattle |
+| `lever_pull` | Levers and switches | `sfx/world/lever_pull.wav` | 1 | A ratchet |
+| `secret_found` | A hidden chest or secret wall revealing | `sfx/world/secret_found.wav` | 1 | A short reveal sting |
+| `trap_trigger` | A trap firing | `sfx/world/trap_trigger.wav` | 1 | A snap and a whoosh |
+| `torch_extinguish` | A torch going out | `sfx/world/torch_extinguish.wav` | 1 | A wet snuff |
+| `effect_poison`, `effect_burn`, `effect_freeze`, `effect_stun`, `effect_bleed`, `effect_cure` | The six condition applications, and the only feedback that a condition landed | `sfx/effects/effect_*.wav` | 1 each | Six short stingers |
+| `footstep_stone`, `footstep_wood`, `footstep_grass`, `footstep_water`, `footstep_metal`, `footstep_dirt` | Footsteps per surface | `sfx/footsteps/footstep_<surface>_*.wav` | 4 each | Recorded steps per material |
+
+Footsteps are the one row here that was not silent: all six surfaces played the
+one real generic footstep through `EVENT_SUBSTITUTES`. Those six substitute
+lines are gone, replaced by shaped per-material placeholders with four variants
+each. **The real file is untouched** and still answers `footstep_generic`.
+
+**Substitutes still standing in** (these do play, and are real recordings, but
+they are not the sound the game is asking for): hits, blocks, parries and crits
+play the sword clanks; every menu sound, quest notification and save plays the
+accept click; `item_pickup` plays a bush rustle and `gold_pickup` a glass
+clink; `chest_open` plays blacksmith tongs; `enemy_alert` and `enemy_aggro`
+play the monster growls; `projectile_fire` the bow and `projectile_explode` the
+musket; `spell_cast` the chant. **These were deliberately left alone** - a real
+recording standing in for a neighbouring event beats a synthesised one at the
+exact name, and none of them is silent.
+

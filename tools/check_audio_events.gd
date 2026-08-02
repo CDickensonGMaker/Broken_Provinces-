@@ -10,18 +10,25 @@ extends Node
 ## `if not stream: return`, so no hit, death, menu or item sound had ever
 ## played and nothing had ever crashed to say so.
 ##
-## Four assertions:
+## Five assertions:
 ##
-##   1. Every EVENTS key resolves to a file on disk, through its own asset or
-##      a declared substitute - or is named in MISSING_SFX.
+##   1. Every EVENTS key resolves to a file on disk, through its own asset, a
+##      synthesised variant or a declared substitute - or is named in
+##      MISSING_SFX.
 ##   2. Every MISSING_SFX entry is a real EVENTS key (no stale excuses) and
 ##      appears in docs/audits/art_replacement_manifest.md.
-##   3. Every EVENT_SUBSTITUTES entry points at an event with a real file, so
+##   3. Every EVENT_VARIANTS entry names a real event, is non-empty, lives
+##      under assets/audio/generated/, is on disk, and has a manifest row.
+##   4. Every EVENT_SUBSTITUTES entry points at an event with a real file, so
 ##      a substitution can never itself be silent.
-##   4. Every sound name written as a literal at a call site in scripts/
+##   5. Every sound name written as a literal at a call site in scripts/
 ##      resolves: an event, an alias, or a res:// path that exists.
 
 const MANIFEST_PATH := "res://docs/audits/art_replacement_manifest.md"
+
+## Synthesised placeholders live here and nowhere else. A generated file
+## written next to a real recording is one rename away from destroying it.
+const GENERATED_ROOT := "res://assets/audio/generated/"
 const SCRIPT_DIRS: Array[String] = ["res://scripts", "res://tools", "res://dev"]
 
 ## Call sites whose sound argument is a variable, an expression or data-driven.
@@ -35,6 +42,7 @@ var checks: int = 0
 func _ready() -> void:
 	_check_events_resolve()
 	_check_missing_declared()
+	_check_variants_resolve()
 	_check_substitutes_resolve()
 	_check_call_sites()
 
@@ -75,6 +83,32 @@ func _check_missing_declared() -> void:
 			continue
 		if not manifest.contains(event_name):
 			failures.append("MISSING_SFX names '%s' with no row in the art manifest" % event_name)
+
+
+## Every synthesised placeholder names a real event, lives under
+## assets/audio/generated/, is on disk, and has a manifest row. A variant list
+## that has quietly lost a file degrades to fewer variants and sounds fine -
+## which is exactly why it needs a gate rather than an ear.
+func _check_variants_resolve() -> void:
+	var manifest: String = ""
+	if FileAccess.file_exists(MANIFEST_PATH):
+		manifest = FileAccess.get_file_as_string(MANIFEST_PATH)
+
+	for event_name: String in AudioManager.EVENT_VARIANTS.keys():
+		checks += 1
+		if not AudioManager.EVENTS.has(event_name):
+			failures.append("EVENT_VARIANTS names '%s', which is not an EVENTS key" % event_name)
+		if not manifest.contains(event_name):
+			failures.append("EVENT_VARIANTS names '%s' with no row in the art manifest" % event_name)
+		var variants: Array = AudioManager.EVENT_VARIANTS[event_name]
+		if variants.is_empty():
+			failures.append("EVENT_VARIANTS['%s'] is empty - that is a silent event wearing a table entry" % event_name)
+		for variant: Variant in variants:
+			var path: String = str(variant)
+			if not path.begins_with(GENERATED_ROOT):
+				failures.append("EVENT_VARIANTS['%s'] points outside %s: %s" % [event_name, GENERATED_ROOT, path])
+			if not ResourceLoader.exists(path):
+				failures.append("EVENT_VARIANTS['%s'] has no file on disk: %s" % [event_name, path])
 
 
 func _check_substitutes_resolve() -> void:
