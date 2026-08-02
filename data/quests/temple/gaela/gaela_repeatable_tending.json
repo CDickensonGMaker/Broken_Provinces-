@@ -1,7 +1,7 @@
 {
 	"id": "gaela_repeatable_tending",
 	"title": "Tending the Garden",
-	"description": "Priestess Elara invites Devotees of Gaela to help maintain the temple gardens. A peaceful task that brings one closer to the Harvest Mother's teachings.",
+	"description": "Priestess Elara keeps calling devotees back to the temple gardens for the plainest reason there is: compost doesn't turn itself and weeds don't pull themselves, and a goddess of growing things is not honored by people who only show up for the dramatic rescues. Come tend what's here.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",
@@ -57,5 +57,6 @@
 	},
 	"prerequisites": ["gaela_05_devotion_choice"],
 	"required_flags": ["gaela_devotee"],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "System, not a plot - no invented threat. Giver motive: Elara treats unglamorous upkeep as the actual measure of devotion, consistent with her voice elsewhere in the line."
 }

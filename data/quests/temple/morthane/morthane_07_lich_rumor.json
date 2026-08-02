@@ -1,7 +1,7 @@
 {
 	"id": "morthane_07_lich_rumor",
 	"title": "Whispers of Immortality",
-	"description": "Dark rumors reach the temple - someone in Willow Dale is attempting to become a lich, achieving undeath through forbidden rituals. This is the ultimate perversion of Morthane's cycle. You must find them and stop the transformation before it's too late.",
+	"description": "The man attempting the ritual in Willow Dale is old enough that dying honestly should not surprise him, and that is exactly why he is doing it - he spent everything he owned on the research rather than face what is coming for everyone. The Priest of Morthane has no sympathy in him for that fear. Undeath is the one perversion of the cycle his doctrine will not forgive, however understandable the terror that drove someone to it. Stop the transformation before it finishes.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_elder_moor",
@@ -42,7 +42,7 @@
 		},
 		{
 			"id": "defeat_aspirant",
-			"description": "Defeat the lich aspirant before transformation completes",
+			"description": "Stop the old man before his fear of dying finishes the ritual",
 			"type": "kill",
 			"target": "lich_aspirant_valdris",
 			"target_zone": "willow_dale",
@@ -82,5 +82,6 @@
 	],
 	"prerequisites": ["morthane_06_death_speaker"],
 	"next_quest": "morthane_08_rebirth_ritual",
-	"faction": "church_of_morthane"
+	"faction": "church_of_morthane",
+	"notes": "Threat: named motive for the aspirant - ordinary fear of death, not villainy, which the priest's doctrine still condemns without exception. Giver motive: Morthane's faith treats death as natural and undeath as the one line it will not soften on, regardless of sympathy for the reason. Consequence: not wired."
 }

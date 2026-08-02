@@ -1,7 +1,7 @@
 {
 	"id": "morthane_10_deathwalker",
 	"title": "The Deathwalker",
-	"description": "You have proven yourself time and again as a defender of the natural cycle. The Priest of Morthane offers you the ultimate test - to become a Champion of Morthane, a Deathwalker who walks the line between life and death itself. You will face a near-death experience, gain understanding of the cycle's deepest mysteries, and face an ancient undead lord.",
+	"description": "You buried the nameless dead, freed one lingering spirit, stood watch at a desecrated cemetery, stopped a frightened old man from becoming what the priest despises most, and held two towns against a rising tide he could not have held alone. The Priest of Morthane offers the last test - to become a Deathwalker, one who can cross into death's edge and return, and confront what an undead lord makes of the cycle he still, after everything, refuses to forgive.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_elder_moor",
@@ -90,6 +90,7 @@
 	"choice_consequences": {
 		"become_champion": {
 			"flags_to_set": ["morthane_champion", "deathwalker_title"],
+			"world_flags_to_set": ["morthane_deathwalker_named"],
 			"reputation_changes": {
 				"church_of_morthane": 50
 			}
@@ -97,5 +98,6 @@
 	},
 	"prerequisites": ["morthane_09_undead_army"],
 	"next_quest": "",
-	"faction": "church_of_morthane"
+	"faction": "church_of_morthane",
+	"notes": "Threat/consequence: capstone recap of the doctrine running through morthane_01-09 - death respected, undeath refused, no exceptions made for sympathy. Added world_flags_to_set (morthane_deathwalker_named) to the existing become_champion consequence, free per spec since the entry already existed. Giver motive: the priest is not sentimental about the title; it marks someone the cycle can rely on."
 }

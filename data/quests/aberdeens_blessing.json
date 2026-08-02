@@ -1,7 +1,7 @@
 {
 	"id": "aberdeens_blessing",
 	"title": "Aberdeen's Blessing",
-	"description": "Father Aldwin, the priest of Chronos in Aberdeen, seeks a faithful soul to retrieve a sacred relic from the old temple ruins to the east. The Temple of Chronos was abandoned when the undead began rising in the region, but the relic must be recovered before darkness fully claims it.",
+	"description": "Father Aldwin is the last priest of Chronos left in Aberdeen - the two who served with him died the year the temple was abandoned, and no one has been sent to replace them. He keeps the faith alone now, in a town too poor to rebuild the shrine, which is why the Sacred Hourglass sitting in the ruined inner sanctum matters more to him than its gold would suggest: it is the only working timepiece Aberdeen has left, and every rite he performs without one is a rite measured by guesswork.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "father_aldwin",
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "recover_relic",
-			"description": "Recover the Sacred Hourglass from the inner sanctum",
+			"description": "Recover the last working timepiece Aberdeen has left",
 			"type": "collect",
 			"target": "sacred_hourglass",
 			"required_count": 1
@@ -42,5 +42,6 @@
 		}
 	},
 	"prerequisites": [],
-	"next_quest": null
+	"next_quest": null,
+	"notes": "Threat: named concretely - Aldwin is Aberdeen's last priest of Chronos and the hourglass is his only working timepiece, not generic temple treasure. Giver motive: doctrinal necessity, not sentiment - a rite measured by guesswork offends the same principle chronos_02_hourglasses runs on. Consequence: not wired; Aldwin keeps performing rites by guesswork if the relic is never recovered."
 }

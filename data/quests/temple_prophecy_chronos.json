@@ -1,7 +1,7 @@
 {
 	"id": "temple_prophecy_chronos",
 	"title": "Visions of Time",
-	"description": "The Priest of Chronos has received troubling visions of events to come. He requires you to deliver a sealed prophecy to the Temple of Time in Thornfield, where the High Chronist can properly interpret its meaning. Time is of the essence - the prophecy must not fall into the wrong hands.",
+	"description": "The Priest of Chronos has sealed a vision concerning the High Chronist's own order - something about how Thornfield's branch of the faith will read the coming season, not a warning meant for any single villager. He does not pretend the timing is favorable; the High Chronist may already have drawn her own conclusions by the time this reaches her. He sends it anyway, because a temple that stops recording its foresight because the hour has already passed has stopped practicing the faith at all.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "deliver_prophecy",
-			"description": "Deliver the prophecy to the High Chronist",
+			"description": "Deliver the prophecy, whether or not it beats her own conclusions",
 			"type": "talk",
 			"target": "high_chronist_thornfield",
 			"required_count": 1
@@ -42,5 +42,6 @@
 		}
 	},
 	"prerequisites": [],
-	"next_quest": "chronos_time_fragment"
+	"next_quest": "chronos_time_fragment",
+	"notes": "Same fix as chronos_03_late_delivery: no invented deadline, lateness accepted as doctrine rather than dramatized as a countdown. Threat: internal to the church - whether Thornfield's order trusts Dalhurst's readings. Giver motive: recording foresight is the practice itself, independent of whether it arrives first. Consequence: not wired. Known duplicate of chronos_03_late_delivery, deliberately differentiated - this copy concerns the Chronist orders' internal standing and is the church's own business; chronos_03 concerns the Thornfield mill wheel and a townsman's stake in the outcome."
 }

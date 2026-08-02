@@ -1,7 +1,7 @@
 {
 	"id": "chronos_01_first_vision",
 	"title": "The First Vision",
-	"description": "The Priest of Chronos has asked you to prove your dedication by meditating at an ancient shrine near Crossroads. He speaks of visions that come to those who seek the favor of the Timekeeper. Clear your mind and experience what Chronos wishes to reveal.",
+	"description": "The Priest of Chronos does not take a stranger's word for devotion. He sends you to the old shrine near Crossroads to sit still for an hour and bring back a token, because an hour spent doing nothing tells him more about a person than a week of talk does. Acolytes who cannot manage stillness do not last through what comes after.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",
@@ -11,21 +11,21 @@
 	"objectives": [
 		{
 			"id": "visit_shrine",
-			"description": "Travel to the ancient shrine near Crossroads",
+			"description": "Travel to the shrine near Crossroads and sit with it",
 			"type": "reach",
 			"target": "crossroads",
 			"required_count": 1
 		},
 		{
 			"id": "collect_offering",
-			"description": "Gather a Timekeeper's Hourglass token from the shrine",
+			"description": "Take the Timekeeper's Hourglass token as proof you stayed",
 			"type": "collect",
 			"target": "timekeepers_token",
 			"required_count": 1
 		},
 		{
 			"id": "return_to_priest",
-			"description": "Return the token to the Priest of Chronos",
+			"description": "Bring the token back as proof you sat through it",
 			"type": "talk",
 			"target": "priest_chronos_dalhurst",
 			"required_count": 1
@@ -55,5 +55,5 @@
 		}
 	],
 	"quest_items": ["timekeepers_token"],
-	"notes": "DESIGN INTENT: Introductory quest to establish player interest in Chronos. Simple fetch quest with light narrative flavor. Spawns a shrine marker at Crossroads for the player to discover. Rewards are modest - this is just the first step on the path."
+	"notes": "Giver motive: the priest tests with stillness before he spends real teaching on a stranger - a wasted hour costs him nothing, a wasted year costs the temple an acolyte who quits partway. Consequence: this is the filter the rest of the questline sits behind; nobody who cannot sit through one quiet hour is offered the next one. Not wired mechanically - the filtering is the priest's private judgment, not a gate in data."
 }

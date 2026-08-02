@@ -1,7 +1,7 @@
 {
 	"id": "morthane_09_undead_army",
 	"title": "The Rising Tide",
-	"description": "A massive undead incursion threatens multiple settlements. Something has corrupted the burial grounds near the Bandit Hideout, causing waves of undead to rise. This is the greatest threat to the cycle you have faced. You must find and destroy the source before entire towns fall.",
+	"description": "Something has corrupted the burial grounds near the Bandit Hideout, and the dead are rising in numbers Crossroads' handful of watchmen cannot hold and Thornfield's cemetery-keeper cannot bury fast enough. This is the greatest threat to the cycle you have faced. The Priest of Morthane sends you to find the source before the watch at Crossroads breaks and Thornfield loses its dead a second time.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_elder_moor",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "defend_crossroads",
-			"description": "Defend Crossroads from the first undead wave",
+			"description": "Hold Crossroads' watch line against the first wave",
 			"type": "kill",
 			"target": "skeleton_warrior",
 			"target_zone": "crossroads",
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "defend_thornfield",
-			"description": "Defend Thornfield from skeleton shades",
+			"description": "Stop the shades before the cemetery-keeper loses the graves twice over",
 			"type": "kill",
 			"target": "skeleton_shade",
 			"target_zone": "thornfield",
@@ -85,5 +85,6 @@
 	],
 	"prerequisites": ["morthane_08_rebirth_ritual"],
 	"next_quest": "morthane_10_deathwalker",
-	"faction": "church_of_morthane"
+	"faction": "church_of_morthane",
+	"notes": "Threat: named against the audit's complaint - Crossroads' watch and Thornfield's cemetery-keeper stand in for the unnamed towns, giving each wave someone concrete to fail if the player doesn't hold. Giver motive: doctrinal escalation - this is the largest breach of the cycle the priest has sent the player against. Consequence: not wired."
 }

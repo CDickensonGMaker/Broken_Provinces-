@@ -1,7 +1,7 @@
 {
 	"id": "gaela_03_protect_harvest",
 	"title": "Guardians of the Field",
-	"description": "Farmers in Millbrook report that dire wolves and giant rats are threatening their crops. Priestess Elara asks you to protect the harvest by driving the creatures away.",
+	"description": "Edda's field is thin enough this year without dire wolves trampling what came up and rats getting into what little grain is stored. Losing this harvest on top of the last one does not mean a hungry month for that family - it means no seed grain for next spring at all. Priestess Elara asks you to drive the animals off before the family has nothing left to plant.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "kill_dire_wolves",
-			"description": "Kill Dire Wolves threatening Millbrook farms",
+			"description": "Kill the dire wolves trampling Edda's field",
 			"type": "kill",
 			"target": "dire_wolf",
 			"required_count": 5,
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "kill_giant_rats",
-			"description": "Kill Giant Rats infesting the grain stores",
+			"description": "Kill the rats getting into what grain is left",
 			"type": "kill",
 			"target": "giant_rat",
 			"required_count": 8,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "report_to_farmer",
-			"description": "Report to the Millbrook farmer",
+			"description": "Tell Edda whether she has seed grain for next spring",
 			"type": "talk",
 			"target": "farmer_edda",
 			"required_count": 1,
@@ -55,5 +55,6 @@
 		}
 	},
 	"prerequisites": ["gaela_02_healing_herbs"],
-	"next_quest": "gaela_04_sacred_grove"
+	"next_quest": "gaela_04_sacred_grove",
+	"notes": "Threat: named and compounding - this is the same household from gaela_01 and gaela_02, and a second bad season in a row costs them next year's seed grain, not just this year's food. Giver motive: Elara is protecting a specific family she already sent the player to twice. Consequence: not wired; closes the three-quest arc started in gaela_01."
 }

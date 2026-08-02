@@ -1,7 +1,7 @@
 {
 	"id": "gaela_09_famine_threat",
 	"title": "When Harvests Fail",
-	"description": "A regional famine threatens the valley. Crops are failing in Elder Moor, Millbrook, and Thornfield. Priestess Elara fears dark magic is at work. As Gaela's Devotee, you must find the source and restore the land's fertility before people starve.",
+	"description": "Crops are failing in three towns and Priestess Elara can put a name to the failure in each one: the Hollis family in Elder Moor, whose spring grain never broke the soil at all; Edda in Millbrook, whose field you already know; and the Thornfield mill's own grain stores, half empty before the first frost. She fears dark magic is behind all three and sends you to find the source and stop it before a fourth household joins the list.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "investigate_elder_moor",
-			"description": "Investigate crop failures in Elder Moor",
+			"description": "See why the Hollis family's grain never sprouted",
 			"type": "explore",
 			"target": "elder_moor",
 			"required_count": 1,
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "investigate_millbrook",
-			"description": "Investigate crop failures in Millbrook",
+			"description": "Check whether Edda's field is failing the same way",
 			"type": "explore",
 			"target": "millbrook",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "investigate_thornfield",
-			"description": "Investigate crop failures in Thornfield",
+			"description": "Count what is left in the Thornfield mill's stores",
 			"type": "explore",
 			"target": "thornfield",
 			"required_count": 1,
@@ -82,5 +82,6 @@
 	},
 	"prerequisites": ["gaela_08_seed_of_life"],
 	"required_flags": ["gaela_devotee"],
-	"next_quest": "gaela_10_lifebringer"
+	"next_quest": "gaela_10_lifebringer",
+	"notes": "The audit's named failure for this quest: three towns investigated, no farmer named. Fixed - the Hollis family (invented, Elder Moor) joins Edda (already established in gaela_01-03) and the Thornfield mill's own stores as the three concrete stakes. Giver motive: Elara names them because a regional famine that stays abstract does not move anyone to hurry. Consequence: not wired; a fourth household joining the list is stated as the cost of failure, not enforced in data."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "gaela_01_first_offering",
 	"title": "Seeds of Faith",
-	"description": "Priestess Elara of Gaela asks you to bring an offering to the goddess's shrine in Elder Moor. Fresh produce or flowers from the region would please the Harvest Mother.",
+	"description": "Priestess Elara wants an offering laid at Gaela's shrine in Elder Moor - fresh produce or flowers, nothing grand. But she sends you by way of Millbrook first, to a farmer named Edda whose spring planting came up thin. Elara says prayers don't feed anyone, and a priestess who hasn't stood in a bare larder has no business asking for one more offering from it.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "help_farmer",
-			"description": "Speak with a struggling farmer near Millbrook",
+			"description": "Hear from Edda what a thin planting actually costs a household",
 			"type": "talk",
 			"target": "farmer_edda",
 			"required_count": 1,
@@ -54,5 +54,6 @@
 		}
 	},
 	"prerequisites": [],
-	"next_quest": "gaela_02_healing_herbs"
+	"next_quest": "gaela_02_healing_herbs",
+	"notes": "Threat: Edda's household, first of a three-quest arc (01-02-03) following her farm through a bad season. Giver motive: Elara routes offering-bearers through a real farmer's kitchen on purpose - devotion that never sees hunger is cheap. Consequence: not wired; the household's situation carries forward in prose through gaela_02 and gaela_03."
 }

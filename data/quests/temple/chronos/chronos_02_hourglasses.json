@@ -1,7 +1,7 @@
 {
 	"id": "chronos_02_hourglasses",
 	"title": "Sands of Service",
-	"description": "The Priest of Chronos requires sacred sand from three blessed sites to craft ceremonial hourglasses. The sand must be collected from Elder Moor's old timekeeping shrine, a windswept hilltop near Thornfield, and the ruins of Willow Dale where time once stood still.",
+	"description": "Three of the temple's ceremonial hourglasses cracked in the same month - old glass, nobody's fault - and the equinox rite cannot be measured by guesswork. The Priest of Chronos needs fresh sacred sand from three blessed sites to cast new ones: Elder Moor's old timekeeping shrine, a windswept hilltop near Thornfield, and the ruins of Willow Dale where time once stood still. A rite run without a working glass is not a rite Chronos recognizes.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",
@@ -32,7 +32,7 @@
 		},
 		{
 			"id": "return_sands",
-			"description": "Deliver the three sands to the Priest of Chronos",
+			"description": "Deliver the three sands before the equinox rite",
 			"type": "talk",
 			"target": "priest_chronos_dalhurst",
 			"required_count": 1
@@ -76,5 +76,5 @@
 		}
 	],
 	"quest_items": ["elder_moor_sand", "thornfield_sand", "willow_dale_sand"],
-	"notes": "DESIGN INTENT: Multi-location collection quest that encourages exploration across the allowed zones. Players must visit 3 different areas, introducing them to the geography. Willow Dale is a dungeon, adding mild danger. The ceremonial_hourglass trinket is a keepsake item that can be sold or kept."
+	"notes": "Threat: three broken hourglasses mean the equinox rite has no honest way to measure itself. Giver motive: the priest needs the glasses cast in time, not out of vanity but because an unmeasured rite is null to Chronos by his own doctrine. Consequence: if the sand is not gathered, the rite is held anyway on guesswork, which the priest regards privately as no rite at all - not wired mechanically."
 }

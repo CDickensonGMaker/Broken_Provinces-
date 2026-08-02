@@ -1,7 +1,7 @@
 {
 	"id": "gaela_seed_of_life",
 	"title": "Seed of Renewal",
-	"description": "A mysterious sickness has struck several villagers in Dalhurst, resisting all conventional healing. The Priestess of Gaela believes only the legendary Seed of Renewal can save them - a rare artifact blessed by the goddess herself. The seed grows in a dangerous location deep within Willow Dale ruins, guarded by ancient protectors who do not take kindly to intruders.",
+	"description": "A dockworker named Osk and two others in the same tenement row have come down with a sickness that resists every poultice the temple has tried. Their landlord has already started asking when the rooms will be free. The Priestess of Gaela believes only the legendary Seed of Renewal can save them - grown deep in Willow Dale ruins, guarded by ancient protectors who will not simply hand it over.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "collect_seed",
-			"description": "Collect the Seed of Renewal",
+			"description": "Collect the Seed of Renewal before Osk loses his room as well as his health",
 			"type": "collect",
 			"target": "seed_of_renewal",
 			"required_count": 1
@@ -49,5 +49,6 @@
 		}
 	},
 	"prerequisites": ["gaela_sacred_grove"],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: named - a dockworker, Osk (invented), and two neighbours facing eviction on top of illness, a townsman's stake distinct from Tam's fever in gaela_08. Giver motive: the priestess is treating both the sickness and what it will cost them if it drags on. Consequence: not wired. Known duplicate of gaela_08_seed_of_life, deliberately differentiated - this copy is Dalhurst tenement workers facing eviction as well as illness; the temple copy is Tam, a Thornfield plague victim, and the church's decision to finally risk the guardians for him."
 }

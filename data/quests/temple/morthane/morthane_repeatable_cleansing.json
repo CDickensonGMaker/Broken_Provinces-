@@ -1,7 +1,7 @@
 {
 	"id": "morthane_repeatable_cleansing",
 	"title": "Cleansing Duty",
-	"description": "As a servant of Morthane, you are called to maintain the natural order. Clear undead spawns that corrupt the cycle. This duty is ongoing - the battle against undeath never truly ends.",
+	"description": "The Priest of Morthane does not send you out for these because any one skeleton matters. He sends you because the cycle is not defended once and left defended - it is a duty kept or it is not kept at all, and he intends to keep asking for as long as the dead keep getting back up.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_elder_moor",
@@ -31,5 +31,6 @@
 	"prerequisites": ["morthane_05_devotion_choice"],
 	"cooldown_days": 7,
 	"next_quest": "",
-	"faction": "church_of_morthane"
+	"faction": "church_of_morthane",
+	"notes": "System, not a plot - no invented threat. Giver motive: doctrine treats the fight as permanent, not a problem with an ending, consistent with the priest's voice elsewhere in the line."
 }

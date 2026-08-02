@@ -1,7 +1,7 @@
 {
 	"id": "gaela_06_blight_source",
 	"title": "Root of Corruption",
-	"description": "A mysterious blight is spreading from Willow Dale Ruins, corrupting the land and killing crops. As a Devotee of Gaela, you must investigate the source of this unnatural corruption and stop it.",
+	"description": "The blight spreading out of Willow Dale Ruins has already taken one plot of land bare - a smallholding on the ruins' edge whose family salted what soil they could save and moved into Dalhurst with nothing. Priestess Elara does not want a second family to lose their ground the same way. As a Devotee of Gaela, you are sent to find what is maintaining the corruption and put a stop to it before it reaches the next farm.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "kill_blight_cultists",
-			"description": "Defeat the cultists maintaining the corruption",
+			"description": "Defeat the cultists keeping the corruption fed",
 			"type": "kill",
 			"target": "cultist",
 			"required_count": 6,
@@ -55,5 +55,6 @@
 	},
 	"prerequisites": ["gaela_05_devotion_choice"],
 	"required_flags": ["gaela_devotee"],
-	"next_quest": "gaela_07_spirit_of_land"
+	"next_quest": "gaela_07_spirit_of_land",
+	"notes": "Threat: one family already lost their land to this blight and left; the quest exists to stop a second one losing theirs. Giver motive: Elara has already failed one household once and does not intend to fail a second. Consequence: not wired; the abandoned smallholding is prose only. Known duplicate of the root file gaela_blight, deliberately differentiated - this copy is the temple's own investigation with a devotee doing the work; the root copy is the same blight reaching Millbrook and told from a townsman's report of it."
 }

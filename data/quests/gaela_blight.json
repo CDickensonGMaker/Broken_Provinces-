@@ -1,7 +1,7 @@
 {
 	"id": "gaela_blight",
 	"title": "The Spreading Blight",
-	"description": "The crops around Millbrook are withering and dying despite the farmers' best efforts. The Priestess of Gaela fears this is no natural drought - something is poisoning the land itself. She asks you to investigate the source of this blight before the entire harvest is lost and the town faces starvation.",
+	"description": "A Millbrook boatman came to the temple himself to ask about the withering crops, not sent by anyone - he ferries grain barges for a living and has watched three farms along his route come up empty this season. He is not a farmer and has no field of his own to lose, but he knows what an empty barge means for the town at the other end of his route. The Priestess of Gaela sends you to find what is poisoning the land before his cargo runs out entirely.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",
@@ -17,7 +17,7 @@
 		},
 		{
 			"id": "examine_crops",
-			"description": "Examine the blighted crops",
+			"description": "Examine the crops along the boatman's grain route",
 			"type": "interact",
 			"target": "blighted_field",
 			"required_count": 1
@@ -56,5 +56,6 @@
 		}
 	},
 	"prerequisites": ["temple_blessing_quest"],
-	"next_quest": "gaela_sacred_grove"
+	"next_quest": "gaela_sacred_grove",
+	"notes": "Threat: named through a boatman whose grain barges are running lighter each trip, giving the blight a concrete measure without a specific farmer's field. Giver motive: he came to the temple himself, unprompted - a townsman's angle rather than the church's own investigation. Consequence: not wired. Known duplicate of gaela_06_blight_source, deliberately differentiated - this copy is a Millbrook boatman's report about his route; the temple copy is the church's own devotee-led investigation naming a specific abandoned smallholding near Willow Dale."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "gaela_07_spirit_of_land",
 	"title": "Voice of the Green",
-	"description": "Priestess Elara has sensed a land spirit in distress near the Crossroads. As a Devotee, you can commune with nature spirits and offer aid. Free the trapped spirit and earn its blessing.",
+	"description": "The wells and greens around Crossroads have gone thin the same season a land spirit went quiet there, and Priestess Elara does not think that is a coincidence - a bound spirit does not tend what it cannot reach. As a Devotee, you can commune with what is left of it. Free it, and see whether the ground remembers how to grow again.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",
@@ -63,5 +63,6 @@
 	},
 	"prerequisites": ["gaela_06_blight_source"],
 	"required_flags": ["gaela_devotee"],
-	"next_quest": "gaela_08_seed_of_life"
+	"next_quest": "gaela_08_seed_of_life",
+	"notes": "Threat: Crossroads' wells and greens have gone thin while the spirit has been bound - a stake tied to the land itself rather than a single named farmer this time. Giver motive: Elara's diagnosis links the two facts and sends a devotee to test it. Consequence: not wired; freeing the spirit is prose-only restoration."
 }

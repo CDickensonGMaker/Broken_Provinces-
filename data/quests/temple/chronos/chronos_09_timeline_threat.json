@@ -1,7 +1,7 @@
 {
 	"id": "chronos_09_timeline_threat",
 	"title": "When Time Bleeds",
-	"description": "Your prophetic training has borne terrible fruit - a vision of catastrophe. A rift in time has opened near the Bandit Hideout, allowing creatures from other timelines to bleed through into the present. These time-warped abominations threaten to unravel reality itself. The Priest of Chronos calls upon you as his champion to seal the breach before the damage becomes irreversible. Time itself is wounded - and it bleeds monsters.",
+	"description": "Your training has borne its first hard vision: a rift near the Bandit Hideout, and things coming through it that do not belong to this hour. The road between Dalhurst and Millbrook runs within a day's walk of the tear, and every caravan that has used it since spring will keep using it, because nobody told them not to yet. The Priest of Chronos asks you to close it before a wagon crew finds out what is coming through the hard way.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "locate_temporal_rift",
-			"description": "Locate the temporal rift near Bandit Hideout",
+			"description": "Locate the rift before it reaches the Millbrook road",
 			"type": "reach",
 			"target": "bandit_hideout",
 			"required_count": 1
@@ -119,5 +119,5 @@
 		}
 	],
 	"quest_items": ["chronos_sealing_stone"],
-	"notes": "DESIGN INTENT: Climactic multi-stage quest. Combines combat, collection, puzzle-solving, and a boss fight. The time_aberration enemies are twisted versions of normal creatures (wolves with multiple heads, bandits phasing in and out of time). The Rift Guardian is a major boss - a being from another timeline with powerful temporal abilities. The Timekeeper's Aegis is legendary-tier armor or shield with significant time-based protection. This quest should feel like a major heroic moment - the player is literally saving the timeline. The sealing puzzle involves placing the 3 stones at ritual points around the rift in a specific pattern."
+	"notes": "Threat: named and concrete - the Dalhurst-Millbrook caravan road sits within reach of the rift. Giver motive: the priest is spending his most trained champion on this because a wagon crew has no doctrine to protect them, only luck. Consequence: left alone, the rift's reach grows until it touches the road; not wired to a timer, stated as inevitable in the prose per the line's fix - Chronos's people act on foreseen harm without a countdown attached to it."
 }

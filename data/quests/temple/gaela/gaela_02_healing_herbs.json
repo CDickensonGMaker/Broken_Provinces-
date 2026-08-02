@@ -1,7 +1,7 @@
 {
 	"id": "gaela_02_healing_herbs",
 	"title": "The Healer's Garden",
-	"description": "Priestess Elara wishes to teach you about Gaela's healing aspect. Gather medicinal herbs from the wilderness and bring them to the temple healer.",
+	"description": "Edda's youngest has been feverish since the thin planting, and the family cannot spare the coin for a Dalhurst healer. Priestess Elara teaches the healing side of her faith the same way she teaches everything else - by need, not by lesson plan. Gather moonleaf, silvervine and sunroot, and the temple will grind them into something that actually helps.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_gaela_dalhurst",
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "return_to_priestess",
-			"description": "Deliver the herbs to Priestess Elara",
+			"description": "Deliver the herbs before the fever gets worse",
 			"type": "talk",
 			"target": "priest_gaela_dalhurst",
 			"required_count": 1,
@@ -54,5 +54,6 @@
 		}
 	},
 	"prerequisites": ["gaela_01_first_offering"],
-	"next_quest": "gaela_03_protect_harvest"
+	"next_quest": "gaela_03_protect_harvest",
+	"notes": "Threat: a sick child in the household introduced in gaela_01, named to keep the arc's stakes concrete rather than abstract healing-lesson flavor. Giver motive: Elara teaches by pointing at a real fever, not a hypothetical one. Consequence: not wired; carries into gaela_03 where the same farm is attacked by wolves and rats."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "chronos_hourglass",
 	"title": "The Shattered Hourglass",
-	"description": "A sacred hourglass blessed by Chronos himself has been stolen from a roadside shrine near Crossroads. The Priest of Chronos believes bandits took it, not knowing its significance. The artifact must be recovered before its temporal energies dissipate - or worse, fall into the wrong hands. He suspects the thieves fled to the Bandit Hideout to the east.",
+	"description": "A sacred hourglass has been stolen from the roadside shrine near Crossroads, and the Priest of Chronos is fairly sure the bandits who took it have no idea what it is - shrine gold and shrine glass look the same in a saddlebag at night. That is precisely what worries him. A relic in the hands of someone who knows what it does is a problem he understands; one loose in a bandit camp, mishandled by people who think it is worth its weight and nothing more, is not.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "recover_hourglass",
-			"description": "Recover the sacred hourglass",
+			"description": "Recover the hourglass before someone breaks it open for the sand",
 			"type": "collect",
 			"target": "sacred_hourglass",
 			"required_count": 1
@@ -56,5 +56,6 @@
 		}
 	},
 	"prerequisites": ["chronos_false_prophet"],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: named and specific - the bandits' ignorance of what they stole is the actual danger, not their malice. Giver motive: the priest fears mishandling more than theft, consistent with Chronos doctrine that treats time as something borrowed, not owned. Consequence: not wired; a broken relic in the wrong hands is stated, not enforced."
 }

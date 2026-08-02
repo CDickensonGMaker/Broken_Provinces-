@@ -1,7 +1,7 @@
 {
 	"id": "chronos_10_eternal_vigil",
 	"title": "The Eternal Vigil",
-	"description": "The Priest of Chronos has one final trial for you - the ultimate test of a Champion. Deep beneath the Kazer-Dun Entrance lies an ancient Chronos shrine, abandoned for centuries. There, a sacred hourglass turns endlessly, measuring the heartbeat of time itself. But dark forces seek to shatter it, to break time's flow and plunge the world into chaos. You must descend into the depths, face the Timeless One - an abomination that exists outside of fate - and prove yourself worthy of the title Champion of Chronos.",
+	"description": "Deep beneath the Kazer-Dun Entrance an old Chronos shrine still turns its hourglass, and every traveler and dwarf who uses that pass sets their watch-changes by it without knowing it is there. The Timeless One does not care about any of that - it exists outside the doctrine entirely, which is the one thing Chronos's faith cannot forgive. Break the hourglass and nobody in the caves below will be able to trust the hour again. The Priest sends you to finish this because he cannot.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",
@@ -97,5 +97,5 @@
 			"count": 1
 		}
 	],
-	"notes": "DESIGN INTENT: FINAL CLIMACTIC QUEST. This is the ultimate Chronos quest chain payoff. The Timeless One is an extremely powerful boss - a being that exists outside of time, immune to temporal effects, with devastating attacks. Defeating it requires skill and preparation. The Eternal Hourglass Fragment is a legendary equipment set piece (part of the Champion of Chronos set). The Champion's Mantle is a unique cloak/cape with powerful time-based abilities. Completing this quest grants MASSIVE reputation (100 with church_of_chronos, 50 with church_of_three) and the official title 'Champion of Chronos'. NPCs will address the player differently. This quest should feel EPIC - the culmination of 10 quests of dedication. The restoration puzzle involves using temporal energy to repair the hourglass's flow."
+	"notes": "Threat: named concretely - travelers and dwarves in the Kazer-Dun caves lose their only working clock if the hourglass breaks. Giver motive: doctrinal offense - a thing outside fate is the one category Chronos's faith has no answer for, and the priest is too old to descend himself. Consequence: not wired mechanically; stated as doctrine, matching the line's rule against invented urgency."
 }

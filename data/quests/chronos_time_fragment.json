@@ -1,7 +1,7 @@
 {
 	"id": "chronos_time_fragment",
 	"title": "Echoes of the Past",
-	"description": "The Priest of Chronos senses a temporal disturbance emanating from the ruins of Willow Dale. Ancient artifacts touched by time magic are calling out, showing visions of events long forgotten. He asks you to recover these time-fragments before their power fades completely.",
+	"description": "The Priest of Chronos senses three artifacts in Willow Dale losing their charge, the way anything does eventually - that is not urgency to him, it is simply what time does to things. He would rather have the visions they hold than not, so he asks you to bring them back while there is still something in them to see. If they fade before you get there, that was always going to happen to something, sooner or later.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",
@@ -17,7 +17,7 @@
 		},
 		{
 			"id": "collect_time_fragments",
-			"description": "Collect time-touched artifacts from the ruins",
+			"description": "Collect the time-touched artifacts while they still hold their visions",
 			"type": "collect",
 			"target": "time_fragment",
 			"required_count": 3
@@ -42,5 +42,6 @@
 		}
 	},
 	"prerequisites": ["temple_prophecy_chronos"],
-	"next_quest": "chronos_false_prophet"
+	"next_quest": "chronos_false_prophet",
+	"notes": "The line's recurring failure - a deadline stated and never enforced. Fixed the same way as chronos_03: no clock in the data, and the priest's own doctrine treats the fading as ordinary rather than an emergency, which is the inevitability answer rather than an invented countdown. Threat: modest - lost visions, not lost lives. Giver motive: curiosity within doctrine, not fear. Consequence: not wired."
 }

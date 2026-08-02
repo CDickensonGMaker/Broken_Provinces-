@@ -1,7 +1,7 @@
 {
 	"id": "temple_undead_menace",
 	"title": "Cleanse the Restless Dead",
-	"description": "Priest of Morthane at the Temple of the Three Gods is troubled by reports of undead rising in the old cemetery outside town. As the priest of Death and Rebirth, he takes personal offense at the unnatural corruption of the cycle. Help him restore balance.",
+	"description": "The old cemetery north of Dalhurst has started giving up its dead, and the Priest of Morthane takes it as a personal offense rather than a mystery to solve - graves are not supposed to empty themselves, whatever the cause. He is less interested in why than in making it stop. Find the source of the corruption and put the dead back where doctrine says they belong.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_dalhurst",
@@ -49,5 +49,6 @@
 		}
 	},
 	"prerequisites": [],
-	"next_quest": "morthane_necromancer"
+	"next_quest": "morthane_necromancer",
+	"notes": "Threat: Dalhurst's cemetery rising, distinct location and giver (priest_morthane_dalhurst) from Thornfield's grave-robbing in morthane_03_cemetery_duty. Giver motive: offense at the desecration itself, matching the priest's doctrine elsewhere - death is natural, an emptied grave is not. Consequence: not wired. Overlaps morthane_03_cemetery_duty in premise (per the duplicate notes in docs/audits/quest_quality_audit.md) but does not repeat its soulstone-touchpoint detail - that detail lives only in morthane_03, per docs/design/quest_web.md."
 }

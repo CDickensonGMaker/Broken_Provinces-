@@ -1,7 +1,7 @@
 {
 	"id": "chronos_06_temporal_echo",
 	"title": "Echoes of What Was",
-	"description": "As a Devotee of Chronos, you have been granted the gift of Temporal Sight - the ability to glimpse echoes of past events. The ruins of Willow Dale hold secrets locked in time. The Priest asks you to venture there and witness what transpired when the settlement fell. Beware - temporal guardians protect such sacred visions.",
+	"description": "As a Devotee of Chronos, you have been granted Temporal Sight - the ability to glimpse echoes of past events. The Priest wants to know one thing from Willow Dale's fall: whether the settlement had warning and ignored it, or had none at all. The temple has taught the story both ways for years and he is tired of not knowing which sermon is true. The guardians still standing watch over that hour will not let it be viewed for free.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",
@@ -32,14 +32,14 @@
 		},
 		{
 			"id": "witness_vision",
-			"description": "Witness the vision of Willow Dale's fall",
+			"description": "Witness whether Willow Dale had warning of its fall",
 			"type": "talk",
 			"target": "temporal_echo_trigger",
 			"required_count": 1
 		},
 		{
 			"id": "report_vision",
-			"description": "Return to the Priest with what you witnessed",
+			"description": "Tell the Priest which sermon he has to stop preaching",
 			"type": "talk",
 			"target": "priest_chronos_dalhurst",
 			"required_count": 1
@@ -83,5 +83,5 @@
 			"count": 1
 		}
 	],
-	"notes": "DESIGN INTENT: First devotee-exclusive quest. Requires 'chronos_devotee' flag to be offered. Introduces new enemy type 'temporal_guardian' - spectral/ghostly enemies that are thematic to time magic. The time_touched_blade is a unique weapon with temporal properties (chance to slow enemies on hit). This quest combines combat, puzzle-solving, and narrative revelation. The vision at the end reveals lore about Willow Dale's destruction - could tie into larger story. Temporal Echo shrine is an interactable object in Willow Dale that triggers a cutscene/dialogue."
+	"notes": "Threat: none to the player directly - the stake is what the priest has been teaching wrongly for years, and to whom. Giver motive: doctrinal honesty; he would rather retract a sermon than keep preaching a comfortable lie about a dead town. Consequence: the answer changes what the temple says about Willow Dale afterward, in prose only - not wired to a flag, so a later pass could hang a world_flags_to_set off it if the answer needs to matter mechanically."
 }

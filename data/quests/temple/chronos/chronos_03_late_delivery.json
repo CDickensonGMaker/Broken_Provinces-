@@ -1,7 +1,7 @@
 {
 	"id": "chronos_03_late_delivery",
 	"title": "Time-Sensitive",
-	"description": "The Priest of Chronos has received an urgent prophecy that must reach the High Chronist in Thornfield before nightfall. Time itself seems to press against you - bandits have been spotted on the roads, and delay could mean the prophecy's warning comes too late.",
+	"description": "The Priest of Chronos has a sealed prophecy for the High Chronist in Thornfield, and he does not pretend you will beat the hour it warns of. He has read enough of these to know how this one goes: the road is long, bandits work it, and the mill wheel it warns about will likely have already cracked by the time you arrive. He sends the warning anyway - not because it will arrive in time, but because Chronos's people write down what they saw coming whether or not anyone gets there first, so the next warning is believed a little sooner.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_chronos_dalhurst",
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "deliver_to_thornfield",
-			"description": "Deliver the prophecy to the High Chronist in Thornfield before nightfall",
+			"description": "Carry the prophecy to Thornfield, knowing it may already be too late",
 			"type": "talk",
 			"target": "high_chronist_thornfield",
 			"required_count": 1
@@ -39,5 +39,5 @@
 	"prerequisites": ["chronos_02_hourglasses"],
 	"next_quest": "chronos_04_false_prophet",
 	"quest_items": ["sealed_time_prophecy"],
-	"notes": "DESIGN INTENT: Time-pressure quest (though not mechanically enforced in this version). The flavor text emphasizes urgency. Bandits on the road between Dalhurst and Thornfield provide optional combat encounters. This quest introduces the High Chronist NPC in Thornfield, who will become important later. Higher reputation reward for successful delivery."
+	"notes": "The line's worst prior failure: an asserted deadline ('before nightfall') with no clock and no consequence for lateness. Fixed per directive - there is no timer, and the priest's own doctrine is that lateness was never in question. Threat: the mill wheel the prophecy warns of breaks regardless of the player's speed. Giver motive: Chronos's faithful record foreseen harm even when they cannot prevent it - the record is what teaches the next warning to be trusted. Consequence: the warning lands after the fact every time; nothing in the data changes with speed, which is the point, not an oversight. Known duplicate of the root file temple_prophecy_chronos, deliberately differentiated - this copy concerns the Thornfield mill wheel and is the temple's own doctrinal business; the root copy concerns a different prophecy and a different day."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "morthane_restless_soul",
 	"title": "Unfinished Business",
-	"description": "A ghost haunts the streets of Dalhurst at night, unable to pass through Morthane's gate to the afterlife. The Priest of Morthane can sense the spirit's anguish - it has unfinished business in the mortal world. He asks you to help the spirit resolve whatever chains it to this realm, so it may finally find peace in the cycle of rebirth.",
+	"description": "The widow living alone on Cooper's Row asked the temple herself why her husband still walks the street outside their old house at night - she has heard him, or thinks she has, three nights running. The Priest of Morthane does not correct her fear so much as answer it: the spirit has something unfinished, and it is likely something meant for her. He asks you to find it and see whether she can finally stop lying awake for footsteps.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_dalhurst",
@@ -31,7 +31,7 @@
 		},
 		{
 			"id": "deliver_message",
-			"description": "Deliver the ghost's final message to their loved one",
+			"description": "Give the widow the message so she can finally sleep",
 			"type": "talk",
 			"target": "widow_dalhurst",
 			"required_count": 1
@@ -63,5 +63,6 @@
 		}
 	},
 	"prerequisites": ["morthane_necromancer"],
-	"next_quest": "morthane_cycle_broken"
+	"next_quest": "morthane_cycle_broken",
+	"notes": "Threat: named - a widow on Cooper's Row (invented) who has gone three sleepless nights believing she is hearing her dead husband. Giver motive: she came to the temple herself; the priest is answering a specific grief, not enforcing doctrine for its own sake here. Consequence: not wired. Known duplicate of the temple file morthane_02_restless_spirit, deliberately differentiated - this copy is the widow's grief and a townsman's request; the temple copy is the priest's doctrinal insistence on the difference between a lingering soul and undeath."
 }

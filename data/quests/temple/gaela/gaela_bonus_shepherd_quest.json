@@ -1,7 +1,7 @@
 {
 	"id": "gaela_bonus_shepherd_quest",
 	"title": "The Lost Flock",
-	"description": "A shepherd from Millbrook has lost his flock to dire wolves in the wilderness. As a servant of Gaela, protector of pastoral life, you must find the sheep and return them safely.",
+	"description": "A Millbrook shepherd's flock scattered when dire wolves hit them near Willow Dale, and the sheep are the whole of what he owns - no wool to sell, no mutton for winter, no flock to breed back from if they're gone for good. As a servant of Gaela, protector of pastoral life, you are asked to find them before the wolves do.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "millbrook_shepherd",
@@ -54,5 +54,6 @@
 		}
 	},
 	"prerequisites": ["gaela_03_protect_harvest"],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: the shepherd's entire livelihood, named explicitly rather than left as an unstated assumption. Giver motive: he has no militia and no coin to hire a hunter, only a stranger passing through Millbrook. Consequence: not wired; losing the flock for good is stated as ruin, not enforced."
 }

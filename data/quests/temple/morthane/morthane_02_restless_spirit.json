@@ -1,7 +1,7 @@
 {
 	"id": "morthane_02_restless_spirit",
 	"title": "Unfinished Business",
-	"description": "A restless spirit haunts Dalhurst, unable to move on. The Priest of Morthane senses the ghost has unfinished earthly concerns that bind it to this world. Help the spirit find peace so it may complete the cycle.",
+	"description": "A spirit is lingering in Dalhurst, and the Priest of Morthane wants that word used precisely - lingering, not undead. There is a doctrinal difference he insists on: this soul has not been torn from the cycle by some abomination, it is simply delayed, tethered by an unfinished thing left behind in life. Find what it left and it will complete the passage on its own. Get the distinction wrong and you have learned nothing about his faith.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_elder_moor",
@@ -74,5 +74,6 @@
 	],
 	"prerequisites": ["morthane_01_last_rites"],
 	"next_quest": "morthane_03_cemetery_duty",
-	"faction": "church_of_morthane"
+	"faction": "church_of_morthane",
+	"notes": "Threat: named specifically as the doctrinal category, not the ghost's grief - a lingering soul, not an undead abomination, which is the whole point Morthane's priest wants understood. Giver motive: teaching the distinction is the actual lesson, not the locket errand. Consequence: not wired. Known duplicate of the root file morthane_restless_soul, deliberately differentiated - this copy is the temple's doctrinal concern (what kind of dead this is); the root copy is a townsman's grief (the widow who receives the ghost's message)."
 }

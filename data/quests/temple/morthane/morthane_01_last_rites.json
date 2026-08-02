@@ -1,7 +1,7 @@
 {
 	"id": "morthane_01_last_rites",
 	"title": "Final Rest",
-	"description": "The Priest of Morthane asks you to perform last rites for unburied dead outside Dalhurst. The dead deserve proper ceremony to complete their cycle. This will be your first lesson in Morthane's doctrine: death is natural, but the dead must be honored.",
+	"description": "Three graves west of Crossroads have gone unmarked since spring - a family of tanners who caught the fever on the road and never made it as far as Dalhurst. Whoever traveled with them buried nobody and kept walking; the priest does not know if that was cowardice or if there was no one left standing well enough to dig. He does not need to know. Morthane's doctrine does not ask who the dead were before it demands they be honored - it asks only that someone finally does the honoring.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_elder_moor",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "travel_to_graves",
-			"description": "Find the unmarked graves west of Crossroads",
+			"description": "Find the tanner family's unmarked graves west of Crossroads",
 			"type": "reach",
 			"target": "crossroads",
 			"target_zone": "crossroads",
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "perform_rites",
-			"description": "Perform last rites at the burial site (use Burial Incense)",
+			"description": "Give the three of them the rites nobody else stayed to give",
 			"type": "interact",
 			"target": "burial_site_marker",
 			"target_zone": "crossroads",
@@ -52,5 +52,6 @@
 	],
 	"prerequisites": [],
 	"next_quest": "morthane_02_restless_spirit",
-	"faction": "church_of_morthane"
+	"faction": "church_of_morthane",
+	"notes": "The line's named failure: unburied dead nobody buried, with who they were and why nobody came left unwritten. Fixed - a tanner family who caught fever on the road and were abandoned by whoever they traveled with, invented for this quest since the bible names no specific dead here. Giver motive: doctrine, not sentiment - Morthane's priest does not need a sympathetic backstory to demand rites, which is itself the doctrine in action. Consequence: not wired; left unburied they remain a standing offense to the cycle in prose only."
 }

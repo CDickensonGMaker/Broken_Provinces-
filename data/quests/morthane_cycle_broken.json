@@ -1,7 +1,7 @@
 {
 	"id": "morthane_cycle_broken",
 	"title": "The Broken Cycle",
-	"description": "A massive undead incursion threatens the entire region. The dead are rising in unprecedented numbers near Willow Dale, Crossroads, and even the outskirts of Thornfield. The Priest of Morthane believes something deep within Willow Dale's lowest chambers is disrupting the natural cycle of death and rebirth. He asks you to venture into the depths, find the source of this corruption, and destroy it - before the entire land becomes a kingdom of the unliving.",
+	"description": "The dead are rising near Willow Dale, Crossroads, and the outskirts of Thornfield, and the Dalhurst priest of Morthane has already lost two lay brothers sent out to bury the ones who fall in the first waves - young men who volunteered for grave duty and did not come back from it. He believes something in Willow Dale's lowest chambers is disrupting the cycle itself, and he asks you to finish what cost him two of his own before it costs a third.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_dalhurst",
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "defeat_undead_lord",
-			"description": "Defeat the Undead Lord corrupting the cycle",
+			"description": "Defeat the Undead Lord that killed two of the priest's own",
 			"type": "kill",
 			"target": "undead_lord_malthor",
 			"required_count": 1
@@ -56,5 +56,6 @@
 		}
 	},
 	"prerequisites": ["morthane_restless_soul"],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Threat: named against the audit's complaint - two lay brothers of the Dalhurst temple already died on grave duty in this incursion, giving the region-wide rising a concrete cost before the player is asked to finish it. Giver motive: this is personal loss for the priest, not abstract doctrine. Consequence: not wired."
 }
