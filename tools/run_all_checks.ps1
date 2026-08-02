@@ -11,7 +11,7 @@
     Exit code is non-zero if anything failed, so it can be used from a hook.
 
 .PARAMETER Godot
-    Path to the Godot 4.5 binary. Defaults to the project's standard location.
+    Path to the Godot 4.7 binary. Defaults to the project's standard location.
 
 .PARAMETER SkipValidator
     Run only the check scenes.
@@ -20,14 +20,14 @@
     powershell -ExecutionPolicy Bypass -File tools/run_all_checks.ps1
 #>
 param(
-    [string]$Godot = "$env:USERPROFILE\_tools\godot45\Godot_v4.5-stable_win64_console.exe",
+    [string]$Godot = "$env:USERPROFILE\_tools\godot47\Godot_v4.7-stable_win64_console.exe",
     [switch]$SkipValidator
 )
 
 $ErrorActionPreference = "Stop"
 
 if (-not (Test-Path $Godot)) {
-    Write-Host "Godot 4.5 not found at: $Godot" -ForegroundColor Red
+    Write-Host "Godot 4.7 not found at: $Godot" -ForegroundColor Red
     Write-Host "Pass the binary explicitly: tools/run_all_checks.ps1 -Godot <path>"
     exit 2
 }

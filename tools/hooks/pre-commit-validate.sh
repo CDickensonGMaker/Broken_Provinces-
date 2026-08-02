@@ -28,10 +28,10 @@ case "$staged" in
 esac
 
 repo=$(git rev-parse --show-toplevel)
-godot="${BP_GODOT:-$USERPROFILE/_tools/godot45/Godot_v4.5-stable_win64_console.exe}"
+godot="${BP_GODOT:-$USERPROFILE/_tools/godot47/Godot_v4.7-stable_win64_console.exe}"
 
 if [ ! -f "$godot" ]; then
-    echo "pre-commit: Godot 4.5 not found at $godot - set BP_GODOT to the binary" >&2
+    echo "pre-commit: Godot 4.7 not found at $godot - set BP_GODOT to the binary" >&2
     exit 1
 fi
 

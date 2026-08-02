@@ -11,19 +11,19 @@
     Full findings land in docs/audits/validation_report.md.
 
 .PARAMETER Godot
-    Path to the Godot 4.5 binary. Defaults to the project's standard location.
+    Path to the Godot 4.7 binary. Defaults to the project's standard location.
 
 .EXAMPLE
     powershell -ExecutionPolicy Bypass -File tools/validate.ps1
 #>
 param(
-    [string]$Godot = "$env:USERPROFILE\_tools\godot45\Godot_v4.5-stable_win64_console.exe"
+    [string]$Godot = "$env:USERPROFILE\_tools\godot47\Godot_v4.7-stable_win64_console.exe"
 )
 
 $ErrorActionPreference = "Stop"
 
 if (-not (Test-Path $Godot)) {
-    Write-Host "Godot 4.5 not found at: $Godot" -ForegroundColor Red
+    Write-Host "Godot 4.7 not found at: $Godot" -ForegroundColor Red
     Write-Host "Pass the binary explicitly: tools/validate.ps1 -Godot <path>"
     exit 2
 }

@@ -108,7 +108,7 @@ deliberately; nothing bypasses it by accident.
 > appends its own marked section below the beads-managed one; it is idempotent
 > and never touches the beads block.
 
-It boots Godot 4.5 headless, checks that quest givers are actually spawned,
+It boots Godot 4.7 headless, checks that quest givers are actually spawned,
 reward items and factions actually exist, encounter tables point at real
 enemies, and quest branches are reachable, then writes
 `docs/audits/validation_report.md`.
@@ -297,7 +297,7 @@ Adding a sound means adding an `EVENTS` entry, and either shipping the file or
 adding it to `MISSING_SFX` with a manifest row. The gate:
 
 ```powershell
-& $godot45 --headless --path . res://tools/check_audio_events.tscn
+& $godot47 --headless --path . res://tools/check_audio_events.tscn
 ```
 
 ## SCENE GROUPS
@@ -315,7 +315,7 @@ commit.
 **The gate:**
 
 ```powershell
-& $godot45 --headless --path . res://tools/check_groups.tscn
+& $godot47 --headless --path . res://tools/check_groups.tscn
 ```
 
 It scans every `.gd` under `scripts/`, `tools/`, `dev/` and `addons/` for
@@ -551,7 +551,7 @@ and the only ones that mean anything.
 **The gate:**
 
 ```powershell
-& $godot45 --headless --path . res://tools/check_autoload_api.tscn
+& $godot47 --headless --path . res://tools/check_autoload_api.tscn
 ```
 
 It resolves every `Autoload.member` written anywhere in `scripts/`, `tools/`
@@ -2040,7 +2040,7 @@ reloaded quest - against the template, so a field added to the class and
 forgotten in the copy fails the day it is written.
 
 ```powershell
-& $godot45 --headless --path . res://tools/check_quest_engine.tscn
+& $godot47 --headless --path . res://tools/check_quest_engine.tscn
 ```
 
 **When you add a field to Quest or Objective you must also add a value for it
@@ -2054,7 +2054,7 @@ through `from_dict`, or be named in its `TRANSIENT_MEMBERS` with a reason.
 **The general serialisation guard:**
 
 ```powershell
-& $godot45 --headless --path . res://tools/check_serialization.tscn
+& $godot47 --headless --path . res://tools/check_serialization.tscn
 ```
 
 `tools/check_serialization.tscn` is the same discipline over every other class
@@ -2198,7 +2198,7 @@ Mark -> Nobody -> Known Face -> Hired Blade -> Cutthroat -> Lieutenant -> Chief.
 Every bandit enemy `.tres` already points at it via `political_faction`.
 
 ```powershell
-& $godot45 --headless --path . res://tools/check_ongoing_effects.tscn
+& $godot47 --headless --path . res://tools/check_ongoing_effects.tscn
 ```
 
 **Gap Analysis:**
