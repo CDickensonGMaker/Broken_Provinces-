@@ -334,11 +334,38 @@ Where the sound lives is `AudioManager`'s business alone:
 |---|---|
 | `EVENTS` | event -> the asset it wants, whether or not that file exists yet |
 | `EVENT_ALIASES` | other spellings call sites use, mapped to the canonical event |
+| `EVENT_VARIANTS` | event -> a list of **synthesised placeholders**, one picked per play |
 | `EVENT_SUBSTITUTES` | what plays until the real asset lands - every entry is a row in the art manifest |
 | `MISSING_SFX` | no asset, no honest stand-in: silent on purpose, one warning, one manifest row |
 
+Resolution order is **alias -> the event's own asset -> a variant -> a
+substitute -> nothing**. The event's own asset comes first on purpose: dropping
+a real recording at `EVENTS[name]` retires its placeholder without anyone
+editing a table.
+
 Adding a sound means adding an `EVENTS` entry, and either shipping the file or
-adding it to `MISSING_SFX` with a manifest row. The gate:
+adding it to `MISSING_SFX` with a manifest row.
+
+### GENERATED AUDIO NEVER TOUCHES A REAL RECORDING
+
+**Every synthesised file lives under `assets/audio/generated/` and nowhere
+else.** `tools/gen_audio.py` writes only there, and `check_audio_events.tscn`
+fails if a wired variant path leaves that directory. The rule exists because
+generated audio has overwritten real recordings on another project, and a
+generated file sitting beside a hand-made one is a single careless rename away
+from doing it here.
+
+`python tools/gen_audio.py all` regenerates the set (numpy + ffmpeg;
+deterministic, same seeds every time). 114 files, 7 MB: 74 one-shots, 15 biome
+beds, 24 dialogue blips, one music bed. All of it is **PLACEHOLDER-CLASS** with
+a row in `docs/audits/art_replacement_manifest.md`.
+
+**`MISSING_SFX` is empty as of 8/2 and should stay that way.** Nothing this
+game names is silent. If you add an event with no asset, synthesise one rather
+than declaring it silent - and if synthesis would genuinely embarrass the
+game, say so in the manifest row.
+
+The gate:
 
 ```powershell
 & $godot47 --headless --path . res://tools/check_audio_events.tscn
@@ -2736,7 +2763,7 @@ ticks. **A green row means "boots, round-trips and passes its gate", never
 | Save/Load | Working, format version 9, guarded by `check_serialization.tscn` |
 | Crime/Bounty | Working |
 | Options / settings | Working as of batch 5 - `user://settings.cfg`, not the save file |
-| Audio | Partly stood-in. 84 of 117 events resolve; the other 33 are declared silent with manifest rows |
+| Audio | Every event resolves as of 8/2. `MISSING_SFX` is empty; the 32 that were silent, plus the biome ambience the outdoors never had, plus dialogue blips, are synthesised placeholders under `assets/audio/generated/`. **Nothing here has been judged by ear** |
 
 ### Known Working Features
 - Daggerfall-style cell streaming (seamless world traversal)
