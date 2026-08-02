@@ -1,102 +1,236 @@
-# Citizen masters — review pass (2026-08-02, Wyrm)
+# Citizen masters — refinement pass (2026-08-02, Wyrm)
 
-Four PSX citizen masters for Broken Provinces, built headless from RECON's
-`us_base_v3.blend`. **Nothing has been exported.** GLB export waits on Caleb's
-approval, per the standing rule.
+Second pass over the four PSX citizen masters, built headless from RECON's
+`us_base_v3.blend`. **They are now EXPORTED**: four GLBs live in
+`assets/models/citizens/glb/` and each one has been reimported and asserted.
 
-- Blend: `assets/models/citizens/citizens_master.blend` (195 KB)
-- Build scripts: `tools/citizens/01`–`07` (each re-runnable from the stage before it)
+- Blend: `assets/models/citizens/src/citizens_master.blend`
+- Exports: `assets/models/citizens/glb/citizen_{man,woman,boy,girl}.glb`
+- Build scripts: `tools/citizens/01`–`09` (each re-runnable from the stage before it)
 - Renders: this folder
 
-## What the base append yielded
+**The stage files moved.** They now sit under `assets/models/citizens/src/`,
+which carries the `.gdignore`. They used to sit one level up, and that
+`.gdignore` would have hidden `glb/` from Godot too — a `.gdignore` hides every
+subdirectory beneath it, so the exports would have been invisible to the engine
+that needs them.
 
-`Base_Human` from `C:\Users\caleb\RECONgame\assets\us\characters\us_base_v3.blend`
-(source untouched, opened read-only). The whole `Collection` hierarchy was
-appended — armature plus all 78 objects — then 76 gear/prop meshes were deleted,
-leaving the rig and the bare body. **The gear was never fused into the body**:
-`Base_Human` is a separate 402-tri mesh on a single material, with helmet,
-webbing, rucksack, canteens and weapons as their own objects. No blockout
-fallback was needed.
+---
 
-The rig came across with all **41 Mixamo bone names intact**
-(`mixamorig:Hips` … `mixamorig:RightToe_End`). Nothing was renamed or
-restructured, on either rig.
+## What changed in this pass
+
+| # | Task | Outcome |
+|---|---|---|
+| 1 | Trousers | Rebuilt as continuous hip→ankle tubes with one knee seam and an ankle flare. 96 → **80 tris/pair** |
+| 2 | Hair | All 7 styles rebuilt with real silhouettes, 48–76 tris each; new close-up review sheet |
+| 3 | Skirt deformation | **Found a real defect and fixed it** — see below |
+| 4 | Face atlas | RECON hand-packed wins. Head split into its own mesh; layout restructured to 8×4 |
+| 5 | EQ pass | Adults only: forearms ×1.16, hands ×1.22, boots ×1.20, perpendicular to the bone axis |
+| 6 | Export | Four GLBs, validated by headless reimport |
+| 7 | Renders | All refreshed, plus `citizen_hair_wall.png` and `citizen_skirt_walk.png` |
+
+---
+
+## THE ATLAS CONVENTION — what Caleb paints to
+
+**Ruling: the RECON hand-packed format wins over the 10×7 grid.** The grid is
+gone. What replaced it is the layout that RECON's own bake script can read.
+
+```
+256 x 256 PNG        8 columns x 4 rows  =  32 face cells
+cell                 32 px wide, 64 px tall
+  rows  0..47        FACE rect  (32 x 48)   <- the head mesh, and NOTHING else
+  rows 48..63        SKIN patch (32 x 16)   <- body, hands, feet, neck
+cell stride (uv1_offset) = (0.125, 0.25)
+```
+
+Three rules for painting it:
+
+1. **The face rect is the top three-quarters of a cell; the skin patch is the
+   bottom quarter.** The skin patch must be a flat swatch of the same tone the
+   face's neck ends on — every vertex below the jaw samples one pixel of it.
+2. **The leftmost 4 and rightmost 4 columns of the face rect are the BACK of the
+   head.** The head UV is a front-planar wrap, so rear-facing verts collapse
+   onto those edge columns. Paint scalp there, never features.
+3. **The layout is resolution-independent.** A 512² or 1024² atlas needs no UV
+   change at all, as long as it stays 8 columns × 4 rows and the cell stays
+   three-quarters face over one-quarter skin. Only the pixel counts double.
+
+**Why this shape and not a nicer one.** `RECONgame/tools/bake_us_faces.py`
+finds a character's face rect by clustering the UV centroids of every polygon
+on a mesh whose *name* contains `head` carrying a *material* whose name contains
+`face`, then rejects the result if the rect is under 16 px or over 25% of either
+atlas axis. Two things follow, and both are now structural:
+
+- **The head is its own object, `citizen_head`.** With head and body fused, the
+  flat skin patch is by far the denser cluster (358 body tris against 44 head
+  tris), the script resolves a 1×1 px rect and skips the character entirely.
+- **The cell is 32×64, not larger.** Measured on the shipped GLBs, the face rect
+  comes out **31×39 px** — inside the script's [16, 64] window at 256², and it
+  stays inside at 512² and 1024².
+
+`04_build_masters.py` and `09_validate_glb.py` both run that exact clustering
+and fail the build if it stops resolving. It is asserted, not hoped for.
+
+**What Caleb loses:** 32 faces per atlas instead of 70. A 512² atlas at the same
+grid gives 32 faces at 64×96 px each, which is the trade worth taking.
+
+---
 
 ## Masters
 
-| Master | Rig | Bones | Height | Body tris | Verts | Material |
+| Master | Rig | Bones | Height | Body | Head | Total tris | Material |
+|---|---|---|---|---|---|---|---|
+| MAN | `PSXRig` | 41 | 1.800 m | 358 | 44 | 402 | `face_atlas_mat` |
+| WOMAN | `PSXRig` (shared) | 41 | 1.800 m | 358 | 44 | 402 | `face_atlas_mat` |
+| BOY | `PSXRig_child` | 41 | 1.218 m | 358 | 44 | 402 | `face_atlas_mat` |
+| GIRL | `PSXRig_child` (shared) | 41 | 1.218 m | 358 | 44 | 402 | `face_atlas_mat` |
+
+Body and head are two objects on ONE material, so `uv1_offset` slides face and
+skin together and a mismatch stays impossible. The **neck stays on the body** —
+leaving it on the head made the face rect span jaw-to-collarbone, which put the
+mouth on the throat and dropped every hair style's brow ring over the eyes.
+Both defects were visible in the first render of the hair sheet and are the
+reason that sheet now exists.
+
+### The EQ pass (adults only)
+
+Forearms, hands and boots are thickened **perpendicular to their own bone axis**,
+so nothing got longer — 80 verts moved per adult. The children were cloned
+before the pass and are untouched, per the brief.
+
+---
+
+## Garb inventory (34 meshes, 2,072 tris)
+
+| Piece | tris | was | MAN | WOMAN | BOY | GIRL |
 |---|---|---|---|---|---|---|
-| MAN | `PSXRig` | 41 | 1.800 m | 402 | 203 | `face_atlas_mat` |
-| WOMAN | `PSXRig` (shared with MAN) | 41 | 1.800 m | 402 | 203 | `face_atlas_mat` |
-| BOY | `PSXRig_child` | 41 | 1.218 m | 402 | 203 | `face_atlas_mat` |
-| GIRL | `PSXRig_child` (shared with BOY) | 41 | 1.218 m | 402 | 203 | `face_atlas_mat` |
+| `garb_vest_plain` | 60 | 60 | ✓ | ✓ | ✓ | ✓ |
+| `garb_vest_laced` | 68 | 68 | ✓ | ✓ | ✓ | ✓ |
+| `garb_pants` | **80** | 96 | ✓ | ✓ | ✓ | ✓ |
+| `garb_skirt` | 68 | 68 | — | ✓ | — | ✓ |
+| `garb_sleeve_long` | **72** | 96 | ✓ | ✓ | ✓ | ✓ |
+| `garb_sleeve_rolled` | **72** | 96 | ✓ | ✓ | ✓ | ✓ |
+| `garb_sleeve_none` | 48 | 48 | ✓ | ✓ | ✓ | ✓ |
+| `garb_apron` | 14 | 14 | ✓ | ✓ | ✓ | ✓ |
+| `garb_hood` | **70** | 86 | ✓ | ✓ | ✓ | ✓ |
 
-Two rigs, four masters. The child rig is a clone scaled to 65% with the head
-chain given back 1.32× — child height lands at **0.677 of the adult**, with a
-near-adult head, which is the big-head PSX read.
+**Trousers.** Each leg is now one continuous tube from hip to ankle with a
+single seam loop at the knee, so it bends at the knee and nowhere else, and the
+ankle ring is wider than the knee ring — that modest flare is the EQ chunk and
+it is what stopped the leg reading as a pipe. The seat is a waist-to-crotch
+taper whose bottom ring sits at the same height as the leg tops, so the three
+parts read as one garment. The old version was a closed barrel plus two open
+tubes with a step between them, which is exactly the leg-strap read.
+Weights come from the nearest body vertex, so hip/thigh/shin fall out correctly.
 
-No shape keys, no subsurf, no modifiers but the armature. Every body is one
-manifold island, zero loose or stray verts (asserted at every stage).
+Sleeves and hood lost a ring each to hold the dressed budget. Nothing else moved.
 
-## Materials and textures
+---
 
-| Material | Texture | Size | Used by |
-|---|---|---|---|
-| `face_atlas_mat` | `citizen_face_atlas_placeholder.png` | 256×256 | the four bodies |
-| `garb_mat` | `citizen_garb_palette_placeholder.png` | 64×64 | all 34 garb meshes |
-| `hair_mat` | `citizen_hair_palette_placeholder.png` | 32×32 | all 14 hair meshes |
+## Hair inventory (14 meshes, 880 tris)
 
-All three sample with `Closest` interpolation — nearest neighbour, no filtering.
-Textures live beside the blend in `assets/models/citizens/`.
-
-**The atlas contract.** 10 columns × 7 rows = 70 cells of **25×36 px** on a
-256² image. Within a cell, image rows 0–23 are the face and rows 24–35 are the
-flat skin patch. Head and neck UV into the face rect; hands, limbs, torso and
-feet all UV into the skin patch **of the same cell**, so `uv1_offset` slides
-face and skin together and a mismatch is impossible. Every master is currently
-parked on cell (0, 0). Cell stride for the dresser is `(25/256, 36/256)` =
-`(0.09766, 0.14063)`.
-
-## Garb inventory (34 meshes)
-
-Visibility-toggled meshes on the masters, hidden by default (`hide_render`), for
-the dresser to enable by name prefix.
-
-| Piece | tris | MAN | WOMAN | BOY | GIRL |
+| Style | MAN | BOY | WOMAN | GIRL | Silhouette |
 |---|---|---|---|---|---|
-| `garb_vest_plain_*` | 60 | ✓ | ✓ | ✓ | ✓ |
-| `garb_vest_laced_*` | 68 | ✓ | ✓ | ✓ | ✓ |
-| `garb_pants_*` | 96 | ✓ | ✓ | ✓ | ✓ |
-| `garb_skirt_*` | 68 | — | ✓ | — | ✓ |
-| `garb_sleeve_long_*` | 96 | ✓ | ✓ | ✓ | ✓ |
-| `garb_sleeve_rolled_*` | 96 | ✓ | ✓ | ✓ | ✓ |
-| `garb_sleeve_none_*` | 48 | ✓ | ✓ | ✓ | ✓ |
-| `garb_apron_*` | 14 | ✓ | ✓ | ✓ | ✓ |
-| `garb_hood_*` | 86 | ✓ | ✓ | ✓ | ✓ |
+| `hair_short_crop` | 48 | 48 | — | — | tight cap + front fringe band |
+| `hair_side_part` | 52 | 56 | — | — | crown swept sideways + a wedge over one ear |
+| `hair_shaggy` | 66 | 62 | — | — | cap + 3 jagged clump tiers |
+| `hair_long_straight` | — | — | 70 | 70 | nape band + back plane to mid-back + 2 side curtains |
+| `hair_long_braid` | — | — | 72 | 72 | nape band + 3-segment pinched tail tube |
+| `hair_bun` | — | — | 76 | 76 | swept cap + knot blob at the crown |
+| `hair_shoulder` | — | — | 58 | 54 | two stacked curtain bands to the shoulder |
 
-Total garb: **2,392 tris across 34 meshes.** A fully dressed citizen
-(body + vest + pants + sleeves + hair) runs roughly **660–700 tris**, inside the
-300–800 humanoid budget with the body alone at 402.
+All ride `mixamorig:Head` alone. Every style now anchors off the **jaw-to-crown**
+span, where 0.62 is eye level and 0.74 the brow ridge; no cap ring is allowed
+below ~0.70.
 
-Every piece is generated from that master's own measured silhouette, so the
-child's garb is the child's, not a shrunk adult's. Weights are copied from the
-nearest body vertex — the body's weights are already correct — except the skirt.
+**Hood compatibility holds.** Worst crown radius is `hair_side_part` at 0.136 m
+against a hood inner radius of 0.204 m (adult), and 0.117 m against 0.175 m
+(child). All 14 styles measure as fitting; none needs hiding under a hood.
+Whether a *bun* under a hood reads right to the eye is still Caleb's call —
+`citizen_hair_wall.png` and the hood column of the variant wall are the evidence.
 
-## Hair inventory (14 meshes)
+---
 
-Chunky slab/ring geometry, each on `hair_mat`, each weighted 100% to
-`mixamorig:Head` and nothing else.
+## Skirt deformation — the claim a still could not make
 
-| Master | Styles | tris |
-|---|---|---|
-| MAN | `hair_short_crop` 28, `hair_side_part` 38, `hair_shaggy` 40 | bald = no mesh |
-| BOY | `hair_short_crop` 28, `hair_side_part` 38, `hair_shaggy` 40 | bald = no mesh |
-| WOMAN | `hair_long_straight` 36, `hair_long_braid` 56, `hair_bun` 56, `hair_shoulder` 36 | |
-| GIRL | `hair_long_straight` 36, `hair_long_braid` 60, `hair_bun` 56, `hair_shoulder` 32 | |
+`citizen_skirt_walk.png` is six posed frames of the woman through a walk arc
+(−30°, −16°, 0°, +16°, +30°, +14° on the thigh). The strip is generated by
+posing six independent copies of the rig, not by faking it with mesh copies.
 
-**Hood compatibility: all 14 styles fit inside the hood shell** by measurement —
-worst crown radius is the bun at 0.142 m against a hood inner radius of 0.204 m
-(adult) and 0.122 m against 0.175 m (child). No style needs hiding under a hood.
+**The swing axis is measured, not assumed.** The arc is applied on the thigh's
+local X, the toe's world displacement is read back, and the axis is swapped and
+re-probed if the leg moved sideways instead of forward. It swings on local **Z**;
+X moves the leg out to the side.
+
+**It sheared, and the number said so before any eye did.** Max edge stretch
+across the arc:
+
+| | −30° | −16° | 0° | +16° | +30° | +14° | worst |
+|---|---|---|---|---|---|---|---|
+| **before** | 1.11 | 1.05 | 1.00 | 1.19 | **2.14** | 1.56 | **2.14** |
+| **after** | 1.12 | 1.06 | 1.00 | 1.19 | 1.31 | 1.17 | **1.31** |
+
+Two weights caused it and both are now derived rather than picked:
+
+- **Leg share ramps as `t²`, capped at 0.50.** It was linear to 0.75, which put
+  three-quarters of the hem on the thighs and let an edge across the centreline
+  stretch 2.14× at a full stride.
+- **The left/right blend spans the full hem half-width**, measured off the hem
+  ring, instead of a hardcoded 0.167 m band. Two verts either side of the
+  centreline can no longer take opposite rotations at full strength.
+
+`07_render_review.py` asserts the worst stretch stays under 1.40, so this cannot
+silently come back.
+
+---
+
+## Dressed tri counts (budget ≤ 700)
+
+| Combination | tris |
+|---|---|
+| man — plain vest, trousers, long sleeves, crop | **662** |
+| boy — plain vest, trousers, rolled sleeves, shaggy | **676** |
+| woman — laced vest, skirt, long sleeves, braid | **682** |
+| girl — plain vest, skirt, bun | **606** |
+
+Heaviest possible adult (laced vest + trousers + long sleeves + bun) is **698**.
+The renderer asserts ≤ 700 on every combination it draws.
+
+---
+
+## The exports
+
+| GLB | meshes | tris (all variants) | bones | size |
+|---|---|---|---|---|
+| `citizen_man.glb` | 13 | 1,052 | 41 | 108 KB |
+| `citizen_woman.glb` | 15 | 1,230 | 41 | 125 KB |
+| `citizen_boy.glb` | 13 | 1,052 | 41 | 108 KB |
+| `citizen_girl.glb` | 15 | 1,226 | 41 | 125 KB |
+
+Object names inside a GLB drop the `_<MASTER>` suffix:
+`citizen_body`, `citizen_head`, `garb_pants`, `hair_bun`, and so on. Materials
+are exactly `face_atlas_mat`, `garb_mat`, `hair_mat` — asserted on reimport.
+
+**Every variant mesh ships VISIBLE, and the runtime must hide what it does not
+want.** glTF has no visibility flag: a mesh hidden in Blender either exports
+visible or does not export at all. This is the RECON convention
+(`RECONgame/scripts/visuals/grunt_dresser.gd:278`, `_set_visible_by_name`) and it
+is why every one of the 13–15 meshes made it into the file. Until the dresser
+runs, a spawned citizen wears **all** the garb at once — that is expected, not a
+bug, but the dresser is now a hard requirement for the first spawn, not a
+nicety.
+
+`09_validate_glb.py` reimports each GLB into a scratch scene and asserts: one
+armature, 41 bones all `mixamorig:`, the exact mesh inventory, one material per
+mesh from the three contract names, every mesh skinned to the armature with
+weights and UVs intact, and the face rect still clustering inside the bake
+script's window. All four pass. (Blender 5's glTF *importer* spawns a stray
+`Icosphere` and hands it to the leaf bones as a display shape — it is viewport
+furniture, it is in no exported file, and the validator now says so by name
+rather than tripping over it.)
+
+---
 
 ## Renders in this folder
 
@@ -108,76 +242,67 @@ worst crown radius is the bun at 0.142 m against a hood inner radius of 0.204 m
 | `citizen_turnaround_GIRL.png` | 512×288 | same |
 | `citizen_variant_wall.png` | 512×640 | garb combos and hair styles, man and woman |
 | `citizen_scale_check.png` | 512×224 | four masters nude, then four dressed |
+| `citizen_hair_wall.png` | 768×340 | **new** — every hair style, head close-up, front and side |
+| `citizen_skirt_walk.png` | 768×300 | **new** — the skirt through a walk arc |
 
 EEVEE, flat shadowless world light, transparent background.
 
-## Structural compromises — say so plainly
+---
 
-1. **MAN and WOMAN share one armature; BOY and GIRL share another.** That is
-   what was asked for, and it means the woman's mesh is reshaped against bones
-   that did not move. Her arms were shifted inboard 15 mm to follow the narrowed
-   shoulders, so her upper-arm skinning is stretched by that much. At PSX scale
-   it is invisible in the renders; it is still a real deviation.
-2. **The children are proportioned like scaled adults below the neck.** Only the
-   head was given back. Real child proportions (shorter limbs relative to torso,
-   softer waist) were not modelled — the brief asked for a 65% clone with a big
-   head, and that is what is there.
-3. **The rest pose is the soldier's A-pose, untouched**, as instructed. The
-   citizens stand like grunts until an animation plays.
-4. **The face atlas is placeholder pixels, not placeholder layout.** The 10×7
-   grid is the contract. Note that RECON's shipping atlas is 768×1056 with
-   hand-measured, irregular face rects (`RECONgame/tools/face_uv.py`), *not* a
-   uniform grid — so a real CoG atlas must be authored to the grid, or this
-   UV pass must be redone to match whatever Caleb paints.
-5. **The garb is procedural blocking, not sculpted clothing.** Tubes and rings
-   fitted to measured body sections. It reads correctly at PSX distance and it
-   is structurally right; it is not hand-crafted.
+## Structural compromises — still true, said plainly
 
-## What Caleb must eyeball before this can be exported
+1. **MAN and WOMAN share one armature; BOY and GIRL share another.** The woman's
+   mesh is reshaped against bones that did not move; her arms were shifted
+   inboard 15 mm, so her upper-arm skinning is stretched by that much.
+2. **The children are proportioned like scaled adults below the neck**, and the
+   EQ pass deliberately skipped them, so their hands and boots stay slimmer than
+   the adults'. The brief forbade re-proportioning them further.
+3. **The rest pose is the soldier's A-pose, untouched.**
+4. **The face atlas is placeholder pixels.** The cell grid above is the contract.
+5. **The garb is procedural blocking, not sculpted clothing.**
+6. **The head/body seam is a real seam.** Polys straddling the neck stayed on the
+   body, so nothing has a hole, but the two objects are separate draw calls
+   sharing one material. That is the price of the atlas ruling, and RECON pays
+   it too.
 
-1. **Woman's proportions.** Shoulders 0.90×, waist 0.92×, hips 1.16×, thighs
-   1.06×, and a 22 mm forward chest nudge. Is the read right, or too subtle /
-   too much? Best seen in `citizen_turnaround_WOMAN.png` (side view carries the
-   chest form).
-2. **Skirt deformation.** `garb_skirt_WOMAN` and `garb_skirt_GIRL` are weighted
-   Hips → both thighs, blended across the centreline so the cloth cannot tear
-   open when the legs split. **Nothing has been animated yet** — this is the one
-   claim in this document that a still render cannot prove. Drop a Mixamo walk
-   on the woman and watch the hem before approving it.
-3. **Child head ratio.** 1.32× head on a 0.65× body, giving 1.218 m total.
-   Compare with the adults in `citizen_scale_check.png`. Too cartoonish, or not
-   enough?
-4. **Whether the hood should replace hair rather than coexist.** All styles
-   measure as fitting, but a bun under a hood may still read wrong to the eye.
-5. **The atlas layout question in compromise 4** — grid or hand-packed. This
-   decides whether the head UVs stay as they are.
-6. **Whether the men need a civilian silhouette pass at all.** The body is the
-   soldier base with the gear removed and no reproportioning; it reads as a
-   plain man in the renders.
+## What Caleb still has to eyeball
 
-## How to open and inspect
+1. **Woman's proportions** — shoulders 0.90×, waist 0.92×, hips 1.16×, thighs
+   1.06×, 22 mm forward chest nudge. Best seen in the WOMAN turnaround side view.
+2. **The EQ chunk level.** Forearm 1.16, hand 1.22, boot 1.20 — enough EverQuest,
+   or push further? `citizen_scale_check.png` carries the adult/child comparison.
+3. **Child head ratio** — 1.32× head on a 0.65× body, 1.218 m total.
+4. **Hood over a bun.** Measured as fitting; the eye may still disagree.
+5. **32 faces per atlas** instead of 70 — acceptable, or should the atlas go to
+   512² for 64×96 px faces at the same grid? (No UV work either way.)
+
+## How to rebuild
+
+```
+cd C:\Users\caleb\CatacombsOfGore
+set B="C:\Program Files\Blender Foundation\Blender 5.0\blender.exe"
+%B% -b --factory-startup --python tools\citizens\01_append_base.py
+%B% -b --factory-startup --python tools\citizens\03_make_textures.py
+%B% -b --factory-startup --python tools\citizens\04_build_masters.py
+%B% -b --factory-startup --python tools\citizens\05_build_garb.py
+%B% -b --factory-startup --python tools\citizens\06_build_hair.py
+%B% -b --factory-startup --python tools\citizens\07_render_review.py
+%B% -b --factory-startup --python tools\citizens\08_export_glb.py
+%B% -b --factory-startup --python tools\citizens\09_validate_glb.py
+```
+
+`00_probe_source.py` and `02_probe_body.py` are read-only measuring tools; they
+write nothing and are safe to run against the RECON source at any time.
+Every stage is idempotent, writes the next stage file, and `.blend1` backups are
+disabled throughout.
+
+To open and inspect:
 
 ```
 "C:\Program Files\Blender Foundation\Blender 5.0\blender.exe" ^
-  "C:\Users\caleb\CatacombsOfGore\assets\models\citizens\citizens_master.blend"
+  "C:\Users\caleb\CatacombsOfGore\assets\models\citizens\src\citizens_master.blend"
 ```
 
 Four collections — `MAN`, `WOMAN`, `BOY`, `GIRL` — plus `RIGS` holding `PSXRig`
 and `PSXRig_child`. Garb and hair meshes are visible in the viewport and hidden
 in renders; toggle the camera icon per object to try a combination.
-
-To rebuild any stage from scratch (each is idempotent, each writes the next
-stage file, `.blend1` backups are disabled throughout):
-
-```
-cd C:\Users\caleb\CatacombsOfGore
-blender -b --factory-startup --python tools\citizens\01_append_base.py
-blender -b --factory-startup --python tools\citizens\03_make_textures.py
-blender -b --factory-startup --python tools\citizens\04_build_masters.py
-blender -b --factory-startup --python tools\citizens\05_build_garb.py
-blender -b --factory-startup --python tools\citizens\06_build_hair.py
-blender -b --factory-startup --python tools\citizens\07_render_review.py
-```
-
-`00_probe_source.py` and `02_probe_body.py` are read-only measuring tools; they
-write nothing and are safe to run against the RECON source at any time.
