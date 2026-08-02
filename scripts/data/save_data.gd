@@ -12,11 +12,14 @@ extends Resource
 ##            FactionSaveData now carries ongoing effects, hostility and crime days
 ## Version 8: FlagSaveData replaces DialogueSaveData - flags are FlagManager's,
 ##            not DialogueManager's, and context_variables is carried too
+## Version 9: FogOfWarSaveData deleted. The painted world map it belonged to was
+##            removed long ago; the live map reads PlayerGPS.discovered_cells.
+##            The "fog_of_war" key is dropped on load.
 ##
 ## SaveManager reads this constant rather than keeping its own copy. It kept one
 ## for a long time, and the two drifted three versions apart, which left a live
 ## migration block that could never run.
-const SAVE_VERSION := 8
+const SAVE_VERSION := 9
 
 ## Metadata
 @export var version: int = SAVE_VERSION
@@ -57,9 +60,6 @@ var world_manager_data = null  # WorldManagerSaveData
 
 ## Encounter manager section
 var encounter_data = null  # EncounterSaveData
-
-## Fog of war section (painted world map)
-var fog_of_war_data = null  # FogOfWarSaveData
 
 ## Cell streamer section (floating origin, active cell)
 var cell_streamer_data = null  # CellStreamerSaveData
@@ -131,7 +131,6 @@ func _init() -> void:
 	errand_data = ErrandSaveData.new()
 	world_manager_data = WorldManagerSaveData.new()
 	encounter_data = EncounterSaveData.new()
-	fog_of_war_data = FogOfWarSaveData.new()
 	cell_streamer_data = CellStreamerSaveData.new()
 	morality_data = MoralitySaveData.new()
 	faction_data = FactionSaveData.new()
@@ -169,7 +168,6 @@ func to_dict() -> Dictionary:
 		"errands": errand_data.to_dict() if errand_data else {},
 		"world_manager": world_manager_data.to_dict() if world_manager_data else {},
 		"encounters": encounter_data.to_dict() if encounter_data else {},
-		"fog_of_war": fog_of_war_data.to_dict() if fog_of_war_data else {},
 		"cell_streamer": cell_streamer_data.to_dict() if cell_streamer_data else {},
 		"morality": morality_data.to_dict() if morality_data else {},
 		"factions": faction_data.to_dict() if faction_data else {},
@@ -220,8 +218,6 @@ func from_dict(data: Dictionary) -> void:
 		world_manager_data.from_dict(data.get("world_manager", {}))
 	if encounter_data:
 		encounter_data.from_dict(data.get("encounters", {}))
-	if fog_of_war_data:
-		fog_of_war_data.from_dict(data.get("fog_of_war", {}))
 	if cell_streamer_data:
 		cell_streamer_data.from_dict(data.get("cell_streamer", {}))
 	if morality_data:
@@ -831,25 +827,6 @@ class EncounterSaveData:
 		cooldown_remaining = data.get("cooldown_remaining", 0.0)
 		encounter_timer = data.get("encounter_timer", 0.0)
 		last_check_hex = data.get("last_check_hex", {"x": 0, "y": 0})
-
-
-## Fog of war save data structure (for painted world map)
-class FogOfWarSaveData:
-	## Explored hex cells as array of [q, r] coordinates
-	var explored_hexes: Array = []
-
-	## Image size (for validation)
-	var image_size: Array = [798, 588]
-
-	func to_dict() -> Dictionary:
-		return {
-			"explored_hexes": explored_hexes,
-			"image_size": image_size
-		}
-
-	func from_dict(data: Dictionary) -> void:
-		explored_hexes = data.get("explored_hexes", [])
-		image_size = data.get("image_size", [798, 588])
 
 
 ## Cell streamer save data structure (floating origin and active cell)

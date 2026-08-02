@@ -415,10 +415,6 @@ func _collect_save_data():
 	if save_data.encounter_data:
 		_collect_encounter_data(save_data.encounter_data)
 
-	# Fog of war data (painted world map)
-	if save_data.fog_of_war_data:
-		_collect_fog_of_war_data(save_data.fog_of_war_data)
-
 	# Cell streamer data (floating origin, active cell)
 	if save_data.cell_streamer_data:
 		_collect_cell_streamer_data(save_data.cell_streamer_data)
@@ -765,10 +761,6 @@ func _apply_save_data(save_data) -> void:
 	# Restore encounter manager data
 	if save_data.encounter_data:
 		_apply_encounter_data(save_data.encounter_data)
-
-	# Restore fog of war data (painted world map)
-	if save_data.fog_of_war_data:
-		_apply_fog_of_war_data(save_data.fog_of_war_data)
 
 	# Restore cell streamer data (floating origin, active cell)
 	# NOTE: This is stored for application after scene loads
@@ -1148,18 +1140,6 @@ func _apply_encounter_data(encounter_data) -> void:
 		else:
 			# Fallback for corrupted/string data
 			em._last_check_hex = Vector2i.ZERO
-
-
-## Collect fog of war data from world map
-func _collect_fog_of_war_data(_fog_data) -> void:
-	# PaintedWorldMap removed - fog of war handled by PlayerGPS.discovered_cells
-	pass
-
-
-## Apply fog of war data to world map
-func _apply_fog_of_war_data(_fog_data) -> void:
-	# PaintedWorldMap removed - fog of war handled by PlayerGPS.discovered_cells
-	pass
 
 
 ## Pending cell streamer data to apply after scene loads
@@ -1735,6 +1715,13 @@ func _migrate_save_data(data: Dictionary, from_version: int) -> Dictionary:
 				old_player["total_ip_earned"] = CharacterData.IP_PER_LEVEL[index]
 
 		migrated["version"] = 8
+
+	# Version 8 -> 9: FogOfWarSaveData is gone. The painted world map it served
+	# was removed before this key ever carried anything but {}. Drop it rather
+	# than carry a section no class reads.
+	if migrated.get("version", 0) == 8:
+		migrated.erase("fog_of_war")
+		migrated["version"] = 9
 
 	return migrated
 

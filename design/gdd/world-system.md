@@ -399,7 +399,7 @@ Locations with `wip: true`:
 |--------|-------------|
 | CellStreamer | Uses WorldGrid for cell data, PlayerGPS for position |
 | FastTravelManager | Reads discovered locations from PlayerGPS |
-| PaintedWorldMap | Displays WorldGrid terrain and PlayerGPS discoveries |
+| WorldMap (`scripts/ui/world_map.gd`) | Displays WorldGrid terrain and PlayerGPS discoveries |
 | QuestManager | Uses location_id for objective targeting |
 | WildernessRoom | Generates terrain based on biome from WorldGrid |
 | CompassUI | Shows direction to locations using WorldGrid coords |
@@ -440,7 +440,7 @@ Locations with `wip: true`:
 | cell_streamer.gd | Autoload for streaming |
 | wilderness_room.gd | Procedural terrain generator |
 | enhanced_terrain.gd | Terrain algorithms |
-| painted_world_map.gd | World map UI |
+| world_map.gd | World map UI |
 
 ---
 

@@ -1432,8 +1432,7 @@ The game uses a Daggerfall-inspired cell streaming system for seamless open worl
 | **PlayerGPS** | `scripts/autoload/player_gps.gd` | Tracks player position and discovery |
 | **WorldGrid** | `scripts/data/world_grid.gd` | Single source of truth for world data |
 | **CellEdge** | `scripts/world/cell_edge.gd` | Boundary walls for impassable terrain |
-| **PaintedWorldMap** | `scripts/ui/painted_world_map.gd` | OpenMW-style world map UI |
-| **MapFogOfWar** | `scripts/map/map_fog_of_war.gd` | Exploration fog reveal system |
+| **WorldMap** | `scripts/ui/world_map.gd` | World map UI, fog of war, fast travel |
 
 ---
 
@@ -1610,47 +1609,28 @@ if CellEdge.is_direction_blocked(coords, CellEdge.Direction.NORTH):
 
 ---
 
-### PaintedWorldMap (UI)
+### WorldMap (UI)
 
-OpenMW-inspired world map with a hand-painted texture overlay, fog of war, and fast travel.
+The world map UI. It draws the WorldGrid as a grid of terrain-coloured cells,
+with fog of war and click-to-fast-travel.
 
-**Features:**
-- Pan and zoom with mouse
-- Fog of war reveals as player explores
-- Click towns to fast travel (discovered only)
-- Player marker with pulsing glow
-- Tooltip showing cell info
+**Fog of war is `PlayerGPS.discovered_cells` and nothing else.** There is no
+fog image, no `MapFogOfWar`, and no `PaintedWorldMap` - both classes were
+deleted (the map class years ago, the fog class on 8/2 with zero references to
+its name anywhere in the repo). The map re-syncs discovery from PlayerGPS onto
+`WorldGrid.CellInfo.discovered` when it opens; the save file carries
+PlayerGPS's dictionary and nothing else.
+
+`SceneManager.fog_of_war_enabled` is the dev switch that reveals everything.
 
 **Integration:**
 ```gdscript
-# The map reads from PlayerGPS for player position
+# The map reads from PlayerGPS for player position and discovery,
 # and WorldGrid for cell/location data
 var player_cell: Vector2i = PlayerGPS.current_cell
 var cell_info: WorldGrid.CellInfo = WorldGrid.get_cell(player_cell)
+var seen: bool = PlayerGPS.is_discovered(player_cell)
 ```
-
----
-
-### MapFogOfWar
-
-Grayscale image-based fog of war system. White = visible, black = hidden.
-
-**Constants:**
-```gdscript
-const REVEAL_RADIUS_CELLS := 2  # Cells around player to reveal
-const REVEAL_FEATHER := 0.3     # Edge softness
-```
-
-**Public API:**
-| Method | Description |
-|--------|-------------|
-| `reveal_hex(cell: Vector2i)` | Reveal area around cell |
-| `is_explored(hex: Vector2i) -> bool` | Check if cell explored |
-| `bulk_reveal(hexes: Array)` | Reveal multiple cells |
-| `reset()` | Clear all exploration |
-| `reveal_all()` | Reveal entire map (dev mode) |
-| `to_dict() -> Dictionary` | Save state |
-| `from_dict(data: Dictionary)` | Load state |
 
 ---
 
@@ -2935,13 +2915,15 @@ The game now uses a Daggerfall-style cell streaming system:
 - **CellStreamer** loads/unloads 100x100 unit cells around the player
 - **PlayerGPS** is the single source of truth for player position
 - **WorldGrid** contains all world data with Elder Moor at (0, 0)
-- **PaintedWorldMap** shows an OpenMW-style world map with fog of war
+- **WorldMap** (`scripts/ui/world_map.gd`) draws the grid; fog of war is PlayerGPS.discovered_cells
 - Player walks seamlessly across cell boundaries (no teleporting)
 
 **DELETED SYSTEMS (do not reference):**
 - WorldManager (replaced by PlayerGPS + WorldGrid)
 - MapTracker (replaced by PlayerGPS)
 - BackgroundManager (no longer needed)
+- PaintedWorldMap / painted_world_map.gd (replaced by world_map.gd)
+- MapFogOfWar / map_fog_of_war.gd (fog is PlayerGPS.discovered_cells)
 - room_edge.gd (replaced by CellEdge)
 - zone_edge.gd (deleted)
 - wilderness_exit_handler.gd (deleted)
