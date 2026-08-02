@@ -1,7 +1,7 @@
 {
 	"id": "bounty_medicine_delivery",
 	"title": "Medicine for Millbrook",
-	"description": "The healer in Millbrook sent word three days ago: a fever is moving through the mill workers and she's out of feverfew tincture. Dalhurst's apothecary mixed a fresh batch and needs someone who isn't afraid of the road to carry it before the fever runs into its second week, which is when it stops being the kind people walk away from.",
+	"description": "Fever is moving through Millbrook's mill workers and the healer there is out of feverfew. A fresh batch is mixed and waiting on a carrier. The second week is when it stops being survivable.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "deliver_medicine",
-			"description": "Get the tincture to the healer in Millbrook before the fever runs its second week",
+			"description": "Carry the tincture to the healer in Millbrook",
 			"type": "talk",
 			"target": "millbrook_healer",
 			"target_zone": "millbrook",

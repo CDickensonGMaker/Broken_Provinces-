@@ -1,7 +1,7 @@
 {
 	"id": "bounty_rat_extermination",
 	"title": "Rat Extermination",
-	"description": "Warehouse-master Corin Petsch has lost two months of stored grain to rats since spring, and the Guild's ledger shows it as coin nobody stole - just eaten. It's cheap work, but the Guild would rather pay it out once than keep watching the cellars lose what they're paid to hold.",
+	"description": "Rats have eaten two months of stored grain out of the Guild cellars since spring. Warehouse-master Corin Petsch wants them cleared. Cheap work, and plenty of it.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "kill_rats",
-			"description": "Clear the rats out of the Guild's storage cellars",
+			"description": "Clear the rats out of the Guild cellars",
 			"type": "kill",
 			"target": "giant_rat",
 			"required_count": 8

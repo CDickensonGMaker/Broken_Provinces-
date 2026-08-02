@@ -1,7 +1,7 @@
 {
 	"id": "bounty_goblin_scouts",
 	"title": "Goblin Scouts",
-	"description": "Watch-Sergeant Coel Renn has counted four goblin scouts at the forest edge in a week, always in pairs, always moving north to south like they're marking something. Scouts this organized don't come without a column somewhere behind them, and the garrison hasn't the men to go find out where it's camped. Kill what shows itself; that's the only intelligence Dalhurst can currently afford.",
+	"description": "Four goblin scouts at the forest edge in a week, always in pairs, always north to south. Coel Renn has no men to find what they are marking for. Kill what shows itself.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "kill_goblins",
-			"description": "Kill the goblin scouts marking the forest edge before more come",
+			"description": "Kill the goblin scouts at the forest edge",
 			"type": "kill",
 			"target": "goblin_soldier",
 			"required_count": 4

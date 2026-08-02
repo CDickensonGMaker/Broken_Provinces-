@@ -1,7 +1,7 @@
 {
 	"id": "bounty_troll_bridge",
 	"title": "The Bridge Troll",
-	"description": "The troll at the old stone bridge doesn't kill everyone who tries to cross - it takes something first, and only kills the ones who argue. A trader lost a wagon wheel and half his stock trying to reason with it last week; the woman before him lost nothing but a wedding ring and walked home shaking. Mill Brook can't spare the bridge and can't spare anyone willing to keep paying what it asks, so the board carries a price for ending the arrangement instead.",
+	"description": "The troll at the old stone bridge takes something off everyone who crosses, and kills the ones who argue. A trader lost a wheel and half his stock last week. Mill Brook wants the arrangement ended.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "kill_troll",
-			"description": "End the toll the troll has been taking at the stone bridge",
+			"description": "End the troll's toll at the stone bridge",
 			"type": "kill",
 			"target": "troll",
 			"required_count": 1

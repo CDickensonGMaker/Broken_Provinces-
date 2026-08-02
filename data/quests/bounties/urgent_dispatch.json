@@ -1,7 +1,7 @@
 {
 	"id": "bounty_urgent_dispatch",
 	"title": "Urgent Dispatch",
-	"description": "Elder Moor's watch has turned back the supply column meant for Thornfield's garrison - bad axle, worse road - and someone needs to carry word ahead before Thornfield's captain plans a week around grain that isn't coming. The seal is wax, not paper folded twice; this one is meant to be believed on sight.",
+	"description": "Thornfield's garrison is waiting on a supply column Elder Moor's watch turned back - bad axle, worse road. Word has to reach their captain before he plans a week around grain that is not coming.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "deliver_dispatch",
-			"description": "Get the sealed dispatch into Thornfield's captain's own hand",
+			"description": "Put the dispatch in Thornfield's captain's hand",
 			"type": "talk",
 			"target": "thornfield_guard_captain",
 			"target_zone": "thornfield",

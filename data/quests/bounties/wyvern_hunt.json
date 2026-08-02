@@ -1,7 +1,7 @@
 {
 	"id": "bounty_wyvern_hunt",
 	"title": "Wyvern Hunt",
-	"description": "Three sheep and a plow-ox gone off the Hale farmstead in the eastern hills, and the last time anyone in this guild saw a wyvern take stock instead of deer, it didn't stop until someone put it down. The guild won't send apprentices after wings that size - this one is paid at the top of the board, for a hunter who has killed something that can see them coming.",
+	"description": "Three sheep and a plow-ox gone off the Hale farmstead in the eastern hills. A wyvern that has moved from deer to stock does not stop on its own. The guild will not send apprentices.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",

@@ -1,7 +1,7 @@
 {
 	"id": "bounty_undead_rising",
 	"title": "Undead Rising",
-	"description": "Widow Sarel found her husband's grave open and him standing in it three nights back, and walked him down herself with a hoe. She hasn't slept since. The graves nearest Willow Dale keep doing the same, and whatever is cut into that totem is pulling every one of them up faster than the village can lay them back down.",
+	"description": "Widow Sarel found her husband standing in his own open grave and put him down herself with a hoe. The graves near Willow Dale keep opening, and whatever is cut into that totem keeps pulling them up.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "kill_skeletons",
-			"description": "Put the risen dead back down before more climb out",
+			"description": "Put the risen dead back down",
 			"type": "kill",
 			"target": "skeleton_shade",
 			"required_count": 5
 		},
 		{
 			"id": "destroy_totem",
-			"description": "Destroy the totem driving them out of their graves",
+			"description": "Destroy the totem",
 			"type": "interact",
 			"target": "cursed_totem",
 			"required_count": 1

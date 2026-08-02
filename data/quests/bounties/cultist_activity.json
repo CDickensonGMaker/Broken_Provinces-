@@ -1,7 +1,7 @@
 {
 	"id": "bounty_cultist_activity",
 	"title": "Dark Cult Activity",
-	"description": "The old temple's fires have burned three nights running and Ferris Coale hasn't come home since the second one. Nobody in Mill Brook has the stomach to climb up there, so they're passing a hat instead - what coin the hamlet has, for someone with a stronger stomach, to bring back what's left of him or make sure nothing comes down after the fires go out.",
+	"description": "Fires have burned three nights at the old temple and Ferris Coale has not come home. Mill Brook passed a hat for whoever will climb up there. Bring him back, or make sure nothing follows.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "kill_leader",
-			"description": "Kill whoever is leading them and lighting those fires",
+			"description": "Kill whoever is lighting the fires",
 			"type": "kill",
 			"target": "cult_leader",
 			"required_count": 1

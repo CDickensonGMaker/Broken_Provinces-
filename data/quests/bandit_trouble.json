@@ -1,7 +1,7 @@
 {
 	"id": "bandit_trouble",
 	"title": "Bandit Trouble",
-	"description": "A carter named Oswald Pell took an arrow through the shoulder on the Elder Moor road last week and hasn't worked since - one of six attacks the guard has logged this month. The bandits camped in the northern hills aren't slowing down, and every cart that stops running is goods that don't reach Dalhurst's shelves. Someone needs to clear the camp before the road empties out entirely.",
+	"description": "A carter named Oswald Pell took an arrow on the Elder Moor road and has not worked since - one of six attacks logged this month. The camp is in the northern hills. Clear it.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -17,7 +17,7 @@
 		},
 		{
 			"id": "kill_bandits",
-			"description": "Clear out the bandits (0/8)",
+			"description": "Clear out the bandits",
 			"type": "kill",
 			"target": "human_bandit",
 			"required_count": 8

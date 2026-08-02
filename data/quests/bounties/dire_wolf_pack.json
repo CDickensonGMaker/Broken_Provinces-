@@ -1,7 +1,7 @@
 {
 	"id": "bounty_dire_wolf_pack",
 	"title": "Dire Wolf Pack",
-	"description": "The dire pack has pushed out of the deep forest and onto the trap lines - three trappers won't walk them anymore. Guildmaster Tam Ashby isn't sending journeymen after wolves that size on a training contract, so this one goes up as a proper bounty, guild scrip against guild coin, for someone who has killed bigger than deer before.",
+	"description": "Three trappers will not walk their lines - the dire pack has come out of the deep forest onto them. Tam Ashby will not risk journeymen on wolves that size. Guild coin for whoever will.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "kill_dire_wolves",
-			"description": "Kill the dire wolves that have taken the trap lines",
+			"description": "Kill the dire wolves on the trap lines",
 			"type": "kill",
 			"target": "dire_wolf",
 			"required_count": 2

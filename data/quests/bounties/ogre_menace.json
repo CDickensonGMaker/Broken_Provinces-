@@ -1,7 +1,7 @@
 {
 	"id": "bounty_ogre_menace",
 	"title": "Ogre Menace",
-	"description": "Three travelers on the southern road haven't reached Elder Moor since midsummer, and the last body found on the verge outside Hollow's Bend had marks too big to be a man's. Garrison Captain Yorick Dane won't send soldiers after one beast when there's a whole road system to hold, hence the coin - for whoever wants it more than the garrison can spare the men.",
+	"description": "Three travelers gone off the southern road since midsummer, and the last body found outside Hollow's Bend was marked by something bigger than a man. Yorick Dane can spare coin, not soldiers.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "kill_ogre",
-			"description": "Kill the ogre working the southern road out of Hollow's Bend",
+			"description": "Kill the ogre on the southern road",
 			"type": "kill",
 			"target": "ogre",
 			"required_count": 1

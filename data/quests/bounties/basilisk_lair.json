@@ -1,7 +1,7 @@
 {
 	"id": "bounty_basilisk_lair",
 	"title": "The Basilisk's Lair",
-	"description": "Six miners haven't come up from the Hollow Vein since caravan-master Otto Praed lost the third crew to whatever has denned in there. The Vein feeds half of Dalhurst's ore contracts, and every week it sits closed costs the Guild a shipment already sold north. Praed put up the head-money out of the Guild's own purse - it won't pay to send men down again, only to reward whoever else does.",
+	"description": "Six miners are dead in the Hollow Vein and nobody will go back down. Otto Praed pays out of the Guild's own purse. Kill whatever has denned in there.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "kill_basilisk",
-			"description": "Slay whatever has denned in the Hollow Vein and taken it for its own",
+			"description": "Slay whatever has denned in the Hollow Vein",
 			"type": "kill",
 			"target": "basilisk",
 			"required_count": 1

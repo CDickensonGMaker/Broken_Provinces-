@@ -1,7 +1,7 @@
 {
 	"id": "bounty_wolf_menace",
 	"title": "Wolf Menace",
-	"description": "Three separate parties have come into the guild hall with wolf bites and torn packs this month, all off the Millbrook road. It isn't dire-wolf work, not big enough to pull a real hunter off a paying contract, but the complaints keep coming - so the board carries the price of a pack thinned instead.",
+	"description": "Three parties this month have come into the guild hall off the Millbrook road with wolf bites and torn packs. Not dire wolves - just a pack that has learned where travelers walk.",
 	"is_main_quest": false,
 	"quest_source": "bounty",
 	"giver_npc_id": "bounty_board",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "kill_wolves",
-			"description": "Thin the pack harassing travelers on the Millbrook road",
+			"description": "Thin the pack on the Millbrook road",
 			"type": "kill",
 			"target": "wolf",
 			"required_count": 5
