@@ -479,6 +479,10 @@ func _collect_save_data():
 	if save_data.world_state_data:
 		_collect_world_state_data(save_data.world_state_data)
 
+	# Fast travel data (journey in progress, caravan routes)
+	if save_data.fast_travel_data:
+		_collect_fast_travel_data(save_data.fast_travel_data)
+
 	return save_data
 
 ## Collect player data
@@ -818,6 +822,37 @@ func _apply_save_data(save_data) -> void:
 	# Restore world state (must land before anything that reads world facts)
 	if save_data.world_state_data:
 		_apply_world_state_data(save_data.world_state_data)
+
+	# Restore fast travel state
+	if save_data.fast_travel_data:
+		_apply_fast_travel_data(save_data.fast_travel_data)
+
+
+## Collect fast travel data
+func _collect_fast_travel_data(fast_travel_save_data) -> void:
+	var ft_dict: Dictionary = FastTravelManager.to_dict()
+	fast_travel_save_data.is_traveling = ft_dict.get("is_traveling", false)
+	fast_travel_save_data.travel_destination = ft_dict.get("travel_destination", "")
+	fast_travel_save_data.travel_hours_remaining = ft_dict.get("travel_hours_remaining", 0.0)
+	fast_travel_save_data.caravan_routes = ft_dict.get("caravan_routes", {})
+	fast_travel_save_data.is_caravan_traveling = ft_dict.get("is_caravan_traveling", false)
+	fast_travel_save_data.caravan_destination = ft_dict.get("caravan_destination", "")
+	fast_travel_save_data.caravan_segments = ft_dict.get("caravan_segments", [])
+	fast_travel_save_data.caravan_current_segment = ft_dict.get("caravan_current_segment", 0)
+
+
+## Apply fast travel data
+func _apply_fast_travel_data(fast_travel_save_data) -> void:
+	FastTravelManager.from_dict({
+		"is_traveling": fast_travel_save_data.is_traveling,
+		"travel_destination": fast_travel_save_data.travel_destination,
+		"travel_hours_remaining": fast_travel_save_data.travel_hours_remaining,
+		"caravan_routes": fast_travel_save_data.caravan_routes,
+		"is_caravan_traveling": fast_travel_save_data.is_caravan_traveling,
+		"caravan_destination": fast_travel_save_data.caravan_destination,
+		"caravan_segments": fast_travel_save_data.caravan_segments,
+		"caravan_current_segment": fast_travel_save_data.caravan_current_segment
+	})
 
 ## Apply player data
 func _apply_player_data(player_data) -> void:

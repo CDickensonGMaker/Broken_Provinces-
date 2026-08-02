@@ -106,6 +106,9 @@ var weather_data = null  # WeatherSaveData
 ## World state section (persistent world facts and modifications)
 var world_state_data = null  # WorldStateSaveData
 
+## Fast travel section (journey in progress, caravan routes)
+var fast_travel_data = null  # FastTravelSaveData
+
 ## Audio settings section
 @export_group("Settings")
 @export var audio_settings: Dictionary = {}
@@ -138,6 +141,7 @@ func _init() -> void:
 	companion_data = CompanionSaveData.new()
 	weather_data = WeatherSaveData.new()
 	world_state_data = WorldStateSaveData.new()
+	fast_travel_data = FastTravelSaveData.new()
 
 ## Convert to dictionary for JSON serialization
 func to_dict() -> Dictionary:
@@ -173,6 +177,7 @@ func to_dict() -> Dictionary:
 		"companions": companion_data.to_dict() if companion_data else {},
 		"weather": weather_data.to_dict() if weather_data else {},
 		"world_state": world_state_data.to_dict() if world_state_data else {},
+		"fast_travel": fast_travel_data.to_dict() if fast_travel_data else {},
 		"audio_settings": audio_settings
 	}
 
@@ -237,6 +242,8 @@ func from_dict(data: Dictionary) -> void:
 		weather_data.from_dict(data.get("weather", {}))
 	if world_state_data:
 		world_state_data.from_dict(data.get("world_state", {}))
+	if fast_travel_data:
+		fast_travel_data.from_dict(data.get("fast_travel", {}))
 
 	audio_settings = data.get("audio_settings", {})
 
@@ -1162,6 +1169,59 @@ class CompanionSaveData:
 		active_companion_ids = data.get("active_companion_ids", [])
 		companion_states = data.get("companion_states", {})
 		position_mode = data.get("position_mode", 0)
+
+
+## Fast travel save data structure
+##
+## FastTravelManager had a working to_dict/from_dict pair with no caller in
+## SaveManager at all, so an in-progress journey and the caravan route table
+## were both lost on every save.
+class FastTravelSaveData:
+	## Whether a fast-travel journey is in progress
+	var is_traveling: bool = false
+
+	## Destination location id of that journey
+	var travel_destination: String = ""
+
+	## In-game hours left on it
+	var travel_hours_remaining: float = 0.0
+
+	## Known caravan routes (route_id -> route data)
+	var caravan_routes: Dictionary = {}
+
+	## Whether a caravan journey is in progress
+	var is_caravan_traveling: bool = false
+
+	## Destination of the caravan journey
+	var caravan_destination: String = ""
+
+	## Cells the caravan crosses, as [{x, y}, ...]
+	var caravan_segments: Array = []
+
+	## Index of the segment currently being crossed
+	var caravan_current_segment: int = 0
+
+	func to_dict() -> Dictionary:
+		return {
+			"is_traveling": is_traveling,
+			"travel_destination": travel_destination,
+			"travel_hours_remaining": travel_hours_remaining,
+			"caravan_routes": caravan_routes,
+			"is_caravan_traveling": is_caravan_traveling,
+			"caravan_destination": caravan_destination,
+			"caravan_segments": caravan_segments,
+			"caravan_current_segment": caravan_current_segment
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		is_traveling = data.get("is_traveling", false)
+		travel_destination = data.get("travel_destination", "")
+		travel_hours_remaining = data.get("travel_hours_remaining", 0.0)
+		caravan_routes = data.get("caravan_routes", {})
+		is_caravan_traveling = data.get("is_caravan_traveling", false)
+		caravan_destination = data.get("caravan_destination", "")
+		caravan_segments = data.get("caravan_segments", [])
+		caravan_current_segment = data.get("caravan_current_segment", 0)
 
 
 ## Weather system save data structure

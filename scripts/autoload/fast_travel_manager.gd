@@ -297,12 +297,24 @@ func get_valid_destinations() -> Array[Dictionary]:
 	return destinations
 
 
-## Serialize for saving (not much state to save)
+## Serialize for saving
+##
+## The caravan half was left out of this for as long as it existed, and this
+## whole pair had no caller in SaveManager, so none of it was ever written.
 func to_dict() -> Dictionary:
+	var segments: Array = []
+	for segment: Vector2i in caravan_segments:
+		segments.append({"x": segment.x, "y": segment.y})
+
 	return {
 		"is_traveling": is_traveling,
 		"travel_destination": travel_destination,
-		"travel_hours_remaining": travel_hours_remaining
+		"travel_hours_remaining": travel_hours_remaining,
+		"caravan_routes": caravan_routes.duplicate(true),
+		"is_caravan_traveling": is_caravan_traveling,
+		"caravan_destination": caravan_destination,
+		"caravan_segments": segments,
+		"caravan_current_segment": caravan_current_segment
 	}
 
 
@@ -311,6 +323,19 @@ func from_dict(data: Dictionary) -> void:
 	is_traveling = data.get("is_traveling", false)
 	travel_destination = data.get("travel_destination", "")
 	travel_hours_remaining = data.get("travel_hours_remaining", 0.0)
+
+	caravan_routes = data.get("caravan_routes", {}).duplicate(true)
+	is_caravan_traveling = data.get("is_caravan_traveling", false)
+	caravan_destination = data.get("caravan_destination", "")
+	caravan_current_segment = data.get("caravan_current_segment", 0)
+
+	caravan_segments.clear()
+	for segment: Variant in data.get("caravan_segments", []):
+		if segment is Dictionary:
+			caravan_segments.append(Vector2i(
+				int((segment as Dictionary).get("x", 0)),
+				int((segment as Dictionary).get("y", 0))
+			))
 
 
 # =============================================================================
