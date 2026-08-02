@@ -33,6 +33,14 @@ const WALK_NOISE_RADIUS: float = 8.0     # Walking is moderate
 const CROUCH_NOISE_RADIUS: float = 3.0   # Crouching is quiet
 const NOISE_AWARENESS_BOOST: float = 0.2 # How much awareness each footstep adds
 
+# --- Hit reaction ---
+## Post-hit mercy window. Without one, two enemies in melee range can chain the
+## player to death with no counterplay - `_set_invulnerable` existed and was
+## called only by the dodge roll. Placeholder value, see dispositions 3f.
+@export var hit_iframe_duration: float = 0.35
+var hit_iframe_timer: float = 0.0
+var is_hit_invulnerable: bool = false
+
 # --- Dodge tuning ---
 var dodge_stamina_cost: float = 20.0
 var base_iframe_duration: float = 0.3  # Seconds of invulnerability
@@ -165,12 +173,21 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("dodge") and not is_climbing:
 		_try_dodge()
 
+	# --- Post-hit invulnerability ---
+	if is_hit_invulnerable:
+		hit_iframe_timer -= delta
+		if hit_iframe_timer <= 0.0:
+			is_hit_invulnerable = false
+			# The dodge owns i-frames while it is running; do not cut its short
+			if not is_dodging:
+				_set_invulnerable(false)
+
 	# --- Process active dodge ---
 	if is_dodging:
 		dodge_timer -= delta
 		iframe_timer -= delta
 
-		if iframe_timer <= 0:
+		if iframe_timer <= 0 and not is_hit_invulnerable:
 			_set_invulnerable(false)
 
 		if dodge_timer <= 0:
@@ -753,6 +770,10 @@ func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> 
 	if is_dead:
 		return 0
 
+	# Post-hit mercy window
+	if is_hit_invulnerable:
+		return 0
+
 	if not GameManager.player_data:
 		return 0
 
@@ -794,11 +815,26 @@ func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> 
 	if hud and hud.has_method("spawn_damage_number"):
 		hud.spawn_damage_number(global_position + Vector3.UP * 2, actual_damage)
 
+	# Hit reaction: a sound, a shake, and a short window where the next blow
+	# cannot land. Enemies get a real STAGGERED state; the player got nothing.
+	AudioManager.play_sfx_3d("player_hit", global_position)
+	_apply_screen_shake(0.35, 0.15)
+	_begin_hit_iframes()
+
 	# Check for death (skip if in duel - duel handles non-lethal combat)
 	if player_data.is_dead() and not (DuelManager and DuelManager.is_in_duel(self)):
 		_on_death()
 
 	return actual_damage
+
+## Start the post-hit mercy window
+func _begin_hit_iframes() -> void:
+	if hit_iframe_duration <= 0.0:
+		return
+	is_hit_invulnerable = true
+	hit_iframe_timer = hit_iframe_duration
+	_set_invulnerable(true)
+
 
 ## Called when melee hitbox lands a hit (for weapon sound effects)
 func _on_melee_hit_landed(target: Node) -> void:
@@ -810,9 +846,10 @@ func _on_melee_hit_landed(target: Node) -> void:
 
 ## Apply stagger effect
 func apply_stagger(power: float) -> void:
-	# Could implement stagger animation/state here
-	# For now, brief movement interrupt
+	# Brief attack interrupt, plus the reaction that makes it readable
 	can_attack = false
+	_apply_screen_shake(0.5, 0.2)
+	AudioManager.play_sfx_3d("player_stagger", global_position)
 	await get_tree().create_timer(0.3 * power).timeout
 	can_attack = true
 

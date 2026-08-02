@@ -324,6 +324,18 @@ is a placeholder, exported and labelled as such. A windup, a stamina cost or a
 different swing arc are all more interesting than a longer cooldown; that is
 his call.
 
+### 3f. The player's mercy window (task 64)
+
+`take_damage` had no post-hit invulnerability at all - `_set_invulnerable()`
+existed and was called only by the dodge roll - so two enemies in melee range
+could chain the player to death with no counterplay. Batch 4 adds a 0.35s
+window (`hit_iframe_duration`, exported), a hit sound, and a screen shake, and
+gives `apply_stagger` a shake and a sound so it reads as something rather than
+a silent boolean. **0.35s is a placeholder**: it is long enough to break a
+two-enemy chain and short enough not to trivialise a crowd, and it has never
+been played. Enemies still get a real `AIState.STAGGERED` and the player still
+gets `can_attack = false`; a real hit animation is art, not wiring.
+
 ### 3c. Death with no save (task 66) — respawn is a design call
 
 The death screen offers Load Autosave, Load Save, New Game and Main Menu. With
