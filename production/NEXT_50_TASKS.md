@@ -526,6 +526,126 @@ new state that then has to survive a save. This batch ends by teaching the
 validator to catch the whole class, so authoring a dead key becomes a red
 session gate instead of a silent no-op.
 
+> **BATCH 3 DONE 8/1.** All eleven tasks landed, ten commits (49 and 50 are the
+> same bug in two tables and share one). Validator held at **0 errors**, and
+> warnings fell **228 → 179**. All ten check scenes green, plus the new gates.
+> Real headless boot clean.
+>
+> **Commits were not taken in numeric order,** and the reason is the warning
+> ratchet: 46 legitimately *creates* nine warnings, so 53 and 52 (which remove
+> 55 between them) landed first. Every commit therefore held or lowered the
+> count, which is now enforced by a hook rather than by intention.
+>
+> **46, the headline. Reproduced before it was fixed.** A probe started all nine
+> affected quests and fired every driver `QuestManager` owns at every objective:
+> **21 objectives across nine quests could not be settled by anything the engine
+> can do.** After the fix, **eight of the nine complete**; the ninth
+> (`mage_repeatable_research`) is the `variable` type, a design call, tabled in
+> dispositions §2i. Both guild ladders are unblocked: `thieves_10` through
+> `thieves_13` and `mage_05`/`mage_13` all finish.
+>
+> Types were mapped onto machinery that already existed rather than new systems:
+> `kill_or_persuade`/`combat_or_talk` → OR groups (step 21); `puzzle` →
+> `solve_puzzle` off the puzzle controller's flags; `lockpick`/`revelation`/
+> `heist_event`/`investigate` → `interact` against `QuestInteractable`
+> (step 24); `special_combat` → `duel_win`. Only `has_item` needed a real
+> handler — it is a question about the pack, not a count of pickups, so it polls
+> on offer and on pickup.
+>
+> **The reproduction found two things the audit did not.** `thieves_09` and
+> `thieves_13` could not settle their `choice` objectives either: both author
+> `choice_paths`, a key the engine has never read, and
+> `apply_choice_consequence` returns early unless the branch is in
+> `choice_consequences`. And `soulstone_greater` is an item id that has never
+> existed (the real ones are `..._empty`/`..._filled`).
+>
+> **48 uncovered a second instance of task 36.**
+> `GuildRankManager.reset_for_new_game()` had **zero callers repo-wide**, exactly
+> as `FlagManager`'s did. Task 36 cleared the rank *flags* on New Game; the
+> ladder itself — `guild_rank_levels`, `guild_quest_counts` — was never touched,
+> so a new character started twelve quests into the Thieves Guild with the badge
+> taken off him. Reproduced in `check_fresh_boot` (3 of 26 red) before fixing.
+>
+> **50 was much larger than the audit measured.** It named `morality` and
+> `guild_rank`. The real data uses `flag` (52), `faction_reputation` (14) and
+> `quest_active` (1) — spellings the loader parsed *none* of. **67 gated dialogue
+> choices have been standing open**, because an unparsed condition coerced to
+> `NONE` and a `NONE` condition passes. That also meant "make the default fail
+> closed" could not be done alone: flipping it without teaching the loader those
+> three spellings would have *hidden* 67 choices instead of ungating them. Both
+> halves landed together, with a new `ConditionType.INVALID` that is immune to
+> `invert`.
+>
+> **53 was worse than "a validator-counting artifact."** `QuestManager`'s own
+> loader walks `data/quests/` recursively, reaches `_future/` last, and lets it
+> **overwrite**. Proved by boot: `aberdeens_blessing` was loading with giver
+> `priest_chronos_aberdeen` and `missing_miner` with the typo'd
+> `mayor_aberdeeen`, both NPCs spawned nowhere. The repaired shipped versions
+> were being thrown away, so both quests were unofferable in the milestone build.
+>
+> **55: `.git/hooks/` would never have run.** The audit found the directory empty
+> and concluded there was no hook. This repo sets
+> `core.hooksPath = .beads/hooks`, so a hook installed the obvious way is a
+> silent no-op — the same shape as everything else in this document.
+> `tools/install_hooks.ps1` resolves the real path and appends its own marked
+> section below the beads block. Proved in both directions (a bogus reward key
+> blocks with "1 validator ERRORS", a bogus enemy id with "warnings rose
+> 179 → 180"), and it fired on this batch's own last commit.
+>
+> **56 found a third hand-copy about to be written.** There was no canonical
+> skill → stat map: `DialogueManager` and `ConversationSystem` each kept one and
+> **they had already drifted**. `DiceManager` owns it now, both delegate, and the
+> guard asserts all three agree for every skill in the enum.
+>
+> **The class-closing guards.** `check_quest_engine` grew from 19 to 292 checks:
+> every type in `HANDLED_OBJECTIVE_TYPES` is now driven end to end through the
+> same entry point the game uses (a type on the list with no driver fails, so
+> adding to the list must be paid for), every type in shipping data must be on
+> that list or deferred **with a written reason**, and a deferred type that stops
+> shipping fails as a stale excuse. Verified by re-breaking two fixes.
+> `validate_content` learned all four vocabularies — objective types, reward
+> keys, consequence keys, and both dialogue tables — **read out of the engine's
+> own source** so they cannot rot, verified by poisoning a quest.
+> `check_serialization` gained a migration-ladder assertion so task 54's bug
+> shape (a block above `SAVE_VERSION` that can never run) cannot recur.
+>
+> **Three tasks were partly or wholly misdiagnosed, and are recorded.**
+> - **52.** `tomas_informant` is not a mistyped `talk` objective. It is an
+>   *optional* `kill` on a real spawned killable NPC, beside a `talk` objective
+>   on the same man, described as "kill, bribe, or intimidate" — an OR group
+>   waiting to be authored. Four more ids (`any_enemy_with_magic`,
+>   `bounty_target`, `contract_enemy`, `bandit_crossroads_group`) are an engine
+>   gap, not missing stat blocks.
+> - **54.** Obsolete on arrival: batch 2 had already collapsed the two
+>   `SAVE_VERSION` constants and gone to 8. Per instruction no second constant
+>   was reintroduced; the *class* was guarded instead.
+> - **47.** `optional_rewards` is read by nothing and appears in one quest.
+>   Recorded, not fixed — it is a top-level key, outside 51's four vocabularies.
+>
+> **Warnings this batch deliberately created (9), all itemised in dispositions
+> §2j.** Seven newly-*executable* quest branches that no dialogue node fires yet
+> (the cheapest content work in the file), and two antagonists the validator can
+> finally see and which need stat blocks.
+>
+> **Eye gate outstanding, and it is bigger than usual.** Nothing here was played.
+> Specifically:
+> 1. **67 dialogue choices that were always shown are now conditional.** Any
+>    impression of how gated the conversation system feels — guild-rank options,
+>    reputation options, quest-state options — was formed with every gate open.
+>    This is the single most visible change in the batch and it needs eyes.
+> 2. **Two quests come back from the dead with different givers.**
+>    `aberdeens_blessing` is Father Aldwin's now, not a priest who does not
+>    exist; `missing_miner` is Mayor Bjorn Aberdeen's. Both were unofferable.
+> 3. **The Thieves and Arcane Circle ladders are completable for the first
+>    time**, but their last quests want world content: interactables for the
+>    vault, the clues, the ledger, the convoy and the parleys, and dialogue nodes
+>    for the seven new branches. The engine no longer blocks them; the world
+>    still does.
+> 4. **A new character no longer inherits guild rank.** Any save made before
+>    today may carry ranks from an earlier playthrough.
+> 5. **`.claude/hooks.json` is still inert prose** naming six agents that do not
+>    exist. It is Caleb's configuration, not an agent's to rewrite.
+
 ### 46. Ten objective types have no handler — guild capstones uncompletable — **L**
 - **System:** `scripts/autoload/quest_manager.gd`; `data/quests/guild/thieves/`,
   `data/quests/guild/mages/`, `data/quests/noble_soulstone_request.json`
