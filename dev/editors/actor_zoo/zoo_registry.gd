@@ -1507,8 +1507,11 @@ static var NAMED_CHARACTERS: Array[Dictionary] = [
 		"name": "Thornfield Wizard",
 		"category": "named",
 		"subcategory": "quest_giver",
-		"sprite_path": "res://assets/sprites/legacy/npcs/civilians/wizard_wild.png",
-		"h_frames": 1, "v_frames": 1,
+		# Master Lavinia Wyke. She was dressed as wizard_wild.png - a bearded male
+		# hermit - which is the only one of the fifteen misgendered NPCs that was
+		# not a fallback but a deliberate row.
+		"sprite_path": "res://assets/sprites/legacy/npcs/merchants/magic_shop_worker.png",
+		"h_frames": 3, "v_frames": 1,
 		"pixel_size": PIXEL_SIZE_HUMANOID,
 		"offset_y": 0.0,
 		"idle_frames": 1, "walk_frames": 1,

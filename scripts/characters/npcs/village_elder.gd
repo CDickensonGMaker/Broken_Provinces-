@@ -99,6 +99,10 @@ func _create_visual() -> void:
 				v_frames = config.get("v_frames", v_frames)
 				pixel_size = config.get("pixel_size", pixel_size)
 
+	# The name carries the gender when nobody set the flag. Positive only.
+	if not is_female and WorldLexicon.is_female_name(display_name):
+		is_female = true
+
 	# Fallback to default sprite if none assigned
 	if not tex:
 		if is_female:

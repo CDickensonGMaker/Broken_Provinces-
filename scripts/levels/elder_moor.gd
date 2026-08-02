@@ -837,7 +837,7 @@ func _spawn_residents() -> void:
 		["steady", "frightened", "practical"],
 		["elder_moor", "logging", "local_area"],
 		"He went out with the north crew and the north crew came back without him. Nobody will say more than that.",
-		["rescue_woodsman_1"], false, 50)
+		["rescue_woodsman_1"], false, 50, "casual", true)
 
 	# The dying merchant of the Rebirth Ritual. She was carried in off the
 	# Crossroads road and laid down beside the Shrine of Endings, which is why
@@ -848,4 +848,4 @@ func _spawn_residents() -> void:
 		["lucid", "unafraid", "bargaining"],
 		["elder_moor", "morthane", "death", "rebirth", "trade"],
 		"I have made worse trades than this one. Tell your priest I am not frightened, I am negotiating.",
-		[], true, 55)
+		[], true, 55, "casual", true)

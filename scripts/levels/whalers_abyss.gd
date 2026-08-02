@@ -332,4 +332,4 @@ func _spawn_residents() -> void:
 		["dry", "incurious", "capable"],
 		["whalers_abyss", "canyon", "mining", "surveyors", "local_area"],
 		"Mayor of a hole in the ground. People come down here to stop being asked questions, so I try not to ask many.",
-		[], true, 45)
+		[], true, 45, "casual", true)

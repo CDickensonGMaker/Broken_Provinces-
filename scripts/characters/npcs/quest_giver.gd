@@ -209,6 +209,12 @@ func _create_visual() -> void:
 				v_frames = config.get("v_frames", v_frames)
 				pixel_size = config.get("pixel_size", pixel_size)
 
+	# A quest giver placed by a .tscn rather than the factory never passed through
+	# the gender resolution above, so read the name here too. Positive only: this
+	# can turn an unset flag on, never off.
+	if not is_female and WorldLexicon.is_female_name(display_name):
+		is_female = true
+
 	if not tex:
 		if is_female:
 			# Use lady in red sprite for female NPCs
@@ -675,9 +681,17 @@ static func spawn_from_registry(parent: Node, pos: Vector3, npc_name: String, np
 ## is_talk_target: If true, this NPC gives no quests (just a "talk to" objective target).
 ## pixel_size: Size of sprite in world units (0.0 = use default 0.0384)
 ## actor_id: Optional actor ID for ActorRegistry lookup (e.g., "tharin_ironbeard")
-static func spawn_quest_giver(parent: Node, pos: Vector3, npc_name: String = "Mysterious Stranger", id: String = "", custom_sprite: Texture2D = null, h_frames: int = 8, v_frames: int = 2, quest_list: Array[String] = [], is_talk_target: bool = false, pixel_size: float = 0.0, actor_id: String = "") -> QuestGiver:
+## female: Set true for a woman whose given name is not in the gendered pools.
+##   Leave it alone for anyone drawn from a pool or carrying a title - the name
+##   itself is read. It can only ever ADD a woman; it never forces a man.
+static func spawn_quest_giver(parent: Node, pos: Vector3, npc_name: String = "Mysterious Stranger", id: String = "", custom_sprite: Texture2D = null, h_frames: int = 8, v_frames: int = 2, quest_list: Array[String] = [], is_talk_target: bool = false, pixel_size: float = 0.0, actor_id: String = "", female: bool = false) -> QuestGiver:
 	var npc := QuestGiver.new()
 	npc.display_name = npc_name
+	# THE GENDER BIT. It has to be set before add_child, because _ready() builds
+	# the billboard and there is no path that re-dresses one afterwards. Until
+	# 8/2 nothing set it at all on this path: every named woman a level script
+	# spawned - fifteen of them - wore man_civilian.png.
+	npc.is_female = female or WorldLexicon.is_female_name(npc_name)
 	# Set npc_id - use provided id, or convert name to snake_case
 	if id.is_empty():
 		npc.npc_id = npc_name.to_lower().replace(" ", "_")

@@ -18,6 +18,10 @@ extends RefCounted
 ## [param traits] and [param knowledge_tags] feed the conversation tiers, so the
 ## resident answers RUMORS and LOCAL_NEWS in their trade's voice without anyone
 ## writing a dialogue tree for them.
+##
+## [param is_female] is only needed for a woman whose given name is not in the
+## gendered name pools and who carries no female title - QuestGiver reads the name
+## otherwise. Getting it wrong costs a sprite, not a crash.
 static func spawn_townsfolk(
 	parent: Node,
 	pos: Vector3,
@@ -32,7 +36,8 @@ static func spawn_townsfolk(
 	quest_ids: Array[String] = [],
 	is_talk_target: bool = false,
 	disposition: int = 50,
-	speech_style: String = "casual"
+	speech_style: String = "casual",
+	is_female: bool = false
 ) -> QuestGiver:
 	var npc: QuestGiver = QuestGiver.spawn_quest_giver(
 		parent,
@@ -42,7 +47,10 @@ static func spawn_townsfolk(
 		null,
 		8, 2,
 		quest_ids,
-		is_talk_target
+		is_talk_target,
+		0.0,
+		"",
+		is_female
 	)
 	if not npc:
 		push_warning("[Townsfolk] Failed to spawn %s" % npc_id)

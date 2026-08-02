@@ -448,6 +448,75 @@ static func get_random_name(is_female: bool = false, race: String = "human", rng
 ## Get a unique NPC name for a specific zone (no duplicates within same zone)
 ## Returns empty string if all names for that sex are used in the zone
 ## rng: pass a seeded generator to make the draw reproducible (RULING LW-1)
+enum Gender { UNKNOWN, MALE, FEMALE }
+
+## Honorifics and role words that name a woman on their own, so "Widow Hild Marrow"
+## and "Sister Rowena Ash" resolve even when the given name is not in a pool.
+const FEMALE_TITLES: Array[String] = [
+	"lady", "widow", "goodwife", "sister", "mother", "priestess", "matron",
+	"madam", "madame", "mistress", "dame", "abbess", "wife", "daughter", "queen",
+	"duchess", "baroness", "countess", "enchantress", "seeress", "witch", "nun",
+]
+
+## The same for men. Listed so a male title beats a female-sounding given name
+## rather than the classifier having to guess.
+const MALE_TITLES: Array[String] = [
+	"lord", "sir", "brother", "father", "widower", "king", "duke", "baron",
+	"count", "prince", "abbot", "monk", "friar", "husband", "son",
+]
+
+
+## Which pool a display name came out of, and therefore which body it should wear.
+##
+## The name pools are gendered and always were; nothing between the pool and the
+## sprite carried the bit, so every quest giver whose name a level script wrote by
+## hand fell through to the male fallback. This is the bit, recovered from the name.
+##
+## Returns UNKNOWN rather than guessing. Every caller treats UNKNOWN as "keep doing
+## what you did before", so this can only ever fix a wrong answer, never invent one.
+static func name_gender(display_name: String) -> int:
+	if display_name.is_empty():
+		return Gender.UNKNOWN
+
+	var words: PackedStringArray = display_name.replace("-", " ").replace("'", " ").split(" ", false)
+	if words.is_empty():
+		return Gender.UNKNOWN
+
+	# A title is a stronger signal than a given name, and it comes first.
+	for word: String in words:
+		var lower: String = word.to_lower().rstrip(".,")
+		if lower in MALE_TITLES:
+			return Gender.MALE
+		if lower in FEMALE_TITLES:
+			return Gender.FEMALE
+
+	# Otherwise the given name decides, checked against every pool the game draws
+	# from. Titles like "Master" and "Lector" are gender-neutral here on purpose,
+	# so the word after them is what gets tested.
+	var female_pools: Array[Array] = [
+		FEMALE_NAMES, DWARF_FEMALE_NAMES, HALFLING_FEMALE_NAMES, ELF_FEMALE_NAMES
+	]
+	var male_pools: Array[Array] = [
+		MALE_NAMES, DWARF_MALE_NAMES, HALFLING_MALE_NAMES, ELF_MALE_NAMES
+	]
+
+	for word: String in words:
+		var candidate: String = word.rstrip(".,")
+		for pool: Array in female_pools:
+			if candidate in pool:
+				return Gender.FEMALE
+		for pool: Array in male_pools:
+			if candidate in pool:
+				return Gender.MALE
+
+	return Gender.UNKNOWN
+
+
+## Convenience: true only when the name is positively a woman's.
+static func is_female_name(display_name: String) -> bool:
+	return name_gender(display_name) == Gender.FEMALE
+
+
 static func get_unique_name_for_zone(zone_id: String, is_female: bool = false, rng: RandomNumberGenerator = null) -> String:
 	# Initialize zone tracking if needed
 	if not _used_names_by_zone.has(zone_id):

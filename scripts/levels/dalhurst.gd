@@ -992,7 +992,10 @@ func _spawn_thieves_guild() -> void:
 		null,
 		8, 2,
 		[],
-		true  # is_talk_target
+		true,  # is_talk_target
+		0.0,
+		"",
+		true  # female
 	)
 	_dress_thief(red_mara, "res://data/dialogue/trees/red_mara.json",
 			["brash", "independent", "dangerous"],
@@ -1493,7 +1496,7 @@ func _spawn_residents() -> void:
 		["precise", "acquisitive", "unshockable"],
 		["dalhurst", "books", "history", "athenaeum", "magic", "local_area"],
 		"The reading room is Athenaeum property, whatever the town calls it. Bring me anything written and I will find you a chair.",
-		["cursed_tome_1"], false, 50, "formal")
+		["cursed_tome_1"], false, 50, "formal", true)
 
 	# Somebody always saw something. In Dalhurst it is usually him, because he
 	# is sitting in the same doorway all day.
@@ -1521,7 +1524,7 @@ func _spawn_residents() -> void:
 		["composed", "bitter", "sleepless"],
 		["dalhurst", "local_area"],
 		"People tell me they have seen him. They tell me kindly, which is worse.",
-		[], true, 45)
+		[], true, 45, "casual", true)
 
 	# The Iron Company keeps a squad in Dalhurst between contracts
 	Townsfolk.spawn_townsfolk(
@@ -1539,7 +1542,7 @@ func _spawn_residents() -> void:
 		["chatty", "ambitious", "indiscreet"],
 		["dalhurst", "adventurers_guild", "contracts", "rumors", "local_area"],
 		"Three of ours went out on board contracts last month and none of the three came back to sign off. Nobody has said that out loud but me.",
-		[], true, 50)
+		[], true, 50, "casual", true)
 
 	# The Guild's plant in the magistrate's office. He is a clerk. That is the
 	# entire trick: nobody has ever wondered where a clerk goes at night.

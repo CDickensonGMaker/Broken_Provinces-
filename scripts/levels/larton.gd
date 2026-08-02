@@ -425,7 +425,7 @@ func _spawn_residents() -> void:
 		["decisive", "worn down", "unsentimental"],
 		["larton", "trade", "supply_lines", "aberdeen", "famine", "local_area"],
 		"Every week I decide which town eats. Do not tell me it is a hard job. Tell me what is in your cart.",
-		["starving_south", "aberdeen_relief"], false, 50, "formal")
+		["starving_south", "aberdeen_relief"], false, 50, "formal", true)
 
 	# The empire's civil authority in the south, such as it is: one magistrate
 	# with a seal, a stack of unanswered petitions and no soldiers of his own.

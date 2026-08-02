@@ -30,6 +30,11 @@ extends Node
 ## 7. THE PILOT. Grom the Smith boots inside Elder Moor as a rigged citizen,
 ##    dressed, wearing his apron, standing at his 13:00 station - and the
 ##    billboard NPCs around him are untouched.
+## 8. WOMEN ARE NOT DRESSED AS MEN. The name pools are gendered; nothing between
+##    the pool and the sprite carried the bit, so every named woman a level
+##    script spawned wore man_civilian.png. The classifier is asserted on real
+##    names from the game, and no zoo row may dress a female-named actor in a
+##    sheet this file knows to be a man's.
 
 const MAN := "res://assets/characters/citizens/glb/citizen_man.glb"
 const MASTERS: Array[String] = ["citizen_man", "citizen_woman", "citizen_boy", "citizen_girl"]
@@ -59,6 +64,7 @@ func _run() -> void:
 	_check_composition_rules()
 	_check_material_instancing()
 	_check_the_body_is_alive()
+	_check_gender()
 	await _check_pilot()
 
 
@@ -807,3 +813,61 @@ func _check(label: String, passed: bool, detail: String = "") -> void:
 func _finish() -> void:
 	print("check_character_visual: %d checks, %d failures" % [_checks, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
+
+
+## ============================================================================
+## 8. WOMEN ARE NOT DRESSED AS MEN
+## ============================================================================
+
+## Sheets that are unmistakably a man. A female-named actor wearing one of these
+## is the 8/2 playtest bug, and it must fail rather than merely look wrong.
+const MALE_SHEETS: Array[String] = [
+	"npcs/civilians/man_civilian.png",
+	"npcs/civilians/wizard_wild.png",
+	"npcs/combat/male_gladiator1.png",
+]
+
+func _check_g(passed: bool, what: String) -> void:
+	_check(what, passed)
+
+
+func _check_gender() -> void:
+	# The classifier, on names actually in the game. Titles first, then pools.
+	var female: Array[String] = [
+		"Widow Hild Marrow", "Goodwife Anwen Fell", "Sister Rowena Ash",
+		"Lady Venetia Harrow", "Greta Vance", "Master Lavinia Wyke",
+		"Priestess of Gaela", "Archmage Elara",
+	]
+	var male: Array[String] = [
+		"Mayor Bjorn Aberdeen", "Brother Cedric", "Father Aldwin", "Lord Harald",
+	]
+	for name: String in female:
+		_check_g(WorldLexicon.is_female_name(name), "gender: %s reads as a woman" % name)
+	for name: String in male:
+		_check_g(WorldLexicon.name_gender(name) == WorldLexicon.Gender.MALE,
+			"gender: %s reads as a man" % name)
+	_check_g(WorldLexicon.name_gender("Grom the Smith") == WorldLexicon.Gender.UNKNOWN,
+		"gender: an unpooled name stays UNKNOWN rather than guessing")
+
+	# The factory dresses by name, before add_child, which is the only moment
+	# that can decide a billboard.
+	var host := Node3D.new()
+	add_child(host)
+	var her: QuestGiver = QuestGiver.spawn_quest_giver(host, Vector3.ZERO, "Sister Rowena Ash", "probe_female")
+	var him: QuestGiver = QuestGiver.spawn_quest_giver(host, Vector3.ZERO, "Brother Cedric", "probe_male")
+	_check_g(her != null and her.is_female, "a female-named quest giver is female before it is built")
+	_check_g(him != null and not him.is_female, "a male-named quest giver is not")
+	host.queue_free()
+
+	# No zoo row dresses a woman as a man.
+	var women: int = 0
+	for entry: Dictionary in ZooRegistry.NPCS:
+		var display: String = entry.get("name", "")
+		if not WorldLexicon.is_female_name(display):
+			continue
+		women += 1
+		var path: String = entry.get("sprite_path", "")
+		for male_sheet: String in MALE_SHEETS:
+			_check_g(not path.ends_with(male_sheet),
+				"zoo row '%s' is a woman wearing %s" % [display, male_sheet])
+	print("  gender: %d female-named zoo rows checked against %d male sheets" % [women, MALE_SHEETS.size()])

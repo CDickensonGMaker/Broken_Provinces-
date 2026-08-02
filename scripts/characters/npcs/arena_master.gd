@@ -73,8 +73,12 @@ func _ready() -> void:
 
 ## Create the visual representation (billboard sprite)
 func _create_visual() -> void:
-	# Load a burly gladiator/pitmaster sprite
-	var tex: Texture2D = load("res://assets/sprites/legacy/npcs/civilians/man_civilian.png") as Texture2D
+	# A burly pitmaster - unless the name says otherwise, in which case the
+	# fallback is the one female civilian sheet, same as everywhere else.
+	var fallback: String = "res://assets/sprites/legacy/npcs/civilians/man_civilian.png"
+	if WorldLexicon.is_female_name(display_name):
+		fallback = "res://assets/sprites/legacy/npcs/civilians/lady_in_red.png"
+	var tex: Texture2D = load(fallback) as Texture2D
 	if not tex:
 		push_warning("[ArenaMaster] No sprite texture available")
 		return

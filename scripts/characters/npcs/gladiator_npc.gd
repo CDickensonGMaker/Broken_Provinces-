@@ -89,6 +89,11 @@ func _create_visual() -> void:
 	if enemy_data and not enemy_data.icon_path.is_empty():
 		tex = load(enemy_data.icon_path) as Texture2D
 
+	# A gladiator with a woman's name gets the female fighter sheet, which
+	# exists; the male fallbacks below are only reached for everybody else.
+	if not tex and enemy_data and WorldLexicon.is_female_name(enemy_data.display_name):
+		tex = load("res://assets/sprites/legacy/npcs/combat/female_gladiator1.png") as Texture2D
+
 	if not tex:
 		tex = load("res://assets/sprites/legacy/enemies/humanoid/human_bandit_alt.png") as Texture2D
 

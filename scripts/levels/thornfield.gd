@@ -679,7 +679,7 @@ func _spawn_residents() -> void:
 		["gentle", "exhausted", "direct"],
 		["thornfield", "medicine", "herbs", "sickness", "local_area"],
 		"Half this street has the wasting cough and I am out of everything that touches it. If you are carrying, say so now.",
-		[], true, 55)
+		[], true, 55, "casual", true)
 
 	# The farms on the slope above town, and the man who lost a crew to whatever
 	# came out of the treeline
