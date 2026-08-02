@@ -498,10 +498,14 @@ func _spawn_npcs() -> void:
 		Vector3(-4, 0, -4), # Between buildings
 		Vector3(6, 0, -2),  # Near blacksmith
 	]
+	var slot: int = 0
 	for spawn_pos: Vector3 in random_positions:
-		var civilian := CivilianNPC.spawn_gendered_random(npcs, spawn_pos, ZONE_ID)
-		# Ambient crowd: id and spot are drawn fresh every boot, so the trade
-		# goes on at spawn rather than into an authored record.
+		# Seeded per slot (RULING LW-1): the same three villagers every session.
+		var rng: RandomNumberGenerator = CivilianNPC.make_slot_rng(GameManager.world_seed, ZONE_ID, slot)
+		slot += 1
+		var civilian := CivilianNPC.spawn_gendered_random(npcs, spawn_pos, ZONE_ID, rng)
+		# Ambient crowd: their id and spot hold across sessions now, but no
+		# authored record names them yet, so the trade goes on at spawn.
 		civilian.attach_to_schedule("townsfolk", _leisure_world_pos())
 		if civilian.wander:
 			civilian.wander.wander_radius = 5.0

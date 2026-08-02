@@ -583,7 +583,29 @@ biome ambience assets exist.
 Five things the schedule pass found or reached and did not decide. None of them
 blocks the feature; all of them are yours.
 
-### LW-1. 76 of the town NPCs cannot be named by any data file
+### LW-1. The ambient crowd is the same people every time — **RULED-AND-BUILT**
+
+**Ruled: seed the ambient population from `world_seed`, deterministic per NPC
+slot.** `CivilianNPC.make_slot_rng(world_seed, zone_id, slot)` gives one
+generator per slot, and the level script draws the position from it and hands
+the same generator to the spawner — so slot 7 of Dalhurst is one person, one
+spot, one archetype for a given world, and somebody else in a different world.
+Every `randf()` in the ambient path now goes through it: type rolls, sprite
+variants, tints, dwarf names. Corpse loot and hostile barks were deliberately
+left on the global generator, because they are not identity.
+
+**A second bug fell out of testing, and it was the one that actually mattered.**
+Seeding the ambient draw was not enough. The ambient slot indexes into what is
+*left* of the zone's name pool, and every hand-placed NPC ahead of it takes a
+name first — most then throw it away and set their own — and those draws were
+unseeded. So the pool shifted under the ambient slots and the same seed still
+produced different names. Naming within a zone is now a fixed sequence.
+
+`tools/check_living_world.tscn` boots Dalhurst and Elder Moor three times — the
+same seed twice, then a different seed — and fails if the crowd is not identical
+across the first two and different in the third.
+
+### LW-1 (original text, kept for the reasoning)
 
 `spawn_random` / `spawn_gendered_random` / `spawn_worker_random` draw a
 townsperson's name from `WorldLexicon`'s pool and their position from `randf()`.
@@ -609,7 +631,23 @@ where they are. Either the declared size is wrong or the town sprawls past its
 cell; **it is a level-design call**, and the streaming ring will have an opinion
 about it before the schedules do.
 
-### LW-3. Three Dalhurst npc_ids are worn by two people each
+### LW-3. Three duplicate npc_ids — **RULED-AND-BUILT (deduped)**
+
+`worried_merchant_dalhurst`, `wizard_dalhurst` and `aldric_vane` were each
+spawned twice, once from `dalhurst.tscn` and once from `dalhurst.gd`, so
+whichever the engine found first was the one quest turn-ins and dispositions
+counted and the other was a ghost. **The script body survives in all three
+cases** — it carries the ruled post-rename names, the factions, the profiles,
+and it is the body each schedule record was measured against. The scene nodes
+are deleted, not kept as second people: each was a bare instance offering the
+*same* quest under the *same* id, so keeping it would have meant a second mute
+quest giver rather than a second character.
+
+What the scene had and the script lacked was moved onto the survivor: Severin
+Vane gains his `dialogue_data`, and his `faction_id` is corrected from
+`"keepers"` — which names no faction file at all — to `"the_keepers"`.
+
+### LW-3 (original text, kept for the reasoning)
 
 `worried_merchant_dalhurst`, `wizard_dalhurst` and `aldric_vane` are each
 spawned twice, at different positions, with different display names — "Worried
@@ -619,7 +657,24 @@ the id, so whichever the engine finds first is the one that counts. The schedule
 table keeps the first and ignores the second. **Which of each pair is the real
 one, and what is the other one's id?**
 
-### LW-4. The Drowned Man keeps a beggar's hours
+### LW-4. The Drowned Man keeps a ghost's hours — **RULED-AND-BUILT**
+
+New archetype `revenant`: **present 20:00–03:00**, absent the rest of the day
+behind an `interior: true` home station, which is how `NPCScheduler` removes an
+NPC from the world. He works his harbour post 20:00–22:00, stands about the
+dockside until midnight, and works again until three.
+
+**This collided with a gate, and the gate was the one that was wrong.**
+`validate_content` failed him as an *error*, because every quest talk target
+must be awake and outdoors 09:00–17:00 — and `morthane_restless_soul`'s own
+objective text reads *"Locate the restless spirit in Dalhurst **at night**."*
+The authored design already wanted a nocturnal ghost, and the rule only passed
+before because he was wrongly keeping a beggar's hours. Rather than list his id
+in the validator, the exemption is data: an archetype may declare
+`"nocturnal": true`. `revenant` is the only one that does, and an archetype that
+claims it falsely is still caught by the whole-day-coverage rule.
+
+### LW-4 (original text, kept for the reasoning)
 
 `restless_ghost` is a ghost, and the schedule has him standing about the harbour
 in daylight like everyone else because there is no archetype for the dead.

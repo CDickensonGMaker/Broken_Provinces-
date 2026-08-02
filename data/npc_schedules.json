@@ -2169,7 +2169,7 @@
    }
   },
   "restless_ghost": {
-   "archetype": "beggar",
+   "archetype": "revenant",
    "zone": "dalhurst",
    "stations": {
     "work": {

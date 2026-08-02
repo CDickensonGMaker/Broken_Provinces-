@@ -742,6 +742,13 @@ func _check_schedules() -> void:
 ## Rule 5, the schedule-era version of the giver/receiver law: no quest may be
 ## soft-locked by an NPC being in bed. Every giver, turn-in and talk target with
 ## a schedule must be present and awake through the whole day band.
+##
+## One exemption, and it is declared in data rather than listed here: an
+## archetype may set `"nocturnal": true`, which says the design MEANS this one
+## to be found after dark. `revenant` is the case it was written for - the
+## Drowned Man is a ghost, and the quest that wants him says "at night" in the
+## objective the player reads. An archetype that claims this and is not
+## actually nocturnal is caught by the whole-day rule above, not here.
 func _check_quest_npc_daytime_reachability() -> void:
 	if schedule_records.is_empty():
 		return
@@ -766,7 +773,10 @@ func _check_quest_npc_daytime_reachability() -> void:
 		if not schedule_records.has(npc_id):
 			continue
 		var rec: Dictionary = schedule_records[npc_id]
-		var blocks: Array = (schedule_archetypes.get(rec.get("archetype", ""), {}) as Dictionary).get("blocks", [])
+		var archetype: Dictionary = schedule_archetypes.get(rec.get("archetype", ""), {})
+		if bool(archetype.get("nocturnal", false)):
+			continue
+		var blocks: Array = archetype.get("blocks", [])
 		var stations: Dictionary = rec.get("stations", {})
 
 		for hour: int in range(SCHEDULE_DAY_FIRST, SCHEDULE_DAY_LAST + 1):

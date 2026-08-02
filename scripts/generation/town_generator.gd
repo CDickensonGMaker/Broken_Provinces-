@@ -822,7 +822,9 @@ func _get_random_npc_position() -> Vector3:
 func _create_civilian_npc(pos: Vector3) -> Node3D:
 	# Use CivilianNPC spawn methods for proper variety
 	# spawn_gendered_random ensures male sprites get male names, female sprites get female names
-	var npc: Node3D = CivilianNPC.spawn_gendered_random(self, pos, location_id)
+	# The town's own persisted seed drives the draw (RULING LW-1), so a
+	# procedural settlement is populated by the same people on every visit.
+	var npc: Node3D = CivilianNPC.spawn_gendered_random(self, pos, location_id, rng)
 	if npc:
 		# 15% chance to be a quest giver (for procedural bounties)
 		if rng.randf() < 0.15:

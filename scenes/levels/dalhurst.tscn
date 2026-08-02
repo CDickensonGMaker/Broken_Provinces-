@@ -15,7 +15,6 @@
 [ext_resource type="Texture2D" uid="uid://dpdehw6py1vin" path="res://assets/sprites/npcs/animals/cat_animiation.png" id="13"]
 [ext_resource type="Texture2D" uid="uid://nl8fdo0bmq3w" path="res://assets/sprites/npcs/animals/cow_animiation.png" id="14"]
 [ext_resource type="PackedScene" uid="uid://4ykj44g24gpj" path="res://assets/models/statues/sword_statue.glb" id="15_28san"]
-[ext_resource type="Resource" uid="uid://c3l61k4gy131v" path="res://data/dialogues/aldric_vane.tres" id="aldric_dialogue"]
 [ext_resource type="PackedScene" uid="uid://c5ice5bcw4dko" path="res://assets/models/buildings/modular_house_blocks.glb" id="house_blocks_0"]
 [ext_resource type="PackedScene" uid="uid://cliay51ov0drs" path="res://assets/models/buildings/modular_house_blocks_1.glb" id="house_blocks_1"]
 [ext_resource type="PackedScene" uid="uid://djbjixhluc1km" path="res://assets/models/buildings/modular_house_blocks_2.glb" id="house_blocks_2"]
@@ -1580,31 +1579,11 @@ merchant_name = "Gilded Grog Bar"
 
 [node name="QuestGivers" type="Node3D" parent="NPCs"]
 
-[node name="AldricVane" parent="NPCs/QuestGivers" instance=ExtResource("11")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 25)
-npc_id = "aldric_vane"
-display_name = "Aldric Vane"
-quest_ids = Array[String](["keepers_initiation"])
-faction_id = "the_keepers"
-dialogue_data = ExtResource("aldric_dialogue")
-
 [node name="HarborCaptain" parent="NPCs/QuestGivers" instance=ExtResource("11")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.23027, 0, 38.298466)
 npc_id = "harbor_captain"
 display_name = "Harbor Captain"
 quest_ids = Array[String](["harbor_ghost_ship"])
-
-[node name="WorriedMerchant" parent="NPCs/QuestGivers" instance=ExtResource("11")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.627035, 0, 7.3276854)
-npc_id = "worried_merchant_dalhurst"
-display_name = "Worried Merchant"
-quest_ids = Array[String](["willow_dale_investigation"])
-
-[node name="WizardMaelorn" parent="NPCs/QuestGivers" instance=ExtResource("11")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.61619, 0, 25.48919)
-npc_id = "wizard_dalhurst"
-display_name = "Maelorn the Wizard"
-quest_ids = Array[String](["lost_apprentice"])
 
 [node name="Interactables" type="Node3D" parent="."]
 

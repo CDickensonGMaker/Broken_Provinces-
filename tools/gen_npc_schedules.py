@@ -73,7 +73,7 @@ OVERRIDES = {
     "grom_the_smith": "shopkeeper",
     "sage_brennan": "scholar",
     "tharin_ironbeard": "shopkeeper",
-    "restless_ghost": "beggar",                # The Drowned Man keeps no hours
+    "restless_ghost": "revenant",              # The Drowned Man walks after dark
     "temple_acolyte_dalhurst": "acolyte",
     "millbrook_healer": "healer",
     "thornfield_healer": "healer",
@@ -96,7 +96,9 @@ OVERRIDES = {
 }
 
 # Ambient townsfolk who drew the same pooled name in both census boots by luck,
-# so the two-boot stability test kept them. A third boot names someone else.
+# so the two-boot stability test kept them. Since RULING LW-1 that is no longer
+# luck - the draw is seeded - but the name is a property of the world seed the
+# census ran under, not of the town, so they stay out of this file.
 # tools/check_living_world.tscn is the permanent guard: it boots every town and
 # fails on any record nobody spawns.
 LUCKY_COLLISIONS = {"colm_thornfield"}
@@ -144,10 +146,17 @@ def face(seed):
 def stable(path_a, path_b):
     """Only NPCs whose id AND position are identical across two cold boots.
 
-    The rest are the ambient population: `spawn_random` draws their name out of
-    a pool and their spot out of `randf()`, so both change every boot. A record
-    keyed on one of those ids would be dead data. They get a schedule at
-    runtime instead, off the archetype their spawner names.
+    RULING LW-1 seeded the ambient crowd off `GameManager.world_seed`, so this
+    no longer drops half a town: an ambient townsfolk's id and spot now hold
+    across boots of the same world and pass the test. What the filter still
+    catches is the genuinely unstable - ids built from an instance number, and
+    anything spawned off a seed the census did not hold fixed.
+
+    A record written for an ambient NPC is now valid data, but it is valid
+    only for the world seed the census was taken under. Records for the
+    procedural crowd are therefore still not written by default; the ambient
+    population takes its schedule at runtime, off the archetype its spawner
+    names, and that is what keeps this file world-agnostic.
     """
     a = json.loads(open(path_a, "rb").read().decode("utf-8-sig"))
     b = json.loads(open(path_b, "rb").read().decode("utf-8-sig"))

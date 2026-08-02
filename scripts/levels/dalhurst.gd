@@ -470,6 +470,8 @@ func _spawn_npcs() -> void:
 	# Do NOT spawn a second one here via code
 
 	# === WORRIED MERCHANT (willow_dale_investigation quest giver) ===
+	# RULING LW-3: dalhurst.tscn carried a second body on this same id, with no
+	# profile, no faction and no line. Deleted; this is the merchant.
 	var worried_merchant_quests: Array[String] = ["willow_dale_investigation"]
 	var worried_merchant := QuestGiver.spawn_quest_giver(
 		npcs_container,
@@ -491,6 +493,9 @@ func _spawn_npcs() -> void:
 	worried_merchant.npc_profile = worried_profile
 
 	# === WIZARD (lost_apprentice quest giver) ===
+	# RULING LW-3: "Maelorn the Wizard" in dalhurst.tscn wore this id too.
+	# Deleted - Master Edric Vayle is the ruled name and this is the body the
+	# schedule record was measured against.
 	var wizard_quests: Array[String] = ["lost_apprentice"]
 	var wizard := QuestGiver.spawn_quest_giver(
 		npcs_container,
@@ -512,6 +517,9 @@ func _spawn_npcs() -> void:
 	wizard.npc_profile = wizard_profile
 
 	# === ALDRIC VANE - THE KEEPERS CONTACT (keepers_initiation quest giver) ===
+	# RULING LW-3: this used to be two men wearing one id - this one and a
+	# second "Aldric Vane" in dalhurst.tscn. The scene body is gone; the ruled
+	# name, the authored dialogue and the real faction are all on this one.
 	var aldric_quests: Array[String] = ["keepers_initiation"]
 	var aldric := QuestGiver.spawn_quest_giver(
 		npcs_container,
@@ -523,7 +531,8 @@ func _spawn_npcs() -> void:
 		aldric_quests
 	)
 	aldric.region_id = ZONE_ID
-	aldric.faction_id = "keepers"
+	aldric.faction_id = "the_keepers"  # "keepers" names no faction file
+	aldric.dialogue_data = load("res://data/dialogues/aldric_vane.tres")
 	aldric.no_quest_dialogue = "You've proven yourself a trusted ally of the Keepers. Should you need guidance, speak with me again."
 	var aldric_profile := NPCKnowledgeProfile.new()
 	aldric_profile.archetype = NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER
@@ -762,6 +771,11 @@ func _spawn_civilian_population(parent: Node3D) -> void:
 	var total_spawned: int = 0
 	var max_attempts_per_spawn: int = 10
 
+	# One generator per npc slot, seeded off the world seed (RULING LW-1), so
+	# slot 7 of Dalhurst is the same person standing in the same place in every
+	# session of this world - and somebody else entirely in another world.
+	var slot: int = 0
+
 	# Spawn NPCs at each area
 	for spawn_def: Dictionary in all_spawns:
 		var center: Vector3 = spawn_def["pos"]
@@ -769,13 +783,15 @@ func _spawn_civilian_population(parent: Node3D) -> void:
 		var count: int = spawn_def["count"]
 
 		for i in range(count):
+			var rng: RandomNumberGenerator = CivilianNPC.make_slot_rng(GameManager.world_seed, ZONE_ID, slot)
+			slot += 1
 			var spawn_pos: Vector3 = Vector3.ZERO
 			var valid_pos: bool = false
 
 			# Try to find a valid spawn position outside all exclusion zones
 			for attempt in range(max_attempts_per_spawn):
-				var angle: float = randf() * TAU
-				var dist: float = randf() * radius
+				var angle: float = rng.randf() * TAU
+				var dist: float = rng.randf() * radius
 				var test_pos := Vector3(
 					center.x + cos(angle) * dist,
 					0.0,
@@ -804,12 +820,13 @@ func _spawn_civilian_population(parent: Node3D) -> void:
 			var npc: CivilianNPC = CivilianNPC.spawn_gendered_random(
 				civilians_container,
 				spawn_pos,
-				ZONE_ID
+				ZONE_ID,
+				rng
 			)
 
 			# Configure wander behavior
 			npc.wander_radius = radius * 0.8  # Stay mostly in their area
-			npc.wander_speed = randf_range(1.4, 2.2)  # Slight speed variation
+			npc.wander_speed = rng.randf_range(1.4, 2.2)  # Slight speed variation
 
 			# Add zone-specific knowledge to civilians for town-appropriate dialogue
 			if not npc.knowledge_profile:
@@ -818,8 +835,8 @@ func _spawn_civilian_population(parent: Node3D) -> void:
 			npc.knowledge_profile.knowledge_tags.append("local_area")
 
 			# A port town's ambient crowd keep ordinary hours. Their id and
-			# their spot are drawn fresh every boot, so no authored record
-			# could name them - the trade goes on at spawn instead.
+			# their spot are now fixed by the world seed, so an authored record
+			# could name them; until one does, the trade goes on at spawn.
 			npc.attach_to_schedule("townsfolk", _leisure_world_pos())
 
 			total_spawned += 1

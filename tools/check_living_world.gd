@@ -3,7 +3,7 @@ extends Node
 ##
 ## Usage: godot --headless --path . res://tools/check_living_world.tscn
 ##
-## Five things are asserted.
+## Six things are asserted.
 ##
 ## 1. SCHEDULE RESOLUTION. Every scheduled npc_id resolves to a real archetype,
 ##    a real action and a real station at four sample hours - 03, 09, 13, 21.
@@ -23,7 +23,11 @@ extends Node
 ##    all survive a save and a load, and `advance()` replays the hours it
 ##    crossed instead of jumping them.
 ##
-## 5. THE PLACEMENT ITSELF, in the live scene. Elder Moor is booted and the
+## 5. THE AMBIENT CROWD IS THE SAME PEOPLE. A town booted twice under one
+##    world seed spawns the same ids in the same spots; under another seed it
+##    spawns a different town. A disposition earned with Mabel is Mabel's.
+##
+## 6. THE PLACEMENT ITSELF, in the live scene. Elder Moor is booted and the
 ##    NPCs are counted where they stand, not where the data says they should.
 
 const START_SCENE := "res://scenes/levels/elder_moor.tscn"
@@ -37,6 +41,12 @@ const SCHEDULED_TOWNS: Dictionary = {
 	"thornfield": "res://scenes/levels/thornfield.tscn",
 	"millbrook": "res://scenes/levels/millbrook.tscn",
 	"willow_dale": "res://scenes/levels/willow_dale.tscn",
+}
+## Towns with a procedural ambient crowd, keyed by the meta the level sets on
+## itself. These are the ones RULING LW-1 seeds off the world seed.
+const AMBIENT_TOWNS: Dictionary = {
+	"dalhurst": "res://scenes/levels/dalhurst.tscn",
+	"elder_moor": "res://scenes/levels/elder_moor.tscn",
 }
 const ELDER_MOOR_CELL := Vector2i(0, 0)
 const SAMPLE_HOURS: Array[int] = [3, 9, 13, 21]
@@ -56,6 +66,7 @@ func _run() -> void:
 	_check_quest_npcs_are_reachable_by_day()
 	_check_clock()
 	await _check_every_scheduled_npc_spawns()
+	await _check_ambient_population_is_seeded()
 	await _check_live_roster()
 
 
@@ -274,6 +285,112 @@ func _check_every_scheduled_npc_spawns() -> void:
 			missing.append(npc_id)
 	_check("every scheduled npc_id is spawned by the town that claims it%s" % _tail(missing),
 		missing.is_empty())
+
+
+## ============================================================================
+## 4b. THE AMBIENT POPULATION IS THE SAME PEOPLE EVERY SESSION (RULING LW-1)
+## ============================================================================
+
+## Boot a town twice under one world seed and once under another. Same seed
+## must give the same people in the same order standing in the same places;
+## a different seed must give a different town, or "seeded" means "hardcoded".
+##
+## Position is compared with slack. The seed fixes where each slot is PUT, but
+## `CivilianNPC.validate_spawn_position` then nudges anyone who landed inside
+## something by up to two units, and what a spawn overlaps depends on how far
+## the physics server has got - which is not a property of the seed.
+const AMBIENT_SPOT_SLACK := 2.5
+
+func _check_ambient_population_is_seeded() -> void:
+	var saved_seed: int = GameManager.world_seed
+
+	for zone: String in AMBIENT_TOWNS.keys():
+		var path: String = AMBIENT_TOWNS[zone]
+		var first: Dictionary = await _ambient_crowd(path, 424242)
+		var again: Dictionary = await _ambient_crowd(path, 424242)
+		var other: Dictionary = await _ambient_crowd(path, 991137)
+
+		var ids_first: Array[String] = first["ids"]
+		var ids_again: Array[String] = again["ids"]
+		var ids_other: Array[String] = other["ids"]
+
+		_check("%s has an ambient population to compare (%d)" % [zone, ids_first.size()],
+			ids_first.size() > 0)
+		_check("%s: the same world_seed spawns the same people in the same order%s" % [
+				zone, _tail(_differences(ids_first, ids_again))],
+			ids_first == ids_again)
+		_check("%s: the same world_seed puts them in the same places%s" % [
+				zone, _tail(_spot_differences(first, again))],
+			_spot_differences(first, again).is_empty())
+		_check("%s: a different world_seed spawns a different ambient crowd" % zone,
+			ids_first != ids_other)
+
+	GameManager.world_seed = saved_seed
+	WorldLexicon.clear_all_zone_names()
+
+
+## Who the town's ambient crowd are and where they were PUT, in spawn order.
+## The wander home is the spawn point; the live position is whatever the wander
+## has done with it in the four frames since, which is not the subject.
+func _ambient_crowd(scene_path: String, world_seed: int) -> Dictionary:
+	var ids: Array[String] = []
+	var spots: Array[Vector3] = []
+	var out: Dictionary = {"ids": ids, "spots": spots}
+	if not ResourceLoader.exists(scene_path):
+		return out
+
+	# A cold session: nothing carried over from the previous boot.
+	GameManager.world_seed = world_seed
+	WorldLexicon.clear_all_zone_names()
+
+	var packed: PackedScene = load(scene_path)
+	if packed == null:
+		return out
+	var level: Node = packed.instantiate()
+	add_child(level)
+	for _i: int in range(4):
+		await get_tree().process_frame
+
+	var container: Node = null
+	if level.has_meta("civilians_container"):
+		container = level.get_meta("civilians_container") as Node
+	if container != null:
+		for child: Node in container.get_children():
+			if not child is CivilianNPC:
+				continue
+			var npc: CivilianNPC = child as CivilianNPC
+			ids.append(npc.npc_id)
+			spots.append(npc.wander.home_position if npc.wander != null else npc.global_position)
+
+	level.queue_free()
+	remove_child(level)
+	await get_tree().process_frame
+	return out
+
+
+## Slots whose spawn point moved further than the collision nudge can explain.
+func _spot_differences(a: Dictionary, b: Dictionary) -> Array[String]:
+	var out: Array[String] = []
+	var left: Array[Vector3] = a["spots"]
+	var right: Array[Vector3] = b["spots"]
+	var ids: Array[String] = a["ids"]
+	for i: int in range(mini(left.size(), right.size())):
+		var gap: float = left[i].distance_to(right[i])
+		if gap > AMBIENT_SPOT_SLACK:
+			out.append("slot %d (%s) moved %.1f" % [i, ids[i], gap])
+	return out
+
+
+## The first few slots where two fingerprints part company.
+func _differences(a: Array[String], b: Array[String]) -> Array[String]:
+	var out: Array[String] = []
+	var count: int = maxi(a.size(), b.size())
+	for i: int in range(count):
+		var left: String = a[i] if i < a.size() else "-"
+		var right: String = b[i] if i < b.size() else "-"
+		if left != right:
+			out.append("slot %d: %s vs %s" % [i, left, right])
+	return out
 
 
 ## ============================================================================

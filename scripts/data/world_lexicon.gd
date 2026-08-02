@@ -222,6 +222,17 @@ const FEMALE_NAMES := [
 ## Format: { "zone_id": { "male": ["Borin", "Merric"], "female": ["Rowena"] } }
 static var _used_names_by_zone: Dictionary = {}
 
+## How many zone-unique names have been handed out in each zone this session.
+##
+## RULING LW-1: the ambient crowd draws its names with a seeded slot generator,
+## but it draws them out of whatever is *left* in the pool. Every hand-placed
+## NPC ahead of them takes a name first - most of them throw it away a line
+## later and set their own - so an unseeded draw there shifted the pool under
+## the ambient slots and the same seed produced a different crowd. Naming is
+## therefore a sequence: draw n in a zone is the same draw in every session.
+## Cleared with the zone's used-name list.
+static var _zone_draw_count: Dictionary = {}
+
 const SURNAMES := [
 	"Ironhand", "Blackwood", "Stonehelm", "Ashford", "Brightwater", "Coldstream",
 	"Darkhollow", "Frostborn", "Goldsmith", "Hawkwind", "Longstride", "Moorwalker",
@@ -381,9 +392,28 @@ static func get_random_nearby_region(settlement_id: String) -> String:
 	return nearby[randi() % nearby.size()]
 
 
+## Draw an index from [param pool] using [param rng] when one is supplied.
+## A null rng means the global unseeded generator, which is what every caller
+## outside the ambient-population path wants.
+static func _pick(pool: Array, rng: RandomNumberGenerator) -> String:
+	if pool.is_empty():
+		return ""
+	if rng != null:
+		return String(pool[rng.randi() % pool.size()])
+	return String(pool[randi() % pool.size()])
+
+
+## A 0..1 roll from [param rng], or the global generator when it is null.
+static func _roll(rng: RandomNumberGenerator) -> float:
+	if rng != null:
+		return rng.randf()
+	return randf()
+
+
 ## Get a random NPC name (not zone-aware, may produce duplicates)
 ## race: "human" (default), "dwarf", "halfling", "elf"
-static func get_random_name(is_female: bool = false, race: String = "human") -> String:
+## rng: pass a seeded generator to make the draw reproducible (RULING LW-1)
+static func get_random_name(is_female: bool = false, race: String = "human", rng: RandomNumberGenerator = null) -> String:
 	var first_names: Array = FEMALE_NAMES if is_female else MALE_NAMES
 	var last_names: Array = SURNAMES
 	var surname_chance: float = 0.3
@@ -401,29 +431,35 @@ static func get_random_name(is_female: bool = false, race: String = "human") -> 
 			first_names = ELF_FEMALE_NAMES if is_female else ELF_MALE_NAMES
 			surname_chance = 0.0  # elves go by single names among humans
 
-	var first: String = first_names[randi() % first_names.size()]
+	var first: String = _pick(first_names, rng)
 
-	if randf() < surname_chance:
-		var surname: String = last_names[randi() % last_names.size()]
-		return first + " " + surname
+	if _roll(rng) < surname_chance:
+		return first + " " + _pick(last_names, rng)
 
 	# Humans without surnames: small chance of a memorable epithet instead
-	if race == "human" and randf() < 0.15:
-		if randf() < 0.5:
-			var prefix: String = EPITHETS_PREFIX[randi() % EPITHETS_PREFIX.size()]
-			return prefix + " " + first
-		var suffix: String = EPITHETS_SUFFIX[randi() % EPITHETS_SUFFIX.size()]
-		return first + " " + suffix
+	if race == "human" and _roll(rng) < 0.15:
+		if _roll(rng) < 0.5:
+			return _pick(EPITHETS_PREFIX, rng) + " " + first
+		return first + " " + _pick(EPITHETS_SUFFIX, rng)
 
 	return first
 
 
 ## Get a unique NPC name for a specific zone (no duplicates within same zone)
 ## Returns empty string if all names for that sex are used in the zone
-static func get_unique_name_for_zone(zone_id: String, is_female: bool = false) -> String:
+## rng: pass a seeded generator to make the draw reproducible (RULING LW-1)
+static func get_unique_name_for_zone(zone_id: String, is_female: bool = false, rng: RandomNumberGenerator = null) -> String:
 	# Initialize zone tracking if needed
 	if not _used_names_by_zone.has(zone_id):
 		_used_names_by_zone[zone_id] = {"male": [], "female": []}
+
+	# No seeded generator supplied: use this zone's draw sequence, so the pool
+	# the ambient slots later index into is the same pool every session.
+	var draw_index: int = int(_zone_draw_count.get(zone_id, 0))
+	_zone_draw_count[zone_id] = draw_index + 1
+	if rng == null:
+		rng = RandomNumberGenerator.new()
+		rng.seed = hash("%s#%d" % [zone_id, draw_index])
 
 	var sex_key: String = "female" if is_female else "male"
 	var first_names: Array = FEMALE_NAMES if is_female else MALE_NAMES
@@ -441,15 +477,14 @@ static func get_unique_name_for_zone(zone_id: String, is_female: bool = false) -
 		return ""
 
 	# Pick a random available name
-	var chosen: String = available[randi() % available.size()]
+	var chosen: String = _pick(available, rng)
 
 	# Mark as used
 	used_in_zone.append(chosen)
 
 	# 30% chance to include surname
-	if randf() < 0.3:
-		var surname: String = SURNAMES[randi() % SURNAMES.size()]
-		return chosen + " " + surname
+	if _roll(rng) < 0.3:
+		return chosen + " " + _pick(SURNAMES, rng)
 
 	return chosen
 
@@ -485,11 +520,13 @@ static func reserve_name_in_zone(zone_id: String, name: String, is_female: bool 
 static func clear_zone_names(zone_id: String) -> void:
 	if _used_names_by_zone.has(zone_id):
 		_used_names_by_zone.erase(zone_id)
+	_zone_draw_count.erase(zone_id)
 
 
 ## Clear all used names across all zones (call on new game)
 static func clear_all_zone_names() -> void:
 	_used_names_by_zone.clear()
+	_zone_draw_count.clear()
 
 
 ## Get count of available names remaining for a zone

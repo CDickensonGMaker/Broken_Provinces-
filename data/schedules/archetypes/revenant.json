@@ -1,0 +1,37 @@
+{
+  "id": "revenant",
+  "nocturnal": true,
+  "description": "The dead keep the hours the living do not. Present on the streets from dusk to first light; behind the door of a house that is not modelled - and so absent from the world - through the whole of the day.",
+  "blocks": [
+    {
+      "from": 0,
+      "to": 3,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 3,
+      "to": 5,
+      "action": "travel",
+      "station": "home"
+    },
+    {
+      "from": 5,
+      "to": 20,
+      "action": "sleep",
+      "station": "home"
+    },
+    {
+      "from": 20,
+      "to": 22,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 22,
+      "to": 24,
+      "action": "socialise",
+      "station": "leisure"
+    }
+  ]
+}

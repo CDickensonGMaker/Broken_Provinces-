@@ -164,12 +164,14 @@ func _spawn_priests() -> void:
 func _spawn_villagers() -> void:
 	var npc_spawns := $NPCSpawnPoints
 
-	# Spawn random villagers with proper gender variety
+	# Spawn random villagers with proper gender variety, seeded per slot off the
+	# world seed (RULING LW-1) so the village keeps its own five people.
 	for i in range(5):
 		var marker := npc_spawns.get_node_or_null("VillagerSpawn_%d" % i)
 		if marker:
 			# Use gendered_random for proper variety with correct name/gender matching
-			CivilianNPC.spawn_gendered_random(self, marker.position, ZONE_ID)
+			var rng: RandomNumberGenerator = CivilianNPC.make_slot_rng(GameManager.world_seed, ZONE_ID, i)
+			CivilianNPC.spawn_gendered_random(self, marker.position, ZONE_ID, rng)
 
 
 ## Spawn inn entrance door

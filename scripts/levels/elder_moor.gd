@@ -371,15 +371,22 @@ func _spawn_civilian_population() -> void:
 
 	var total_spawned: int = 0
 
+	# One generator per npc slot, seeded off the world seed (RULING LW-1), so
+	# the camp is crewed by the same hands in the same places every session.
+	var slot: int = 0
+
 	for spawn_def: Dictionary in spawn_areas:
 		var center: Vector3 = spawn_def["pos"]
 		var radius: float = spawn_def["radius"]
 		var count: int = spawn_def["count"]
 
 		for i in range(count):
+			var rng: RandomNumberGenerator = CivilianNPC.make_slot_rng(GameManager.world_seed, ZONE_ID, slot)
+			slot += 1
+
 			# Random position within radius
-			var angle: float = randf() * TAU
-			var dist: float = randf() * radius
+			var angle: float = rng.randf() * TAU
+			var dist: float = rng.randf() * radius
 			var spawn_pos := Vector3(
 				center.x + cos(angle) * dist,
 				0.0,
@@ -390,12 +397,13 @@ func _spawn_civilian_population() -> void:
 			var npc: CivilianNPC = CivilianNPC.spawn_worker_random(
 				civilians_container,
 				spawn_pos,
-				ZONE_ID
+				ZONE_ID,
+				rng
 			)
 
 			# Configure wander behavior - loggers move around their work area
 			npc.wander_radius = radius * 0.8
-			npc.wander_speed = randf_range(1.2, 2.0)
+			npc.wander_speed = rng.randf_range(1.2, 2.0)
 
 			# Add zone-specific knowledge to civilians for town-appropriate dialogue
 			if not npc.knowledge_profile:
@@ -405,8 +413,8 @@ func _spawn_civilian_population() -> void:
 
 			# Elder Moor is a logging camp, so its ambient population are the
 			# camp's people: up before light, in the tavern by dusk. Their id
-			# and their spot are drawn fresh every boot, so no authored record
-			# could name them - the trade goes on at spawn instead.
+			# and their spot are now fixed by the world seed, so an authored
+			# record could name them; until one does, the trade goes on here.
 			npc.attach_to_schedule("laborer", _leisure_world_pos())
 
 			total_spawned += 1

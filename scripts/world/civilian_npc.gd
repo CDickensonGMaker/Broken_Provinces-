@@ -12,6 +12,48 @@ extends CharacterBody3D
 ## Stable NPC ID for quest tracking (e.g., "barmaid_elder_moor")
 @export var npc_id: String = ""
 
+## ============================================================================
+## AMBIENT POPULATION RNG (RULING LW-1)
+## ============================================================================
+##
+## The ambient crowd must be the same people in the same places every session
+## within one world. The spawn path used to pick a type, a name, a tint and a
+## sprite variant with the global unseeded generator, so half a town changed
+## identity every boot and no quest could ever name one of them.
+##
+## The three ambient entry points - [method spawn_random],
+## [method spawn_gendered_random] and [method spawn_worker_random] - take a
+## generator. While one is in force every draw below it comes from that
+## generator instead. Everything else in this file keeps drawing globally,
+## because a hand-placed NPC has no slot to be reproducible against.
+
+## The generator in force for the ambient spawn currently under way, or null.
+static var _ambient_rng: RandomNumberGenerator = null
+
+
+## A generator for one ambient npc SLOT. Slot 7 of Dalhurst is the same person
+## in every session of a given world, and a different person in another world.
+static func make_slot_rng(world_seed: int, zone_id: String, slot_index: int) -> RandomNumberGenerator:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash("%d|%s|%d" % [world_seed, zone_id, slot_index])
+	return rng
+
+
+## A 0..1 roll from the ambient generator, or the global one when idle.
+static func _rf() -> float:
+	if _ambient_rng != null:
+		return _ambient_rng.randf()
+	return randf()
+
+
+## An index in 0..count-1 from the ambient generator, or the global one.
+static func _ri(count: int) -> int:
+	if count <= 0:
+		return 0
+	if _ambient_rng != null:
+		return int(_ambient_rng.randi() % count)
+	return randi() % count
+
 ## Visual representation
 var billboard: BillboardSprite
 var collision_shape: CollisionShape3D
@@ -881,7 +923,7 @@ static func spawn_civilian(parent: Node, pos: Vector3, sprite_path: String,
 
 	# Apply random color tint
 	if random_color:
-		npc.tint_color = DRESS_COLORS[randi() % DRESS_COLORS.size()]
+		npc.tint_color = DRESS_COLORS[_ri(DRESS_COLORS.size())]
 
 	parent.add_child(npc)
 	return npc
@@ -991,7 +1033,7 @@ static func spawn_woman(parent: Node, pos: Vector3, zone_id: String = "") -> Civ
 		false,  # Don't use default colors
 		pixel_size
 	)
-	npc.tint_color = DRESS_COLORS[randi() % DRESS_COLORS.size()]
+	npc.tint_color = DRESS_COLORS[_ri(DRESS_COLORS.size())]
 	_assign_unique_name(npc, zone_id, true)
 	return npc
 
@@ -1021,7 +1063,7 @@ static func spawn_man(parent: Node, pos: Vector3, zone_id: String = "") -> Civil
 		false,   # Don't use default colors
 		pixel_size
 	)
-	npc.tint_color = MALE_COLORS[randi() % MALE_COLORS.size()]
+	npc.tint_color = MALE_COLORS[_ri(MALE_COLORS.size())]
 	_assign_unique_name(npc, zone_id, false)
 	return npc
 
@@ -1029,7 +1071,7 @@ static func spawn_man(parent: Node, pos: Vector3, zone_id: String = "") -> Civil
 ## Spawn a barmaid NPC (randomly picks between variants)
 ## zone_id: Optional zone for unique name generation
 static func spawn_barmaid(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	if randf() < 0.5:
+	if _rf() < 0.5:
 		return spawn_barmaid_blonde(parent, pos, zone_id)
 	else:
 		return spawn_barmaid_brunette(parent, pos, zone_id)
@@ -1120,7 +1162,7 @@ static func spawn_wizard(parent: Node, pos: Vector3, zone_id: String = "") -> Ci
 		false,
 		pixel_size
 	)
-	npc.tint_color = WIZARD_COLORS[randi() % WIZARD_COLORS.size()]
+	npc.tint_color = WIZARD_COLORS[_ri(WIZARD_COLORS.size())]
 	_assign_unique_name(npc, zone_id, false, "Mage")
 	return npc
 
@@ -1157,18 +1199,27 @@ static func spawn_lady_in_red(parent: Node, pos: Vector3, zone_id: String = "") 
 
 ## Spawn a random civilian (man, woman, barmaid, wizard, or lady in red)
 ## zone_id: Optional zone for unique name generation
-static func spawn_random(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	var roll := randf()
+## rng: seeded slot generator for the ambient crowd (see make_slot_rng)
+static func spawn_random(parent: Node, pos: Vector3, zone_id: String = "", rng: RandomNumberGenerator = null) -> CivilianNPC:
+	var previous: RandomNumberGenerator = _ambient_rng
+	if rng != null:
+		_ambient_rng = rng
+
+	var npc: CivilianNPC = null
+	var roll: float = _rf()
 	if roll < 0.30:
-		return spawn_woman(parent, pos, zone_id)
+		npc = spawn_woman(parent, pos, zone_id)
 	elif roll < 0.60:
-		return spawn_man(parent, pos, zone_id)
+		npc = spawn_man(parent, pos, zone_id)
 	elif roll < 0.75:
-		return spawn_barmaid(parent, pos, zone_id)  # 15% chance for barmaid
+		npc = spawn_barmaid(parent, pos, zone_id)  # 15% chance for barmaid
 	elif roll < 0.90:
-		return spawn_lady_in_red(parent, pos, zone_id)  # 15% chance for lady in red
+		npc = spawn_lady_in_red(parent, pos, zone_id)  # 15% chance for lady in red
 	else:
-		return spawn_wizard(parent, pos, zone_id)   # 10% chance for wizard
+		npc = spawn_wizard(parent, pos, zone_id)   # 10% chance for wizard
+
+	_ambient_rng = previous
+	return npc
 
 
 ## Helper to assign a unique name and npc_id to an NPC
@@ -1182,13 +1233,13 @@ static func _assign_unique_name(npc: CivilianNPC, zone_id: String, is_female: bo
 	var first_name: String
 	if zone_id.is_empty():
 		# No zone tracking - use random name
-		first_name = WorldLexicon.get_random_name(is_female)
+		first_name = WorldLexicon.get_random_name(is_female, "human", _ambient_rng)
 	else:
 		# Zone tracking - get unique name
-		first_name = WorldLexicon.get_unique_name_for_zone(zone_id, is_female)
+		first_name = WorldLexicon.get_unique_name_for_zone(zone_id, is_female, _ambient_rng)
 		if first_name.is_empty():
 			# Fallback if all names exhausted
-			first_name = WorldLexicon.get_random_name(is_female)
+			first_name = WorldLexicon.get_random_name(is_female, "human", _ambient_rng)
 
 	# Set npc_id to first name only (for quest tracking)
 	# Extract just the first name if surname was included
@@ -1245,7 +1296,7 @@ static func spawn_dwarf_warrior(parent: Node, pos: Vector3, zone_id: String = ""
 static func spawn_dwarf_civilian(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
 	var sprite_path: String
 	var title: String
-	if randf() < 0.5:
+	if _rf() < 0.5:
 		sprite_path = "res://assets/sprites/npcs/dwarves/dwarf_2.png"
 		title = ""  # Just a regular dwarf
 	else:
@@ -1262,14 +1313,14 @@ static func spawn_dwarf_civilian(parent: Node, pos: Vector3, zone_id: String = "
 		PIXEL_SIZE_DWARF
 	)
 	npc.tint_color = Color.WHITE
-	_assign_dwarf_name(npc, zone_id, randf() < 0.3)  # 30% chance female
+	_assign_dwarf_name(npc, zone_id, _rf() < 0.3)  # 30% chance female
 	return npc
 
 
 ## Spawn a dwarf refugee (wounded, displaced - slightly muted colors)
 ## zone_id: Optional zone for unique name generation
 static func spawn_dwarf_refugee(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	var sprite_path: String = "res://assets/sprites/npcs/dwarves/dwarf_3.png" if randf() < 0.5 else "res://assets/sprites/npcs/dwarves/dwarf_2.png"
+	var sprite_path: String = "res://assets/sprites/npcs/dwarves/dwarf_3.png" if _rf() < 0.5 else "res://assets/sprites/npcs/dwarves/dwarf_2.png"
 
 	var npc := spawn_civilian(
 		parent,
@@ -1282,7 +1333,7 @@ static func spawn_dwarf_refugee(parent: Node, pos: Vector3, zone_id: String = ""
 	)
 	# Muted, dusty colors for refugees
 	npc.tint_color = Color(0.85, 0.8, 0.75)
-	_assign_dwarf_name(npc, zone_id, randf() < 0.4, "Refugee")  # 40% chance female
+	_assign_dwarf_name(npc, zone_id, _rf() < 0.4, "Refugee")  # 40% chance female
 	return npc
 
 
@@ -1306,7 +1357,7 @@ static func spawn_dwarf_wounded(parent: Node, pos: Vector3, zone_id: String = ""
 ## Spawn a random dwarf for the hold (variety of types)
 ## zone_id: Optional zone for unique name generation
 static func spawn_dwarf_random(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	var roll := randf()
+	var roll := _rf()
 	if roll < 0.35:
 		return spawn_dwarf_guard(parent, pos, zone_id)  # 35% guards
 	elif roll < 0.70:
@@ -1322,9 +1373,9 @@ static func _assign_dwarf_name(npc: CivilianNPC, zone_id: String, is_female: boo
 
 	var first_name: String
 	if is_female:
-		first_name = DWARF_FEMALE_NAMES[randi() % DWARF_FEMALE_NAMES.size()]
+		first_name = DWARF_FEMALE_NAMES[_ri(DWARF_FEMALE_NAMES.size())]
 	else:
-		first_name = DWARF_MALE_NAMES[randi() % DWARF_MALE_NAMES.size()]
+		first_name = DWARF_MALE_NAMES[_ri(DWARF_MALE_NAMES.size())]
 
 	# Set npc_id
 	npc.npc_id = first_name.to_lower() + "_" + zone_id if not zone_id.is_empty() else first_name.to_lower()
@@ -1395,7 +1446,7 @@ static func spawn_dwarf_forge_guard(parent: Node, pos: Vector3, zone_id: String 
 ## Spawn a random forge dwarf
 ## zone_id: Optional zone for unique name generation
 static func spawn_dwarf_forge_random(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	var roll := randf()
+	var roll := _rf()
 	if roll < 0.15:
 		return spawn_dwarf_forge_master(parent, pos, zone_id)  # 15% forge masters
 	elif roll < 0.60:
@@ -1505,7 +1556,7 @@ static func spawn_blue_dress_lady(parent: Node, pos: Vector3, zone_id: String = 
 ## Spawn a random new-style civilian (uses the newer reference sheet sprites)
 ## zone_id: Optional zone for unique name generation
 static func spawn_random_new(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	var roll := randf()
+	var roll := _rf()
 	if roll < 0.20:
 		return spawn_guy_green_vest(parent, pos, zone_id)    # 20% green vest guy
 	elif roll < 0.40:
@@ -1521,7 +1572,7 @@ static func spawn_random_new(parent: Node, pos: Vector3, zone_id: String = "") -
 ## Spawn any random civilian (combines old and new sprite types)
 ## zone_id: Optional zone for unique name generation
 static func spawn_any_random(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	if randf() < 0.5:
+	if _rf() < 0.5:
 		return spawn_random(parent, pos, zone_id)      # 50% old animated sprites
 	else:
 		return spawn_random_new(parent, pos, zone_id)  # 50% new reference sprites
@@ -1617,7 +1668,7 @@ static func spawn_guard_roman_civilian(parent: Node, pos: Vector3, zone_id: Stri
 
 ## Spawn a random guard civilian (either dwarf or roman style)
 static func spawn_guard_civilian_random(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	if randf() < 0.5:
+	if _rf() < 0.5:
 		return spawn_guard_civilian(parent, pos, zone_id)
 	else:
 		return spawn_guard_roman_civilian(parent, pos, zone_id)
@@ -1673,7 +1724,7 @@ static func spawn_merchant_civilian(parent: Node, pos: Vector3, zone_id: String 
 
 ## Spawn a bandit civilian (reformed bandits in towns) - male
 static func spawn_bandit_civilian(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	var sprite: String = "res://assets/sprites/npcs/combat/thief.png" if randf() < 0.5 else "res://assets/sprites/npcs/combat/bandit_3.png"
+	var sprite: String = "res://assets/sprites/npcs/combat/thief.png" if _rf() < 0.5 else "res://assets/sprites/npcs/combat/bandit_3.png"
 	var npc := spawn_civilian(
 		parent, pos,
 		sprite,
@@ -1686,7 +1737,7 @@ static func spawn_bandit_civilian(parent: Node, pos: Vector3, zone_id: String = 
 
 ## Spawn any of the newer reference sprites randomly
 static func spawn_random_newest(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	var roll: float = randf()
+	var roll: float = _rf()
 	if roll < 0.1:
 		return spawn_female_noble(parent, pos, zone_id)
 	elif roll < 0.2:
@@ -1711,7 +1762,7 @@ static func spawn_random_newest(parent: Node, pos: Vector3, zone_id: String = ""
 
 ## Spawn any civilian from ALL available sprite types
 static func spawn_truly_random(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	var roll: float = randf()
+	var roll: float = _rf()
 	if roll < 0.33:
 		return spawn_random(parent, pos, zone_id)          # Old animated sprites
 	elif roll < 0.66:
@@ -1722,7 +1773,7 @@ static func spawn_truly_random(parent: Node, pos: Vector3, zone_id: String = "")
 
 ## Spawn a random FEMALE civilian from all available female sprites
 static func spawn_random_female(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	var roll: float = randf()
+	var roll: float = _rf()
 	if roll < 0.12:
 		return spawn_woman(parent, pos, zone_id)
 	elif roll < 0.24:
@@ -1749,7 +1800,7 @@ static func spawn_random_female(parent: Node, pos: Vector3, zone_id: String = ""
 
 ## Spawn a random MALE civilian from all available male sprites
 static func spawn_random_male(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	var roll: float = randf()
+	var roll: float = _rf()
 	if roll < 0.18:
 		return spawn_man(parent, pos, zone_id)
 	elif roll < 0.30:
@@ -1775,17 +1826,26 @@ static func spawn_random_male(parent: Node, pos: Vector3, zone_id: String = "") 
 
 
 ## Spawn a random civilian with proper gender (50/50 male/female)
-static func spawn_gendered_random(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	if randf() < 0.5:
-		return spawn_random_female(parent, pos, zone_id)
+## rng: seeded slot generator for the ambient crowd (see make_slot_rng)
+static func spawn_gendered_random(parent: Node, pos: Vector3, zone_id: String = "", rng: RandomNumberGenerator = null) -> CivilianNPC:
+	var previous: RandomNumberGenerator = _ambient_rng
+	if rng != null:
+		_ambient_rng = rng
+
+	var npc: CivilianNPC = null
+	if _rf() < 0.5:
+		npc = spawn_random_female(parent, pos, zone_id)
 	else:
-		return spawn_random_male(parent, pos, zone_id)
+		npc = spawn_random_male(parent, pos, zone_id)
+
+	_ambient_rng = previous
+	return npc
 
 
 ## Spawn a random WORKING CLASS female (no nobles, gladiators, seductresses)
 ## For logging camps, villages, and rural areas
 static func spawn_worker_female(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	var roll: float = randf()
+	var roll: float = _rf()
 	if roll < 0.25:
 		return spawn_woman(parent, pos, zone_id)
 	elif roll < 0.50:
@@ -1801,7 +1861,7 @@ static func spawn_worker_female(parent: Node, pos: Vector3, zone_id: String = ""
 ## Spawn a random WORKING CLASS male (no nobles, gladiators, wizards)
 ## For logging camps, villages, and rural areas
 static func spawn_worker_male(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	var roll: float = randf()
+	var roll: float = _rf()
 	if roll < 0.35:
 		return spawn_man(parent, pos, zone_id)
 	elif roll < 0.55:
@@ -1816,11 +1876,20 @@ static func spawn_worker_male(parent: Node, pos: Vector3, zone_id: String = "") 
 
 ## Spawn a random WORKING CLASS civilian (50/50 male/female)
 ## Excludes nobles, gladiators, wizards, seductresses - for rural/working areas
-static func spawn_worker_random(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	if randf() < 0.5:
-		return spawn_worker_female(parent, pos, zone_id)
+## rng: seeded slot generator for the ambient crowd (see make_slot_rng)
+static func spawn_worker_random(parent: Node, pos: Vector3, zone_id: String = "", rng: RandomNumberGenerator = null) -> CivilianNPC:
+	var previous: RandomNumberGenerator = _ambient_rng
+	if rng != null:
+		_ambient_rng = rng
+
+	var npc: CivilianNPC = null
+	if _rf() < 0.5:
+		npc = spawn_worker_female(parent, pos, zone_id)
 	else:
-		return spawn_worker_male(parent, pos, zone_id)
+		npc = spawn_worker_male(parent, pos, zone_id)
+
+	_ambient_rng = previous
+	return npc
 
 
 # =============================================================================
@@ -1895,7 +1964,7 @@ static func spawn_monk_purple(parent: Node, pos: Vector3, zone_id: String = "") 
 
 ## Spawn a random monk (any of the three variants)
 static func spawn_monk_random(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	var roll: float = randf()
+	var roll: float = _rf()
 	if roll < 0.4:
 		return spawn_monk_tan(parent, pos, zone_id)
 	elif roll < 0.8:
@@ -1969,7 +2038,7 @@ static func spawn_innkeeper_female(parent: Node, pos: Vector3, zone_id: String =
 
 ## Spawn a random innkeeper (male or female)
 static func spawn_innkeeper_random(parent: Node, pos: Vector3, zone_id: String = "") -> CivilianNPC:
-	if randf() < 0.5:
+	if _rf() < 0.5:
 		return spawn_innkeeper_male(parent, pos, zone_id)
 	else:
 		return spawn_innkeeper_female(parent, pos, zone_id)
