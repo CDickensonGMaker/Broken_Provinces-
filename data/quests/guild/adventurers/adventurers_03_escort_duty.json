@@ -1,7 +1,7 @@
 {
 	"id": "adventurers_03_escort_duty",
 	"title": "Safe Passage",
-	"description": "A merchant named Halvard needs safe passage from Dalhurst to Thornfield. Bandits have been hitting the trade routes, and he's willing to pay for protection. Escort him safely and you'll be promoted to full Guild Member.",
+	"description": "Halvard has one wagon and this season's whole margin loaded onto it - bolts of dye bound for Thornfield, bought on credit he cannot repay if the wagon doesn't arrive. Bandits have already hit three caravans on this road this month. Vorn is putting a new Member on this because Halvard paid the Guild's asking price without haggling, and a merchant who doesn't haggle is a merchant worth keeping.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "meet_merchant",
-			"description": "Meet Halvard at the Dalhurst gate",
+			"description": "Meet Halvard at the Dalhurst gate, and the wagon he can't afford to lose",
 			"type": "talk",
 			"target": "halvard_supplier_dalhurst",
 			"required_count": 1,
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "escort_merchant",
-			"description": "Escort Halvard to Thornfield (keep him alive)",
+			"description": "Keep Halvard's wagon moving toward Thornfield",
 			"type": "escort",
 			"target": "halvard_supplier_dalhurst",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "defend_from_bandits",
-			"description": "Defeat the bandit ambush",
+			"description": "Break the ambush before it takes the dye off Halvard's wagon",
 			"type": "kill",
 			"target": "human_bandit",
 			"required_count": 4,
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "arrive_thornfield",
-			"description": "Safely deliver Halvard to Thornfield",
+			"description": "Get Halvard and his wagon into Thornfield",
 			"type": "reach",
 			"target": "thornfield",
 			"required_count": 1,
@@ -55,5 +55,5 @@
 	},
 	"prerequisites": ["adventurers_02_pest_control"],
 	"next_quest": "adventurers_04_bandit_contract",
-	"notes": "Rank: Initiate → Member (promotion). Escort quest with scripted ambush on Crossroads. Halvard must survive. Completion promotes player to Member rank."
+	"notes": "Rank: Initiate -> Member (promotion). Escort quest with scripted ambush on Crossroads. Halvard must survive. Completion promotes player to Member rank. Threat: Halvard's whole season's margin is on the wagon, bought on credit; bandits have hit three caravans this month. Giver motive: Vorn rewards a client who paid without haggling by staffing the job properly. Consequence: losing the wagon ruins Halvard for the season - stated in prose, not wired since Halvard is scripted to survive."
 }

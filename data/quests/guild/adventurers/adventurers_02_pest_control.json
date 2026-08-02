@@ -1,7 +1,7 @@
 {
 	"id": "adventurers_02_pest_control",
 	"title": "Pest Control",
-	"description": "The Dalhurst warehouse district has been overrun with giant rats. The merchants are desperate, and the Guild has been contracted to clear them out. A simple job for a new recruit - get in, kill the vermin, get paid.",
+	"description": "Grain factor Corrin Dale is losing a sack a night to teeth marks and spoilage, real coin counted out at the till every morning, and the district's own ratcatchers have stopped going past his loading doors - something in there is bigger than a rat should be. He paid the Guild's asking price without argument, which is the whole of Vorn's interest in the job. Clear the warehouse and the fee is yours; leave it, and Corrin's losses keep climbing while the Guild's cut goes unpaid.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "reach_warehouse",
-			"description": "Enter the infested warehouse in Dalhurst",
+			"description": "Enter Corrin Dale's warehouse, past the doors the ratcatchers won't cross",
 			"type": "reach",
 			"target": "dalhurst_warehouse",
 			"required_count": 1,
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "kill_rats",
-			"description": "Exterminate the giant rats",
+			"description": "Kill the rats emptying Corrin Dale's grain stores",
 			"type": "kill",
 			"target": "giant_rat",
 			"required_count": 12,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "report_success",
-			"description": "Report the warehouse is clear",
+			"description": "Tell Vorn the warehouse is Corrin's again",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1,
@@ -46,5 +46,5 @@
 	},
 	"prerequisites": ["adventurers_01_proving_ground"],
 	"next_quest": "adventurers_03_escort_duty",
-	"notes": "Rank: Initiate. Easy indoor combat. Teaches dungeon clearing. Rats spawn in Dalhurst warehouse interior."
+	"notes": "Rank: Initiate. Easy indoor combat. Teaches dungeon clearing. Rats spawn in Dalhurst warehouse interior. Threat: nightly grain loss to a named factor, Corrin Dale, who the district's ratcatchers have abandoned. Giver motive: Vorn takes any paying contract for a new recruit regardless of size. Consequence: Corrin's losses continue and the Guild's cut goes unpaid - stated in prose, not wired."
 }

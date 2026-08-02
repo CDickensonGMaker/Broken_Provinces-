@@ -1,7 +1,7 @@
 {
 	"id": "guild_contract_spiders",
 	"title": "Silk and Venom",
-	"description": "Guildmaster Vorn has another contract for you. The old mine north of Millbrook has been abandoned for weeks - miners fled after encountering massive spiders. The creatures have made the mine their nest, and their webs now choke the upper tunnels. Clear out the infestation, kill the spider queen, and collect venom sacs for the alchemists. A messy job, but profitable.",
+	"description": "Guildmaster Vorn has another contract for you. The old mine north of Millbrook has been abandoned for weeks - foreman Kettil Marsh pulled his whole crew out after losing two men to something in the lower galleries, and the mine's owners are paying the Guild to get their ore moving again before the men take work elsewhere for good. The spiders have made the mine their nest, and their webs now choke the upper tunnels. Clear out the infestation, kill the spider queen, and collect venom sacs for the alchemists - Kettil won't send his crew back down until someone shows him the queen's corpse.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,35 +10,35 @@
 	"objectives": [
 		{
 			"id": "travel_millbrook_mine",
-			"description": "Travel to the abandoned mine near Millbrook",
+			"description": "Reach the mine Kettil Marsh's crew won't go back into",
 			"type": "reach",
 			"target": "millbrook_mine_entrance",
 			"required_count": 1
 		},
 		{
 			"id": "kill_giant_spiders",
-			"description": "Slay the giant spiders infesting the mine",
+			"description": "Kill the spiders that drove the miners out",
 			"type": "kill",
 			"target": "giant_spider",
 			"required_count": 12
 		},
 		{
 			"id": "collect_venom_sacs",
-			"description": "Collect venom sacs from dead spiders",
+			"description": "Collect venom sacs for the alchemists' fee",
 			"type": "collect",
 			"target": "spider_venom_sac",
 			"required_count": 8
 		},
 		{
 			"id": "kill_spider_queen",
-			"description": "Defeat the Spider Queen in the depths",
+			"description": "Kill the spider queen - Kettil wants to see the body",
 			"type": "kill",
 			"target": "spider_queen",
 			"required_count": 1
 		},
 		{
 			"id": "return_to_vorn",
-			"description": "Return to Guildmaster Vorn with the venom sacs",
+			"description": "Tell Vorn the mine is safe for Kettil's crew",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1
@@ -57,5 +57,5 @@
 	},
 	"prerequisites": ["guild_contract_bandits"],
 	"next_quest": "guild_contract_troll",
-	"notes": "Spider infestation dungeon near Millbrook. Boss fight against spider queen. Venom sacs are valuable alchemy materials. Rewards include special spider silk rope item useful for climbing/exploration."
+	"notes": "Spider infestation dungeon near Millbrook. Boss fight against spider queen. Venom sacs are valuable alchemy materials. Rewards include special spider silk rope item useful for climbing/exploration. Threat: a mine idled after two miners died, its foreman (Kettil Marsh) and crew refusing to go back. Giver motive: the mine's owners are paying to get ore moving before the crew scatters for good. Consequence: the crew leaves for other work if the mine stays shut - stated in prose, not wired."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "guild_contract_bandits",
 	"title": "Bandit Elimination Contract",
-	"description": "Now that you've proven yourself, Guildmaster Vorn has a proper contract for you. A band of bandits has set up camp near the road to Millbrook, ambushing merchants. Eliminate their leader and scatter the gang.",
+	"description": "The road south to Millbrook has lost three wagons this month to a camp working out of the tree line, and the grain factors who use that road pooled coin to put a proper end to it - not a toll, not a truce, an end. Vorn wants the captain's head and the gang scattered; the merchants are paying by the head, and he told them plainly that means blood, not negotiation. The captain's purse holds more than a road crew earns in a season, all of it new-struck and none of it Dalhurst mint, and nobody left in the camp can say who hired them in the first place. Vorn does not ask twice about it - the contract's closed, the fee's paid, and the coin is yours to keep.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,28 +10,28 @@
 	"objectives": [
 		{
 			"id": "find_camp",
-			"description": "Locate the bandit camp south of Dalhurst",
+			"description": "Find where the gang's been working the Millbrook road from",
 			"type": "reach",
 			"target": "bandit_camp_south",
 			"required_count": 1
 		},
 		{
 			"id": "kill_bandits",
-			"description": "Eliminate the bandits",
+			"description": "Break the gang holding the south road",
 			"type": "kill",
 			"target": "human_bandit",
 			"required_count": 8
 		},
 		{
 			"id": "kill_leader",
-			"description": "Defeat the Bandit Captain",
+			"description": "Kill the captain the merchants paid to be rid of",
 			"type": "kill",
 			"target": "bandit_captain",
 			"required_count": 1
 		},
 		{
 			"id": "return_contract",
-			"description": "Report completion to Guildmaster Vorn",
+			"description": "Report to Vorn that the south road is clear",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1
@@ -50,5 +50,6 @@
 		}
 	},
 	"prerequisites": ["guild_initiation"],
-	"next_quest": "guild_contract_spiders"
+	"next_quest": "guild_contract_spiders",
+	"notes": "Threat: grain factors losing wagons on the Millbrook road. Giver motive: paid by the head, Vorn wants results, not diplomacy. Consequence: refusing costs the factors their route - stated in prose, not wired. Soulstone undercurrent touchpoint (quest_web.md #6): the captain's purse is new-struck coin, none of it Dalhurst mint, and nobody in the camp can say who hired them - never named as a pattern, Vorn shrugs it off since the contract is closed and paid. Known duplicate pair with adventurers_04_bandit_contract (same giver, same 'eliminate a bandit camp' shape) - deliberately differentiated: adventurers_04 is the eastern outpost hired by 'the merchants' collectively with a written word ('eliminate') Vorn wants interpreted; this is the south road camp hired by named grain factors who want blood, not nuance, and it is the file carrying the soulstone touchpoint."
 }

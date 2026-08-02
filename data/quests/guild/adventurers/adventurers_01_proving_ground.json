@@ -1,7 +1,7 @@
 {
 	"id": "adventurers_01_proving_ground",
 	"title": "Proving Ground",
-	"description": "Guildmaster Vorn of the Dalhurst Adventurer's Guild is willing to consider you for membership, but first you must prove yourself. Clear out a pack of wolves that has been terrorizing travelers on the road to Thornfield.",
+	"description": "Guildmaster Vorn does not know you, and the Guild's name is the only thing he has to sell - he will not put it on a stranger until he has watched that stranger kill something and come back to say so. A wolf pack denned east of the Thornfield road has killed two merchants this month, and Vorn is out of local hands willing to go near it. Clear the den and bring back proof. Fail, and you are just one more armed drifter asking for work in Dalhurst.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "kill_wolves",
-			"description": "Slay 8 wolves menacing the road to Thornfield",
+			"description": "Kill the wolves that have already cost two merchants their lives",
 			"type": "kill",
 			"target": "wolf",
 			"required_count": 8,
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "return_to_guild",
-			"description": "Return to Guildmaster Vorn with proof of your deed",
+			"description": "Bring Vorn proof, and see if the Guild's name is worth having",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1,
@@ -38,5 +38,5 @@
 	},
 	"prerequisites": [],
 	"next_quest": "adventurers_02_pest_control",
-	"notes": "Rank: Initiate. Basic combat test. Wolves spawn on roads between Dalhurst and Thornfield."
+	"notes": "Rank: Initiate. Basic combat test. Wolves spawn on roads between Dalhurst and Thornfield. Threat: a wolf pack has killed two merchants on the Thornfield road this month. Giver motive: Vorn's only asset is the Guild's reputation and he will not vouch for an untested stranger. Consequence: failing or refusing means no membership and the road stays bad; no second path to wire, this is a combat-only entry test. Known duplicate pair with guild_initiation (same giver, same wolves) - deliberately differentiated: this is Vorn's own personal test of a walk-in stranger, guild_initiation is a paid contract from a named client (Oda Renn) handed to the newest hire."
 }

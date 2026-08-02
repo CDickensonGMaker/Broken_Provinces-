@@ -1,7 +1,7 @@
 {
 	"id": "adventurers_12_legendary_contract",
 	"title": "The Impossible Contract",
-	"description": "There's a contract that's been on the Guild board for years. Everyone who's tried it has failed or died. The deepest level of Willow Dale, sealed by the ancients, is said to contain unimaginable treasure - and unimaginable danger. Vorn says if you can clear it, you'll be the first adventurer to do so in the Guild's history. This is the impossible contract. Are you ready?",
+	"description": "The impossible contract has sat on the Guild board for years, and everyone who tried it is dead or worse. Vorn is calling it in now because word reached him that the Iron Blades bought a second key-fragment map off a fence in Thornfield. If a rival crew beats the Guild to that vault, every client who might have hired the Guild for something this dangerous hires them instead. Clear it first, and the Guild's name is worth what it's always claimed to be.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "find_ancient_key",
-			"description": "Locate the three ancient key fragments in Willow Dale",
+			"description": "Find the three key fragments before the Iron Blades' map does the job for them",
 			"type": "collect",
 			"target": "ancient_key_fragment",
 			"required_count": 3,
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "unlock_deepest_level",
-			"description": "Unlock the sealed door to the deepest level",
+			"description": "Open the door the Guild has been locked out of for years",
 			"type": "interact",
 			"target": "willow_dale_sealed_door",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "explore_deepest_level",
-			"description": "Navigate the ancient halls",
+			"description": "Cross the ancient halls no one has mapped and lived",
 			"type": "reach",
 			"target": "willow_dale_throne_room",
 			"required_count": 1,
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "defeat_ancient_guardian",
-			"description": "Defeat the Ancient Guardian boss",
+			"description": "Put down what's guarded this vault since before the Guild existed",
 			"type": "kill",
 			"target": "ancient_guardian",
 			"required_count": 1,
@@ -42,7 +42,7 @@
 		},
 		{
 			"id": "claim_legendary_artifact",
-			"description": "Claim the legendary artifact from the throne",
+			"description": "Take the vault's prize before a second team gets the chance",
 			"type": "collect",
 			"target": "blade_of_legends",
 			"required_count": 1,
@@ -62,5 +62,5 @@
 	},
 	"prerequisites": ["adventurers_11_guild_politics"],
 	"next_quest": "adventurers_13_champion",
-	"notes": "Rank: Elite. Multi-stage epic quest. Key fragments hidden in Willow Dale levels 1-3. Ancient Guardian is raid-tier boss. Blade of Legends is best weapon in game. Legendary Cloak gives massive stat bonuses. Completion unlocks Champion trial."
+	"notes": "Rank: Elite. Multi-stage epic quest. Key fragments hidden in Willow Dale levels 1-3. Ancient Guardian is raid-tier boss. Blade of Legends is best weapon in game. Legendary Cloak gives massive stat bonuses. Completion unlocks Champion trial. Threat: a rival crew (the Iron Blades, established in adventurers_09) racing for the same vault. Giver motive: the Guild's future business depends on being first to a job this legendary. Consequence: losing the race costs future clients - stated in prose, not wired; no rival encounter exists in the dungeon."
 }

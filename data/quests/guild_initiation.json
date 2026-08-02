@@ -1,7 +1,7 @@
 {
 	"id": "guild_initiation",
 	"title": "Proving Ground",
-	"description": "Guildmaster Vorn of the Dalhurst Adventurer's Guild is willing to consider you for membership, but first you must prove yourself. Clear out a pack of wolves that has been terrorizing travelers on the road to Thornfield.",
+	"description": "A hauler named Oda Renn paid the Guild three days ago to clear the wolf den crowding the Thornfield road, and the contract has sat on Vorn's board since - not because it is beneath him, but because sending a walk-in applicant at a live paying contract is a cheap way to see what they are made of before he spends real coin on them. The den has an alpha in it now, big enough that Oda's own drivers will not go near the tree line. Clear it, and the fee moves from the board to your purse. Leave it, and Oda takes her custom to Thornfield's rangers instead.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,28 +10,28 @@
 	"objectives": [
 		{
 			"id": "travel_wolf_den",
-			"description": "Find the wolf den east of Dalhurst",
+			"description": "Find the den Oda's drivers won't go near, east of Dalhurst",
 			"type": "reach",
 			"target": "wolf_den_dalhurst",
 			"required_count": 1
 		},
 		{
 			"id": "kill_wolves",
-			"description": "Slay the wolves menacing the road",
+			"description": "Kill the wolves worrying Oda's wagons",
 			"type": "kill",
 			"target": "wolf",
 			"required_count": 6
 		},
 		{
 			"id": "kill_alpha",
-			"description": "Defeat the Alpha Wolf",
+			"description": "Put down the alpha holding the den together",
 			"type": "kill",
 			"target": "dire_wolf",
 			"required_count": 1
 		},
 		{
 			"id": "return_to_guild",
-			"description": "Return to Guildmaster Vorn with proof of your deed",
+			"description": "Collect Oda's fee from Vorn and see if it becomes a standing account",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1
@@ -49,5 +49,6 @@
 		}
 	},
 	"prerequisites": [],
-	"next_quest": "guild_contract_bandits"
+	"next_quest": "guild_contract_bandits",
+	"notes": "Threat: a hauler's route is blocked and her paid contract is going stale on the board. Giver motive: Vorn tests unproven applicants against small live contracts instead of risking real coin on them untested. Consequence: refusing or failing loses Oda Renn's account to Thornfield's rangers - stated in prose, not wired (no flag exists for a lost client). Known duplicate pair with adventurers_01_proving_ground (same giver, same wolves, different objectives) - deliberately differentiated: adventurers_01 is Vorn's own personal test of a walk-in stranger, this is a paid contract from a named client handed to the newest hire."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "adventurers_07_dungeon_delve",
 	"title": "Into the Deep",
-	"description": "An unexplored section of Willow Dale was recently uncovered by a cave-in. The Guild wants it mapped and cleared of threats. Any artifacts or treasure you find are yours to keep - standard dungeon delving contract. Watch for traps.",
+	"description": "A cave-in opened a section of Willow Dale nobody has mapped, and Vorn has heard - from where, he won't say - that the Thieves Guild already sent someone in to look. Whatever is down there is Guild property only if the Guild's boot prints are the first ones in the dust. Map it, clear it, and anything you carry out is yours to keep. Watch for traps, and watch for anyone else's torchlight.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "enter_deep_section",
-			"description": "Enter the newly discovered section of Willow Dale",
+			"description": "Get into the new section before whoever else is looking does",
 			"type": "reach",
 			"target": "willow_dale_deep",
 			"required_count": 1,
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "map_chambers",
-			"description": "Explore all chambers in the deep section",
+			"description": "Map the chambers before somebody else does",
 			"type": "reach",
 			"target": "willow_dale_deep_end",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "defeat_guardians",
-			"description": "Defeat the undead guardians",
+			"description": "Cut through the undead standing between you and the vault",
 			"type": "kill",
 			"target": "skeleton_warrior",
 			"required_count": 8,
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "recover_artifact",
-			"description": "Recover the ancient artifact from the vault",
+			"description": "Take the vault's artifact before it belongs to someone else's claim",
 			"type": "collect",
 			"target": "ancient_amulet",
 			"required_count": 1,
@@ -62,5 +62,5 @@
 	},
 	"prerequisites": ["adventurers_06_monster_hunt"],
 	"next_quest": "adventurers_08_ogre_problem",
-	"notes": "Rank: Veteran. Dungeon exploration with traps and puzzles. Willow Dale deep section. Optional puzzle for bonus rewards. Boots give trap detection bonus."
+	"notes": "Rank: Veteran. Dungeon exploration with traps and puzzles. Willow Dale deep section. Optional puzzle for bonus rewards. Boots give trap detection bonus. Threat: a rival claim on the same vault - the Thieves Guild, per Vorn's unconfirmed word. Giver motive: territorial control of a Guild asset, not treasure for its own sake. Consequence: arriving second costs the Guild the claim - stated in prose only, no rival encounter or flag exists to wire it; deferred."
 }

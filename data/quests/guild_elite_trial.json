@@ -1,7 +1,7 @@
 {
 	"id": "guild_elite_trial",
 	"title": "The Elite Trial",
-	"description": "You've proven yourself capable, but Guildmaster Vorn now offers something few achieve: a chance to become an Elite member. The trial is simple in concept, brutal in execution. First, you must clear the deepest chamber of Willow Dale ruins alone - no backup, no rescue. Then, you'll face Katrina Steelwind, the Guild's champion, in single combat. Only those who pass both tests earn the black seal of an Elite adventurer - and access to the Guild's most dangerous contracts.",
+	"description": "You've proven yourself capable, but Guildmaster Vorn now offers something few achieve: a chance to become an Elite member. The trial is simple in concept, brutal in execution. First, you must clear the deepest chamber of Willow Dale ruins alone - no backup, no rescue. Then you'll face Katrina Steelwind, the Guild's champion, in single combat; she hasn't lost a challenge in three years, and Vorn is plain that a loss will cost her more than the bout - the fighters under her stop deferring to a champion who's been beaten. Only those who pass both tests earn the black seal of an Elite adventurer, and the Guild's most dangerous, best-paying contracts with it.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "accept_trial",
-			"description": "Accept the Elite Trial from Guildmaster Vorn",
+			"description": "Accept the Elite Trial, and what it will cost Katrina if you win",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "clear_willow_dale_depths",
-			"description": "Survive the depths of Willow Dale and defeat the guardian",
+			"description": "Survive the depths of Willow Dale alone, and beat what's guarding it",
 			"type": "kill",
 			"target": "willow_dale_guardian",
 			"required_count": 1
@@ -45,14 +45,14 @@
 		},
 		{
 			"id": "duel_katrina",
-			"description": "Defeat Katrina Steelwind in honorable combat",
+			"description": "Beat Katrina Steelwind, undefeated three years running",
 			"type": "kill",
 			"target": "katrina_steelwind",
 			"required_count": 1
 		},
 		{
 			"id": "receive_elite_rank",
-			"description": "Receive your Elite rank from Guildmaster Vorn",
+			"description": "Take the black seal from Vorn",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1
@@ -72,5 +72,5 @@
 	"prerequisites": ["guild_contract_troll"],
 	"next_quest": "guild_contract_elite",
 	"unlocks_quests": ["guild_contract_elite"],
-	"notes": "Major trial quest for guild advancement. Two-part challenge: solo dungeon clear in Willow Dale depths (hard difficulty enemies + boss), then duel with NPC champion back at guild hall. Katrina is non-lethal - she yields at 25% HP and player yields if reduced to 25% (quest fails, can retry). Unlocks elite contract tier and special vendor access. Elite seal grants 10% discount at all Guild-affiliated merchants."
+	"notes": "Major trial quest for guild advancement. Two-part challenge: solo dungeon clear in Willow Dale depths (hard difficulty enemies + boss), then duel with NPC champion back at guild hall. Katrina is non-lethal - she yields at 25% HP and player yields if reduced to 25% (quest fails, can retry). Unlocks elite contract tier and special vendor access. Elite seal grants 10% discount at all Guild-affiliated merchants. Threat/stake: Katrina's three-year undefeated standing among the Guild's fighters, and what a loss does to her authority over them. Giver motive: Vorn only staffs the most dangerous contracts with fighters tested against the best the Guild has. Consequence for Katrina stated in prose; not wired since this is a single duel with no branch."
 }

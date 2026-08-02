@@ -1,7 +1,7 @@
 {
 	"id": "guild_contract_elite",
 	"title": "The Thornfield Terror",
-	"description": "Your first Elite contract. For weeks, something has been slaughtering livestock and destroying crops around Thornfield - entire fields reduced to ash, animals torn apart with inhuman strength. The locals whisper of a chimera: a beast with the body of a lion, wings of a dragon, and breath of fire. Standard adventurers wouldn't survive the encounter. That's why Vorn is sending you. Find the beast's lair in the hills east of Thornfield, and put it down. This is what Elite pay is for.",
+	"description": "Your first Elite contract. Farmer Toman Ashcroft lost eleven sheep and both his dogs in a single night, and three other farms have stopped grazing anything east of the tree line - fields reduced to ash, animals torn apart with inhuman strength. The locals whisper of a chimera: a beast with the body of a lion, wings of a dragon, and breath of fire. Thornfield's council has already voted to abandon the eastern fields for the season if it isn't dead by first frost. Standard adventurers wouldn't survive the encounter, which is why Vorn is sending you. Find the beast's lair in the hills east of Thornfield, and put it down. This is what Elite pay is for.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,21 +10,21 @@
 	"objectives": [
 		{
 			"id": "investigate_thornfield_farms",
-			"description": "Investigate the destroyed farms around Thornfield",
+			"description": "See what's left of the farms east of Thornfield",
 			"type": "reach",
 			"target": "thornfield_farmlands",
 			"required_count": 1
 		},
 		{
 			"id": "question_survivors",
-			"description": "Question survivors about the creature",
+			"description": "Ask Toman Ashcroft and the other farmers what they saw",
 			"type": "talk",
 			"target": "thornfield_farmer",
 			"required_count": 1
 		},
 		{
 			"id": "track_beast",
-			"description": "Track the beast to its lair in the eastern hills",
+			"description": "Track the chimera to its lair before the council abandons the fields",
 			"type": "reach",
 			"target": "chimera_lair",
 			"required_count": 1
@@ -45,7 +45,7 @@
 		},
 		{
 			"id": "return_to_vorn_elite",
-			"description": "Return to Guildmaster Vorn with proof of the kill",
+			"description": "Bring Vorn proof the eastern fields can be grazed again",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1
@@ -65,5 +65,5 @@
 	},
 	"prerequisites": ["guild_elite_trial"],
 	"next_quest": "",
-	"notes": "High-tier boss encounter for Elite guild members only. Chimera is boss-level enemy (level 25-30) with fire breath AoE attacks, flight mobility, and high HP. Lair is cave dungeon east of Thornfield with lesser enemies leading up to boss chamber. Chimera heart is valuable crafting material. Chimera scale armor reward is high-tier equipment with fire resistance. This quest establishes Elite contracts as significantly more dangerous and lucrative than standard guild work."
+	"notes": "High-tier boss encounter for Elite guild members only. Chimera is boss-level enemy (level 25-30) with fire breath AoE attacks, flight mobility, and high HP. Lair is cave dungeon east of Thornfield with lesser enemies leading up to boss chamber. Chimera heart is valuable crafting material. Chimera scale armor reward is high-tier equipment with fire resistance. This quest establishes Elite contracts as significantly more dangerous and lucrative than standard guild work. Threat: a named farmer, Toman Ashcroft, has lost his flock, and Thornfield's council has a first-frost deadline to abandon the eastern fields. Giver motive: only Elite contractors are trusted with something this dangerous. Consequence: the council's deadline is stated in prose, not a mechanical clock - the fields stay lost if the player is too slow, but nothing currently tracks the date."
 }

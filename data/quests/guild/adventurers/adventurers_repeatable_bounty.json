@@ -1,7 +1,7 @@
 {
 	"id": "adventurers_repeatable_bounty",
 	"title": "Guild Bounty Board",
-	"description": "The Guild always has work for capable adventurers. Check the bounty board for available contracts - monster extermination, bandit clearing, escort jobs. Rewards scale with difficulty. Simple work for a Champion, but the gold is steady.",
+	"description": "Vorn keeps a running list nailed by the door - names, gold, and how dead he needs something. Take a job off it, finish it, and get paid on the spot. No ceremony, no debrief. Just the next name on the board if you want it.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "complete_bounty",
-			"description": "Complete the selected bounty contract",
+			"description": "Finish whatever the board says needs doing",
 			"type": "kill",
 			"target": "bounty_target",
 			"required_count": 1,
@@ -19,7 +19,7 @@
 		},
 		{
 			"id": "claim_reward",
-			"description": "Return to the Guild for payment",
+			"description": "Collect payment from Vorn, no questions asked",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1,
@@ -37,5 +37,5 @@
 		}
 	},
 	"prerequisites": ["adventurers_13_champion"],
-	"notes": "REPEATABLE. Available after Champion rank. Bounty targets rotate weekly. Includes: bandit leaders, monster dens, escort missions, dungeon clearing. Rewards scale with target difficulty. Can complete unlimited times. Works with BountyManager system."
+	"notes": "REPEATABLE. Available after Champion rank. Bounty targets rotate weekly. Includes: bandit leaders, monster dens, escort missions, dungeon clearing. Rewards scale with target difficulty. Can complete unlimited times. Works with BountyManager system. This is a system wrapper by design and deliberately carries no plot per the batch brief - only Vorn's voice, no invented stake."
 }

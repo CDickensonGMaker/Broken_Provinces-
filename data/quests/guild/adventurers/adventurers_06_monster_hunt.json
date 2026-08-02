@@ -1,7 +1,7 @@
 {
 	"id": "adventurers_06_monster_hunt",
 	"title": "The Beast of Millbrook",
-	"description": "Something large and dangerous has been stalking the woods near Millbrook. Livestock mutilated, travelers disappearing. The locals are terrified. Track down the beast and end its reign of terror. This is a Veteran-level contract - succeed and you'll earn the promotion.",
+	"description": "Millbrook's flocks are down by half since planting season. Shepherd Ansel Crake lost the last of his sheep two nights ago and has stopped taking his cart out after dark. Vorn is calling this a Veteran contract because whatever is doing it has already ducked three separate hunting parties from the village - it is smart enough that dead livestock is the good outcome.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "investigate_millbrook",
-			"description": "Speak to locals in Millbrook about the beast",
+			"description": "Ask the Millbrook elder what Ansel Crake and the others have lost",
 			"type": "talk",
 			"target": "millbrook_elder",
 			"required_count": 1,
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "find_tracks",
-			"description": "Track the beast to its lair",
+			"description": "Track the beast past where three hunting parties already turned back",
 			"type": "reach",
 			"target": "millbrook_beast_lair",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "hunt_beast",
-			"description": "Slay the dire wolf alpha",
+			"description": "Kill the dire wolf alpha before Millbrook loses anything else",
 			"type": "kill",
 			"target": "dire_wolf",
 			"required_count": 1,
@@ -62,5 +62,5 @@
 	},
 	"prerequisites": ["adventurers_05_missing_team"],
 	"next_quest": "adventurers_07_dungeon_delve",
-	"notes": "Rank: Member → Veteran (promotion). Monster hunt with tracking mechanics. Dire wolf spawns in den near Millbrook. Promotion to Veteran rank on completion."
+	"notes": "Rank: Member -> Veteran (promotion). Monster hunt with tracking mechanics. Dire wolf spawns in den near Millbrook. Promotion to Veteran rank on completion. Threat: a named shepherd, Ansel Crake, has lost his whole flock, and the village's own hunting parties have failed three times. Giver motive: Vorn only calls something Veteran-tier once local hunters have already failed. Consequence: more of Millbrook's livestock and, eventually, people, are named as at risk if it isn't found - stated in prose, not wired."
 }
