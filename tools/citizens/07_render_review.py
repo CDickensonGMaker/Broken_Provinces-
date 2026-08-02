@@ -4,12 +4,14 @@
   citizen_variant_wall.png         garb toggles and hair styles on man and woman
   citizen_scale_check.png          child beside adult
   citizen_skirt_walk.png           six posed frames of the woman's skirt
+  citizen_robe_walk_<MASTER>.png   the same arc for the robe, man and woman
 
 The masters are rest-pose, so a plain copy of the mesh data renders identically
 to the rigged object - no evaluation, no armature, nothing to go stale. The
-skirt strip is the exception and the reason it exists: it POSES six independent
-copies of the rig through a walk arc and renders the deformed cloth, because
-that is the one claim a still cannot make.
+cloth strips are the exception and the reason they exist: they POSE six
+independent copies of the rig through a walk arc and render the deformed cloth,
+because that is the one claim a still cannot make. Every deforming garment gets
+one - the skirt earned the gate, the robe inherits it.
 
 Run: blender -b --factory-startup --python tools/citizens/07_render_review.py
 """
@@ -161,17 +163,17 @@ def turnaround(master):
 GARB_SETS = {
     "MAN": [
         (["garb_vest_plain_MAN", "garb_pants_MAN", "garb_sleeve_long_MAN"], "vest+pants+long"),
-        (["garb_vest_laced_MAN", "garb_pants_MAN", "garb_sleeve_rolled_MAN"], "laced+rolled"),
+        (["garb_robe_MAN", "garb_sleeve_long_MAN"], "robe"),
         (["garb_vest_plain_MAN", "garb_pants_MAN", "garb_sleeve_none_MAN",
           "garb_apron_MAN"], "apron+sleeveless"),
-        (["garb_vest_plain_MAN", "garb_pants_MAN", "garb_hood_MAN"], "hood"),
+        (["garb_robe_MAN", "garb_sleeve_long_MAN", "garb_hood_MAN"], "robe+hood"),
     ],
     "WOMAN": [
         (["garb_vest_plain_WOMAN", "garb_pants_WOMAN", "garb_sleeve_long_WOMAN"], "vest+pants+long"),
-        (["garb_vest_laced_WOMAN", "garb_skirt_WOMAN", "garb_sleeve_rolled_WOMAN"], "laced+skirt"),
+        (["garb_vest_plain_WOMAN", "garb_skirt_WOMAN", "garb_sleeve_rolled_WOMAN"], "skirt+rolled"),
         (["garb_vest_plain_WOMAN", "garb_skirt_WOMAN", "garb_sleeve_none_WOMAN",
           "garb_apron_WOMAN"], "apron+sleeveless"),
-        (["garb_vest_plain_WOMAN", "garb_skirt_WOMAN", "garb_hood_WOMAN"], "hood"),
+        (["garb_robe_WOMAN", "garb_sleeve_long_WOMAN", "garb_hood_WOMAN"], "robe+hood"),
     ],
 }
 
@@ -210,7 +212,7 @@ def scale_check():
                       "garb_sleeve_long_MAN", "hair_short_crop_MAN"], "man dressed"),
         (5.5, "BOY", ["garb_vest_plain_BOY", "garb_pants_BOY",
                       "garb_sleeve_rolled_BOY", "hair_shaggy_BOY"], "boy dressed"),
-        (6.4, "WOMAN", ["garb_vest_laced_WOMAN", "garb_skirt_WOMAN",
+        (6.4, "WOMAN", ["garb_vest_plain_WOMAN", "garb_skirt_WOMAN",
                         "garb_sleeve_long_WOMAN", "hair_long_braid_WOMAN"], "woman dressed"),
         (7.3, "GIRL", ["garb_vest_plain_GIRL", "garb_skirt_GIRL",
                        "hair_bun_GIRL"], "girl dressed"),
@@ -263,6 +265,27 @@ def _deformed(ob):
     return co, edges
 
 
+def _clear_pose(rig):
+    """Zero every pose bone before the walk arc is applied.
+
+    MEASURED 2026-08-02: the master rig carries a stale non-identity pose on 34
+    of its 41 bones - a leftover of the RECON source, held harmless only by
+    `pose_position = 'REST'`, which is also what stage 08 exports. Flipping a
+    clone to 'POSE' for the walk strip therefore applied that stale pose on TOP
+    of the stride, and the strip was measuring both.
+
+    The skirt never caught it because it is weighted almost entirely to Hips and
+    rode the stale pose as a rigid body - no edge changes length. The robe spans
+    Hips to Spine2 and read 1.508x shear at a ZERO-degree stride, which is what
+    exposed this. A garment must be judged against the rest pose the GLB ships,
+    and nothing else.
+    """
+    from mathutils import Matrix
+    for pb in rig.pose.bones:
+        pb.matrix_basis = Matrix.Identity(4)
+    bpy.context.view_layer.update()
+
+
 def _pose_legs(rig, degrees, axis):
     for side, sign in (("Left", 1.0), ("Right", -1.0)):
         for bone, share in (("UpLeg", 1.0), ("Leg", -0.55)):
@@ -294,26 +317,17 @@ def _clone_posed(master, worn, i, degrees, axis):
             if m.type == 'ARMATURE':
                 m.object = rig
         made.append(ob)
+    _clear_pose(rig)
     _pose_legs(rig, degrees, axis)
     return rig, made
 
 
-def skirt_walk_strip():
-    """Six posed frames of the woman's skirt through a walk arc.
-
-    The swing axis is MEASURED, not assumed: the arc is applied on the thigh's
-    local X, the toe's world displacement is read back, and if the leg moved
-    sideways instead of forward the axis is swapped and the strip rebuilt. The
-    cloth is then checked for shear by comparing every skirt edge against its
-    rest length.
-    """
-    worn = ["garb_vest_laced_WOMAN", "garb_skirt_WOMAN", "garb_sleeve_long_WOMAN",
-            "hair_long_braid_WOMAN"]
-    rest_co, rest_edges = _deformed(bpy.data.objects["garb_skirt_WOMAN"])
-
+def _swing_axis(master, worn, tag):
+    """MEASURED, not assumed: apply the arc on the thigh's local X, read the
+    toe's world displacement back, and swap to Z if the leg went sideways."""
     def toe_swing(axis):
         clear_render_scene()
-        rig, _ = _clone_posed("WOMAN", worn, 0, WALK_ARC[0], axis)
+        rig, _ = _clone_posed(master, worn, 0, WALK_ARC[0], axis)
         base = (rig.matrix_world @ rig.pose.bones["mixamorig:LeftToeBase"].head)
         _pose_legs(rig, WALK_ARC[4], axis)
         tip = (rig.matrix_world @ rig.pose.bones["mixamorig:LeftToeBase"].head)
@@ -323,22 +337,36 @@ def skirt_walk_strip():
 
     axis = 0
     d = toe_swing(axis)
-    print("SKIRT axis probe X: toe swing dx=%.4f dy=%.4f dz=%.4f" % (d.x, d.y, d.z))
+    print("%s axis probe X: toe swing dx=%.4f dy=%.4f dz=%.4f" % (tag, d.x, d.y, d.z))
     if abs(d.y) <= abs(d.x):
         axis = 2
         d = toe_swing(axis)
-        print("SKIRT axis probe Z: toe swing dx=%.4f dy=%.4f dz=%.4f" % (d.x, d.y, d.z))
+        print("%s axis probe Z: toe swing dx=%.4f dy=%.4f dz=%.4f" % (tag, d.x, d.y, d.z))
     assert abs(d.y) > abs(d.x), \
         "no thigh axis swings the leg fore/aft (dx=%.4f dy=%.4f)" % (d.x, d.y)
-    print("SKIRT walk swings on thigh local axis %s, toe travel %.3f m"
-          % ("XYZ"[axis], d.y))
+    print("%s walk swings on thigh local axis %s, toe travel %.3f m"
+          % (tag, "XYZ"[axis], d.y))
+    return axis
+
+
+def cloth_walk_strip(master, worn, cloth, tag, out_png, limit=1.40):
+    """Six posed frames of a deforming garment through a walk arc.
+
+    This is the one claim a still cannot make. Six independent copies of the rig
+    are posed through the arc, the cloth is evaluated through the armature, and
+    every edge is compared against its rest length. A garment that shears is one
+    that will tear open on a walking citizen, and no turnaround render shows it.
+    """
+    rest_co, rest_edges = _deformed(bpy.data.objects[cloth])
+    axis = _swing_axis(master, worn, tag)
 
     clear_render_scene()
     worst = 0.0
     for i, a in enumerate(WALK_ARC):
-        _clone_posed("WOMAN", worn, i, a, axis)
-        skirt = bpy.data.objects["_rv_garb_skirt_WOMAN_%d" % i]
-        co, edges = _deformed(skirt)
+        _clone_posed(master, worn, i, a, axis)
+        piece = bpy.data.objects["_rv_%s_%d" % (cloth, i)]
+        co, edges = _deformed(piece)
+        del edges
         stretch = 1.0
         for e0, e1 in rest_edges:
             rest = (rest_co[e0] - rest_co[e1]).length
@@ -347,11 +375,11 @@ def skirt_walk_strip():
                 stretch = max(stretch, now / rest)
         worst = max(worst, stretch)
         hem = min(c.z for c in co)
-        print("SKIRTDEF frame %d thigh %+.0f deg  max_edge_stretch=%.3f  hem_z=%.3f"
-              % (i, a, stretch, hem))
-    print("SKIRTDEF worst edge stretch across the arc: %.3f" % worst)
-    assert worst < 1.40, \
-        "skirt shears: an edge stretches %.2fx across the walk arc" % worst
+        print("%sDEF frame %d thigh %+.0f deg  max_edge_stretch=%.3f  hem_z=%.3f"
+              % (tag, i, a, stretch, hem))
+    print("%sDEF worst edge stretch across the arc: %.3f" % (tag, worst))
+    assert worst < limit, \
+        "%s shears: an edge stretches %.2fx across the walk arc" % (cloth, worst)
 
     for i, a in enumerate(WALK_ARC):
         cu = bpy.data.curves.new("_rv_txt_walk%d" % i, type='FONT')
@@ -370,8 +398,31 @@ def skirt_walk_strip():
         ob.hide_render = not ob.name.startswith("_rv_")
     camera_over(-SLOT_W * 0.55, SLOT_W * (len(WALK_ARC) - 1) + SLOT_W * 0.55,
                 -0.30, 1.95, 768, 300)
-    render_to(os.path.join(REVIEW, "citizen_skirt_walk.png"))
+    render_to(os.path.join(REVIEW, out_png))
     clear_render_scene()
+
+
+def skirt_walk_strip():
+    cloth_walk_strip("WOMAN",
+                     ["garb_vest_plain_WOMAN", "garb_skirt_WOMAN",
+                      "garb_sleeve_long_WOMAN", "hair_long_braid_WOMAN"],
+                     "garb_skirt_WOMAN", "SKIRT", "citizen_skirt_walk.png")
+
+
+def robe_walk_strip():
+    """The robe gets the SAME gate as the skirt, because it is the same problem.
+
+    It is a shoulder-to-shin tube weighted half to the spine and half to two
+    thighs; if the hips-to-thigh ramp were wrong it would tear at the knee
+    exactly as a linearly-ramped skirt did. Man and woman both, since the robe
+    is the one garment built for every master.
+    """
+    for master, hair in (("MAN", "hair_short_crop_MAN"),
+                         ("WOMAN", "hair_long_braid_WOMAN")):
+        cloth_walk_strip(master,
+                         ["garb_robe_%s" % master, "garb_sleeve_long_%s" % master, hair],
+                         "garb_robe_%s" % master, "ROBE_%s" % master,
+                         "citizen_robe_walk_%s.png" % master)
 
 
 def inventory_dump():
@@ -404,6 +455,7 @@ def main():
     scale_check()
     hair_wall()
     skirt_walk_strip()
+    robe_walk_strip()
     print("STAGE07_OK")
 
 

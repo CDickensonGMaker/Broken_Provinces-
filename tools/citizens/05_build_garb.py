@@ -6,8 +6,13 @@ takes its skin weights from the nearest body vertex - the body's weights are
 already correct, so nothing is hand-weighted except the skirt, which is
 deliberately weighted to the thighs so it swings instead of splitting.
 
+EVERY piece here changes the OUTLINE - that is the only thing a mesh is allowed
+to be (EQ_TECHNIQUE Rule 3). Colour, laces, buckles, aprons-fronts and armour
+are pages in the garb atlas, and each garment is UV'd into PAGE 0 so the runtime
+dresser can slide it to whichever page the citizen's archetype names.
+
 Naming contract (the runtime dresser toggles on the prefix):
-    garb_vest_plain_<MASTER>   garb_vest_laced_<MASTER>
+    garb_vest_plain_<MASTER>   garb_robe_<MASTER>       (replaces vest+legs)
     garb_pants_<MASTER>        garb_skirt_<MASTER>      (woman/girl only)
     garb_sleeve_long_<MASTER>  garb_sleeve_rolled_<MASTER>  garb_sleeve_none_<MASTER>
     garb_apron_<MASTER>        garb_hood_<MASTER>
@@ -27,15 +32,15 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from citizen_common import (STAGE, TEX_GARB, MAT_GARB, MASTERS, open_stage,
                             save_blend, purge, tri_count, banner, report_floaters,
                             get_or_make_image_material, armature_bind,
-                            new_mesh_object, flat_uv, island_count)
+                            new_mesh_object, flat_uv, island_count,
+                            GARB_ZONE_UV, GARB_STRIDE)
 
-# garb palette zones as UV rects on the 64x64 placeholder (u0, v0, u1, v1)
-ZONE = {
-    "vest":    (0.02, 0.52, 0.48, 0.98),
-    "pants":   (0.52, 0.52, 0.98, 0.98),
-    "sleeves": (0.02, 0.02, 0.48, 0.48),
-    "extra":   (0.52, 0.02, 0.98, 0.48),
-}
+# Zone UV rects INSIDE PAGE 0 of the garb atlas. Every garment is authored on
+# page 0 and the runtime dresser slides it to the page its archetype names, so
+# every UV here must satisfy u,v < 0.25 - a garment whose UVs straddle a page
+# boundary smears two outfits together the moment it moves, and it looks like a
+# texture bug rather than a UV bug. Stages 08 and 09 assert it on the export.
+ZONE = dict(GARB_ZONE_UV)
 
 HEAD_GROUPS = {"mixamorig:Head", "mixamorig:HeadTop_End", "mixamorig:Neck"}
 ARM_GROUPS = set()
@@ -252,26 +257,71 @@ def weight_skirt(garb, top_z, hem_z, half_width=1.0):
         rup.add([v.index], legs * (1.0 - side), 'REPLACE')
 
 
+def weight_robe(garb, body, top_z, hem_z, half_width):
+    """Torso weights above the waist, skirt weights below it, one seam between.
+
+    Both halves are already-proven work: the upper takes the body's own weights
+    through the nearest-vertex copy every other garment uses, and the lower gets
+    the SAME quadratic hips-to-thigh ramp and full-hem-width left/right blend
+    the skirt was tuned to, because those two numbers are what decided whether
+    the skirt swung or tore. Below-the-waist verts have every other group
+    stripped first - a spine weight left on a hem vert is a tear at the knee.
+    """
+    transfer_weights(garb, body)
+    for n in ("mixamorig:Hips", "mixamorig:LeftUpLeg", "mixamorig:RightUpLeg"):
+        if n not in garb.vertex_groups:
+            garb.vertex_groups.new(name=n)
+    hips = garb.vertex_groups["mixamorig:Hips"]
+    lup = garb.vertex_groups["mixamorig:LeftUpLeg"]
+    rup = garb.vertex_groups["mixamorig:RightUpLeg"]
+    keep = {hips.index, lup.index, rup.index}
+    others = [vg for vg in garb.vertex_groups if vg.index not in keep]
+    span = max(1e-6, top_z - hem_z)
+    hw = max(1e-6, half_width)
+    for v in garb.data.vertices:
+        if v.co.z >= top_z:
+            continue
+        member = {g.group for g in v.groups}
+        for vg in others:
+            if vg.index in member:
+                vg.remove([v.index])
+        t = min(1.0, max(0.0, (top_z - v.co.z) / span))
+        legs = 0.50 * t * t
+        side = 0.5 + 0.5 * max(-1.0, min(1.0, v.co.x / hw))
+        hips.add([v.index], 1.0 - legs, 'REPLACE')
+        lup.add([v.index], legs * side, 'REPLACE')
+        rup.add([v.index], legs * (1.0 - side), 'REPLACE')
+
+
 # --------------------------------------------------------------------------- #
 # the pieces
 # --------------------------------------------------------------------------- #
 
 def make_piece(name, verts, faces, mat, zone, rig, body, master, skirt=None,
-               weight_src=None):
+               robe=None, weight_src=None):
     ob = new_mesh_object("%s_%s" % (name, master), verts, faces)
     ob.data.materials.append(mat)
     flat_uv(ob, *ZONE[zone])
     armature_bind(ob, rig)
-    if skirt is None:
-        transfer_weights(ob, weight_src or body)
-    else:
+    if robe is not None:
+        weight_robe(ob, body, *robe)
+    elif skirt is not None:
         weight_skirt(ob, *skirt)
+    else:
+        transfer_weights(ob, weight_src or body)
     ob.hide_render = True          # variants ship hidden; the dresser enables one
     ob.hide_viewport = False
     return ob
 
 
-def build_vest(b, laced):
+def build_vest(b):
+    """The torso garment. There is exactly ONE of these and there always will be.
+
+    `garb_vest_laced` used to sit beside it: the same tube with a 4-quad strip
+    down the chest. Against the sky it was the plain vest, so it was 68 tris
+    and one mesh per master buying nothing - the textbook Rule-3 violation
+    (EQ_TECHNIQUE sec 2). Laces are paint now, on whichever page wants them.
+    """
     h = b.height
     z_hem = 0.50 * h
     z_waist = 0.635 * h
@@ -282,23 +332,49 @@ def build_vest(b, laced):
     for z, pad in ((z_hem, 1.12), (z_waist, 1.10), (z_chest, 1.09), (z_shoulder, 1.06)):
         rx, cy, ry = b.torso_profile(z)
         rings.append(ring(0.0, cy, z, rx * pad, max(ry, rx * 0.55) * pad, sides))
-    parts = [stitch(rings, sides, cap_top=True, cap_bottom=True)]
-    if laced:
-        rx, cy, ry = b.torso_profile(z_chest)
-        y = cy - max(ry, rx * 0.55) * 1.14
-        w = rx * 0.16
-        strip = []
-        sfaces = []
-        steps = 4
-        for k in range(steps + 1):
-            z = z_hem + (z_shoulder - z_hem) * k / steps
-            strip.append(Vector((-w, y, z)))
-            strip.append(Vector((w, y, z)))
-        for k in range(steps):
-            a = k * 2
-            sfaces.append((a, a + 1, a + 3, a + 2))
-        parts.append((strip, sfaces))
-    return merge(parts)
+    return merge([stitch(rings, sides, cap_top=True, cap_bottom=True)])
+
+
+def build_robe(b):
+    """Shoulder to shin in one skirted tube - the one silhouette we cannot fake.
+
+    Priests of three gods, cultists, mages and the whole Wave-5 lich/wight
+    family are a robe hem against the sky, and no amount of paint on a vest and
+    trousers makes that outline. EQ gave robes their own seven texture slots
+    (sec 1.4) for exactly this reason.
+
+    It REPLACES vest + pants + skirt rather than layering over them, so the
+    dressed total goes DOWN when a citizen wears it. Above the waist it is a
+    torso garment and takes the body's own weights; below the waist it is a
+    skirt and is weighted like one - which is why it returns the three numbers
+    weight_robe needs rather than just the mesh.
+    """
+    h = b.height
+    sides = 8
+    z_shoulder = 0.845 * h
+    z_chest = 0.755 * h
+    z_waist = 0.615 * h
+    z_hem = 0.13 * h                     # shin, clear of the ankle at 0.075
+    rings = []
+    for z, pad in ((z_shoulder, 1.06), (z_chest, 1.09), (z_waist, 1.10)):
+        rx, cy, ry = b.torso_profile(z)
+        rings.append(ring(0.0, cy, z, rx * pad, max(ry, rx * 0.55) * pad, sides))
+    rings.reverse()                      # stitch bottom-up, so cap_top is the hem side
+    rx_w, cy_w, ry_w = b.torso_profile(z_waist)
+    base_rx = rx_w
+    base_ry = max(ry_w, rx_w * 0.6)
+    steps = 3
+    lower = []
+    for k in range(1, steps + 1):
+        t = k / steps
+        z = z_waist + (z_hem - z_waist) * t
+        flare = 1.10 + 0.75 * t          # the hem swings; a straight tube tears
+        lower.append(ring(0.0, cy_w, z, base_rx * flare, base_ry * flare, sides))
+    lower.reverse()
+    rings = lower + rings                # hem first, shoulders last
+    hem_half_width = max(abs(v.x) for v in rings[0])
+    verts, faces = stitch(rings, sides, cap_top=True, cap_bottom=False)
+    return (verts, faces), z_waist, z_hem, hem_half_width
 
 
 def build_pants(b):
@@ -483,10 +559,14 @@ def main():
         female = master in ("WOMAN", "GIRL")
 
         pieces = []
-        v, f = build_vest(b, laced=False)
+        v, f = build_vest(b)
         pieces.append(make_piece("garb_vest_plain", v, f, mat, "vest", rig, body, master))
-        v, f = build_vest(b, laced=True)
-        pieces.append(make_piece("garb_vest_laced", v, f, mat, "vest", rig, body, master))
+
+        # The robe replaces vest+pants+skirt rather than layering over them.
+        # It samples the VEST zone because it IS the torso garment.
+        (v, f), r_top, r_hem, r_hw = build_robe(b)
+        pieces.append(make_piece("garb_robe", v, f, mat, "vest", rig, body, master,
+                                 robe=(r_top, r_hem, r_hw)))
 
         v, f = build_pants(b)
         pieces.append(make_piece("garb_pants", v, f, mat, "pants", rig, body, master))
@@ -529,8 +609,25 @@ def main():
         assert t <= 800, "%s over PSX budget: %d tris" % (ob.name, t)
         if ob.name.startswith("garb_pants"):
             assert t <= 120, "%s over the trouser budget: %d tris" % (ob.name, t)
+        if ob.name.startswith("garb_robe"):
+            assert t <= 110, "%s over the robe budget: %d tris" % (ob.name, t)
         assert len(ob.data.materials) == 1 and ob.data.materials[0].name == MAT_GARB
         assert ob.vertex_groups, "%s has no weights" % ob.name
+
+        # THE PAGE-0 LAW. Every garment is authored on page 0 and slid at
+        # runtime; a UV past the stride straddles a page boundary and smears two
+        # outfits together the moment the dresser moves it.
+        uvl = ob.data.uv_layers[0]
+        worst_u = max(uvl.data[li].uv[0] for p in ob.data.polygons for li in p.loop_indices)
+        worst_v = max(uvl.data[li].uv[1] for p in ob.data.polygons for li in p.loop_indices)
+        assert worst_u < GARB_STRIDE and worst_v < GARB_STRIDE, \
+            "%s UVs leave page 0 (max u=%.4f v=%.4f, stride %.2f)" \
+            % (ob.name, worst_u, worst_v, GARB_STRIDE)
+
+    names = {ob.name.rsplit("_", 1)[0] for ob in made}
+    assert "garb_vest_laced" not in names, \
+        "garb_vest_laced is back - it is a Rule-3 violation and a painted page now"
+    assert "garb_robe" in names, "the robe did not build"
     print("  garb meshes=%d total tris=%d" % (len(made), total))
 
     purge()
