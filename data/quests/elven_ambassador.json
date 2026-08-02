@@ -1,7 +1,7 @@
 {
 	"id": "elven_ambassador",
 	"title": "The Elven Embassy",
-	"description": "The Keepers have received troubling news: an Elven ambassador from Silvanost was last seen traveling toward Dalhurst, carrying a treaty that could reshape relations between the races. She never arrived. Aldric Vane believes dark forces may have intercepted her. Find the ambassador - and the treaty - before the delicate peace between humans and elves collapses.",
+	"description": "The Keepers have received troubling news: an Elven ambassador from Silvanost was last seen traveling toward Dalhurst, carrying a treaty that could reshape relations between the races. She never arrived. Severin Vane believes dark forces may have intercepted her. Find the ambassador - and the treaty - before the delicate peace between humans and elves collapses.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "aldric_vane",

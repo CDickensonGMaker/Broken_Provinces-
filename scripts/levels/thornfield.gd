@@ -636,7 +636,7 @@ func _spawn_residents() -> void:
 		add_child(npcs_container)
 
 	# The Circle's third wizard, and the only one east of the Crossroads.
-	# Dalhurst has Master Aldric and Master Helvant; she has an apprentice and
+	# Dalhurst has Master Edric Vayle and Master Helvant; she has an apprentice and
 	# a leaking roof.
 	Townsfolk.spawn_townsfolk(
 		npcs_container, Vector3(-10, 0, -8), "Master Lavinia Wyke", "thornfield_wizard",
@@ -673,3 +673,33 @@ func _spawn_residents() -> void:
 		["thornfield", "farming", "local_area", "beasts"],
 		"I do not know what it was. I know how far it carried a full-grown ox, and I would rather have not learned that.",
 		[], true, 50)
+
+	# The Temple of Time in Thornfield is a shrine-stone and a water clock under
+	# an awning. The High Chronist keeps it and says so without embarrassment.
+	# The temple building itself is a level-design call and is not made here.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(-6, 0, 4), "High Chronist Cassian Mere",
+		"high_chronist_thornfield", ZONE_ID, "church_of_chronos",
+		NPCKnowledgeProfile.Archetype.PRIEST,
+		["measured", "unhurried", "exact"],
+		["thornfield", "chronos", "prophecy", "time", "local_area"],
+		"Dalhurst has the temple. Thornfield has a stone, a water clock and me, and the hours arrive on time regardless.",
+		[], true, 55, "formal")
+
+	# The rival company the Adventurers' Guild has to deal with
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(8, 0, 3), "Captain Dane Ferrow", "iron_blades_leader",
+		ZONE_ID, "adventurers_guild", NPCKnowledgeProfile.Archetype.GUARD,
+		["cocky", "capable", "grudging"],
+		["thornfield", "adventurers_guild", "iron_blades", "contracts", "local_area"],
+		"The Iron Blades take the contracts Vorn's people are too slow to sign. That is not a rivalry, that is a calendar.",
+		[], true, 40)
+
+	# Chronos's charlatan number two, run east out of somewhere else
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(-1, 0, 14), "Seer Ambrose Tine", "false_seer_thornfield",
+		ZONE_ID, "common_folk", NPCKnowledgeProfile.Archetype.BARD,
+		["silver-tongued", "shifty", "quick"],
+		["thornfield", "chronos", "prophecy", "local_area"],
+		"I have been asked to leave two towns for being right too early. Judge that how you like.",
+		[], true, 40)

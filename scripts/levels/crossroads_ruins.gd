@@ -36,6 +36,7 @@ func _ready() -> void:
 	_setup_navigation()
 	_setup_interactables()
 	_setup_ambient_magic_effects()
+	_spawn_crossroads_cast()
 
 
 ## Configure spawn points from pre-placed markers
@@ -221,3 +222,60 @@ func get_spawn_point(spawn_id: String) -> Node3D:
 		if child.name.to_lower() == spawn_id or child.get_meta("spawn_id", "") == spawn_id:
 			return child
 	return spawn_points.get_node_or_null("DefaultSpawn")
+
+
+## Five quests send the player to "the Crossroads" to meet somebody: a troll on
+## the bridge, an informant in the inn, a necromancer near the junction, a rival
+## mercenary captain and an enemy commander. The Crossroads on the grid is this
+## ruined intersection - there is no wayhouse, no inn and no bridge geometry, and
+## building them is level design. These five stand on grey-box marks in the
+## ruins so their quests are walkable today; the buildings are Caleb's call and
+## are recorded in docs/audits/wave_b_dispositions.md.
+func _spawn_crossroads_cast() -> void:
+	# Gurm holds the crossing. He talks, because guild_contract_troll has a
+	# bribe branch and a fair-toll branch, and a monster cannot take a toll.
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(-18, 0, 14), "Gurm", "bridge_troll", ZONE_ID,
+		"goblins", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["slow", "literal", "immovable"],
+		["crossroads", "bridge", "toll"],
+		"Bridge is mine. Was mine before road. You pay, or you swim, or we find out which.",
+		[], true, 25)
+
+	# Tomas drinks where the roads meet. Whether he is a talk target or a body
+	# depends entirely on which branch the player takes.
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(12, 0, 10), "Tomas Redd", "tomas_informant", ZONE_ID,
+		"thieves_guild", NPCKnowledgeProfile.Archetype.THIEF,
+		["chatty", "drunk", "doomed"],
+		["crossroads", "thieves_guild", "rumors", "roads"],
+		"You are the third person to buy me a drink this month and none of you wanted conversation.",
+		[], true, 40)
+
+	# One necromancer, two quests. He was called Aeris in one of them; he is
+	# Valdris in both now.
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(4, 0, -22), "Valdris", "necromancer_valdris", ZONE_ID,
+		"shadowed_hand_cult", NPCKnowledgeProfile.Archetype.SCHOLAR,
+		["reasonable", "unrepentant", "patient"],
+		["crossroads", "necromancy", "undead", "morthane"],
+		"Your priest calls it desecration. I call it refusing to waste a person. We are describing the same act.",
+		[], true, 30, "formal")
+
+	# The rival mercenary company, met on the road rather than in a hall
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(-8, 0, -6), "Captain Vashka Kolt", "black_wolf_captain", ZONE_ID,
+		"iron_company", NPCKnowledgeProfile.Archetype.GUARD,
+		["hard", "professional", "contemptuous"],
+		["crossroads", "mercenaries", "black_wolves", "contracts"],
+		"Steele sent a messenger instead of coming himself. That tells me everything about how this ends.",
+		[], true, 30)
+
+	# The other house's commander in the noble war
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(16, 0, -14), "Commander Roderic Brackmoor", "enemy_commander",
+		ZONE_ID, "nobility", NPCKnowledgeProfile.Archetype.NOBLE,
+		["exhausted", "correct", "unyielding"],
+		["crossroads", "war", "nobility", "brackmoor"],
+		"Say your terms. I have four hundred men behind that ridge and I would like to keep as many as you will let me.",
+		[], true, 35, "formal")

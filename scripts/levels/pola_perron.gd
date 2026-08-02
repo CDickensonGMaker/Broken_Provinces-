@@ -79,12 +79,12 @@ func _spawn_monks() -> void:
 	add_child(head_monk)
 
 	# Librarian monk
-	var aldric_marker: Marker3D = get_node_or_null("NPCSpawnPoints/NPC_BrotherAldric")
-	var aldric_pos: Vector3 = aldric_marker.global_position if aldric_marker else Vector3(-12, MONASTERY_LEVEL, -8)
+	var anselm_marker: Marker3D = get_node_or_null("NPCSpawnPoints/NPC_BrotherAnselm")
+	var aldric_pos: Vector3 = anselm_marker.global_position if anselm_marker else Vector3(-12, MONASTERY_LEVEL, -8)
 
 	var librarian := QuestGiver.new()
-	librarian.display_name = "Brother Aldric"
-	librarian.npc_id = "brother_aldric"
+	librarian.display_name = "Brother Anselm"
+	librarian.npc_id = "brother_anselm"
 	librarian.quest_ids = []
 	librarian.position = aldric_pos
 	librarian.no_quest_dialogue = "The library holds many ancient texts.\nKnowledge from ages past, preserved.\nIf you seek wisdom, the answers\nmay lie within these walls."

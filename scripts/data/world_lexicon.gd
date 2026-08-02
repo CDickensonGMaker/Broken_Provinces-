@@ -158,9 +158,9 @@ const SETTLEMENTS := {
 
 ## Names for randomly generated NPCs (75 male, 75 female)
 ## NOTE: "Aleric" is RESERVED for story NPC (Aleric Vale in Dalhurst)
-## "Aldric" removed due to similarity to reserved name
+## "Aldric" removed - it is the missing king's name and belongs to nobody else
 const MALE_NAMES := [
-	# Original names (24 - Aldric removed to avoid confusion with Aleric Vale)
+	# Original names (24 - Aldric removed; see above)
 	"Borin", "Cedric", "Dunstan", "Edmund", "Gareth", "Harald", "Osric",
 	"Godwin", "Leofric", "Wulfric", "Beorn", "Cynric", "Eadric", "Aelfric", "Thurstan",
 	"Grimwald", "Roderick", "Sigurd", "Torsten", "Ulrich", "Viktor", "Werner", "Yorick",
@@ -219,7 +219,7 @@ const FEMALE_NAMES := [
 ]
 
 ## Tracks used names per zone to prevent duplicates
-## Format: { "zone_id": { "male": ["Aldric", "Borin"], "female": ["Elara"] } }
+## Format: { "zone_id": { "male": ["Borin", "Merric"], "female": ["Rowena"] } }
 static var _used_names_by_zone: Dictionary = {}
 
 const SURNAMES := [

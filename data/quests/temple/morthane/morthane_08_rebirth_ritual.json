@@ -1,7 +1,7 @@
 {
 	"id": "morthane_08_rebirth_ritual",
 	"title": "The Second Chance",
-	"description": "Not all death magic is evil. A dying merchant in Crossroads wishes to undergo Morthane's sacred Rebirth Ritual - a chance to be reborn with new purpose, to serve the cycle itself. You will assist the Priest in this rare and beautiful ceremony.",
+	"description": "Not all death magic is evil. A dying merchant, carried in off the Crossroads road to the Shrine of Endings, wishes to undergo Morthane's sacred Rebirth Ritual - a chance to be reborn with new purpose, to serve the cycle itself. You will assist the Priest in this rare and beautiful ceremony.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "priest_morthane_elder_moor",
@@ -10,17 +10,17 @@
 	"objectives": [
 		{
 			"id": "travel_crossroads",
-			"description": "Travel to Crossroads to meet the merchant",
+			"description": "Go to the Shrine of Endings at Elder Moor",
 			"type": "reach",
-			"target": "crossroads",
+			"target": "elder_moor",
 			"target_zone": "crossroads",
 			"required_count": 1
 		},
 		{
 			"id": "speak_dying_merchant",
-			"description": "Speak with the dying merchant Elara",
+			"description": "Speak with the dying merchant Ilsabet Corr",
 			"type": "talk",
-			"target": "merchant_elara",
+			"target": "dying_merchant_ilsabet",
 			"target_zone": "crossroads",
 			"required_count": 1
 		},
@@ -42,7 +42,7 @@
 		},
 		{
 			"id": "witness_rebirth",
-			"description": "Witness Elara's rebirth as a Servant of the Cycle",
+			"description": "Witness Ilsabet's rebirth as a Servant of the Cycle",
 			"type": "interact",
 			"target": "rebirth_ritual_altar",
 			"target_zone": "elder_moor",

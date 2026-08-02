@@ -57,7 +57,7 @@ The Arcane Circle is the premier organization for magical research, spell develo
 ### APPRENTICE RANK (Practical Magic)
 
 **Quest 4: First Enchantment** (`mage_04_enchantment_task.json`)
-- Assist Senior Mage Aldric with enchanting ritual
+- Assist Master Edric Vayle with enchanting ritual
 - Gather silver ingot and enchanting dust
 - Create Ring of Protection
 - **Rewards:** 150 gold, 400 XP, Ring of Protection (+2 armor)
@@ -170,7 +170,7 @@ The Arcane Circle is the premier organization for magical research, spell develo
 - Final boss fight in ceremonial duel (quest 13)
 - Blueprint: `C:\Users\caleb\CatacombsOfGore\data\blueprints\npcs\archmage_elara.json`
 
-**Senior Mage Aldric** (`mage_aldric_dalhurst`)
+**Master Edric Vayle** (`mage_aldric_dalhurst`)
 - Location: The Athenaeum, Dalhurst
 - Quest Giver: Quest 4 (First Enchantment), Quest 8 (Containment)
 - Enchanting instructor

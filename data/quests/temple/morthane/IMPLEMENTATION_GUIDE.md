@@ -47,7 +47,7 @@ Quick reference for implementing the Morthane quest chain in Catacombs of Gore.
 
 ### Named NPCs for Quests
 
-4. **Necromancer Aeris** (`necromancer_aeris`)
+4. **Necromancer Valdris** (`necromancer_valdris`)
    - Dialogue-enabled enemy (Quest 4)
    - Can be killed, redeemed, or spared
    - Sets flags based on choice
@@ -168,11 +168,11 @@ These are typically Node3D markers with metadata or Area3D triggers.
 
 ### Quest-Specific Dialogue
 
-**Quest 4 - Necromancer Aeris:**
+**Quest 4 - Necromancer Valdris:**
 Create dialogue tree with 3 choices:
-1. "You must die for this corruption." → Combat, sets `necromancer_aeris_killed`
-2. "Give up this dark path and serve the cycle." → Sets `necromancer_aeris_redeemed`
-3. "I will not interfere." → Sets `necromancer_aeris_freed`, may spawn hostile later
+1. "You must die for this corruption." → Combat, sets `necromancer_valdris_killed`
+2. "Give up this dark path and serve the cycle." → Sets `necromancer_valdris_redeemed`
+3. "I will not interfere." → Sets `necromancer_valdris_freed`, may spawn hostile later
 
 **Quest 6 - Merchant Vrell (Killer):**
 After identifying via Speak with Dead:
@@ -192,9 +192,9 @@ Add these flags to the game's flag system:
 - `deathwalker_title` - Player has Deathwalker title
 
 ### Quest Choice Flags
-- `necromancer_aeris_killed` - Quest 4 outcome
-- `necromancer_aeris_redeemed` - Quest 4 outcome
-- `necromancer_aeris_freed` - Quest 4 outcome
+- `necromancer_valdris_killed` - Quest 4 outcome
+- `necromancer_valdris_redeemed` - Quest 4 outcome
+- `necromancer_valdris_freed` - Quest 4 outcome
 - `merchant_vrell_arrested` - Quest 6 outcome
 - `merchant_vrell_executed` - Quest 6 outcome
 

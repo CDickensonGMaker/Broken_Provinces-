@@ -457,7 +457,7 @@
     {
       "id": "company_info",
       "speaker": "Captain Steele",
-      "text": "The Iron Company has operated for sixty years. Founded by Captain Aldric Iron - my predecessor - after the Tenger Wars. We're the best professional fighting force money can buy. Not thugs, not murderers. Soldiers. We take contracts, we complete them, we get paid. Simple as that.",
+      "text": "The Iron Company has operated for sixty years. Founded by Captain Hadrian Iron - my predecessor - after the Tenger Wars. We're the best professional fighting force money can buy. Not thugs, not murderers. Soldiers. We take contracts, we complete them, we get paid. Simple as that.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -617,7 +617,7 @@
     {
       "id": "became_captain",
       "speaker": "Captain Steele",
-      "text": "Captain Aldric Iron chose me himself, fifteen years back. Said I understood what the Company meant - not just the fighting, but the brotherhood. The discipline. He died three months later. Arrow to the throat at the Siege of Blackmont. I've led the Company ever since.",
+      "text": "Captain Hadrian Iron chose me himself, fifteen years back. Said I understood what the Company meant - not just the fighting, but the brotherhood. The discipline. He died three months later. Arrow to the throat at the Siege of Blackmont. I've led the Company ever since.",
       "is_end": false,
       "auto_continue": "",
       "choices": [

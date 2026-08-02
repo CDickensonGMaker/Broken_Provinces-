@@ -246,6 +246,18 @@ func _spawn_loot() -> void:
 
 ## Spawn special Tenger NPCs (elder captive, friendly scout)
 func _spawn_tenger_npcs() -> void:
+	# Khan Toghrul, who leads this warband. The desert camp is the Tegnar's
+	# furthest outcropping and he leads a scouting horde, not an invasion -
+	# whether the Tegnar ever become an Act-scale threat is a bible [OPEN] and
+	# nothing he says answers it.
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(3, 0, 9), "Khan Toghrul", "khan_toghrul", ZONE_ID,
+		"tengers", NPCKnowledgeProfile.Archetype.NOBLE,
+		["towering", "curious", "unbothered"],
+		["tenger", "horde", "warfare", "desert", "east_hollow"],
+		"You are small and you walked here anyway. Sit. I will hear what your village wants before I decide what it costs.",
+		[], true, 25, "formal")
+
 	# === TENGER ELDER MAKHAR (at central tent - captive/neutral elder) ===
 	var elder_pos := Vector3(0, 0, 5)  # Near central fire area
 	var tenger_elder := QuestGiver.spawn_quest_giver(

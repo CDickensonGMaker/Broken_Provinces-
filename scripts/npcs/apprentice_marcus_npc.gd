@@ -124,7 +124,7 @@ func _show_follower_dialogue() -> void:
 
 	var idle_lines: Array[String] = [
 		"This place has fascinating magical resonance...",
-		"I wonder what Master Aldric would say about this.",
+		"I wonder what Master Edric Vayle would say about this.",
 		"Thank you again for freeing me.",
 		"I've read about places like this in my studies.",
 		"My magical abilities grow stronger with each battle.",

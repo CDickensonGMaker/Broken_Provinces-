@@ -1,8 +1,8 @@
 {
   "name": "Tharin's Message",
-  "who": "Tharin Ironbeard gives it\nAldric Vane receives the letter\nFirst contact with The Keepers",
-  "what": "Deliver sealed letter to Aldric Vane in Dalhurst\nIntroduction to main story\nEstablishes Keeper connection",
-  "where": "Starts in Elder Moor\nTravel to Dalhurst\nFind Aldric's Curiosity Shop",
+  "who": "Tharin Ironbeard gives it\nSeverin Vane receives the letter\nFirst contact with The Keepers",
+  "what": "Deliver sealed letter to Severin Vane in Dalhurst\nIntroduction to main story\nEstablishes Keeper connection",
+  "where": "Starts in Elder Moor\nTravel to Dalhurst\nFind Severin Vane in the market",
   "when": "Available at game start\nMain story quest chain begins",
   "rewards": "Gold, XP, unlocks Supply Run quest"
 }

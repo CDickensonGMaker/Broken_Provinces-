@@ -164,7 +164,7 @@
     {
       "id": "hero_talk",
       "speaker": "Harbor Master Giles",
-      "text": "Ha! You've got guts. Talk to Mayor Aldric - he's been looking for someone brave enough to investigate. The whole town would be in your debt if you could end this nightmare.",
+      "text": "Ha! You've got guts. Talk to Mayor Kendrick - he's been looking for someone brave enough to investigate. The whole town would be in your debt if you could end this nightmare.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -200,7 +200,7 @@
     {
       "id": "help_options",
       "speaker": "Harbor Master Giles",
-      "text": "Break the blockade. Either clear out those ghost pirates, or break through the goblin siege at Kazer-Dun. Either would save us. Mayor Aldric can tell you more about the ghost pirates. The dwarves might know how to deal with the goblins.",
+      "text": "Break the blockade. Either clear out those ghost pirates, or break through the goblin siege at Kazer-Dun. Either would save us. Mayor Kendrick can tell you more about the ghost pirates. The dwarves might know how to deal with the goblins.",
       "is_end": false,
       "auto_continue": "",
       "choices": [

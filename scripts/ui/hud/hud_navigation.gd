@@ -1522,7 +1522,7 @@ func _get_objective_target_zone(objective: QuestManager.Objective) -> String:
 				"tharin_ironbeard":
 					return "elder_moor"  # Tharin is in starting town
 				"aldric_vane":
-					return "dalhurst"  # Aldric is in Dalhurst
+					return "dalhurst"  # Severin Vane is in Dalhurst
 				"innkeeper", "blacksmith", "merchant", "alchemist":
 					# Use current zone if in town, else return elder_moor
 					var current: String = PlayerGPS.current_location_id if PlayerGPS else ""

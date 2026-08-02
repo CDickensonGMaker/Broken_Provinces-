@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1")
 npc_id = "mayor_aldric_larton"
-display_name = "Mayor Aldric"
+display_name = "Mayor Kendrick"
 race = "Human"
 archetype = "quest_giver"
 location = "Larton"

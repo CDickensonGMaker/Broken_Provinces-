@@ -822,3 +822,14 @@ func _spawn_residents() -> void:
 		["elder_moor", "logging", "local_area"],
 		"He went out with the north crew and the north crew came back without him. Nobody will say more than that.",
 		["rescue_woodsman_1"], false, 50)
+
+	# The dying merchant of the Rebirth Ritual. She was carried in off the
+	# Crossroads road and laid down beside the Shrine of Endings, which is why
+	# the Priest of Morthane knows about her at all.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(-11, 0, -26), "Ilsabet Corr", "dying_merchant_ilsabet",
+		ZONE_ID, "merchant_guild", NPCKnowledgeProfile.Archetype.MERCHANT,
+		["lucid", "unafraid", "bargaining"],
+		["elder_moor", "morthane", "death", "rebirth", "trade"],
+		"I have made worse trades than this one. Tell your priest I am not frightened, I am negotiating.",
+		[], true, 55)

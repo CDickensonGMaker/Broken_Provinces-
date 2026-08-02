@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1")
 npc_id = "aldric_vane"
-display_name = "Aldric Vane"
+display_name = "Severin Vane"
 race = "Human"
 archetype = "merchant"
 location = "Dalhurst"

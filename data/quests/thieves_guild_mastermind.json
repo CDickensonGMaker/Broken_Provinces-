@@ -4,7 +4,7 @@
 	"description": "The Guild's mastermind of operations has the job of a lifetime for you. Lord Ashford of Thornfield is hosting a gala at his estate - nobles from across the region, pockets heavy with gold and jewelry. But the real prize is Ashford's vault: a collection of artifacts worth more than the rest of his fortune combined. This is the big score. You'll need to infiltrate the party, bypass the vault's defenses, and escape with the goods before dawn. High risk. High reward. The kind of job that makes legends... or gets you hanged. Are you ready?",
 	"is_main_quest": false,
 	"quest_source": "faction",
-	"giver_npc_id": "guild_mastermind",
+	"giver_npc_id": "guildmaster_nightshade",
 	"giver_npc_type": "quest_giver",
 	"giver_region": "dalhurst",
 	"objectives": [
@@ -12,7 +12,7 @@
 			"id": "meet_mastermind",
 			"description": "Meet with the Guild's mastermind for the briefing",
 			"type": "talk",
-			"target": "guild_mastermind",
+			"target": "guildmaster_nightshade",
 			"required_count": 1
 		},
 		{
@@ -68,12 +68,12 @@
 			"id": "deliver_to_mastermind",
 			"description": "Deliver the haul to the mastermind",
 			"type": "talk",
-			"target": "guild_mastermind",
+			"target": "guildmaster_nightshade",
 			"required_count": 1
 		}
 	],
 	"turn_in_type": "npc_specific",
-	"turn_in_target": "guild_mastermind",
+	"turn_in_target": "guildmaster_nightshade",
 	"turn_in_zone": "dalhurst",
 	"rewards": {
 		"gold": 1000,

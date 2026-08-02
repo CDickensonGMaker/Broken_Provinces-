@@ -974,7 +974,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4180903, -30)
 [node name="NPC_AbbotSerenian" type="Marker3D" parent="NPCSpawnPoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.3180904, -20)
 
-[node name="NPC_BrotherAldric" type="Marker3D" parent="NPCSpawnPoints"]
+[node name="NPC_BrotherAnselm" type="Marker3D" parent="NPCSpawnPoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 3.3180904, -8)
 
 [node name="NPC_SisterMei" type="Marker3D" parent="NPCSpawnPoints"]

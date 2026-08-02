@@ -1,7 +1,7 @@
 {
 	"id": "retake_harbor",
 	"title": "Retake the Harbor",
-	"description": "Bandits have taken advantage of Larton's weakened state and occupied the harbor warehouses. Mayor Aldric needs someone to clear them out so the survivors can reclaim their supplies and fortify their position.",
+	"description": "Bandits have taken advantage of Larton's weakened state and occupied the harbor warehouses. Mayor Kendrick needs someone to clear them out so the survivors can reclaim their supplies and fortify their position.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "mayor_aldric_larton",

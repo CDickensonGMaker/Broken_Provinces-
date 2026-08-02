@@ -49,7 +49,27 @@ const INTERACTABLE_IDS: Array[String] = [
 ## Ids that exist in quest text as narrative placeholders and are deliberately
 ## never spawned - a rumour's subject, an off-screen authority. They are
 ## reported as warnings so the list stays visible instead of silently rotting.
-const LORE_ONLY_IDS: Array[String] = []
+## Every entry needs a row in docs/audits/wave_b_dispositions.md naming the
+## question that blocks it. Nothing goes on this list to make a number move.
+const LORE_ONLY_IDS: Array[String] = [
+	# The missing king. The bible's first [OPEN] question is whether this game
+	# reaches his cave at all, so he must not be standing in a room.
+	"king_aldric",
+	# Act II, inside the capital's politics. The society is unnamed and touches
+	# the elf-claimant plot, which is Act II's main side quest.
+	"secret_society_contact",
+	"capital_informant",
+	# The bible leaves the elven lands' position [OPEN], and what the king did
+	# for the elves [OPEN]. Both of these characters exist to answer those.
+	"elven_elder_witness",
+	"elven_guide",
+	# East Hollow's grid cell points at the *destroyed* hamlet scene. The
+	# diplomacy quest predates the destruction; which of the two is canon is a
+	# world-design call.
+	"village_elder_east_hollow",
+	# southern_outpost has no scene at all.
+	"garrison_commander",
+]
 
 ## Consequence keys QuestManager actually executes; anything else in a
 ## choice_consequences entry is a note to the reader and never fires.

@@ -79,3 +79,37 @@ robed sheet**, **a labourer sheet** (shepherd, fisherman, carter, stallhand),
 | `imperial_magistrate` | Magistrate Uther Craine | Default quest-giver sprite (8x2) |
 | `whaelers_abyss_mayor` | Mayor Ysolde Kerr | Default quest-giver sprite (8x2) |
 | `caravan_survivor` | Yoren the Carter, Willow Dale survivor | Default quest-giver sprite (8x2) |
+
+### Wave B backlog, stage 3 (20 more, three of them badly wrong)
+
+Same default sheet. Three of these are not human and read as townsfolk, which is
+the worst of it:
+
+* **Khan Toghrul** is an eight-foot bear-man on a huge horse per the bible, and
+  currently looks like a Dalhurst shopkeeper standing in a desert camp.
+* **Gurm the bridge troll** is a troll who talks, drawn as a man.
+* **The Drowned Man** is a ghost the player finds in Dalhurst at night, drawn
+  with no transparency, no tint and no glow.
+
+| NPC id | Character | Currently drawn as |
+|---|---|---|
+| `merchant_talbot` | Talbot Ashe, escorted caravan merchant | Default quest-giver sprite (8x2) |
+| `noble_hakon` | Lord Hakon Greyfell | Default quest-giver sprite (8x2) |
+| `noble_client` | Lady Venetia Harrow | Default quest-giver sprite (8x2) |
+| `enemy_commander` | Commander Roderic Brackmoor | Default quest-giver sprite (8x2) |
+| `guild_traitor_adventurers` | Officer Malcolm Rede | Default quest-giver sprite (8x2) |
+| `guild_traitor_thieves` | Sable Quint | Default quest-giver sprite (8x2) |
+| `iron_company_traitor` | Corporal Nils Hark | Default quest-giver sprite (8x2) |
+| `iron_blades_leader` | Captain Dane Ferrow, Iron Blades | Default quest-giver sprite (8x2) |
+| `black_wolf_captain` | Captain Vashka Kolt, Black Wolves | Default quest-giver sprite (8x2) |
+| `sailor_brennan` | Brennan Locke | Default quest-giver sprite (8x2) |
+| `restless_ghost` | The Drowned Man - a GHOST drawn as a living townsman | Default quest-giver sprite (8x2) |
+| `merchant_vrell` | Dorn Vrell | Default quest-giver sprite (8x2) |
+| `false_prophet_millbrook` | Brother Wendel Pyke | Default quest-giver sprite (8x2) |
+| `false_seer_thornfield` | Seer Ambrose Tine | Default quest-giver sprite (8x2) |
+| `high_chronist_thornfield` | High Chronist Cassian Mere | Default quest-giver sprite (8x2) |
+| `bridge_troll` | Gurm - a TROLL drawn as a human townsman | Default quest-giver sprite (8x2) |
+| `tomas_informant` | Tomas Redd | Default quest-giver sprite (8x2) |
+| `necromancer_valdris` | Valdris the necromancer | Default quest-giver sprite (8x2) |
+| `dying_merchant_ilsabet` | Ilsabet Corr, dying merchant | Default quest-giver sprite (8x2) |
+| `khan_toghrul` | Khan Toghrul - an eight-foot BEAR-MAN drawn as a human townsman | Default quest-giver sprite (8x2) |

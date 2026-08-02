@@ -1,7 +1,7 @@
 {
 	"id": "ghost_pirate_investigation",
 	"title": "The Ghost Pirate Menace",
-	"description": "Mayor Aldric of Larton has asked you to investigate the ghost pirates that have been blockading the port. Their stronghold is said to be on an island in the bay. Old Willem the fisherman knows where the ghost ship makes its lair.",
+	"description": "Mayor Kendrick of Larton has asked you to investigate the ghost pirates that have been blockading the port. Their stronghold is said to be on an island in the bay. Old Willem the fisherman knows where the ghost ship makes its lair.",
 	"is_main_quest": true,
 	"quest_source": "story",
 	"giver_npc_id": "mayor_aldric_larton",
@@ -31,7 +31,7 @@
 		},
 		{
 			"id": "return_to_mayor",
-			"description": "Report your success to Mayor Aldric",
+			"description": "Report your success to Mayor Kendrick",
 			"type": "talk",
 			"target": "mayor_aldric_larton",
 			"required_count": 1

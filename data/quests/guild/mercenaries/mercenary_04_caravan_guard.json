@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_04_caravan_guard",
 	"title": "Gold on the Road",
-	"description": "A wealthy merchant named Aldric has hired the Iron Company to guard him and his cargo traveling from Dalhurst to Thornfield. Bandits have been raiding the eastern roads. Your job: protect Aldric at all costs. Multiple ambushes are expected along the route.",
+	"description": "A wealthy merchant named Talbot Ashe has hired the Iron Company to guard him and his cargo traveling from Dalhurst to Thornfield. Bandits have been raiding the eastern roads. Your job: protect Ashe at all costs. Multiple ambushes are expected along the route.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",
@@ -11,17 +11,17 @@
 	"objectives": [
 		{
 			"id": "meet_merchant",
-			"description": "Meet Aldric the merchant at the Crossroads",
+			"description": "Meet Talbot Ashe in the Dalhurst market",
 			"type": "talk",
-			"target": "aldric_the_merchant",
+			"target": "merchant_talbot",
 			"target_zone": "crossroads",
 			"required_count": 1
 		},
 		{
 			"id": "escort_merchant",
-			"description": "Escort Aldric safely to Thornfield (keep him alive!)",
+			"description": "Escort Ashe safely to Thornfield (keep him alive!)",
 			"type": "escort",
-			"target": "aldric_the_merchant",
+			"target": "merchant_talbot",
 			"target_zone": "thornfield",
 			"required_count": 1
 		},
@@ -53,5 +53,5 @@
 	},
 	"prerequisites": ["mercenary_03_first_blood"],
 	"next_quest": "mercenary_05_siege_support",
-	"notes": "Rank: Private -> Corporal. Escort quest using EscortNPC system. Aldric spawns at Crossroads. Ambush trigger zones along route spawn bandits. Quest fails if Aldric dies."
+	"notes": "Rank: Private -> Corporal. Escort quest using EscortNPC system. Ashe waits in the Dalhurst market. Ambush trigger zones along route spawn bandits. Quest fails if Ashe dies."
 }

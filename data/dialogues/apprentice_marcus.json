@@ -38,7 +38,7 @@
     {
       "id": "master_sent",
       "speaker": "Marcus",
-      "text": "Master Aldric? He was worried enough to send someone? I suppose I've been gone far longer than I realized. Time moves strangely in the crystal...",
+      "text": "Master Edric Vayle? He was worried enough to send someone? I suppose I've been gone far longer than I realized. Time moves strangely in the crystal...",
       "auto_continue": "what_now"
     },
     {
@@ -88,7 +88,7 @@
     {
       "id": "send_home",
       "speaker": "Marcus",
-      "text": "You're right. Master Aldric has taught me so much - I should return and continue my studies properly. Perhaps one day, when I'm stronger, I can repay this debt.",
+      "text": "You're right. Master Edric Vayle has taught me so much - I should return and continue my studies properly. Perhaps one day, when I'm stronger, I can repay this debt.",
       "choices": [
         {
           "text": "Safe travels, Marcus.",
@@ -104,7 +104,7 @@
     {
       "id": "home_confirmed",
       "speaker": "Marcus",
-      "text": "Thank you again. I'll tell Master Aldric of your heroism. May the Three Gods watch over you!",
+      "text": "Thank you again. I'll tell Master Edric Vayle of your heroism. May the Three Gods watch over you!",
       "is_end": true,
       "actions": [
         {"type": "give_xp", "param": "", "value": 100},

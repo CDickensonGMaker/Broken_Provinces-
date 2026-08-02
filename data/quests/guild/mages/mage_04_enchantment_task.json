@@ -1,19 +1,19 @@
 {
 	"id": "mage_04_enchantment_task",
 	"title": "First Enchantment",
-	"description": "As an Apprentice, you're ready to learn the art of enchantment. Senior Mage Aldric needs assistance with a complex enchanting ritual. Gather the necessary components and follow his precise instructions to create your first enchanted item - a ring of minor protection.",
+	"description": "As an Apprentice, you're ready to learn the art of enchantment. Master Edric Vayle needs assistance with a complex enchanting ritual. Gather the necessary components and follow his precise instructions to create your first enchanted item - a ring of minor protection.",
 	"is_main_quest": false,
 	"quest_source": "faction",
-	"giver_npc_id": "mage_aldric_dalhurst",
+	"giver_npc_id": "wizard_dalhurst",
 	"giver_npc_type": "quest_giver",
 	"giver_region": "dalhurst",
 	"faction": "arcane_circle",
 	"objectives": [
 		{
 			"id": "speak_with_aldric",
-			"description": "Speak with Senior Mage Aldric about the enchantment",
+			"description": "Speak with Master Edric Vayle about the enchantment",
 			"type": "talk",
-			"target": "mage_aldric_dalhurst",
+			"target": "wizard_dalhurst",
 			"required_count": 1
 		},
 		{
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "perform_enchantment",
-			"description": "Assist Aldric with the enchanting ritual",
+			"description": "Assist Master Edric Vayle with the enchanting ritual",
 			"type": "interact",
 			"target": "enchanting_altar",
 			"required_count": 1

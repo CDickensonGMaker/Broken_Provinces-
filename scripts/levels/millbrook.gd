@@ -334,6 +334,35 @@ func _spawn_residents() -> void:
 		[], true, 50)
 
 
+	# The noble who hires the Iron Company. The war is over Mill Brook's mill
+	# lands, which is why a hamlet has two houses arguing in it.
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(6, 0, 3), "Lady Venetia Harrow", "noble_client", ZONE_ID,
+		"nobility", NPCKnowledgeProfile.Archetype.NOBLE,
+		["clipped", "ruthless", "courteous"],
+		["millbrook", "nobility", "war", "mercenaries", "local_area"],
+		"I am buying an outcome, not a battle. If your Captain can get me the outcome without the battle I will pay the same.",
+		[], true, 40, "formal")
+
+	# morthane_06's killer. He sells salt and he sold a man out.
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(-8, 0, 3), "Dorn Vrell", "merchant_vrell", ZONE_ID,
+		"merchant_guild", NPCKnowledgeProfile.Archetype.MERCHANT,
+		["affable", "watchful", "rehearsed"],
+		["millbrook", "trade", "local_area"],
+		"Terrible business. He owed me, as it happens, but I am not the sort to bring that up now.",
+		[], true, 45)
+
+	# Chronos's charlatan number one. Thornfield has its own.
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(0, 0, 18), "Brother Wendel Pyke", "false_prophet_millbrook", ZONE_ID,
+		"common_folk", NPCKnowledgeProfile.Archetype.PRIEST,
+		["theatrical", "plausible", "greedy"],
+		["millbrook", "chronos", "prophecy", "local_area"],
+		"I do not choose what I am shown. I only choose whether to warn you, and warning costs a candle.",
+		[], true, 45, "formal")
+
+
 ## Spawn fast travel shrine at marker position
 func _spawn_fast_travel_shrine() -> void:
 	var shrine_marker: Marker3D = get_node_or_null("Interactables/FastTravelShrine")

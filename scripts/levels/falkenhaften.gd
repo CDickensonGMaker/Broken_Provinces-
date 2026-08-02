@@ -173,7 +173,7 @@ func _spawn_fighters_guild_master(pos: Vector3) -> void:
 
 	# Spawn Guild Master NPC
 	var guild_master := QuestGiver.new()
-	guild_master.display_name = "Guildmaster Aldric"
+	guild_master.display_name = "Guildmaster Wulfric"
 	guild_master.npc_id = "fighters_guild_master"
 	guild_master.quest_ids = []
 	guild_master.no_quest_dialogue = "Welcome to the Fighter's Guild Headquarters.\nThis is where warriors are forged into legends.\nSpeak to our trainers if you wish to hone your skills,\nor check our contracts board for work."

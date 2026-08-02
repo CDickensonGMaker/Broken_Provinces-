@@ -4,7 +4,7 @@
 ## Dark, desperate, PS1 horror vibes - blood, bodies, few lights.
 ##
 ## Key NPCs:
-## - Mayor Aldric (quest giver - ghost_pirate_investigation, larton_famine, retake_harbor)
+## - Mayor Kendrick (quest giver - ghost_pirate_investigation, larton_famine, retake_harbor)
 ## - Captain Harken (guard leader at survivor hideout)
 ## - Old Salt Willem (fisherman - knows ghost ship location)
 ## - 5 Survivors (generic civilians in hideout)
@@ -119,7 +119,7 @@ func _spawn_npcs() -> void:
 	var mayor := QuestGiver.spawn_quest_giver(
 		npcs_container,
 		Vector3(20, 0.5, -8),  # Inside survivor hideout
-		"Mayor Aldric",
+		"Mayor Kendrick",
 		"mayor_aldric_larton",
 		preload("res://assets/sprites/npcs/civilians/man_noble1.png"),
 		1, 1,
@@ -187,7 +187,7 @@ func _spawn_npcs() -> void:
 		"Elder Thorne",
 		"larton_elder",
 		null, 8, 2,
-		[],  # Quests handled by Mayor Aldric
+		[],  # Quests handled by Mayor Kendrick
 		true  # is_talk_target
 	)
 	larton_elder.region_id = ZONE_ID

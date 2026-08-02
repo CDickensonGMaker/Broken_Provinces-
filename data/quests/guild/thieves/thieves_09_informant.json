@@ -28,7 +28,7 @@
     {
       "id": "obj_confront_traitor",
       "type": "talk",
-      "target": "guild_traitor",
+      "target": "guild_traitor_thieves",
       "description": "Confront the traitor"
     },
     {

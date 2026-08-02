@@ -36,7 +36,7 @@
 			"id": "confront_traitor",
 			"description": "Confront the corrupt guild officer",
 			"type": "talk",
-			"target": "guild_traitor",
+			"target": "guild_traitor_adventurers",
 			"required_count": 1,
 			"is_optional": false
 		},

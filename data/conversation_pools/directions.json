@@ -210,7 +210,7 @@
     },
     {
       "response_id": "dir_dalhurst_vane",
-      "text": "Vane's Oddities? Curious shop on the back street, near the market. Aldric Vane runs it. Deals in strange goods.",
+      "text": "Vane's Oddities? Curious shop on the back street, near the market. Severin Vane runs it. Deals in strange goods.",
       "topic_type": 3,
       "personality_affinity": ["helpful", "curious"],
       "min_disposition": 40,

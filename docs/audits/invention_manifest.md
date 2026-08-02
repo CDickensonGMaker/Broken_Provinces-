@@ -246,3 +246,102 @@ match.
 Crossroads a cultist-ruined dungeon and three quests want a tavern there — held
 in `wave_b_dispositions.md`); Mill Brook's shrine building; a Thornfield temple;
 the Athenaeum's relationship to the Arcane Circle beyond "allied".
+
+---
+
+## Wave B backlog — stage 3: the lore-bound characters, and the Aldric collision
+
+### The Aldric collision, resolved
+
+The bible adopted **Aldric** for the missing king and flagged that Dalhurst
+already had three. It had more than three. Seven things in shipped content were
+called Aldric, four of them people the player can walk up to:
+
+| Was | Now | Why |
+|---|---|---|
+| **King Aldric** — the missing king | **Aldric**, unchanged | The bible's adopted name. He keeps it, and he keeps it alone |
+| **Master Aldric**, `wizard_dalhurst` | **Master Edric Vayle** | Display text only; the id was already name-agnostic |
+| **Aldric Vane**, `aldric_vane`, the Keepers contact | **Severin Vane** | Surname kept — the Keepers' whole line, the letter quest and Tharin's dialogue all lean on "Vane" |
+| **Senior Mage Aldric**, `mage_aldric_dalhurst` | **repointed to `wizard_dalhurst`** | RULING: he was never a second wizard. Dalhurst's senior enchanter is Master Edric Vayle, and mage_04/mage_08 are now his |
+| **Aldric the merchant**, `aldric_the_merchant` (Crossroads) | **Talbot Ashe**, `merchant_talbot`, in the Dalhurst market | RULING: the escort runs Dalhurst → Crossroads → Thornfield, so meeting him in Dalhurst gains the quest the whole road instead of losing it |
+| **Mayor Aldric Brennworth** (Larton blueprint, harbour dialogue) | **Mayor Kendrick Brennworth** | Rename only |
+| **Captain Aldric Iron**, the Iron Company's dead founder | **Captain Hadrian Iron** | Rename only |
+| **Guildmaster Aldric** (Falkenhaften) | **Guildmaster Wulfric** | Rename only |
+| **Brother Aldric** (Pola Perron library) | **Brother Anselm** | Rename only; marker and id renamed with him |
+| "the merchant Aldric" / "Lord Aldric" in the conversation pools | **Corvin Ashford** / **Lord Hakon** | Both are now real people standing in Dalhurst, so the rumour points at somebody |
+| "Aldric" in the innkeeper, character-creation and lexicon random name pools | removed | So no procedurally-named villager is ever called Aldric again |
+
+`raven_thief_contact.json` frames a Dalhurst shop merchant for counterfeiting.
+That merchant is now **Corvin Ashford**, the same man four other chains send you
+to — which makes the Thieves Guild's cruellest early job land on somebody the
+player has already helped.
+
+### Other collisions ruled
+
+* **Elara** named three people: the Arcane Circle's `archmage_elara_dalhurst`, a
+  Priestess of Gaela, and a dying merchant in `morthane_08`. The merchant is now
+  **Ilsabet Corr** (`dying_merchant_ilsabet`) and was carried off the Crossroads
+  road to the Shrine of Endings at Elder Moor, which is where the Priest of
+  Morthane who gives the quest actually stands.
+* **Necromancer Aeris / Necromancer Valdris** were two names in one questline.
+  RULING: one villain. Everything is **Valdris** now, matching the existing
+  `lich_aspirant_valdris` enemy id.
+* **`guild_traitor`** was one id doing duty for two unrelated traitors in two
+  guilds — a data bug. Split into `guild_traitor_adventurers` (Officer Malcolm
+  Rede) and `guild_traitor_thieves` (Sable Quint).
+* **`guild_mastermind`** repointed to `guildmaster_nightshade`. RULING: the
+  mastermind IS Nightshade. She runs the Guild from behind her own counter and
+  briefs the Ashford gala heist herself; a separate unseen mastermind was a
+  layer with nobody in it.
+* **Brennan** appears twice — Elder Moor's Old Sage Brennan and the indebted
+  sailor. RULING: two men, and the coincidence stays. The sailor is
+  **Brennan Locke**, in the Dalhurst harbour.
+
+### Characters spawned
+
+| Who | id | Where | Ruling |
+|---|---|---|---|
+| **Lord Hakon Greyfell** | `noble_hakon` | Dalhurst | The first noble house with a name on it. House Greyfell has held the coast since before the throne emptied and does not ask for things |
+| **Lady Venetia Harrow** | `noble_client` | Mill Brook | The other end of the noble war. She is buying an outcome, not a battle |
+| **Commander Roderic Brackmoor** | `enemy_commander` | Crossroads | The house on the other side. He wants to keep as many of his four hundred as he is allowed to |
+| **Officer Malcolm Rede** | `guild_traitor_adventurers` | Dalhurst guild hall | |
+| **Sable Quint** | `guild_traitor_thieves` | Dalhurst thieves' den | "I sold names. You would have sold names" |
+| **Corporal Nils Hark** | `iron_company_traitor` | Dalhurst billet | |
+| **Captain Dane Ferrow**, Iron Blades | `iron_blades_leader` | Thornfield | RULING: the rival company is not a conspiracy, it is a calendar — they sign the contracts Vorn's people are slow on |
+| **Captain Vashka Kolt**, Black Wolves | `black_wolf_captain` | Crossroads | |
+| **Brennan Locke** | `sailor_brennan` | Dalhurst harbour | |
+| **The Drowned Man** | `restless_ghost` | Dalhurst, at night | RULING: he is a talk target, not a monster. His widow is thirty yards away and does not know he is there |
+| **Dorn Vrell** | `merchant_vrell` | Mill Brook | RULING: the murderer is the affable one, and he brings up the debt himself |
+| **Brother Wendel Pyke** | `false_prophet_millbrook` | Mill Brook | RULING: two charlatans, not one man in two towns. Warning costs a candle |
+| **Seer Ambrose Tine** | `false_seer_thornfield` | Thornfield | "Asked to leave two towns for being right too early" |
+| **High Chronist Cassian Mere** | `high_chronist_thornfield` | Thornfield | RULING: the "Temple of Time in Thornfield" is a shrine-stone and a water clock under an awning. **The temple building is not invented** — that is level design and stays Caleb's |
+| **Gurm**, the troll on the bridge | `bridge_troll` | Crossroads | RULING: he talks. `guild_contract_troll` has a bribe branch and a fair-toll branch, and a monster cannot take a toll |
+| **Tomas Redd** | `tomas_informant` | Crossroads | He is both a talk target and a kill target, and the quest is exactly that choice |
+| **Valdris**, necromancer | `necromancer_valdris` | Crossroads | "Your priest calls it desecration. I call it refusing to waste a person" |
+| **Ilsabet Corr** | `dying_merchant_ilsabet` | Elder Moor, Shrine of Endings | "I am not frightened, I am negotiating" |
+| **Khan Toghrul** | `khan_toghrul` | Tenger war camp | He leads a **warband at a scouting camp** — which is what the bible already says the desert is. Nothing he says touches the [OPEN] question of whether the Tegnar ever become an Act-scale invasion |
+
+### The Crossroads, grey-boxed
+
+Five quests send the player to the Crossroads to meet a person: a troll on a
+bridge, an informant in an inn, a necromancer near the junction, a rival captain
+and an enemy commander. The Crossroads on the grid is a **cultist-ruined
+intersection** — there is no wayhouse, no inn and no bridge geometry. The five
+now stand on grey-box marks inside `crossroads_ruins.tscn` so their quests are
+walkable today. **Whether the Crossroads gets buildings is level design and is
+held for Caleb** in `wave_b_dispositions.md`.
+
+### LORE_ONLY — deliberately never spawned
+
+`tools/validate_content.gd`'s `LORE_ONLY_IDS` list is no longer empty. Seven ids
+are on it, each with the question that blocks it written beside it in the code
+and a row in `wave_b_dispositions.md`: `king_aldric`, `secret_society_contact`,
+`capital_informant`, `elven_elder_witness`, `elven_guide`,
+`village_elder_east_hollow`, `garrison_commander`. They report as warnings, so
+the list stays visible and cannot rot quietly.
+
+**Deliberately NOT invented:** the missing king in any form — no statue, no
+portrait, no decree, because no Act I quest needs one and putting his face on a
+wall is a ruling about how present he is; the secret society's name; the elves'
+position on the map; whether East Hollow is destroyed or intact; the Thornfield
+temple; any Crossroads building.

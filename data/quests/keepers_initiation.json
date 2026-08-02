@@ -1,7 +1,7 @@
 {
 	"id": "keepers_initiation",
 	"title": "The Keeper's Trust",
-	"description": "Aldric Vane has revealed himself as a member of the Keepers - an ancient order sworn to protect the realm from threats that kingdoms cannot openly acknowledge. For centuries, they have watched from the shadows, guarding secrets that could unmake the world. Now dark forces stir at Willow Dale, an abandoned watchtower that once belonged to the Keepers themselves. Before it fell to ruin, it served as a watchpost against incursions from beyond. Something has awakened there - cultists performing forbidden rites to summon entities from the void. Investigate the ruins, disrupt their ritual, and bring evidence of what you find. Prove yourself worthy of the Keepers' trust.",
+	"description": "Severin Vane has revealed himself as a member of the Keepers - an ancient order sworn to protect the realm from threats that kingdoms cannot openly acknowledge. For centuries, they have watched from the shadows, guarding secrets that could unmake the world. Now dark forces stir at Willow Dale, an abandoned watchtower that once belonged to the Keepers themselves. Before it fell to ruin, it served as a watchpost against incursions from beyond. Something has awakened there - cultists performing forbidden rites to summon entities from the void. Investigate the ruins, disrupt their ritual, and bring evidence of what you find. Prove yourself worthy of the Keepers' trust.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "aldric_vane",
@@ -31,7 +31,7 @@
 		},
 		{
 			"id": "return_evidence",
-			"description": "Return to Aldric Vane with evidence of what you found",
+			"description": "Return to Severin Vane with evidence of what you found",
 			"type": "talk",
 			"target": "aldric_vane",
 			"required_count": 1

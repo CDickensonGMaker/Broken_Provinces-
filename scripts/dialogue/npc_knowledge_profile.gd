@@ -32,7 +32,7 @@ enum Archetype {
 @export_range(0, 100) var base_disposition: int = 50
 ## Speech style affecting text presentation (e.g., "casual", "formal", "uneducated", "scholarly")
 @export var speech_style: String = "casual"
-## Custom topics this NPC can discuss (e.g., "Aldric Vane", "The Undead Problem")
+## Custom topics this NPC can discuss (e.g., "Severin Vane", "The Undead Problem")
 ## Each entry: {id: String, display_text: String, response: String, required_knowledge: Array, unlock_topics: Array}
 @export var custom_topics: Array[Dictionary] = []
 

@@ -487,7 +487,7 @@ func _spawn_npcs() -> void:
 	var wizard := QuestGiver.spawn_quest_giver(
 		npcs_container,
 		Vector3(52, 0, -8),  # Near magic shop / mage quarter
-		"Master Aldric",
+		"Master Edric Vayle",
 		"wizard_dalhurst",
 		null,  # Default sprite
 		8, 2,
@@ -508,7 +508,7 @@ func _spawn_npcs() -> void:
 	var aldric := QuestGiver.spawn_quest_giver(
 		npcs_container,
 		Vector3(60, 0, 18),  # Near adventurer's guild area
-		"Aldric Vane",
+		"Severin Vane",
 		"aldric_vane",
 		null,  # Default sprite
 		8, 2,
@@ -1561,3 +1561,72 @@ func _spawn_residents() -> void:
 		["dalhurst", "crossroads", "roads", "rumors", "shadow_circle"],
 		"I sell the same story twice and both buyers are happy. Yours will be the true version, obviously.",
 		[], true, 35)
+
+	# Talbot Ashe - the caravan the Iron Company is hired to escort east.
+	# He waits in the market and the road runs Dalhurst -> Crossroads ->
+	# Thornfield, which is the escort quest's whole route.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(40, 0, 10), "Talbot Ashe", "merchant_talbot",
+		ZONE_ID, "merchant_guild", NPCKnowledgeProfile.Archetype.MERCHANT,
+		["nervous", "wealthy", "talkative"],
+		["dalhurst", "trade", "caravans", "roads", "thornfield"],
+		"Two carts, one strongbox and a road full of men who know it. I am paying the Company well and I want to be worth it.",
+		[], true, 50)
+
+	# Lord Hakon Greyfell - the noble house that wants a soulstone, and the
+	# first of the houses to put a name on the board
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(70, 0, -18), "Lord Hakon Greyfell", "noble_hakon",
+		ZONE_ID, "nobility", NPCKnowledgeProfile.Archetype.NOBLE,
+		["imperious", "impatient", "well-informed"],
+		["dalhurst", "nobility", "soulstones", "politics", "local_area"],
+		"House Greyfell has held this coast since before the throne emptied. I do not ask for things. I state what is required.",
+		["noble_soulstone_request"], false, 35, "formal")
+
+	# The Adventurers' Guild officer selling contracts to the wrong people
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(64, 0, 16), "Officer Malcolm Rede", "guild_traitor_adventurers",
+		ZONE_ID, "adventurers_guild", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["smooth", "defensive", "cornered"],
+		["dalhurst", "adventurers_guild", "contracts", "local_area"],
+		"Every contract I signed, I signed for the Guild. Show me the one you think says otherwise.",
+		[], true, 40, "formal")
+
+	# A different traitor, in a different guild. These two shared one id and
+	# were never the same person.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(-16, 0, -44), "Sable Quint", "guild_traitor_thieves",
+		ZONE_ID, "thieves_guild", NPCKnowledgeProfile.Archetype.THIEF,
+		["cold", "unrepentant", "quick"],
+		["dalhurst", "thieves_guild", "informants", "local_area"],
+		"I sold names. You would have sold names. The difference is nobody has offered you enough yet.",
+		[], true, 30)
+
+	# The Iron Company's own
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(56, 0, 24), "Corporal Nils Hark", "iron_company_traitor",
+		ZONE_ID, "iron_company", NPCKnowledgeProfile.Archetype.GUARD,
+		["evasive", "frightened", "proud"],
+		["dalhurst", "iron_company", "mercenaries", "local_area"],
+		"Twelve years I wore this. Do not stand there and tell me what I am.",
+		[], true, 35)
+
+	# The sailor who owes the Guild a hundred and fifty gold and drinks in the
+	# Rusty Anchor anyway. No relation to Elder Moor's Old Sage Brennan.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(-20, 0, 18), "Brennan Locke", "sailor_brennan",
+		ZONE_ID, "common_folk", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["belligerent", "broke", "sentimental"],
+		["dalhurst", "harbor", "debts", "sailors", "local_area"],
+		"I will have it by the spring tide. I have said that about four springs now, and one of them I meant.",
+		[], true, 35)
+
+	# The restless soul on the night streets. He is a talk target, not a
+	# monster; his widow is thirty yards away and does not know he is here.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(18, 0, -34), "The Drowned Man", "restless_ghost",
+		ZONE_ID, "common_folk", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["cold", "confused", "insistent"],
+		["dalhurst", "harbor", "death", "morthane"],
+		"I keep walking to the house and the door is the wrong colour. Tell her the ring is in the boat. Tell her that.",
+		[], true, 50)

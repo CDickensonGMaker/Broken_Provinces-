@@ -418,7 +418,7 @@ func _update_preview() -> void:
 func _on_randomize_pressed() -> void:
 	# Random name from a pool
 	var names = [
-		"Aldric", "Bran", "Cedric", "Dorian", "Edmund", "Finnian", "Gareth", "Hadrian",
+		"Alden", "Bran", "Cedric", "Dorian", "Edmund", "Finnian", "Gareth", "Hadrian",
 		"Isolde", "Jorah", "Kira", "Lyra", "Magnus", "Nadia", "Osric", "Petra",
 		"Quinn", "Roland", "Sera", "Theron", "Una", "Vance", "Wren", "Xander",
 		"Yara", "Zephyr", "Grimm", "Ash", "Raven", "Storm", "Wolf", "Crow"

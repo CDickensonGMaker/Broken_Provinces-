@@ -28,7 +28,7 @@
     },
     {
       "response_id": "topic_thief_mark_info",
-      "text": "With your background, you might appreciate knowing that the merchant Aldric keeps his strongbox under a false panel in his floor. Third board from the fireplace.",
+      "text": "With your background, you might appreciate knowing that the merchant Corvin Ashford keeps his strongbox under a false panel in his floor. Third board from the fireplace.",
       "topic_type": 1,
       "personality_affinity": ["conspiratorial", "greedy"],
       "min_disposition": 65,
@@ -232,7 +232,7 @@
     },
     {
       "response_id": "topic_noble_political_gossip",
-      "text": "As one of proper breeding, you'll appreciate this: Lord Aldric's claim to the eastern lands is based on a forged deed. Useful leverage, wouldn't you say?",
+      "text": "As one of proper breeding, you'll appreciate this: Lord Hakon's claim to the eastern lands is based on a forged deed. Useful leverage, wouldn't you say?",
       "topic_type": 1,
       "personality_affinity": ["scheming", "aristocratic"],
       "min_disposition": 60,

@@ -45,7 +45,7 @@
 		},
 		{
 			"id": "return_to_aldric",
-			"description": "Return to Aldric Vane with the outcome",
+			"description": "Return to Severin Vane with the outcome",
 			"type": "talk",
 			"target": "aldric_vane",
 			"required_count": 1

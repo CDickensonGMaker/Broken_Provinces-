@@ -36,7 +36,7 @@
 			"id": "confront_necromancer",
 			"description": "Confront the necromancer in their sanctum",
 			"type": "talk",
-			"target": "necromancer_aeris",
+			"target": "necromancer_valdris",
 			"target_zone": "willow_dale",
 			"required_count": 1
 		},
@@ -65,21 +65,21 @@
 	},
 	"choice_consequences": {
 		"kill_necromancer": {
-			"flags_to_set": ["necromancer_aeris_killed"],
+			"flags_to_set": ["necromancer_valdris_killed"],
 			"reputation_changes": {
 				"church_of_morthane": 10
 			}
 		},
 		"redeem_necromancer": {
-			"flags_to_set": ["necromancer_aeris_redeemed"],
+			"flags_to_set": ["necromancer_valdris_redeemed"],
 			"reputation_changes": {
 				"church_of_morthane": 5,
 				"arcane_circle": 10
 			}
 		},
 		"spare_necromancer": {
-			"flags_to_set": ["necromancer_aeris_freed"],
-			"spawn_enemy": "necromancer_aeris@willow_dale"
+			"flags_to_set": ["necromancer_valdris_freed"],
+			"spawn_enemy": "necromancer_valdris@willow_dale"
 		}
 	},
 	"spawn_on_accept": [

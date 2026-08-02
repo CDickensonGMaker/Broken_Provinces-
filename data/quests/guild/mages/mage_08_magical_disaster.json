@@ -4,7 +4,7 @@
 	"description": "Disaster strikes! A novice mage's experiment has gone catastrophically wrong in the Athenaeum basement, creating a spreading magical anomaly that threatens to destabilize reality itself. You must contain the anomaly before it spreads beyond the Athenaeum and wreaks havoc across Dalhurst. Time is of the essence!",
 	"is_main_quest": false,
 	"quest_source": "faction",
-	"giver_npc_id": "mage_aldric_dalhurst",
+	"giver_npc_id": "wizard_dalhurst",
 	"giver_npc_type": "quest_giver",
 	"giver_region": "dalhurst",
 	"faction": "arcane_circle",

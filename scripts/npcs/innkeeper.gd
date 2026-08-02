@@ -16,7 +16,7 @@ const PIXEL_SIZE_MALE := BillboardSprite.HUMANOID_FRAME_HEIGHT_M / float(INNKEEP
 const PIXEL_SIZE_FEMALE := BillboardSprite.HUMANOID_FRAME_HEIGHT_M / float(INNKEEPER_FRAME_HEIGHT)
 
 ## Gender-specific names (optional - can be overridden via merchant_name export)
-const MALE_NAMES: Array[String] = ["Gareth", "Brom", "Aldric", "Thom", "Willem"]
+const MALE_NAMES: Array[String] = ["Gareth", "Brom", "Emeric", "Thom", "Willem"]
 const FEMALE_NAMES: Array[String] = ["Marta", "Helga", "Greta", "Elspeth", "Brynn"]
 
 ## Track selected gender for reference

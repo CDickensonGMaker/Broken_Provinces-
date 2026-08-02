@@ -1,7 +1,7 @@
 {
 	"id": "keepers_test",
 	"title": "Eyes in the Shadows",
-	"description": "Aldric Vane has a task that will test your skills as a Keeper. Strange disappearances have been reported across multiple towns - Dalhurst, Thornfield, and Millbrook. The pattern suggests a coordinated effort, perhaps a cult or criminal organization. Your mission: investigate each town, find the connection, and report back. But remember - Keepers work unseen. Draw no attention to yourself.",
+	"description": "Severin Vane has a task that will test your skills as a Keeper. Strange disappearances have been reported across multiple towns - Dalhurst, Thornfield, and Millbrook. The pattern suggests a coordinated effort, perhaps a cult or criminal organization. Your mission: investigate each town, find the connection, and report back. But remember - Keepers work unseen. Draw no attention to yourself.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "aldric_vane",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "briefing",
-			"description": "Receive your briefing from Aldric Vane",
+			"description": "Receive your briefing from Severin Vane",
 			"type": "talk",
 			"target": "aldric_vane",
 			"required_count": 1
@@ -66,7 +66,7 @@
 		},
 		{
 			"id": "report_aldric",
-			"description": "Report your findings to Aldric Vane",
+			"description": "Report your findings to Severin Vane",
 			"type": "talk",
 			"target": "aldric_vane",
 			"required_count": 1

@@ -175,7 +175,7 @@
     {
       "id": "quest_02_offer",
       "speaker": "Raven",
-      "text": "There's a merchant named Aldric who's been undercutting our... business partners. The Guild wants him out of the way. Plant this bag of counterfeit coins in his shop, then tip off the guards. He'll be arrested, and our friends can operate freely.",
+      "text": "There's a merchant named Corvin Ashford who's been undercutting our... business partners. The Guild wants him out of the way. Plant this bag of counterfeit coins in his shop, then tip off the guards. He'll be arrested, and our friends can operate freely.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -202,7 +202,7 @@
     {
       "id": "quest_02_cold",
       "speaker": "Raven",
-      "text": "Cold? Aldric's been cheating honest fences out of business for months. He's not innocent - just clever enough to avoid the law. We're giving him what he deserves. It's not personal, it's business.",
+      "text": "Cold? Ashford has been cheating honest fences out of business for months. He's not innocent - just clever enough to avoid the law. We're giving him what he deserves. It's not personal, it's business.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -223,7 +223,7 @@
     {
       "id": "quest_02_pay",
       "speaker": "Raven",
-      "text": "100 gold for the job. Quick work if you're careful. Get in, plant the coins somewhere the guards will find them, get out, then send an anonymous tip. Aldric goes to jail, you get paid.",
+      "text": "100 gold for the job. Quick work if you're careful. Get in, plant the coins somewhere the guards will find them, get out, then send an anonymous tip. Ashford goes to jail, you get paid.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -252,7 +252,7 @@
     {
       "id": "quest_02_accept",
       "speaker": "Raven",
-      "text": "Aldric's shop is in the market district. Plant the counterfeit coins somewhere obvious - his strongbox, behind the counter. Then tip off the city guard. Don't be seen, don't get connected to it.",
+      "text": "Ashford's shop is in the market district. Plant the counterfeit coins somewhere obvious - his strongbox, behind the counter. Then tip off the city guard. Don't be seen, don't get connected to it.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -260,7 +260,7 @@
     {
       "id": "quest_02_turnin",
       "speaker": "Raven",
-      "text": "Aldric's in jail? The guards found the coins exactly where they needed to. Clean work. Here's your 100 gold. The Guild's fences are grateful - you've made some useful friends. Ready for the next job?",
+      "text": "Ashford is in jail? The guards found the coins exactly where they needed to. Clean work. Here's your 100 gold. The Guild's fences are grateful - you've made some useful friends. Ready for the next job?",
       "is_end": false,
       "auto_continue": "",
       "choices": [
