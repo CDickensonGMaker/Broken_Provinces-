@@ -89,10 +89,17 @@ func _setup_navigation() -> void:
 	add_child(nav_region)
 
 	var nav_mesh := NavigationMesh.new()
-	nav_mesh.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
+	nav_mesh.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_BOTH  # CSG rooms: their collision is not a StaticBody3D the collider parser sees
 	nav_mesh.geometry_collision_mask = 1
-	nav_mesh.cell_size = 0.3
-	nav_mesh.cell_height = 0.2
+	# Parse the level and everything under it. Left at the default
+	# ROOT_NODE_CHILDREN the bake reads the region's own children, of
+	# which there are none, and produces an empty navmesh.
+	var nav_group: StringName = StringName("navmesh_src_%d" % get_instance_id())
+	add_to_group(nav_group)
+	nav_mesh.geometry_source_geometry_mode = NavigationMesh.SOURCE_GEOMETRY_GROUPS_WITH_CHILDREN
+	nav_mesh.geometry_source_group_name = nav_group
+	nav_mesh.cell_size = 0.25
+	nav_mesh.cell_height = 0.25
 	nav_mesh.agent_height = 2.0
 	nav_mesh.agent_radius = 0.4
 	nav_mesh.agent_max_climb = 0.5
@@ -103,6 +110,12 @@ func _setup_navigation() -> void:
 
 
 func _bake_navigation() -> void:
+	if not nav_region or not nav_region.navigation_mesh:
+		return
+	# CSG rooms build their meshes on the following frames; baking in the same
+	# deferred pass as _ready parses an empty scene.
+	await get_tree().process_frame
+	await get_tree().process_frame
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
 

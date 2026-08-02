@@ -128,6 +128,13 @@ func _setup_navigation() -> void:
 	var nav_mesh := NavigationMesh.new()
 	nav_mesh.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
 	nav_mesh.geometry_collision_mask = 1
+	# Parse the level and everything under it. Left at the default
+	# ROOT_NODE_CHILDREN the bake reads the region's own children, of
+	# which there are none, and produces an empty navmesh.
+	var nav_group: StringName = StringName("navmesh_src_%d" % get_instance_id())
+	add_to_group(nav_group)
+	nav_mesh.geometry_source_geometry_mode = NavigationMesh.SOURCE_GEOMETRY_GROUPS_WITH_CHILDREN
+	nav_mesh.geometry_source_group_name = nav_group
 	nav_mesh.cell_size = 0.25
 	nav_mesh.cell_height = 0.25
 	nav_mesh.agent_height = 2.0

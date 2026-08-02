@@ -355,5 +355,18 @@ func _spawn_portals() -> void:
 
 ## Bake navigation mesh
 func _bake_navigation() -> void:
-	if nav_region and nav_region.navigation_mesh:
-		nav_region.bake_navigation_mesh()
+	if not nav_region or not nav_region.navigation_mesh:
+		return
+	# Let the spawned buildings and props settle before parsing them
+	await get_tree().process_frame
+	await get_tree().process_frame
+	if not nav_region or not nav_region.navigation_mesh:
+		return
+	# The scene's navmesh is left at the default ROOT_NODE_CHILDREN, which reads
+	# the region's own children - it has none - and bakes nothing.
+	var nav_group: StringName = StringName("navmesh_src_%d" % get_instance_id())
+	add_to_group(nav_group)
+	var nav_mesh: NavigationMesh = nav_region.navigation_mesh
+	nav_mesh.geometry_source_geometry_mode = NavigationMesh.SOURCE_GEOMETRY_GROUPS_WITH_CHILDREN
+	nav_mesh.geometry_source_group_name = nav_group
+	nav_region.bake_navigation_mesh()
