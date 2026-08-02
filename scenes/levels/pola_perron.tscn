@@ -14,7 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://8l2y8aulgqyh" path="res://assets/sprites/props/monastery/town_jugs1.png" id="12"]
 [ext_resource type="Texture2D" uid="uid://wl3q4tcgo3n5" path="res://assets/sprites/props/monastery/town_jugs2.png" id="13"]
 [ext_resource type="Texture2D" uid="uid://8o1r7r64sqld" path="res://assets/sprites/props/monastery/town_jugs3.png" id="14"]
-[ext_resource type="Texture2D" uid="uid://bryukqr50fm6w" path="res://assets/textures/environment/floors/monastary_floor_outside1.png" id="15"]
+[ext_resource type="Texture2D" uid="uid://bcblmlpu6wmf4" path="res://assets/textures/environment/floors/monastary_floor_outside1.png" id="15"]
 [ext_resource type="Texture2D" uid="uid://bmb05bgwi386f" path="res://assets/sprites/props/monastery/monastary_floor_outside2.png" id="16"]
 [ext_resource type="Texture2D" uid="uid://brrqywdrxqmql" path="res://assets/sprites/props/monastery/monastary_floor_outside3.png" id="17"]
 
