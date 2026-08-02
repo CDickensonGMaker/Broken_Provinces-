@@ -10,7 +10,12 @@
         "Yoren", "Aldous", "Brennan", "Cedric", "Declan", "Egan", "Finbar", "Godfrey",
         "Hamish", "Ingram", "Jareth", "Keegan", "Lachlan", "Maddox", "Niall", "Oswin",
         "Padraig", "Riordan", "Struan", "Tavish", "Vaughn", "Wynstan", "Eamon", "Baird",
-        "Colm", "Dougal", "Emeric", "Flynn", "Gideon", "Heath", "Ivar", "Jorah"
+        "Colm", "Dougal", "Emeric", "Flynn", "Gideon", "Heath", "Ivar", "Jorah",
+        "Torben", "Toma", "Toman", "Wex", "Perrin", "Oskar", "Corin", "Otto",
+        "Oswald", "Petrik", "Petsch", "Yorin", "Ythan", "Giles", "Gavin", "Garret",
+        "Ferris", "Fenn", "Dorman", "Denner", "Coel", "Coale", "Ansel", "Alder",
+        "Hask", "Osk", "Harlan", "Harmon", "Horace", "Kettil", "Mercer", "Marren",
+        "Tam", "Oda", "Sarel", "Erik", "Brann", "Garrett", "Henrick"
     ],
     "female_names": [
         "Aelith", "Brenna", "Cordelia", "Drusilla", "Elspeth", "Freya", "Gwendolen", "Helga",
@@ -22,7 +27,9 @@
         "Zora", "Anwen", "Bridget", "Ceridwen", "Deirdre", "Eira", "Fenella", "Grania",
         "Hild", "Iona", "Jessamine", "Kerenza", "Lavinia", "Mirren", "Nuala", "Oonagh",
         "Phoebe", "Rhiannon", "Sorcha", "Talulla", "Vala", "Wynne", "Ailsa", "Briony",
-        "Clover", "Davina", "Enid", "Fenella", "Ginevra", "Hester", "Isolde", "Juno"
+        "Clover", "Davina", "Enid", "Fenella", "Ginevra", "Hester", "Isolde", "Juno",
+        "Bess", "Denna", "Elin", "Fenna", "Mira", "Mirella", "Sena", "Ysolt",
+        "Hollis", "Alsett", "Selene", "Miriam"
     ],
     "surname_prefixes": [
         "Black", "Iron", "Storm", "Frost", "Stone", "Grey", "Oak", "Ash",
@@ -41,7 +48,10 @@
         "Winterborn", "Nightingale", "Dawnweaver", "Frostheart", "Stormwind", "Oakheart", "Wolfbane", "Crowley",
         "Briarwood", "Hawksworth", "Bearstone", "Mossgrave", "Swiftbrook", "Brightwater", "Darkhollow", "Coldwell",
         "Silverdale", "Goldridge", "Bronzewood", "Copperfield", "Steelforge", "Dustwalker", "Shadowmend", "Firebrand",
-        "Moorland", "Fairweather", "Strongbow", "Trueblade", "Goodheart", "Hardhammer", "Lightfoot", "Quicksilver"
+        "Moorland", "Fairweather", "Strongbow", "Trueblade", "Goodheart", "Hardhammer", "Lightfoot", "Quicksilver",
+        "Ordell", "Bracken", "Cobb", "Ashby", "Ashcroft", "Blackthorn", "Corliss", "Halworth",
+        "Vantry", "Wexley", "Graymoor", "Stonepick", "Ironhide", "Silktongue", "Verendil", "Marrow",
+        "Voss", "Crake", "Praed", "Steelwind", "Harwick", "Emberlyn", "Hartwin", "Vayle"
     ],
     "dwarf_names": [
         "Thorin", "Balin", "Dwalin", "Fili", "Kili", "Gimli", "Gloin", "Oin",

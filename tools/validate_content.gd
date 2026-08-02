@@ -89,6 +89,89 @@ const CONSEQUENCE_KEYS: Array[String] = [
 
 const FACTION_DIR := "res://data/factions"
 
+# --- THE GROUNDING LAW: constants -------------------------------------------
+
+## "NPCs will remember and know you and react to your choices - but they can't
+## talk about anything that doesn't actually exist in the game." (Caleb, 8/2)
+##
+## Every proper noun spoken in game text must resolve to something the player
+## can reach: a world grid location, a quest, a spawned NPC, an item, a faction,
+## a god. Anything else is a phantom - a place that sounds real, is named twice,
+## and has no cell on the map. This is the only file that may excuse one.
+const GROUNDING_WHITELIST_PATH := "res://data/lore_only_whitelist.json"
+
+const WORLD_GRID_PATH := "res://scripts/data/world_grid.gd"
+const WORLD_LEXICON_PATH := "res://scripts/data/world_lexicon.gd"
+const CONVERSATION_POOL_DIR := "res://data/conversation_pools"
+const NPC_NAMES_PATH := "res://data/npc_names.json"
+const COMPANION_DIRS: Array[String] = [
+	"res://data/companions",
+	"res://data/followers",
+	"res://data/npc_profiles",
+]
+const LORE_DIR := "res://data/lore"
+
+## JSON keys whose string values are read by the player. Everything else in a
+## data file is machinery or a note to the author, and is not scanned.
+const PROSE_KEYS: Array[String] = [
+	"text",
+	"title",
+	"description",
+	"journal_entry",
+	"journal",
+	"completion_text",
+	"objective_text",
+	"menu_text",
+	"display_text",
+	"greeting",
+	"farewell",
+	"prompt",
+	"speaker",
+]
+
+## Lowercase words that may legitimately be joined into a capitalised name
+## without themselves being capitalised: "Church of the Three", "Sea of Sighs".
+const NAME_JOINERS: Array[String] = ["of", "the", "and", "de", "von", "der", "du", "da"]
+
+## Ordinary English that arrives capitalised for reasons that are not
+## proper-nounhood: sentence position, honorifics, titles of address, calendar.
+##
+## This list is deliberately short. The heavy lifting is done by the corpus
+## itself - see _prose_lowercase_words - because any word the writers ever type
+## in lowercase is, by demonstration, an ordinary word. A hand-maintained
+## stopword list is the thing that rots; a corpus is the thing that does not.
+const GROUNDING_STOPWORDS: Array[String] = [
+	"i", "ill", "im", "ive", "id", "a", "an", "the", "and", "but", "or", "so", "if",
+	"you", "your", "yours", "we", "our", "they", "he", "she", "it", "his", "her",
+	"my", "me", "mine", "us", "them", "this", "that", "these", "those", "there",
+	"here", "what", "when", "where", "who", "why", "how", "which", "whose",
+	"yes", "no", "not", "now", "then", "well", "still", "just", "only", "even",
+	"aye", "nay", "oh", "ah", "hah", "hm", "hmm", "eh", "ha", "gods", "god",
+	"sir", "madam", "master", "mistress", "lord", "lady", "milord", "milady",
+	"father", "mother", "brother", "sister", "elder", "king", "queen", "prince",
+	"princess", "captain", "sergeant", "guard", "guildmaster", "loremaster",
+	"thane", "regent", "baron", "high", "priest", "priestess", "archmage",
+	"shadowmaster", "harbor", "harbour", "innkeeper", "blacksmith", "merchant",
+	"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
+	"spring", "summer", "autumn", "winter", "north", "south", "east", "west",
+	"northern", "southern", "eastern", "western",
+	"first", "second", "third", "fourth", "fifth", "one", "two", "three", "four",
+	"ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x",
+	# Ordinary English that the corpus happens never to write in lower case,
+	# almost all of it from Title Case epithets ("the Eternal Watcher", "Gavin
+	# the Weasel"), UI labels and bracketed board headers.
+	"hail", "kiss", "watcher", "nurturer", "maiden", "weasel", "nail", "compact",
+	"recursion", "shelve", "exercise", "dispensed", "smashing", "rebellion",
+	"vein", "ser", "viscount", "magi", "magus", "cantos", "theorem", "siege",
+	"wildflowers", "cabbage", "barley", "yarrow", "rogues", "burglar", "scarface",
+	"medium", "accuracy", "verified", "balance", "stance", "rally", "taunt",
+	"bash", "cry", "roar", "gust", "arc", "dense", "aimed", "sweeping", "onward",
+	"apologies", "acknowledged", "resuming", "dismissed", "hello", "alright",
+	"definitely", "wonderfully", "wandered", "confuse", "divide", "drama",
+	"opinions", "missiles", "fireballs", "mutually", "includes", "undo", "xp",
+	"hrm", "hrrrm", "npcs", "athenaeum", "athenaeums", "pitmaster",
+]
+
 var errors: Array[Dictionary] = []
 var warnings: Array[Dictionary] = []
 
@@ -97,6 +180,16 @@ var item_ids: Dictionary = {}
 var enemy_ids: Dictionary = {}
 var faction_ids: Dictionary = {}
 var invoked_choices: Dictionary = {}
+
+## THE GROUNDING LAW's working set.
+## grounded_tokens: lowercase word -> the entity vocabulary that grounds it.
+## lore_only_tokens: lowercase word -> the whitelist reason that excuses it.
+## _prose_lowercase_words: every word the corpus itself ever writes in lowercase.
+var grounded_tokens: Dictionary = {}
+var lore_only_tokens: Dictionary = {}
+var _prose_lowercase_words: Dictionary = {}
+var _prose_entries: Array[Dictionary] = []
+var grounding_texts_scanned: int = 0
 
 
 func _initialize() -> void:
@@ -114,6 +207,13 @@ func _initialize() -> void:
 	_check_dialogue_actions()
 	_check_schedules()
 	_check_quest_npc_daytime_reachability()
+
+	# THE GROUNDING LAW runs last: it needs every id the earlier passes collected.
+	_collect_grounding_vocabulary()
+	_gather_player_facing_prose()
+	_absorb_ordinary_words()
+	_selftest_grounding()
+	_check_grounded_references()
 
 	var failed: bool = _write_report()
 	quit(1 if failed else 0)
@@ -853,6 +953,509 @@ func _warn(category: String, path: String, subject: String, message: String) -> 
 	warnings.append({"category": category, "path": path, "subject": subject, "message": message})
 
 
+# --- THE GROUNDING LAW -------------------------------------------------------
+#
+# Three steps, in order:
+#   1. _collect_grounding_vocabulary() - everything the world actually contains,
+#      reduced to a set of lowercase word tokens.
+#   2. _gather_player_facing_prose()   - every string a player will ever read,
+#      and, as a by-product, every word the corpus writes in lowercase.
+#   3. _check_grounded_references()    - every capitalised word in that prose
+#      must be in (1), in the whitelist, or demonstrably an ordinary word.
+#
+# The lint works on TOKENS, not phrases. "Willow Dale Ruins" grounds `willow`,
+# `dale` and `ruins`; a line about "the Willow Dale road" therefore passes,
+# because both of its name words are words the world owns. A line about
+# "Greyhollow" fails, because nothing in the world has ever heard of it. That is
+# the right sensitivity: it catches invented places and invented people, and it
+# does not police word order.
+
+## Reduce a display name to the lowercase word tokens it contributes.
+## "Wyvern's Roost" -> [wyverns, wyvern, roost]; "Kazer-Dun" -> [kazer, dun];
+## "elder_moor" -> [elder, moor].
+func _name_tokens(name: String) -> Array[String]:
+	var tokens: Array[String] = []
+	var current: String = ""
+	var lowered: String = name.to_lower()
+	for i in range(lowered.length()):
+		var c: String = lowered[i]
+		if (c >= "a" and c <= "z") or c == "'" or c == "\u2019":
+			current += c
+		else:
+			if not current.is_empty():
+				tokens.append_array(_split_possessive(current))
+			current = ""
+	if not current.is_empty():
+		tokens.append_array(_split_possessive(current))
+	return tokens
+
+
+## A possessive is two facts about the world, not one: "Wyvern's Roost" tells you
+## the place is called Wyvern's Roost AND that a wyvern is a thing here.
+func _split_possessive(word: String) -> Array[String]:
+	var bare: String = word.replace("\u2019", "'")
+	var out: Array[String] = [bare.replace("'", "")]
+	var apostrophe: int = bare.find("'")
+	if apostrophe > 0:
+		var stem: String = bare.substr(0, apostrophe)
+		if stem.length() > 1 and stem not in out:
+			out.append(stem)
+	return out
+
+
+func _ground(name: String, source: String) -> void:
+	for token: String in _name_tokens(name):
+		if token.length() < 2:
+			continue
+		if not grounded_tokens.has(token):
+			grounded_tokens[token] = source
+
+
+## Everything the world contains, as words. Ids count as well as display names:
+## `elder_moor` is the same promise as "Elder Moor", written for the machine.
+func _collect_grounding_vocabulary() -> void:
+	for id: String in npc_ids:
+		_ground(id, "npc id")
+	for id: String in item_ids:
+		_ground(id, "item id")
+	for id: String in enemy_ids:
+		_ground(id, "enemy id")
+	for id: String in faction_ids:
+		_ground(id, "faction id")
+
+	# World grid: the map. If a place has a cell, the player can stand on it.
+	var name_re := RegEx.new()
+	name_re.compile("\"(?:name|display_name)\"\\s*:\\s*\"([^\"]+)\"")
+	var grid_text: String = _read_text(WORLD_GRID_PATH)
+	for m: RegExMatch in name_re.search_all(grid_text):
+		_ground(m.get_string(1), "world grid location")
+	var grid_id_re := RegEx.new()
+	grid_id_re.compile("\"id\"\\s*:\\s*\"([^\"]+)\"")
+	for m: RegExMatch in grid_id_re.search_all(grid_text):
+		_ground(m.get_string(1), "world grid id")
+
+	# WorldLexicon: the regions, settlements and creatures conversation draws on.
+	var lexicon_text: String = _read_text(WORLD_LEXICON_PATH)
+	for m: RegExMatch in name_re.search_all(lexicon_text):
+		_ground(m.get_string(1), "world lexicon")
+	for m: RegExMatch in grid_id_re.search_all(lexicon_text):
+		_ground(m.get_string(1), "world lexicon id")
+	var lexicon_key_re := RegEx.new()
+	lexicon_key_re.compile("(?m)^\\s*\"([a-z][a-z0-9_]+)\"\\s*:\\s*\\{")
+	for m: RegExMatch in lexicon_key_re.search_all(lexicon_text):
+		_ground(m.get_string(1), "world lexicon key")
+
+	# Quests: a quest title is a thing the player can be doing.
+	for path: String in _walk(QUEST_DIR, ".json", true):
+		var quest: Dictionary = _read_json(path)
+		_ground(str(quest.get("id", "")), "quest id")
+		_ground(str(quest.get("title", "")), "quest title")
+
+	# Display names off every resource kind that has one.
+	var resource_dirs: Array[String] = []
+	resource_dirs.append_array(ITEM_DIRS)
+	resource_dirs.append(ENEMY_DIR)
+	resource_dirs.append(NPC_DIR)
+	resource_dirs.append(FACTION_DIR)
+	resource_dirs.append_array(COMPANION_DIRS)
+	for dir: String in resource_dirs:
+		for path: String in _walk(dir, ".tres"):
+			_ground(_read_field(path, "display_name"), "display name")
+			_ground(_read_field(path, "name"), "display name")
+
+	# Lore entries are authored world facts and ground what they name.
+	for path: String in _walk(LORE_DIR, ".json"):
+		var lore: Dictionary = _read_json(path)
+		_ground_lore_values(lore)
+
+	# The name generator's own vocabulary: any name it can roll is a name a
+	# living townsperson may be wearing, so dialogue may use it.
+	var names_json: Dictionary = _read_json(NPC_NAMES_PATH)
+	_ground_lore_values(names_json)
+
+	# Display names passed to the NPC spawn factories in level scripts. These are
+	# the people actually standing in the world, and most of them have no .tres.
+	_collect_spawned_display_names()
+
+	# The whitelist, last, so it is visibly separate from what the world contains.
+	var whitelist: Dictionary = _read_json(GROUNDING_WHITELIST_PATH)
+	var entries: Array = whitelist.get("entries", [])
+	if entries.is_empty():
+		_fail("GROUNDING", GROUNDING_WHITELIST_PATH, "lore_only_whitelist",
+				"the lore-only whitelist is missing or has no entries; THE GROUNDING LAW cannot excuse anything")
+	for entry: Variant in entries:
+		if not entry is Dictionary:
+			continue
+		var row: Dictionary = entry
+		var token: String = str(row.get("token", "")).to_lower()
+		var reason: String = str(row.get("reason", ""))
+		var bible: String = str(row.get("bible", ""))
+		if token.is_empty():
+			continue
+		if reason.is_empty() or bible.is_empty():
+			_fail("GROUNDING", GROUNDING_WHITELIST_PATH, token,
+					"whitelist entry has no reason and/or no bible citation; an unexplained excuse is laundering")
+		lore_only_tokens[token] = reason
+
+	# The second section: things the world speaks of but does not contain.
+	# Held to the same standard - a reason and the file that says it.
+	var offscreen: Array = whitelist.get("offscreen", [])
+	for entry: Variant in offscreen:
+		if not entry is Dictionary:
+			continue
+		var row: Dictionary = entry
+		var token: String = str(row.get("token", "")).to_lower()
+		if token.is_empty():
+			continue
+		if str(row.get("reason", "")).is_empty() or str(row.get("found_in", "")).is_empty():
+			_fail("GROUNDING", GROUNDING_WHITELIST_PATH, token,
+					"offscreen entry has no reason and/or no found_in; an unexplained excuse is laundering")
+		lore_only_tokens[token] = str(row.get("reason", ""))
+
+
+## Pull every string value out of a nested lore/name JSON and ground it.
+func _ground_lore_values(data: Variant) -> void:
+	if data is Dictionary:
+		var dict: Dictionary = data
+		for key: Variant in dict:
+			var key_name: String = str(key)
+			if not key_name.begins_with("_"):
+				_ground(key_name, "lore key")
+			_ground_lore_values(dict[key])
+	elif data is Array:
+		for item: Variant in (data as Array):
+			_ground_lore_values(item)
+	elif data is String:
+		var text: String = data
+		# Long prose in a lore file is prose, not a name list; do not let it
+		# ground arbitrary words.
+		if text.length() <= 64:
+			_ground(text, "lore value")
+
+
+## Display names handed to the spawn factories. Index 2 is the display name for
+## the QuestGiver family and for townsfolk; the id sits at index 3 and is
+## already harvested by _collect_spawn_call_ids.
+func _collect_spawned_display_names() -> void:
+	const NAME_ARG_INDEX: int = 2
+	var factories: Array[String] = [
+		"spawn_quest_giver", "spawn_from_registry", "spawn_townsfolk", "spawn_hostage",
+	]
+	for dir: String in SCRIPT_DIRS:
+		for path: String in _walk(dir, ".gd"):
+			var text: String = _read_text(path)
+			for fn: String in factories:
+				var search_from: int = 0
+				while true:
+					var idx: int = text.find(fn + "(", search_from)
+					if idx == -1:
+						break
+					search_from = idx + fn.length()
+					var args: Array[String] = _split_call_args(text, idx + fn.length())
+					if args.size() <= NAME_ARG_INDEX:
+						continue
+					_ground(_literal_of(args[NAME_ARG_INDEX]), "spawned NPC name")
+
+
+## Every string a player will ever read, plus the corpus's lowercase vocabulary.
+func _gather_player_facing_prose() -> void:
+	for dir: String in DIALOGUE_DIRS:
+		for path: String in _walk(dir, ".json"):
+			_harvest_prose(_read_json(path), path, "")
+
+	# Legacy authored dialogue still lives in .tres.
+	var tres_prose_re := RegEx.new()
+	# `text` only. DialogueData.description is an editor field - a note to the
+	# author about placeholders and autoloads - and scanning it reported
+	# `DialogueManager` as an invented place.
+	tres_prose_re.compile("(?m)^text\\s*=\\s*\"((?:[^\"\\\\]|\\\\.)*)\"")
+	for dir: String in DIALOGUE_DIRS:
+		for path: String in _walk(dir, ".tres"):
+			for m: RegExMatch in tres_prose_re.search_all(_read_text(path)):
+				_record_prose(m.get_string(1).replace("\\n", " "), path, "text")
+
+	for path: String in _walk(CONVERSATION_POOL_DIR, ".json"):
+		_harvest_prose(_read_json(path), path, "")
+	for path: String in _walk(CONVERSATION_POOL_DIR, ".tres"):
+		for m: RegExMatch in tres_prose_re.search_all(_read_text(path)):
+			_record_prose(m.get_string(1).replace("\\n", " "), path, "text")
+
+	for path: String in _walk(QUEST_DIR, ".json", true):
+		_harvest_prose(_read_json(path), path, "")
+
+
+## Walk a data file and record the value of every player-facing key.
+func _harvest_prose(data: Variant, path: String, key_name: String) -> void:
+	if data is Dictionary:
+		var dict: Dictionary = data
+		for key: Variant in dict:
+			_harvest_prose(dict[key], path, str(key))
+	elif data is Array:
+		for item: Variant in (data as Array):
+			_harvest_prose(item, path, key_name)
+	elif data is String:
+		if key_name in PROSE_KEYS:
+			_record_prose(data, path, key_name)
+
+
+func _record_prose(text: String, path: String, key_name: String) -> void:
+	if text.strip_edges().is_empty():
+		return
+	grounding_texts_scanned += 1
+	_prose_entries.append({"text": text, "path": path, "key": key_name})
+	# Any word the writers themselves type in lowercase is an ordinary word.
+	for word: String in _lowercase_words(text):
+		_prose_lowercase_words[word] = true
+
+
+## The words in a string that were written entirely in lower case.
+func _lowercase_words(text: String) -> Array[String]:
+	var out: Array[String] = []
+	var current: String = ""
+	var all_lower: bool = true
+	for i in range(text.length() + 1):
+		var c: String = "" if i == text.length() else text[i]
+		var is_letter: bool = (c >= "a" and c <= "z") or (c >= "A" and c <= "Z") or c == "'" or c == "\u2019"
+		if is_letter:
+			current += c
+			if c >= "A" and c <= "Z":
+				all_lower = false
+		else:
+			if all_lower and current.length() > 1:
+				out.append_array(_split_possessive(current))
+			current = ""
+			all_lower = true
+	return out
+
+
+## Split prose into words, remembering which of them open a sentence. A lone
+## capital that opens a sentence is not evidence of anything.
+func _split_words(text: String) -> Array[Dictionary]:
+	var words: Array[Dictionary] = []
+	var current: String = ""
+	var starts_sentence: bool = true
+	var pending_sentence_start: bool = true
+	for i in range(text.length() + 1):
+		var c: String = "" if i == text.length() else text[i]
+		var is_letter: bool = (c >= "a" and c <= "z") or (c >= "A" and c <= "Z") or c == "'" or c == "\u2019"
+		if is_letter:
+			if current.is_empty():
+				starts_sentence = pending_sentence_start
+			current += c
+			continue
+		if not current.is_empty():
+			words.append({"word": current, "starts_sentence": starts_sentence})
+			current = ""
+			pending_sentence_start = false
+		if c in [".", "!", "?", ":", ";", "\n", "\u2014", "-"]:
+			pending_sentence_start = true
+	return words
+
+
+func _is_capitalised(word: String) -> bool:
+	var first: String = word[0]
+	return first >= "A" and first <= "Z"
+
+
+## Strip runtime placeholders - {npc_name}, {quest_title} - before scanning.
+## What they resolve to is grounded at the source, not here.
+func _strip_placeholders(text: String) -> String:
+	var out: String = ""
+	var depth: int = 0
+	for i in range(text.length()):
+		var c: String = text[i]
+		if c == "{":
+			depth += 1
+			continue
+		if c == "}":
+			depth = maxi(0, depth - 1)
+			out += " "
+			continue
+		if depth == 0:
+			out += c
+	return out
+
+
+## The capitalised word tokens in a string that are candidate proper nouns.
+func _proper_noun_tokens(text: String) -> Array[String]:
+	var out: Array[String] = []
+	var seen: Dictionary = {}
+	var words: Array[Dictionary] = _split_words(_strip_placeholders(text))
+	var i: int = 0
+	while i < words.size():
+		var word: String = words[i]["word"]
+		if not _is_capitalised(word):
+			i += 1
+			continue
+
+		# Measure the run of capitalised words, allowing lowercase name joiners.
+		# A run never crosses a sentence boundary. "Difficulty: Medium\nReward:"
+		# is three sentences, not one four-word name, and reading it as a name
+		# was most of this lint's first-run noise.
+		var run: Array[Dictionary] = [words[i]]
+		var j: int = i + 1
+		while j < words.size():
+			if bool(words[j]["starts_sentence"]):
+				break
+			var next_word: String = words[j]["word"]
+			if _is_capitalised(next_word):
+				run.append(words[j])
+				j += 1
+				continue
+			if next_word.to_lower() in NAME_JOINERS and j + 1 < words.size() \
+					and _is_capitalised(words[j + 1]["word"]) \
+					and not bool(words[j + 1]["starts_sentence"]):
+				run.append(words[j + 1])
+				j += 2
+				continue
+			break
+
+		for entry: Dictionary in run:
+			# A lone capital opening a sentence is grammar, not a name.
+			if run.size() == 1 and bool(entry["starts_sentence"]):
+				continue
+			for token: String in _name_tokens(str(entry["word"])):
+				if token.length() < 2 or seen.has(token):
+					continue
+				seen[token] = true
+				out.append(token)
+		i = j
+	return out
+
+
+## Does this word token resolve to something the game contains, to demonstrated
+## ordinary English, or to a sanctioned lore-only mention?
+##
+## Plurals and possessives resolve through their stem: "Thornfield's" arrives
+## here as `thornfields`, and Thornfield is a town, so the reference is grounded.
+func _token_resolves(token: String) -> bool:
+	if _token_known(token):
+		return true
+	for stem: String in _stems_of(token):
+		if _token_known(stem):
+			return true
+	return false
+
+
+func _token_known(token: String) -> bool:
+	if token.length() < 2:
+		return true
+	if token in GROUNDING_STOPWORDS:
+		return true
+	# Demonstrated by the game's own writing to be an ordinary word.
+	if _prose_lowercase_words.has(token):
+		return true
+	if grounded_tokens.has(token):
+		return true
+	if lore_only_tokens.has(token):
+		return true
+	return false
+
+
+## Candidate singular forms of a plural or possessive token.
+func _stems_of(token: String) -> Array[String]:
+	var stems: Array[String] = []
+	if token.ends_with("ies") and token.length() > 4:
+		stems.append(token.substr(0, token.length() - 3) + "y")
+	if token.ends_with("es") and token.length() > 3:
+		stems.append(token.substr(0, token.length() - 2))
+	if token.ends_with("s") and token.length() > 2:
+		stems.append(token.substr(0, token.length() - 1))
+	return stems
+
+
+## Widen the evidence for "this is an ordinary English word" beyond the dialogue
+## corpus to everything the project writes in prose: item and enemy descriptions,
+## lore files, and the sentence-shaped string literals in the scripts.
+##
+## Why: the dialogue corpus alone is small enough that perfectly ordinary words
+## ("bash", "medium", "apologies") can happen never to appear in lower case in
+## it, and the lint then reports them as invented places. A word the project
+## writes in lower case anywhere is a word, full stop.
+func _absorb_ordinary_words() -> void:
+	for dir: String in ["res://data"]:
+		for path: String in _walk(dir, ".json"):
+			_absorb_json_strings(_read_json(path))
+		for path: String in _walk(dir, ".tres"):
+			_absorb_quoted_prose(_read_text(path))
+	for dir: String in SCRIPT_DIRS:
+		for path: String in _walk(dir, ".gd"):
+			_absorb_quoted_prose(_read_text(path))
+
+
+func _absorb_json_strings(data: Variant) -> void:
+	if data is Dictionary:
+		var dict: Dictionary = data
+		for key: Variant in dict:
+			_absorb_json_strings(dict[key])
+	elif data is Array:
+		for item: Variant in (data as Array):
+			_absorb_json_strings(item)
+	elif data is String:
+		for word: String in _lowercase_words(data):
+			_prose_lowercase_words[word] = true
+
+
+## Harvest lower-case words from double-quoted literals that contain a space -
+## i.e. from sentences, not from identifiers. `"velkyr_tower"` must not be able
+## to quietly ground a place name that has no tower.
+func _absorb_quoted_prose(text: String) -> void:
+	var re := RegEx.new()
+	re.compile("\"([^\"\\n]* [^\"\\n]*)\"")
+	for m: RegExMatch in re.search_all(text):
+		for word: String in _lowercase_words(m.get_string(1)):
+			_prose_lowercase_words[word] = true
+
+
+## Prove the lint still bites before trusting it to report zero.
+##
+## A grounding check that has quietly stopped extracting anything reports a
+## clean bill of health and looks exactly like a well-written game. So: feed it
+## a sentence naming a place that does not exist and require a hit, feed it a
+## sentence naming Dalhurst and require silence, and fail the whole validator if
+## either answer is wrong.
+func _selftest_grounding() -> void:
+	const PHANTOM := "The road to Greyhollow Vantage is closed past the mill."
+	const REAL := "The road to Dalhurst is closed past the mill."
+
+	var phantom_hits: Array[String] = []
+	for token: String in _proper_noun_tokens(PHANTOM):
+		if not _token_resolves(token):
+			phantom_hits.append(token)
+	if phantom_hits.is_empty():
+		_fail("GROUNDING_SELFTEST", "res://tools/validate_content.gd", "extraction",
+				"the grounding lint did not flag an invented place name; it has stopped biting and its zero means nothing")
+
+	for token: String in _proper_noun_tokens(REAL):
+		if not _token_resolves(token):
+			_fail("GROUNDING_SELFTEST", "res://tools/validate_content.gd", token,
+					"the grounding lint flagged `%s` in a sentence about a real town; it is reporting noise as law" % token)
+
+	# A lone capital that opens a sentence is grammar. If that ever starts
+	# reading as a name, every line of dialogue becomes an error.
+	for token: String in _proper_noun_tokens("Well. Quiet enough today."):
+		_fail("GROUNDING_SELFTEST", "res://tools/validate_content.gd", token,
+				"sentence-initial `%s` was read as a proper noun" % token)
+
+
+## The law itself. An unresolvable proper noun is an ERROR.
+func _check_grounded_references() -> void:
+	var reported: Dictionary = {}
+	for entry: Dictionary in _prose_entries:
+		var text: String = entry["text"]
+		var path: String = entry["path"]
+		var key_name: String = entry["key"]
+		for token: String in _proper_noun_tokens(text):
+			if _token_resolves(token):
+				continue
+			var report_key: String = "%s|%s" % [token, path]
+			if reported.has(report_key):
+				continue
+			reported[report_key] = true
+			_fail("GROUNDING", path, token,
+					"`%s` names something the game does not contain (in `%s`). Point it at a real place, person, item or faction, or add it to data/lore_only_whitelist.json with the bible line that sanctions it." % [token, key_name])
+
+
 # --- reporting ---------------------------------------------------------------
 
 func _write_report() -> bool:
@@ -869,6 +1472,9 @@ func _write_report() -> bool:
 	lines.append("| Interactable ids whitelisted | %d |" % INTERACTABLE_IDS.size())
 	lines.append("| Lore-only ids whitelisted | %d |" % LORE_ONLY_IDS.size())
 	lines.append("| Staging quests not gated (`_future/`) | %d |" % staging_quest_count)
+	lines.append("| Grounded name tokens (what the world contains) | %d |" % grounded_tokens.size())
+	lines.append("| Lore-only tokens whitelisted | %d |" % lore_only_tokens.size())
+	lines.append("| Player-facing strings scanned | %d |" % grounding_texts_scanned)
 	lines.append("| Schedule archetypes | %d |" % schedule_archetypes.size())
 	lines.append("| NPCs with a schedule record | %d |" % schedule_records.size())
 	lines.append("| Errors | %d |" % errors.size())

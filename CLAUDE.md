@@ -125,6 +125,51 @@ Never invent content to make the validator quiet. If a phantom reference cannot
 be fixed from data that already exists, add a row to the disposition table
 instead.
 
+### THE GROUNDING LAW
+
+> "NPCs will remember and know you and react to your choices - but they can't
+> talk about anything that doesn't actually exist in the game." - Caleb, 8/2
+
+**Every proper noun in a line the player reads must resolve to something the
+player can reach.** A world grid location, a quest, a spawned NPC, an item, an
+enemy, a faction, a god - or a row in `data/lore_only_whitelist.json`. Anything
+else is a phantom: a place that sounds real, is named twice, and has no cell on
+the map.
+
+The gate is a pass inside `validate_content.gd`, so it runs everywhere the
+validator already runs - `validate.ps1`, `run_all_checks.ps1`, and the
+pre-commit hook (whose path filter now includes `scripts/dialogue/` and the two
+conversation autoloads, because what they spawn is what grounds the words).
+
+**An unresolvable proper noun is an ERROR, not a warning.**
+
+How it decides, in order:
+
+| Test | Meaning |
+|---|---|
+| in the grounded token set | the world contains a thing with that word in its name or id |
+| written in lower case anywhere in the project | it is an ordinary English word, demonstrated by our own prose |
+| singular stem resolves | "Thornfield's", "Dalhursts" - a plural of a real place is a real place |
+| in `lore_only_whitelist.json` | deliberately unresolvable, with the bible line that says so |
+
+It works on **word tokens, not phrases**, so "the Willow Dale road" passes on
+the strength of Willow Dale Ruins, and word order is not policed. Runs of
+capitals never cross a sentence boundary, and a lone capital opening a sentence
+is grammar, not a name.
+
+**The whitelist has two sections and both are honest or neither is.**
+`entries` are bible-sanctioned lore (Sylvaine, Corwin, the missing king Aldric,
+the Kazan-Dun figures, Viktor's continent, the Tegnar) and each carries its
+bible citation. `offscreen` are things the world speaks of but does not contain
+- a siege fought before the game starts, a boat already on the bottom - and each
+carries the file that says it. A missing reason on either fails the validator.
+**A quest that DIRECTS the player at a name gets the name fixed, not excused.**
+
+`_selftest_grounding()` runs before the pass and fails the whole validator if
+the lint stops flagging an invented place or starts flagging a real town. A
+grounding check that has quietly stopped extracting reports zero and looks
+exactly like a well-written game.
+
 ## RULES
 - Do NOT add features beyond what was requested
 - Do NOT move on until current task is complete

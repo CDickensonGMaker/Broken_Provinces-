@@ -1,12 +1,18 @@
 #!/usr/bin/env sh
 # Broken Provinces content gate, run from the repository's pre-commit hook.
 #
-# Fires only when the staged diff touches data/ or scripts/levels/ - the two
-# trees the validator actually reads - so ordinary code commits are not taxed
-# with a Godot boot.
+# Fires when the staged diff touches data/, scripts/levels/ or the dialogue and
+# conversation scripts - the trees the validator reads - so ordinary code
+# commits are not taxed with a Godot boot.
+#
+# scripts/dialogue/ and the conversation autoloads are in the filter because of
+# THE GROUNDING LAW: the lint's vocabulary is partly built out of what those
+# files spawn and name, so a change there can turn a grounded reference into a
+# phantom without a single data file moving.
 #
 # Two failure conditions:
-#   1. any validator ERROR (the count has been zero since 8/1 and must stay)
+#   1. any validator ERROR (the count has been zero since 8/1 and must stay),
+#      which now includes an unresolvable proper noun in any player-facing line
 #   2. the warning count rose against the committed docs/audits/validation_report.md
 #
 # Set BP_SKIP_VALIDATE=1 to bypass deliberately (e.g. committing a known-red
@@ -21,7 +27,7 @@ fi
 
 staged=$(git diff --cached --name-only --diff-filter=ACMR)
 case "$staged" in
-    *data/*|*scripts/levels/*) ;;
+    *data/*|*scripts/levels/*|*scripts/dialogue/*|*conversation_system.gd*|*dialogue_manager.gd*) ;;
     *)
         exit 0
         ;;
@@ -35,7 +41,7 @@ if [ ! -f "$godot" ]; then
     exit 1
 fi
 
-echo "pre-commit: staged changes touch data/ or scripts/levels/, running the content validator"
+echo "pre-commit: staged changes touch content or dialogue, running the content validator"
 
 output=$("$godot" --headless --path "$repo" --script res://tools/validate_content.gd 2>&1 || true)
 verdict=$(printf '%s\n' "$output" | grep -E '^Errors: ' | tail -n 1)

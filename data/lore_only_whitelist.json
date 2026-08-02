@@ -1,0 +1,131 @@
+{
+  "_purpose": "THE GROUNDING LAW's escape hatch, and the only one. A proper noun in game text must resolve to something the player can walk up to - a world grid location, a quest title, a spawned NPC, an item, a faction, a god - or it must appear here with the bible line that sanctions it. tools/validate_content.gd::_check_grounded_references() reads this file and nothing else.",
+  "_law": "Nothing goes on this list to make a number move. An entry is a promise that the reference is DELIBERATELY unresolvable - lore the world talks about but does not contain - and it carries the bible section that says so. A phantom place somebody invented is not lore-only; it is a bug, and the fix is to delete it or replace it with a real place.",
+  "_shape": "entries[] = {token, reason, bible}. token is matched case-insensitively against a single capitalised word. Multi-word names are listed word by word, because the lint works on tokens.",
+  "entries": [
+    {
+      "token": "Sylvaine",
+      "reason": "The elf claimant. Bible-adopted name, sprinkled through Act I as passing NPC talk and nothing more; she is not spawned until Act II at the capital.",
+      "bible": "world_story_bible.md - Subplot: the claimant (RULED 8/1); Names table"
+    },
+    {
+      "token": "Corwin",
+      "reason": "The claimant's son, the king's unknowing child. Same Act I sprinkle rule as his mother - talked about, never met.",
+      "bible": "world_story_bible.md - Subplot: the claimant (RULED 8/1); Names table"
+    },
+    {
+      "token": "Aldric",
+      "reason": "The missing king. Whether this game ever reaches his cave is the bible's first deliberate [OPEN]; he must be rumour and nothing else. (Also the given name of two spawned NPCs, which is the collision the bible flags for Caleb's ruling.)",
+      "bible": "world_story_bible.md - The main story; Names table; Name collision to rule on"
+    },
+    {
+      "token": "Thurgan",
+      "reason": "The dead dwarf king of Kazan-Dun. A corpse at the bottom of the mine pits - named in the succession quest's prose, never a standing NPC.",
+      "bible": "world_story_bible.md - The Kazan-Dun side quest; Names table"
+    },
+    {
+      "token": "Ironvein",
+      "reason": "Thurgan Ironvein's house name. Second half of the dead king's name.",
+      "bible": "world_story_bible.md - Names table"
+    },
+    {
+      "token": "Brann",
+      "reason": "The dead dwarf king's infant heir. An infant is talked about, not talked to.",
+      "bible": "world_story_bible.md - The succession split; Names table"
+    },
+    {
+      "token": "Skarrag",
+      "reason": "The goblin king. The thing under the siege that the whole Kazan-Dun arc is afraid of; what feeding him a dwarf king actually does is an [OPEN] and he is deliberately never on screen.",
+      "bible": "world_story_bible.md - The soulstones [OPEN]; Names table"
+    },
+    {
+      "token": "Devourer",
+      "reason": "Second half of Skarrag the Devourer.",
+      "bible": "world_story_bible.md - Names table"
+    },
+    {
+      "token": "Viktor",
+      "reason": "Lord Baron Viktor, who rules the undead wasteland on a separate continent. World-canon backdrop; whether that continent is ever visitable is an [OPEN].",
+      "bible": "world_story_bible.md - The undead continent"
+    },
+    {
+      "token": "Isolde",
+      "reason": "Viktor's wife, the immortal queen. Same continent, same [OPEN].",
+      "bible": "world_story_bible.md - The undead continent; Names table"
+    },
+    {
+      "token": "Vespera",
+      "reason": "The rogue undead princess growing a third faction in the west of the undead continent. Same continent, same [OPEN].",
+      "bible": "world_story_bible.md - The undead continent; Names table"
+    },
+    {
+      "token": "Tegnar",
+      "reason": "The eight-foot bear-men horde south of the mountain passes. Their scouting camp exists in-game; the people as a nation are frontier rumour. Whether they become an invasion arc is an [OPEN].",
+      "bible": "world_story_bible.md - The Tegnar"
+    },
+    {
+      "token": "Tegner",
+      "reason": "The spelling the shipped enemy files use for the same people. Kept because renaming enemy ids is not a text edit.",
+      "bible": "world_story_bible.md - The Tegnar ('Tegner' enemies, partially built in the files)"
+    },
+    {
+      "token": "Birthright",
+      "reason": "Named only where design documentation quotes the influence; never spoken in game text. Present so the lint does not have to special-case docs it may later be pointed at.",
+      "bible": "world_story_bible.md - Origin & influences"
+    }
+  ],
+  "_offscreen_purpose": "The second and last excuse. These are things the world SPEAKS of but does not contain, found by THE GROUNDING LAW's first run on 8/2 in prose that predates it: a battle fought before the game starts, a boat already on the bottom, a book stolen off a shelf. They are not places the player can be sent to and not people the player is told to find - a quest that DIRECTS you at a name gets the name fixed, not excused.",
+  "_offscreen_law": "Every row names the file that says it and what would make it real. Anything here that later gets a cell on the map, an item, or an NPC comes OFF this list in the same commit. Rows are recorded in docs/audits/wave_b_dispositions.md; this is not a place to park work.",
+  "offscreen": [
+    {
+      "token": "Blackmont",
+      "reason": "The Siege of Blackmont - where Katrina Steelwind's predecessor took an arrow to the throat. A battle fought before the game begins, spoken of once, as a soldier's history. No cell, and it should not have one.",
+      "found_in": "data/dialogue/captain_roderick_steele.json"
+    },
+    {
+      "token": "Ironpeak",
+      "reason": "The Ironpeak foothills, north of the mining camps - where a wyvern nest is said to be. This one is a direction, not a memory, and is the weakest row here: if the nest ever becomes a place the player travels to, this reference must be re-pointed at the real cell.",
+      "found_in": "data/dialogue/katrina_steelwind.json"
+    },
+    {
+      "token": "Ashgrave",
+      "reason": "The Ashgrave Cantos, the tome stolen off the Athenaeum's restricted shelf. Already logged as an invention in docs/audits/invention_manifest.md - the quest's own note says so. It is a book in someone else's hands, never an item the player holds.",
+      "found_in": "data/quests/chains/cursed_tome_1.json"
+    },
+    {
+      "token": "Merrow",
+      "reason": "The Merrow's Kiss, the last boat out of Larton harbour before the mist ship started showing at dawn. A wreck, not a vessel; the quest is about the two brothers who did not come back.",
+      "found_in": "data/quests/harbor_ghost_ship.json, data/quests/ghost_ship_rumors.json"
+    },
+    {
+      "token": "Shadowroot",
+      "reason": "A reagent on the Arcane Circle's research board. No ItemData exists for it, so the board is asking for something the player cannot carry - a real gap, recorded rather than papered over with an invented item.",
+      "found_in": "data/dialogue/arcane_circle_research_board.json"
+    },
+    {
+      "token": "Glowcap",
+      "reason": "As Shadowroot: a board reagent with no item behind it.",
+      "found_in": "data/dialogue/arcane_circle_research_board.json"
+    },
+    {
+      "token": "Moonpetals",
+      "reason": "As Shadowroot: a board reagent with no item behind it.",
+      "found_in": "data/dialogue/arcane_circle_research_board.json"
+    },
+    {
+      "token": "Moonweave",
+      "reason": "Moonweave, the Circle's name for a fabric and for a council seat's endowment. Named twice, never handled.",
+      "found_in": "data/dialogue/archmage_elara.json, data/quests/guild/mages/mage_13_council_seat.json"
+    },
+    {
+      "token": "Silverleaf",
+      "reason": "An elven place-word in Sylva Swiftfoot's own account of where she comes from. The bible leaves the elven lands' position [OPEN]; naming a cell for it would answer his question for him.",
+      "found_in": "data/dialogue/companions/sylva_swiftfoot.json"
+    },
+    {
+      "token": "Velkyr",
+      "reason": "An archmage of the Circle before Elara. Faculty history, spoken in the past tense.",
+      "found_in": "data/dialogue/archmage_elara.json"
+    }
+  ]
+}
