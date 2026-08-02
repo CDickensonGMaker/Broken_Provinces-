@@ -168,7 +168,6 @@ Every item MUST serve a gameplay purpose. No "junk" items without function.
 - 50% movement speed reduction
 - Cannot sprint
 - Cannot jump
-- Cannot dodge
 
 **Carry weight formula:**
 ```

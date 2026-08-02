@@ -155,7 +155,6 @@ table cannot rot in either direction.
 |---|---|---|---|
 | `player_attack` | The player's swing through empty air | `player_controller._do_light_attack` | A short cloth/steel whoosh, 2-3 variations |
 | `player_death` | The player dying | `hud._on_death`, `game_manager` | One long human death cry |
-| `player_dodge` | Dodge roll | `player_controller` dodge | A cloth roll / scuff |
 | `player_stagger` | Player staggered by a hit | `player_controller.apply_stagger` | A grunt plus a stumble |
 | `player_heal` | Healing spell or potion landing on the player | `spell_caster`, `inventory_manager` | A warm rising chime |
 | `player_level_up` | Level threshold crossed | `character_data.add_ip` path | A short fanfare |

@@ -22,7 +22,6 @@ const EVENTS := {
 	# UI accept/click sound
 	"ui_accept": "res://assets/audio/sfx/ui/Accepting_Click_Noise.wav",
 	"player_death": "res://assets/audio/sfx/player_death.wav",
-	"player_dodge": "res://assets/audio/sfx/player_dodge.wav",
 	"player_block": "res://assets/audio/sfx/player_block.wav",
 	"player_parry": "res://assets/audio/sfx/player_parry.wav",
 	"player_stagger": "res://assets/audio/sfx/player_stagger.wav",
@@ -251,7 +250,7 @@ const EVENT_SUBSTITUTES := {
 ## tools/check_audio_events.tscn fails if an entry here is not in that file,
 ## or if an event is missing from disk and named in neither table.
 const MISSING_SFX: Array[String] = [
-	"player_attack", "player_death", "player_dodge", "player_stagger",
+	"player_attack", "player_death", "player_stagger",
 	"player_heal", "player_level_up",
 	"enemy_attack", "enemy_death", "enemy_stagger", "enemy_spawn",
 	"projectile_miss", "miss",

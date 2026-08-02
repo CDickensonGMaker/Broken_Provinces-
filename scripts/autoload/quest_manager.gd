@@ -55,9 +55,12 @@ const HANDLED_OBJECTIVE_TYPES: Array[String] = [
 ## implementing one would mean inventing a design decision Caleb has not made.
 ## Each needs a row in docs/audits/wave_b_dispositions.md naming the question.
 ## Nothing goes on this list to make a check quiet.
-const DEFERRED_OBJECTIVE_TYPES: Dictionary = {
-	"variable": "mage_repeatable_research: what a randomly-generated research assignment IS is unbuilt quest design, see wave_b_dispositions.md 2i",
-}
+##
+## Empty, and it must stay empty until a type genuinely has to wait on a
+## design call. `variable` lived here for mage_repeatable_research; that quest
+## now asks for a real reagent through the "has_item" driver, so the excuse has
+## no subject left and check_quest_engine fails on a deferral nothing uses.
+const DEFERRED_OBJECTIVE_TYPES: Dictionary = {}
 
 ## Quest data structure
 class Quest:
@@ -101,6 +104,26 @@ class Quest:
 
 	# Faction the quest belongs to (for reputation on complete/fail)
 	var faction: String = ""
+
+	## Flags raised in FlagManager the moment this quest completes.
+	##
+	## ONE property, TWO authored spellings. The story chains and the Mage
+	## ladder write `on_complete_flags`; the Thieves ladder writes `flags_set`,
+	## sitting beside the turn-in fields, which is the same claim in different
+	## words. _parse_quest unions both keys into this list rather than carrying
+	## two properties that would have to be raised in two places forever.
+	##
+	## These do not collide with the rank flags GuildRankManager writes: the
+	## quests spell them `thieves_rank_burglar`, the ladder spells its own
+	## `thieves_guild_rank_burglar`, and no name appears in both schemes.
+	var on_complete_flags: Array[String] = []
+
+	## Guild rank LEVEL the player must already hold before this quest is
+	## offered, read against `faction` as the guild id.
+	## GuildRankManager.get_guild_rank_level() answers -1 for a non-member and
+	## 0+ for a member, so 0 here means "must have joined" and -1 - the default
+	## for a quest that authored no rank_required at all - gates nothing.
+	var rank_required: int = -1
 
 	# Bounty cooldown system
 	var cooldown_days: int = 0  # Days before this bounty can be taken again (0 = no cooldown)
@@ -708,6 +731,19 @@ func _parse_quest(data: Dictionary) -> Quest:
 	# Faction for this quest
 	quest.faction = data.get("faction", "")
 
+	# Flags raised on completion. Two authored spellings, one meaning, one list.
+	for completion_key: String in ["on_complete_flags", "flags_set"]:
+		var completion_flags: Variant = data.get(completion_key, [])
+		if not (completion_flags is Array):
+			continue
+		for flag: Variant in completion_flags as Array:
+			if flag is String and not quest.on_complete_flags.has(flag):
+				quest.on_complete_flags.append(flag as String)
+
+	# Guild rank gate. JSON hands every number over as a float and assigning a
+	# float to an int property throws, which would abort the rest of this parse.
+	quest.rank_required = int(data.get("rank_required", -1))
+
 	# Bounty cooldown (days before quest can be taken again)
 	quest.cooldown_days = data.get("cooldown_days", 0)
 
@@ -750,6 +786,23 @@ func _parse_turn_in_type(turn_in: String) -> Enums.TurnInType:
 		"auto_complete": return Enums.TurnInType.AUTO_COMPLETE
 		_: return Enums.TurnInType.NPC_SPECIFIC
 
+## Does the player hold the guild rank this quest is written for?
+##
+## The two gate sets - is_quest_available() and start_quest() - are duplicated
+## by hand in this file, and every gate that lives in only one of them is a
+## quest the board refuses to show and the engine hands over anyway. This one
+## is a function so both can ask the same question.
+func meets_rank_requirement(template: Quest) -> bool:
+	if template.rank_required < 0:
+		return true  # no rank_required authored, nothing to gate on
+	if template.faction.is_empty():
+		push_warning("[QuestManager] %s sets rank_required with no faction to read it against" % template.id)
+		return true
+	if not GuildRankManager:
+		return true
+	return GuildRankManager.get_guild_rank_level(template.faction) >= template.rank_required
+
+
 ## Start a quest
 func start_quest(quest_id: String) -> bool:
 	if not quest_database.has(quest_id):
@@ -775,6 +828,10 @@ func start_quest(quest_id: String) -> bool:
 			return false
 		if not FlagManager.check_forbidden_flags(template.forbidden_flags):
 			return false
+
+	# Check the guild rank the quest is written for
+	if not meets_rank_requirement(template):
+		return false
 
 	# Create active quest from template
 	var quest := Quest.new()
@@ -854,6 +911,8 @@ func start_quest(quest_id: String) -> bool:
 	for item_id: String in template.quest_items:
 		quest.quest_items.append(item_id)
 	quest.faction = template.faction
+	quest.on_complete_flags = template.on_complete_flags.duplicate()
+	quest.rank_required = template.rank_required
 
 	quests[quest_id] = quest
 	quest_started.emit(quest_id)
@@ -1793,6 +1852,14 @@ func complete_quest(quest_id: String, completion_type: Enums.QuestCompletionStat
 				if CodexManager and not creature_id.is_empty():
 					CodexManager.discover_bestiary_entry(creature_id)
 
+	# Flags the quest promised to raise on completion, authored as
+	# `on_complete_flags` or `flags_set`. Raised before the signal so anything
+	# listening for the completion already sees the world it describes.
+	if FlagManager:
+		for completion_flag: String in quest.on_complete_flags:
+			if not completion_flag.is_empty():
+				FlagManager.set_flag(completion_flag)
+
 	quest_completed.emit(quest_id)
 
 	# Clear any active timers for this quest
@@ -2162,6 +2229,10 @@ func is_quest_available(quest_id: String) -> bool:
 			return false
 		if not FlagManager.check_forbidden_flags(template.forbidden_flags):
 			return false
+
+	# Check the guild rank the quest is written for
+	if not meets_rank_requirement(template):
+		return false
 
 	return true
 
@@ -2600,6 +2671,8 @@ func from_dict(data: Dictionary) -> void:
 		quest.is_main_quest = template.is_main_quest
 		quest.trigger_item = template.trigger_item
 		quest.faction = template.faction
+		quest.on_complete_flags = template.on_complete_flags.duplicate()
+		quest.rank_required = template.rank_required
 		quest.cooldown_days = template.cooldown_days
 		quest.objective_groups = template.objective_groups.duplicate(true)
 		for zone: String in template.possible_zones:

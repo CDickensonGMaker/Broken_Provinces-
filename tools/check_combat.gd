@@ -12,7 +12,8 @@ extends Node
 ##       is scoped to the hit CombatManager is delivering and to nobody else
 ##   C3  the block verb: a frontal hit is halved, a hit from behind is not,
 ##       stamina is spent per blocked hit and the guard breaks at zero
-##   C4  the soft lock-on verb: acquire, hold, and every documented break
+##   C4  the verbs the combat identity ruling removed stay removed - no dodge,
+##       no lock-on. The identity is Skyrim/Daggerfall, not Souls (Caleb, 8/2)
 ##
 ## C1 exists because melee paid armour twice for the whole of batch 4 - once in
 ## `apply_melee_damage` (honouring `armor_pierce`) and again in the receiver's
@@ -51,7 +52,7 @@ func _run() -> void:
 	await _settle()
 	_check_block()
 	await _settle()
-	_check_lock_on()
+	_check_removed_verbs()
 
 	print("")
 	print("Checks run: %d" % _checks)
@@ -221,8 +222,8 @@ func _check_block() -> void:
 	add_child(attacker)
 
 	_expect(
-		InputMap.has_action("block") and InputMap.has_action("lock_on"),
-		"the block / lock_on actions are not registered - GameSettings.ensure_runtime_actions did not run"
+		InputMap.has_action("block"),
+		"the block action is not registered - GameSettings.ensure_runtime_actions did not run"
 	)
 
 	# The pivot looks down -Z at yaw 0, so an attacker at -Z is dead ahead.
@@ -282,77 +283,45 @@ func _check_block() -> void:
 	player.queue_free()
 
 
-## C4. The lock. Acquisition rules and all four documented breaks.
-func _check_lock_on() -> void:
-	var player: PlayerController = _spawn_player()
-	if player == null:
-		_expect(false, "the player scene would not instance, so lock-on cannot be checked")
-		return
+## C4. The two verbs the identity ruling removed.
+##
+## Combat here is Skyrim/Daggerfall - move, swing, guard, armour - and not
+## Souls. Ruled 8/2: no player dodge and no lock-on. Both had code and both are
+## gone, and the cheapest way for either to creep back is for somebody to see a
+## dead binding and helpfully implement it. This is what stops that.
+func _check_removed_verbs() -> void:
+	GameSettings.ensure_runtime_actions()
 
-	CombatManager.active_enemies.clear()
-
-	var near := _probe_enemy(0)
-	near.global_position = player.global_position + Vector3(0.0, 0.0, -6.0)
-	var far := _probe_enemy(0)
-	far.global_position = player.global_position + Vector3(0.0, 0.0, -12.0)
-	var beyond := _probe_enemy(0)
-	beyond.global_position = player.global_position + Vector3(0.0, 0.0, -40.0)
-	CombatManager.active_enemies.assign([near, far, beyond] as Array[Node])
-
-	player._toggle_lock_on()
-	_expect(player.lock_on_target == near, "lock-on did not take the nearest enemy in range")
-
-	# Retoggle releases.
-	player._toggle_lock_on()
-	_expect(player.lock_on_target == null, "pressing lock-on again did not release the lock")
-
-	# Out of acquire range is not acquirable.
-	CombatManager.active_enemies.assign([beyond] as Array[Node])
-	player._toggle_lock_on()
 	_expect(
-		player.lock_on_target == null,
-		"an enemy %.0fm away was locked with a range of %.0fm" % [40.0, player.lock_on_range]
+		not InputMap.has_action("dodge"),
+		"the `dodge` action is bound again - the player dodge was removed by ruling, not by accident"
+	)
+	_expect(
+		not InputMap.has_action("lock_on"),
+		"the `lock_on` action is bound again - lock-on was cancelled by ruling"
+	)
+	_expect(
+		not GameSettings.REBINDABLE_ACTIONS.has("dodge")
+			and not GameSettings.REBINDABLE_ACTIONS.has("lock_on"),
+		"the options menu offers a binding for a verb the game does not have"
 	)
 
-	# Break on distance.
-	CombatManager.active_enemies.assign([near] as Array[Node])
-	player._toggle_lock_on()
-	_expect(player.lock_on_target == near, "lock-on failed to reacquire")
-	near.global_position = player.global_position + Vector3(0.0, 0.0, -(player.lock_on_break_range + 5.0))
-	player._update_lock_on(0.016)
-	_expect(player.lock_on_target == null, "the lock survived the target walking past break range")
+	var player_source: String = FileAccess.get_file_as_string("res://scripts/player/player_controller.gd")
+	_expect(
+		not player_source.is_empty(),
+		"could not read player_controller.gd to check for the removed verbs"
+	)
+	for banned: String in ["_try_dodge", "_perform_dodge", "is_dodging", "_toggle_lock_on", "lock_on_target"]:
+		_expect(
+			not player_source.contains("func %s" % banned) and not player_source.contains("var %s" % banned),
+			"PlayerController declares `%s` again - a removed verb is growing back" % banned
+		)
 
-	# Break on death.
-	near.global_position = player.global_position + Vector3(0.0, 0.0, -6.0)
-	player._toggle_lock_on()
-	_expect(player.lock_on_target == near, "lock-on failed to reacquire after a distance break")
-	near.current_state = EnemyBase.AIState.DEAD
-	player._update_lock_on(0.016)
-	_expect(player.lock_on_target == null, "the lock survived the target dying")
-
-	# Break on a freed target.
-	near.current_state = EnemyBase.AIState.IDLE
-	player._toggle_lock_on()
-	_expect(player.lock_on_target == near, "lock-on failed to reacquire after a death break")
-	CombatManager.active_enemies.clear()
-	near.free()
-	player._update_lock_on(0.016)
-	_expect(player.lock_on_target == null, "the lock survived the target being freed")
-
-	# The camera leans rather than snaps: one frame of bias must move the yaw
-	# some of the way and not all of it.
-	var pivot := player.camera_pivot
-	pivot.set("yaw", 0.0)
-	var target_point: Vector3 = pivot.global_position + Vector3(-10.0, 0.0, 0.0)
-	pivot.call("bias_toward", target_point, 0.016, player.lock_on_camera_bias)
-	var moved: float = absf(float(pivot.get("yaw")))
-	_expect(moved > 0.0, "one frame of camera bias moved the view not at all")
-	_expect(moved < PI * 0.5 * 0.9, "one frame of camera bias snapped the view onto the target")
-
-	far.queue_free()
-	beyond.queue_free()
-	player.queue_free()
-	CombatManager.active_enemies.clear()
+	var camera_source: String = FileAccess.get_file_as_string("res://scripts/player/camera_pivot.gd")
+	_expect(
+		not camera_source.contains("bias_toward"),
+		"CameraPivot.bias_toward is back - that function existed only to serve lock-on"
+	)
 
 
 ## A point `degrees` off the pivot's forward (-Z at yaw 0), `distance` away.

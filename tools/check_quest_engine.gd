@@ -90,6 +90,9 @@ func _run() -> void:
 	_check_shipping_data_types()
 	_check_title_reward()
 	_check_objective_skill_checks()
+	_check_completion_flags()
+	_check_rank_gate()
+	_check_repeatables_complete()
 
 	print("")
 	print("Checks run: %d" % _checks)
@@ -232,6 +235,11 @@ func _satisfy_prerequisites(template: Object) -> void:
 
 	for flag: String in template.forbidden_flags:
 		FlagManager.clear_flag(flag)
+
+	# A rank_required of 0 means membership, and the reference quest's faction
+	# is not a guild with a ladder, so seat the level directly.
+	if template.rank_required >= 0 and not template.faction.is_empty():
+		GuildRankManager.guild_rank_levels[template.faction] = template.rank_required
 
 
 func _diff_quest(template: Object, active: Object, stage: String) -> void:
@@ -748,6 +756,249 @@ func _check_objective_skill_checks() -> void:
 		deception_users > 0,
 		"no quest objective rolls a deception check - DECEPTION is a dead skill again"
 	)
+
+
+# =============================================================================
+# 9. FLAGS RAISED ON COMPLETION
+# =============================================================================
+#
+# 36 quests authored a list of flags to raise when they finish - 22 spelled
+# `on_complete_flags`, 14 spelled `flags_set` - and nothing in scripts/ read
+# either key. Every gate written against those flags was a door with no key
+# behind it: the whole Mage ladder gates on `arcane_circle_novice` and friends,
+# and none of them were ever raised.
+
+func _check_completion_flags() -> void:
+	var cases: Dictionary = {
+		"on_complete_flags": "_completion_flag_a",
+		"flags_set": "_completion_flag_b",
+	}
+
+	for key: String in cases:
+		var flag: String = cases[key]
+		var quest_id: String = "_completion_flag_check_" + key
+		FlagManager.clear_flag(flag)
+
+		var definition: Dictionary = {
+			"id": quest_id,
+			"title": "Completion flag check",
+			"turn_in_type": "auto_complete",
+			"objectives": [{"id": "_obj", "type": "interact", "target": "_completion_flag_target_" + key}],
+		}
+		definition[key] = [flag]
+
+		QuestManager.quest_database[quest_id] = QuestManager._parse_quest(definition)
+		_expect(QuestManager.start_quest(quest_id), "the completion-flag quest for '%s' would not start" % key)
+		_expect(not FlagManager.has_flag(flag), "'%s' raised its flag before the quest was finished" % key)
+
+		QuestManager.on_interact("_completion_flag_target_" + key)
+		_expect(
+			FlagManager.has_flag(flag),
+			"a quest completed with '%s': [\"%s\"] and the flag was never raised" % [key, flag]
+		)
+
+		FlagManager.clear_flag(flag)
+		QuestManager.quests.erase(quest_id)
+		QuestManager.quest_database.erase(quest_id)
+
+	# Both spellings mean the same thing, so they have to land in one list -
+	# otherwise a quest carrying both raises only half of what it promised.
+	var both_id := "_completion_flag_check_both"
+	QuestManager.quest_database[both_id] = QuestManager._parse_quest({
+		"id": both_id,
+		"title": "Both spellings",
+		"on_complete_flags": ["_completion_both_a"],
+		"flags_set": ["_completion_both_b", "_completion_both_a"],
+		"objectives": [{"id": "_obj", "type": "interact", "target": "_completion_both_target"}],
+	})
+	var both: Object = QuestManager.quest_database[both_id]
+	_expect(
+		both.on_complete_flags.size() == 2,
+		"on_complete_flags and flags_set did not union into one list without duplicates, got %s" % str(both.on_complete_flags)
+	)
+	QuestManager.quest_database.erase(both_id)
+
+
+# =============================================================================
+# 10. THE GUILD RANK GATE
+# =============================================================================
+#
+# Every Thieves Guild quest carries a `rank_required` that nothing read, so the
+# whole ladder was offered to anyone who walked in, in any order. The gate has
+# to hold in BOTH gate sets: is_quest_available() is what a board asks, and
+# start_quest() is what actually hands the quest over, and they are duplicated
+# by hand.
+
+func _check_rank_gate() -> void:
+	var guild := "_rank_check_guild"
+	var quest_id := "_rank_check_quest"
+
+	QuestManager.quest_database[quest_id] = QuestManager._parse_quest({
+		"id": quest_id,
+		"title": "Rank gate check",
+		"faction": guild,
+		"rank_required": 1,
+		"turn_in_type": "auto_complete",
+		"objectives": [{"id": "_obj", "type": "interact", "target": "_rank_check_target"}],
+	})
+	var template: Object = QuestManager.quest_database[quest_id]
+	_expect(template.rank_required == 1, "rank_required did not survive the parse as an int, got %s" % var_to_str(template.rank_required))
+
+	# Not a member at all: -1.
+	GuildRankManager.guild_rank_levels.erase(guild)
+	_expect(not QuestManager.is_quest_available(quest_id), "a non-member was offered a rank-gated quest")
+	_expect(not QuestManager.start_quest(quest_id), "a non-member was handed a rank-gated quest anyway")
+
+	# A member, but one rung short.
+	GuildRankManager.guild_rank_levels[guild] = 0
+	_expect(not QuestManager.is_quest_available(quest_id), "an under-ranked member was offered a rank-gated quest")
+	_expect(not QuestManager.start_quest(quest_id), "an under-ranked member was handed a rank-gated quest anyway")
+
+	# Ranked high enough.
+	GuildRankManager.guild_rank_levels[guild] = 1
+	_expect(QuestManager.is_quest_available(quest_id), "a properly ranked member was refused a rank-gated quest")
+	_expect(QuestManager.start_quest(quest_id), "a properly ranked member could not start a rank-gated quest")
+
+	QuestManager.quests.erase(quest_id)
+	QuestManager.quest_database.erase(quest_id)
+
+	# rank_required: 0 is not "ungated" - it is "must have joined". A quest that
+	# authored nothing is the ungated one.
+	var member_id := "_rank_check_membership"
+	QuestManager.quest_database[member_id] = QuestManager._parse_quest({
+		"id": member_id,
+		"title": "Membership gate",
+		"faction": guild,
+		"rank_required": 0,
+		"turn_in_type": "auto_complete",
+		"objectives": [{"id": "_obj", "type": "interact", "target": "_rank_check_member_target"}],
+	})
+	GuildRankManager.guild_rank_levels.erase(guild)
+	_expect(not QuestManager.is_quest_available(member_id), "rank_required: 0 let a non-member in - it means membership, not 'ungated'")
+	GuildRankManager.guild_rank_levels[guild] = 0
+	_expect(QuestManager.is_quest_available(member_id), "rank_required: 0 refused a rank-0 member")
+	QuestManager.quest_database.erase(member_id)
+
+	var open_id := "_rank_check_ungated"
+	QuestManager.quest_database[open_id] = QuestManager._parse_quest({
+		"id": open_id,
+		"title": "No rank gate",
+		"faction": guild,
+		"turn_in_type": "auto_complete",
+		"objectives": [{"id": "_obj", "type": "interact", "target": "_rank_check_open_target"}],
+	})
+	GuildRankManager.guild_rank_levels.erase(guild)
+	_expect(
+		QuestManager.is_quest_available(open_id),
+		"a quest with no rank_required was gated anyway - the default must gate nothing"
+	)
+	QuestManager.quest_database.erase(open_id)
+	GuildRankManager.guild_rank_levels.erase(guild)
+
+
+# =============================================================================
+# 11. THE TWO REPEATABLES
+# =============================================================================
+#
+# Both guild repeatables shipped uncompletable, in two different ways.
+# mage_repeatable_research's middle objective used type `variable`, which
+# nothing dispatched, and its `prerequisites` named a FLAG in the completed-
+# quest-id list so it was never offered either. thieves_repeatable_jobs had no
+# top-level `objectives` array at all - only nested `job_types` nothing reads -
+# so it parsed to zero objectives and completed the instant it was accepted.
+#
+# These are the real shipping quests, driven through the real entry points.
+
+func _check_repeatables_complete() -> void:
+	_drive_repeatable("mage_repeatable_research")
+	_drive_repeatable("thieves_repeatable_jobs")
+
+
+## Start a shipping quest, settle every objective the way the game does, and
+## turn it in. Fails unless it reaches COMPLETED with real objectives behind it.
+## _satisfy_prerequisites seats the quest's own gates - completed prerequisite
+## quests, flags, and the guild rank its rank_required asks for.
+func _drive_repeatable(quest_id: String) -> void:
+	if not QuestManager.quest_database.has(quest_id):
+		_fail("%s is not in the quest database at all" % quest_id)
+		return
+
+	var template: Object = QuestManager.quest_database[quest_id]
+	_expect(not template.objectives.is_empty(), "%s parsed with no objectives, so it completes the moment it is accepted" % quest_id)
+	if template.objectives.is_empty():
+		return
+
+	_satisfy_prerequisites(template)
+
+	QuestManager.quests.erase(quest_id)
+	if not QuestManager.start_quest(quest_id):
+		_fail("%s would not start even with its prerequisites and rank satisfied" % quest_id)
+		return
+
+	var quest: Object = QuestManager.quests[quest_id]
+	_expect(
+		quest.state == Enums.QuestState.ACTIVE,
+		"%s did not stay ACTIVE on accept - a quest with no real objectives completes on the spot" % quest_id
+	)
+
+	# Drive each objective through the entry point the game uses for its type.
+	for objective: Object in quest.objectives:
+		_settle_objective(quest, objective)
+
+	_expect(
+		QuestManager.are_objectives_complete(quest_id),
+		"%s has objectives that cannot be settled through any real entry point: %s" % [quest_id, _unsettled(quest)]
+	)
+
+	# npc_specific turn-in: quest_giver.gd:555 calls complete_quest directly.
+	QuestManager.complete_quest(quest_id)
+	_expect(
+		quest.state == Enums.QuestState.COMPLETED,
+		"%s was turned in and did not reach COMPLETED, state is %d" % [quest_id, quest.state]
+	)
+
+	QuestManager.quests.erase(quest_id)
+	QuestManager.bounty_cooldowns.erase(quest_id)
+	if not template.faction.is_empty():
+		GuildRankManager.guild_rank_levels.erase(template.faction)
+
+
+## The one public call that settles an objective of this type in the real game.
+func _settle_objective(quest: Object, objective: Object) -> void:
+	match objective.type:
+		"kill":
+			for _i: int in range(objective.required_count):
+				QuestManager.on_enemy_killed(objective.target)
+		"collect":
+			QuestManager.on_item_collected(objective.target, objective.required_count)
+		"has_item":
+			InventoryManager.add_item(objective.target, objective.required_count)
+			QuestManager.refresh_has_item_objectives(quest)
+		"talk":
+			QuestManager.on_npc_talked(objective.target)
+		"reach":
+			QuestManager.on_location_reached(objective.target)
+		"explore":
+			QuestManager.on_location_explored(objective.target)
+		"interact":
+			for _i: int in range(objective.required_count):
+				QuestManager.on_interact(objective.target)
+		_:
+			_fail(
+				"objective '%s' in '%s' is type '%s' and this guard has no real entry point for it"
+					% [objective.id, quest.id, objective.type]
+			)
+
+
+func _unsettled(quest: Object) -> String:
+	var stuck: Array[String] = []
+	for objective: Object in quest.objectives:
+		if not objective.is_optional and not objective.is_satisfied():
+			stuck.append("%s (%s -> %s, %d/%d)" % [
+				objective.id, objective.type, objective.target,
+				objective.current_count, objective.required_count
+			])
+	return ", ".join(stuck)
 
 
 ## Script-declared members on the QuestManager singleton.

@@ -35,22 +35,13 @@ const NOISE_AWARENESS_BOOST: float = 0.2 # How much awareness each footstep adds
 
 # --- Hit reaction ---
 ## Post-hit mercy window. Without one, two enemies in melee range can chain the
-## player to death with no counterplay - `_set_invulnerable` existed and was
-## called only by the dodge roll. Placeholder value, see dispositions 3f.
+## player to death with no counterplay. It is the ONLY thing that grants
+## i-frames now that the dodge is gone - the combat identity is
+## Skyrim/Daggerfall, not Souls (Caleb, 8/2). Placeholder value, see
+## dispositions 3f.
 @export var hit_iframe_duration: float = 0.35
 var hit_iframe_timer: float = 0.0
 var is_hit_invulnerable: bool = false
-
-# --- Dodge tuning ---
-var dodge_stamina_cost: float = 20.0
-var base_iframe_duration: float = 0.3  # Seconds of invulnerability
-var roll_distance: float = 4.0
-var sidestep_distance: float = 2.0
-var is_dodging: bool = false
-var iframe_timer: float = 0.0
-var dodge_velocity: Vector3 = Vector3.ZERO
-var dodge_timer: float = 0.0
-var dodge_duration: float = 0.3  # How long the dodge movement lasts
 
 # --- Crouch & Stealth ---
 var is_crouching: bool = false
@@ -93,19 +84,6 @@ var block_broken: bool = false
 signal block_state_changed(blocking: bool)
 signal block_broken_signal
 
-# --- Soft lock-on (ruling 3b) ---
-## A toggle, not a hold, and soft: the camera is *biased* toward the target and
-## never snapped to it, and movement is untouched. A hard lock would fight the
-## mouse and make the player's own aim feel broken.
-@export var lock_on_range: float = 15.0        ## How far a target can be acquired
-@export var lock_on_break_range: float = 20.0  ## How far before the lock drops
-@export var lock_on_los_grace: float = 2.0     ## Seconds out of sight before the lock drops
-@export var lock_on_camera_bias: float = 3.0   ## Lerp rate of the camera nudge
-var lock_on_target: Node3D = null
-var _lock_on_blind_timer: float = 0.0
-
-signal lock_on_changed(target: Node3D)
-
 # --- Interaction tuning ---
 @export var interaction_range: float = 2.5  # How far player can interact
 
@@ -135,9 +113,9 @@ func _ready() -> void:
 	# Add to player group
 	add_to_group("player")
 
-	# `block` and `lock_on` are read below and are not declared in
-	# project.godot. Registering them is idempotent, and a dev scene that never
-	# runs GameSettings.apply_all still gets working keys.
+	# `block` is read below and is not declared in project.godot. Registering
+	# it is idempotent, and a dev scene that never runs GameSettings.apply_all
+	# still gets a working key.
 	GameSettings.ensure_runtime_actions()
 
 	# Configure floor snapping for terrain traversal
@@ -179,11 +157,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("heavy_attack") and can_attack:
 		_do_light_attack(true)
 
-	# Lock-on toggle. Pressing it while locked releases, which is one of the
-	# four documented ways the lock ends.
-	if event.is_action_pressed("lock_on"):
-		_toggle_lock_on()
-
 	# Interaction input
 	if event.is_action_pressed("interact"):
 		_try_interact()
@@ -212,50 +185,15 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("crouch") and not is_climbing:
 		_toggle_crouch()
 
-	# --- Dodge input (disabled while climbing) ---
-	if Input.is_action_just_pressed("dodge") and not is_climbing:
-		_try_dodge()
-
-	# --- Guard, and the lock the camera leans on ---
+	# --- Guard ---
 	_update_block()
-	_update_lock_on(delta)
 
 	# --- Post-hit invulnerability ---
 	if is_hit_invulnerable:
 		hit_iframe_timer -= delta
 		if hit_iframe_timer <= 0.0:
 			is_hit_invulnerable = false
-			# The dodge owns i-frames while it is running; do not cut its short
-			if not is_dodging:
-				_set_invulnerable(false)
-
-	# --- Process active dodge ---
-	if is_dodging:
-		dodge_timer -= delta
-		iframe_timer -= delta
-
-		if iframe_timer <= 0 and not is_hit_invulnerable:
 			_set_invulnerable(false)
-
-		if dodge_timer <= 0:
-			is_dodging = false
-			dodge_velocity = Vector3.ZERO
-		else:
-			velocity.x = dodge_velocity.x
-			velocity.z = dodge_velocity.z
-			# Skip normal movement processing during dodge
-
-			# Still apply gravity
-			if not is_on_floor():
-				velocity.y -= gravity * delta
-			else:
-				if velocity.y < 0:
-					velocity.y = -0.1
-
-			move_and_slide()
-			_regenerate_mana(delta)
-			_update_interaction()
-			return
 
 	# --- Process ladder climbing ---
 	if is_climbing and current_ladder:
@@ -774,7 +712,6 @@ func _update_block() -> void:
 
 	var can_guard: bool = held \
 		and not block_broken \
-		and not is_dodging \
 		and not is_climbing \
 		and not is_dead \
 		and _current_stamina() > 0
@@ -835,132 +772,6 @@ func _current_stamina() -> int:
 		return 0
 	return GameManager.player_data.current_stamina
 
-
-# =============================================================================
-# SOFT LOCK-ON
-# =============================================================================
-
-## Toggle: acquire the nearest visible enemy in range, or drop the one held.
-func _toggle_lock_on() -> void:
-	if lock_on_target != null:
-		_clear_lock_on()
-		return
-
-	var best: Node3D = null
-	var best_distance: float = lock_on_range
-
-	for candidate: Node in CombatManager.active_enemies:
-		if not is_instance_valid(candidate) or not (candidate is Node3D):
-			continue
-		if candidate.has_method("is_dead") and candidate.is_dead():
-			continue
-
-		var node := candidate as Node3D
-		var distance: float = global_position.distance_to(node.global_position)
-		if distance > best_distance:
-			continue
-		if not CombatManager.has_line_of_sight(self, node):
-			continue
-
-		best = node
-		best_distance = distance
-
-	if best == null:
-		return
-
-	lock_on_target = best
-	_lock_on_blind_timer = 0.0
-	lock_on_changed.emit(lock_on_target)
-
-
-func _clear_lock_on() -> void:
-	if lock_on_target == null:
-		return
-	lock_on_target = null
-	_lock_on_blind_timer = 0.0
-	lock_on_changed.emit(null)
-
-
-## The four ways a lock ends: the target dies or is freed, it walks out of
-## break range, it stays out of sight for the grace period, or the player
-## presses the key again (handled in _toggle_lock_on).
-func _update_lock_on(delta: float) -> void:
-	if lock_on_target == null:
-		return
-
-	if not is_instance_valid(lock_on_target):
-		_clear_lock_on()
-		return
-
-	if lock_on_target.has_method("is_dead") and lock_on_target.is_dead():
-		_clear_lock_on()
-		return
-
-	if global_position.distance_to(lock_on_target.global_position) > lock_on_break_range:
-		_clear_lock_on()
-		return
-
-	if CombatManager.has_line_of_sight(self, lock_on_target):
-		_lock_on_blind_timer = 0.0
-	else:
-		_lock_on_blind_timer += delta
-		if _lock_on_blind_timer >= lock_on_los_grace:
-			_clear_lock_on()
-			return
-
-	# Soft: a nudge toward the target, never a snap onto it. The player keeps
-	# the mouse, and letting go of it does not fight anything.
-	if camera_pivot.has_method("bias_toward"):
-		camera_pivot.bias_toward(lock_on_target.global_position, delta, lock_on_camera_bias)
-
-
-## Attempt to perform a dodge (roll or sidestep)
-func _try_dodge() -> void:
-	# Can't dodge if overencumbered
-	if InventoryManager.is_overencumbered():
-		return
-
-	# Can't dodge if already dodging, or no stamina
-	if is_dodging:
-		return
-
-	if not GameManager.player_data:
-		return
-
-	var stamina := GameManager.player_data.current_stamina
-	if not DEBUG_UNLIMITED_STAMINA and stamina < dodge_stamina_cost:
-		return
-
-	# Get DODGE skill for i-frame bonus
-	var dodge_skill: int = 0
-	if GameManager.player_data:
-		dodge_skill = GameManager.player_data.get_skill(Enums.Skill.DODGE)
-	var iframe_bonus := dodge_skill * 0.05  # +0.05s per skill level
-
-	# Check movement direction
-	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
-
-	if input_dir.length() > 0.1:
-		# ROLL - direction held, longer i-frames
-		var direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-		_perform_dodge(direction, roll_distance, base_iframe_duration + iframe_bonus)
-	else:
-		# SIDESTEP - no direction, shorter i-frames, dodge backward
-		var direction := -transform.basis.z  # Backward
-		_perform_dodge(direction, sidestep_distance, base_iframe_duration * 0.5 + iframe_bonus * 0.5)
-
-	if GameManager.player_data and not DEBUG_UNLIMITED_STAMINA:
-		GameManager.player_data.use_stamina(int(dodge_stamina_cost))
-
-## Execute the dodge movement and i-frames
-func _perform_dodge(direction: Vector3, distance: float, iframe_time: float) -> void:
-	is_dodging = true
-	iframe_timer = iframe_time
-	dodge_timer = dodge_duration
-	dodge_velocity = direction * (distance / dodge_duration)
-
-	# Disable hurtbox for i-frames
-	_set_invulnerable(true)
 
 ## Toggle player invulnerability by enabling/disabling hurtbox
 func _set_invulnerable(invulnerable: bool) -> void:

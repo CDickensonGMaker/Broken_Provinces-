@@ -32,11 +32,13 @@ const DEFAULT_UI_SCALE := 0.68
 ## toggle_camera_mode rather than shipping keys that did nothing, and this list
 ## must never grow back past what the input code handles.
 ##
-## `block` and `lock_on` are back because PlayerController implements them now.
+## `block` is back because PlayerController implements it. `lock_on` and
+## `dodge` are not, and will not be: the combat identity is Skyrim/Daggerfall,
+## not Souls (Caleb, 8/2).
 const REBINDABLE_ACTIONS: Array[String] = [
 	"move_forward", "move_backward", "move_left", "move_right",
-	"jump", "sprint", "crouch", "dodge",
-	"light_attack", "heavy_attack", "block", "lock_on", "interact",
+	"jump", "sprint", "crouch",
+	"light_attack", "heavy_attack", "block", "interact",
 	"menu", "pause",
 ]
 
@@ -45,13 +47,22 @@ const REBINDABLE_ACTIONS: Array[String] = [
 ## file - the same shape SaveManager uses for quick_save/quick_load.
 const RUNTIME_ACTION_DEFAULTS: Dictionary = {
 	"block": KEY_Q,
-	"lock_on": KEY_V,
 }
 
+## Actions `project.godot` still declares that nothing reads any more, cleared
+## at boot so the key is genuinely unbound rather than bound to nothing.
+##
+## `dodge` is here because the player's dodge roll is gone: the combat identity
+## is Skyrim/Daggerfall, not Souls (Caleb, 8/2). Agents do not edit
+## `project.godot`, so the block for it is still in the file and inert; delete
+## it there and this list can shrink.
+const RUNTIME_ACTION_REMOVALS: Array[String] = ["dodge"]
 
-## Register any action in RUNTIME_ACTION_DEFAULTS the InputMap does not have.
-## Idempotent, and it never touches an action that already exists - so a
-## player's rebind, loaded a moment later, wins.
+
+## Register any action in RUNTIME_ACTION_DEFAULTS the InputMap does not have,
+## and clear any action in RUNTIME_ACTION_REMOVALS that it still has.
+## Idempotent, and registration never touches an action that already exists -
+## so a player's rebind, loaded a moment later, wins.
 static func ensure_runtime_actions() -> void:
 	for action: String in RUNTIME_ACTION_DEFAULTS:
 		if InputMap.has_action(action):
@@ -60,6 +71,10 @@ static func ensure_runtime_actions() -> void:
 		var event := InputEventKey.new()
 		event.physical_keycode = RUNTIME_ACTION_DEFAULTS[action]
 		InputMap.action_add_event(action, event)
+
+	for action: String in RUNTIME_ACTION_REMOVALS:
+		if InputMap.has_action(action):
+			InputMap.erase_action(action)
 
 
 static func display_name_for_action(action: String) -> String:
@@ -71,11 +86,9 @@ static func display_name_for_action(action: String) -> String:
 		"jump": return "Jump"
 		"sprint": return "Sprint"
 		"crouch": return "Crouch"
-		"dodge": return "Dodge"
 		"light_attack": return "Attack"
 		"heavy_attack": return "Heavy Attack"
 		"block": return "Block"
-		"lock_on": return "Lock On"
 		"interact": return "Interact"
 		"menu": return "Menu"
 		"pause": return "Pause"

@@ -24,7 +24,6 @@ var compass_quest_marker: Label = null  # Quest objective marker
 var compass_enemy_markers: Dictionary = {}  # enemy instance_id -> Label (INTUITION-based radar)
 var compass_plant_markers: Dictionary = {}  # plant instance_id -> Label (HERBALISM-based detection)
 var compass_quest_target_markers: Dictionary = {}  # enemy instance_id -> Label (quest bounty targets)
-var compass_lock_on_marker: Label = null  # The one enemy the player has locked
 
 ## Bounty indicator
 var bounty_indicator: Label
@@ -525,58 +524,6 @@ func _update_compass() -> void:
 
 	# Update compass quest marker (points to objective or door)
 	_update_compass_quest_marker(player, yaw_degrees, ppd)
-
-	# Update the soft lock-on marker (the one enemy the player chose)
-	_update_compass_lock_on(player, yaw_degrees, ppd)
-
-
-## Mark the soft lock-on target on the compass.
-##
-## Unlike the enemy radar this ignores INTUITION and ignores range fade: the
-## player pressed a key to say "that one", so it is always drawn while the lock
-## holds. PlayerController owns every rule about when the lock ends; this only
-## reads `lock_on_target` and follows it.
-func _update_compass_lock_on(player: Node3D, yaw_degrees: float, ppd: float) -> void:
-	var target: Node3D = null
-	if player is PlayerController:
-		target = (player as PlayerController).lock_on_target
-
-	if target == null or not is_instance_valid(target):
-		if compass_lock_on_marker and is_instance_valid(compass_lock_on_marker):
-			compass_lock_on_marker.visible = false
-		return
-
-	if not compass_lock_on_marker or not is_instance_valid(compass_lock_on_marker):
-		compass_lock_on_marker = _create_lock_on_marker()
-
-	var to_target: Vector3 = target.global_position - player.global_position
-	var target_angle: float = rad_to_deg(atan2(-to_target.x, -to_target.z))
-	target_angle = fmod(target_angle + 360.0, 360.0)
-
-	var rel_angle: float = target_angle - yaw_degrees
-	while rel_angle < -180.0:
-		rel_angle += 360.0
-	while rel_angle > 180.0:
-		rel_angle -= 360.0
-
-	compass_lock_on_marker.position.x = COMPASS_WIDTH + rel_angle * ppd - compass_lock_on_marker.size.x / 2.0
-	compass_lock_on_marker.position.y = (COMPASS_HEIGHT - compass_lock_on_marker.size.y) / 2.0
-	compass_lock_on_marker.visible = true
-
-
-func _create_lock_on_marker() -> Label:
-	var marker := Label.new()
-	marker.text = "◈"
-	marker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	marker.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	marker.add_theme_font_size_override("font_size", 12)
-	marker.add_theme_color_override("font_color", Color(1.0, 0.85, 0.35))
-	marker.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-	marker.add_theme_constant_override("outline_size", 2)
-	marker.tooltip_text = "Locked target"
-	marker.size = Vector2(18, COMPASS_HEIGHT)
-	compass_strip.add_child(marker)
-	return marker
 
 
 ## Update POI markers on compass

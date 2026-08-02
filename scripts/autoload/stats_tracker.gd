@@ -17,7 +17,6 @@ var stats: Dictionary = {
 	"damage_taken": 0,
 	"critical_hits": 0,
 	"blocks": 0,
-	"dodges": 0,
 
 	# Exploration
 	"locations_discovered": 0,
@@ -258,7 +257,6 @@ func reset() -> void:
 		"damage_taken": 0,
 		"critical_hits": 0,
 		"blocks": 0,
-		"dodges": 0,
 		"locations_discovered": 0,
 		"cells_explored": 0,
 		"dungeons_entered": 0,

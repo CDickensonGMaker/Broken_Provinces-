@@ -185,12 +185,27 @@ the machinery for "a quest whose objective is chosen at runtime" exists; whether
 the Arcane Circle's repeatable is that, a fixed rotation of four hand-written
 assignments, or something else is Caleb's call.
 
-Until it is answered, `variable` is named in
-`QuestManager.DEFERRED_OBJECTIVE_TYPES` with this reason, and
-`tools/check_quest_engine.tscn` **fails if the entry loses its reason, and fails
-if the type stops shipping and the excuse is left behind.** The quest itself
-stays uncompletable; it is repeatable content behind a capstone that is now
-finishable, so it blocks no ladder.
+**CLOSED.** The design question above is still unanswered and still Caleb's to
+answer, but it is no longer allowed to hold a quest hostage. `complete_task` is
+now `{"type": "has_item", "target": "arcane_essence"}` - the Circle's standing
+list asks for one honest, checkable thing, and the quest completes. A named
+counter API was the alternative; it was rejected because its only callers would
+have to live in dialogue action data, so it would have shipped as another field
+with no consumer, which is the exact defect this whole audit exists to kill.
+When the generator is designed it re-skins that objective rather than replacing
+a dead type.
+
+`variable` is therefore off `QuestManager.DEFERRED_OBJECTIVE_TYPES`, which is
+now empty. `tools/check_quest_engine.tscn` **fails if a deferred entry loses its
+reason, and fails if a deferred type stops shipping and the excuse is left
+behind** - so the list cannot rot in either direction.
+
+The same quest's `prerequisites: ["arcane_circle_magister"]` was a FLAG name in
+the completed-quest-id list, so it was never offered at all; it now sits in
+`flag_prerequisites`. The identical defect ran through `mage_02` to `mage_13`
+- twelve quests, each gating on the previous quest's `on_complete_flags` value
+through the wrong list - and is fixed the same way. The Arcane Circle ladder was
+dead from its second rung down.
 
 ### 2k. What a failed Deception costs (design call)
 
@@ -365,7 +380,47 @@ question for Caleb is which of these is the melee formula:
 3. Apply armour once **in CombatManager** and stop `EnemyBase.take_damage()`
    from doing it — the only version where `armor_pierce` means anything.
 
-### 3b. Player block and lock-on — **RULED-AND-BUILT**
+### 3g. Combat identity — **RULED by Caleb, 8/2**
+
+**The combat identity is Skyrim / Daggerfall, not Souls.** Block, swing timing,
+armour and movement. **No player dodge and no lock-on.**
+
+This ruling arrived after both were built, and it removed both:
+
+* **Lock-on is cancelled.** The `V` binding, the acquisition and break rules,
+  `CameraPivot.bias_toward()` and the compass marker are all deleted. `V` is
+  unbound.
+* **The player's dodge is removed.** The roll and the sidestep, their i-frames,
+  their 20-stamina cost and the `dodge` binding are gone. It was in the game
+  before either audit and it was the Souls half of the loop.
+
+**Stamina stays** — sprint and block spend it. **Enemy dodge behaviour stays**;
+this was about the player's verb.
+
+**The post-hit mercy window (3f) is now the only source of player i-frames.**
+It used to share that job with the roll; `hit_iframe_duration` is doing all of
+it alone, and its 0.35 s is still a placeholder that has never been played.
+
+**One thing this ruling orphaned, and it needs you.** `Enums.Skill.DODGE`
+survives — Daggerfall has Dodging as a skill and it fits the identity — but the
+character sheet and the rest menu both promise *"+3% dodge chance per level.
+Reduces incoming damage"* and **nothing has ever computed that.** The roll's
+i-frame bonus was its only real consumer, and the roll is gone. So Dodging is
+now a skill that does nothing at all. Making it a real passive evasion roll is
+new combat math and was not invented here. **Your call:** build the passive, or
+retire the skill.
+
+`project.godot` still declares the `dodge` action, because agents do not edit
+that file. `GameSettings.RUNTIME_ACTION_REMOVALS` erases it at boot so the key
+is genuinely unbound rather than bound to nothing; delete the block in
+`project.godot` when convenient and that list can shrink.
+
+`tools/check_combat.tscn` fails if either verb grows back — if `dodge` or
+`lock_on` is bound, if the options menu offers to rebind them, if
+`PlayerController` declares any of their symbols again, or if `bias_toward`
+reappears.
+
+### 3b. Player block — **RULED-AND-BUILT**
 
 **Block.** Hold `Q`. A hit arriving inside a **120° frontal arc** — measured off
 where the player is *looking*, because in first person that is the only facing
@@ -381,26 +436,17 @@ disturbs none of this. Player-side only; enemies already block via `EnemyData`.
 **HUD:** the existing stamina bar brightens while the guard is up. That is the
 whole indicator, and it is the bar that is about to pay.
 
-**Lock-on.** Press `V`. The nearest enemy with line of sight within **15 m**
-becomes the target; the camera is **biased** toward it (an exponential lerp on
-yaw and pitch, framerate-independent) and never snapped, so the mouse always
-wins and letting go of it drifts the view onto the enemy. **Movement is
-untouched** — there is no strafe-lock. It breaks on death, on a freed target,
-past **20 m**, after **2 s** with no line of sight, or on pressing `V` again.
-The compass carries a gold `◈` on the target, drawn regardless of INTUITION and
-without range fade, because the player pressed a key to say *that one*.
+**Lock-on was built alongside this and then cancelled — see 3g.**
 
-**One thing fought back:** batch 4 deleted `block` and `lock_on` from
-`project.godot`'s InputMap, and `project.godot` is not to be edited. They are
-registered at boot instead by `GameSettings.ensure_runtime_actions()` —
-`Q` and `V` — the same shape `SaveManager` already uses for quick-save. Both
-are back in `REBINDABLE_ACTIONS`, so the options menu can rebind them and
+**One thing fought back:** batch 4 deleted `block` from `project.godot`'s
+InputMap, and `project.godot` is not to be edited. It is registered at boot
+instead by `GameSettings.ensure_runtime_actions()` on `Q` — the same shape
+`SaveManager` already uses for quick-save — and is back in
+`REBINDABLE_ACTIONS`, so the options menu can rebind it and
 `user://settings.cfg` keeps the change.
 
-`tools/check_combat.tscn` covers both: the arc at four angles, the halving, the
-stamina spend, the break, the guard staying broken, acquisition, the range
-gate, and all four breaks — plus that one frame of camera bias moves the view
-*some* of the way and not all of it.
+`tools/check_combat.tscn` covers it: the arc at four angles, the halving, the
+stamina spend, the break, and the guard staying broken until the key comes up.
 
 ### 3b (original text, kept for the reasoning)
 
@@ -428,7 +474,8 @@ his call.
 ### 3f. The player's mercy window (task 64)
 
 `take_damage` had no post-hit invulnerability at all - `_set_invulnerable()`
-existed and was called only by the dodge roll - so two enemies in melee range
+existed and was called only by the dodge roll, which no longer exists (3g), so
+this window is the only source of player i-frames now - so two enemies in melee range
 could chain the player to death with no counterplay. Batch 4 adds a 0.35s
 window (`hit_iframe_duration`, exported), a hit sound, and a screen shake, and
 gives `apply_stagger` a shake and a sound so it reads as something rather than
@@ -565,9 +612,15 @@ the Elder Moor priest the dialogue too?
 
 ### FX-7. Authored quest fields nothing reads
 
-Each is written in two or more quest files and has zero consumers in
-`scripts/`: `on_complete_flags` (22), `rank_required` (14), `flags_set` (14),
-`unlocks_quests` (6), `xp_bonus`/`gold_bonus`/`reward_bonus` (12),
+**Partly closed.** `on_complete_flags` (22), `flags_set` (14) and
+`rank_required` (14) are wired: the first two union into one
+`Quest.on_complete_flags` raised through `FlagManager` by `complete_quest()`,
+and `rank_required` gates on `GuildRankManager.get_guild_rank_level(faction)` in
+both `is_quest_available()` and `start_quest()`. `flags_required` has zero
+remaining uses in `data/`. `check_quest_engine.tscn` asserts all three.
+
+Still unread, each written in two or more quest files with zero consumers in
+`scripts/`: `unlocks_quests` (6), `xp_bonus`/`gold_bonus`/`reward_bonus` (12),
 `is_tutorial` (3), `is_repeatable` (3), `detection_consequences` (3),
 `optional_objectives`/`choice_paths`/`time_pressure`/`phases` (2 each). Wire or
 delete, per field. Related: the `moral_choice` blocks in `thieves_02`, `_04`,
