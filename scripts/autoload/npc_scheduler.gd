@@ -387,11 +387,23 @@ func place_for_hour(node: Node3D, npc_id: String, hour: int) -> bool:
 	node.set_meta("schedule_sitting", sitting)
 	node.set_meta("schedule_action", String(action_for(npc_id, hour)))
 
-	var billboard: Node = node.get_node_or_null("Billboard")
-	if billboard and "facing_direction" in billboard:
-		billboard.facing_direction = Vector3(sin(deg_to_rad(facing)), 0.0, cos(deg_to_rad(facing)))
-	if billboard and billboard.has_method("set_walking"):
-		billboard.set_walking(false)
+	var facing_dir := Vector3(sin(deg_to_rad(facing)), 0.0, cos(deg_to_rad(facing)))
+
+	# The body, whatever kind it is. A billboard is told where to look and that
+	# it has stopped walking, which was always the whole of what a schedule could
+	# say to a sprite. A rigged character is told the ACTION as well, because it
+	# has somewhere to put it.
+	if "visual" in node and node.visual != null:
+		var body: CharacterVisual = node.visual
+		body.set_facing(facing_dir)
+		body.set_moving(false)
+		body.set_action(action_for(npc_id, hour))
+	else:
+		var billboard: Node = node.get_node_or_null("Billboard")
+		if billboard and "facing_direction" in billboard:
+			billboard.facing_direction = facing_dir
+		if billboard and billboard.has_method("set_walking"):
+			billboard.set_walking(false)
 
 	return true
 

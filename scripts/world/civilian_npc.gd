@@ -55,6 +55,12 @@ static func _ri(count: int) -> int:
 	return randi() % count
 
 ## Visual representation
+##
+## `visual` is the body, whatever kind it is (scripts/visuals/character_visual.gd).
+## `billboard` is the sprite when there is one and null when this character has
+## been flipped to 3D, so every `if billboard and billboard.sprite:` below stays
+## correct rather than merely still compiling.
+var visual: CharacterVisual
 var billboard: BillboardSprite
 var collision_shape: CollisionShape3D
 var wander: WanderBehavior
@@ -281,29 +287,32 @@ func attach_to_schedule(archetype: String, leisure_world_pos: Vector3) -> void:
 
 
 func _create_visual() -> void:
-	if not sprite_texture:
+	# THE MIGRATION SEAM. `model` in the character registry decides whether this
+	# body is a sprite or a rig; absent, which is the case for every character
+	# but the pilot, this builds exactly the billboard it always did.
+	var effective_id: String = npc_id if not npc_id.is_empty() else name
+	visual = CharacterVisual.for_character(effective_id, {
+		"texture": sprite_texture,
+		"h_frames": sprite_h_frames,
+		"v_frames": sprite_v_frames,
+		"pixel_size": sprite_pixel_size,
+		"idle_frames": sprite_h_frames,
+		"walk_frames": sprite_h_frames,
+		"offset_y": sprite_offset_y,
+		"archetype": NPCScheduler.archetype_of(effective_id),
+	})
+	if not visual.attach(self):
+		visual = null
 		return
-
-	billboard = BillboardSprite.new()
-	billboard.sprite_sheet = sprite_texture
-	billboard.h_frames = sprite_h_frames
-	billboard.v_frames = sprite_v_frames
-	billboard.pixel_size = sprite_pixel_size
-	billboard.idle_frames = sprite_h_frames
-	billboard.walk_frames = sprite_h_frames
-	billboard.idle_fps = 3.0
-	billboard.walk_fps = 6.0
-	billboard.name = "Billboard"
-	billboard.offset_y = sprite_offset_y  # Configurable per NPC type
-	add_child(billboard)
+	billboard = visual.billboard_sprite()
 
 	# Apply color tint
 	call_deferred("_apply_tint")
 
 
 func _apply_tint() -> void:
-	if billboard and billboard.sprite:
-		billboard.sprite.modulate = tint_color
+	if visual:
+		visual.set_tint(tint_color)
 
 
 func _create_collision() -> void:
@@ -456,11 +465,15 @@ func _setup_wandering() -> void:
 func _on_started_moving() -> void:
 	if billboard:
 		billboard.set_state(BillboardSprite.AnimState.WALK)
+	elif visual:
+		visual.set_moving(true)
 
 
 func _on_stopped_moving() -> void:
 	if billboard:
 		billboard.set_state(BillboardSprite.AnimState.IDLE)
+	elif visual:
+		visual.set_moving(false)
 
 
 func _process(delta: float) -> void:
@@ -469,9 +482,11 @@ func _process(delta: float) -> void:
 		_update_fleeing(delta)
 		return
 
-	# Update billboard facing direction
+	# Update facing direction
 	if billboard and wander:
 		billboard.facing_direction = wander.get_facing_direction()
+	elif visual and wander:
+		visual.set_facing(wander.get_facing_direction())
 
 
 ## Update fleeing behavior
@@ -492,6 +507,8 @@ func _update_fleeing(delta: float) -> void:
 	# Update facing direction
 	if billboard:
 		billboard.facing_direction = direction
+	elif visual:
+		visual.set_facing(direction)
 
 
 ## ============================================================================
@@ -516,6 +533,8 @@ func take_damage(amount: int, damage_type: Enums.DamageType = Enums.DamageType.P
 			if billboard and billboard.sprite:
 				billboard.sprite.modulate = original_color
 		)
+	elif visual:
+		visual.play_hurt()
 
 	# Report crime if attacker is the player
 	if attacker and attacker.is_in_group("player"):
@@ -718,6 +737,9 @@ func _die(killer: Node = null) -> void:
 	is_fleeing = false
 	velocity = Vector3.ZERO
 
+	if visual:
+		visual.play_death()
+
 	# Spawn lootable corpse
 	_spawn_corpse()
 
@@ -767,8 +789,8 @@ func _spawn_corpse() -> void:
 ## Handle essential NPC going unconscious
 func _go_unconscious() -> void:
 	# Visual feedback - darken sprite
-	if billboard and billboard.sprite:
-		billboard.sprite.modulate = Color(0.4, 0.4, 0.4)
+	if visual:
+		visual.set_tint(Color(0.4, 0.4, 0.4))
 
 	# Stop movement
 	if wander:
@@ -787,8 +809,8 @@ func _recover_from_unconscious() -> void:
 	current_health = max_health / 2  # Recover to half health
 
 	# Restore visual
-	if billboard and billboard.sprite:
-		billboard.sprite.modulate = tint_color
+	if visual:
+		visual.set_tint(tint_color)
 
 	# Resume behavior
 	if wander:

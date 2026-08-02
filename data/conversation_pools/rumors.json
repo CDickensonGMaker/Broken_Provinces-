@@ -1051,7 +1051,7 @@
       "actions": [],
       "conditions": [
         {
-          "condition_type": 5,
+          "condition_type": "flag_set",
           "string_value": "kazan_dun_fallen",
           "int_value": 0,
           "float_value": 0.0,
@@ -1074,7 +1074,7 @@
       "actions": [],
       "conditions": [
         {
-          "condition_type": 5,
+          "condition_type": "flag_set",
           "string_value": "kazan_dun_fallen",
           "int_value": 0,
           "float_value": 0.0,
@@ -1097,7 +1097,7 @@
       "actions": [],
       "conditions": [
         {
-          "condition_type": 5,
+          "condition_type": "flag_set",
           "string_value": "kazan_dun_fallen",
           "int_value": 0,
           "float_value": 0.0,
@@ -1120,7 +1120,7 @@
       "actions": [],
       "conditions": [
         {
-          "condition_type": 5,
+          "condition_type": "flag_set",
           "string_value": "kazan_dun_fallen",
           "int_value": 0,
           "float_value": 0.0,
@@ -1143,7 +1143,7 @@
       "actions": [],
       "conditions": [
         {
-          "condition_type": 5,
+          "condition_type": "flag_set",
           "string_value": "kazan_dun_helped",
           "int_value": 0,
           "float_value": 0.0,
@@ -1166,7 +1166,7 @@
       "actions": [],
       "conditions": [
         {
-          "condition_type": 5,
+          "condition_type": "flag_set",
           "string_value": "kazan_dun_helped",
           "int_value": 0,
           "float_value": 0.0,
@@ -1189,7 +1189,7 @@
       "actions": [],
       "conditions": [
         {
-          "condition_type": 5,
+          "condition_type": "flag_set",
           "string_value": "kazan_dun_helped",
           "int_value": 0,
           "float_value": 0.0,
@@ -1212,7 +1212,7 @@
       "actions": [],
       "conditions": [
         {
-          "condition_type": 5,
+          "condition_type": "flag_set",
           "string_value": "kazan_dun_regency_upheld",
           "int_value": 0,
           "float_value": 0.0,
@@ -1235,7 +1235,7 @@
       "actions": [],
       "conditions": [
         {
-          "condition_type": 5,
+          "condition_type": "flag_set",
           "string_value": "kazan_dun_trial_called",
           "int_value": 0,
           "float_value": 0.0,
@@ -1258,7 +1258,7 @@
       "actions": [],
       "conditions": [
         {
-          "condition_type": 5,
+          "condition_type": "flag_set",
           "string_value": "kazan_dun_regent_disgraced",
           "int_value": 0,
           "float_value": 0.0,

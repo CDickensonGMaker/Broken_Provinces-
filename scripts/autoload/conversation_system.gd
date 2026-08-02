@@ -260,7 +260,10 @@ func _load_response_pools() -> void:
 		"quests.json",
 		"directions.json",
 		"career_greetings.json",
-		"career_topics.json"
+		"career_topics.json",
+		# The reactive layer. Every line in these two is gated on real state.
+		"reactions.json",
+		"reaction_greetings.json"
 	]
 
 	# Per-NPC pools are dropped into conversation_pools/unique/ rather than listed
@@ -408,7 +411,7 @@ func _load_responses_from_dict(pool_data: Dictionary) -> int:
 		# content, not topic content), so archetype-tagged greetings stay in the shared
 		# greeting_pool and rely on the required_archetype hard-filter in _filter_responses()
 		# instead of a parallel archetype-keyed greeting tier.
-		if pool_id == "greetings" or pool_id == "career_greetings":
+		if pool_id == "greetings" or pool_id == "career_greetings" or pool_id == "reaction_greetings":
 			greeting_pool.append(response)
 		elif pool_id == "farewells":
 			farewell_pool.append(response)
@@ -556,15 +559,47 @@ func _parse_action(data: Dictionary) -> DialogueAction:
 	return action
 
 
-## Parse a DialogueCondition from a JSON dictionary
+## Parse a DialogueCondition from a JSON dictionary.
+##
+## `condition_type` may be a NAME ("player_career") or a raw enum int. Write the
+## name. The raw int is honoured only so old pool files keep loading, and it is
+## the reason this function exists in this shape at all:
+##
+## Every race- and career-gated line in the pools was authored as `12` and `13`,
+## which WERE PLAYER_RACE and PLAYER_CAREER when they were written. Four
+## condition types have been inserted into the middle of the enum since, so 12
+## now means FACTION_RANK and 13 means LORE_DISCOVERED - neither of which the
+## evaluator handled, so both fell through to `return true`. Sixty-five gated
+## lines have been ungated ever since: the dwarf-only greeting said to humans,
+## the thief-career line said to farmers. A number that means something
+## different next month is not a way to write down a requirement.
 func _parse_condition(data: Dictionary) -> DialogueCondition:
 	var condition := DialogueCondition.new()
-	condition.type = data.get("condition_type", 0) as DialogueData.ConditionType
+	condition.type = _parse_condition_type(data.get("condition_type", 0))
 	condition.param_string = data.get("string_value", "")
 	condition.param_int = data.get("int_value", 0)
 	condition.param_float = data.get("float_value", 0.0)
 	condition.invert = data.get("negate", false)
 	return condition
+
+
+## Resolve a JSON `condition_type` value to a ConditionType.
+## Anything unreadable becomes INVALID, which is always false - an unreadable
+## requirement must fail closed, never stand open.
+func _parse_condition_type(raw: Variant) -> DialogueData.ConditionType:
+	if raw is String:
+		var wanted: String = (raw as String).to_upper().strip_edges()
+		var index: int = DialogueData.ConditionType.keys().find(wanted)
+		if index == -1:
+			push_warning("ConversationSystem: unknown condition_type '%s'; the line will never show" % raw)
+			return DialogueData.ConditionType.INVALID
+		return index as DialogueData.ConditionType
+
+	var value: int = int(raw)
+	if value < 0 or value >= DialogueData.ConditionType.size():
+		push_warning("ConversationSystem: condition_type %d is out of range; the line will never show" % value)
+		return DialogueData.ConditionType.INVALID
+	return value as DialogueData.ConditionType
 
 
 # =============================================================================
@@ -596,6 +631,8 @@ func start_conversation(npc: Node, profile: NPCKnowledgeProfile) -> bool:
 	# Try to get location context from scene manager or current scene
 	_populate_location_context(current_context)
 
+	_populate_reaction_context(current_context)
+
 	# Store current NPC reference
 	current_npc = npc
 	is_active = true
@@ -617,6 +654,41 @@ func start_conversation(npc: Node, profile: NPCKnowledgeProfile) -> bool:
 		AudioManager.play_npc_bark(is_female, npc_pos, -5.0)
 
 	return true
+
+
+## Fill in the variables the reaction pools speak through.
+##
+## `{quest_title}` is the whole reason this exists. A reaction line that
+## congratulates the player by name - "they're still talking about {quest_title}
+## down at the docks" - has to say the REAL title of a quest the player really
+## finished, pulled out of quest data at the moment of speaking. Hand-writing
+## the titles into the lines would mean a renamed quest turns an NPC into a liar
+## the same afternoon, and would mean the line survives the quest's deletion.
+##
+## When nothing has been completed the variables resolve to harmless generic
+## words, but no reaction line reaches them: every one is gated on
+## `quests_completed:N`.
+func _populate_reaction_context(context: ConversationContext) -> void:
+	# QuestManager.Quest is an inner class with no global class_name, so this
+	# array cannot be typed here.
+	var completed: Array = QuestManager.get_completed_quests()
+	context.set_custom_variable("quest_count", completed.size())
+
+	if completed.is_empty():
+		context.set_custom_variable("quest_title", "that business")
+		context.set_custom_variable("last_quest_title", "that business")
+		context.set_custom_variable("earlier_quest_title", "that business")
+		return
+
+	# The most recent completion is the one a townsperson would still be talking
+	# about; a second, older one keeps a speaker from repeating the first.
+	var newest_title: String = str(completed[completed.size() - 1].title)
+	context.set_custom_variable("quest_title", newest_title)
+	context.set_custom_variable("last_quest_title", newest_title)
+	if completed.size() > 1:
+		context.set_custom_variable("earlier_quest_title", str(completed[completed.size() - 2].title))
+	else:
+		context.set_custom_variable("earlier_quest_title", newest_title)
 
 
 ## End the current conversation
@@ -1228,10 +1300,153 @@ func clear_flag(flag_name: String) -> void:
 		conversation_flags.erase(resolved_name)
 
 
-## Check if a flag is set (supports context variable substitution)
+## Check if a flag is set (supports context variable substitution).
+##
+## Four stores are consulted, in this order, and this order is the reactive
+## layer's whole foundation:
+##
+##   1. conversation_flags  - what conversation itself remembers
+##   2. computed flags      - questions about live state, answered on the spot
+##   3. FlagManager         - devotee bonds, guild ranks, quest flags
+##   4. WorldState          - durable world facts (kazan_dun_fallen, ...)
+##
+## Until 8/2 only (1) was read, and the comment said so proudly: "Check
+## ConversationSystem flags only". So a pool line gated on `gaela_devotee` or
+## `kazan_dun_fallen` could never fire - the flag was set, in a store nobody
+## asked. Every reaction in data/conversation_pools/reactions.json depends on
+## this function seeing past its own dictionary.
 func has_flag(flag_name: String) -> bool:
 	var resolved_name := _substitute_context_variables(flag_name)
-	return conversation_flags.has(resolved_name)
+
+	if conversation_flags.has(resolved_name):
+		var stored: Variant = conversation_flags[resolved_name]
+		if stored is bool:
+			return stored
+		return true
+
+	var computed: int = _evaluate_computed_flag(resolved_name)
+	if computed != -1:
+		return computed == 1
+
+	if FlagManager.has_flag(resolved_name):
+		return true
+
+	return WorldState.has_flag(resolved_name)
+
+
+## Answer a computed flag: a question about live state, written like a flag so
+## FLAG_SET / FLAG_NOT_SET conditions (and therefore free negation) work on it.
+##
+## Returns 1 for true, 0 for false, -1 for "not a computed flag" so the caller
+## falls through to the real flag stores.
+##
+## The vocabulary, all of it:
+##
+## | Flag | True when |
+## |---|---|
+## | `crime:wanted` | the player has a bounty anywhere |
+## | `crime:wanted_here` | the player has a bounty in the town they are standing in |
+## | `crime:hunted` | some faction's hostility has crossed into hunting the player |
+## | `speaker:caught_lying` | THIS NPC caught the player in a lie |
+## | `speaker:faction_hostile` | this NPC's own faction is hostile or worse to the player |
+## | `speaker:faction_friendly` | this NPC's own faction is friendly or better |
+## | `speaker:faction_honored` | this NPC's own faction is honoured or exalted |
+## | `rep:<faction>:<min>` | reputation with <faction> is at least <min> |
+## | `guild:<guild>:<level>` | the player's rank level in <guild> is at least <level> |
+## | `devotee:<deity>` | the player is sworn to chronos / gaela / morthane |
+## | `quests_completed:<n>` | the player has finished at least <n> quests |
+func _evaluate_computed_flag(flag: String) -> int:
+	if flag.begins_with("crime:"):
+		match flag.substr(6):
+			"wanted":
+				return 1 if CrimeManager.has_any_bounty() else 0
+			"wanted_here":
+				return 1 if CrimeManager.has_bounty_in_region(_current_region_id()) else 0
+			"hunted":
+				for faction_id: String in FactionManager.get_joined_factions() + [_speaker_faction()]:
+					if not faction_id.is_empty() and FactionManager.is_hunting_player(faction_id):
+						return 1
+				return 0
+		return -1
+
+	if flag.begins_with("speaker:"):
+		var speaker_faction: String = _speaker_faction()
+		match flag.substr(8):
+			"caught_lying":
+				if not is_instance_valid(current_npc):
+					return 0
+				return 1 if was_caught_lying(_get_npc_id(current_npc)) else 0
+			"faction_hostile":
+				if speaker_faction.is_empty():
+					return 0
+				return 1 if FactionManager.is_hostile_with(speaker_faction) else 0
+			"faction_friendly":
+				if speaker_faction.is_empty():
+					return 0
+				return 1 if FactionManager.is_friendly_with(speaker_faction) else 0
+			"faction_honored":
+				if speaker_faction.is_empty():
+					return 0
+				return 1 if FactionManager.is_honored_by(speaker_faction) else 0
+		return -1
+
+	if flag.begins_with("rep:"):
+		var parts: PackedStringArray = flag.substr(4).split(":")
+		if parts.size() != 2:
+			return -1
+		return 1 if FactionManager.get_reputation(parts[0]) >= int(parts[1]) else 0
+
+	if flag.begins_with("guild:"):
+		var parts: PackedStringArray = flag.substr(6).split(":")
+		if parts.size() != 2:
+			return -1
+		return 1 if GuildRankManager.get_guild_rank_level(parts[0]) >= int(parts[1]) else 0
+
+	if flag.begins_with("devotee:"):
+		return 1 if FlagManager.is_devotee_of(flag.substr(8)) else 0
+
+	if flag.begins_with("quests_completed:"):
+		return 1 if QuestManager.get_completed_quests().size() >= int(flag.substr(17)) else 0
+
+	return -1
+
+
+## The faction the NPC currently being spoken to belongs to, or "" if none.
+## Falls back to the faction of the town the conversation is happening in, so a
+## nameless townsperson still reacts as one of the locals.
+func _speaker_faction() -> String:
+	if is_instance_valid(current_npc):
+		if "faction_id" in current_npc:
+			var declared: String = str(current_npc.faction_id)
+			if not declared.is_empty():
+				return declared
+	return FactionManager.get_town_faction()
+
+
+func _current_region_id() -> String:
+	return PlayerGPS.current_location_id
+
+
+## MORALITY condition: param_string names a tier or a band.
+func _evaluate_morality_condition(requirement: String) -> bool:
+	var tier: int = MoralityManager.get_morality_tier()
+	match requirement.to_lower().strip_edges():
+		"vile":
+			return tier == MoralityManager.MoralityTier.VILE
+		"wicked":
+			return tier == MoralityManager.MoralityTier.WICKED
+		"neutral", "neutral_only":
+			return tier == MoralityManager.MoralityTier.NEUTRAL
+		"honorable":
+			return tier == MoralityManager.MoralityTier.HONORABLE
+		"paragon":
+			return tier == MoralityManager.MoralityTier.PARAGON
+		"good", "good_only":
+			return MoralityManager.is_good()
+		"evil", "evil_only":
+			return MoralityManager.is_evil()
+	push_warning("ConversationSystem: unknown morality requirement '%s'" % requirement)
+	return false
 
 
 ## Get a flag value (supports context variable substitution)
@@ -2585,11 +2800,9 @@ func _evaluate_condition_internal(condition: DialogueCondition) -> bool:
 			return InventoryManager.gold >= condition.param_int
 
 		DialogueData.ConditionType.FLAG_SET:
-			# Check ConversationSystem flags only (DialogueManager dependency removed)
 			return has_flag(condition.param_string)
 
 		DialogueData.ConditionType.FLAG_NOT_SET:
-			# Check ConversationSystem flags only (DialogueManager dependency removed)
 			return not has_flag(condition.param_string)
 
 		DialogueData.ConditionType.STAT_CHECK:
@@ -2619,8 +2832,37 @@ func _evaluate_condition_internal(condition: DialogueCondition) -> bool:
 			return false
 
 		DialogueData.ConditionType.REPUTATION:
-			# Future: check faction reputation
-			return true
+			# Was `return true` with a "# Future:" note. A requirement nobody
+			# evaluates is a door standing open, and reputation is the whole
+			# spine of the reactive layer - it had to stop being a comment.
+			return FactionManager.get_reputation(condition.param_string) >= condition.param_int
+
+		DialogueData.ConditionType.FACTION_MEMBERSHIP:
+			return FactionManager.is_member(condition.param_string)
+
+		DialogueData.ConditionType.FACTION_RANK:
+			# param_string is "faction_id:Rank Name"
+			var parts: PackedStringArray = condition.param_string.split(":", false, 1)
+			if parts.size() < 2:
+				return false
+			return FactionManager.has_rank(parts[0], parts[1])
+
+		DialogueData.ConditionType.GUILD_RANK:
+			# param_string is the guild id, param_int the minimum rank LEVEL
+			return GuildRankManager.get_guild_rank_level(condition.param_string) >= condition.param_int
+
+		DialogueData.ConditionType.MORALITY:
+			return _evaluate_morality_condition(condition.param_string)
+
+		DialogueData.ConditionType.LORE_DISCOVERED:
+			return CodexManager.is_lore_discovered(condition.param_string)
+
+		DialogueData.ConditionType.BESTIARY_DISCOVERED:
+			return CodexManager.is_bestiary_discovered(condition.param_string)
+
+		DialogueData.ConditionType.INVALID:
+			# The loader could not read this requirement. Fail closed.
+			return false
 
 		DialogueData.ConditionType.RANDOM_CHANCE:
 			return randf() <= condition.param_float

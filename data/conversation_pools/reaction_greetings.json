@@ -1,0 +1,48 @@
+{
+  "pool_id": "reaction_greetings",
+  "description": "Reactive GREETINGS - the first sentence out of an NPC's mouth when the state holds. These route into greeting_pool alongside greetings.json and career_greetings.json, and are hard-filtered by required_archetype in _filter_responses(). A greeting is the highest-value reaction slot in the game: it is the line the player hears without asking for it, so the world reacting is felt rather than looked up. Weights are high for the same reason the topic reactions' are, and _remember_response() records greetings, so an NPC does not open the same way twice.",
+  "responses": [
+
+    {"response_id": "greet_reaction_guard_wanted_1", "archetype": "guard", "weight": 9.0, "text": "Stop there. I know that face and I know what's written under it.", "conditions": [{"condition_type": "flag_set", "string_value": "crime:wanted_here"}]},
+    {"response_id": "greet_reaction_guard_wanted_2", "archetype": "guard", "weight": 9.0, "text": "You've got a debt to this town. Until it's paid you get civility and nothing warmer.", "conditions": [{"condition_type": "flag_set", "string_value": "crime:wanted_here"}]},
+    {"response_id": "greet_reaction_guard_wanted_3", "archetype": "guard", "weight": 9.0, "text": "Somewhere out there you're wanted. Not here. Keep it that way and we'll get on.", "conditions": [{"condition_type": "flag_set", "string_value": "crime:wanted"}]},
+
+    {"response_id": "greet_reaction_merchant_wanted_1", "archetype": "merchant", "weight": 9.0, "text": "...oh. It's you. Come in, then, and stand where I can see your hands.", "conditions": [{"condition_type": "flag_set", "string_value": "crime:wanted"}]},
+    {"response_id": "greet_reaction_merchant_wanted_2", "archetype": "merchant", "weight": 9.0, "text": "I've read the notice. I'll serve you. I'll not be pleasant about it.", "conditions": [{"condition_type": "flag_set", "string_value": "crime:wanted_here"}]},
+
+    {"response_id": "greet_reaction_villager_wanted_1", "archetype": "generic_villager", "weight": 9.0, "text": "Oh - no, I'm - I've nothing for you. Please.", "conditions": [{"condition_type": "flag_set", "string_value": "crime:wanted"}]},
+    {"response_id": "greet_reaction_villager_wanted_2", "archetype": "generic_villager", "weight": 9.0, "text": "You shouldn't be stood in the open. Not with your name where it is.", "conditions": [{"condition_type": "flag_set", "string_value": "crime:wanted_here"}]},
+
+    {"response_id": "greet_reaction_thief_wanted_1", "archetype": "thief", "weight": 9.0, "text": "Well look who's collecting prices on his head. Sit down before somebody counts them.", "conditions": [{"condition_type": "flag_set", "string_value": "crime:wanted"}]},
+
+    {"response_id": "greet_reaction_priest_wanted_1", "archetype": "priest", "weight": 9.0, "text": "Come in. Whatever they want you for, it stops at the step.", "conditions": [{"condition_type": "flag_set", "string_value": "crime:wanted"}]},
+
+    {"response_id": "greet_reaction_guard_bandit_1", "archetype": "guard", "weight": 9.0, "text": "Hands where they are. State it, and make it short.", "conditions": [{"condition_type": "flag_set", "string_value": "player_is_bandit_boss"}]},
+    {"response_id": "greet_reaction_merchant_bandit_1", "archetype": "merchant", "weight": 9.0, "text": "You. Say what you want and take it and go.", "conditions": [{"condition_type": "flag_set", "string_value": "player_is_bandit_boss"}]},
+    {"response_id": "greet_reaction_villager_bandit_1", "archetype": "generic_villager", "weight": 9.0, "text": "I don't want any trouble. I've said that already, haven't I. I've said it before you spoke.", "conditions": [{"condition_type": "flag_set", "string_value": "player_is_bandit_boss"}]},
+    {"response_id": "greet_reaction_thief_bandit_1", "archetype": "thief", "weight": 9.0, "text": "The road king himself. Come to slum it with the indoor trade?", "conditions": [{"condition_type": "flag_set", "string_value": "player_is_bandit_boss"}]},
+    {"response_id": "greet_reaction_priest_bandit_1", "archetype": "priest", "weight": 9.0, "text": "You may come in. I'd rather you came in for the right reason, but the door doesn't ask.", "conditions": [{"condition_type": "flag_set", "string_value": "player_is_bandit_boss"}]},
+
+    {"response_id": "greet_reaction_villager_renown_1", "archetype": "generic_villager", "weight": 7.0, "text": "That's - you're the one from {quest_title}, aren't you. I'd know the description anywhere.", "conditions": [{"condition_type": "flag_set", "string_value": "quests_completed:4"}]},
+    {"response_id": "greet_reaction_merchant_renown_1", "archetype": "merchant", "weight": 7.0, "text": "Ah! The one who saw to {quest_title}. Come in, come in, mind the crates.", "conditions": [{"condition_type": "flag_set", "string_value": "quests_completed:4"}]},
+    {"response_id": "greet_reaction_guard_renown_1", "archetype": "guard", "weight": 7.0, "text": "Pass. I know the name from the reports, and it was a good report.", "conditions": [{"condition_type": "flag_set", "string_value": "quests_completed:4"}]},
+    {"response_id": "greet_reaction_priest_renown_1", "archetype": "priest", "weight": 7.0, "text": "You're the one they've been talking about since {quest_title}. Peace on you, whatever you came for.", "conditions": [{"condition_type": "flag_set", "string_value": "quests_completed:4"}]},
+    {"response_id": "greet_reaction_thief_renown_1", "archetype": "thief", "weight": 7.0, "text": "The famous one. Try to look less like yourself on your way out.", "conditions": [{"condition_type": "flag_set", "string_value": "quests_completed:4"}]},
+
+    {"response_id": "greet_reaction_merchant_honored_1", "archetype": "merchant", "weight": 8.0, "text": "There you are. Best prices in the place for you and you know it.", "conditions": [{"condition_type": "flag_set", "string_value": "speaker:faction_honored"}]},
+    {"response_id": "greet_reaction_guard_honored_1", "archetype": "guard", "weight": 8.0, "text": "Go through. You've never needed asking twice and I've never needed to ask.", "conditions": [{"condition_type": "flag_set", "string_value": "speaker:faction_honored"}]},
+    {"response_id": "greet_reaction_villager_honored_1", "archetype": "generic_villager", "weight": 8.0, "text": "Good to see you back. Genuinely - people ask after you here.", "conditions": [{"condition_type": "flag_set", "string_value": "speaker:faction_honored"}]},
+    {"response_id": "greet_reaction_guard_hostile_1", "archetype": "guard", "weight": 8.0, "text": "You've a nerve showing that face to my people. Speak.", "conditions": [{"condition_type": "flag_set", "string_value": "speaker:faction_hostile"}]},
+    {"response_id": "greet_reaction_merchant_hostile_1", "archetype": "merchant", "weight": 8.0, "text": "I know what you are to us. Coin first.", "conditions": [{"condition_type": "flag_set", "string_value": "speaker:faction_hostile"}]},
+
+    {"response_id": "greet_reaction_priest_devotee_gaela_1", "archetype": "priest", "weight": 9.0, "text": "Gaela's own, come in out of the road. You're welcome here and you always were.", "conditions": [{"condition_type": "flag_set", "string_value": "devotee:gaela"}]},
+    {"response_id": "greet_reaction_priest_devotee_chronos_1", "archetype": "priest", "weight": 9.0, "text": "Sworn to the Watcher. Then you'll not mind waiting a moment.", "conditions": [{"condition_type": "flag_set", "string_value": "devotee:chronos"}]},
+    {"response_id": "greet_reaction_priest_devotee_morthane_1", "archetype": "priest", "weight": 9.0, "text": "Morthane's bond on you. Few come through that door wearing it. Sit.", "conditions": [{"condition_type": "flag_set", "string_value": "devotee:morthane"}]},
+    {"response_id": "greet_reaction_merchant_devotee_gaela_1", "archetype": "merchant", "weight": 9.0, "text": "Gaela's own, in my shop. Sit down, I'll find you the good bread.", "conditions": [{"condition_type": "flag_set", "string_value": "devotee:gaela"}]},
+
+    {"response_id": "greet_reaction_villager_kd_fallen_1", "archetype": "generic_villager", "weight": 7.0, "text": "Hello. You'll not have heard - the hold's gone. Everyone's heard. I keep saying it anyway.", "conditions": [{"condition_type": "flag_set", "string_value": "kazan_dun_fallen"}]},
+    {"response_id": "greet_reaction_merchant_kd_fallen_1", "archetype": "merchant", "weight": 7.0, "text": "Before you ask: no dwarf steel, and everything else is up. I'm sorry. It's not me.", "conditions": [{"condition_type": "flag_set", "string_value": "kazan_dun_fallen"}]},
+    {"response_id": "greet_reaction_merchant_kd_helped_1", "archetype": "merchant", "weight": 7.0, "text": "Good day - and it is one. Southern goods on the shelf again after two years.", "conditions": [{"condition_type": "flag_set", "string_value": "kazan_dun_helped"}]},
+    {"response_id": "greet_reaction_guard_kd_helped_1", "archetype": "guard", "weight": 7.0, "text": "Go on through. Everything's easier since the south stopped being a question.", "conditions": [{"condition_type": "flag_set", "string_value": "kazan_dun_helped"}]}
+  ]
+}

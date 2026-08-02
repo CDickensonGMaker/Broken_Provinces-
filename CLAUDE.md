@@ -2355,6 +2355,67 @@ greeting -> destinations -> confirm_larton -> depart_larton (END + actions)
 
 ---
 
+## THE REACTIVE LAYER (conversation)
+
+Reaction lines live in `data/conversation_pools/reactions.json` (topic answers)
+and `reaction_greetings.json` (the line you get without asking). They are
+ordinary pool content and ride the tier system, anti-repeat and `npc_memory`
+exactly as everything else does. Two rules make them reactions:
+
+1. **Every line carries a condition.** A reaction with no condition is a line
+   said to everybody, which is the opposite of a reaction.
+2. **Every referenced thing is real.** They pass THE GROUNDING LAW like all
+   other prose, and quests are named through `{quest_title}`, resolved at
+   speak-time out of quest data. **Never hand-write a quest title into a line** -
+   a renamed quest would turn the speaker into a liar the same afternoon.
+
+### Write conditions by NAME, never by number
+
+```json
+"conditions": [{"condition_type": "flag_set", "string_value": "kazan_dun_helped"}]
+```
+
+Numbers still parse, for old files only. They were how the pools were written
+and it cost sixty-five gated lines: `12` and `13` meant PLAYER_RACE and
+PLAYER_CAREER when they were authored, four types have been inserted into the
+middle of the enum since, and the evaluator handled neither of the types they
+now mean - so both fell through to `return true` and every race- and
+career-gated line was said to everybody. **An unreadable `condition_type` now
+becomes `INVALID`, which is always false.** Requirements fail closed.
+
+### `ConversationSystem.has_flag()` reads four stores
+
+`conversation_flags` -> **computed flags** -> `FlagManager` -> `WorldState`.
+Before 8/2 it read only the first, so a line gated on `gaela_devotee` or
+`kazan_dun_fallen` could never fire; the flag was set, in a store nobody asked.
+
+**Computed flags** are questions about live state written like flags, so
+`FLAG_SET` / `FLAG_NOT_SET` work on them and negation is free:
+
+| Flag | True when |
+|---|---|
+| `crime:wanted` / `crime:wanted_here` | a bounty anywhere / in this town |
+| `crime:hunted` | a faction's hostility has crossed into hunting |
+| `speaker:caught_lying` | **this** NPC caught the player lying |
+| `speaker:faction_hostile` / `_friendly` / `_honored` | this NPC's own faction's standing |
+| `rep:<faction>:<min>` | reputation with a faction is at least `<min>` |
+| `guild:<guild>:<level>` | guild rank level is at least `<level>` |
+| `devotee:<deity>` | sworn to `chronos` / `gaela` / `morthane` |
+| `quests_completed:<n>` | at least `<n>` quests finished |
+
+`REPUTATION`, `FACTION_MEMBERSHIP`, `FACTION_RANK`, `GUILD_RANK`, `MORALITY`,
+`LORE_DISCOVERED` and `BESTIARY_DISCOVERED` are all evaluated now too. The
+`REPUTATION` case used to be `return true` under a `# Future:` note.
+
+**The gate:** `tools/check_conversation_tiers.tscn` asserts the pools load
+across five archetypes, that a gated line is ineligible with its state off and
+eligible with it on, that a guard *actually says* one in three hundred draws
+with the state set and *never* with it clear, that `{quest_title}` resolves to a
+real title, that the computed-flag prefixes still answer, and that an unreadable
+condition fails closed.
+
+---
+
 ## NPC SPRITE SPECIFICATIONS (CRITICAL)
 
 > **Measured 2026-08-01 and largely wrong below.** The real house format is

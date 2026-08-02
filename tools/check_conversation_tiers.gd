@@ -33,6 +33,12 @@ func _run() -> void:
 	_check_unique_pool_directory_is_read()
 	_check_memory_survives_a_save()
 	_check_repeats_are_avoided()
+	_check_reaction_pools_registered()
+	_check_reactions_only_fire_when_their_state_holds()
+	_check_reactions_reach_the_player()
+	_check_quest_title_resolves_to_a_real_title()
+	_check_computed_flags_answer()
+	_check_unreadable_conditions_fail_closed()
 
 	print("")
 	if _failures.is_empty():
@@ -181,6 +187,222 @@ func _check_repeats_are_avoided() -> void:
 	npc.queue_free()
 	ConversationSystem.npc_memory = kept_memory
 	ConversationSystem.npc_memory_heard_count = kept_counts
+
+
+# =============================================================================
+# THE REACTIVE LAYER
+# =============================================================================
+#
+# A reaction is a line an NPC says BECAUSE of something the player did. Two ways
+# it fails, and both look fine from the outside:
+#
+#   - it never fires, because its gate reads a store nobody writes to. The NPC
+#     just says something generic and the world appears not to have noticed.
+#   - it always fires, because its gate was unreadable and fell through to true.
+#     The guard is cold to a player who has committed no crime.
+#
+# Neither throws. So both are asserted here.
+
+
+## Find a loaded response by id, across every pool it could have landed in.
+func _find_response(response_id: String) -> ConversationResponse:
+	for response: ConversationResponse in ConversationSystem.greeting_pool:
+		if response.response_id == response_id:
+			return response
+	for archetype: Variant in ConversationSystem.archetype_pools:
+		var by_topic: Dictionary = ConversationSystem.archetype_pools[archetype]
+		for topic: Variant in by_topic:
+			for response: Variant in by_topic[topic]:
+				if response is ConversationResponse and response.response_id == response_id:
+					return response
+	for topic: Variant in ConversationSystem.response_pools:
+		for response: Variant in ConversationSystem.response_pools[topic]:
+			if response is ConversationResponse and response.response_id == response_id:
+				return response
+	return null
+
+
+## The reaction pools have to have actually loaded, into the archetype tier,
+## for more than one archetype. A pool file that failed to parse warns once at
+## boot and is then indistinguishable from a game with no reactive layer.
+func _check_reaction_pools_registered() -> void:
+	var reaction_count: int = 0
+	var archetypes_reacting: Dictionary = {}
+	for archetype: Variant in ConversationSystem.archetype_pools:
+		var by_topic: Dictionary = ConversationSystem.archetype_pools[archetype]
+		for topic: Variant in by_topic:
+			for response: Variant in by_topic[topic]:
+				if response is ConversationResponse and (response as ConversationResponse).response_id.begins_with("reaction_"):
+					reaction_count += 1
+					archetypes_reacting[archetype] = true
+
+	var greeting_reactions: int = 0
+	for response: ConversationResponse in ConversationSystem.greeting_pool:
+		if response.response_id.begins_with("greet_reaction_"):
+			greeting_reactions += 1
+
+	print("  reaction topic lines: %d across %d archetypes" % [reaction_count, archetypes_reacting.size()])
+	print("  reaction greetings:   %d" % greeting_reactions)
+
+	if reaction_count < 100:
+		_failures.append("only %d reaction lines registered; data/conversation_pools/reactions.json is not loading" % reaction_count)
+	if archetypes_reacting.size() < 5:
+		_failures.append("only %d archetypes have reactions; priest/guard/merchant/thief/villager is the minimum" % archetypes_reacting.size())
+	if greeting_reactions < 20:
+		_failures.append("only %d reaction greetings registered; reaction_greetings.json is not routing into greeting_pool" % greeting_reactions)
+
+
+## The load-bearing assertion. A gated line must be ineligible with its state
+## off and eligible with it on - and the state has to be set the way the GAME
+## sets it, through WorldState and CrimeManager, not by writing the flag into
+## ConversationSystem's own dictionary where the old evaluator could see it.
+func _check_reactions_only_fire_when_their_state_holds() -> void:
+	var line: ConversationResponse = _find_response("reaction_guard_bandit_boss_1")
+	if line == null:
+		_failures.append("reaction_guard_bandit_boss_1 did not load at all")
+		return
+	if line.conditions.is_empty():
+		_failures.append("reaction_guard_bandit_boss_1 loaded with NO conditions - it would be said to everyone")
+		return
+
+	var was_boss: bool = WorldState.has_flag(WorldState.FLAG_BANDIT_BOSS)
+
+	WorldState.clear_flag(WorldState.FLAG_BANDIT_BOSS)
+	if ConversationSystem._check_conditions(line):
+		_failures.append("a bandit-boss reaction is eligible with player_is_bandit_boss CLEAR; the gate is not being read")
+
+	WorldState.set_flag(WorldState.FLAG_BANDIT_BOSS, true)
+	if not ConversationSystem._check_conditions(line):
+		_failures.append("a bandit-boss reaction is NOT eligible with player_is_bandit_boss SET; has_flag() is not reaching WorldState")
+
+	if not was_boss:
+		WorldState.clear_flag(WorldState.FLAG_BANDIT_BOSS)
+
+
+## End to end: with the state set, a guard must actually SAY one of these, and
+## with it clear he must never say one. Conditions being right is not the same
+## as selection surfacing them - a reaction that always loses the weighted roll
+## is a reaction the player never hears.
+func _check_reactions_reach_the_player() -> void:
+	const SAMPLES: int = 300
+	var was_boss: bool = WorldState.has_flag(WorldState.FLAG_BANDIT_BOSS)
+
+	var npc := Node.new()
+	npc.name = "_reaction_check_npc"
+	add_child(npc)
+
+	WorldState.set_flag(WorldState.FLAG_BANDIT_BOSS, true)
+	var reactions_heard: int = 0
+	ConversationSystem.start_conversation(npc, NPCKnowledgeProfile.guard())
+	for i in range(SAMPLES):
+		var picked: ConversationResponse = ConversationSystem.select_response(ConversationTopic.TopicType.LOCAL_NEWS)
+		if picked != null and picked.response_id.begins_with("reaction_"):
+			reactions_heard += 1
+	ConversationSystem.end_conversation()
+
+	if reactions_heard == 0:
+		_failures.append("a guard never once reacted to player_is_bandit_boss in %d draws; the reactive layer is invisible in play" % SAMPLES)
+
+	WorldState.clear_flag(WorldState.FLAG_BANDIT_BOSS)
+	var leaked: String = ""
+	ConversationSystem.start_conversation(npc, NPCKnowledgeProfile.guard())
+	for i in range(SAMPLES):
+		var picked: ConversationResponse = ConversationSystem.select_response(ConversationTopic.TopicType.LOCAL_NEWS)
+		if picked != null and picked.response_id.begins_with("reaction_guard_bandit_boss"):
+			leaked = picked.response_id
+			break
+	ConversationSystem.end_conversation()
+
+	if not leaked.is_empty():
+		_failures.append("'%s' was said to a player who is not a bandit boss" % leaked)
+
+	npc.queue_free()
+	if was_boss:
+		WorldState.set_flag(WorldState.FLAG_BANDIT_BOSS, true)
+
+
+## {quest_title} must resolve to a title out of quest data. A line that reaches
+## the player with the braces still in it is worse than no reaction at all, and
+## a line that names a quest by hand becomes a lie the day the quest is renamed.
+func _check_quest_title_resolves_to_a_real_title() -> void:
+	var context := ConversationContext.new()
+	ConversationSystem._populate_reaction_context(context)
+
+	var spoken: String = context.inject_variables("still talking about {quest_title} down at the docks")
+	if spoken.contains("{"):
+		_failures.append("{quest_title} was not substituted: '%s'" % spoken)
+
+	var completed: Array = QuestManager.get_completed_quests()
+	if completed.is_empty():
+		# Nothing finished, so nothing to name - but every line that uses the
+		# variable is gated on quests_completed:N, so none of them can be said.
+		if ConversationSystem.has_flag("quests_completed:1"):
+			_failures.append("quests_completed:1 is true with no completed quests")
+		return
+
+	var expected: String = str(completed[completed.size() - 1].title)
+	if not spoken.contains(expected):
+		_failures.append("{quest_title} resolved to something other than the last completed quest's real title")
+
+
+## The computed-flag vocabulary is the only way a pool line can ask about crime,
+## reputation, guild rank or this speaker in particular. If a prefix stops being
+## answered it returns -1, falls through to the flag stores, finds nothing, and
+## every line gated on it goes quiet - without a warning.
+func _check_computed_flags_answer() -> void:
+	const TEST_REGION := "_flag_check_region"
+
+	if ConversationSystem._evaluate_computed_flag("crime:wanted") == -1:
+		_failures.append("crime:wanted is not answered as a computed flag")
+	if ConversationSystem._evaluate_computed_flag("quests_completed:0") != 1:
+		_failures.append("quests_completed:0 should always be true")
+	if ConversationSystem._evaluate_computed_flag("rep:town_guard:-999") != 1:
+		_failures.append("rep:<faction>:<min> is not answered as a computed flag")
+	if ConversationSystem._evaluate_computed_flag("not_a_computed_flag") != -1:
+		_failures.append("an unknown prefix must fall through to the real flag stores, not answer")
+
+	var kept_bounties: Dictionary = CrimeManager.bounties.duplicate()
+	CrimeManager.bounties.clear()
+	if ConversationSystem.has_flag("crime:wanted"):
+		_failures.append("crime:wanted is true with no bounty anywhere")
+	CrimeManager.set_bounty(TEST_REGION, 250)
+	if not ConversationSystem.has_flag("crime:wanted"):
+		_failures.append("crime:wanted is false with a 250 bounty standing")
+	CrimeManager.bounties = kept_bounties
+
+	# Devotee bonds live on FlagManager. has_flag() reaching them is what lets a
+	# priest say "Gaela's own" at all.
+	var was_devotee: bool = FlagManager.is_devotee_of("gaela")
+	FlagManager.set_flag(FlagManager.FLAG_GAELA_DEVOTEE, true)
+	if not ConversationSystem.has_flag("devotee:gaela"):
+		_failures.append("devotee:gaela is false while the FlagManager bond is set")
+	if not ConversationSystem.has_flag(FlagManager.FLAG_GAELA_DEVOTEE):
+		_failures.append("ConversationSystem.has_flag() cannot see FlagManager flags")
+	if not was_devotee:
+		FlagManager.clear_flag(FlagManager.FLAG_GAELA_DEVOTEE)
+
+
+## A requirement the loader cannot read must fail closed. It used to fall
+## through to NONE - "no condition, always available" - which is how sixty-five
+## race- and career-gated lines came to be said to everybody.
+func _check_unreadable_conditions_fail_closed() -> void:
+	var parsed: DialogueCondition = ConversationSystem._parse_condition({
+		"condition_type": "no_such_condition_type", "string_value": "x"
+	})
+	if parsed.type != DialogueData.ConditionType.INVALID:
+		_failures.append("an unknown condition_type name did not become INVALID")
+	if ConversationSystem._evaluate_condition(parsed):
+		_failures.append("an INVALID condition evaluated TRUE; unreadable requirements are standing open")
+
+	var out_of_range: DialogueCondition = ConversationSystem._parse_condition({"condition_type": 9999})
+	if out_of_range.type != DialogueData.ConditionType.INVALID:
+		_failures.append("an out-of-range numeric condition_type did not become INVALID")
+
+	var by_name: DialogueCondition = ConversationSystem._parse_condition({
+		"condition_type": "player_career", "string_value": "thief"
+	})
+	if by_name.type != DialogueData.ConditionType.PLAYER_CAREER:
+		_failures.append("condition_type names are not being parsed; the pools cannot express a requirement")
 
 
 ## Per-NPC pools are meant to be droppable into a folder, not listed in code.

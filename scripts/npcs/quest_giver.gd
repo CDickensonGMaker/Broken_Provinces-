@@ -71,6 +71,12 @@ enum QuestState { NO_QUESTS, NOT_STARTED, ACTIVE, READY_TO_COMPLETE, COMPLETED_A
 var quest_state: QuestState = QuestState.NO_QUESTS
 
 ## Visual components
+##
+## `visual` is the body, whatever kind it is (scripts/visuals/character_visual.gd).
+## `billboard` is the sprite when there is one and null when this character has
+## been flipped to 3D - which is why every `if billboard and billboard.sprite:`
+## in this file is still correct rather than merely still compiling.
+var visual: CharacterVisual
 var billboard: BillboardSprite
 var interaction_area: Area3D
 
@@ -217,21 +223,23 @@ func _create_visual() -> void:
 			v_frames = 1
 			pixel_size = 0.0256  # 96px frame, 2.46m target
 
-	if not tex:
-		push_warning("QuestGiver: No sprite texture available for " + display_name)
+	# THE MIGRATION SEAM. `model` in the character registry decides whether this
+	# body is a sprite or a rig; absent, which is the case for every character
+	# but the pilot, it builds exactly the billboard the line below used to.
+	visual = CharacterVisual.for_character(npc_id, {
+		"texture": tex,
+		"h_frames": h_frames,
+		"v_frames": v_frames,
+		"pixel_size": pixel_size,
+		"idle_frames": h_frames,
+		"walk_frames": h_frames,
+		"archetype": NPCScheduler.archetype_of(npc_id),
+	})
+	if not visual.attach(self):
+		visual = null
+		push_warning("QuestGiver: No visual available for " + display_name)
 		return
-
-	billboard = BillboardSprite.new()
-	billboard.sprite_sheet = tex
-	billboard.h_frames = h_frames
-	billboard.v_frames = v_frames
-	billboard.pixel_size = pixel_size
-	billboard.idle_frames = h_frames
-	billboard.walk_frames = h_frames
-	billboard.idle_fps = 3.0
-	billboard.walk_fps = 6.0
-	billboard.name = "Billboard"
-	add_child(billboard)
+	billboard = visual.billboard_sprite()
 
 ## Create interaction area
 func _create_interaction_area() -> void:
@@ -904,6 +912,8 @@ func take_damage(amount: int, damage_type: Enums.DamageType = Enums.DamageType.P
 			if billboard and billboard.sprite and not _is_dead:
 				billboard.sprite.modulate = original_color
 		)
+	elif visual:
+		visual.play_hurt()
 
 	# Play hurt sound
 	if AudioManager:

@@ -111,22 +111,19 @@ const COMPANION_DIRS: Array[String] = [
 ]
 const LORE_DIR := "res://data/lore"
 
-## JSON keys whose string values are read by the player. Everything else in a
-## data file is machinery or a note to the author, and is not scanned.
-const PROSE_KEYS: Array[String] = [
-	"text",
-	"title",
-	"description",
-	"journal_entry",
-	"journal",
-	"completion_text",
-	"objective_text",
-	"menu_text",
-	"display_text",
-	"greeting",
-	"farewell",
-	"prompt",
-	"speaker",
+## JSON keys whose string values are read by the player, per file family.
+## Everything else in a data file is machinery or a note to the author.
+##
+## The families differ and it matters. A quest's `description` is the journal
+## entry - the player reads every word of it. A conversation pool's
+## `description` is a note to whoever edits the pool next, and scanning it made
+## this lint report its own header comment as an invented place.
+const DIALOGUE_PROSE_KEYS: Array[String] = [
+	"text", "speaker", "menu_text", "display_text", "greeting", "farewell", "prompt",
+]
+const POOL_PROSE_KEYS: Array[String] = ["text"]
+const QUEST_PROSE_KEYS: Array[String] = [
+	"title", "description", "journal_entry", "journal", "completion_text", "objective_text",
 ]
 
 ## Lowercase words that may legitimately be joined into a capitalised name
@@ -1161,7 +1158,7 @@ func _collect_spawned_display_names() -> void:
 func _gather_player_facing_prose() -> void:
 	for dir: String in DIALOGUE_DIRS:
 		for path: String in _walk(dir, ".json"):
-			_harvest_prose(_read_json(path), path, "")
+			_harvest_prose(_read_json(path), path, "", DIALOGUE_PROSE_KEYS)
 
 	# Legacy authored dialogue still lives in .tres.
 	var tres_prose_re := RegEx.new()
@@ -1175,26 +1172,26 @@ func _gather_player_facing_prose() -> void:
 				_record_prose(m.get_string(1).replace("\\n", " "), path, "text")
 
 	for path: String in _walk(CONVERSATION_POOL_DIR, ".json"):
-		_harvest_prose(_read_json(path), path, "")
+		_harvest_prose(_read_json(path), path, "", POOL_PROSE_KEYS)
 	for path: String in _walk(CONVERSATION_POOL_DIR, ".tres"):
 		for m: RegExMatch in tres_prose_re.search_all(_read_text(path)):
 			_record_prose(m.get_string(1).replace("\\n", " "), path, "text")
 
 	for path: String in _walk(QUEST_DIR, ".json", true):
-		_harvest_prose(_read_json(path), path, "")
+		_harvest_prose(_read_json(path), path, "", QUEST_PROSE_KEYS)
 
 
 ## Walk a data file and record the value of every player-facing key.
-func _harvest_prose(data: Variant, path: String, key_name: String) -> void:
+func _harvest_prose(data: Variant, path: String, key_name: String, prose_keys: Array[String]) -> void:
 	if data is Dictionary:
 		var dict: Dictionary = data
 		for key: Variant in dict:
-			_harvest_prose(dict[key], path, str(key))
+			_harvest_prose(dict[key], path, str(key), prose_keys)
 	elif data is Array:
 		for item: Variant in (data as Array):
-			_harvest_prose(item, path, key_name)
+			_harvest_prose(item, path, key_name, prose_keys)
 	elif data is String:
-		if key_name in PROSE_KEYS:
+		if key_name in prose_keys:
 			_record_prose(data, path, key_name)
 
 

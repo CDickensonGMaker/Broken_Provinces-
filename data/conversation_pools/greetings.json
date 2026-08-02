@@ -204,7 +204,7 @@
       "required_knowledge": [],
       "weight": 1.5,
       "actions": [],
-      "conditions": [{"condition_type": 12, "string_value": "elf"}]
+      "conditions": [{"condition_type": "player_race", "string_value": "elf"}]
     },
     {
       "response_id": "greeting_elf_wary",
@@ -216,7 +216,7 @@
       "required_knowledge": [],
       "weight": 1.3,
       "actions": [],
-      "conditions": [{"condition_type": 12, "string_value": "elf"}]
+      "conditions": [{"condition_type": "player_race", "string_value": "elf"}]
     },
     {
       "response_id": "greeting_dwarf_friendly",
@@ -228,7 +228,7 @@
       "required_knowledge": [],
       "weight": 1.5,
       "actions": [],
-      "conditions": [{"condition_type": 12, "string_value": "dwarf"}]
+      "conditions": [{"condition_type": "player_race", "string_value": "dwarf"}]
     },
     {
       "response_id": "greeting_dwarf_tavern",
@@ -240,7 +240,7 @@
       "required_knowledge": ["tavern"],
       "weight": 1.8,
       "actions": [],
-      "conditions": [{"condition_type": 12, "string_value": "dwarf"}]
+      "conditions": [{"condition_type": "player_race", "string_value": "dwarf"}]
     },
     {
       "response_id": "greeting_halfling_suspicious",
@@ -252,7 +252,7 @@
       "required_knowledge": [],
       "weight": 1.3,
       "actions": [],
-      "conditions": [{"condition_type": 12, "string_value": "halfling"}]
+      "conditions": [{"condition_type": "player_race", "string_value": "halfling"}]
     },
     {
       "response_id": "greeting_halfling_friendly",
@@ -264,7 +264,7 @@
       "required_knowledge": [],
       "weight": 1.5,
       "actions": [],
-      "conditions": [{"condition_type": 12, "string_value": "halfling"}]
+      "conditions": [{"condition_type": "player_race", "string_value": "halfling"}]
     },
     {
       "response_id": "greeting_human_common",
@@ -276,7 +276,7 @@
       "required_knowledge": [],
       "weight": 1.2,
       "actions": [],
-      "conditions": [{"condition_type": 12, "string_value": "human"}]
+      "conditions": [{"condition_type": "player_race", "string_value": "human"}]
     }
   ]
 }

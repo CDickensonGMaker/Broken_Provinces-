@@ -12,7 +12,7 @@
       "required_knowledge": ["trade"],
       "weight": 2.0,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "merchant"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "merchant"}]
     },
     {
       "response_id": "greeting_merchant_to_thief",
@@ -24,7 +24,7 @@
       "required_knowledge": ["trade"],
       "weight": 1.8,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "thief"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "thief"}]
     },
     {
       "response_id": "greeting_merchant_to_noble",
@@ -36,7 +36,7 @@
       "required_knowledge": ["trade"],
       "weight": 1.8,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "noble"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "noble"}]
     },
     {
       "response_id": "greeting_guard_to_soldier",
@@ -48,7 +48,7 @@
       "required_knowledge": ["security"],
       "weight": 2.0,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "soldier"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "soldier"}]
     },
     {
       "response_id": "greeting_guard_to_thief",
@@ -60,7 +60,7 @@
       "required_knowledge": ["security"],
       "weight": 2.0,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "thief"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "thief"}]
     },
     {
       "response_id": "greeting_guard_to_cultist",
@@ -72,7 +72,7 @@
       "required_knowledge": ["security"],
       "weight": 1.8,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "cultist"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "cultist"}]
     },
     {
       "response_id": "greeting_priest_to_priest",
@@ -84,7 +84,7 @@
       "required_knowledge": ["religion"],
       "weight": 2.0,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "priest"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "priest"}]
     },
     {
       "response_id": "greeting_priest_to_cultist",
@@ -96,7 +96,7 @@
       "required_knowledge": ["religion"],
       "weight": 2.0,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "cultist"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "cultist"}]
     },
     {
       "response_id": "greeting_priest_to_grave_digger",
@@ -108,7 +108,7 @@
       "required_knowledge": ["religion"],
       "weight": 1.8,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "grave_digger"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "grave_digger"}]
     },
     {
       "response_id": "greeting_scholar_to_apprentice",
@@ -120,7 +120,7 @@
       "required_knowledge": ["history", "lore"],
       "weight": 2.0,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "apprentice"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "apprentice"}]
     },
     {
       "response_id": "greeting_scholar_to_alchemist",
@@ -132,7 +132,7 @@
       "required_knowledge": ["history", "lore"],
       "weight": 1.8,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "alchemist"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "alchemist"}]
     },
     {
       "response_id": "greeting_farmer_to_farmer",
@@ -144,7 +144,7 @@
       "required_knowledge": ["crops", "animals"],
       "weight": 2.0,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "farmer"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "farmer"}]
     },
     {
       "response_id": "greeting_farmer_to_noble",
@@ -156,7 +156,7 @@
       "required_knowledge": ["crops", "animals"],
       "weight": 1.8,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "noble"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "noble"}]
     },
     {
       "response_id": "greeting_farmer_to_scout",
@@ -168,7 +168,7 @@
       "required_knowledge": ["crops", "animals"],
       "weight": 1.6,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "scout"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "scout"}]
     },
     {
       "response_id": "greeting_innkeeper_to_noble",
@@ -180,7 +180,7 @@
       "required_knowledge": ["tavern", "food"],
       "weight": 1.8,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "noble"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "noble"}]
     },
     {
       "response_id": "greeting_innkeeper_to_merchant",
@@ -192,7 +192,7 @@
       "required_knowledge": ["tavern", "food"],
       "weight": 1.8,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "merchant"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "merchant"}]
     },
     {
       "response_id": "greeting_innkeeper_to_beggar",
@@ -204,7 +204,7 @@
       "required_knowledge": ["tavern", "food"],
       "weight": 1.6,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "beggar"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "beggar"}]
     },
     {
       "response_id": "greeting_blacksmith_to_soldier",
@@ -216,7 +216,7 @@
       "required_knowledge": ["weapons", "armor"],
       "weight": 1.8,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "soldier"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "soldier"}]
     },
     {
       "response_id": "greeting_hunter_to_scout",
@@ -228,7 +228,7 @@
       "required_knowledge": ["wilderness", "creatures"],
       "weight": 2.0,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "scout"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "scout"}]
     },
     {
       "response_id": "greeting_beggar_to_beggar",
@@ -240,7 +240,7 @@
       "required_knowledge": [],
       "weight": 2.0,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "beggar"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "beggar"}]
     },
     {
       "response_id": "greeting_beggar_to_noble",
@@ -252,7 +252,7 @@
       "required_knowledge": [],
       "weight": 1.6,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "noble"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "noble"}]
     },
     {
       "response_id": "greeting_noble_to_noble",
@@ -264,7 +264,7 @@
       "required_knowledge": [],
       "weight": 2.0,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "noble"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "noble"}]
     },
     {
       "response_id": "greeting_noble_to_farmer",
@@ -276,7 +276,7 @@
       "required_knowledge": [],
       "weight": 1.6,
       "actions": [],
-      "conditions": [{"condition_type": 13, "string_value": "farmer"}]
+      "conditions": [{"condition_type": "player_career", "string_value": "farmer"}]
     }
   ]
 }
