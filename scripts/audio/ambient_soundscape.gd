@@ -1,4 +1,13 @@
 ## ambient_soundscape.gd - Layered ambient audio system with biome and time-of-day variations
+##
+## NOT INSTANTIATED BY ANYTHING (measured 8/1). `AmbientSoundscape` and
+## `add_to_scene()` are named by no script, scene or data file in the repo -
+## zone ambience is played by `AudioManager.play_zone_ambiance()` instead. The
+## class is kept because the layer/crossfade machinery is sound and the biome
+## beds it wants are logged in the art manifest; wiring it up (or deleting it
+## in favour of play_zone_ambiance) is a call for Caleb, recorded in
+## docs/audits/wave_b_dispositions.md. Wiring it today would buy nothing:
+## there are no biome assets to play.
 ## Respects performance budget of 4 max audio sources
 ## Integrates with AudioManager, GameManager (time), and biome system
 class_name AmbientSoundscape
@@ -36,93 +45,33 @@ const BASE_VOLUME: float = 0.0  # dB
 const ACCENT_VOLUME: float = -6.0  # dB (quieter than base)
 const WEATHER_VOLUME: float = -3.0  # dB
 
-## Soundscape definitions per biome
-## Each biome has day and night variants with up to 4 layers
-## Paths are placeholders - replace with actual audio assets
+## Soundscape definitions per biome.
+##
+## MEASURED 8/1: this table used to name 36 loops under
+## `res://assets/audio/ambient/`. That directory does not exist. The real one
+## is `assets/audio/Ambiance/` and holds four files, none of them a biome bed -
+## so every layer of every biome resolved to null, and the loader suppressed
+## its own warning on the way past. Biome ambience has never made a sound.
+##
+## The table is now collapsed to what is on disk: one BASE layer for CAVES,
+## which the ruins bed honestly covers, and nothing anywhere else. The 36
+## loops that are wanted are logged in docs/audits/art_replacement_manifest.md.
+## Adding one is one line here - the layer scheme still works, it just has
+## nothing to play.
 const SOUNDSCAPES: Dictionary = {
-	Biome.FOREST: {
-		"day": {
-			Layer.BASE: "res://assets/audio/ambient/forest_day_base.ogg",
-			Layer.ACCENT_1: "res://assets/audio/ambient/forest_birds.ogg",
-			Layer.ACCENT_2: "res://assets/audio/ambient/forest_wind_leaves.ogg",
-		},
-		"night": {
-			Layer.BASE: "res://assets/audio/ambient/forest_night_base.ogg",
-			Layer.ACCENT_1: "res://assets/audio/ambient/forest_crickets.ogg",
-			Layer.ACCENT_2: "res://assets/audio/ambient/forest_owls.ogg",
-		}
-	},
-	Biome.HIGHLANDS: {
-		"day": {
-			Layer.BASE: "res://assets/audio/ambient/hills_day_base.ogg",
-			Layer.ACCENT_1: "res://assets/audio/ambient/hills_wind.ogg",
-			Layer.ACCENT_2: "res://assets/audio/ambient/hills_birds.ogg",
-		},
-		"night": {
-			Layer.BASE: "res://assets/audio/ambient/hills_night_base.ogg",
-			Layer.ACCENT_1: "res://assets/audio/ambient/hills_night_wind.ogg",
-			Layer.ACCENT_2: "res://assets/audio/ambient/hills_wolves.ogg",
-		}
-	},
-	Biome.SWAMP: {
-		"day": {
-			Layer.BASE: "res://assets/audio/ambient/swamp_day_base.ogg",
-			Layer.ACCENT_1: "res://assets/audio/ambient/swamp_frogs.ogg",
-			Layer.ACCENT_2: "res://assets/audio/ambient/swamp_insects.ogg",
-		},
-		"night": {
-			Layer.BASE: "res://assets/audio/ambient/swamp_night_base.ogg",
-			Layer.ACCENT_1: "res://assets/audio/ambient/swamp_night_frogs.ogg",
-			Layer.ACCENT_2: "res://assets/audio/ambient/swamp_night_creatures.ogg",
-		}
-	},
-	Biome.COAST: {
-		"day": {
-			Layer.BASE: "res://assets/audio/ambient/coast_waves.ogg",
-			Layer.ACCENT_1: "res://assets/audio/ambient/coast_seagulls.ogg",
-			Layer.ACCENT_2: "res://assets/audio/ambient/coast_wind.ogg",
-		},
-		"night": {
-			Layer.BASE: "res://assets/audio/ambient/coast_waves_night.ogg",
-			Layer.ACCENT_1: "res://assets/audio/ambient/coast_night_wind.ogg",
-			Layer.ACCENT_2: "res://assets/audio/ambient/coast_night_creatures.ogg",
-		}
-	},
-	Biome.ROAD: {
-		"day": {
-			Layer.BASE: "res://assets/audio/ambient/plains_day_base.ogg",
-			Layer.ACCENT_1: "res://assets/audio/ambient/plains_wind.ogg",
-			Layer.ACCENT_2: "res://assets/audio/ambient/plains_grasshoppers.ogg",
-		},
-		"night": {
-			Layer.BASE: "res://assets/audio/ambient/plains_night_base.ogg",
-			Layer.ACCENT_1: "res://assets/audio/ambient/plains_crickets.ogg",
-			Layer.ACCENT_2: "res://assets/audio/ambient/plains_night_wind.ogg",
-		}
-	},
-	Biome.DESERT: {
-		"day": {
-			Layer.BASE: "res://assets/audio/ambient/desert_wind.ogg",
-			Layer.ACCENT_1: "res://assets/audio/ambient/desert_sand.ogg",
-			Layer.ACCENT_2: "res://assets/audio/ambient/desert_heat.ogg",
-		},
-		"night": {
-			Layer.BASE: "res://assets/audio/ambient/desert_night_wind.ogg",
-			Layer.ACCENT_1: "res://assets/audio/ambient/desert_night_cold.ogg",
-			Layer.ACCENT_2: "res://assets/audio/ambient/desert_coyotes.ogg",
-		}
-	},
+	Biome.FOREST: {"day": {}, "night": {}},
+	Biome.HIGHLANDS: {"day": {}, "night": {}},
+	Biome.SWAMP: {"day": {}, "night": {}},
+	Biome.COAST: {"day": {}, "night": {}},
+	Biome.ROAD: {"day": {}, "night": {}},
+	Biome.DESERT: {"day": {}, "night": {}},
 	Biome.CAVES: {
+		# Caves sound the same day and night
 		"day": {
-			Layer.BASE: "res://assets/audio/ambient/cave_drips.ogg",
-			Layer.ACCENT_1: "res://assets/audio/ambient/cave_echo.ogg",
-			Layer.ACCENT_2: "res://assets/audio/ambient/cave_wind.ogg",
+			Layer.BASE: "res://assets/audio/Ambiance/ruins/ruins_creepy_ambience.wav",
 		},
 		"night": {
-			# Caves sound the same day and night
-			Layer.BASE: "res://assets/audio/ambient/cave_drips.ogg",
-			Layer.ACCENT_1: "res://assets/audio/ambient/cave_echo.ogg",
-			Layer.ACCENT_2: "res://assets/audio/ambient/cave_wind.ogg",
+			Layer.BASE: "res://assets/audio/Ambiance/ruins/ruins_creepy_ambience.wav",
 		}
 	}
 }
@@ -135,6 +84,9 @@ const FALLBACK_SOUNDSCAPE: Dictionary = {
 
 ## Sound cache for loaded audio streams
 var sound_cache: Dictionary = {}
+
+## Paths already warned about, so a missing loop says so once
+var _warned_missing: Dictionary = {}
 
 
 func _ready() -> void:
@@ -340,7 +292,11 @@ func _load_sound(path: String) -> AudioStream:
 		return sound_cache[path]
 
 	if not ResourceLoader.exists(path):
-		# Don't spam warnings for missing ambient sounds during development
+		# The suppression that used to live here is why nobody noticed this
+		# system had never made a sound. Warn once per path instead.
+		if not _warned_missing.has(path):
+			_warned_missing[path] = true
+			push_warning("[AmbientSoundscape] no such ambient loop: %s - see docs/audits/art_replacement_manifest.md" % path)
 		return null
 
 	var stream: AudioStream = load(path)

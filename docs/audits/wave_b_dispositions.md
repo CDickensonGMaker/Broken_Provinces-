@@ -270,3 +270,60 @@ cannot tell you whether the result is any good.
 9. **Faction standing.** Eight new factions start reputations moving that never
    moved before. `nobility` starts at −10 and `shadowed_hand_cult` at −20; check
    nothing tips hostile from a single bounty.
+
+
+---
+
+## 3. Batch 4 rulings (8/1, "make a hit feel like a hit")
+
+### 3a. Melee now pays armour twice — a number, not a wiring, question
+
+Task 57 routed the player's armed melee through
+`CombatManager.apply_melee_damage()`, which is where crits, lifesteal, the
+damage number and the HUD signals live. That function was written before
+enemies applied their own armour: it reduces by the target's armour value
+(honouring `armor_pierce`, which nothing else does) and then
+`EnemyBase.take_damage()` reduces by the same armour again. It also multiplies
+by `1 + Grit/10 + Melee/20`, which the live hitbox path never did.
+
+**Measured**, 20,000 swings of a 1d6 weapon against armour 10, attacker with no
+stat bonuses: unrouted **2.67** average, routed **2.01** — a 25% drop from the
+double armour alone. A starting character (Grit 3) roughly breaks even; a
+high-Grit, high-Melee character comes out well ahead. Crits are new on top.
+
+No value was retuned in either direction — that was the instruction. The
+question for Caleb is which of these is the melee formula:
+
+1. Leave it. Melee scales with Grit and Melee skill for the first time, and
+   armour bites twice, so armoured enemies are genuinely hard to cut.
+2. Apply armour once (drop the block in `apply_melee_damage`, since the target
+   already does it), keeping the stat scaling. Closest to today's damage.
+3. Apply armour once **in CombatManager** and stop `EnemyBase.take_damage()`
+   from doing it — the only version where `armor_pierce` means anything.
+
+### 3b. Player block and lock-on (task 62/63) — deferred, not built
+
+`block` and `lock_on` are bound keys with no implementing code anywhere.
+`block`/`block_chance` exist only on `EnemyData` — enemies block the player and
+the player cannot block anything. Building either is a combat-design decision
+(timing window, stamina cost, damage reduction or full negation; hard lock or
+soft lock, break distance, target cycling), not wiring, so nothing was invented.
+The bindings are left in place and dead until ruled. `lock_on_target` on the
+player and the HUD branch that reads it were deleted per the fossil rule — a
+variable nothing assigns is not a feature.
+
+### 3c. Death with no save (task 66) — respawn is a design call
+
+The death screen offers Load Autosave, Load Save, New Game and Main Menu. With
+no save on disk the two Load buttons bounce back to the death screen; batch 4
+disables them and says why. Whether death should offer a real respawn or
+checkpoint at all is unruled and unbuilt.
+
+### 3d. `AmbientSoundscape` is wired to nothing
+
+The class is instantiated by no script, scene or data file. Zone ambience is
+played by `AudioManager.play_zone_ambiance()` instead. Its biome table is now
+collapsed to the one bed that exists (caves/ruins); the other 36 loops are in
+the art manifest. Wire it to the wilderness generator, or delete it in favour
+of `play_zone_ambiance` — both are defensible and neither buys anything until
+biome ambience assets exist.
