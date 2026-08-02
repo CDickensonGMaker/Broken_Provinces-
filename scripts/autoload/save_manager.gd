@@ -1450,6 +1450,7 @@ func _collect_guild_rank_data(guild_rank_save_data) -> void:
 	var guild_dict: Dictionary = guild_manager.to_dict()
 	guild_rank_save_data.quest_counts = guild_dict.get("quest_counts", {})
 	guild_rank_save_data.rank_levels = guild_dict.get("rank_levels", {})
+	guild_rank_save_data.earned_titles = guild_dict.get("earned_titles", [])
 
 
 ## Apply guild rank system data
@@ -1460,7 +1461,8 @@ func _apply_guild_rank_data(guild_rank_save_data) -> void:
 	var guild_manager := get_node("/root/GuildRankManager")
 	guild_manager.from_dict({
 		"quest_counts": guild_rank_save_data.quest_counts,
-		"rank_levels": guild_rank_save_data.rank_levels
+		"rank_levels": guild_rank_save_data.rank_levels,
+		"earned_titles": guild_rank_save_data.earned_titles
 	})
 
 
@@ -2063,6 +2065,12 @@ func reset_world_state() -> void:
 	# a brand new character the last run's ranks and devotions.
 	FlagManager.reset_for_new_game()
 
+	# And the ladder those flags gate. Clearing the flags alone left
+	# guild_rank_levels and guild_quest_counts standing, so a new character
+	# started twelve quests into the Thieves Guild with the badge taken off him.
+	# GuildRankManager.reset_for_new_game() existed with zero callers, exactly
+	# as FlagManager's did.
+	GuildRankManager.reset_for_new_game()
 
 	# Reset conversation memory, flags, heard-counts and discovered topics.
 	# Clearing the two dictionaries by hand used to leave the heard-counts and

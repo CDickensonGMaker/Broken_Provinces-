@@ -63,7 +63,8 @@
 
   "GuildRankManager": {
     "guild_quest_counts": {"thieves_guild": 9},
-    "guild_rank_levels": {"thieves_guild": 3}
+    "guild_rank_levels": {"thieves_guild": 3},
+    "earned_titles": ["Guildmaster's Hand"]
   },
 
   "MoralityManager": {

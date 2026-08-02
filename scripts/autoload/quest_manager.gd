@@ -1741,6 +1741,12 @@ func complete_quest(quest_id: String, completion_type: Enums.QuestCompletionStat
 		if not soulstone_id.is_empty():
 			InventoryManager.add_item(soulstone_id, 1)
 
+	# NEW: Title reward - an honorific somebody hands you, not a rank you climb
+	if quest.rewards.has("title"):
+		var title: String = str(quest.rewards["title"])
+		if not title.is_empty():
+			GuildRankManager.grant_title(title)
+
 	# NEW: Unlock area reward - set flag to unlock an area
 	if quest.rewards.has("unlock_area"):
 		var unlock_flag: String = quest.rewards["unlock_area"]

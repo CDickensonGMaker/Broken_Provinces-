@@ -88,6 +88,7 @@ func _run() -> void:
 	_check_manager_member_survival()
 	_check_objective_type_coverage()
 	_check_shipping_data_types()
+	_check_title_reward()
 
 	print("")
 	print("Checks run: %d" % _checks)
@@ -642,6 +643,45 @@ func _check_shipping_data_types() -> void:
 			seen.has(type),
 			"objective type '%s' is deferred in QuestManager but no quest uses it any more - delete the entry" % type
 		)
+
+
+# =============================================================================
+# 7. THE TITLE REWARD
+# =============================================================================
+#
+# thieves_13_right_hand's headline reward is "title": "Guildmaster's Hand". No
+# title-granting code existed, so the capstone of the whole Thieves ladder paid
+# in flavour text.
+
+func _check_title_reward() -> void:
+	var quest_id := "_title_check"
+	var title := "Guildmaster's Hand"
+
+	QuestManager.quest_database[quest_id] = QuestManager._parse_quest({
+		"id": quest_id,
+		"title": "Title check",
+		"turn_in_type": "auto_complete",
+		"rewards": {"title": title},
+		"objectives": [{"id": "_obj", "type": "interact", "target": "_title_target"}],
+	})
+
+	_expect(QuestManager.start_quest(quest_id), "the title-check quest would not start")
+	QuestManager.on_interact("_title_target")
+
+	_expect(GuildRankManager.has_title(title), "a quest with a 'title' reward completed and granted no title")
+	_expect(
+		FlagManager.has_flag("title_guildmasters_hand"),
+		"a granted title did not raise a flag dialogue can gate on, expected title_guildmasters_hand"
+	)
+
+	# Twice must not stack it: repeatable quests exist.
+	_expect(not GuildRankManager.grant_title(title), "the same title was granted twice")
+
+	GuildRankManager.reset_for_new_game()
+	_expect(not FlagManager.has_flag("title_guildmasters_hand"), "a new game left the last run's title flag standing")
+
+	QuestManager.quests.erase(quest_id)
+	QuestManager.quest_database.erase(quest_id)
 
 
 ## Script-declared members on the QuestManager singleton.

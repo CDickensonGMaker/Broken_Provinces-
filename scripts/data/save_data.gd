@@ -1107,15 +1107,20 @@ class GuildRankSaveData:
 	## Current rank level per guild (guild_id -> int, -1 = not a member)
 	var rank_levels: Dictionary = {}
 
+	## Titles awarded by quest rewards, newest last
+	var earned_titles: Array = []
+
 	func to_dict() -> Dictionary:
 		return {
 			"quest_counts": quest_counts,
-			"rank_levels": rank_levels
+			"rank_levels": rank_levels,
+			"earned_titles": earned_titles
 		}
 
 	func from_dict(data: Dictionary) -> void:
 		quest_counts = data.get("quest_counts", {})
 		rank_levels = data.get("rank_levels", {})
+		earned_titles = data.get("earned_titles", [])
 
 
 ## Duel manager save data structure

@@ -49,6 +49,11 @@ func _new_character() -> void:
 	FlagManager.set_flag(FlagManager.FLAG_GAELA_DEVOTEE, true)
 	FlagManager.set_context_variable("merchant_id", "last_run_smith")
 	WorldState.set_flag("last_run_fact", true)
+	# The rank flags above are only the gate. The ladder itself lives on
+	# GuildRankManager, whose reset_for_new_game() had zero callers.
+	GuildRankManager.guild_rank_levels["thieves_guild"] = 4
+	GuildRankManager.guild_quest_counts["thieves_guild"] = 12
+	GuildRankManager.grant_title("Last Run's Hand")
 
 	GameManager.reset_for_new_game()
 	InventoryManager.clear_inventory_state()
@@ -64,6 +69,12 @@ func _new_character() -> void:
 		FlagManager.get_context_variables().is_empty())
 	_check("a new character does not inherit the last run's world facts",
 		not WorldState.has_flag("last_run_fact"))
+	_check("a new character does not inherit the last run's guild rank level",
+		GuildRankManager.get_guild_rank_level("thieves_guild") == -1)
+	_check("a new character does not inherit the last run's guild quest count",
+		GuildRankManager.get_guild_quest_count("thieves_guild") == 0)
+	_check("a new character does not inherit the last run's titles",
+		GuildRankManager.get_titles().is_empty())
 
 	_check("character exists", GameManager.player_data != null)
 	if GameManager.player_data == null:

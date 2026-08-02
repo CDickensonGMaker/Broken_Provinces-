@@ -5,6 +5,7 @@ extends Node
 ## Signals
 signal rank_promoted(guild_id: String, old_rank: String, new_rank: String, rank_level: int)
 signal rank_check_failed(guild_id: String, reason: String)  # For debug/UI feedback
+signal title_granted(title: String)  # A quest reward handed the player a style
 
 # =============================================================================
 # GUILD CONFIGURATION
@@ -100,6 +101,13 @@ var guild_quest_counts: Dictionary = {}
 
 ## Current rank level per guild (guild_id -> int, 0-indexed)
 var guild_rank_levels: Dictionary = {}
+
+## Titles the player has been given, newest last. A title is a display string
+## a quest can award ("Guildmaster's Hand") plus a flag so dialogue and quest
+## prerequisites can gate on it. Ranks are earned by a ladder; a title is
+## handed to you by somebody, which is why it lives beside the ranks rather
+## than inside them.
+var earned_titles: Array[String] = []
 
 # =============================================================================
 # LIFECYCLE
@@ -210,6 +218,57 @@ func get_guild_rank(guild_id: String) -> String:
 		return ranks[rank_level]["display_name"]
 
 	return ""
+
+
+# --- Titles -------------------------------------------------------------------
+
+## Award a title. Idempotent, so re-completing a repeatable quest cannot stack
+## the same honorific twice. Sets `title_<slug>` on FlagManager so dialogue
+## conditions and quest flag_prerequisites can gate on it with the vocabulary
+## they already speak.
+func grant_title(title: String) -> bool:
+	var trimmed: String = title.strip_edges()
+	if trimmed.is_empty() or earned_titles.has(trimmed):
+		return false
+
+	earned_titles.append(trimmed)
+	FlagManager.set_flag(title_flag(trimmed), true)
+	title_granted.emit(trimmed)
+
+	var hud: Node = get_tree().get_first_node_in_group("hud")
+	var message: String = "You are known from now on as %s." % trimmed
+	if hud and hud.has_method("show_notification"):
+		hud.show_notification(message)
+	else:
+		Log.d("[GuildRankManager] %s" % message)
+
+	return true
+
+
+func has_title(title: String) -> bool:
+	return earned_titles.has(title.strip_edges())
+
+
+## The player's current style - the most recent title, empty if he has none.
+func get_current_title() -> String:
+	if earned_titles.is_empty():
+		return ""
+	return earned_titles[-1]
+
+
+func get_titles() -> Array[String]:
+	return earned_titles.duplicate()
+
+
+## "Guildmaster's Hand" -> "title_guildmasters_hand"
+static func title_flag(title: String) -> String:
+	var slug: String = ""
+	for character: String in title.to_lower():
+		if character.is_valid_identifier() or (character >= "0" and character <= "9"):
+			slug += character
+		elif character == " " and not slug.ends_with("_"):
+			slug += "_"
+	return "title_" + slug.strip_edges().trim_suffix("_")
 
 
 ## Get the current rank level (0-indexed, -1 if not a member)
@@ -482,7 +541,8 @@ func _show_rank_notification(guild_id: String, rank_name: String, is_join: bool)
 func to_dict() -> Dictionary:
 	return {
 		"quest_counts": guild_quest_counts.duplicate(),
-		"rank_levels": guild_rank_levels.duplicate()
+		"rank_levels": guild_rank_levels.duplicate(),
+		"earned_titles": earned_titles.duplicate()
 	}
 
 
@@ -490,6 +550,12 @@ func to_dict() -> Dictionary:
 func from_dict(data: Dictionary) -> void:
 	guild_quest_counts = data.get("quest_counts", {}).duplicate()
 	guild_rank_levels = data.get("rank_levels", {}).duplicate()
+
+	earned_titles.clear()
+	for title: Variant in data.get("earned_titles", []):
+		if title is String and not (title as String).is_empty():
+			earned_titles.append(title as String)
+			FlagManager.set_flag(title_flag(title as String), true)
 
 	# Ensure all guilds have entries
 	for guild_id: String in GUILD_RANKS:
@@ -527,6 +593,10 @@ func reset_for_new_game() -> void:
 	# Clear all guild rank flags
 	for guild_id: String in GUILD_RANKS:
 		_clear_all_rank_flags(guild_id)
+
+	for title: String in earned_titles:
+		FlagManager.clear_flag(title_flag(title))
+	earned_titles.clear()
 
 
 # =============================================================================
