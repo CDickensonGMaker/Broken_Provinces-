@@ -116,6 +116,11 @@ static func _build_dialogue_condition(data: Dictionary) -> DialogueCondition:
 	condition.param_float = data.get("threshold", 0.0)
 	condition.invert = data.get("invert", false)
 
+	# "quest_active" is QUEST_STATE with the state baked into the name; its
+	# JSON carries "value": 0, which would otherwise ask for UNAVAILABLE.
+	if type_str.to_lower() == "quest_active":
+		condition.param_int = Enums.QuestState.ACTIVE
+
 	return condition
 
 
@@ -155,7 +160,21 @@ static func _parse_condition_type(type_str: String) -> DialogueData.ConditionTyp
 		"random": return DialogueData.ConditionType.RANDOM_CHANCE
 		"player_race": return DialogueData.ConditionType.PLAYER_RACE
 		"player_career": return DialogueData.ConditionType.PLAYER_CAREER
-		_: return DialogueData.ConditionType.NONE
+		"morality": return DialogueData.ConditionType.MORALITY
+		"guild_rank": return DialogueData.ConditionType.GUILD_RANK
+		# The three spellings shipping dialogue actually uses. Every one of
+		# them fell through to NONE - which passes - so 67 gated choices in
+		# data/dialogue/ were ungated. `flag` carries its own `invert`, so it
+		# covers flag_not_set as well.
+		"flag": return DialogueData.ConditionType.FLAG_SET
+		"faction_reputation": return DialogueData.ConditionType.REPUTATION
+		"quest_active": return DialogueData.ConditionType.QUEST_STATE
+		"": return DialogueData.ConditionType.NONE
+		_:
+			# Fails CLOSED. NONE means "always available", so coercing an
+			# unparseable type to it hands the player a gated choice ungated.
+			push_error("[DialogueLoader] Unknown condition type '%s' - the condition will never pass" % type_str)
+			return DialogueData.ConditionType.INVALID
 
 
 ## Parse action type from string
@@ -180,6 +199,7 @@ static func _parse_action_type(type_str: String) -> DialogueData.ActionType:
 		"open_shop": return DialogueData.ActionType.OPEN_SHOP
 		"play_sound": return DialogueData.ActionType.PLAY_SOUND
 		"set_npc_state": return DialogueData.ActionType.SET_NPC_STATE
+		"spawn_errand": return DialogueData.ActionType.SPAWN_ERRAND
 		"start_boat_voyage": return DialogueData.ActionType.START_BOAT_VOYAGE
 		"discover_lore": return DialogueData.ActionType.DISCOVER_LORE
 		"discover_recipe": return DialogueData.ActionType.DISCOVER_RECIPE
@@ -192,7 +212,10 @@ static func _parse_action_type(type_str: String) -> DialogueData.ActionType:
 		"join_faction": return DialogueData.ActionType.JOIN_FACTION
 		"": return DialogueData.ActionType.NONE
 		_:
-			push_warning("[DialogueLoader] Unknown action type '%s' - treated as NONE" % type_str)
+			# A hard error, not a warning. Actions fail closed already (NONE
+			# does nothing), but silently doing nothing is how SPAWN_ERRAND sat
+			# dispatched-at-runtime and unwritable-from-JSON for months.
+			push_error("[DialogueLoader] Unknown action type '%s' - it will do nothing" % type_str)
 			return DialogueData.ActionType.NONE
 
 

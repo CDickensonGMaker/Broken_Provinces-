@@ -38,8 +38,13 @@ enum ConditionType {
 	PLAYER_RACE,        ## Check player's race (param_string: "human", "elf", "halfling", "dwarf")
 	PLAYER_CAREER,      ## Check player's career (param_string: "merchant", "thief", "soldier", etc.)
 	MORALITY,           ## Check morality tier (param_string: "good_only", "evil_only", "neutral_only", "paragon", "vile", etc.)
-	GUILD_RANK          ## Check guild rank (param_string = guild_id, param_int = minimum rank level, e.g., 0=initiate, 3=veteran)
+	GUILD_RANK,         ## Check guild rank (param_string = guild_id, param_int = minimum rank level, e.g., 0=initiate, 3=veteran)
+	INVALID             ## The loader could not parse the condition's type string. ALWAYS FALSE - see below.
 }
+## INVALID exists because NONE means "no condition, always available", and an
+## unparseable condition used to fall through to it. A writer who gated a choice
+## on a type the loader did not know got a choice that was always shown - a
+## secret door standing open. An unreadable requirement must fail closed.
 
 ## Action types that can trigger when a choice is selected
 enum ActionType {

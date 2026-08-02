@@ -438,15 +438,18 @@ func _check_enemy_sprites() -> void:
 
 
 func _check_dialogue_actions() -> void:
-	var known: Dictionary = {}
 	var loader_text: String = _read_text(DIALOGUE_LOADER_PATH)
-	var known_re := RegEx.new()
-	known_re.compile("\"([a-z_]+)\"\\s*:\\s*return DialogueData\\.ActionType\\.")
-	for m: RegExMatch in known_re.search_all(loader_text):
-		known[m.get_string(1)] = true
 
-	if known.is_empty():
+	# Both vocabularies are read straight out of the loader's own match
+	# statements, so the check cannot rot when a case is added.
+	var known_actions: Dictionary = _parse_cases(loader_text, "ActionType")
+	var known_conditions: Dictionary = _parse_cases(loader_text, "ConditionType")
+
+	if known_actions.is_empty():
 		_fail("DIALOGUE", DIALOGUE_LOADER_PATH, "", "could not parse the action type table")
+		return
+	if known_conditions.is_empty():
+		_fail("DIALOGUE", DIALOGUE_LOADER_PATH, "", "could not parse the condition type table")
 		return
 
 	for dir: String in DIALOGUE_DIRS:
@@ -454,25 +457,43 @@ func _check_dialogue_actions() -> void:
 			var data: Dictionary = _read_json(path)
 			if data.is_empty():
 				continue
-			for action_type: String in _harvest_action_types(data):
-				if not known.has(action_type.to_lower()):
+			for action_type: String in _harvest_types(data, "actions"):
+				if not known_actions.has(action_type.to_lower()):
 					_fail("DIALOGUE", path, action_type,
-							"action type has no handler in DialogueLoader (parses to NONE)")
+							"action type has no case in DialogueLoader, so it does nothing")
+			# Worse than the action case: an unparsed condition used to coerce
+			# to NONE, and a NONE condition PASSES. 67 gated choices in this
+			# directory were ungated that way. It fails closed now, which makes
+			# an unknown type hide a choice instead - either way, an error.
+			for condition_type: String in _harvest_types(data, "conditions"):
+				if not known_conditions.has(condition_type.to_lower()):
+					_fail("DIALOGUE", path, condition_type,
+							"condition type has no case in DialogueLoader, so the condition can never pass")
+
+
+## Harvests the loader's `"name": return DialogueData.<enum>.` match cases.
+func _parse_cases(loader_text: String, enum_name: String) -> Dictionary:
+	var found: Dictionary = {}
+	var re := RegEx.new()
+	re.compile("(?m)^\\s*\"([a-z_]*)\"\\s*:\\s*return DialogueData\\.%s\\." % enum_name)
+	for m: RegExMatch in re.search_all(loader_text):
+		found[m.get_string(1)] = true
+	return found
 
 
 ## Walks arbitrarily nested dialogue JSON collecting every "type" string that
-## sits inside an "actions" array.
-func _harvest_action_types(value: Variant, in_actions: bool = false) -> Array[String]:
+## sits inside an array under the given key.
+func _harvest_types(value: Variant, under: String, inside: bool = false) -> Array[String]:
 	var found: Array[String] = []
 	if value is Array:
 		for entry: Variant in (value as Array):
-			found.append_array(_harvest_action_types(entry, in_actions))
+			found.append_array(_harvest_types(entry, under, inside))
 	elif value is Dictionary:
 		var dict: Dictionary = value
-		if in_actions and dict.has("type") and dict["type"] is String:
+		if inside and dict.has("type") and dict["type"] is String:
 			found.append(dict["type"])
 		for key: Variant in dict.keys():
-			found.append_array(_harvest_action_types(dict[key], String(key) == "actions"))
+			found.append_array(_harvest_types(dict[key], under, String(key) == under))
 	return found
 
 

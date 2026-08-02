@@ -317,6 +317,11 @@ func evaluate_conditions(conditions: Array[DialogueCondition]) -> bool:
 
 ## Evaluate a single condition
 func evaluate_condition(condition: DialogueCondition) -> bool:
+	# An unreadable condition fails closed, and `invert` must not turn it back
+	# into an open door.
+	if condition.type == DialogueData.ConditionType.INVALID:
+		return false
+
 	var result := _evaluate_condition_internal(condition)
 
 	# Apply invert flag
@@ -330,6 +335,10 @@ func _evaluate_condition_internal(condition: DialogueCondition) -> bool:
 	match condition.type:
 		DialogueData.ConditionType.NONE:
 			return true
+
+		# The loader could not read this condition. It must never pass.
+		DialogueData.ConditionType.INVALID:
+			return false
 
 		DialogueData.ConditionType.QUEST_STATE:
 			return _check_quest_state(condition.param_string, condition.param_int)
@@ -583,6 +592,9 @@ func _get_condition_failure_reason(condition: DialogueCondition) -> String:
 				if GuildRankManager.has_method("get_guild_display_name"):
 					guild_name = GuildRankManager.get_guild_display_name(guild_id)
 			return "Requires %s or higher in %s" % [rank_name, guild_name]
+
+		DialogueData.ConditionType.INVALID:
+			return "This requirement could not be read (see the loader error)"
 
 		_:
 			return "Requirements not met"
