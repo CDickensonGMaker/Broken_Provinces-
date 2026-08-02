@@ -49,6 +49,59 @@ CELL_H = ATLAS_SIZE // ATLAS_ROWS      # 64
 FACE_ROWS = 48                         # top of the cell
 SKIN_ROWS = CELL_H - FACE_ROWS         # 16
 
+# --------------------------------------------------------------------------- #
+# THE GARB ATLAS CONTRACT (docs/design/EQ_TECHNIQUE.md sec 3.B)
+#
+# 512x512, 4 columns x 4 rows = 16 GARB PAGES of 128x128 px. Within a page,
+# four zones of 64x64, page-local and TOP-ORIGIN:
+#     (0,0)   VEST     the torso garment, front and back (robe samples it too)
+#     (64,0)  PANTS    trousers AND skirt
+#     (0,64)  SLEEVES  both arms
+#     (64,64) EXTRA    apron and hood
+#
+# A page is a uv1_offset of (col*0.25, prow*0.25) exactly as a face cell is a
+# uv1_offset of (col*0.125, row*0.25). PAGE 0 IS THE BOTTOM-LEFT of the image,
+# and prow counts UP, because v is bottom-origin and the meshes are UV'd into
+# page 0 at v < 0.25. Draw the pages any other way round and a townsman wearing
+# page 5 samples the page nobody painted.
+#
+# Resolution-independent: 1024 square gives 128 px zones and needs no UV change,
+# as long as it stays 4x4 pages of four quadrants.
+# --------------------------------------------------------------------------- #
+GARB_ATLAS_SIZE = 512
+GARB_COLS = 4
+GARB_ROWS = 4
+GARB_PAGE_PX = GARB_ATLAS_SIZE // GARB_COLS        # 128
+GARB_ZONE_PX = GARB_PAGE_PX // 2                   # 64
+GARB_STRIDE = 1.0 / GARB_COLS                      # 0.25
+GARB_PAGES = GARB_COLS * GARB_ROWS                 # 16
+
+# Zone UV rects INSIDE PAGE 0, (u0, v0, u1, v1). The 0.005 inset is 2.56 px at
+# 512 - the seam rule from the painting guide, so nearest sampling a fraction
+# off never picks up the neighbouring garment.
+GARB_INSET = 0.005
+GARB_ZONE_UV = {
+    "vest":    (0.005, 0.130, 0.120, 0.245),
+    "pants":   (0.130, 0.130, 0.245, 0.245),
+    "sleeves": (0.005, 0.005, 0.120, 0.120),
+    "extra":   (0.130, 0.005, 0.245, 0.120),
+}
+
+
+def garb_page_origin_px(page):
+    """Top-origin pixel corner of a garb page. Page 0 is BOTTOM-left."""
+    col = page % GARB_COLS
+    prow = page // GARB_COLS
+    return col * GARB_PAGE_PX, (GARB_ROWS - 1 - prow) * GARB_PAGE_PX
+
+
+def garb_page_uv_offset(page):
+    """The uv1_offset the runtime dresser applies for a page. Mirrors
+    CitizenDresser.garb_page_offset() in GDScript - the two must agree."""
+    col = page % GARB_COLS
+    prow = page // GARB_COLS
+    return col * GARB_STRIDE, prow * GARB_STRIDE
+
 
 def banner(msg):
     print("\n" + "=" * 70)
