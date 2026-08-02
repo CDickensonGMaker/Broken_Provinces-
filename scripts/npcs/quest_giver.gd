@@ -843,10 +843,8 @@ func _show_quest_turnin_dialogue(quest_id: String) -> void:
 	if quest.rewards.has("xp") and quest.rewards["xp"] > 0:
 		rewards.append("%d XP" % quest.rewards["xp"])
 	if quest.rewards.has("items"):
-		for item in quest.rewards["items"]:
-			var item_name: String = item.get("id", "item")
-			var quantity: int = item.get("quantity", 1)
-			rewards.append("%dx %s" % [quantity, item_name])
+		for item: Dictionary in QuestManager.normalize_reward_items(quest.rewards["items"]):
+			rewards.append("%dx %s" % [item["quantity"], InventoryManager.get_item_name(item["id"])])
 
 	var reward_text: String = "You received: " + ", ".join(rewards) if not rewards.is_empty() else "Thank you for your help!"
 

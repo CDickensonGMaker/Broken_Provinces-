@@ -1736,14 +1736,14 @@ func complete_quest(quest_id: String, completion_type: Enums.QuestCompletionStat
 		GameManager.player_data.add_ip(quest.rewards["xp"])
 
 	if quest.rewards.has("items"):
-		for item in quest.rewards["items"]:
-			InventoryManager.add_item(item["id"], item.get("quantity", 1))
+		for item: Dictionary in normalize_reward_items(quest.rewards["items"]):
+			InventoryManager.add_item(item["id"], item["quantity"])
 
 	# Apply faction reputation rewards
 	if quest.rewards.has("faction_reputation"):
 		var rep_changes: Dictionary = quest.rewards["faction_reputation"]
 		for faction_id: Variant in rep_changes:
-			var amount: int = rep_changes[faction_id]
+			var amount: int = int(rep_changes[faction_id])
 			if FactionManager:
 				FactionManager.modify_reputation(faction_id as String, amount, "completed quest: %s" % quest.title)
 
@@ -1962,7 +1962,7 @@ func _execute_choice_consequence(quest_id: String, choice_id: String, consequenc
 	# Apply reputation changes
 	var rep_changes: Dictionary = consequence.get("reputation_changes", {})
 	for faction_id: Variant in rep_changes:
-		var amount: int = rep_changes[faction_id]
+		var amount: int = int(rep_changes[faction_id])
 		if FactionManager:
 			FactionManager.modify_reputation(faction_id as String, amount, "quest choice: %s" % choice_id)
 
@@ -2211,6 +2211,41 @@ func get_completable_quest_for_npc(npc_id: String) -> Quest:
 
 
 ## Get raw quest data dictionary from JSON (for quest offers)
+## Read an `items` reward block in either shape the content is written in.
+##
+## Two spellings exist in `data/quests/`, and only one of them was ever read:
+##
+##     "items": ["farmers_blessing_charm"]                 # 114 quests
+##     "items": [{"id": "rope", "quantity": 2}]            # 13 quests
+##
+## The reward code indexed every entry with `item["id"]`, which throws on a
+## String and - in GDScript - aborts the whole function. So for those 114
+## quests `complete_quest` stopped at the item reward and never reached the
+## faction reputation below it, nor the follower, soulstone, title, area
+## unlock, lore or quest chaining after that. The quest still reported itself
+## COMPLETED, because the state is set before the rewards are paid.
+##
+## Returns a list of `{"id": String, "quantity": int}`, skipping entries that
+## name nothing. Static so the three reward-preview call sites can share it.
+static func normalize_reward_items(items: Variant) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	if not items is Array:
+		return result
+
+	for entry: Variant in items as Array:
+		if entry is String:
+			var id: String = entry as String
+			if not id.is_empty():
+				result.append({"id": id, "quantity": 1})
+		elif entry is Dictionary:
+			var dict: Dictionary = entry as Dictionary
+			var entry_id: String = str(dict.get("id", ""))
+			if not entry_id.is_empty():
+				result.append({"id": entry_id, "quantity": int(dict.get("quantity", 1))})
+
+	return result
+
+
 func get_quest_data(quest_id: String) -> Dictionary:
 	# Check loaded quest data files
 	var quest_file_path := "res://data/quests/%s.json" % quest_id

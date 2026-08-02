@@ -705,10 +705,8 @@ func _show_quest_completion_dialogue(completable_quests: Array[String]) -> void:
 	if quest.rewards.has("xp") and quest.rewards["xp"] > 0:
 		rewards.append("%d XP" % quest.rewards["xp"])
 	if quest.rewards.has("items"):
-		for item in quest.rewards["items"]:
-			var item_name: String = item.get("id", "item")
-			var quantity: int = item.get("quantity", 1)
-			rewards.append("%dx %s" % [quantity, item_name])
+		for item: Dictionary in QuestManager.normalize_reward_items(quest.rewards["items"]):
+			rewards.append("%dx %s" % [item["quantity"], InventoryManager.get_item_name(item["id"])])
 
 	var reward_text: String = "You received: " + ", ".join(rewards) if not rewards.is_empty() else "The city thanks you for your service."
 
