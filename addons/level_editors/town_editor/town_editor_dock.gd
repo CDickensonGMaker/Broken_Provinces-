@@ -3491,8 +3491,37 @@ func _set_status(text: String) -> void:
 ## PUBLIC API
 ## ============================================================================
 
+## Open whatever World Forge pointed us at.
+##
+## This used to set a status label and return, so "Edit Town" - on the rare
+## occasion the plugin lookup behind it had worked - opened an empty editor and
+## said "Loading scene:" forever.
 func load_scene(scene_path: String) -> void:
-	_set_status("Loading scene: %s" % scene_path)
+	if scene_path.is_empty():
+		_set_status("No path given")
+		return
+
+	if scene_path.ends_with(".json"):
+		load_layout(scene_path)
+		return
+
+	# A .tscn: prefer its sidecar layout, which round-trips; fall back to reading
+	# the scene's markers back out.
+	var sidecar: String = scene_path.get_basename() + ".json"
+	if FileAccess.file_exists(sidecar):
+		load_layout(sidecar)
+		return
+
+	if not ResourceLoader.exists(scene_path):
+		_set_status("Nothing at %s" % scene_path)
+		return
+
+	_import_existing_scene(scene_path, {
+		"id": scene_path.get_file().get_basename(),
+		"name": scene_path.get_file().get_basename().capitalize(),
+		"type": "village",
+		"scene_path": scene_path,
+	})
 
 
 func create_new_town(poi_data: Dictionary) -> void:

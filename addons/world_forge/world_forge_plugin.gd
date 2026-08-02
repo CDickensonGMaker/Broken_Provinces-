@@ -14,9 +14,21 @@ func _enter_tree() -> void:
 		world_grid_script.force_reload()
 		print("[WorldForge] Cleared WorldGrid cache - will load fresh from JSON")
 
+	# One World Forge, not two.
+	#
+	# `level_editors` builds its own World Forge window off the same dock script.
+	# With both plugins enabled - which is what project.godot has always said -
+	# the editor held two docks over two separate MapStates writing one file, and
+	# whichever was typed into last won the next save. This plugin now stands
+	# down when the umbrella is present, and its toolbar button is the umbrella's.
+	if EditorInterface.is_plugin_enabled("level_editors"):
+		print("[WorldForge] Level Editors is enabled and already hosts World Forge - standing down to avoid two editors over one file.")
+		return
+
 	# Create the dock instance
 	dock = preload("res://addons/world_forge/world_forge_dock.gd").new()
 	dock.name = "WorldForge"
+	dock.host_plugin = self
 
 	# Create popup window
 	window = Window.new()

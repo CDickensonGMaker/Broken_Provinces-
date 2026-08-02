@@ -26,6 +26,15 @@ var _last_painted_cell: Vector2i = Vector2i(-1, -1)
 var _hovered_cell: Vector2i = Vector2i(-1, -1)
 var _road_connections: Array[Array] = []  # Array of [Vector2i, Vector2i]
 
+## The playable edge of the world, in Elder Moor-relative coordinates, read off
+## WorldGrid by the dock. Painting outside it is not a mistake the tool can stop
+## - the canvas is deliberately larger, so a plan can be sketched past the edge -
+## but it is a mistake the tool must never hide. 3296 cells were painted into
+## nowhere before this was drawn. See docs/audits/tool_suite_audit.md.
+var world_bounds_min: Vector2i = Vector2i(-12, -8)
+var world_bounds_max: Vector2i = Vector2i(7, 31)
+var show_bounds: bool = true
+
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	clip_contents = true
@@ -52,6 +61,11 @@ func _draw() -> void:
 	if editor_state.layer_visibility.get("terrain", true):
 		_draw_layer("terrain", start_x, start_y, end_x, end_y, cell_size, offset)
 
+	# Biome overrides sit above terrain and below roads, hatched so a cell that
+	# carries one is obviously carrying one rather than simply being that colour.
+	if editor_state.layer_visibility.get("biome_override", true):
+		_draw_biome_overrides(start_x, start_y, end_x, end_y, cell_size, offset)
+
 	# Draw road overlay layer
 	if editor_state.layer_visibility.get("road", true):
 		_draw_roads_layer(start_x, start_y, end_x, end_y, cell_size, offset)
@@ -67,6 +81,10 @@ func _draw() -> void:
 	# Draw grid
 	if editor_state.show_grid:
 		_draw_grid(start_x, start_y, end_x, end_y, cell_size, offset)
+
+	# Draw the playable edge over everything but the origin and the cursor
+	if show_bounds:
+		_draw_world_bounds(start_x, start_y, end_x, end_y, cell_size, offset)
 
 	# Draw origin marker
 	if editor_state.show_origin:
@@ -131,6 +149,22 @@ func _draw_roads_layer(start_x: int, start_y: int, end_x: int, end_y: int, cell_
 						center + Vector2(cell_size * 0.3, plank_offset),
 						plank_color, plank_width
 					)
+
+
+func _draw_biome_overrides(start_x: int, start_y: int, end_x: int, end_y: int, cell_size: float, offset: Vector2) -> void:
+	var colors: Dictionary = WorldForgeData.LAYER_COLORS.get("biome_override", {})
+
+	for y: int in range(start_y, end_y):
+		for x: int in range(start_x, end_x):
+			var value: Variant = map_state.get_layer_value("biome_override", x, y)
+			if value == null:
+				continue
+
+			var color: Color = colors.get(value, Color.MAGENTA)
+			var cell_pos := Vector2(x * cell_size, y * cell_size) + offset
+			draw_rect(Rect2(cell_pos, Vector2(cell_size, cell_size)), Color(color.r, color.g, color.b, 0.75))
+			# One diagonal stroke: this cell was decided by hand, not by climate.
+			draw_line(cell_pos, cell_pos + Vector2(cell_size, cell_size), Color(1, 1, 1, 0.35), 1.0)
 
 
 func _draw_pois(start_x: int, start_y: int, end_x: int, end_y: int, cell_size: float, offset: Vector2) -> void:
@@ -200,6 +234,39 @@ func _draw_grid(start_x: int, start_y: int, end_x: int, end_y: int, cell_size: f
 	for y: int in range(start_y, end_y + 1):
 		var y_pos: float = y * cell_size + offset.y
 		draw_line(Vector2(start_x * cell_size + offset.x, y_pos), Vector2(end_x * cell_size + offset.x, y_pos), grid_color)
+
+
+## Everything the game will never build is greyed out, and the edge itself is
+## drawn as a red rectangle labelled with the coordinates it stands at. A cell
+## you can see through the grey is a cell the world does not have.
+func _draw_world_bounds(start_x: int, start_y: int, end_x: int, end_y: int, cell_size: float, offset: Vector2) -> void:
+	var min_editor: Vector2i = world_to_editor(world_bounds_min)
+	var max_editor: Vector2i = world_to_editor(world_bounds_max)
+	var veil := Color(0.05, 0.05, 0.07, 0.62)
+
+	for y: int in range(start_y, end_y):
+		for x: int in range(start_x, end_x):
+			if x >= min_editor.x and x <= max_editor.x and y >= min_editor.y and y <= max_editor.y:
+				continue
+			draw_rect(Rect2(Vector2(x * cell_size, y * cell_size) + offset, Vector2(cell_size, cell_size)), veil)
+
+	var edge := Rect2(
+		Vector2(min_editor.x * cell_size, min_editor.y * cell_size) + offset,
+		Vector2((max_editor.x - min_editor.x + 1) * cell_size, (max_editor.y - min_editor.y + 1) * cell_size)
+	)
+	draw_rect(edge, Color(0.85, 0.25, 0.2, 0.9), false, 2.0)
+
+	var font: Font = ThemeDB.fallback_font
+	draw_string(font, edge.position + Vector2(3, -4),
+		"world edge  %d,%d .. %d,%d" % [world_bounds_min.x, world_bounds_min.y, world_bounds_max.x, world_bounds_max.y],
+		HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(0.95, 0.5, 0.4))
+
+
+## True when this editor cell is a cell the game will actually build.
+func is_cell_in_world(editor_cell: Vector2i) -> bool:
+	var world: Vector2i = editor_to_world(editor_cell)
+	return world.x >= world_bounds_min.x and world.x <= world_bounds_max.x \
+		and world.y >= world_bounds_min.y and world.y <= world_bounds_max.y
 
 
 func _draw_origin_marker(cell_size: float, offset: Vector2) -> void:

@@ -13,13 +13,18 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from citizen_common import (GLB_DIR, GLB_NAME, MASTERS, MAT_FACE, MAT_GARB,
-                            MAT_HAIR, ATLAS_SIZE, banner, tri_count)
+                            MAT_HAIR, ATLAS_SIZE, GARB_STRIDE, banner, tri_count)
 
 EXPECT_BONES = 41
 
 BASE = {"citizen_body", "citizen_head"}
-GARB = {"garb_vest_plain", "garb_vest_laced", "garb_pants", "garb_sleeve_long",
+GARB = {"garb_vest_plain", "garb_robe", "garb_pants", "garb_sleeve_long",
         "garb_sleeve_rolled", "garb_sleeve_none", "garb_apron", "garb_hood"}
+
+# Meshes that must NOT come back. garb_vest_laced was a 4-quad strip on a vest
+# that already had that silhouette; it is a painted page now, and a stale stage
+# file must not be able to reintroduce it (EQ_TECHNIQUE sec 3.D).
+FORBIDDEN = {"garb_vest_laced"}
 MALE_HAIR = {"hair_short_crop", "hair_side_part", "hair_shaggy"}
 FEMALE_HAIR = {"hair_long_straight", "hair_long_braid", "hair_bun", "hair_shoulder"}
 
@@ -87,9 +92,13 @@ def validate(master):
     want = expected(master)
     assert got == want, ("%s mesh inventory mismatch\n  missing: %s\n  extra:   %s"
                          % (master, sorted(want - got), sorted(got - want)))
+    back = got & FORBIDDEN
+    assert not back, \
+        "%s: %s came back through a stale stage file" % (master, sorted(back))
 
     mats = set()
     tris = 0
+    garb_checked = 0
     for ob in meshes:
         tris += tri_count(ob)
         assert len(ob.data.materials) == 1, \
@@ -100,6 +109,21 @@ def validate(master):
         assert ob.vertex_groups, "%s/%s lost its weights" % (master, ob.name)
         assert ob.data.uv_layers, "%s/%s lost its UVs" % (master, ob.name)
 
+        # THE PAGE-0 LAW, re-read off the file that ships. The dresser slides
+        # garb a whole page at runtime; UVs that straddle a boundary smear two
+        # outfits together and look like a shader bug for a week.
+        if base_name(ob.name).startswith("garb_"):
+            uvl = ob.data.uv_layers[0]
+            us = [uvl.data[li].uv[0] for p in ob.data.polygons for li in p.loop_indices]
+            vs = [uvl.data[li].uv[1] for p in ob.data.polygons for li in p.loop_indices]
+            assert min(us) >= 0.0 and min(vs) >= 0.0, \
+                "%s/%s has negative UVs" % (master, ob.name)
+            assert max(us) < GARB_STRIDE and max(vs) < GARB_STRIDE, \
+                "%s/%s leaves garb page 0: max u=%.4f v=%.4f (stride %.2f)" \
+                % (master, ob.name, max(us), max(vs), GARB_STRIDE)
+            garb_checked += 1
+
+    assert garb_checked, "%s exported no garb meshes" % master
     assert mats == {MAT_FACE, MAT_GARB, MAT_HAIR}, \
         "%s materials are %s, expected the three contract names" % (master, sorted(mats))
 
@@ -109,9 +133,9 @@ def validate(master):
     assert 16 <= tw <= ATLAS_SIZE * 0.25 and 16 <= th <= ATLAS_SIZE * 0.25, \
         "%s face rect %dx%d is outside bake_us_faces.py's window" % (master, tw, th)
 
-    print("OK %-6s %-18s meshes=%-2d tris=%-4d bones=%d mats=%s face_rect=%dx%d"
+    print("OK %-6s %-18s meshes=%-2d tris=%-4d bones=%d garb_page0=%d mats=%s face_rect=%dx%d"
           % (master, GLB_NAME[master], len(meshes), tris, len(bones),
-             ",".join(sorted(mats)), tw, th))
+             garb_checked, ",".join(sorted(mats)), tw, th))
     for ob in sorted(meshes, key=lambda o: o.name):
         print("     %-22s tris=%-4d verts=%-4d mat=%s"
               % (base_name(ob.name), tri_count(ob), len(ob.data.vertices),

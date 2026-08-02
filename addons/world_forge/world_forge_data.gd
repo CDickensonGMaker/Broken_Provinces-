@@ -16,6 +16,19 @@ const ROAD_VALUES: Array[String] = [
 
 const POI_VALUES: Array[String] = ["town", "village", "city", "capital", "dungeon", "landmark", "outpost", "cave", "ruins", "shrine", "fortress", "port", "camp", "bridge"]
 
+## Biome overrides, named exactly as WorldGrid.Biome spells them.
+##
+## THE RULE: an unpainted cell has NO override, and its biome is whatever
+## `WorldGrid.biome_for_cell()` decides from latitude, moisture and the mountain
+## mask. The climate model is the default and stays the default. This layer is
+## for the one valley that has to be frozen at a warm latitude, and it is empty
+## everywhere else - which is why it is called an override and not a biome layer.
+const BIOME_VALUES: Array[String] = [
+	"FOREST", "PLAINS", "SWAMP", "HILLS", "ROCKY", "MOUNTAINS", "COAST",
+	"UNDEAD", "HORDE", "DESERT", "WINTER",
+	"ROCKY_FOREST", "ROCKY_PLAINS", "ROCKY_WINTER", "ROCKY_DESERT"
+]
+
 ## Layer colors for rendering
 const LAYER_COLORS: Dictionary = {
 	"terrain": {
@@ -40,6 +53,23 @@ const LAYER_COLORS: Dictionary = {
 		"cobblestone": Color(0.45, 0.45, 0.48),
 		"path": Color(0.6, 0.5, 0.4),
 		"bridge": Color(0.5, 0.4, 0.3)
+	},
+	"biome_override": {
+		"FOREST": Color(0.24, 0.42, 0.19),
+		"PLAINS": Color(0.55, 0.70, 0.38),
+		"SWAMP": Color(0.18, 0.29, 0.16),
+		"HILLS": Color(0.52, 0.50, 0.32),
+		"ROCKY": Color(0.45, 0.44, 0.42),
+		"MOUNTAINS": Color(0.30, 0.30, 0.35),
+		"COAST": Color(0.42, 0.56, 0.52),
+		"UNDEAD": Color(0.36, 0.28, 0.40),
+		"HORDE": Color(0.46, 0.24, 0.22),
+		"DESERT": Color(0.83, 0.72, 0.59),
+		"WINTER": Color(0.80, 0.86, 0.90),
+		"ROCKY_FOREST": Color(0.32, 0.40, 0.28),
+		"ROCKY_PLAINS": Color(0.52, 0.56, 0.40),
+		"ROCKY_WINTER": Color(0.62, 0.68, 0.74),
+		"ROCKY_DESERT": Color(0.68, 0.60, 0.48)
 	},
 	"poi": {
 		"town": Color(0.9, 0.75, 0.4),
@@ -87,6 +117,7 @@ class MapState:
 	var layers: Dictionary = {
 		"terrain": [],
 		"road": [],
+		"biome_override": [],
 		"poi": []
 	}
 	var poi_data: Dictionary = {}  # String(index) -> Dictionary {name, type, notes, x, y, scene_path, layout_path, location_id}
@@ -218,6 +249,7 @@ class EditorState:
 	var layer_visibility: Dictionary = {
 		"terrain": true,
 		"road": true,
+		"biome_override": true,
 		"poi": true
 	}
 	var show_grid: bool = true

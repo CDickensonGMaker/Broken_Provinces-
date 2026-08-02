@@ -3,7 +3,15 @@ extends Control
 class_name WorldForgeDock
 ## Main dock UI for the World Forge editor
 
-const EXPORT_PATH := "user://world_forge_map.json"
+## The map lives in the repository. WorldGrid reads this exact path.
+##
+## It was `user://world_forge_map.json` until 8/2, which meant a world nobody
+## but this machine had: not in git, never seen by the validator, absent from
+## every exported build. docs/audits/tool_suite_audit.md section 2.
+const EXPORT_PATH := "res://data/world/world_forge_map.json"
+
+## The old location, offered as an import and read nowhere else.
+const LEGACY_PATH := "user://world_forge_map.json"
 
 var map_state: WorldForgeData.MapState
 var editor_state: WorldForgeData.EditorState
@@ -37,18 +45,37 @@ var coords_label: Label
 # ButtonGroups for exclusive brush selection
 var terrain_brush_group: ButtonGroup
 var road_brush_group: ButtonGroup
+var biome_brush_group: ButtonGroup
 var poi_brush_group: ButtonGroup
+
+## Set by the host plugin so the dock can reach it. Walking `get_parent()` never
+## could: this dock's parents are a Window, then the editor's base control, and
+## an EditorPlugin is not anywhere in that chain. Both "Edit ..." buttons printed
+## "plugin not found" every time they were pressed.
+var host_plugin: EditorPlugin = null
+
+## The playable edge, read once from WorldGrid.
+var world_bounds_min: Vector2i = Vector2i(-12, -8)
+var world_bounds_max: Vector2i = Vector2i(7, 31)
 
 
 func _ready() -> void:
 	map_state = WorldForgeData.MapState.new()
 	editor_state = WorldForgeData.EditorState.new()
 
+	_read_world_bounds()
 	_build_ui()
 	_connect_signals()
 
 	# First try to load from exported JSON, fall back to WorldGrid
 	call_deferred("_load_on_startup")
+
+
+func _read_world_bounds() -> void:
+	var world_grid_script: Script = load("res://scripts/data/world_grid.gd")
+	if world_grid_script:
+		world_bounds_min = world_grid_script.GRID_MIN
+		world_bounds_max = world_grid_script.GRID_MAX
 
 
 func _load_on_startup() -> void:
@@ -60,6 +87,9 @@ func _load_on_startup() -> void:
 		# Fall back to WorldGrid hardcoded data
 		_load_from_world_grid()
 		print("[WorldForge] No JSON found, loaded from WorldGrid GRID_DATA")
+
+	if FileAccess.file_exists(LEGACY_PATH):
+		_set_status("A pre-8/2 map is still in user://. Press 'Import legacy map' to bring it in - nothing reads it where it is.")
 
 
 func _build_ui() -> void:
@@ -93,6 +123,8 @@ func _build_ui() -> void:
 	canvas = WorldForgeCanvas.new()
 	canvas.map_state = map_state
 	canvas.editor_state = editor_state
+	canvas.world_bounds_min = world_bounds_min
+	canvas.world_bounds_max = world_bounds_max
 	canvas.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	canvas_container.add_child(canvas)
@@ -191,6 +223,7 @@ func _create_layer_tabs() -> void:
 	# Create ButtonGroups for exclusive selection
 	terrain_brush_group = ButtonGroup.new()
 	road_brush_group = ButtonGroup.new()
+	biome_brush_group = ButtonGroup.new()
 	poi_brush_group = ButtonGroup.new()
 
 	# Terrain tab - unified biome/elevation/water
@@ -202,6 +235,18 @@ func _create_layer_tabs() -> void:
 	var road_tab := _create_brush_tab_with_group("road", WorldForgeData.ROAD_VALUES, WorldForgeData.LAYER_COLORS["road"], road_brush_group)
 	road_tab.name = "Road"
 	layer_tabs.add_child(road_tab)
+
+	# Biome override tab. Painting here overrules the climate model for one cell;
+	# erasing hands the cell back to it. Every cell starts handed back.
+	var biome_tab := _create_brush_tab_with_group("biome_override", WorldForgeData.BIOME_VALUES, WorldForgeData.LAYER_COLORS["biome_override"], biome_brush_group)
+	biome_tab.name = "Biome"
+	layer_tabs.add_child(biome_tab)
+
+	var biome_note := Label.new()
+	biome_note.text = "Empty = the climate model decides.\nPaint only where it must be overruled.\nRight-click erases back to climate."
+	biome_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	biome_note.add_theme_font_size_override("font_size", 10)
+	biome_tab.add_child(biome_note)
 
 	# POI tab
 	var poi_tab := _create_poi_tab()
@@ -490,10 +535,10 @@ func _create_toolbar() -> Control:
 
 	# Visibility toggles
 	hbox.add_child(_make_label("Show:"))
-	for layer: String in ["terrain", "road", "poi"]:
+	for layer: String in ["terrain", "road", "biome_override", "poi"]:
 		var check := CheckButton.new()
-		check.text = layer.substr(0, 1).to_upper()
-		check.tooltip_text = layer.capitalize()
+		check.text = "B" if layer == "biome_override" else layer.substr(0, 1).to_upper()
+		check.tooltip_text = "Biome overrides" if layer == "biome_override" else layer.capitalize()
 		check.button_pressed = true
 		check.toggled.connect(_on_visibility_toggled.bind(layer))
 		visibility_checks[layer] = check
@@ -526,19 +571,22 @@ func _create_footer() -> Control:
 	var row1 := HBoxContainer.new()
 
 	var export_btn := Button.new()
-	export_btn.text = "Export JSON"
+	export_btn.text = "Save map"
+	export_btn.tooltip_text = "Write %s. This is the file the game builds the world from." % EXPORT_PATH
 	export_btn.pressed.connect(_on_export_pressed)
 	row1.add_child(export_btn)
 
 	var import_btn := Button.new()
-	import_btn.text = "Import JSON"
+	import_btn.text = "Reload map"
+	import_btn.tooltip_text = "Discard unsaved edits and re-read %s" % EXPORT_PATH
 	import_btn.pressed.connect(_on_import_pressed)
 	row1.add_child(import_btn)
 
-	var apply_btn := Button.new()
-	apply_btn.text = "Apply to Game"
-	apply_btn.pressed.connect(_on_apply_pressed)
-	row1.add_child(apply_btn)
+	var check_btn := Button.new()
+	check_btn.text = "Check map"
+	check_btn.tooltip_text = "Count what the game would refuse: cells past the world edge, POIs LOCATIONS does not declare, POIs with no scene"
+	check_btn.pressed.connect(_on_check_pressed)
+	row1.add_child(check_btn)
 
 	vbox.add_child(row1)
 
@@ -559,6 +607,13 @@ func _create_footer() -> Control:
 	sync_pois_btn.tooltip_text = "Add missing POIs from WorldGrid.LOCATIONS"
 	sync_pois_btn.pressed.connect(_on_sync_pois_pressed)
 	row2.add_child(sync_pois_btn)
+
+	var legacy_btn := Button.new()
+	legacy_btn.text = "Import legacy map"
+	legacy_btn.tooltip_text = "Read the pre-8/2 %s into the editor. Nothing reads it where it is." % LEGACY_PATH
+	legacy_btn.disabled = not FileAccess.file_exists(LEGACY_PATH)
+	legacy_btn.pressed.connect(_on_import_legacy_pressed)
+	row2.add_child(legacy_btn)
 
 	vbox.add_child(row2)
 
@@ -608,7 +663,7 @@ func _on_center_pressed() -> void:
 
 
 func _on_layer_tab_changed(tab: int) -> void:
-	var layer_names: Array[String] = ["terrain", "road", "poi"]
+	var layer_names: Array[String] = ["terrain", "road", "biome_override", "poi"]
 	if tab >= 0 and tab < layer_names.size():
 		editor_state.current_layer = layer_names[tab]
 		# Set default brush for layer
@@ -617,6 +672,8 @@ func _on_layer_tab_changed(tab: int) -> void:
 				editor_state.current_brush = "forest"
 			"road":
 				editor_state.current_brush = "dirt_road"
+			"biome_override":
+				editor_state.current_brush = "WINTER"
 			"poi":
 				editor_state.current_brush = "town"
 
@@ -933,27 +990,108 @@ func _set_status(text: String) -> void:
 
 # Export/Import
 func _on_export_pressed() -> void:
+	DirAccess.make_dir_recursive_absolute(EXPORT_PATH.get_base_dir())
+
 	var data: Dictionary = map_state.to_dict()
 	var json_str: String = JSON.stringify(data, "  ")
 
 	var file := FileAccess.open(EXPORT_PATH, FileAccess.WRITE)
-	if file:
-		file.store_string(json_str)
-		file.close()
-		_set_status("Exported to: %s" % EXPORT_PATH)
-	else:
-		_set_status("Failed to export!")
+	if not file:
+		_set_status("Failed to save %s" % EXPORT_PATH)
+		return
+
+	file.store_string(json_str)
+	file.close()
+
+	# Never save quietly over a map the game will partly refuse.
+	var report: Dictionary = _audit_map()
+	var msg: String = "Saved %s" % EXPORT_PATH
+	if report["outside"] > 0 or not report["ungrounded"].is_empty():
+		msg += "  -  %s" % _report_line(report)
+	_set_status(msg)
+
+
+## Count exactly what the game will refuse to build, so the tool says it at the
+## moment of saving instead of a warning nobody reads at boot.
+func _audit_map() -> Dictionary:
+	var outside: int = 0
+	for i: int in range(map_state.layers["terrain"].size()):
+		if map_state.layers["terrain"][i] == null:
+			continue
+		var coords: Vector2i = map_state.get_cell_coords(i) - map_state.origin
+		if coords.x < world_bounds_min.x or coords.x > world_bounds_max.x \
+			or coords.y < world_bounds_min.y or coords.y > world_bounds_max.y:
+			outside += 1
+
+	var declared: Dictionary = {}
+	var world_grid_script: Script = load("res://scripts/data/world_grid.gd")
+	if world_grid_script:
+		for loc: Dictionary in world_grid_script.LOCATIONS:
+			declared[String(loc.get("id", ""))] = true
+
+	var ungrounded: Array[String] = []
+	var sceneless: Array[String] = []
+	for key: String in map_state.poi_data:
+		var poi: Dictionary = map_state.poi_data[key]
+		var id: String = String(poi.get("location_id", ""))
+		if id.is_empty():
+			continue
+		if not declared.has(id):
+			ungrounded.append(id)
+		elif String(poi.get("scene_path", "")).is_empty():
+			sceneless.append(id)
+
+	ungrounded.sort()
+	sceneless.sort()
+	return {"outside": outside, "ungrounded": ungrounded, "sceneless": sceneless}
+
+
+func _report_line(report: Dictionary) -> String:
+	var parts: Array[String] = []
+	if report["outside"] > 0:
+		parts.append("%d cells past the world edge (not built)" % report["outside"])
+	var ungrounded: Array = report["ungrounded"]
+	if not ungrounded.is_empty():
+		parts.append("%d POIs LOCATIONS does not declare: %s" % [ungrounded.size(), ", ".join(ungrounded)])
+	var sceneless: Array = report["sceneless"]
+	if not sceneless.is_empty():
+		parts.append("%d POIs with no scene: %s" % [sceneless.size(), ", ".join(sceneless)])
+	if parts.is_empty():
+		return "Map is clean: every painted cell is inside the world and every place is declared."
+	return " | ".join(parts)
+
+
+func _on_check_pressed() -> void:
+	var report: Dictionary = _audit_map()
+	var line: String = _report_line(report)
+	_set_status(line)
+	print("[WorldForge] %s" % line)
+
+
+func _on_import_legacy_pressed() -> void:
+	if not FileAccess.file_exists(LEGACY_PATH):
+		_set_status("No legacy map at %s" % LEGACY_PATH)
+		return
+	if not _read_map_file(LEGACY_PATH):
+		return
+	var report: Dictionary = _audit_map()
+	_set_status("Imported legacy map. %s  -  press 'Save map' to make it the world." % _report_line(report))
 
 
 func _on_import_pressed() -> void:
-	if not FileAccess.file_exists(EXPORT_PATH):
-		_set_status("No export file found at: %s" % EXPORT_PATH)
-		return
+	if _read_map_file(EXPORT_PATH):
+		_set_status("Loaded %s" % EXPORT_PATH)
 
-	var file := FileAccess.open(EXPORT_PATH, FileAccess.READ)
+
+func _read_map_file(path: String) -> bool:
+	if not FileAccess.file_exists(path):
+		_set_status("No map file at: %s" % path)
+		return false
+
+	var file := FileAccess.open(path, FileAccess.READ)
 	if not file:
-		_set_status("Failed to open export file!")
-		return
+		_set_status("Failed to open %s" % path)
+		return false
 
 	var json_str: String = file.get_as_text()
 	file.close()
@@ -962,11 +1100,12 @@ func _on_import_pressed() -> void:
 	var error := json.parse(json_str)
 	if error != OK:
 		_set_status("Failed to parse JSON: %s" % json.get_error_message())
-		return
+		return false
 
 	if not json.data is Dictionary:
-		_set_status("Invalid JSON format!")
-		return
+		_set_status("Invalid JSON format in %s" % path)
+		return false
+
 	var data: Dictionary = json.data
 	map_state.from_dict(data)
 
@@ -978,12 +1117,7 @@ func _on_import_pressed() -> void:
 
 	_update_location_list()
 	canvas.queue_redraw()
-	_set_status("Imported from: %s" % EXPORT_PATH)
-
-
-func _on_apply_pressed() -> void:
-	_on_export_pressed()
-	_set_status("Exported to %s - changes apply on next game run." % EXPORT_PATH)
+	return true
 
 
 ## Public method to update POI layout_path from external editors
@@ -1070,11 +1204,15 @@ func _on_sync_pois_pressed() -> void:
 			"name": loc_name,
 			"type": loc_type,
 			"notes": description,
-			"scene_path": "",
+			"scene_path": world_grid_script.LOCATION_SCENES.get(loc_id, ""),
 			"layout_path": "",
 			"location_id": loc_id,
 			"x": editor_x,
-			"y": editor_y
+			"y": editor_y,
+			# Without these the inspector and the list both read (0, 0) for
+			# every synced location, which is what they did until 8/2.
+			"world_x": game_x,
+			"world_y": game_y
 		}
 		added_count += 1
 		print("[WorldForge] Added POI: %s at (%d, %d)" % [loc_name, game_x, game_y])
@@ -1296,11 +1434,13 @@ func _on_edit_dungeon_pressed() -> void:
 		_set_status("Opening dungeon: " + layout_path.get_file())
 
 
-## Helper to get the Level Editors plugin
+## The host plugin, handed in by whoever built this dock.
+##
+## This used to walk `get_parent()` looking for an EditorPlugin. The dock's
+## parents are a Window and then the editor's base control; an EditorPlugin has
+## never been in that chain, so it returned null every time and both "Edit ..."
+## buttons were dead from the day they were written.
 func _get_level_editors_plugin() -> EditorPlugin:
-	var node: Node = get_parent()
-	while node:
-		if node is EditorPlugin and node.has_method("open_dungeon_editor"):
-			return node
-		node = node.get_parent()
+	if is_instance_valid(host_plugin) and host_plugin.has_method("open_dungeon_editor"):
+		return host_plugin
 	return null

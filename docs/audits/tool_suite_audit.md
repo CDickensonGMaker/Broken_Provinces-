@@ -188,10 +188,11 @@ What the new world added and the tool never learned:
   from what the tool shows you would fail the gate.
 - `load_scene(path)` - the entry point World Forge calls - **is a stub that
   sets a status label and returns.**
-- `_create_blank_from_settlement()` does not carry the location's world coords
-  into `metadata`, so a layout started from the Locations dropdown does not
-  know where in the world it is; only `create_new_town()` (the World Forge
-  path, which cannot be reached, see §2e) sets `world_x` / `world_y`.
+- **Corrected 8/2 on a second read:** an earlier draft of this table claimed
+  `_create_blank_from_settlement()` dropped the location's world coordinates.
+  It does not. All three entry points - that one, `_import_existing_scene()`
+  and `create_new_town()` - write `metadata.world_x` / `world_y`. The cell is
+  known; nothing had ever used it.
 
 ---
 

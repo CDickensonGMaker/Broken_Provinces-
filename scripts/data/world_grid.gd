@@ -411,8 +411,17 @@ const REGION_LARTON_BAY := "Larton Bay"
 const REGION_TENGER_DESERT := "Tenger Desert"
 const REGION_SOUTHERN_REACHES := "Southern Reaches"
 
-## World Forge map path
-const FORGE_MAP_PATH := "user://world_forge_map.json"
+## World Forge map path.
+##
+## In the repository, deliberately. Until 8/2 this was `user://`, which meant
+## the world the game built was a file in AppData that git could not see, the
+## validator had never read, and no second machine possessed. See
+## docs/audits/tool_suite_audit.md section 2.
+const FORGE_MAP_PATH := "res://data/world/world_forge_map.json"
+
+## The pre-8/2 location, kept only so World Forge can offer to import it. NOTHING
+## reads this to build the world; a map has to be in the repository to be real.
+const LEGACY_FORGE_MAP_PATH := "user://world_forge_map.json"
 
 ## Terrain value to Terrain enum mapping (for World Forge)
 const FORGE_TERRAIN_MAP: Dictionary = {
@@ -429,7 +438,24 @@ const FORGE_TERRAIN_MAP: Dictionary = {
 	"river": Terrain.COAST,
 }
 
-## Load world from World Forge JSON if it exists
+## Load the land from a World Forge map, if one is in the repository.
+##
+## THE CONTRACT, settled 8/2: **the forge map owns the land; LOCATIONS owns the
+## places.** A painted map contributes terrain, roads and biome. It never moves
+## a town, never names a cell, and never decides which scene streams there -
+## those come from LOCATIONS and LOCATION_SCENES on the pass that always runs
+## after this one.
+##
+## Before 8/2 the forge map replaced the whole world and `initialize()` returned
+## before LOCATIONS was applied. Twenty-eight places lost their scene and
+## streamed as procedural towns, Dalhurst moved two cells west of its own
+## residents, and eleven named cells had nothing behind them - invisible to the
+## grounding lint, which reads this file as source text and not the map.
+##
+## Cells outside GRID_MIN..GRID_MAX are counted and reported, never built. A
+## painted cell the world has no room for is a mistake to tell the author about,
+## not one to half-honour: `is_in_bounds()` would keep saying no while
+## `get_cell()` said yes, which is two worlds in one process.
 static func _load_from_forge_map() -> bool:
 	if not FileAccess.file_exists(FORGE_MAP_PATH):
 		return false
@@ -458,12 +484,10 @@ static func _load_from_forge_map() -> bool:
 	var origin := Vector2i(origin_info.get("x", 32), origin_info.get("y", 32))
 
 	var layers: Dictionary = data.get("layers", {})
-	var poi_data: Dictionary = data.get("poi_data", {})
 
-	# Detect format
 	var terrain_layer: Array = layers.get("terrain", [])
 	var road_layer: Array = layers.get("road", [])
-	var poi_layer: Array = layers.get("poi", [])
+	var biome_layer: Array = layers.get("biome_override", [])
 
 	# Handle legacy format
 	if terrain_layer.is_empty() and layers.has("biome"):
@@ -472,57 +496,102 @@ static func _load_from_forge_map() -> bool:
 	if terrain_layer.is_empty():
 		return false
 
-	# Create cells from forge data
+	var out_of_bounds: int = 0
+	var painted: int = 0
+
 	for y: int in range(grid_height):
 		for x: int in range(grid_width):
 			var index: int = y * grid_width + x
 			var world_coords := Vector2i(x - origin.x, y - origin.y)
 
-			# Get terrain value
 			var terrain_val: Variant = terrain_layer[index] if index < terrain_layer.size() else null
 			if terrain_val == null:
 				continue
 
+			if not is_in_bounds(world_coords):
+				out_of_bounds += 1
+				continue
+
 			var terrain: Terrain = FORGE_TERRAIN_MAP.get(terrain_val, Terrain.FOREST)
+
+			# The road layer wins over the terrain beneath it, as it did before.
+			if index < road_layer.size() and road_layer[index] != null:
+				terrain = Terrain.ROAD
+
+			# The climate model decides the biome unless the map overrides this
+			# one cell by name. An unpainted override is not a decision.
 			var biome: Biome = biome_for_cell(world_coords, terrain)
+			if index < biome_layer.size() and biome_layer[index] != null:
+				var named: int = Biome.keys().find(String(biome_layer[index]).to_upper())
+				if named >= 0:
+					biome = named as Biome
+				else:
+					push_warning("[WorldGrid] Forge map names biome '%s' at (%d, %d), which does not exist" % [
+						biome_layer[index], world_coords.x, world_coords.y
+					])
 
 			var cell := CellInfo.new(terrain, biome)
+			cell.is_road = (terrain == Terrain.ROAD)
 			cell.region_name = _get_region_for_coords(world_coords)
 			cell.danger_level = _get_danger_level(world_coords)
 
-			# Check road layer
-			if index < road_layer.size() and road_layer[index] != null:
-				cell.is_road = true
-				cell.terrain = Terrain.ROAD
-
-			# Check POI layer
-			if index < poi_layer.size() and poi_layer[index] != null:
-				var poi_type: String = poi_layer[index]
-				var poi_info: Dictionary = poi_data.get(str(index), {})
-
-				match poi_type:
-					"town": cell.location_type = LocationType.TOWN
-					"village": cell.location_type = LocationType.VILLAGE
-					"city": cell.location_type = LocationType.CITY
-					"capital": cell.location_type = LocationType.CAPITAL
-					"dungeon", "cave", "ruins": cell.location_type = LocationType.DUNGEON
-					"landmark", "shrine": cell.location_type = LocationType.LANDMARK
-					"outpost": cell.location_type = LocationType.OUTPOST
-
-				if not poi_info.is_empty():
-					cell.location_name = poi_info.get("name", "")
-					cell.location_id = poi_info.get("location_id", "")
-					cell.description = poi_info.get("notes", "")
-					var scene: String = poi_info.get("scene_path", "")
-					if not scene.is_empty():
-						cell.scene_path = scene
-
-					if not cell.location_id.is_empty():
-						locations[cell.location_id] = world_coords
-
 			cells[world_coords] = cell
+			painted += 1
 
+	if out_of_bounds > 0:
+		push_warning("[WorldGrid] Forge map paints %d cells outside the world (%s..%s). They are not built. Move them inside the bounds or widen GRID_MIN/GRID_MAX." % [
+			out_of_bounds, GRID_MIN, GRID_MAX
+		])
+
+	# Any in-bounds cell the map did not paint keeps the hand-authored terrain,
+	# so a partial map is a partial map and never a hole in the world.
+	_fill_unpainted_from_grid_data()
+
+	_report_ungrounded_forge_pois(data)
+
+	print("[WorldGrid] Forge map: %d cells painted, %d skipped out of bounds" % [painted, out_of_bounds])
 	return true
+
+
+## Build any cell GRID_DATA describes that the forge map left empty.
+static func _fill_unpainted_from_grid_data() -> void:
+	var grid_rows: int = GRID_DATA.size()
+	var grid_cols: int = GRID_DATA[0].size() if grid_rows > 0 else 0
+	for row: int in range(grid_rows):
+		for col: int in range(grid_cols):
+			var coords := Vector2i(col, row) - _INTERNAL_OFFSET
+			if cells.has(coords):
+				continue
+			var terrain: Terrain = TERRAIN_MAP.get(GRID_DATA[row][col], Terrain.FOREST)
+			var cell := CellInfo.new(terrain, biome_for_cell(coords, terrain))
+			cell.is_road = (terrain == Terrain.ROAD)
+			cell.region_name = _get_region_for_coords(coords)
+			cell.danger_level = _get_danger_level(coords)
+			cells[coords] = cell
+
+
+## A POI the map names that LOCATIONS does not declare is a place the player
+## cannot reach: no scene, no NPCs, no quests, nothing behind the label. The map
+## does not get to create one silently - THE GROUNDING LAW, applied to the tool.
+static func _report_ungrounded_forge_pois(data: Dictionary) -> void:
+	var declared: Dictionary = {}
+	for loc: Dictionary in LOCATIONS:
+		declared[String(loc.get("id", ""))] = true
+
+	var orphans: Array[String] = []
+	var poi_data: Dictionary = data.get("poi_data", {})
+	for key: String in poi_data:
+		var poi: Dictionary = poi_data[key]
+		var id: String = String(poi.get("location_id", ""))
+		if id.is_empty() or declared.has(id):
+			continue
+		orphans.append(id)
+
+	if not orphans.is_empty():
+		orphans.sort()
+		push_warning("[WorldGrid] Forge map names %d places LOCATIONS does not declare, so they are not in the world: %s. Declare them in world_grid.gd's LOCATIONS (with a scene) or remove them from the map." % [
+			orphans.size(), ", ".join(orphans)
+		])
 
 
 ## Merge legacy biome/elevation/water layers into terrain
@@ -564,31 +633,12 @@ static func initialize() -> void:
 	locations.clear()
 	roads.clear()
 
-	# Check if World Forge map exists and load from it
-	if _load_from_forge_map():
-		_forge_map_loaded = true
-		return
-
-	# Fall back to hardcoded GRID_DATA
-	var grid_rows: int = GRID_DATA.size()
-	var grid_cols: int = GRID_DATA[0].size() if grid_rows > 0 else 0
-
-	# First pass: Create cells from terrain grid
-	for row in range(grid_rows):
-		for col in range(grid_cols):
-			# Convert to Elder Moor-relative coordinates
-			var coords := Vector2i(col, row) - _INTERNAL_OFFSET
-
-			var terrain_char: String = GRID_DATA[row][col]
-			var terrain: Terrain = TERRAIN_MAP.get(terrain_char, Terrain.FOREST)
-			var biome: Biome = biome_for_cell(coords, terrain)
-
-			var cell := CellInfo.new(terrain, biome)
-			cell.is_road = (terrain == Terrain.ROAD)
-			cell.region_name = _get_region_for_coords(coords)
-			cell.danger_level = _get_danger_level(coords)
-
-			cells[coords] = cell
+	# First pass: the land. A forge map in the repository paints it; otherwise
+	# GRID_DATA does. Either way the passes below always run, because the places
+	# are declared here and never by the map.
+	_forge_map_loaded = _load_from_forge_map()
+	if not _forge_map_loaded:
+		_fill_unpainted_from_grid_data()
 
 	# Second pass: Add location data
 	for loc: Dictionary in LOCATIONS:
@@ -650,23 +700,10 @@ static func initialize() -> void:
 
 			roads.append([from_coords, to_coords])
 
-	# Fourth pass: Apply WorldForge overlay (if exists)
-	var forge_path := "user://world_forge_map.json"
-	if FileAccess.file_exists(forge_path):
-		# Get WorldForgeImporter autoload from scene tree (runtime only)
-		var main_loop: MainLoop = Engine.get_main_loop()
-		if main_loop and main_loop is SceneTree:
-			var scene_tree: SceneTree = main_loop as SceneTree
-			var scene_root: Window = scene_tree.root
-			if scene_root and scene_root.has_node("WorldForgeImporter"):
-				var forge_importer: Node = scene_root.get_node("WorldForgeImporter")
-				if forge_importer and forge_importer.has_method("import_and_apply"):
-					if forge_importer.import_and_apply(forge_path):
-						pass
-					else:
-						push_warning("[WorldGrid] WorldForge overlay file exists but import failed: %s" % forge_path)
-			else:
-				push_warning("[WorldGrid] WorldForgeImporter autoload not found in scene tree")
+	# There used to be a fourth pass here that asked WorldForgeImporter to apply
+	# the map a second time. It could never run: the branch above it returned
+	# whenever the file existed, and its own guard was false whenever it did not.
+	# The map is applied once, in the first pass, and nowhere else.
 
 
 ## Get region name for coordinates

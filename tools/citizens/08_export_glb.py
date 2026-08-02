@@ -26,11 +26,51 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from citizen_common import (MASTER, GLB_DIR, GLB_NAME, MASTERS, MAT_FACE,
-                            MAT_GARB, MAT_HAIR, banner, tri_count, unhide_all,
-                            select_only)
+                            MAT_GARB, MAT_HAIR, GARB_STRIDE, banner, tri_count,
+                            unhide_all, select_only)
 
 BODY_NAME = "citizen_body"
 HEAD_NAME = "citizen_head"
+
+
+def assert_garb_on_page_zero(objects):
+    """Every garb mesh's UVs must fall inside PAGE 0 of the garb atlas.
+
+    The dresser slides garb by a whole page at runtime. A garment whose UVs
+    straddle a page boundary smears two outfits together the moment it moves,
+    and on screen that reads as a texture bug rather than the UV bug it is - so
+    it is asserted on the way OUT, on the meshes that are actually being
+    written, not only on the ones stage 05 happened to build.
+    """
+    checked = 0
+    for ob in objects:
+        if not ob.name.startswith("garb_") or ob.type != 'MESH':
+            continue
+        assert ob.data.uv_layers, "%s has no UVs" % ob.name
+        uvl = ob.data.uv_layers[0]
+        us = [uvl.data[li].uv[0] for p in ob.data.polygons for li in p.loop_indices]
+        vs = [uvl.data[li].uv[1] for p in ob.data.polygons for li in p.loop_indices]
+        assert min(us) >= 0.0 and min(vs) >= 0.0, \
+            "%s has negative UVs (u=%.4f v=%.4f)" % (ob.name, min(us), min(vs))
+        assert max(us) < GARB_STRIDE and max(vs) < GARB_STRIDE, \
+            "%s leaves page 0: max u=%.4f v=%.4f, stride %.2f" \
+            % (ob.name, max(us), max(vs), GARB_STRIDE)
+        checked += 1
+    assert checked, "no garb meshes found to check"
+    return checked
+
+
+def assert_mesh_inventory(objects):
+    """The deleted mesh stays deleted and the new one is actually there.
+
+    Stage 05 can be re-run, but a stale `_stage05_garb.blend` or a hand-edited
+    master could put garb_vest_laced back without anybody noticing until a
+    citizen wore two vests. The export is the last place to catch it.
+    """
+    names = {ob.name for ob in objects}
+    assert "garb_vest_laced" not in names, \
+        "garb_vest_laced is in the export - it is a Rule-3 violation and a page now"
+    assert "garb_robe" in names, "garb_robe is missing from the export"
 
 
 def export_one(master):
@@ -58,6 +98,9 @@ def export_one(master):
             ob.name = ob.name[:-len(suffix)]
         ob.data.name = ob.name + "_mesh"
 
+    assert_mesh_inventory(keep_objs)
+    pages = assert_garb_on_page_zero(keep_objs)
+
     unhide_all()
     rig.data.pose_position = 'REST'
     select_only([rig] + keep_objs)
@@ -84,9 +127,9 @@ def export_one(master):
         export_extras=True,
     )
     tris = sum(tri_count(o) for o in keep_objs if o.type == 'MESH')
-    print("EXPORT %-16s %-22s meshes=%d tris=%d bones=%d %.1f KB"
+    print("EXPORT %-16s %-22s meshes=%d tris=%d bones=%d garb_on_page0=%d %.1f KB"
           % (master, GLB_NAME[master], len(keep_objs), tris,
-             len(rig.data.bones), os.path.getsize(out) / 1024.0))
+             len(rig.data.bones), pages, os.path.getsize(out) / 1024.0))
     print("       materials: %s"
           % sorted({m.name for o in keep_objs for m in o.data.materials}))
     return out

@@ -146,6 +146,7 @@ func _create_world_forge_window() -> void:
 
 	world_forge_dock = WorldForgeDock.new()
 	world_forge_dock.name = "WorldForgeDock"
+	world_forge_dock.host_plugin = self
 	world_forge_window.add_child(world_forge_dock)
 	world_forge_dock.set_anchors_preset(Control.PRESET_FULL_RECT)
 

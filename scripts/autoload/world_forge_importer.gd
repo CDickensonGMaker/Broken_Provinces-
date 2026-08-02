@@ -2,7 +2,7 @@ extends Node
 ## WorldForgeImporter - Runtime importer for World Forge map data
 ## Loads JSON data exported from the World Forge editor and applies it to WorldGrid
 
-const FORGE_MAP_PATH := "user://world_forge_map.json"
+const FORGE_MAP_PATH := "res://data/world/world_forge_map.json"
 
 ## Unified terrain to WorldGrid terrain mapping (new format)
 const TERRAIN_TO_WORLDGRID: Dictionary = {
@@ -55,20 +55,19 @@ var _is_loaded: bool = false
 var _preload_attempted: bool = false
 
 
+## The map is applied once, by WorldGrid.initialize(), and nowhere else.
+##
+## This autoload used to apply it a second time from here, a frame later, on top
+## of the world WorldGrid had just built out of the same file. Two appliers over
+## one file is how the terrain and the biome came apart: WorldGrid's pass runs
+## the climate model, this one wrote `cell.terrain` and left `cell.biome` at
+## whatever it had been, so a cell painted desert kept forest floors and forest
+## trees. Both halves are fixed; the double-apply is gone.
+##
+## The public API below remains, for applying a map to a world that is already
+## running - which is what the editor's Apply button wants.
 func _ready() -> void:
-	# Don't auto-load in editor
-	if Engine.is_editor_hint():
-		return
-
-	# Automatically load and apply forge map if it exists
-	if not _preload_attempted:
-		_preload_attempted = true
-		if FileAccess.file_exists(FORGE_MAP_PATH):
-			var data: Dictionary = load_from_file(FORGE_MAP_PATH)
-			if not data.is_empty():
-				# Wait for WorldGrid to initialize first
-				await get_tree().process_frame
-				var count: int = apply_to_world_grid(data)
+	_preload_attempted = true
 
 
 ## Check if a forge map file exists
@@ -130,6 +129,7 @@ func apply_to_world_grid(data: Dictionary) -> int:
 
 	var layers: Dictionary = data.get("layers", {})
 	var poi_data: Dictionary = data.get("poi_data", {})
+	var biome_override_layer: Array = layers.get("biome_override", [])
 
 	# Detect format: new format has "terrain" layer, old format has "biome" layer
 	var is_new_format: bool = layers.has("terrain")
@@ -193,6 +193,17 @@ func apply_to_world_grid(data: Dictionary) -> int:
 				# Roads are always passable
 				cell.terrain = WorldGrid.Terrain.ROAD
 				was_modified = true
+
+			# THE CLIMATE MODEL. Terrain and biome are one decision, not two.
+			# Every write to cell.terrain above must be followed by this, or the
+			# cell wears the wrong floors, trees and tree density - BiomePalette
+			# and TerrainGenerator are keyed on biome, never on terrain.
+			if was_modified:
+				cell.biome = WorldGrid.biome_for_cell(world_coords, cell.terrain)
+				if index < biome_override_layer.size() and biome_override_layer[index] != null:
+					var named: int = WorldGrid.Biome.keys().find(String(biome_override_layer[index]).to_upper())
+					if named >= 0:
+						cell.biome = named
 
 			# Apply POI
 			if index < poi_layer.size() and poi_layer[index] != null:
