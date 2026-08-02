@@ -1,7 +1,7 @@
 {
 	"id": "mage_09_rival_circle",
 	"title": "The Shadow Circle",
-	"description": "Intelligence has uncovered a rival magical organization operating in secret - the Shadow Circle. They're researching forbidden magic and acquiring dangerous artifacts. Investigate their activities near the Bandit Hideout, discover what they're planning, and stop them before they unleash something catastrophic.",
+	"description": "A courier the Circle trusted with a restricted delivery turned up dead near the Bandit Hideout, a Shadow Circle sigil branded into his collarbone. The reagents he carried were already sold and paid for by a Dalhurst patron who is still waiting on them. If a rival order can rob the Circle's own courier and service its patrons instead, three Magisters have already told Elara they want to know how she let it happen. Find the Shadow Circle's base, take back what's owed, and end this before the patron looks elsewhere.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "gather_intelligence",
-			"description": "Gather intelligence on Shadow Circle activities",
+			"description": "Learn from the Crossroads informant what the Shadow Circle wanted with a dead courier",
 			"type": "talk",
 			"target": "informant_crossroads",
 			"required_count": 1,
@@ -19,14 +19,14 @@
 		},
 		{
 			"id": "infiltrate_hideout",
-			"description": "Infiltrate the Shadow Circle's base near Bandit Hideout",
+			"description": "Find the Shadow Circle's base near the Bandit Hideout",
 			"type": "reach",
 			"target": "shadow_circle_base",
 			"required_count": 1
 		},
 		{
 			"id": "steal_research_notes",
-			"description": "Steal their research notes",
+			"description": "Take their notes - proof of what they took and why",
 			"type": "collect",
 			"target": "shadow_circle_research",
 			"required_count": 1,
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "disrupt_ritual",
-			"description": "Disrupt their summoning ritual",
+			"description": "Break the ritual before they finish whatever the reagents were for",
 			"type": "interact",
 			"target": "summoning_circle",
 			"required_count": 1,
@@ -42,7 +42,7 @@
 		},
 		{
 			"id": "defeat_shadow_mages",
-			"description": "Defeat the Shadow Circle mages",
+			"description": "Put down the mages guarding the base",
 			"type": "kill",
 			"target": "shadow_mage",
 			"required_count": 5,
@@ -50,7 +50,7 @@
 		},
 		{
 			"id": "report_findings",
-			"description": "Report your findings to Archmage Elara",
+			"description": "Bring Elara what you found, and what it costs the Circle if it happens again",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
@@ -70,5 +70,5 @@
 	"on_complete_flags": ["arcane_circle_adept", "shadow_circle_disrupted"],
 	"prerequisites": ["disaster_contained"],
 	"next_quest": "mage_10_forbidden_tome",
-	"notes": "Final Journeyman quest. Promotion to Adept rank. Stealth and combat. Introduces Shadow Circle as recurring antagonists. Rewards adept robes."
+	"notes": "Threat: a dead Circle courier and a stolen shipment a paying patron is still waiting on. Giver motive: the Shadow Circle poaching the Circle's own patrons is exactly the failure three Magisters are watching Elara for. Consequence: losing this patron to a rival order costs the Circle income and sets a precedent other patrons could follow - stated in prose, not modeled in data. Final Journeyman quest, promotion to Adept; introduces the Shadow Circle as recurring antagonists."
 }

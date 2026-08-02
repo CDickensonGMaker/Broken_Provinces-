@@ -1,7 +1,7 @@
 {
 	"id": "mage_repeatable_research",
 	"title": "Guild Assignments",
-	"description": "As a Magister of the Arcane Circle, you have ongoing responsibilities to the guild. Accept research assignments, gather rare reagents, recover lost artifacts, or investigate magical phenomena. These tasks help advance the guild's knowledge and power while rewarding you for your continued service.",
+	"description": "A Magister's seat comes with a standing bill. The Circle keeps a running list of what it needs - reagents, recovered artifacts, phenomena somebody has to go and look at - and expects its own to work it down instead of drawing a stipend for nothing. Take the next assignment off Elara's list and clear it.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -12,7 +12,7 @@
 	"objectives": [
 		{
 			"id": "accept_assignment",
-			"description": "Accept a research assignment from the guild",
+			"description": "Take the next assignment off the Circle's standing list",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1,
@@ -20,7 +20,7 @@
 		},
 		{
 			"id": "complete_task",
-			"description": "Complete the assigned research task",
+			"description": "Do whatever the assignment turns out to need",
 			"type": "variable",
 			"target": "assignment_variable",
 			"required_count": 1,
@@ -28,7 +28,7 @@
 		},
 		{
 			"id": "report_completion",
-			"description": "Report task completion to Archmage Elara",
+			"description": "Report back to Elara that the list is one shorter",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
@@ -47,5 +47,5 @@
 	},
 	"on_complete_flags": [],
 	"prerequisites": ["arcane_circle_magister"],
-	"notes": "Repeatable quest. Procedurally generated objectives. Lower rewards than main chain. Provides ongoing engagement with guild."
+	"notes": "UNCOMPLETABLE: the `complete_task` objective uses type `variable`, which QuestManager deliberately does not implement - there is no handler for it anywhere in the engine, so this quest can be accepted but never finished. Already on the wave_b dispositions list. Prose rewritten for tone only; the underlying structural defect is untouched and out of scope for a prose-only pass - fixing it means either replacing `variable` with a real objective type or building the handler, both data/engine changes this batch's hard limits forbid. Repeatable quest, Magister rank."
 }

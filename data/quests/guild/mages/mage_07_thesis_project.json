@@ -1,7 +1,7 @@
 {
 	"id": "mage_07_thesis_project",
 	"title": "Original Research",
-	"description": "As a Journeyman, you must conduct original magical research and present your findings to the Arcane Circle council. Choose your specialization - Elemental Magic, Illusion, Necromancy, or Enchantment - and demonstrate mastery by creating a unique magical effect or discovering new applications of existing spells.",
+	"description": "A Journeyman's stipend is paid out of a patron's endowment, and the patron who funds yours wants to see it produce something before the year is out - not for its own sake, for the report Elara has to give at the winter council. Pick a specialization - Elemental, Illusion, Necromancy or Enchantment - and put something on paper worth defending, or the endowment goes to next year's Journeyman instead.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "choose_specialization",
-			"description": "Choose your magical specialization",
+			"description": "Pick the specialization you'll be judged on",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1,
@@ -19,7 +19,7 @@
 		},
 		{
 			"id": "gather_research_materials",
-			"description": "Gather specialized research materials",
+			"description": "Gather the materials your research actually needs, on the endowment's coin",
 			"type": "collect",
 			"target": "arcane_essence",
 			"required_count": 10,
@@ -27,14 +27,14 @@
 		},
 		{
 			"id": "conduct_experiments",
-			"description": "Conduct magical experiments in the research lab",
+			"description": "Run the experiments that turn materials into a real finding",
 			"type": "interact",
 			"target": "research_laboratory",
 			"required_count": 5
 		},
 		{
 			"id": "document_findings",
-			"description": "Document your findings in a research journal",
+			"description": "Write it up as something the council can actually read",
 			"type": "collect",
 			"target": "completed_thesis",
 			"required_count": 1,
@@ -42,7 +42,7 @@
 		},
 		{
 			"id": "present_to_council",
-			"description": "Present your thesis to the Arcane Circle council",
+			"description": "Defend it in front of the council whose money paid for it",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
@@ -62,5 +62,5 @@
 	"on_complete_flags": ["thesis_complete", "magic_specialization_chosen"],
 	"prerequisites": ["arcane_circle_journeyman"],
 	"next_quest": "mage_08_magical_disaster",
-	"notes": "First Journeyman quest. Player chooses specialization path. Rewards depend on choice: Elemental=spell, Illusion=spell, Necromancy=spell, Enchanting=recipe."
+	"notes": "Threat: an endowment that lapses to someone else if the research produces nothing. Giver motive: Elara has to justify every Journeyman's upkeep to the patron paying for it, at a council session where other Magisters are watching her choices. Consequence: unwired - the quest cannot fail or produce a weak thesis in the data, so the endowment never actually moves. First Journeyman quest; reward depends on chosen specialization."
 }

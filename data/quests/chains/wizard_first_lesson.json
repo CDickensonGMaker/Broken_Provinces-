@@ -1,7 +1,7 @@
 {
 	"id": "wizard_first_lesson",
 	"title": "Elemental Foundations",
-	"description": "Master Helvant teaches that all magic stems from the four elemental forces: Fire, Water, Earth, and Air. To truly understand magic, you must gather pure samples of each element and attune yourself to their essence.",
+	"description": "Helvant teaches from a tower he built himself, not a guild's coffers - there's no council behind him if you get something wrong, only him telling you afterward which mistake would have killed you fastest. He wants the four elements gathered and used, not admired: forge-fire in Dalhurst, lake-water in Millbrook, standing-stone earth at the Crossroads, hilltop air over Elder Moor, and three real fights won on nothing but what you learned from them.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "master_helvant_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "collect_fire_essence",
-			"description": "Collect fire essence from Dalhurst's blacksmith forge",
+			"description": "Draw fire essence from the forge at Dalhurst's blacksmith",
 			"type": "interact",
 			"target": "blacksmith_forge_dalhurst",
 			"required_count": 1,
@@ -19,7 +19,7 @@
 		},
 		{
 			"id": "collect_water_essence",
-			"description": "Collect water essence from Millbrook's lake",
+			"description": "Draw water essence from Millbrook's lake",
 			"type": "reach",
 			"target": "millbrook",
 			"required_count": 1,
@@ -27,7 +27,7 @@
 		},
 		{
 			"id": "collect_earth_essence",
-			"description": "Collect earth essence from the Crossroads standing stones",
+			"description": "Draw earth essence from the standing stones at the Crossroads",
 			"type": "interact",
 			"target": "crossroads_stones",
 			"required_count": 1,
@@ -35,7 +35,7 @@
 		},
 		{
 			"id": "collect_air_essence",
-			"description": "Collect air essence from the hilltop near Elder Moor",
+			"description": "Draw air essence from the hilltop over Elder Moor",
 			"type": "reach",
 			"target": "elder_moor_hilltop",
 			"required_count": 1,
@@ -43,7 +43,7 @@
 		},
 		{
 			"id": "practice_spell_combat",
-			"description": "Use magic to defeat 3 enemies",
+			"description": "Kill three things with what you just learned, not a blade",
 			"type": "kill",
 			"target": "any_enemy_with_magic",
 			"required_count": 3,
@@ -51,7 +51,7 @@
 		},
 		{
 			"id": "return_to_helvant_lesson",
-			"description": "Return to Master Helvant with your experiences",
+			"description": "Tell Helvant what each element felt like when it worked",
 			"type": "talk",
 			"target": "master_helvant_dalhurst",
 			"required_count": 1
@@ -71,5 +71,5 @@
 	"on_complete_flags": ["helvant_lesson_one_complete"],
 	"prerequisites": ["wizard_aptitude_test"],
 	"next_quest": "wizard_field_test",
-	"notes": "Second quest - teaches elemental theory and requires first practical spell usage in combat. Rewards Flame Burst spell and apprentice robes."
+	"notes": "Threat: none new - training, same as mage_01's shape, but privately funded rather than institutional. Giver motive: Helvant teaches alone, at his own risk and on his own dime, distinct from the Circle's budget-driven testing in mage_03/mage_04. Consequence: unwired, binary completion. Second quest in the chain."
 }

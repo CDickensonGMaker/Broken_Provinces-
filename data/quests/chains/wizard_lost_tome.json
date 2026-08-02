@@ -1,7 +1,7 @@
 {
 	"id": "wizard_lost_tome",
 	"title": "The Lost Grimoire",
-	"description": "Master Helvant confides that his own master's spellbook - a grimoire of great power - was lost decades ago in the ruins of Willow Dale. The tome contains advanced techniques that could accelerate your training. However, Willow Dale is dangerous, filled with undead and magical traps. Helvant warns that some pages may be missing, stolen by scavengers over the years.",
+	"description": "The grimoire belonged to Edric Vayle, Helvant's own master, and it is most of what Helvant knows that he didn't teach himself. He hasn't set foot in Willow Dale in decades - not since the undead there, first grief and now simply age. This isn't a guild sending an Adept after guild property. It's an old man asking a near-stranger to go get back the one thing he has left of the person who taught him.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "master_helvant_dalhurst",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "enter_willow_dale",
-			"description": "Travel to the Willow Dale ruins",
+			"description": "Travel to the ruins where the grimoire has lain for decades",
 			"type": "reach",
 			"target": "willow_dale",
 			"required_count": 1
 		},
 		{
 			"id": "find_tome_location",
-			"description": "Search the ruins for the ancient library chamber",
+			"description": "Find the library chamber, past whatever traps still hold",
 			"type": "reach",
 			"target": "willow_dale_library",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "defeat_tome_guardian",
-			"description": "Defeat the magical guardian protecting the grimoire",
+			"description": "Put down whatever's been guarding it all this time",
 			"type": "kill",
 			"target": "arcane_guardian_willow_dale",
 			"required_count": 1,
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "recover_grimoire",
-			"description": "Recover the ancient grimoire",
+			"description": "Take Edric Vayle's grimoire - carefully, it's the only copy",
 			"type": "collect",
 			"target": "helvants_master_grimoire",
 			"required_count": 1,
@@ -42,7 +42,7 @@
 		},
 		{
 			"id": "return_grimoire_helvant",
-			"description": "Return the grimoire to Master Helvant",
+			"description": "Bring it back to Helvant",
 			"type": "talk",
 			"target": "master_helvant_dalhurst",
 			"required_count": 1
@@ -79,5 +79,5 @@
 		}
 	],
 	"quest_items": ["helvants_master_grimoire"],
-	"notes": "Fourth quest - dungeon delve with boss fight. Grimoire is recovered but Helvant discovers pages are missing, leading to next quest. Rewards Lightning Bolt spell."
+	"notes": "Threat: decades of guardians and undead in Willow Dale, faced by a single student with no institution backing them - contrast mage_06's parallel Circle quest to the same kind of ruin, sent by committee instead of grief. Giver motive: personal - Edric Vayle was Helvant's own teacher, and this is the last thing of his left to recover, not guild property. Consequence: flows directly into wizard_stolen_pages, already storied - the pages are found missing the moment the grimoire is opened. Fourth quest in the chain."
 }

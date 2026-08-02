@@ -1,7 +1,7 @@
 {
 	"id": "mage_02_library_duty",
 	"title": "Cataloging the Arcane",
-	"description": "As a new Novice of the Arcane Circle, you've been assigned library duty at the Athenaeum. Help organize the magical texts and learn about the different schools of magic. While cataloging, you discover a dangerous tome misfiled in the common section - it must be moved to the restricted vault immediately.",
+	"description": "Library duty is where the Circle puts every new Novice, not to teach you the schools of magic but to see whether you can be trusted around them unsupervised. A necromancy tome has been sitting on an open shelf for who knows how long - any patron touring the Athenaeum, or worse, any Magister with a grudge against Elara, could have found it there first. Shelve it properly and get it into the vault before somebody else notices what she missed.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "organize_texts",
-			"description": "Organize magical texts in the Athenaeum library",
+			"description": "Shelve the Athenaeum's texts properly, five cases of them",
 			"type": "interact",
 			"target": "library_bookshelf_01",
 			"required_count": 5,
@@ -19,7 +19,7 @@
 		},
 		{
 			"id": "find_dangerous_tome",
-			"description": "Discover the misfiled dangerous tome",
+			"description": "Find the necromancy tome shelved where any visitor could reach it",
 			"type": "collect",
 			"target": "forbidden_tome_necromancy",
 			"required_count": 1,
@@ -27,14 +27,14 @@
 		},
 		{
 			"id": "secure_tome",
-			"description": "Place the forbidden tome in the restricted vault",
+			"description": "Get it into the restricted vault before anyone else sees where it was",
 			"type": "interact",
 			"target": "restricted_vault",
 			"required_count": 1
 		},
 		{
 			"id": "report_to_elara",
-			"description": "Report your findings to Archmage Elara",
+			"description": "Tell Elara what you found and where it was sitting",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
@@ -54,5 +54,5 @@
 	"on_complete_flags": ["library_duty_complete", "knows_about_restricted_vault"],
 	"prerequisites": ["arcane_circle_novice"],
 	"next_quest": "mage_03_reagent_gathering",
-	"notes": "Second quest. Teaches about magical schools and introduces forbidden magic concept. Rewards fire spell."
+	"notes": "Threat: a necromancy tome sitting unsecured where any visitor - patron or rival Magister - could have found it first. Giver motive: a misfiled forbidden text is Elara's mistake, and finding it before somebody else does is the only way it never becomes one. Consequence: unwired - the quest never lets the tome actually be found by anyone but the player, so the exposure it threatens never lands; a later pass could make failing this in time cost Elara a council rebuke. Second quest, Novice rank."
 }

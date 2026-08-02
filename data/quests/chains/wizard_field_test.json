@@ -1,7 +1,7 @@
 {
 	"id": "wizard_field_test",
 	"title": "Practical Application",
-	"description": "Master Helvant believes magic should serve the people. He's arranged for you to help villagers around Dalhurst using your newly-learned spells. Prove that you can apply magic to real-world problems, not just combat.",
+	"description": "Helvant doesn't send you to villagers to be seen doing good - he sends you because word is the only reputation a solitary wizard has, and it travels faster than he does anymore. Harbormaster Harmon Voss hasn't had a working beacon in a week and two boats have already turned back from the rocks rather than risk the dark. Ysolt Bracken in Thornfield has been hauling creek water since her well turned foul. A carter named Denner Cobb has sat three days at the Crossroads with a fallen tree across the road and a load of fish going bad in the sun. And there are bandits working that same stretch who won't ask twice before they take something.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "master_helvant_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "light_harbor_beacon",
-			"description": "Use fire magic to light the harbor beacon in Dalhurst",
+			"description": "Light Harmon Voss's harbor beacon before another boat turns back",
 			"type": "interact",
 			"target": "dalhurst_harbor_beacon",
 			"required_count": 1,
@@ -19,7 +19,7 @@
 		},
 		{
 			"id": "purify_thornfield_well",
-			"description": "Purify the contaminated well water in Thornfield",
+			"description": "Purify Ysolt Bracken's well - she's been hauling creek water for a week",
 			"type": "interact",
 			"target": "thornfield_well",
 			"required_count": 1,
@@ -27,7 +27,7 @@
 		},
 		{
 			"id": "clear_road_obstacle",
-			"description": "Magically move the fallen tree blocking the road to Crossroads",
+			"description": "Clear the tree off the road before Denner Cobb's fish finish spoiling",
 			"type": "interact",
 			"target": "crossroads_tree_obstacle",
 			"required_count": 1,
@@ -35,7 +35,7 @@
 		},
 		{
 			"id": "combat_test_bandits",
-			"description": "Defeat the bandit group threatening travelers near Crossroads",
+			"description": "Drive off the bandits working the travelers on that road",
 			"type": "kill",
 			"target": "bandit_crossroads_group",
 			"required_count": 5,
@@ -43,7 +43,7 @@
 		},
 		{
 			"id": "return_to_helvant_field",
-			"description": "Report your successes to Master Helvant",
+			"description": "Tell Helvant how the villagers actually took it",
 			"type": "talk",
 			"target": "master_helvant_dalhurst",
 			"required_count": 1
@@ -64,5 +64,5 @@
 	"on_complete_flags": ["helvant_field_test_complete"],
 	"prerequisites": ["wizard_first_lesson"],
 	"next_quest": "wizard_lost_tome",
-	"notes": "Third quest - mix of utility magic and combat. Shows the player helping communities with magic. Rewards Ice Shard spell and a minor enchanted amulet (+5 arcana)."
+	"notes": "Names invented for this pass, no bible basis - local colour: Harmon Voss (Dalhurst harbormaster), Ysolt Bracken (Thornfield well-owner), Denner Cobb (Crossroads carter). Threat: a dark harbor turning ships back, a fouled well, a blocked road with spoiling cargo, bandits working travelers. Giver motive: Helvant's standing in these villages is built favor by favor, with no institution to fall back on if it sours. Consequence: Denner Cobb is written ungrateful even after help - a carter with three days of lost trade behind him already resents needing a stranger's magic to fix it, and says so. Third quest in the chain."
 }

@@ -19,7 +19,7 @@
 		},
 		{
 			"id": "collect_silver_dust",
-			"description": "Collect silver dust from a defeated undead creature",
+			"description": "Cut silver dust from something undead you've put down yourself",
 			"type": "collect",
 			"target": "silver_dust",
 			"required_count": 1,
@@ -27,7 +27,7 @@
 		},
 		{
 			"id": "return_to_helvant",
-			"description": "Return the reagents to Master Helvant",
+			"description": "Bring both back and let Helvant judge you on them",
 			"type": "talk",
 			"target": "master_helvant_dalhurst",
 			"required_count": 1
@@ -47,5 +47,5 @@
 	"on_complete_flags": ["helvant_accepted_apprentice"],
 	"prerequisites": [],
 	"next_quest": "wizard_first_lesson",
-	"notes": "First quest in wizard apprentice chain. Rewards the player with their first basic spell (Magic Missile) and acceptance as Helvant's apprentice."
+	"notes": "Distinct from the Arcane Circle's mage_01: this is a lone master risking his own remaining years, not an institution risking its budget. Threat: none yet - a door, same shape as mage_01. Giver motive: Helvant has already buried two apprentices who didn't make it and turned away three hopefuls this year; he is old and has no time left to spend on a fourth false start. Consequence: unwired - fail and the quest simply doesn't complete, no data-side rejection is modeled, though the prose states he's turned others away for less. First quest in wizard apprentice chain."
 }

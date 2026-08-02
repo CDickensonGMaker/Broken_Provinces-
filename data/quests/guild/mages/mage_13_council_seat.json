@@ -1,7 +1,7 @@
 {
 	"id": "mage_13_council_seat",
 	"title": "The Inner Circle",
-	"description": "You have solved the unsolvable and proven your mastery of the arcane arts. Now comes the final test: a ceremonial magical duel with Archmage Elara Moonweave herself. This is not a battle to the death, but a demonstration of power, skill, and wisdom. Impress the council and take your rightful seat among the Magisters of the Arcane Circle.",
+	"description": "Two Magisters voted against sponsoring you, and Elara spent more of her own standing than she strictly had to getting you this far anyway. The ceremonial duel is the price of the seat: beat her cleanly enough that even the two who voted no cannot call it a gift, and it is yours. Beat her badly, or barely, and it will read as charity for years.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,21 +11,21 @@
 	"objectives": [
 		{
 			"id": "prepare_for_duel",
-			"description": "Prepare for the ceremonial duel",
+			"description": "Hear from Elara what the two dissenting votes will be watching for",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
 		},
 		{
 			"id": "enter_dueling_arena",
-			"description": "Enter the Arcane Circle's dueling arena",
+			"description": "Enter the Circle's dueling arena in front of the council",
 			"type": "reach",
 			"target": "dueling_arena_dalhurst",
 			"required_count": 1
 		},
 		{
 			"id": "duel_elara",
-			"description": "Duel Archmage Elara Moonweave",
+			"description": "Duel Archmage Elara Moonweave - a yield only counts if it's earned",
 			"type": "duel_win",
 			"target": "archmage_elara_duel",
 			"required_count": 1,
@@ -33,7 +33,7 @@
 		},
 		{
 			"id": "join_council",
-			"description": "Take your seat on the Arcane Circle council",
+			"description": "Take the seat Elara spent her own standing to get you",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
@@ -53,5 +53,5 @@
 	"on_complete_flags": ["arcane_circle_magister", "council_member", "arcane_circle_complete"],
 	"prerequisites": ["archmage_trial_passed"],
 	"next_quest": "mage_repeatable_research",
-	"notes": "Final guild rank quest. Special boss fight (non-lethal). Rewards best robes and guild signet ring. Unlocks repeatable research quests."
+	"notes": "Threat: none physical - the threat is political, to Elara's standing on the council. Giver motive: two Magisters voted against sponsoring the player, and Elara spent capital she didn't have to spare getting them here anyway; a weak duel reads as her handing out favors. Consequence: named in the description (years of the seat reading as charity) but not modeled - the duel has no losing branch in the data. Final guild rank quest; unlocks repeatable research."
 }

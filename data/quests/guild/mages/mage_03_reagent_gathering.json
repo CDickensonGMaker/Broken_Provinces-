@@ -1,7 +1,7 @@
 {
 	"id": "mage_03_reagent_gathering",
 	"title": "Essence Collection",
-	"description": "The Arcane Circle needs fresh magical reagents for upcoming enchantments. Venture into the wilderness near Elder Moor and gather rare herbs, crystals, and essence from magical creatures. This is your final test as a Novice - succeed and you'll be promoted to Apprentice.",
+	"description": "The Athenaeum's reagent stock is thinner than it should be. Elara says only, tightly, that the stone-cutter the Circle has always bought from won't sell to them anymore - somebody else is paying triple and taking the whole cut, and she is not going to explain that to a Novice. Whatever the reason, the Circle still needs what it needs, so a Novice goes into Elder Moor's woods with a basket and does by hand what used to arrive already cut. This is your last test before Apprentice: come back with all of it.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "collect_moonpetals",
-			"description": "Gather moonpetal flowers from Elder Moor forest",
+			"description": "Pick moonpetal flowers in Elder Moor's forest, by hand",
 			"type": "collect",
 			"target": "moonpetal_flower",
 			"required_count": 5,
@@ -19,7 +19,7 @@
 		},
 		{
 			"id": "collect_mana_crystals",
-			"description": "Collect mana crystals from the Crossroads area",
+			"description": "Cut mana crystals near the Crossroads shrine yourself - the Circle's usual cutter has stopped selling to them",
 			"type": "collect",
 			"target": "mana_crystal",
 			"required_count": 3,
@@ -27,7 +27,7 @@
 		},
 		{
 			"id": "collect_spirit_essence",
-			"description": "Harvest spirit essence from undead creatures",
+			"description": "Harvest spirit essence from undead in the wilderness - grim work, but it costs the Circle nothing to send you instead of buying it",
 			"type": "collect",
 			"target": "spirit_essence",
 			"required_count": 5,
@@ -35,7 +35,7 @@
 		},
 		{
 			"id": "return_reagents",
-			"description": "Return the reagents to Archmage Elara",
+			"description": "Bring everything back to Elara and let her stop counting coppers for a day",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
@@ -55,5 +55,5 @@
 	"on_complete_flags": ["arcane_circle_apprentice", "reagent_collection_complete"],
 	"prerequisites": ["library_duty_complete"],
 	"next_quest": "mage_04_enchantment_task",
-	"notes": "Final Novice quest. Promotion to Apprentice rank. Rewards magical staff. Requires wilderness exploration and combat."
+	"notes": "Soulstone-undercurrent touchpoint (quest_web.md #7, tell 2 - the buyer who pays triple): the stone-cutter's refusal to sell is stated once, as an irritated budget complaint from Elara, and never explained, named or called a pattern. Threat: the Circle's reagent supply is quietly drying up. Giver motive: pride - Elara would rather send a Novice out with a basket than admit the guild's usual supplier has been bought out from under it. Consequence: unstated on the page; the Circle absorbs the cost by spending a Novice's labor instead of coin. Final Novice quest, promotion to Apprentice."
 }

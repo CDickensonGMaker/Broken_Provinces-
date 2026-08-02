@@ -1,7 +1,7 @@
 {
 	"id": "mage_04_enchantment_task",
 	"title": "First Enchantment",
-	"description": "As an Apprentice, you're ready to learn the art of enchantment. Master Edric Vayle needs assistance with a complex enchanting ritual. Gather the necessary components and follow his precise instructions to create your first enchanted item - a ring of minor protection.",
+	"description": "This ring is not a lesson piece. A Dalhurst merchant has already paid the Circle for a ring of minor protection, and the coin is spent whether or not the enchantment holds. The Circle's enchanter needs a second set of hands to gather what the ritual takes and see it through - your first real enchantment, on a deadline a paying customer is watching.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "wizard_dalhurst",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "speak_with_aldric",
-			"description": "Speak with Master Edric Vayle about the enchantment",
+			"description": "Learn what the paying customer's ring actually needs",
 			"type": "talk",
 			"target": "wizard_dalhurst",
 			"required_count": 1
 		},
 		{
 			"id": "gather_silver_ingot",
-			"description": "Acquire a silver ingot from a blacksmith",
+			"description": "Buy a silver ingot from a blacksmith - out of Circle funds, not the merchant's",
 			"type": "collect",
 			"target": "silver_ingot",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "gather_enchanting_dust",
-			"description": "Collect enchanting dust",
+			"description": "Collect enchanting dust before the ritual window closes",
 			"type": "collect",
 			"target": "enchanting_dust",
 			"required_count": 3,
@@ -34,14 +34,14 @@
 		},
 		{
 			"id": "perform_enchantment",
-			"description": "Assist Master Edric Vayle with the enchanting ritual",
+			"description": "Hold the ritual steady while the ring takes the enchantment",
 			"type": "interact",
 			"target": "enchanting_altar",
 			"required_count": 1
 		},
 		{
 			"id": "report_success",
-			"description": "Report the successful enchantment to Archmage Elara",
+			"description": "Tell Elara the customer's ring is finished and worth what he paid",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
@@ -61,5 +61,5 @@
 	"on_complete_flags": ["first_enchantment_complete", "knows_enchanting"],
 	"prerequisites": ["arcane_circle_apprentice"],
 	"next_quest": "mage_05_rogue_mage",
-	"notes": "First Apprentice quest. Introduces enchanting mechanic. Rewards enchanted ring (+2 armor)."
+	"notes": "Threat: a botched or late enchantment on a ring already paid for. Giver motive: the Circle takes commissions from Dalhurst patrons to fund itself, and a failed job is money refunded and a customer who doesn't come back. Consequence: unstated on the page - the quest cannot fail, so the stakes named in the description are never actually spent. First Apprentice quest."
 }

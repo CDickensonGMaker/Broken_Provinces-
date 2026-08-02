@@ -1,7 +1,7 @@
 {
 	"id": "mage_11_planar_breach",
 	"title": "Beyond the Veil",
-	"description": "A dimensional breach has opened near Crossroads, and entities from another plane are seeping through. The barrier between worlds is weakening. You must close the breach before otherworldly horrors flood into our realm. This will require channeling immense magical power and facing extraplanar threats unlike anything you've encountered.",
+	"description": "The tear opened directly over the shrine at the Crossroads, where the Dalhurst road meets the Millbrook road and every caravan on either one stops to water its horses. Two guards riding with the last wagon through are already missing, dragged through or worse before anyone got the road closed off. Elara needs it sealed before the next caravan comes through blind - and there is always a next caravan on that road.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "assess_breach",
-			"description": "Assess the dimensional breach near Crossroads",
+			"description": "See what's coming through at the Crossroads shrine, and who's already caught in it",
 			"type": "reach",
 			"target": "dimensional_breach_crossroads",
 			"required_count": 1
 		},
 		{
 			"id": "gather_sealing_components",
-			"description": "Gather components for the sealing ritual",
+			"description": "Take what the sealing ritual needs off the things it dragged through",
 			"type": "collect",
 			"target": "planar_binding_reagent",
 			"required_count": 5,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "defeat_planar_entities",
-			"description": "Defeat the extraplanar invaders",
+			"description": "Clear the road of what's come through, before another wagon rolls into it blind",
 			"type": "kill",
 			"target": "planar_entity",
 			"required_count": 10,
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "empower_ley_anchors",
-			"description": "Empower the four ley line anchors around the breach",
+			"description": "Charge the four anchor stones ringing the shrine",
 			"type": "interact",
 			"target": "ley_anchor",
 			"required_count": 4,
@@ -42,7 +42,7 @@
 		},
 		{
 			"id": "seal_breach",
-			"description": "Perform the sealing ritual to close the breach",
+			"description": "Hold the ritual until the tear closes, whatever comes through while you do",
 			"type": "interact",
 			"target": "dimensional_breach_center",
 			"required_count": 1,
@@ -50,7 +50,7 @@
 		},
 		{
 			"id": "report_success",
-			"description": "Report the breach closure to Archmage Elara",
+			"description": "Tell Elara the Crossroads road is a road again",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
@@ -70,5 +70,5 @@
 	"on_complete_flags": ["planar_breach_sealed", "saved_the_realm"],
 	"prerequisites": ["forbidden_knowledge_acquired"],
 	"next_quest": "mage_12_archmage_trial",
-	"notes": "Second Adept quest. Major combat encounter with unique enemies. Defense/survival mechanics. Rewards legendary staff."
+	"notes": "Threat: two named caravan guards missing and the Dalhurst-Millbrook road impassable at the exact point every caravan on it has to cross. Giver motive: keeping the trade roads safe is the Circle's stated purpose and Elara's council standing rides on a fast, visible response. Consequence: every caravan behind the closed road either waits or risks the breach; left alone, the next crossing is blind. Second Adept quest."
 }

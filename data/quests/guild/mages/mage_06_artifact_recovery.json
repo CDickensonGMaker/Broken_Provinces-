@@ -1,7 +1,7 @@
 {
 	"id": "mage_06_artifact_recovery",
 	"title": "Lost Knowledge",
-	"description": "Ancient texts speak of a powerful artifact hidden in the ruins of Willow Dale - the Amulet of Arcane Sight. The Arcane Circle has searched for this artifact for decades. As an Apprentice nearing promotion, you've been chosen to attempt its recovery. Navigate the magical traps, face the arcane guardians, and claim this lost treasure for the guild.",
+	"description": "The Circle has wanted the Amulet of Arcane Sight out of Willow Dale for three Archmages running, and Elara has never been the one to bring it home. She has heard, from a source she won't name, that somebody outside the Circle has started asking after Willow Dale too. Whoever reaches the amulet first keeps the credit - and if it isn't the Circle, that is a decades-long failure landing on Elara's watch specifically.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "travel_willow_dale",
-			"description": "Travel to Willow Dale ruins",
+			"description": "Get to Willow Dale before anyone else does",
 			"type": "reach",
 			"target": "willow_dale",
 			"required_count": 1
 		},
 		{
 			"id": "navigate_traps",
-			"description": "Navigate the magical trap gauntlet",
+			"description": "Get through the trap gauntlet three Archmages' searchers never cleared",
 			"type": "reach",
 			"target": "willow_dale_inner_sanctum",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "defeat_guardians",
-			"description": "Defeat the arcane guardians",
+			"description": "Put down the guardians still standing watch over it",
 			"type": "kill",
 			"target": "arcane_guardian",
 			"required_count": 3,
@@ -34,14 +34,14 @@
 		},
 		{
 			"id": "retrieve_amulet",
-			"description": "Retrieve the Amulet of Arcane Sight",
+			"description": "Take the Amulet of Arcane Sight before whoever else is asking gets there",
 			"type": "collect",
 			"target": "amulet_arcane_sight",
 			"required_count": 1
 		},
 		{
 			"id": "return_artifact",
-			"description": "Return the artifact to Archmage Elara",
+			"description": "Bring it to Elara before anyone can say the Circle lost the race",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
@@ -61,5 +61,5 @@
 	"on_complete_flags": ["arcane_circle_journeyman", "amulet_recovered"],
 	"prerequisites": ["rogue_mage_dealt_with"],
 	"next_quest": "mage_07_thesis_project",
-	"notes": "Final Apprentice quest. Promotion to Journeyman rank. Dungeon exploration with traps and combat. Rewards journeyman robes."
+	"notes": "Threat: an unnamed outside party asking after the same ruin, racing the Circle for it. Giver motive: three Archmages before Elara have failed to bring this amulet home, and losing it to an outsider now would be her failure specifically, in front of a council that remembers the other three. Consequence: unwired - there is no rival encounter in the data, so the race is stated in prose only. Final Apprentice quest, promotion to Journeyman."
 }

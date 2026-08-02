@@ -1,7 +1,7 @@
 {
 	"id": "mage_10_forbidden_tome",
 	"title": "The Locked Section",
-	"description": "As an Adept, you've earned access to the Athenaeum's restricted vault - the Locked Section. Archmage Elara has granted you permission to study one forbidden topic to advance your knowledge. But with great power comes great responsibility. What you learn may test your morality and loyalty to the Arcane Circle's principles.",
+	"description": "The Locked Section holds what the Circle decided nobody should carry alone. Elara is granting you one shelf: a necromancer's ledgers, a blood-rite transcript, or a dimensional traveler's diary that ends mid-sentence. Whatever you choose leaves something behind - a stammer, a taste you can't place, a name you find yourself answering to before you notice - and the Circle will want to know what's left of you when you're done.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,21 +11,21 @@
 	"objectives": [
 		{
 			"id": "receive_vault_key",
-			"description": "Receive the vault key from Archmage Elara",
+			"description": "Take the vault key from Elara, and her warning with it",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
 		},
 		{
 			"id": "enter_locked_section",
-			"description": "Enter the restricted vault",
+			"description": "Go down into the Locked Section",
 			"type": "reach",
 			"target": "restricted_vault",
 			"required_count": 1
 		},
 		{
 			"id": "choose_forbidden_topic",
-			"description": "Choose which forbidden topic to study",
+			"description": "Pick the one shelf you're allowed - necromancy, blood magic, or the traveler's diary",
 			"type": "interact",
 			"target": "forbidden_bookshelf",
 			"required_count": 1,
@@ -33,14 +33,14 @@
 		},
 		{
 			"id": "study_forbidden_knowledge",
-			"description": "Study the forbidden texts",
+			"description": "Read what the Circle locked away, and feel what it takes out of you",
 			"type": "interact",
 			"target": "study_desk",
 			"required_count": 1
 		},
 		{
 			"id": "field_test",
-			"description": "Perform a controlled field test of the forbidden magic",
+			"description": "Try what you learned somewhere it can only reach you",
 			"type": "reach",
 			"target": "testing_grounds_elder_moor",
 			"required_count": 1,
@@ -48,7 +48,7 @@
 		},
 		{
 			"id": "moral_choice",
-			"description": "Decide how to use this dangerous knowledge",
+			"description": "Tell Elara what you'll do with it, now that you know what it costs",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1,
@@ -69,5 +69,5 @@
 	"on_complete_flags": ["forbidden_knowledge_acquired", "vault_access_granted"],
 	"prerequisites": ["arcane_circle_adept"],
 	"next_quest": "mage_11_planar_breach",
-	"notes": "First Adept quest. Moral choice quest with consequences. Rewards powerful forbidden spell based on player choice."
+	"notes": "Threat: the tome is its own cost - reading it changes the student, named concretely in the description (a stammer, a taste, an unfamiliar name answered to) rather than a game-mechanical harm. Giver motive: Elara is testing whether an Adept who has touched forbidden knowledge stays a Circle asset or becomes a liability - every Adept she vouches for is her name on the line with the council. UNWIRED BRANCH: the file promises a moral choice at `moral_choice` and ships one path. It should split on how the player answers Elara: `forbidden_knowledge_concealed` (lie about what was learned, keep the darker application, arcane_circle reputation penalty) versus `forbidden_knowledge_reported` (report honestly, shelf resealed, no penalty, milder reward). No such choice_consequences entry exists and none is added here - hard limits forbid adding one. A later pass should wire it. First Adept quest."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "mage_01_entrance_exam",
 	"title": "The Entrance Exam",
-	"description": "Archmage Elara Moonweave of the Arcane Circle has agreed to test your aptitude for magic. You must demonstrate basic magical knowledge and prove your worth to join the guild. Travel to the Crossroads shrine and perform a simple magical ritual to gather arcane essence.",
+	"description": "The Circle does not take students on faith. Every apprentice Elara accepts is boarded, taught and fed out of the Athenaeum's own purse, and half of last year's intake left before they earned a copper of it back. She will not spend more of that coin on you until she has seen something. Go to the Crossroads shrine, draw arcane essence with the one spell she taught you, and come back and do it again where she can watch.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "archmage_elara_dalhurst",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "speak_with_elara",
-			"description": "Speak with Archmage Elara about joining the Arcane Circle",
+			"description": "Tell Archmage Elara why the Circle should spend on you",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
 		},
 		{
 			"id": "collect_arcane_essence",
-			"description": "Gather arcane essence from the Crossroads shrine",
+			"description": "Draw arcane essence at the Crossroads shrine, three times over, to prove the lesson took",
 			"type": "collect",
 			"target": "arcane_essence",
 			"required_count": 3,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "test_spell_knowledge",
-			"description": "Demonstrate basic spell knowledge to Elara",
+			"description": "Do it again in front of Elara, without anyone walking you through it",
 			"type": "talk",
 			"target": "archmage_elara_dalhurst",
 			"required_count": 1
@@ -46,5 +46,5 @@
 	"on_complete_flags": ["arcane_circle_novice", "elara_entrance_exam_passed"],
 	"prerequisites": [],
 	"next_quest": "mage_02_library_duty",
-	"notes": "First quest in Arcane Circle guild chain. Player becomes Novice rank. Rewards basic healing spell and novice robes."
+	"notes": "Threat: none yet - this is the door, not the danger. Giver motive: every apprentice the Circle takes on is boarded and taught at the Athenaeum's expense, and Elara answers to the council for what that coin buys; a stranger who wastes the investment costs her standing as much as gold. Consequence: fail and she cuts her losses on the spot - no second attempt is written or wired. First quest in Arcane Circle guild chain; player becomes Novice rank."
 }
