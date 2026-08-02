@@ -98,9 +98,9 @@ func _show_locked_options() -> void:
 
 func _on_lockpick_choice() -> void:
 	var choice: int = ConversationSystem.get_last_scripted_choice_index()
-	if choice == 1:
+	if choice == 0:  # Try to pick the lock
 		_attempt_lockpick()
-	# Choices 2 and 3 just showed info/cancelled
+	# 1 = examine, 2 = step back, -1 = dismissed - all no-ops
 
 
 ## Attempt to lockpick the door

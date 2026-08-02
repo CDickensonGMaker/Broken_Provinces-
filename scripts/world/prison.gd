@@ -571,11 +571,11 @@ func _on_cell_door_choice_made() -> void:
 	var choice_index: int = ConversationSystem.get_last_scripted_choice_index()
 
 	match choice_index:
-		1:  # Lockpick
+		0:  # Lockpick
 			_attempt_cell_lockpick()
-		2:  # Examine
+		1:  # Examine
 			pass  # Just showed info
-		3:  # Cancel
+		2:  # Cancel
 			pass
 
 

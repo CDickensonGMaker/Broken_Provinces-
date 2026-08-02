@@ -166,6 +166,7 @@ var is_scripted_mode: bool = false
 var scripted_lines: Array[Dictionary] = []  # Array of ScriptedLine dictionaries
 var scripted_current_index: int = 0
 var scripted_callback: Callable  # Called when scripted dialogue ends
+var scripted_last_choice_index: int = -1  # 0-based ordinal of the last choice picked, -1 if none
 
 ## Greeting responses (separate from standard topic pools)
 ## These are shown at conversation start based on disposition
@@ -1331,6 +1332,7 @@ func start_scripted_dialogue(lines: Array, callback: Callable = Callable()) -> v
 		if line is Dictionary:
 			scripted_lines.append(line)
 	scripted_current_index = 0
+	scripted_last_choice_index = -1
 	scripted_callback = callback
 
 	# Pause game
@@ -1371,6 +1373,7 @@ func select_scripted_choice(choice_index: int) -> void:
 		return
 
 	var choice: Dictionary = choices[choice_index]
+	scripted_last_choice_index = choice_index
 
 	# Execute any actions attached to the choice
 	var actions: Array = choice.get("actions", [])
@@ -1384,6 +1387,14 @@ func select_scripted_choice(choice_index: int) -> void:
 		_end_scripted_dialogue()
 	else:
 		_show_scripted_line(next_index)
+
+
+## The 0-based ordinal of the last scripted choice the player picked.
+## Returns -1 if the sequence ended without a choice being taken.
+## Valid inside a start_scripted_dialogue callback - it survives the end of
+## the sequence and is cleared when the next one starts.
+func get_last_scripted_choice_index() -> int:
+	return scripted_last_choice_index
 
 
 ## Continue scripted dialogue (for lines without choices)
