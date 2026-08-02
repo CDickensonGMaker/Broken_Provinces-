@@ -1,7 +1,7 @@
 {
   "id": "thieves_11_impossible_vault",
   "title": "The Impossible Vault",
-  "description": "Legend speaks of an ancient vault beneath Elder Moor, built by a paranoid merchant prince centuries ago. No thief has ever cracked it. The Guildmaster believes you can. The vault contains treasures beyond imagination - and a puzzle that has stumped generations.",
+  "description": "Stealing the decree out from under the crown cost the Guild - bribed guards, a burned inside contact, safehouses abandoned in a hurry - and Nightshade needs the coffers filled before the next debt comes due. She's decided the vault beneath Elder Moor, the one three generations of thieves have failed to open, is where that gold comes from. No one is racing you to it. No one else has found the entrance in a hundred years.",
   "giver_npc_id": "guildmaster_nightshade",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",
@@ -11,28 +11,28 @@
       "id": "obj_find_vault_entrance",
       "type": "explore",
       "target": "elder_moor_ruins",
-      "description": "Locate the hidden vault entrance in Elder Moor"
+      "description": "Find the entrance nobody's found in a hundred years"
     },
     {
       "id": "obj_solve_entry_puzzle",
       "type": "solve_puzzle",
       "target": "entry_riddle",
       "required_count": 1,
-      "description": "Solve the ancient puzzle lock at the entrance",
+      "description": "Solve the puzzle lock guarding the entrance",
       "notes": "PuzzleRoomController completion flag; see puzzle_challenges[entry_riddle] below"
     },
     {
       "id": "obj_navigate_traps",
       "type": "explore",
       "target": "vault_trap_corridor",
-      "description": "Navigate the trapped corridor"
+      "description": "Get through the trapped corridor in one piece"
     },
     {
       "id": "obj_solve_vault_puzzle",
       "type": "solve_puzzle",
       "target": "master_vault_mechanism",
       "required_count": 1,
-      "description": "Solve the master vault puzzle (combination of logic, riddles, and mechanism)",
+      "description": "Crack the master mechanism the merchant prince built",
       "notes": "PuzzleRoomController completion flag; see puzzle_challenges[master_vault_mechanism] below"
     },
     {
@@ -40,13 +40,13 @@
       "type": "collect",
       "target": "vault_treasures",
       "required_count": 1,
-      "description": "Claim the vault's treasures"
+      "description": "Take what fills the Guild's coffers"
     },
     {
       "id": "obj_escape_vault",
       "type": "explore",
       "target": "vault_exit",
-      "description": "Escape before the vault reseals"
+      "description": "Get out before the vault seals for good"
     }
   ],
   "rewards": {
@@ -104,5 +104,5 @@
       "benefit": "Provides hint for final puzzle"
     }
   ],
-  "notes": "Legendary difficulty. Puzzle-focused quest. Time pressure mechanic. Vault in Elder Moor ancient ruins. Rewards Master Thieves Tools (best lockpicking/trap tools)."
+  "notes": "Legendary difficulty. Puzzle-focused quest. Time pressure mechanic. Vault in Elder Moor ancient ruins. Rewards Master Thieves Tools (best lockpicking/trap tools). Threat: none to a named person - reframed around the Guild's own need for the gold (ties to thieves_10's 500-gold payoff, invented, no bible basis, local colour) rather than a rival that would need a new named character. Giver motive: Nightshade needs the coffers filled, stated plainly instead of legend for its own sake. Consequence: none wired - the vault's contents don't feed back into any later quest's economy."
 }

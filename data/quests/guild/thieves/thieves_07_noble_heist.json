@@ -1,7 +1,7 @@
 {
   "id": "thieves_07_noble_heist",
   "title": "High Society",
-  "description": "Lady Emberlyn is hosting a masquerade ball in Thornfield. A priceless family heirloom - the Emberlyn Sapphire - will be on display. Infiltrate the party, steal the sapphire, and escape without being identified.",
+  "description": "The Emberlyn Sapphire has passed down Lady Emberlyn's line for four generations and it will be on display, unguarded by anything but the crowd, at her masquerade ball. Vex wants it in Guild hands - not for the gold, for the name it makes for whoever pulls it off. Get in, take it, and get out without a face anyone remembers.",
   "giver_npc_id": "shadowmaster_vex",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",
@@ -12,19 +12,19 @@
       "type": "collect",
       "target": "masquerade_invitation",
       "required_count": 1,
-      "description": "Acquire an invitation to the masquerade (steal, forge, or purchase)"
+      "description": "Get an invitation, however you can manage it"
     },
     {
       "id": "obj_attend_party",
       "type": "explore",
       "target": "emberlyn_estate_ballroom",
-      "description": "Attend the masquerade ball"
+      "description": "Blend in among the masked guests"
     },
     {
       "id": "obj_locate_sapphire",
       "type": "explore",
       "target": "emberlyn_estate_display",
-      "description": "Locate the Emberlyn Sapphire on display"
+      "description": "Find where the sapphire's on display"
     },
     {
       "id": "obj_talk_past_suspicion",
@@ -33,7 +33,7 @@
       "required_count": 1,
       "is_optional": true,
       "skill_check": {"skill": "deception", "dc": 14},
-      "description": "Talk your way clear if a guest questions you",
+      "description": "Talk your way past a guest who's noticed you",
       "notes": "The challenge.skill_checks phase \"if_questioned\", made real. Optional, so a failed lie never strands the heist."
     },
     {
@@ -41,13 +41,13 @@
       "type": "collect",
       "target": "emberlyn_sapphire",
       "required_count": 1,
-      "description": "Steal the sapphire without raising alarm"
+      "description": "Lift the sapphire without a hand seeing it move"
     },
     {
       "id": "obj_escape_undetected",
       "type": "explore",
       "target": "thornfield_gate",
-      "description": "Leave Thornfield without being identified"
+      "description": "Get out of Thornfield before your face is known"
     }
   ],
   "rewards": {
@@ -85,5 +85,5 @@
       "reward_bonus": {"gold": 150, "xp": 50}
     }
   ],
-  "notes": "High-stakes social stealth mission. Multiple skill checks. Emberlyn Estate in Thornfield. Rewards Shadow Cloak (stealth bonus item)."
+  "notes": "High-stakes social stealth mission. Multiple skill checks. Emberlyn Estate in Thornfield. Rewards Shadow Cloak (stealth bonus item). Threat: a four-generation family heirloom, taken for reputation rather than need. Giver motive: Vex wants the Guild's name made, not the gold. Consequence: unwired beyond quest failure on detection - no flag records the Emberlyn family's response or whether Lady Emberlyn becomes a standing enemy of the Guild (flags_set includes thieves_emberlyn_enemy, which nothing currently reads)."
 }

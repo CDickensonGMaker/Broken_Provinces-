@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_09_betrayal",
 	"title": "The Turncloak",
-	"description": "Captain Steele suspects someone in the Iron Company is selling information to enemies. Recent ambushes have been too well-coordinated. He's tasking you with finding the traitor among the ranks. Investigate company members in Dalhurst and Elder Moor, gather evidence, and dispense Iron Company justice. Loyalty above all.",
+	"description": "Two contracts in a row went bad in exactly the way that only happens when the other side already knew the route. Steele thinks it's Corporal Dain Wexley - four years in the Company, and four years of a moneylender in Dalhurst who's owned him since before he enlisted. Steele won't say the debt out loud until you bring back something that proves it; he's buried men for less than a rumor and he's not doing it again. Find the proof, then find out what Dain has to say for himself.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",
@@ -11,35 +11,35 @@
 	"objectives": [
 		{
 			"id": "investigate_dalhurst",
-			"description": "Question Iron Company members in Dalhurst",
+			"description": "Ask around the Iron Hall about Dain's debts",
 			"type": "talk",
 			"target": "iron_company_veteran",
 			"required_count": 3
 		},
 		{
 			"id": "investigate_elder_moor",
-			"description": "Search for evidence in Elder Moor outpost",
+			"description": "Check whether the Elder Moor outpost was compromised too",
 			"type": "reach",
 			"target": "elder_moor",
 			"required_count": 1
 		},
 		{
 			"id": "gather_evidence",
-			"description": "Collect incriminating letters or documents",
+			"description": "Find what Dain sent the moneylender's agent",
 			"type": "collect",
 			"target": "betrayal_evidence",
 			"required_count": 3
 		},
 		{
 			"id": "confront_traitor",
-			"description": "Confront the suspected traitor",
+			"description": "Confront Dain with what you found",
 			"type": "talk",
 			"target": "iron_company_traitor",
 			"required_count": 1
 		},
 		{
 			"id": "handle_justice",
-			"description": "Execute or exile the traitor",
+			"description": "Decide Dain's sentence yourself, if it comes to that",
 			"type": "kill",
 			"target": "iron_company_traitor",
 			"required_count": 1,
@@ -47,7 +47,7 @@
 		},
 		{
 			"id": "return_to_captain",
-			"description": "Report your findings to Captain Steele",
+			"description": "Report to Steele what Dain did and why",
 			"type": "talk",
 			"target": "captain_roderick_steele",
 			"required_count": 1
@@ -65,5 +65,6 @@
 		}
 	},
 	"prerequisites": ["mercenary_08_rival_company"],
-	"next_quest": "mercenary_10_noble_war"
+	"next_quest": "mercenary_10_noble_war",
+	"notes": "Named traitor Corporal Dain Wexley, invented with a debt motive per Step 3's directive - no bible basis. Threat: two ambushed contracts, a route sold to whoever paid Dain's debt collector. Giver motive: Steele needs proof before he acts, having learned that lesson before. Consequence: handle_justice (execute or exile) is a single optional kill objective with no choice_consequences - the description's stated dilemma is not mechanically forked. A full fix needs a real OR group for mercy vs execution, which this pass cannot add."
 }

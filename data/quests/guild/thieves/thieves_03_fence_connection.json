@@ -1,7 +1,7 @@
 {
   "id": "thieves_03_fence_connection",
   "title": "Moving Goods",
-  "description": "The Guild needs a new fence in Thornfield. Smuggle a package of stolen goods to contact Silas without alerting the guards. Guards patrol the road between Dalhurst and Thornfield.",
+  "description": "Everything the Guild lifts in Thornfield right now has to be hauled back to Dalhurst to sell, and every mile of that is a mile a patrol can search you. Silas will take the trade off the Guild's hands locally if he trusts you're real - which means one delivery, clean, through guards who fine and search anyone carrying the wrong bag at the wrong hour.",
   "giver_npc_id": "raven_thief_contact",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",
@@ -12,19 +12,19 @@
       "type": "collect",
       "target": "smuggled_package",
       "required_count": 1,
-      "description": "Receive the package from Raven"
+      "description": "Take the package from Raven, no questions about the contents"
     },
     {
       "id": "obj_deliver_package",
       "type": "talk",
       "target": "silas_fence",
-      "description": "Deliver the package to Silas in Thornfield"
+      "description": "Get the package to Silas past the road patrols"
     },
     {
       "id": "obj_return_confirmation",
       "type": "talk",
       "target": "raven_thief_contact",
-      "description": "Return to Raven with confirmation"
+      "description": "Bring Silas's confirmation back to Raven"
     }
   ],
   "rewards": {
@@ -48,5 +48,5 @@
       "faction_rep": {"thieves_guild": -10}
     }
   },
-  "notes": "Promotion to Footpad upon completion. Establishes fence contact in Thornfield. Silas becomes recurring NPC."
+  "notes": "Promotion to Footpad upon completion. Establishes fence contact in Thornfield. Silas becomes recurring NPC. Threat: getting searched costs 50 gold and standing with the Guild (data field 'challenge.detection_penalty', unwired to any mechanic this pass can touch). Giver motive: a local Thornfield fence saves the Guild the Dalhurst road every time they move goods. Consequence: unwired beyond the flat penalty already in the data - no world state records whether the fence connection is compromised."
 }

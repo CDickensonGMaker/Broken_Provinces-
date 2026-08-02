@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_12_legendary_battle",
 	"title": "Hold the Line",
-	"description": "Intelligence reports a coordinated attack on the Crossroads by multiple enemy forces - bandits, deserters, and even dark cultists. If the Crossroads falls, the entire region's trade routes collapse. Captain Steele is committing every available Iron Company soldier to this defense. This is your Thermopylae moment. Hold. The. Line.",
+	"description": "Bandits, deserters and dark cultists are converging on the Crossroads from three roads at once, and if it falls the whole region's trade dies with it. Steele is committing every soldier the Company has, including Denna and Oskar - the two recruits who made it back from Thornfield under your command and have fought under you ever since. He's telling you plainly: not everyone standing here tonight gets to walk away from it.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",
@@ -11,42 +11,42 @@
 	"objectives": [
 		{
 			"id": "rally_forces",
-			"description": "Gather all Iron Company forces at the Crossroads",
+			"description": "Rally every Company soldier, Denna and Oskar included",
 			"type": "reach",
 			"target": "crossroads",
 			"required_count": 1
 		},
 		{
 			"id": "bandit_assault",
-			"description": "Repel the bandit coalition assault",
+			"description": "Repel the bandit coalition off the first road",
 			"type": "kill",
 			"target": "bandit_captain",
 			"required_count": 20
 		},
 		{
 			"id": "deserter_wave",
-			"description": "Defeat the deserter mercenaries",
+			"description": "Break the deserter mercenaries off the second road",
 			"type": "kill",
 			"target": "rival_mercenary",
 			"required_count": 15
 		},
 		{
 			"id": "cultist_infiltration",
-			"description": "Eliminate dark cultist saboteurs",
+			"description": "Root out the cultist saboteurs before they open the third road",
 			"type": "kill",
 			"target": "cultist",
 			"required_count": 10
 		},
 		{
 			"id": "final_stand",
-			"description": "Defeat the enemy warlord in single combat",
+			"description": "Break the warlord who organized all three assaults",
 			"type": "kill",
 			"target": "enemy_warlord",
 			"required_count": 1
 		},
 		{
 			"id": "return_to_captain",
-			"description": "Report the legendary victory to Captain Steele",
+			"description": "Report to Steele who held the Crossroads, and at what cost",
 			"type": "talk",
 			"target": "captain_roderick_steele",
 			"required_count": 1
@@ -64,5 +64,6 @@
 		}
 	},
 	"prerequisites": ["mercenary_11_monster_battalion"],
-	"next_quest": "mercenary_13_second_command"
+	"next_quest": "mercenary_13_second_command",
+	"notes": "Reuses Denna and Oskar from mercenary_07 per Step 3's continuity directive - two of the four recruits, if that thread survives, standing with the player again as veterans. Threat: three roads converging on the Crossroads, the region's trade route. Giver motive: Steele commits everyone, no reserve held back. Consequence: no death flag is wired for named soldiers - the prose states people may not walk away, but nothing in the data can make that true for Denna or Oskar specifically. A later pass could add a world_flags_to_set noting losses if this quest gets a choice_consequences entry."
 }

@@ -1,7 +1,7 @@
 {
   "id": "thieves_05_blackmail",
   "title": "Leverage",
-  "description": "Lord Ashford of Thornfield has been causing problems for Guild operations. Break into his manor and find evidence of his illegal activities. The Guild wants leverage - but what you do with it is up to you.",
+  "description": "Lord Ashford has been leaning on Guild fences in Thornfield through the city watch, and Vex wants him leaned on back. Break into his manor, find whatever he's hiding in that study, and bring it to her. The letters turn out to be proof of slave trafficking - worse than Vex expected, and it changes nothing about the job. She wants leverage, not justice, and the only wired ending here is handing it to her.",
   "giver_npc_id": "shadowmaster_vex",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",
@@ -11,26 +11,26 @@
       "id": "obj_case_manor",
       "type": "explore",
       "target": "ashford_manor_exterior",
-      "description": "Scout Ashford Manor in Thornfield"
+      "description": "Scout Ashford Manor for guards and a way in"
     },
     {
       "id": "obj_break_in",
       "type": "explore",
       "target": "ashford_manor_study",
-      "description": "Break into the manor and reach the study"
+      "description": "Get past the household to the study, unheard"
     },
     {
       "id": "obj_find_evidence",
       "type": "collect",
       "target": "incriminating_letters",
       "required_count": 1,
-      "description": "Find the incriminating letters"
+      "description": "Find what Ashford is hiding in that study"
     },
     {
       "id": "obj_report_back",
       "type": "talk",
       "target": "shadowmaster_vex",
-      "description": "Return to Vex with the evidence"
+      "description": "Hand the letters over to Vex"
     }
   ],
   "rewards": {
@@ -75,5 +75,5 @@
       }
     }
   },
-  "notes": "Major moral decision. Introduces Shadowmaster Vex. Stealth challenge. Ashford Manor in Thornfield."
+  "notes": "Introduces Shadowmaster Vex. Stealth challenge. Ashford Manor in Thornfield. Threat: Ashford's letters prove slave trafficking, and the trafficking itself continues regardless of the quest's outcome. Giver motive: Vex wants leverage against a man leaning on Guild fences, nothing higher-minded. Consequence: the moral_choice block (expose publicly / guild leverage / personal blackmail) is decorative - only obj_report_back is wired, so the description's 'up to you' is not true of the data. A full fix needs three real choice objectives in an OR group at the turn-in."
 }

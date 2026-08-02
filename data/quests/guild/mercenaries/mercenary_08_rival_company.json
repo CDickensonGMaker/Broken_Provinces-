@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_08_rival_company",
 	"title": "Blood and Honor",
-	"description": "The Black Wolves, a rival mercenary company, has been undercutting Iron Company contracts and stealing clients. Captain Steele wants you to confront their leader at the Crossroads and settle this dispute. You can challenge them to honorable combat, outmaneuver them for contracts, or negotiate a merger. Your choice will affect the company's reputation.",
+	"description": "The Black Wolves' captain, Yorin Hask, undercut the Company on the last two contracts that came through Dalhurst by quoting half rate and skimping the escort. Steele doesn't care about honor here - he cares that clients who hire cheap and lose cargo blame the Iron Company's name by association. He's sending you to the Crossroads to confront Hask. What that confrontation becomes is between you and Hask; the Company only wants it to stop.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",
@@ -11,21 +11,21 @@
 	"objectives": [
 		{
 			"id": "travel_to_crossroads",
-			"description": "Meet the Black Wolves at the Crossroads",
+			"description": "Meet Hask and the Black Wolves at the Crossroads",
 			"type": "reach",
 			"target": "crossroads",
 			"required_count": 1
 		},
 		{
 			"id": "confront_wolves",
-			"description": "Confront the Black Wolves leadership",
+			"description": "Confront Hask over the undercut contracts",
 			"type": "talk",
 			"target": "black_wolf_captain",
 			"required_count": 1
 		},
 		{
 			"id": "resolve_conflict",
-			"description": "Resolve the rivalry (combat, negotiation, or contract competition)",
+			"description": "Break the Black Wolves in the fight Hask picked",
 			"type": "kill",
 			"target": "rival_mercenary",
 			"required_count": 8,
@@ -33,7 +33,7 @@
 		},
 		{
 			"id": "return_to_captain",
-			"description": "Report the outcome to Captain Steele",
+			"description": "Report to Steele how it ended with Hask",
 			"type": "talk",
 			"target": "captain_roderick_steele",
 			"required_count": 1
@@ -51,5 +51,6 @@
 		}
 	},
 	"prerequisites": ["mercenary_07_command_trial"],
-	"next_quest": "mercenary_09_betrayal"
+	"next_quest": "mercenary_09_betrayal",
+	"notes": "Named rival Yorin Hask, invented, no bible basis. Threat: undercut contracts are costing the Company its reputation by association, not gold directly. Giver motive: Steele wants the underbidding to stop, method unspecified. Consequence: the description's promised negotiation/merger/outmaneuver paths are not wired - resolve_conflict is a single optional kill objective with no choice_consequences behind it. A full fix needs a real OR group (negotiate/outmaneuver/fight) added to the objectives array, which this pass cannot do."
 }

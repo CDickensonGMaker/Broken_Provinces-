@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_11_monster_battalion",
 	"title": "The Horde",
-	"description": "A massive goblin and orc warband is marching on Millbrook. The town militia is outnumbered three to one. Captain Steele is deploying the full Iron Company to defend the settlement. This is large-scale tactical warfare - defensive positions, siege weapons, and holding the line against overwhelming odds. Millbrook must not fall.",
+	"description": "Forty-one people, one mill, and a militia of nine men who are also the harvest - that's Mill Brook, and a goblin-and-orc warband three times the militia's number is two days out on the eastern road. Elder Bram couldn't pay the Company's full rate if he sold the mill itself, so this contract runs on a standing arrangement with Dalhurst's grain buyers, who lose their winter flour if Mill Brook burns. Steele is sending the full Company. Nine militiamen and forty-one people are not going to hold this alone.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",
@@ -11,42 +11,42 @@
 	"objectives": [
 		{
 			"id": "fortify_millbrook",
-			"description": "Organize defenses in Millbrook",
+			"description": "Organize Mill Brook's defenses before the warband arrives",
 			"type": "reach",
 			"target": "millbrook",
 			"required_count": 1
 		},
 		{
 			"id": "first_wave",
-			"description": "Repel the first wave of goblin scouts",
+			"description": "Repel the first wave of goblin scouts off the mill road",
 			"type": "kill",
 			"target": "goblin_archer",
 			"required_count": 15
 		},
 		{
 			"id": "second_wave",
-			"description": "Hold the line against orc warriors",
+			"description": "Hold the line against the orc warriors behind them",
 			"type": "kill",
 			"target": "orc_warrior",
 			"required_count": 12
 		},
 		{
 			"id": "siege_breaker",
-			"description": "Destroy the enemy siege weapons",
+			"description": "Destroy the siege engines before they reach the mill",
 			"type": "kill",
 			"target": "siege_operator",
 			"required_count": 3
 		},
 		{
 			"id": "final_wave",
-			"description": "Defeat the orc warchief and break the horde",
+			"description": "Break the warchief and scatter what's left of the horde",
 			"type": "kill",
 			"target": "orc_warchief",
 			"required_count": 1
 		},
 		{
 			"id": "return_to_captain",
-			"description": "Report Millbrook's salvation to Captain Steele",
+			"description": "Report to Steele that Mill Brook still stands",
 			"type": "talk",
 			"target": "captain_roderick_steele",
 			"required_count": 1
@@ -64,5 +64,6 @@
 		}
 	},
 	"prerequisites": ["mercenary_10_noble_war"],
-	"next_quest": "mercenary_12_legendary_battle"
+	"next_quest": "mercenary_12_legendary_battle",
+	"notes": "Reuses millbrook_bandits.json / millbrook_elder.json facts verbatim per Step 3 - forty-one people, one mill, a nine-man militia who are also the harvest, Elder Bram. This is the same Mill Brook, not a duplicate. Threat: a warband three times the militia's size, two days out. Giver motive: the contract is invented as a standing Dalhurst grain-buyer arrangement (no bible basis, local colour) since Mill Brook itself could never afford Company rates - this keeps Bram's established poverty intact rather than contradicting it. Consequence: no world flag records Mill Brook's survival here; a later pass could set one for millbrook_bandits/millbrook_elder to reference."
 }

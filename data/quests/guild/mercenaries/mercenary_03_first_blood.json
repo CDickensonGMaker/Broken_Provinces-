@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_03_first_blood",
 	"title": "Baptism of Steel",
-	"description": "Training is over. Captain Steele is sending you on your first real combat mission: a squad assault on a bandit outpost near Elder Moor. This is the Iron Company way - follow orders, stay in formation, and don't break ranks. Come back alive and you'll earn the rank of Soldier.",
+	"description": "Training's over. The client is Halworth's timber concern out of Elder Moor - a bandit outpost has been stripping their wagons on the logging road for three weeks straight, and the mill's paid crew hasn't drawn full wages since. Halworth is paying the Company's full rate to make it stop. Follow orders, hold formation, don't break ranks - that's the whole lesson from drill, paid for in someone else's coin this time.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",
@@ -11,28 +11,28 @@
 	"objectives": [
 		{
 			"id": "travel_to_outpost",
-			"description": "Travel to the bandit outpost near Elder Moor",
+			"description": "March to the outpost that's been hitting Halworth's wagons",
 			"type": "reach",
 			"target": "bandit_outpost_elder_moor",
 			"required_count": 1
 		},
 		{
 			"id": "clear_bandits",
-			"description": "Clear the bandit outpost with your squad",
+			"description": "Clear the outpost with your squad, in formation",
 			"type": "kill",
 			"target": "human_bandit",
 			"required_count": 8
 		},
 		{
 			"id": "kill_bandit_leader",
-			"description": "Defeat the bandit leader",
+			"description": "Bring down the bandit leader running the toll",
 			"type": "kill",
 			"target": "bandit_leader",
 			"required_count": 1
 		},
 		{
 			"id": "return_to_captain",
-			"description": "Report victory to Captain Steele",
+			"description": "Report the road clear to Captain Steele",
 			"type": "talk",
 			"target": "captain_roderick_steele",
 			"required_count": 1
@@ -50,5 +50,6 @@
 		}
 	},
 	"prerequisites": ["mercenary_02_drill"],
-	"next_quest": "mercenary_04_caravan_guard"
+	"next_quest": "mercenary_04_caravan_guard",
+	"notes": "Threat: Halworth's timber crew going unpaid while the road's cut - invented client, local colour, no bible basis. Giver motive: Steele fields the contract, the client is Halworth, never seen on the page. Consequence: if this dragged on, the mill's crew starves through winter (echoes logging_troubles' unstated stake without contradicting it - different crew, same road)."
 }

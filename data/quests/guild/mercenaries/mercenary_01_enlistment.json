@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_01_enlistment",
 	"title": "Sign the Contract",
-	"description": "Captain Roderick Steele of the Iron Company is reviewing applications for new recruits. The mercenary life is brutal and demands discipline. Prove your combat prowess in a trial against company soldiers, and if you survive with honor, you'll earn a place among the Iron Company's ranks.",
+	"description": "The Iron Company lost forty soldiers at Thornfield twelve years back and has never filled the roster back up. Captain Steele doesn't take just anyone to make the numbers - a recruit who breaks formation gets someone else killed, and he's buried enough of his own. He wants to see you take a beating from three training soldiers without running. That's the whole test.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",
@@ -11,21 +11,21 @@
 	"objectives": [
 		{
 			"id": "speak_to_captain",
-			"description": "Speak to Captain Steele at the Iron Hall in Dalhurst",
+			"description": "Speak to Captain Steele about the open roster",
 			"type": "talk",
 			"target": "captain_roderick_steele",
 			"required_count": 1
 		},
 		{
 			"id": "combat_trial",
-			"description": "Defeat the training soldiers in combat trial",
+			"description": "Take the training soldiers down without breaking formation",
 			"type": "kill",
 			"target": "training_soldier",
 			"required_count": 3
 		},
 		{
 			"id": "return_to_captain",
-			"description": "Report to Captain Steele with your results",
+			"description": "Report to Captain Steele and see if you made it",
 			"type": "talk",
 			"target": "captain_roderick_steele",
 			"required_count": 1
@@ -43,5 +43,6 @@
 		}
 	},
 	"prerequisites": [],
-	"next_quest": "mercenary_02_drill"
+	"next_quest": "mercenary_02_drill",
+	"notes": "Threat: the Company has been short-handed since Thornfield (established in captain_roderick_steele.json dialogue - forty dead, twelve years ago) and every thin contract is a soldier they can't spare. Giver motive: Steele isn't testing swordplay, he's testing whether you'll hold formation and not get someone killed. Consequence: fails to land mechanically - there is no world state for 'Company stays short-handed' - this quest can only succeed or not exist yet."
 }

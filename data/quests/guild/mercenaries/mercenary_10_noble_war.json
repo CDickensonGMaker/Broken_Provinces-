@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_10_noble_war",
 	"title": "Proxy War",
-	"description": "Two rival noble houses are hiring mercenaries instead of declaring open war. Captain Steele has accepted a contract from one side, but the conflict is morally gray. You'll command Iron Company forces in a series of skirmishes near Millbrook. Choose your tactics carefully - this proxy war could spiral into something larger.",
+	"description": "House Corliss and House Vantry have argued over the grazing uplands above Mill Brook for two generations, and this year Vantry dammed the upper stream to water their own herds first. Corliss can't prove it's illegal and won't wait for a magistrate to decide, so they've hired the Iron Company instead. Steele took the contract because Corliss's coin is real and the dispute isn't his to judge - the shepherds who graze that land answer to whichever house wins, and neither side has asked them what they want.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",
@@ -11,35 +11,35 @@
 	"objectives": [
 		{
 			"id": "meet_noble_client",
-			"description": "Meet the contracting noble in Millbrook",
+			"description": "Meet House Corliss's agent near Millbrook",
 			"type": "talk",
 			"target": "noble_client",
 			"required_count": 1
 		},
 		{
 			"id": "first_skirmish",
-			"description": "Win the first battle near Millbrook",
+			"description": "Win the first skirmish over the dammed stream",
 			"type": "kill",
 			"target": "rival_mercenary",
 			"required_count": 10
 		},
 		{
 			"id": "second_skirmish",
-			"description": "Defeat the enemy's reinforcements",
+			"description": "Break Vantry's reinforcements when they arrive",
 			"type": "kill",
 			"target": "rival_mercenary",
 			"required_count": 6
 		},
 		{
 			"id": "final_battle",
-			"description": "Lead the decisive battle at the Crossroads",
+			"description": "Lead the decisive battle against Vantry's commander",
 			"type": "kill",
 			"target": "rival_commander",
 			"required_count": 1
 		},
 		{
 			"id": "negotiate_terms",
-			"description": "Negotiate surrender or annihilation",
+			"description": "Offer Vantry's commander terms, if you choose to",
 			"type": "talk",
 			"target": "enemy_commander",
 			"required_count": 1,
@@ -47,7 +47,7 @@
 		},
 		{
 			"id": "return_to_captain",
-			"description": "Report the war's outcome to Captain Steele",
+			"description": "Report to Steele who holds the uplands now",
 			"type": "talk",
 			"target": "captain_roderick_steele",
 			"required_count": 1
@@ -65,5 +65,6 @@
 		}
 	},
 	"prerequisites": ["mercenary_09_betrayal"],
-	"next_quest": "mercenary_11_monster_battalion"
+	"next_quest": "mercenary_11_monster_battalion",
+	"notes": "Named Houses Corliss and Vantry over grazing uplands above Mill Brook, invented, no bible basis, deliberately placed above rather than inside Millbrook proper so it doesn't contradict millbrook_bandits' elder-run hamlet. Threat: shepherds who graze the disputed land answer to whichever house wins, unconsulted. Giver motive: Steele took Corliss's coin, not Corliss's cause - stated plainly as the 'morally gray' the old description only claimed. Consequence: negotiate_terms is a single optional talk objective with no choice_consequences behind it - the description's implied surrender/annihilation fork is not wired. A full fix needs a real OR group added to objectives, which this pass cannot do."
 }

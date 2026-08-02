@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_04_caravan_guard",
 	"title": "Gold on the Road",
-	"description": "A wealthy merchant named Talbot Ashe has hired the Iron Company to guard him and his cargo traveling from Dalhurst to Thornfield. Bandits have been raiding the eastern roads. Your job: protect Ashe at all costs. Multiple ambushes are expected along the route.",
+	"description": "Talbot Ashe is paying the Company's full escort rate rather than the road wardens' half-price one, because the road wardens have lost two shipments this month and Ashe can't afford to be the third. His cargo doesn't matter to Steele - Ashe's coin does, and Ashe's coin only comes if Ashe is alive to pay it in Thornfield. Bandits have hit the eastern road twice already.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "meet_merchant",
-			"description": "Meet Talbot Ashe in the Dalhurst market",
+			"description": "Meet Talbot Ashe and his cargo in the Dalhurst market",
 			"type": "talk",
 			"target": "merchant_talbot",
 			"target_zone": "crossroads",
@@ -19,7 +19,7 @@
 		},
 		{
 			"id": "escort_merchant",
-			"description": "Escort Ashe safely to Thornfield (keep him alive!)",
+			"description": "Escort Ashe to Thornfield - the contract dies if he does",
 			"type": "escort",
 			"target": "merchant_talbot",
 			"target_zone": "thornfield",
@@ -27,14 +27,14 @@
 		},
 		{
 			"id": "defend_ambush",
-			"description": "Defeat the bandit ambush",
+			"description": "Break the ambush before it reaches the wagon",
 			"type": "kill",
 			"target": "human_bandit",
 			"required_count": 6
 		},
 		{
 			"id": "return_to_captain",
-			"description": "Report mission success to Captain Steele",
+			"description": "Report to Captain Steele that Ashe reached Thornfield",
 			"type": "talk",
 			"target": "captain_roderick_steele",
 			"required_count": 1
@@ -53,5 +53,5 @@
 	},
 	"prerequisites": ["mercenary_03_first_blood"],
 	"next_quest": "mercenary_05_siege_support",
-	"notes": "Rank: Private -> Corporal. Escort quest using EscortNPC system. Ashe waits in the Dalhurst market. Ambush trigger zones along route spawn bandits. Quest fails if Ashe dies."
+	"notes": "Rank: Private -> Corporal. Escort quest using EscortNPC system. Ashe waits in the Dalhurst market. Ambush trigger zones along route spawn bandits. Quest fails if Ashe dies. Threat: two prior shipments lost to the same road, Ashe is the third client to risk it. Giver motive: Steele fields the contract for the fee, not for Ashe. Consequence: unfixed in data - Ashe's death fails the quest outright rather than branching, which is honest to what's wired."
 }

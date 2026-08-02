@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_02_drill",
 	"title": "Sword and Shield",
-	"description": "As a new recruit, you need to learn the Iron Company's methods. Veteran soldiers will put you through grueling training exercises. Master formation fighting and complete the obstacle course to prove you can survive the rigors of mercenary work.",
+	"description": "You're in. Now Steele has to make sure you don't cost anyone their life on the first real contract. Five veterans will run you through formation drills hard enough to leave bruises, because a recruit who's never been hit doesn't know how to hold a line when it matters. The obstacle course after is the easy part.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",
@@ -11,21 +11,21 @@
 	"objectives": [
 		{
 			"id": "combat_training",
-			"description": "Complete formation combat drills with veterans",
+			"description": "Take the veterans' formation drills without breaking",
 			"type": "kill",
 			"target": "veteran_soldier",
 			"required_count": 5
 		},
 		{
 			"id": "obstacle_course",
-			"description": "Complete the Iron Company obstacle course",
+			"description": "Finish the obstacle course in Company time",
 			"type": "reach",
 			"target": "iron_hall_training_grounds",
 			"required_count": 1
 		},
 		{
 			"id": "report_completion",
-			"description": "Report to Captain Steele",
+			"description": "Report to Captain Steele that the drills are done",
 			"type": "talk",
 			"target": "captain_roderick_steele",
 			"required_count": 1
@@ -43,5 +43,6 @@
 		}
 	},
 	"prerequisites": ["mercenary_01_enlistment"],
-	"next_quest": "mercenary_03_first_blood"
+	"next_quest": "mercenary_03_first_blood",
+	"notes": "Threat: an untrained recruit gets someone else killed on a real contract (paying off mercenary_01's stated cost). Giver motive: Steele drills before he deploys, no exceptions. Consequence: this is training, so the worsening is deferred - it lands in mercenary_03 and mercenary_07 where the drilling either paid off or didn't."
 }

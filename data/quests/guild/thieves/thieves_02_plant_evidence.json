@@ -1,7 +1,7 @@
 {
   "id": "thieves_02_plant_evidence",
   "title": "Framed",
-  "description": "The Guild needs a rival merchant discredited. Steal from the jeweler's shop and plant the stolen goods in Marcus the blacksmith's home. Make it look like he's the thief.",
+  "description": "The city guard has been asking questions around the jeweler's row since the last string of thefts, and Raven wants that attention pointed somewhere that isn't the Guild. Marcus the blacksmith fits: he delivered hinges to that street the same week, he owes the jeweler for scrap he never paid off, and he has a wife and two children who will lose the forge along with him. He did nothing. That is exactly why he was picked.",
   "giver_npc_id": "raven_thief_contact",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",
@@ -12,19 +12,19 @@
       "type": "collect",
       "target": "stolen_jewelry",
       "required_count": 1,
-      "description": "Steal jewelry from the jeweler's shop"
+      "description": "Take jewelry from the jeweler's shop to plant on Marcus"
     },
     {
       "id": "obj_plant_evidence",
       "type": "explore",
       "target": "marcus_blacksmith_home",
-      "description": "Plant the stolen jewelry in Marcus's home"
+      "description": "Hide the jewelry in Marcus's home, where his family lives"
     },
     {
       "id": "obj_report_back",
       "type": "talk",
       "target": "raven_thief_contact",
-      "description": "Report your success to Raven"
+      "description": "Tell Raven the guard has a name to arrest"
     }
   ],
   "rewards": {
@@ -51,5 +51,5 @@
       }
     }
   },
-  "notes": "Stealth and deception test. Player has moral choice. Jeweler and blacksmith should be in Dalhurst."
+  "notes": "Stealth and deception test. Jeweler and blacksmith should be in Dalhurst. Threat: Marcus, his wife and two children lose the forge and his freedom for a theft he had no part in. Giver motive: Raven needs the guard's suspicion pointed away from the Guild's own fence, and Marcus is convenient, not guilty of anything. Consequence: the moral_choice block (warn Marcus instead) is decorative - no choice_consequences entry exists and no dialogue action reads it, so mechanically there is only one path, the framing. A full fix needs a real second objective (warn_marcus) in an OR group with obj_plant_evidence, which this pass cannot add."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_07_command_trial",
 	"title": "Lead from the Front",
-	"description": "As a newly promoted Sergeant, you must prove you can command soldiers in battle. Captain Steele is assigning you a squad of recruits for a live combat mission against goblins near Thornfield. Your tactical decisions will determine their survival. Lead well, and you'll cement your place as a squad leader in the Iron Company.",
+	"description": "Four recruits, fresh off the same drills you ran: Denna, Oskar, Petrik, Ythan. Captain Steele is putting them under you against a goblin camp near Thornfield, and he's told you plainly that not all four are guaranteed to walk back - that's not a threat, it's the job. Lead them well and some of them see their next contract. Lead them badly and Steele buries recruits instead of training new ones.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",
@@ -11,28 +11,28 @@
 	"objectives": [
 		{
 			"id": "muster_squad",
-			"description": "Gather your assigned squad in Thornfield",
+			"description": "Muster Denna, Oskar, Petrik and Ythan in Thornfield",
 			"type": "reach",
 			"target": "thornfield",
 			"required_count": 1
 		},
 		{
 			"id": "clear_goblin_camp",
-			"description": "Lead the assault on the goblin camp",
+			"description": "Lead the squad's assault on the goblin camp",
 			"type": "kill",
 			"target": "goblin_soldier",
 			"required_count": 12
 		},
 		{
 			"id": "defeat_shaman",
-			"description": "Eliminate the goblin shaman leader",
+			"description": "Bring down the shaman leading the camp",
 			"type": "kill",
 			"target": "goblin_mage",
 			"required_count": 1
 		},
 		{
 			"id": "keep_squad_alive",
-			"description": "Keep at least 3 squad members alive",
+			"description": "Get at least three of the four out alive",
 			"type": "reach",
 			"target": "squad_survival_checkpoint",
 			"required_count": 1,
@@ -40,7 +40,7 @@
 		},
 		{
 			"id": "return_to_captain",
-			"description": "Report mission results to Captain Steele",
+			"description": "Report to Steele who made it back and who didn't",
 			"type": "talk",
 			"target": "captain_roderick_steele",
 			"required_count": 1
@@ -58,5 +58,6 @@
 		}
 	},
 	"prerequisites": ["mercenary_06_hostage_rescue"],
-	"next_quest": "mercenary_08_rival_company"
+	"next_quest": "mercenary_08_rival_company",
+	"notes": "Named recruits Denna, Oskar, Petrik, Ythan - invented, no bible basis, local colour to answer Step 3's 'soldiers die' directive. Threat: a green squad against a goblin camp, one may not return even on success. Giver motive: Steele needs to know you can command before he trusts you with contracts, not just a kill count. Consequence: keep_squad_alive only requires 3 of 4 - the data allows one death as a pass, which the prose should not soften. mercenary_12 reuses Denna and Oskar as veterans if this thread is picked up later."
 }

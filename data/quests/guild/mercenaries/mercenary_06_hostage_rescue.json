@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_06_hostage_rescue",
 	"title": "No One Left Behind",
-	"description": "A wealthy merchant's family member has been kidnapped by bandits operating from the Bandit Hideout. The ransom deadline is approaching. Captain Steele is sending you to extract the hostage - by stealth or force. Time is critical. Bring them back alive and earn your promotion to Sergeant.",
+	"description": "The merchant Voss paid the Bandit Hideout crew's ransom demand once already and they came back for more, holding his daughter Petra until he pays twice over. He's out of coin and out of time - the deadline is two days off. Steele isn't sending you for Voss's sake; a client who loses his daughter on the Company's watch never hires again, and neither does anyone who hears about it.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",
@@ -11,42 +11,42 @@
 	"objectives": [
 		{
 			"id": "infiltrate_hideout",
-			"description": "Reach the Bandit Hideout",
+			"description": "Reach the Bandit Hideout before the deadline",
 			"type": "reach",
 			"target": "bandit_hideout",
 			"required_count": 1
 		},
 		{
 			"id": "locate_hostage",
-			"description": "Find the kidnapped merchant",
+			"description": "Find where they're holding Petra",
 			"type": "reach",
 			"target": "hostage_cell",
 			"required_count": 1
 		},
 		{
 			"id": "eliminate_guards",
-			"description": "Eliminate the bandit guards",
+			"description": "Cut down the guards holding her",
 			"type": "kill",
 			"target": "human_bandit",
 			"required_count": 6
 		},
 		{
 			"id": "free_hostage",
-			"description": "Free the hostage from captivity",
+			"description": "Get Petra out of the cell",
 			"type": "talk",
 			"target": "kidnapped_merchant",
 			"required_count": 1
 		},
 		{
 			"id": "escort_to_safety",
-			"description": "Escort the hostage to Elder Moor",
+			"description": "Escort Petra to Elder Moor, out of reach",
 			"type": "reach",
 			"target": "elder_moor",
 			"required_count": 1
 		},
 		{
 			"id": "return_to_captain",
-			"description": "Report mission success to Captain Steele",
+			"description": "Report to Captain Steele that Petra is safe",
 			"type": "talk",
 			"target": "captain_roderick_steele",
 			"required_count": 1
@@ -64,5 +64,6 @@
 		}
 	},
 	"prerequisites": ["mercenary_05_siege_support"],
-	"next_quest": "mercenary_07_command_trial"
+	"next_quest": "mercenary_07_command_trial",
+	"notes": "Threat: Voss already paid one ransom and the crew came back for a second, a two-day deadline on the second demand - invented client and hostage, no bible basis. Giver motive: Steele's angle is the Company's name, not the girl - stated plainly so it isn't a hidden cynicism. Consequence: no fail state is wired beyond the standard hostage-death quest failure; there is no world flag either way."
 }

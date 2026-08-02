@@ -1,7 +1,7 @@
 {
   "id": "thieves_repeatable_jobs",
   "title": "Guild Contracts",
-  "description": "As a high-ranking Guild member, you have access to ongoing contracts. Choose from available jobs - theft, smuggling, intimidation, or reconnaissance. Each job pays well and keeps your skills sharp.",
+  "description": "The Guild's contract board always has work on it for members who've earned the standing - theft, smuggling, debt collection, reconnaissance, a message that needs delivering with weight behind it. This file names six kinds of job and generates none of them: there is no top-level objectives array for the quest engine to read, so right now the board is a sign with nothing pinned to it.",
   "giver_npc_id": "guild_contract_board",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",
@@ -147,5 +147,5 @@
   "turn_in_target": "guild_contract_board",
   "turn_in_zone": "dalhurst",
   "flags_set": ["thieves_contract_completed"],
-  "notes": "Repeatable quest system. Six job types with varying difficulty. Random generation from target/location pools. Scales with player rank. 24-hour cooldown. Contract board in Guild hideout, Dalhurst."
+  "notes": "Repeatable quest system. Six job types with varying difficulty. Random generation from target/location pools. Scales with player rank. 24-hour cooldown. Contract board in Guild hideout, Dalhurst. STRUCTURALLY EMPTY: this file has no top-level 'objectives' array (the job_types entries each carry their own nested 'objectives' list, but nothing in the engine reads job_types - QuestManager expects one real objectives array on the quest itself). It cannot be completed as shipped. A data-capable pass needs to either pick one job_type per instance and promote its objectives to the top level at generation time, or add a generic top-level objectives array (e.g. one collect + one talk-to-turn-in, matching mercenary_repeatable_contracts's shape) that the six job_types re-skin with description text only. Until then this is decoration, not a working repeatable quest."
 }

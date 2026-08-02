@@ -1,7 +1,7 @@
 {
   "id": "thieves_06_warehouse_job",
   "title": "The Dalhurst Job",
-  "description": "A merchant warehouse in Dalhurst is full of valuable imported goods. Vex wants you to plan and execute a heist. Choose your approach: quick smash-and-grab, careful infiltration, or social deception.",
+  "description": "Graymoor Trading Company's warehouse is stacked with silk and spices for market day, and Vex wants five crates of it in the Guild's hands before the sale. However you get in the door - quiet or loud or lying your way past the gate - the job only ends one way: five crates out, to the safehouse, before Graymoor notices what's missing.",
   "giver_npc_id": "shadowmaster_vex",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",
@@ -11,26 +11,26 @@
       "id": "obj_scout_warehouse",
       "type": "explore",
       "target": "merchant_warehouse",
-      "description": "Scout the warehouse and identify security"
+      "description": "Scout Graymoor's warehouse and its guards"
     },
     {
       "id": "obj_choose_approach",
       "type": "talk",
       "target": "shadowmaster_vex",
-      "description": "Report findings and choose your approach"
+      "description": "Tell Vex what you found and how you'll get in"
     },
     {
       "id": "obj_execute_heist",
       "type": "collect",
       "target": "valuable_goods",
       "required_count": 5,
-      "description": "Steal at least 5 crates of valuable goods"
+      "description": "Get at least 5 crates out before market day"
     },
     {
       "id": "obj_escape",
       "type": "explore",
       "target": "guild_safehouse",
-      "description": "Deliver goods to the Guild safehouse"
+      "description": "Get the crates to the Guild safehouse clean"
     }
   ],
   "rewards": {
@@ -69,5 +69,5 @@
       "risks": "If discovered, burns future social approaches"
     }
   ],
-  "notes": "Promotion to Burglar. Multiple approach options. Rewards Guild armor. Warehouse in Dalhurst docks."
+  "notes": "Promotion to Burglar. Rewards Guild armor. Warehouse in Dalhurst docks, client named Graymoor Trading Company (already established in shadowmaster_vex.json dialogue, reused here rather than invented). Threat: Graymoor loses their market-day stock, a real cost to a named trading house. Giver motive: Vex tests planning, not just theft. Consequence: the approach_options block (stealth/smash/social) is decorative - obj_execute_heist is a single collect-5 objective regardless of style, so the choice changes flavor text only. A full fix needs the approach wired as a world_condition or objective_group."
 }

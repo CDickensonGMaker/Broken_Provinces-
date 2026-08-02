@@ -1,7 +1,7 @@
 {
   "id": "thieves_10_government_job",
   "title": "State Secrets",
-  "description": "The Guildmaster herself needs a favor. A magistrate in Dalhurst possesses documents detailing a secret royal decree that could destroy the Guild. Infiltrate the magistrate's offices, steal the documents, and escape. This is the most heavily guarded target you've faced.",
+  "description": "Magistrate Holt keeps a decree locked in his office vault that gives the crown the legal right to seize Guild assets and arrest its members without trial - signed, sealed, waiting on the right excuse to be enacted. Lady Nightshade wants it gone before that excuse arrives. This is the most heavily guarded target the Guild has ever put you against, and she's not sending a footpad because a footpad would not come back.",
   "giver_npc_id": "guildmaster_nightshade",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",
@@ -11,13 +11,13 @@
       "id": "obj_gather_intel",
       "type": "talk",
       "target": "inside_contact",
-      "description": "Meet with inside contact to learn guard schedules"
+      "description": "Meet the inside contact for the guards' rounds"
     },
     {
       "id": "obj_infiltrate_offices",
       "type": "explore",
       "target": "magistrate_offices",
-      "description": "Infiltrate the magistrate's offices"
+      "description": "Get into Magistrate Holt's offices unseen"
     },
     {
       "id": "obj_bypass_vault",
@@ -25,7 +25,7 @@
       "target": "magistrate_vault",
       "required_count": 1,
       "skill_check": {"skill": "lockpicking", "dc": 18},
-      "description": "Bypass the vault's complex lock",
+      "description": "Break the vault holding the decree",
       "notes": "QuestInteractable magistrate_vault rolls this DC itself; a failed pick costs the attempt, never the quest"
     },
     {
@@ -33,13 +33,13 @@
       "type": "collect",
       "target": "royal_decree_documents",
       "required_count": 1,
-      "description": "Steal the royal decree documents"
+      "description": "Take the decree that could end the Guild"
     },
     {
       "id": "obj_escape",
       "type": "explore",
       "target": "guild_hideout",
-      "description": "Escape with documents to Guild hideout"
+      "description": "Get the decree to the Guild hideout before lockdown"
     }
   ],
   "rewards": {
@@ -100,5 +100,5 @@
       }
     }
   },
-  "notes": "Meets Guildmaster Nightshade. High-difficulty heist. Complex multi-phase challenge. Rewards Shadowstep Boots (mobility item). Magistrate offices in Dalhurst government district."
+  "notes": "Meets Guildmaster Nightshade. High-difficulty heist. Complex multi-phase challenge. Rewards Shadowstep Boots (mobility item). Magistrate offices in Dalhurst government district, magistrate named Holt (invented, no bible basis, matches the unnamed magistrate in lady_nightshade.json dialogue). Threat: the decree, described in full per this pass rather than only in the decorative moral_choice block. Giver motive: Nightshade moves first rather than wait for the crown to act. Consequence: the moral_choice (leave the decree to legitimize the Guild) is decorative - obj_steal_documents is the only wired path, so the description no longer pretends otherwise."
 }

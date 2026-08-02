@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_05_siege_support",
 	"title": "Breach the Walls",
-	"description": "A fortified bandit position in the hills near Willow Dale has become a staging ground for raids. The Iron Company has been contracted to assault and take the stronghold. This is tactical warfare - siege equipment, coordinated assault, and overwhelming force. Break their defenses and scatter their forces.",
+	"description": "The client is Ser Aldous Marrow, who holds the tenant land outside Willow Dale and has lost six families off it since the bandits fortified the hills there. He's paying the Company's siege rate - equipment, coordinated assault, the works - because his own guards tried the stronghold once and came back short three men. Break their defenses and there's land left to farm.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",
@@ -11,35 +11,35 @@
 	"objectives": [
 		{
 			"id": "travel_to_stronghold",
-			"description": "Reach the bandit stronghold near Willow Dale",
+			"description": "Reach the stronghold that's emptied Marrow's land",
 			"type": "reach",
 			"target": "bandit_stronghold_willow_dale",
 			"required_count": 1
 		},
 		{
 			"id": "destroy_defenses",
-			"description": "Destroy the stronghold's outer defenses",
+			"description": "Break the outer defenses before pushing in",
 			"type": "kill",
 			"target": "human_bandit",
 			"required_count": 10
 		},
 		{
 			"id": "clear_inner_keep",
-			"description": "Clear the inner keep of bandit forces",
+			"description": "Clear the inner keep, captain by captain",
 			"type": "kill",
 			"target": "bandit_captain",
 			"required_count": 5
 		},
 		{
 			"id": "defeat_commander",
-			"description": "Defeat the bandit commander",
+			"description": "Bring down the commander who built the stronghold",
 			"type": "kill",
 			"target": "bandit_leader",
 			"required_count": 1
 		},
 		{
 			"id": "return_to_captain",
-			"description": "Report the stronghold's fall to Captain Steele",
+			"description": "Report the stronghold's fall so Marrow's tenants can go back",
 			"type": "talk",
 			"target": "captain_roderick_steele",
 			"required_count": 1
@@ -57,5 +57,6 @@
 		}
 	},
 	"prerequisites": ["mercenary_04_caravan_guard"],
-	"next_quest": "mercenary_06_hostage_rescue"
+	"next_quest": "mercenary_06_hostage_rescue",
+	"notes": "Threat: six tenant families driven off Marrow's land near Willow Dale, invented client, no bible basis. Giver motive: Marrow's own guards already failed here and lost men - this is why he pays for professionals instead of doing it himself. Consequence: unwired - the land stays empty if the stronghold isn't taken, no flag records it either way."
 }

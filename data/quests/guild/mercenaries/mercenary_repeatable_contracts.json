@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_repeatable_contracts",
 	"title": "Company Contracts",
-	"description": "As an Iron Company officer, you can take on repeatable mercenary contracts. These jobs range from escort missions to clearing dangerous areas. Contracts scale with your reputation and offer consistent pay for professional soldiers. The work never ends for a mercenary.",
+	"description": "There's always a client on Steele's ledger who needs professionals and can pay for them - the Company doesn't run on glory contracts, it runs on the steady ones nobody writes songs about. Take what's on the board, do the job clean, and the pay is consistent. That's the whole trade once the war stories stop.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "contract_target",
-			"description": "Complete the assigned contract objective",
+			"description": "Complete whatever's next on Steele's ledger",
 			"type": "kill",
 			"target": "contract_enemy",
 			"required_count": 10
 		},
 		{
 			"id": "return_for_payment",
-			"description": "Return to Captain Steele for payment",
+			"description": "Return to Steele to collect the client's pay",
 			"type": "talk",
 			"target": "captain_roderick_steele",
 			"required_count": 1
@@ -37,5 +37,6 @@
 	},
 	"prerequisites": ["mercenary_01_enlistment"],
 	"next_quest": "",
-	"is_repeatable": true
+	"is_repeatable": true,
+	"notes": "Wrapper quest, no single threat by design - matches thieves_repeatable_jobs and mercenary line's other repeatable in shape. Giver motive: the Company runs on a standing ledger of clients, not one dramatic contract. No consequence line since this repeats indefinitely with no state to worsen."
 }

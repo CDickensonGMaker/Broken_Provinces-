@@ -1,7 +1,7 @@
 {
   "id": "thieves_04_debt_collection",
   "title": "The Sailor's Debt",
-  "description": "A sailor named Garrett owes the Guild a substantial sum. He's been run south and gone to ground in Whaler's Abyss. Collect the debt - by persuasion, intimidation, or taking it from his possessions.",
+  "description": "Garrett borrowed 200 gold from the Guild three weeks ago, claiming it was for ship repairs, and drank every coin of it instead. He's gone to ground in Whaler's Abyss rather than face what he owes. The Guild doesn't care why he needed it - a debt that goes unpaid once goes unpaid by everyone, and Raven wants that word to never get around.",
   "giver_npc_id": "raven_thief_contact",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",
@@ -11,20 +11,20 @@
       "id": "obj_find_garrett",
       "type": "talk",
       "target": "debtor_garrett",
-      "description": "Find Garrett in Whaler's Abyss"
+      "description": "Track Garrett down in Whaler's Abyss"
     },
     {
       "id": "obj_collect_debt",
       "type": "collect",
       "target": "debt_payment",
       "required_count": 1,
-      "description": "Collect the 200 gold debt (persuade, intimidate, or steal)"
+      "description": "Get the 200 gold out of Garrett, however it takes"
     },
     {
       "id": "obj_return_payment",
       "type": "talk",
       "target": "raven_thief_contact",
-      "description": "Return the payment to Raven"
+      "description": "Bring the payment back to Raven"
     }
   ],
   "rewards": {
@@ -67,5 +67,5 @@
       }
     }
   },
-  "notes": "Multiple approaches. Moral dilemma. Garrett at Crossroads tavern."
+  "notes": "Garrett at Whaler's Abyss (this file's own target text - the giver dialogue in raven_thief_contact.json says Crossroads tavern instead, a pre-existing mismatch out of this pass's scope). Threat: Garrett faces the Guild's collection one way or another - persuasion, intimidation or theft are all the same single objective mechanically. Giver motive: Raven can't let an unpaid debt become the Guild's reputation. Consequence: the moral_choice (forgive the debt, pay it yourself) and skill_checks blocks are decorative - no choice_consequences entry exists and nothing reads them, so obj_collect_debt is the only wired path regardless of how the description frames it. A full fix needs a real forgive_debt objective in an OR group with obj_collect_debt."
 }
