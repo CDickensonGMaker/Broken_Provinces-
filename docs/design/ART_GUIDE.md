@@ -24,7 +24,10 @@ This is the piece that makes 3D *cheaper* than 2D ever was: the dresser runs at 
 2. **Match materials by texture identity, not name** (the 7/29 black-head bug).
 3. **Duplicate the material per instance** ("a fireteam of octuplets" otherwise).
 4. **Capability gating that WARNS when it degrades**, once per unit.
-CoG build: face/skin atlas (10×7 = 70 faces) per race + garb visibility toggles (hood, apron, pack, hat — socketed props use the stock-item placement datum) + palette variants. Deterministic per-npc_id seed: same villager, same face, every session, forever. **One male + one female master ⇒ the entire human townsfolk population.**
+CoG build: **face/skin atlas (8×4 = 32 faces) + GARB ATLAS PAGES AND DYES, with mesh toggles for silhouette only.** Deterministic per-npc_id seed: same villager, same face, same clothes, every session, forever. **One male + one female master ⇒ the entire human townsfolk population.**
+
+5. **Colour is the variation; geometry is the silhouette.** Two citizens must differ in palette before they differ in polygons. This line used to read "garb visibility toggles + palette variants", and the "palette variants" were fiction: `_shared_garb` was one material for the entire game, so all our variety was in mesh toggles and none in texture — the exact opposite of the EQ technique (`docs/design/EQ_TECHNIQUE.md`, verified 8/2). A garment variant is now a `uv1_offset` into a 4×4-page garb atlas, exactly as a face is: **the archetype picks the page (16), the seed picks the dye (14, in two slots)**, and a new NPC "look" costs one texture page and zero triangles.
+6. **A mesh toggle is only allowed where the OUTLINE changes.** The test is: does it break the silhouette against the sky? Hood, skirt-vs-trousers, sleeve length, robe, hats — geometry. Laces, buttons, belts, apron fronts, armour plates, trim, dirt, rank insignia — paint. `garb_vest_laced` was deleted under this rule and `garb_robe` added under it.
 **Build order: Phase 0 abstraction → masters → dresser → waves.** Modeling 55 individual townsfolk is the trap; two masters + the dresser is the road.
 
 ## RIG RECIPES PER RACE (the dwarf/goblin worry, answered)
@@ -38,10 +41,11 @@ CoG build: face/skin atlas (10×7 = 70 faces) per race + garb visibility toggles
 # WAVE 1 — HUMANS (the big one: ~55 characters resolve to TWO fallback sheets today)
 *Everything below currently renders as `man_civilian.png` or `lady_in_red.png` unless noted. Priority order is the manifest's: market → robed → labourer → officer → old-woman.*
 
-### Townsfolk archetype sheets (randomizer output — each = master + variants)
-- [ ] Merchant/market male + female (stall apron, coin belt)
-- [ ] Priest/robed set (3 gods: Chronos grey, Gaela green, Morthane black — palette variants of one robe master)
-- [ ] Labourer set: shepherd, fisherman, carter, stallhand (garb toggles on one master)
+### Townsfolk archetype sheets (randomizer output — each is now a PAGE, not a sheet)
+*Since 8/2 these are pages in the garb atlas, and the meshes for all of them already exist. What is outstanding is Caleb painting the page, not building anything. `citizen_garb_wall_12px.png` is the acceptance test.*
+- [ ] Merchant/market male + female — **page 2**; apron mesh exists, the coin belt is paint
+- [x] Priest/robed set (3 gods) — **pages 8/9/10**, wired: `CitizenDresser.DEITY_PAGE` reads the god off the npc_id, and `garb_robe` is the one robe master. Placeholder colourways ship; the painting is Caleb's
+- [ ] Labourer set: shepherd, fisherman, carter, stallhand — **page 1**, all four already map to it
 - [ ] Officer set: watch-captain ×2 towns, sergeant (front/back/attack rows)
 - [ ] Old-woman set: 3 widows + goodwife
 - [ ] Beggar, clerk, herbwife, magistrate (Wave B cast, one master + garb)

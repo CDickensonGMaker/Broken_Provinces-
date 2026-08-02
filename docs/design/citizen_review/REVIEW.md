@@ -101,12 +101,83 @@ before the pass and are untouched, per the brief.
 
 ---
 
-## Garb inventory (34 meshes, 2,072 tris)
+## THE GARB ATLAS CONVENTION — what Caleb paints to
+
+The second thing he paints, and the one that changes the crowd fastest. Same
+shape as the face convention above, and binding in the same way.
+
+```
+512 x 512 PNG        4 columns x 4 rows  =  16 GARB PAGES
+page                 128 x 128 px
+  within a page, four zones of 64 x 64, TOP-ORIGIN:
+    (0,0)   VEST      the torso garment — the robe samples this zone too
+    (64,0)  PANTS     trousers AND skirt
+    (0,64)  SLEEVES   both arms
+    (64,64) EXTRA     apron and hood
+page stride (uv1_offset) = (0.25, 0.25)
+```
+
+**PAGE 0 IS THE BOTTOM-LEFT and the page row counts UP.** `v` is bottom-origin
+and every garment is UV'd into page 0 at `v < 0.25`, so page 4 is the row above
+page 0, not below it. Paint the grid the other way round and a townsman wearing
+page 5 samples the page nobody painted. Stages 05, 08 and 09 all assert the
+page-0 law on the meshes; nothing asserts which way *you* painted the grid.
+
+| Page | Colourway | Page | Colourway |
+|---|---|---|---|
+| 0 | commoner grey | 8 | **Chronos grey** |
+| 1 | labourer linen | 9 | **Gaela green** |
+| 2 | merchant wine | 10 | **Morthane black** |
+| 3 | guard slate | 11 | russet |
+| 4 | faded blue | 12 | ash |
+| 5 | dun brown | 13 | ochre |
+| 6 | moss | 14 | slate violet |
+| 7 | bleached | 15 | sand |
+
+Pages 4–7 and 11–15 are **neutral variants, not blanks** — an NPC whose trade
+is not in `CitizenDresser.ARCHETYPE_PAGE` draws one of them on his seed.
+
+Five rules for painting a zone, and the first one is the whole recipe:
+
+1. **Light on top, mid in the middle, dark at the hem, hard edges between.**
+   Upper 40% the lightest values, middle 35% the largest flat block in one hue,
+   lower 25% the hem and belt band — the darkest. It reads as a lit cylinder at
+   12 pixels and it is exactly what a 32×32 EQ chest texture does.
+2. **One light, always: from above and slightly front-left.** Never re-decide it
+   per page. A single inconsistent page makes the crowd look wrong and nobody
+   can say why.
+3. **Paint the occlusion, not the object.** The dark line under a belt, in an
+   armpit, under a hood's brim. Worth more than the belt itself.
+4. **Keep it desaturated and mid-value.** The dresser multiplies one of 14 dyes
+   over the page. A page painted saturated crimson can only ever be crimson; a
+   page painted in warm greys becomes fourteen. This is the rule the whole
+   system rests on.
+5. **Leave 2 px of the correct colour inside every zone boundary.** Nearest
+   filtering plus a UV a fraction off samples the neighbouring garment, and it
+   looks like a shader bug for a week.
+
+**Resolution-independent**, like the face atlas: 1024² gives 128 px zones with
+no UV change, as long as it stays 4×4 pages of four quadrants.
+
+**Rule 5, automated.** `citizen_garb_wall.png` is one master × 16 pages × 3 dyes
+and `citizen_garb_wall_12px.png` is the same grid with the figure at 12 px —
+the size a townsman occupies across a market square. **Read the 12 px sheet
+first.** At full size every page looks fine, which is why the full-size sheet is
+the one that lies. If a citizen is not a silhouette plus two colour blocks at
+12 px, the page has failed and the fix is bigger blocks and more value
+contrast, never more detail.
+
+---
+
+## Garb inventory (34 meshes, 2,144 tris)
+
+Every piece here changes the OUTLINE, which is the only thing a mesh is allowed
+to be. Colour, laces, buckles, apron fronts and armour are *pages*.
 
 | Piece | tris | was | MAN | WOMAN | BOY | GIRL |
 |---|---|---|---|---|---|---|
 | `garb_vest_plain` | 60 | 60 | ✓ | ✓ | ✓ | ✓ |
-| `garb_vest_laced` | 68 | 68 | ✓ | ✓ | ✓ | ✓ |
+| `garb_robe` | **86** | — | ✓ | ✓ | ✓ | ✓ |
 | `garb_pants` | **80** | 96 | ✓ | ✓ | ✓ | ✓ |
 | `garb_skirt` | 68 | 68 | — | ✓ | — | ✓ |
 | `garb_sleeve_long` | **72** | 96 | ✓ | ✓ | ✓ | ✓ |
@@ -124,7 +195,21 @@ parts read as one garment. The old version was a closed barrel plus two open
 tubes with a step between them, which is exactly the leg-strap read.
 Weights come from the nearest body vertex, so hip/thigh/shin fall out correctly.
 
-Sleeves and hood lost a ring each to hold the dressed budget. Nothing else moved.
+Sleeves and hood lost a ring each to hold the dressed budget.
+
+**`garb_vest_laced` was deleted (2026-08-02).** Its entire content was a 4-quad
+strip down the chest of a vest that already had that silhouette — against the
+sky it *was* the plain vest. 68 tris and one mesh per master buying nothing.
+Laces are a painted page now. Stage 09 keeps it in a FORBIDDEN set so a stale
+stage file cannot bring it back.
+
+**`garb_robe` was added.** Shoulder to shin in one skirted tube, 86 tris, on all
+four masters. It is the one silhouette paint cannot fake — priests of three
+gods, cultists, mages, the Wave-5 lich/wight family — and EQ gave robes their
+own seven texture slots for exactly that reason. It REPLACES vest + pants +
+skirt, so a robed citizen is *cheaper* than a dressed one. Above the waist it
+takes the body's own weights; below it takes the skirt's quadratic hips-to-thigh
+ramp, and `citizen_robe_walk_MAN.png` is the proof it does not tear.
 
 ---
 
