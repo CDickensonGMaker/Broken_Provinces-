@@ -239,6 +239,39 @@ validator correctly asking for content that does not exist yet:
   inside OR groups, so the validator can finally see them. Both need a stat
   block — see §2g.
 
+### 2l. Who is buying the soulstones (quest-quality pass, 8/2)
+
+The quest pass laid Caleb's "larger connection across many quests" as a
+**soulstone undercurrent**: twelve small details across twelve unrelated quests
+that add up to somebody quietly acquiring soulstones across the province. The
+design is written up in `docs/design/quest_web.md`; the touchpoints are prose
+only and change no quest data, set no flag and gate nothing.
+
+**What is `[OPEN]` and his alone: who the buyer is, and why.** Nothing anywhere
+in the repository names, describes, or implies an identity — not a file, not a
+note, not a name-agnostic id. Deliberately, so the payoff can be anything he
+wants later. The obvious candidates the world already supports, none of them
+chosen:
+
+1. Skarrag's agents buying above ground what the goblins cannot dig out of
+   Kazan-Dun.
+2. Somebody inside the Arcane Circle — the Circle's own stone-cutter has stopped
+   selling to it, which reads either as a rival buyer or as an inside job.
+3. The elf claimant's household, funding a claim.
+4. Lord Baron Viktor's reach across the water.
+5. The missing king, or somebody acting on twenty-year-old instructions from
+   him.
+6. Nobody — the four-scratch mark means nothing and the player pattern-matched
+   on noise. This is a legitimate answer and the cheapest one to keep.
+
+Related and also his: **the bible's `[OPEN]` on what the soulstones actually do
+for the goblin king is untouched by this.** The thread was built specifically so
+that it neither narrows nor answers that question. Kazan-Dun has no touchpoint
+in it for that reason.
+
+He does not need to answer this to ship. The thread costs nothing while it sits
+unresolved, which is the point of laying it this way.
+
 ---
 
 ## 3. Eye-check list — what to look at in the running game
