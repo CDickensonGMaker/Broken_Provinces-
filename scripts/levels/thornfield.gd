@@ -8,6 +8,9 @@
 extends Node3D
 
 const ZONE_ID := "thornfield"
+
+## Godfrey Larke's inn - where the village drinks. Scene-local; see _leisure_world_pos().
+const LEISURE_LOCAL := Vector3(3.0, 0.0, 9.0)
 const ZONE_SIZE := 100.0  # Matches WorldGrid.CELL_SIZE
 const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/towns/town_murmur_medieval_mix_60s_ps1_retro.wav"
 
@@ -497,6 +500,9 @@ func _spawn_npcs() -> void:
 	]
 	for spawn_pos: Vector3 in random_positions:
 		var civilian := CivilianNPC.spawn_gendered_random(npcs, spawn_pos, ZONE_ID)
+		# Ambient crowd: id and spot are drawn fresh every boot, so the trade
+		# goes on at spawn rather than into an authored record.
+		civilian.attach_to_schedule("townsfolk", _leisure_world_pos())
 		if civilian.wander:
 			civilian.wander.wander_radius = 5.0
 
@@ -710,3 +716,10 @@ func _spawn_residents() -> void:
 		["thornfield", "chronos", "prophecy", "local_area"],
 		"I have been asked to leave two towns for being right too early. Judge that how you like.",
 		[], true, 40)
+
+
+## Godfrey Larke's inn, in world coordinates. The level root's own position plus
+## the streaming offset is the cell origin, so this reads right whether
+## Thornfield is the main scene or a streamed cell.
+func _leisure_world_pos() -> Vector3:
+	return global_position + CellStreamer.world_offset + LEISURE_LOCAL

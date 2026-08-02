@@ -16,6 +16,10 @@ const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/towns/town_murmur_mediev
 ## Town center radius - buildings are kept within this area
 const TOWN_RADIUS := 80.0  # Expanded for larger scene
 
+## Where the camp gathers of an evening - Martha's cook fire. Scene-local; the
+## schedule wants it in world coordinates, so see _leisure_world_pos().
+const LEISURE_LOCAL := Vector3(5.5, 0.0, 12.0)
+
 @onready var nav_region: NavigationRegion3D = $NavigationRegion3D
 
 
@@ -399,48 +403,23 @@ func _spawn_civilian_population() -> void:
 			npc.knowledge_profile.knowledge_tags.append(ZONE_ID)
 			npc.knowledge_profile.knowledge_tags.append("local_area")
 
+			# Elder Moor is a logging camp, so its ambient population are the
+			# camp's people: up before light, in the tavern by dusk. Their id
+			# and their spot are drawn fresh every boot, so no authored record
+			# could name them - the trade goes on at spawn instead.
+			npc.attach_to_schedule("laborer", _leisure_world_pos())
+
 			total_spawned += 1
 
 	# Store reference for day/night management
 	set_meta("civilians_container", civilians_container)
 
-	# Connect to GameManager's time of day changes for visibility management
-	if GameManager:
-		GameManager.time_of_day_changed.connect(_on_time_of_day_changed)
-		# Defer initial visibility check to ensure scene is fully loaded (fixes fast travel/save load issues)
-		call_deferred("_update_civilian_visibility")
 
-
-## Called when time of day changes
-func _on_time_of_day_changed(_new_time: Enums.TimeOfDay) -> void:
-	_update_civilian_visibility()
-
-
-## Show/hide civilians based on time of day (active during daytime: DAWN through DUSK)
-func _update_civilian_visibility() -> void:
-	var civilians_container: Node3D = get_meta("civilians_container", null) as Node3D
-	if not civilians_container:
-		return
-
-	var current_time: Enums.TimeOfDay = GameManager.current_time_of_day if GameManager else Enums.TimeOfDay.NOON
-
-	# Civilians active during daytime hours (DAWN through DUSK, not NIGHT or MIDNIGHT)
-	var is_daytime: bool = current_time in [
-		Enums.TimeOfDay.DAWN,
-		Enums.TimeOfDay.MORNING,
-		Enums.TimeOfDay.NOON,
-		Enums.TimeOfDay.AFTERNOON,
-		Enums.TimeOfDay.DUSK
-	]
-
-	for child in civilians_container.get_children():
-		if child is CivilianNPC:
-			child.visible = is_daytime
-			child.set_physics_process(is_daytime)
-			child.set_process(is_daytime)
-			# Enable/disable wandering
-			if child.wander:
-				child.wander.set_physics_process(is_daytime)
+## The camp's common ground - Martha's cook fire - in world coordinates.
+## The level root's own position plus the streaming offset is the cell origin,
+## so this reads right whether Elder Moor is the main scene or a streamed cell.
+func _leisure_world_pos() -> Vector3:
+	return global_position + CellStreamer.world_offset + LEISURE_LOCAL
 
 
 ## Spawn locked doors from markers placed in the scene

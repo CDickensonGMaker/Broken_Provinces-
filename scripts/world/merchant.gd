@@ -106,6 +106,10 @@ func _ready() -> void:
 	if shop_inventory.is_empty():
 		_setup_default_inventory()
 
+	# Position is a pure function of (schedule, hour). Deferred so the level
+	# script has finished configuring this keeper first.
+	place_for_current_hour.call_deferred()
+
 
 ## Register this merchant as a compass POI
 ## Uses instance ID for guaranteed uniqueness across scenes
@@ -141,6 +145,14 @@ func _register_with_world_data() -> void:
 ## Unregister from PlayerGPS when removed from scene
 func _exit_tree() -> void:
 	PlayerGPS.unregister_npc(get_npc_id())
+
+
+## Stand where this keeper's schedule says they stand at the current hour.
+## One implementation, in NPCScheduler; this is a door onto it.
+func place_for_current_hour() -> void:
+	if not is_inside_tree() or is_dead():
+		return
+	NPCScheduler.place_node(self)
 
 func _create_merchant_mesh() -> void:
 	## Create visual representation - billboard sprite if texture provided, otherwise capsule mesh

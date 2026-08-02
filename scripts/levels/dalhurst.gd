@@ -9,6 +9,9 @@
 extends Node3D
 
 const ZONE_ID := "dalhurst"
+
+## The Gilded Grog - where the town drinks. Scene-local; see _leisure_world_pos().
+const LEISURE_LOCAL := Vector3(-9.0, 0.0, -39.0)
 const ZONE_SIZE := Vector2(160.0, 172.0)  # Actual scene dimensions (width, depth)
 const ZONE_SIZE_LEGACY := 172.0  # For backwards compatibility (use larger dimension)
 const TOWN_AMBIENT_PATH := "res://assets/audio/Ambiance/cities/port_city_1.wav"
@@ -816,48 +819,22 @@ func _spawn_civilian_population(parent: Node3D) -> void:
 			npc.knowledge_profile.knowledge_tags.append(ZONE_ID)
 			npc.knowledge_profile.knowledge_tags.append("local_area")
 
+			# A port town's ambient crowd keep ordinary hours. Their id and
+			# their spot are drawn fresh every boot, so no authored record
+			# could name them - the trade goes on at spawn instead.
+			npc.attach_to_schedule("townsfolk", _leisure_world_pos())
+
 			total_spawned += 1
 
 	# Store reference for day/night management
 	set_meta("civilians_container", civilians_container)
 
-	# Connect to GameManager's time of day changes for visibility management
-	if GameManager:
-		GameManager.time_of_day_changed.connect(_on_time_of_day_changed)
-		# Defer initial visibility check to ensure scene is fully loaded (fixes fast travel/save load issues)
-		call_deferred("_update_civilian_visibility")
 
-
-## Called when time of day changes
-func _on_time_of_day_changed(_new_time: Enums.TimeOfDay) -> void:
-	_update_civilian_visibility()
-
-
-## Show/hide civilians based on time of day (active during daytime: DAWN through DUSK)
-func _update_civilian_visibility() -> void:
-	var civilians_container: Node3D = get_meta("civilians_container", null) as Node3D
-	if not civilians_container:
-		return
-
-	var current_time: Enums.TimeOfDay = GameManager.current_time_of_day if GameManager else Enums.TimeOfDay.NOON
-
-	# Civilians active during daytime hours (DAWN through DUSK, not NIGHT or MIDNIGHT)
-	var is_daytime: bool = current_time in [
-		Enums.TimeOfDay.DAWN,
-		Enums.TimeOfDay.MORNING,
-		Enums.TimeOfDay.NOON,
-		Enums.TimeOfDay.AFTERNOON,
-		Enums.TimeOfDay.DUSK
-	]
-
-	for child in civilians_container.get_children():
-		if child is CivilianNPC:
-			child.visible = is_daytime
-			child.set_physics_process(is_daytime)
-			child.set_process(is_daytime)
-			# Enable/disable wandering
-			if child.wander:
-				child.wander.set_physics_process(is_daytime)
+## The Gilded Grog, in world coordinates. The level root's own position plus the
+## streaming offset is the cell origin, so this reads right whether Dalhurst is
+## the main scene or a streamed cell.
+func _leisure_world_pos() -> Vector3:
+	return global_position + CellStreamer.world_offset + LEISURE_LOCAL
 
 
 ## Spawn locked doors from markers placed in the scene

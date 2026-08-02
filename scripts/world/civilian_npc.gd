@@ -187,6 +187,10 @@ func _ready() -> void:
 	# Register with WorldData for tracking
 	_register_with_world_data()
 
+	# Position is a pure function of (schedule, hour). Deferred so the level
+	# script has finished configuring this NPC first.
+	place_for_current_hour.call_deferred()
+
 
 ## Register this NPC with WorldData for tracking
 func _register_with_world_data() -> void:
@@ -212,6 +216,26 @@ func _register_with_world_data() -> void:
 func _exit_tree() -> void:
 	var effective_id: String = npc_id if not npc_id.is_empty() else name
 	PlayerGPS.unregister_npc(effective_id)
+	NPCScheduler.detach_ambient(self)
+
+
+## Stand where this NPC's schedule says they stand at the current hour.
+##
+## Port of RECON's civilian.gd:742-766, the most portable function in that
+## repository. There is one implementation and it lives in NPCScheduler; this
+## and its twins on QuestGiver and Merchant are the doors onto it. An NPC with
+## no schedule is left exactly where they were.
+func place_for_current_hour() -> void:
+	if not is_inside_tree() or _is_dead:
+		return
+	NPCScheduler.place_node(self)
+
+
+## Enrol an ambient civilian - one whose name and spot are drawn fresh every
+## boot, so no authored record could name them. Their spawner names the trade
+## and wherever they were put this time becomes their work station.
+func attach_to_schedule(archetype: String, leisure_world_pos: Vector3) -> void:
+	NPCScheduler.attach_ambient(self, archetype, leisure_world_pos)
 
 
 func _create_visual() -> void:

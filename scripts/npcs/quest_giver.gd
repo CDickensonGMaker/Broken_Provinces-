@@ -179,6 +179,10 @@ func _ready() -> void:
 	if has_shop and shop_inventory.is_empty():
 		_setup_shop_inventory()
 
+	# Position is a pure function of (schedule, hour). Deferred so the level
+	# script has finished configuring this NPC first.
+	place_for_current_hour.call_deferred()
+
 ## Create the visual representation (billboard sprite - PS1 style)
 func _create_visual() -> void:
 	# Load fallback texture if none assigned - pick based on gender
@@ -604,6 +608,14 @@ func _register_with_world_data() -> void:
 func _exit_tree() -> void:
 	var effective_id: String = npc_id if not npc_id.is_empty() else name
 	PlayerGPS.unregister_npc(effective_id)
+
+
+## Stand where this NPC's schedule says they stand at the current hour.
+## One implementation, in NPCScheduler; this is a door onto it.
+func place_for_current_hour() -> void:
+	if not is_inside_tree() or is_dead():
+		return
+	NPCScheduler.place_node(self)
 
 
 ## Constants for spawn collision avoidance
