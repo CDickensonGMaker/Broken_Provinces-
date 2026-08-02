@@ -70,3 +70,4 @@ Gameplay footage/
 
 # citizen build stage files - regenerable from tools/citizens/01..06
 assets/models/citizens/_stage*.blend
+tools/citizens/__pycache__/
