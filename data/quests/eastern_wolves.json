@@ -45,13 +45,13 @@
 		"gold": 100,
 		"xp": 350,
 		"items": ["hunters_cloak"],
-		"reputation": {"thornfield": 15}
+		"faction_reputation": {"thornfield": 15}
 	},
 	"optional_rewards": {
 		"optional_pelts": {
 			"gold": 50,
 			"xp": 100,
-			"reputation": {"thornfield": 5}
+			"faction_reputation": {"thornfield": 5}
 		}
 	},
 	"prerequisites": [],

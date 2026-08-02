@@ -51,7 +51,7 @@
 		"gold": 60,
 		"xp": 250,
 		"items": ["woodsman_axe"],
-		"reputation": {"thornfield": 10}
+		"faction_reputation": {"thornfield": 10}
 	},
 	"choice_consequences": {
 		"harlen_alive": {

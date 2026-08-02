@@ -29,7 +29,7 @@
     "rewards": {
         "gold": 500,
         "xp": 250,
-        "reputation_changes": {
+        "faction_reputation": {
             "nobility": 15,
             "dalhurst": 10
         }
