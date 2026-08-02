@@ -1335,18 +1335,10 @@ func _find_objective_in_current_zone(objective: QuestManager.Objective, quest: Q
 							result.name = merchant_name + " (sells " + objective.target + ")"
 							return result
 
-			# 3. Containers that might have the item
-			var containers := get_tree().get_nodes_in_group("containers")
-			for container in containers:
-				if container is Node3D:
-					# Check if container has been opened and has the item
-					if container.has_method("has_item"):
-						if container.has_item(objective.target):
-							result.found = true
-							result.position = (container as Node3D).global_position
-							var container_name: String = str(container.get("container_name")) if "container_name" in container else "Container"
-							result.name = container_name
-							return result
+			# 3. Containers: there is no container search. The "containers" group
+			# is joined by nothing and no class in the project implements
+			# has_item(), so this branch could never fire. Pointing the player at
+			# a chest that "might" hold the item is also worse than no waypoint.
 
 			# 4. If we have some items but not enough, still show turn-in NPC as a secondary option
 			# (Player might be able to buy/find rest elsewhere but this gives them direction)

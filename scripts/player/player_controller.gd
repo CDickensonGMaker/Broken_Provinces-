@@ -1119,14 +1119,18 @@ func _get_light_level() -> float:
 	if torch_light and torch_light.is_torch_equipped:
 		return 1.0  # Full brightness with torch
 
-	# Check time of day from GameManager if available
-	if GameManager and GameManager.has_method("get_time_of_day_light"):
-		return GameManager.get_time_of_day_light()
-
-	# Check for DirectionalLight in scene (sun)
+	# Under the sky: the sun's own light level for this hour. DayNightCycle puts
+	# its DirectionalLight3D in the "sun" group, so the group's presence is what
+	# says "outdoors" - which is why the time-of-day value is read here and not
+	# before this test. A cave at noon is still a cave.
+	#
+	# This used to be a three-step chain in the opposite order, and every step
+	# was dead: has_method("get_time_of_day_light") on a method that did not
+	# exist, then a group nothing joined, then a hardcoded 0.5. Enemy detection
+	# never reflected the hour, at any hour.
 	var sun := get_tree().get_first_node_in_group("sun") as DirectionalLight3D
 	if sun and sun.visible:
-		return sun.light_energy
+		return GameManager.get_time_of_day_light()
 
 	# Default to dim lighting (indoor/cave)
 	return 0.5

@@ -756,7 +756,6 @@ func _update_poi_markers() -> void:
 		{"group": "blacksmiths", "icon": "⚒", "color": COLOR_BLACKSMITH},
 		{"group": "alchemists", "icon": "⚗", "color": COLOR_ALCHEMIST},
 		{"group": "temples", "icon": "†", "color": COLOR_TEMPLE},
-		{"group": "shrines", "icon": "†", "color": COLOR_TEMPLE},
 		{"group": "guilds", "icon": "⚔", "color": COLOR_GUILD},
 		{"group": "inns", "icon": "🏠", "color": COLOR_INN},
 		{"group": "taverns", "icon": "🍺", "color": COLOR_INN},
@@ -764,7 +763,6 @@ func _update_poi_markers() -> void:
 		{"group": "fireplaces", "icon": "🔥", "color": COLOR_FIREPLACE},
 		{"group": "campfires", "icon": "🔥", "color": COLOR_FIREPLACE},
 		{"group": "rest_spots", "icon": "🔥", "color": COLOR_FIREPLACE},
-		{"group": "fast_travel", "icon": "◈", "color": COLOR_FAST_TRAVEL},
 		{"group": "fast_travel_shrines", "icon": "◈", "color": COLOR_FAST_TRAVEL},
 		# Generic merchant group comes LAST (fallback for unspecialized merchants)
 		{"group": "merchants", "icon": "$", "color": COLOR_SHOP},

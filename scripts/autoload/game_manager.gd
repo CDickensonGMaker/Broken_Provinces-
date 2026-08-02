@@ -149,6 +149,26 @@ func get_time_of_day_name() -> String:
 		Enums.TimeOfDay.MIDNIGHT: return "Midnight"
 		_: return "Unknown"
 
+## Outdoor daylight level, 0.0 (midnight) to 1.0 (noon).
+##
+## This is the *sky's* light, not the light where the player is standing - a
+## cave at noon is still dark. Callers decide whether the sky reaches them;
+## PlayerController does it by asking whether a "sun" DirectionalLight3D is in
+## the scene. The curve mirrors DayNightCycle's own light energies, normalised
+## against NOON_ENERGY, so the number a stealth check sees and the brightness
+## the player sees agree.
+func get_time_of_day_light() -> float:
+	match current_time_of_day:
+		Enums.TimeOfDay.DAWN: return 0.47
+		Enums.TimeOfDay.MORNING: return 0.73
+		Enums.TimeOfDay.NOON: return 1.0
+		Enums.TimeOfDay.AFTERNOON: return 0.93
+		Enums.TimeOfDay.DUSK: return 0.4
+		Enums.TimeOfDay.NIGHT: return 0.15
+		Enums.TimeOfDay.MIDNIGHT: return 0.1
+		_: return 0.5
+
+
 ## Check if it's currently night (for gameplay purposes)
 func is_night() -> bool:
 	return current_time_of_day == Enums.TimeOfDay.NIGHT or current_time_of_day == Enums.TimeOfDay.MIDNIGHT

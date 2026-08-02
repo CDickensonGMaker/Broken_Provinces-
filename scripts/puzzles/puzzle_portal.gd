@@ -49,6 +49,8 @@ const COOLDOWN_DURATION: float = 1.0
 
 func _ready() -> void:
 	super._ready()
+	# The minimap draws a portal marker for this group and nothing joined it.
+	add_to_group("portals")
 	_setup_visual()
 	_setup_portal_area()
 	_setup_particles()

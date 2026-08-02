@@ -74,7 +74,7 @@ under `data/` or `scripts/levels/`**:
 powershell -ExecutionPolicy Bypass -File tools/validate.ps1
 ```
 
-Or run every gate at once - the validator plus all eleven `check_*.tscn`
+Or run every gate at once - the validator plus all twelve `check_*.tscn`
 probes, one verdict, non-zero exit on any failure:
 
 ```powershell
@@ -248,6 +248,33 @@ adding it to `MISSING_SFX` with a manifest row. The gate:
 ```powershell
 & $godot45 --headless --path . res://tools/check_audio_events.tscn
 ```
+
+## SCENE GROUPS
+
+A group lookup against a name nothing joins returns an empty array. Nothing
+throws and nothing warns, so the feature it powers is simply absent. Batch 5
+found nine of these at once: minimap door icons, arena hazards that could not
+hit a gladiator, guild NPC icons, the guild dialogue branch, a container search
+for an objective, and the day/night light level behind every stealth check.
+
+**The rule: a group you read must be a group something joins.** Add the
+`add_to_group` at the same time as the `get_nodes_in_group`, in the same
+commit.
+
+**The gate:**
+
+```powershell
+& $godot45 --headless --path . res://tools/check_groups.tscn
+```
+
+It scans every `.gd` under `scripts/`, `tools/`, `dev/` and `addons/` for
+group reads - `get_nodes_in_group`, `get_first_node_in_group`, `is_in_group`,
+and the `{"group": "x"}` table form the minimap uses - and every `.gd` and
+`.tscn` for joins, then fails on any read with no joiner. If something joins a
+group in a way the scanner cannot see, add it to `KNOWN_EXTERNAL_JOINS` with
+the reason; an entry that stops being needed fails as a stale excuse.
+
+---
 
 ## SAVE DATA ZONES
 Each scene must have a unique `zone_id` for save data tracking.

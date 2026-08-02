@@ -28,7 +28,7 @@ var npc_type: String = "quest_giver"  # Can be overridden for specific NPC types
 
 ## Faction affiliation (e.g., "human_empire", "the_keepers", "merchant_guild")
 ## Used for quest tracking and faction reputation
-@export var faction_id: String = "human_empire"
+@export var faction_id: String = "human_empire": set = _set_faction_id
 
 ## NPC knowledge profile for ConversationSystem (uses generic_villager if not set)
 @export var npc_profile: NPCKnowledgeProfile
@@ -108,11 +108,33 @@ var generic_dialogues := {
 ## Dialogue when NPC has no more quests
 var no_quest_dialogue := "You've done well, traveler.\nMay your path be clear."
 
+## Guild staff are QuestGivers carrying a guild's faction_id (Guildmaster Vorn
+## and the Dalhurst guild clerk are "adventurers_guild"). The minimap's guild
+## icon and ConversationSystem's guild branch both read the "guilds" group and
+## nothing joined it. faction_id is assigned by level scripts *after* spawn, so
+## this is a setter rather than a line in _ready().
+func _set_faction_id(value: String) -> void:
+	faction_id = value
+	_update_guild_group()
+
+
+func _update_guild_group() -> void:
+	if not is_inside_tree():
+		return
+	var is_guild: bool = GuildRankManager.GUILD_RANKS.has(faction_id)
+	if is_guild and not is_in_group("guilds"):
+		add_to_group("guilds")
+	elif not is_guild and is_in_group("guilds"):
+		remove_from_group("guilds")
+
+
 func _ready() -> void:
 	add_to_group("interactable")
 	add_to_group("npcs")
 	add_to_group("quest_givers")
 	add_to_group("attackable")
+
+	_update_guild_group()
 
 	# If this NPC also has a shop, add to merchant groups
 	if has_shop:

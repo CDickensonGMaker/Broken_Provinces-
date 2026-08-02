@@ -104,6 +104,10 @@ func _clear_children_immediate(parent: Node) -> void:
 		child.queue_free()
 
 func _ready() -> void:
+	# CompanionCommandUI looks for this group to know a menu is open and stop
+	# eating keystrokes. Nothing joined it, so companion hotkeys fired while
+	# the player was typing in the menu.
+	add_to_group("game_menu")
 	visible = false
 	process_mode = Node.PROCESS_MODE_ALWAYS  # Allow menu to work while game is paused
 	_build_menu()

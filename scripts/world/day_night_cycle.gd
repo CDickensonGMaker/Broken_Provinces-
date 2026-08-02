@@ -133,6 +133,10 @@ func _setup_lighting() -> void:
 	sun_light.shadow_bias = 0.1
 	sun_light.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
 	sun_light.rotation_degrees = Vector3(-30, -45, 0)
+	# The player's stealth light check looks for this group to decide whether it
+	# is standing under the sky. Nothing joined it, so every zone read as
+	# "indoors, dim" - which is why stealth at midnight played like noon.
+	sun_light.add_to_group("sun")
 	add_child(sun_light)
 
 	# CRITICAL FIX: ALWAYS remove any existing WorldEnvironment and create our own

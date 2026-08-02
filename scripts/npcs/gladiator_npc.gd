@@ -34,6 +34,9 @@ func _ready() -> void:
 	add_to_group("enemies")
 	add_to_group("attackable")
 	add_to_group("tournament_enemy")
+	# DamageZone.detect_gladiators and TriggeredTrap both test this group, and
+	# nothing joined it - so an arena hazard set to hit gladiators hit nobody.
+	add_to_group("gladiators")
 
 	# Setup collision
 	collision_layer = 4  # Layer 3 (enemies)

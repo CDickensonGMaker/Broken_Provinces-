@@ -38,6 +38,8 @@ var _is_player_inside: bool = false
 func _ready() -> void:
 	add_to_group("interactable")
 	add_to_group("cave_entrances")
+	# The minimap draws a portal marker for this group and nothing joined it.
+	add_to_group("portals")
 
 	# Find or create the portal trigger area
 	_setup_portal_area()
