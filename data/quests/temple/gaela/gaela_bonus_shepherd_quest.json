@@ -1,59 +1,64 @@
 {
-	"id": "gaela_bonus_shepherd_quest",
-	"title": "The Lost Flock",
-	"description": "A Millbrook shepherd's flock scattered when dire wolves hit them near Willow Dale, and the sheep are the whole of what he owns - no wool to sell, no mutton for winter, no flock to breed back from if they're gone for good. As a servant of Gaela, protector of pastoral life, you are asked to find them before the wolves do.",
-	"is_main_quest": false,
-	"quest_source": "npc",
-	"giver_npc_id": "millbrook_shepherd",
-	"giver_npc_type": "civilian",
-	"giver_region": "millbrook",
-	"objectives": [
-		{
-			"id": "find_lost_sheep",
-			"description": "Find the shepherd's lost sheep near Willow Dale",
-			"type": "explore",
-			"target": "willow_dale",
-			"required_count": 1,
-			"is_optional": false
-		},
-		{
-			"id": "kill_dire_wolves",
-			"description": "Kill the Dire Wolves threatening the flock",
-			"type": "kill",
-			"target": "dire_wolf",
-			"required_count": 6,
-			"is_optional": false
-		},
-		{
-			"id": "escort_sheep_home",
-			"description": "Escort the sheep safely back to Millbrook",
-			"type": "escort",
-			"target": "sheep_flock",
-			"required_count": 1,
-			"is_optional": false
-		},
-		{
-			"id": "return_to_shepherd",
-			"description": "Return to the Shepherd in Millbrook",
-			"type": "talk",
-			"target": "millbrook_shepherd",
-			"required_count": 1,
-			"is_optional": false
-		}
-	],
-	"turn_in_type": "npc_specific",
-	"turn_in_target": "millbrook_shepherd",
-	"turn_in_zone": "millbrook",
-	"rewards": {
-		"gold": 150,
-		"xp": 600,
-		"items": ["wool_cloak", "shepherds_crook"],
-		"faction_reputation": {
-			"church_of_gaela": 20,
-			"millbrook": 35
-		}
-	},
-	"prerequisites": ["gaela_03_protect_harvest"],
-	"next_quest": "",
-	"notes": "Threat: the shepherd's entire livelihood, named explicitly rather than left as an unstated assumption. Giver motive: he has no militia and no coin to hire a hunter, only a stranger passing through Millbrook. Consequence: not wired; losing the flock for good is stated as ruin, not enforced."
+  "id": "gaela_bonus_shepherd_quest",
+  "title": "The Lost Flock",
+  "description": "A Millbrook shepherd's flock scattered when dire wolves hit them near Willow Dale, and the sheep are the whole of what he owns - no wool to sell, no mutton for winter, no flock to breed back from if they're gone for good. As a servant of Gaela, protector of pastoral life, you are asked to find them before the wolves do.",
+  "is_main_quest": false,
+  "quest_source": "npc",
+  "giver_npc_id": "millbrook_shepherd",
+  "giver_npc_type": "civilian",
+  "giver_region": "millbrook",
+  "objectives": [
+    {
+      "id": "find_lost_sheep",
+      "description": "Find the shepherd's lost sheep near Willow Dale",
+      "type": "explore",
+      "target": "willow_dale",
+      "required_count": 1,
+      "is_optional": false
+    },
+    {
+      "id": "kill_dire_wolves",
+      "description": "Kill the Dire Wolves threatening the flock",
+      "type": "kill",
+      "target": "dire_wolf",
+      "required_count": 6,
+      "is_optional": false
+    },
+    {
+      "id": "escort_sheep_home",
+      "description": "Escort the sheep safely back to Millbrook",
+      "type": "escort",
+      "target": "sheep_flock",
+      "required_count": 1,
+      "is_optional": false
+    },
+    {
+      "id": "return_to_shepherd",
+      "description": "Return to the Shepherd in Millbrook",
+      "type": "talk",
+      "target": "millbrook_shepherd",
+      "required_count": 1,
+      "is_optional": false
+    }
+  ],
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "millbrook_shepherd",
+  "turn_in_zone": "millbrook",
+  "rewards": {
+    "gold": 150,
+    "xp": 600,
+    "items": [
+      "wool_cloak",
+      "shepherds_crook"
+    ],
+    "faction_reputation": {
+      "church_of_gaela": 20,
+      "millbrook": 35
+    }
+  },
+  "prerequisites": [
+    "gaela_03_protect_harvest"
+  ],
+  "next_quest": "",
+  "notes": "Threat: the shepherd's entire livelihood, named explicitly rather than left as an unstated assumption. Giver motive: he has no militia and no coin to hire a hunter, only a stranger passing through Millbrook. Consequence: not wired; losing the flock for good is stated as ruin, not enforced."
 }

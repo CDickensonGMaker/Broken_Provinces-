@@ -1,87 +1,105 @@
 {
-	"id": "morthane_07_lich_rumor",
-	"title": "Whispers of Immortality",
-	"description": "The man attempting the ritual in Willow Dale is old enough that dying honestly should not surprise him, and that is exactly why he is doing it - he spent everything he owned on the research rather than face what is coming for everyone. The Priest of Morthane has no sympathy in him for that fear. Undeath is the one perversion of the cycle his doctrine will not forgive, however understandable the terror that drove someone to it. Stop the transformation before it finishes.",
-	"is_main_quest": false,
-	"quest_source": "npc",
-	"giver_npc_id": "priest_morthane_elder_moor",
-	"giver_npc_type": "priest",
-	"giver_region": "elder_moor",
-	"objectives": [
-		{
-			"id": "investigate_willow_dale_ruins",
-			"description": "Search Willow Dale ruins for signs of the ritual",
-			"type": "reach",
-			"target": "willow_dale",
-			"target_zone": "willow_dale",
-			"required_count": 1
-		},
-		{
-			"id": "find_phylactery_notes",
-			"description": "Find the lich aspirant's phylactery research",
-			"type": "collect",
-			"target": "phylactery_research",
-			"target_zone": "willow_dale",
-			"required_count": 1
-		},
-		{
-			"id": "destroy_undead_guardians",
-			"description": "Destroy the undead guardians protecting the ritual site",
-			"type": "kill",
-			"target": "skeleton_shade",
-			"target_zone": "willow_dale",
-			"required_count": 6
-		},
-		{
-			"id": "stop_transformation",
-			"description": "Stop the lich transformation ritual",
-			"type": "interact",
-			"target": "lich_transformation_altar",
-			"target_zone": "willow_dale",
-			"required_count": 1
-		},
-		{
-			"id": "defeat_aspirant",
-			"description": "Stop the old man before his fear of dying finishes the ritual",
-			"type": "kill",
-			"target": "lich_aspirant_valdris",
-			"target_zone": "willow_dale",
-			"required_count": 1
-		},
-		{
-			"id": "return_priest",
-			"description": "Return to the Priest of Morthane",
-			"type": "talk",
-			"target": "priest_morthane_elder_moor",
-			"target_zone": "elder_moor",
-			"required_count": 1
-		}
-	],
-	"turn_in_type": "npc_specific",
-	"turn_in_target": "priest_morthane_elder_moor",
-	"turn_in_zone": "elder_moor",
-	"rewards": {
-		"gold": 300,
-		"xp": 900,
-		"items": [
-			{"id": "anti_undead_longsword", "quantity": 1}
-		],
-		"faction_reputation": {
-			"church_of_morthane": 40,
-			"church_of_three": 20
-		}
-	},
-	"spawn_on_accept": [
-		{
-			"type": "chest",
-			"location": "willow_dale",
-			"coords": [-8, 2, 20],
-			"contains": ["phylactery_research"],
-			"loot_tier": "rare"
-		}
-	],
-	"prerequisites": ["morthane_06_death_speaker"],
-	"next_quest": "morthane_08_rebirth_ritual",
-	"faction": "church_of_morthane",
-	"notes": "Threat: named motive for the aspirant - ordinary fear of death, not villainy, which the priest's doctrine still condemns without exception. Giver motive: Morthane's faith treats death as natural and undeath as the one line it will not soften on, regardless of sympathy for the reason. Consequence: not wired."
+  "id": "morthane_07_lich_rumor",
+  "title": "Whispers of Immortality",
+  "description": "The man attempting the ritual in Willow Dale is old enough that dying honestly should not surprise him, and that is exactly why he is doing it - he spent everything he owned on the research rather than face what is coming for everyone. The Priest of Morthane has no sympathy in him for that fear. Undeath is the one perversion of the cycle his doctrine will not forgive, however understandable the terror that drove someone to it. Stop the transformation before it finishes.",
+  "is_main_quest": false,
+  "quest_source": "npc",
+  "giver_npc_id": "priest_morthane_elder_moor",
+  "giver_npc_type": "priest",
+  "giver_region": "elder_moor",
+  "objectives": [
+    {
+      "id": "investigate_willow_dale_ruins",
+      "description": "Search Willow Dale ruins for signs of the ritual",
+      "type": "reach",
+      "target": "willow_dale",
+      "target_zone": "willow_dale",
+      "required_count": 1
+    },
+    {
+      "id": "find_phylactery_notes",
+      "description": "Find the lich aspirant's phylactery research",
+      "type": "collect",
+      "target": "phylactery_research",
+      "target_zone": "willow_dale",
+      "required_count": 1
+    },
+    {
+      "id": "destroy_undead_guardians",
+      "description": "Destroy the undead guardians protecting the ritual site",
+      "type": "kill",
+      "target": "skeleton_shade",
+      "target_zone": "willow_dale",
+      "required_count": 6
+    },
+    {
+      "id": "stop_transformation",
+      "description": "Stop the lich transformation ritual",
+      "type": "interact",
+      "target": "lich_transformation_altar",
+      "target_zone": "willow_dale",
+      "required_count": 1
+    },
+    {
+      "id": "defeat_aspirant",
+      "description": "Stop the old man before his fear of dying finishes the ritual",
+      "type": "kill",
+      "target": "lich_aspirant_valdris",
+      "target_zone": "willow_dale",
+      "required_count": 1
+    },
+    {
+      "id": "return_priest",
+      "description": "Return to the Priest of Morthane",
+      "type": "talk",
+      "target": "priest_morthane_elder_moor",
+      "target_zone": "elder_moor",
+      "required_count": 1
+    }
+  ],
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "priest_morthane_elder_moor",
+  "turn_in_zone": "elder_moor",
+  "rewards": {
+    "gold": 300,
+    "xp": 900,
+    "items": [
+      {
+        "id": "anti_undead_longsword",
+        "quantity": 1
+      }
+    ],
+    "faction_reputation": {
+      "church_of_morthane": 40,
+      "church_of_three": 20
+    }
+  },
+  "spawn_on_accept": [
+    {
+      "type": "chest",
+      "location": "willow_dale",
+      "coords": [
+        -8,
+        2,
+        20
+      ],
+      "contains": [
+        "phylactery_research"
+      ],
+      "loot_tier": "rare"
+    }
+  ],
+  "prerequisites": [
+    "morthane_06_death_speaker"
+  ],
+  "next_quest": "morthane_08_rebirth_ritual",
+  "faction": "church_of_morthane",
+  "notes": "Threat: named motive for the aspirant - ordinary fear of death, not villainy, which the priest's doctrine still condemns without exception. Giver motive: Morthane's faith treats death as natural and undeath as the one line it will not soften on, regardless of sympathy for the reason. Consequence: not wired.",
+  "forbidden_flags": [
+    "chronos_devotee",
+    "gaela_devotee"
+  ],
+  "flag_prerequisites": [
+    "morthane_devotee"
+  ]
 }

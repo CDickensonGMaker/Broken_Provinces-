@@ -1,101 +1,128 @@
 {
-	"id": "chronos_10_eternal_vigil",
-	"title": "The Eternal Vigil",
-	"description": "Deep beneath the Kazer-Dun Entrance an old Chronos shrine still turns its hourglass, and every traveler and dwarf who uses that pass sets their watch-changes by it without knowing it is there. The Timeless One does not care about any of that - it exists outside the doctrine entirely, which is the one thing Chronos's faith cannot forgive. Break the hourglass and nobody in the caves below will be able to trust the hour again. The Priest sends you to finish this because he cannot.",
-	"is_main_quest": false,
-	"quest_source": "npc",
-	"giver_npc_id": "priest_chronos_dalhurst",
-	"giver_npc_type": "civilian",
-	"giver_region": "dalhurst",
-	"faction": "church_of_chronos",
-	"objectives": [
-		{
-			"id": "enter_kazer_dun_entrance",
-			"description": "Enter the Kazer-Dun Entrance and find the ancient shrine",
-			"type": "reach",
-			"target": "kazer_dun_entrance",
-			"required_count": 1
-		},
-		{
-			"id": "defeat_shrine_guardians",
-			"description": "Defeat the corrupted shrine guardians (6 enemies)",
-			"type": "kill",
-			"target": "temporal_guardian",
-			"required_count": 6
-		},
-		{
-			"id": "locate_eternal_hourglass",
-			"description": "Locate the Eternal Hourglass deep in the shrine",
-			"type": "reach",
-			"target": "kazer_dun_entrance",
-			"required_count": 1
-		},
-		{
-			"id": "defeat_timeless_one",
-			"description": "Defeat the Timeless One (epic boss encounter)",
-			"type": "kill",
-			"target": "timeless_one",
-			"required_count": 1
-		},
-		{
-			"id": "protect_hourglass",
-			"description": "Protect the Eternal Hourglass and restore the shrine",
-			"type": "solve_puzzle",
-			"target": "eternal_hourglass_restoration",
-			"required_count": 1
-		},
-		{
-			"id": "receive_champion_title",
-			"description": "Return to the Priest and receive the title of Champion",
-			"type": "talk",
-			"target": "priest_chronos_dalhurst",
-			"required_count": 1
-		}
-	],
-	"turn_in_type": "npc_specific",
-	"turn_in_target": "priest_chronos_dalhurst",
-	"turn_in_zone": "dalhurst",
-	"rewards": {
-		"gold": 750,
-		"xp": 2000,
-		"items": ["eternal_hourglass_fragment", "champions_mantle"],
-		"faction_reputation": {
-			"church_of_chronos": 100,
-			"church_of_three": 50
-		}
-	},
-	"prerequisites": ["chronos_09_timeline_threat"],
-	"flags_required": ["chronos_devotee"],
-	"next_quest": "",
-	"spawn_on_accept": [
-		{
-			"type": "enemy",
-			"location": "kazer_dun_entrance",
-			"coords": [-485, 0, 895],
-			"enemy_type": "corrupted_temporal_guardian",
-			"count": 2
-		},
-		{
-			"type": "enemy",
-			"location": "kazer_dun_entrance",
-			"coords": [-495, 0, 905],
-			"enemy_type": "corrupted_temporal_guardian",
-			"count": 2
-		},
-		{
-			"type": "enemy",
-			"location": "kazer_dun_entrance",
-			"coords": [-475, 0, 905],
-			"enemy_type": "corrupted_temporal_guardian",
-			"count": 2
-		},
-		{
-			"type": "enemy",
-			"location": "kazer_dun_entrance",
-			"coords": [-485, 0, 910],
-			"enemy_type": "the_timeless_one",
-			"count": 1
-		}
-	],
-	"notes": "Threat: named concretely - travelers and dwarves in the Kazer-Dun caves lose their only working clock if the hourglass breaks. Giver motive: doctrinal offense - a thing outside fate is the one category Chronos's faith has no answer for, and the priest is too old to descend himself. Consequence: not wired mechanically; stated as doctrine, matching the line's rule against invented urgency."
+  "id": "chronos_10_eternal_vigil",
+  "title": "The Eternal Vigil",
+  "description": "Deep beneath the Kazer-Dun Entrance an old Chronos shrine still turns its hourglass, and every traveler and dwarf who uses that pass sets their watch-changes by it without knowing it is there. The Timeless One does not care about any of that - it exists outside the doctrine entirely, which is the one thing Chronos's faith cannot forgive. Break the hourglass and nobody in the caves below will be able to trust the hour again. The Priest sends you to finish this because he cannot.",
+  "is_main_quest": false,
+  "quest_source": "npc",
+  "giver_npc_id": "priest_chronos_dalhurst",
+  "giver_npc_type": "civilian",
+  "giver_region": "dalhurst",
+  "faction": "church_of_chronos",
+  "objectives": [
+    {
+      "id": "enter_kazer_dun_entrance",
+      "description": "Enter the Kazer-Dun Entrance and find the ancient shrine",
+      "type": "reach",
+      "target": "kazer_dun_entrance",
+      "required_count": 1
+    },
+    {
+      "id": "defeat_shrine_guardians",
+      "description": "Defeat the corrupted shrine guardians (6 enemies)",
+      "type": "kill",
+      "target": "temporal_guardian",
+      "required_count": 6
+    },
+    {
+      "id": "locate_eternal_hourglass",
+      "description": "Locate the Eternal Hourglass deep in the shrine",
+      "type": "reach",
+      "target": "kazer_dun_entrance",
+      "required_count": 1
+    },
+    {
+      "id": "defeat_timeless_one",
+      "description": "Defeat the Timeless One (epic boss encounter)",
+      "type": "kill",
+      "target": "timeless_one",
+      "required_count": 1
+    },
+    {
+      "id": "protect_hourglass",
+      "description": "Protect the Eternal Hourglass and restore the shrine",
+      "type": "solve_puzzle",
+      "target": "eternal_hourglass_restoration",
+      "required_count": 1
+    },
+    {
+      "id": "receive_champion_title",
+      "description": "Return to the Priest and receive the title of Champion",
+      "type": "talk",
+      "target": "priest_chronos_dalhurst",
+      "required_count": 1
+    }
+  ],
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "priest_chronos_dalhurst",
+  "turn_in_zone": "dalhurst",
+  "rewards": {
+    "gold": 750,
+    "xp": 2000,
+    "items": [
+      "eternal_hourglass_fragment",
+      "champions_mantle"
+    ],
+    "faction_reputation": {
+      "church_of_chronos": 100,
+      "church_of_three": 50
+    }
+  },
+  "prerequisites": [
+    "chronos_09_timeline_threat"
+  ],
+  "next_quest": "",
+  "spawn_on_accept": [
+    {
+      "type": "enemy",
+      "location": "kazer_dun_entrance",
+      "coords": [
+        -485,
+        0,
+        895
+      ],
+      "enemy_type": "corrupted_temporal_guardian",
+      "count": 2
+    },
+    {
+      "type": "enemy",
+      "location": "kazer_dun_entrance",
+      "coords": [
+        -495,
+        0,
+        905
+      ],
+      "enemy_type": "corrupted_temporal_guardian",
+      "count": 2
+    },
+    {
+      "type": "enemy",
+      "location": "kazer_dun_entrance",
+      "coords": [
+        -475,
+        0,
+        905
+      ],
+      "enemy_type": "corrupted_temporal_guardian",
+      "count": 2
+    },
+    {
+      "type": "enemy",
+      "location": "kazer_dun_entrance",
+      "coords": [
+        -485,
+        0,
+        910
+      ],
+      "enemy_type": "the_timeless_one",
+      "count": 1
+    }
+  ],
+  "notes": "Threat: named concretely - travelers and dwarves in the Kazer-Dun caves lose their only working clock if the hourglass breaks. Giver motive: doctrinal offense - a thing outside fate is the one category Chronos's faith has no answer for, and the priest is too old to descend himself. Consequence: not wired mechanically; stated as doctrine, matching the line's rule against invented urgency.",
+  "forbidden_flags": [
+    "gaela_devotee",
+    "morthane_devotee"
+  ],
+  "flag_prerequisites": [
+    "chronos_devotee"
+  ]
 }

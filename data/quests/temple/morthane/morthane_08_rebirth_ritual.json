@@ -1,87 +1,107 @@
 {
-	"id": "morthane_08_rebirth_ritual",
-	"title": "The Second Chance",
-	"description": "Not all death magic is evil, and the Priest of Morthane is careful to say so only rarely, because most who ask for it are asking out of the same fear he condemns in a lich aspirant. Ilsabet Corr is different - dying anyway, past saving, and asking to serve the cycle rather than cheat it. The rite is real and it can still go wrong; the priest has performed it twice before and lost the celebrant once. He wants a second set of hands he trusts if it goes wrong again.",
-	"is_main_quest": false,
-	"quest_source": "npc",
-	"giver_npc_id": "priest_morthane_elder_moor",
-	"giver_npc_type": "priest",
-	"giver_region": "elder_moor",
-	"objectives": [
-		{
-			"id": "travel_crossroads",
-			"description": "Go to the Shrine of Endings at Elder Moor",
-			"type": "reach",
-			"target": "elder_moor",
-			"target_zone": "crossroads",
-			"required_count": 1
-		},
-		{
-			"id": "speak_dying_merchant",
-			"description": "Speak with the dying merchant Ilsabet Corr",
-			"type": "talk",
-			"target": "dying_merchant_ilsabet",
-			"target_zone": "crossroads",
-			"required_count": 1
-		},
-		{
-			"id": "gather_ritual_components",
-			"description": "Gather ritual components: Death's Lily, Grave Soil, and Rebirth Incense",
-			"type": "collect",
-			"target": "rebirth_ritual_components",
-			"target_zone": "crossroads",
-			"required_count": 3
-		},
-		{
-			"id": "prepare_ritual_circle",
-			"description": "Prepare the ritual circle at the Shrine of Endings",
-			"type": "interact",
-			"target": "rebirth_ritual_circle",
-			"target_zone": "elder_moor",
-			"required_count": 1
-		},
-		{
-			"id": "witness_rebirth",
-			"description": "Stand by Ilsabet's rebirth, knowing it has failed before",
-			"type": "interact",
-			"target": "rebirth_ritual_altar",
-			"target_zone": "elder_moor",
-			"required_count": 1
-		},
-		{
-			"id": "return_priest",
-			"description": "Speak with the Priest about the meaning of rebirth",
-			"type": "talk",
-			"target": "priest_morthane_elder_moor",
-			"target_zone": "elder_moor",
-			"required_count": 1
-		}
-	],
-	"turn_in_type": "npc_specific",
-	"turn_in_target": "priest_morthane_elder_moor",
-	"turn_in_zone": "elder_moor",
-	"rewards": {
-		"gold": 350,
-		"xp": 1000,
-		"items": [
-			{"id": "cycle_wisdom_ring", "quantity": 1}
-		],
-		"faction_reputation": {
-			"church_of_morthane": 45,
-			"church_of_three": 22
-		}
-	},
-	"spawn_on_accept": [
-		{
-			"type": "chest",
-			"location": "crossroads",
-			"coords": [5, 0, 5],
-			"contains": ["deaths_lily", "grave_soil", "rebirth_incense"],
-			"loot_tier": "rare"
-		}
-	],
-	"prerequisites": ["morthane_07_lich_rumor"],
-	"next_quest": "morthane_09_undead_army",
-	"faction": "church_of_morthane",
-	"notes": "Threat: the rite's own real failure rate, stated - the priest has lost a celebrant to it before. Giver motive: he needs someone he trusts present in case it goes wrong a second time, not a witness for ceremony's sake. Consequence: not wired; the risk is prose-only since the objectives already resolve to a completed ritual."
+  "id": "morthane_08_rebirth_ritual",
+  "title": "The Second Chance",
+  "description": "Not all death magic is evil, and the Priest of Morthane is careful to say so only rarely, because most who ask for it are asking out of the same fear he condemns in a lich aspirant. Ilsabet Corr is different - dying anyway, past saving, and asking to serve the cycle rather than cheat it. The rite is real and it can still go wrong; the priest has performed it twice before and lost the celebrant once. He wants a second set of hands he trusts if it goes wrong again.",
+  "is_main_quest": false,
+  "quest_source": "npc",
+  "giver_npc_id": "priest_morthane_elder_moor",
+  "giver_npc_type": "priest",
+  "giver_region": "elder_moor",
+  "objectives": [
+    {
+      "id": "travel_crossroads",
+      "description": "Go to the Shrine of Endings at Elder Moor",
+      "type": "reach",
+      "target": "elder_moor",
+      "target_zone": "crossroads",
+      "required_count": 1
+    },
+    {
+      "id": "speak_dying_merchant",
+      "description": "Speak with the dying merchant Ilsabet Corr",
+      "type": "talk",
+      "target": "dying_merchant_ilsabet",
+      "target_zone": "crossroads",
+      "required_count": 1
+    },
+    {
+      "id": "gather_ritual_components",
+      "description": "Gather ritual components: Death's Lily, Grave Soil, and Rebirth Incense",
+      "type": "collect",
+      "target": "rebirth_ritual_components",
+      "target_zone": "crossroads",
+      "required_count": 3
+    },
+    {
+      "id": "prepare_ritual_circle",
+      "description": "Prepare the ritual circle at the Shrine of Endings",
+      "type": "interact",
+      "target": "rebirth_ritual_circle",
+      "target_zone": "elder_moor",
+      "required_count": 1
+    },
+    {
+      "id": "witness_rebirth",
+      "description": "Stand by Ilsabet's rebirth, knowing it has failed before",
+      "type": "interact",
+      "target": "rebirth_ritual_altar",
+      "target_zone": "elder_moor",
+      "required_count": 1
+    },
+    {
+      "id": "return_priest",
+      "description": "Speak with the Priest about the meaning of rebirth",
+      "type": "talk",
+      "target": "priest_morthane_elder_moor",
+      "target_zone": "elder_moor",
+      "required_count": 1
+    }
+  ],
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "priest_morthane_elder_moor",
+  "turn_in_zone": "elder_moor",
+  "rewards": {
+    "gold": 350,
+    "xp": 1000,
+    "items": [
+      {
+        "id": "cycle_wisdom_ring",
+        "quantity": 1
+      }
+    ],
+    "faction_reputation": {
+      "church_of_morthane": 45,
+      "church_of_three": 22
+    }
+  },
+  "spawn_on_accept": [
+    {
+      "type": "chest",
+      "location": "crossroads",
+      "coords": [
+        5,
+        0,
+        5
+      ],
+      "contains": [
+        "deaths_lily",
+        "grave_soil",
+        "rebirth_incense"
+      ],
+      "loot_tier": "rare"
+    }
+  ],
+  "prerequisites": [
+    "morthane_07_lich_rumor"
+  ],
+  "next_quest": "morthane_09_undead_army",
+  "faction": "church_of_morthane",
+  "notes": "Threat: the rite's own real failure rate, stated - the priest has lost a celebrant to it before. Giver motive: he needs someone he trusts present in case it goes wrong a second time, not a witness for ceremony's sake. Consequence: not wired; the risk is prose-only since the objectives already resolve to a completed ritual.",
+  "forbidden_flags": [
+    "chronos_devotee",
+    "gaela_devotee"
+  ],
+  "flag_prerequisites": [
+    "morthane_devotee"
+  ]
 }

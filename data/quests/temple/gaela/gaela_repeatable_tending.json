@@ -1,62 +1,76 @@
 {
-	"id": "gaela_repeatable_tending",
-	"title": "Tending the Garden",
-	"description": "Priestess Elara keeps calling devotees back to the temple gardens for the plainest reason there is: compost doesn't turn itself and weeds don't pull themselves, and a goddess of growing things is not honored by people who only show up for the dramatic rescues. Come tend what's here.",
-	"is_main_quest": false,
-	"quest_source": "npc",
-	"giver_npc_id": "priest_gaela_dalhurst",
-	"giver_npc_type": "priest",
-	"giver_region": "dalhurst",
-	"is_repeatable": true,
-	"cooldown_days": 7,
-	"objectives": [
-		{
-			"id": "gather_compost",
-			"description": "Gather organic materials for compost",
-			"type": "collect",
-			"target": "rotting_vegetation",
-			"required_count": 10,
-			"is_optional": false
-		},
-		{
-			"id": "water_plants",
-			"description": "Water the temple garden plants (interact with 5 planters)",
-			"type": "explore",
-			"target": "dalhurst",
-			"required_count": 5,
-			"is_optional": false
-		},
-		{
-			"id": "remove_weeds",
-			"description": "Remove weeds from the sacred herb beds",
-			"type": "collect",
-			"target": "weeds",
-			"required_count": 15,
-			"is_optional": false
-		},
-		{
-			"id": "report_completion",
-			"description": "Report to Priestess Elara",
-			"type": "talk",
-			"target": "priest_gaela_dalhurst",
-			"required_count": 1,
-			"is_optional": false
-		}
-	],
-	"turn_in_type": "npc_specific",
-	"turn_in_target": "priest_gaela_dalhurst",
-	"turn_in_zone": "dalhurst",
-	"rewards": {
-		"gold": 25,
-		"xp": 100,
-		"items": ["healing_herb", "blue_flower"],
-		"faction_reputation": {
-			"church_of_gaela": 5,
-			"church_of_three": 2
-		}
-	},
-	"prerequisites": ["gaela_05_devotion_choice"],
-	"required_flags": ["gaela_devotee"],
-	"next_quest": "",
-	"notes": "System, not a plot - no invented threat. Giver motive: Elara treats unglamorous upkeep as the actual measure of devotion, consistent with her voice elsewhere in the line."
+  "id": "gaela_repeatable_tending",
+  "title": "Tending the Garden",
+  "description": "Priestess Elara keeps calling devotees back to the temple gardens for the plainest reason there is: compost doesn't turn itself and weeds don't pull themselves, and a goddess of growing things is not honored by people who only show up for the dramatic rescues. Come tend what's here.",
+  "is_main_quest": false,
+  "quest_source": "npc",
+  "giver_npc_id": "priest_gaela_dalhurst",
+  "giver_npc_type": "priest",
+  "giver_region": "dalhurst",
+  "is_repeatable": true,
+  "cooldown_days": 7,
+  "objectives": [
+    {
+      "id": "gather_compost",
+      "description": "Gather organic materials for compost",
+      "type": "collect",
+      "target": "rotting_vegetation",
+      "required_count": 10,
+      "is_optional": false
+    },
+    {
+      "id": "water_plants",
+      "description": "Water the temple garden plants (interact with 5 planters)",
+      "type": "explore",
+      "target": "dalhurst",
+      "required_count": 5,
+      "is_optional": false
+    },
+    {
+      "id": "remove_weeds",
+      "description": "Remove weeds from the sacred herb beds",
+      "type": "collect",
+      "target": "weeds",
+      "required_count": 15,
+      "is_optional": false
+    },
+    {
+      "id": "report_completion",
+      "description": "Report to Priestess Elara",
+      "type": "talk",
+      "target": "priest_gaela_dalhurst",
+      "required_count": 1,
+      "is_optional": false
+    }
+  ],
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "priest_gaela_dalhurst",
+  "turn_in_zone": "dalhurst",
+  "rewards": {
+    "gold": 25,
+    "xp": 100,
+    "items": [
+      "healing_herb",
+      "blue_flower"
+    ],
+    "faction_reputation": {
+      "church_of_gaela": 5,
+      "church_of_three": 2
+    }
+  },
+  "prerequisites": [
+    "gaela_05_devotion_choice"
+  ],
+  "required_flags": [
+    "gaela_devotee"
+  ],
+  "next_quest": "",
+  "notes": "System, not a plot - no invented threat. Giver motive: Elara treats unglamorous upkeep as the actual measure of devotion, consistent with her voice elsewhere in the line.",
+  "forbidden_flags": [
+    "chronos_devotee",
+    "morthane_devotee"
+  ],
+  "flag_prerequisites": [
+    "gaela_devotee"
+  ]
 }

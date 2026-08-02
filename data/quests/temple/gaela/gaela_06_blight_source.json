@@ -1,60 +1,75 @@
 {
-	"id": "gaela_06_blight_source",
-	"title": "Root of Corruption",
-	"description": "The blight spreading out of Willow Dale Ruins has already taken one plot of land bare - a smallholding on the ruins' edge whose family salted what soil they could save and moved into Dalhurst with nothing. Priestess Elara does not want a second family to lose their ground the same way. As a Devotee of Gaela, you are sent to find what is maintaining the corruption and put a stop to it before it reaches the next farm.",
-	"is_main_quest": false,
-	"quest_source": "npc",
-	"giver_npc_id": "priest_gaela_dalhurst",
-	"giver_npc_type": "priest",
-	"giver_region": "dalhurst",
-	"objectives": [
-		{
-			"id": "investigate_willow_dale",
-			"description": "Investigate the source of the blight in Willow Dale Ruins",
-			"type": "explore",
-			"target": "willow_dale",
-			"required_count": 1,
-			"is_optional": false
-		},
-		{
-			"id": "find_corrupted_artifact",
-			"description": "Find the corrupted artifact causing the blight",
-			"type": "collect",
-			"target": "corrupted_stone",
-			"required_count": 1,
-			"is_optional": false
-		},
-		{
-			"id": "kill_blight_cultists",
-			"description": "Defeat the cultists keeping the corruption fed",
-			"type": "kill",
-			"target": "cultist",
-			"required_count": 6,
-			"is_optional": false
-		},
-		{
-			"id": "cleanse_artifact",
-			"description": "Return the corrupted artifact to Priestess Elara for cleansing",
-			"type": "talk",
-			"target": "priest_gaela_dalhurst",
-			"required_count": 1,
-			"is_optional": false
-		}
-	],
-	"turn_in_type": "npc_specific",
-	"turn_in_target": "priest_gaela_dalhurst",
-	"turn_in_zone": "dalhurst",
-	"rewards": {
-		"gold": 250,
-		"xp": 750,
-		"items": ["purifying_charm", "natures_vigor_potion", "natures_vigor_potion"],
-		"faction_reputation": {
-			"church_of_gaela": 40,
-			"church_of_three": 30
-		}
-	},
-	"prerequisites": ["gaela_05_devotion_choice"],
-	"required_flags": ["gaela_devotee"],
-	"next_quest": "gaela_07_spirit_of_land",
-	"notes": "Threat: one family already lost their land to this blight and left; the quest exists to stop a second one losing theirs. Giver motive: Elara has already failed one household once and does not intend to fail a second. Consequence: not wired; the abandoned smallholding is prose only. Known duplicate of the root file gaela_blight, deliberately differentiated - this copy is the temple's own investigation with a devotee doing the work; the root copy is the same blight reaching Millbrook and told from a townsman's report of it."
+  "id": "gaela_06_blight_source",
+  "title": "Root of Corruption",
+  "description": "The blight spreading out of Willow Dale Ruins has already taken one plot of land bare - a smallholding on the ruins' edge whose family salted what soil they could save and moved into Dalhurst with nothing. Priestess Elara does not want a second family to lose their ground the same way. As a Devotee of Gaela, you are sent to find what is maintaining the corruption and put a stop to it before it reaches the next farm.",
+  "is_main_quest": false,
+  "quest_source": "npc",
+  "giver_npc_id": "priest_gaela_dalhurst",
+  "giver_npc_type": "priest",
+  "giver_region": "dalhurst",
+  "objectives": [
+    {
+      "id": "investigate_willow_dale",
+      "description": "Investigate the source of the blight in Willow Dale Ruins",
+      "type": "explore",
+      "target": "willow_dale",
+      "required_count": 1,
+      "is_optional": false
+    },
+    {
+      "id": "find_corrupted_artifact",
+      "description": "Find the corrupted artifact causing the blight",
+      "type": "collect",
+      "target": "corrupted_stone",
+      "required_count": 1,
+      "is_optional": false
+    },
+    {
+      "id": "kill_blight_cultists",
+      "description": "Defeat the cultists keeping the corruption fed",
+      "type": "kill",
+      "target": "cultist",
+      "required_count": 6,
+      "is_optional": false
+    },
+    {
+      "id": "cleanse_artifact",
+      "description": "Return the corrupted artifact to Priestess Elara for cleansing",
+      "type": "talk",
+      "target": "priest_gaela_dalhurst",
+      "required_count": 1,
+      "is_optional": false
+    }
+  ],
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "priest_gaela_dalhurst",
+  "turn_in_zone": "dalhurst",
+  "rewards": {
+    "gold": 250,
+    "xp": 750,
+    "items": [
+      "purifying_charm",
+      "natures_vigor_potion",
+      "natures_vigor_potion"
+    ],
+    "faction_reputation": {
+      "church_of_gaela": 40,
+      "church_of_three": 30
+    }
+  },
+  "prerequisites": [
+    "gaela_05_devotion_choice"
+  ],
+  "required_flags": [
+    "gaela_devotee"
+  ],
+  "next_quest": "gaela_07_spirit_of_land",
+  "notes": "Threat: one family already lost their land to this blight and left; the quest exists to stop a second one losing theirs. Giver motive: Elara has already failed one household once and does not intend to fail a second. Consequence: not wired; the abandoned smallholding is prose only. Known duplicate of the root file gaela_blight, deliberately differentiated - this copy is the temple's own investigation with a devotee doing the work; the root copy is the same blight reaching Millbrook and told from a townsman's report of it.",
+  "forbidden_flags": [
+    "chronos_devotee",
+    "morthane_devotee"
+  ],
+  "flag_prerequisites": [
+    "gaela_devotee"
+  ]
 }

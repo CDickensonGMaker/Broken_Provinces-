@@ -1,87 +1,109 @@
 {
-	"id": "chronos_06_temporal_echo",
-	"title": "Echoes of What Was",
-	"description": "As a Devotee of Chronos, you have been granted Temporal Sight - the ability to glimpse echoes of past events. The Priest wants to know one thing from Willow Dale's fall: whether the settlement had warning and ignored it, or had none at all. The temple has taught the story both ways for years and he is tired of not knowing which sermon is true. The guardians still standing watch over that hour will not let it be viewed for free.",
-	"is_main_quest": false,
-	"quest_source": "npc",
-	"giver_npc_id": "priest_chronos_dalhurst",
-	"giver_npc_type": "civilian",
-	"giver_region": "dalhurst",
-	"faction": "church_of_chronos",
-	"objectives": [
-		{
-			"id": "enter_willow_dale",
-			"description": "Enter the Willow Dale Ruins",
-			"type": "reach",
-			"target": "willow_dale",
-			"required_count": 1
-		},
-		{
-			"id": "activate_temporal_echo",
-			"description": "Activate the Temporal Echo at the ruined shrine",
-			"type": "solve_puzzle",
-			"target": "willow_dale_temporal_shrine",
-			"required_count": 1
-		},
-		{
-			"id": "defeat_temporal_guardians",
-			"description": "Defeat the Temporal Guardians (spectral protectors)",
-			"type": "kill",
-			"target": "temporal_guardian",
-			"required_count": 3
-		},
-		{
-			"id": "witness_vision",
-			"description": "Witness whether Willow Dale had warning of its fall",
-			"type": "talk",
-			"target": "temporal_echo_trigger",
-			"required_count": 1
-		},
-		{
-			"id": "report_vision",
-			"description": "Tell the Priest which sermon he has to stop preaching",
-			"type": "talk",
-			"target": "priest_chronos_dalhurst",
-			"required_count": 1
-		}
-	],
-	"turn_in_type": "npc_specific",
-	"turn_in_target": "priest_chronos_dalhurst",
-	"turn_in_zone": "dalhurst",
-	"rewards": {
-		"gold": 250,
-		"xp": 750,
-		"items": ["time_touched_blade"],
-		"faction_reputation": {
-			"church_of_chronos": 30,
-			"church_of_three": 10
-		}
-	},
-	"prerequisites": ["chronos_05_devotion_choice"],
-	"flags_required": ["chronos_devotee"],
-	"next_quest": "chronos_07_paradox",
-	"spawn_on_accept": [
-		{
-			"type": "enemy",
-			"location": "willow_dale",
-			"coords": [-490, 0, -475],
-			"enemy_type": "temporal_guardian",
-			"count": 1
-		},
-		{
-			"type": "enemy",
-			"location": "willow_dale",
-			"coords": [-480, 0, -490],
-			"enemy_type": "temporal_guardian",
-			"count": 1
-		},
-		{
-			"type": "enemy",
-			"location": "willow_dale",
-			"coords": [-475, 0, -480],
-			"enemy_type": "temporal_guardian",
-			"count": 1
-		}
-	],
-	"notes": "Threat: none to the player directly - the stake is what the priest has been teaching wrongly for years, and to whom. Giver motive: doctrinal honesty; he would rather retract a sermon than keep preaching a comfortable lie about a dead town. Consequence: the answer changes what the temple says about Willow Dale afterward, in prose only - not wired to a flag, so a later pass could hang a world_flags_to_set off it if the answer needs to matter mechanically."
+  "id": "chronos_06_temporal_echo",
+  "title": "Echoes of What Was",
+  "description": "As a Devotee of Chronos, you have been granted Temporal Sight - the ability to glimpse echoes of past events. The Priest wants to know one thing from Willow Dale's fall: whether the settlement had warning and ignored it, or had none at all. The temple has taught the story both ways for years and he is tired of not knowing which sermon is true. The guardians still standing watch over that hour will not let it be viewed for free.",
+  "is_main_quest": false,
+  "quest_source": "npc",
+  "giver_npc_id": "priest_chronos_dalhurst",
+  "giver_npc_type": "civilian",
+  "giver_region": "dalhurst",
+  "faction": "church_of_chronos",
+  "objectives": [
+    {
+      "id": "enter_willow_dale",
+      "description": "Enter the Willow Dale Ruins",
+      "type": "reach",
+      "target": "willow_dale",
+      "required_count": 1
+    },
+    {
+      "id": "activate_temporal_echo",
+      "description": "Activate the Temporal Echo at the ruined shrine",
+      "type": "solve_puzzle",
+      "target": "willow_dale_temporal_shrine",
+      "required_count": 1
+    },
+    {
+      "id": "defeat_temporal_guardians",
+      "description": "Defeat the Temporal Guardians (spectral protectors)",
+      "type": "kill",
+      "target": "temporal_guardian",
+      "required_count": 3
+    },
+    {
+      "id": "witness_vision",
+      "description": "Witness whether Willow Dale had warning of its fall",
+      "type": "talk",
+      "target": "temporal_echo_trigger",
+      "required_count": 1
+    },
+    {
+      "id": "report_vision",
+      "description": "Tell the Priest which sermon he has to stop preaching",
+      "type": "talk",
+      "target": "priest_chronos_dalhurst",
+      "required_count": 1
+    }
+  ],
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "priest_chronos_dalhurst",
+  "turn_in_zone": "dalhurst",
+  "rewards": {
+    "gold": 250,
+    "xp": 750,
+    "items": [
+      "time_touched_blade"
+    ],
+    "faction_reputation": {
+      "church_of_chronos": 30,
+      "church_of_three": 10
+    }
+  },
+  "prerequisites": [
+    "chronos_05_devotion_choice"
+  ],
+  "next_quest": "chronos_07_paradox",
+  "spawn_on_accept": [
+    {
+      "type": "enemy",
+      "location": "willow_dale",
+      "coords": [
+        -490,
+        0,
+        -475
+      ],
+      "enemy_type": "temporal_guardian",
+      "count": 1
+    },
+    {
+      "type": "enemy",
+      "location": "willow_dale",
+      "coords": [
+        -480,
+        0,
+        -490
+      ],
+      "enemy_type": "temporal_guardian",
+      "count": 1
+    },
+    {
+      "type": "enemy",
+      "location": "willow_dale",
+      "coords": [
+        -475,
+        0,
+        -480
+      ],
+      "enemy_type": "temporal_guardian",
+      "count": 1
+    }
+  ],
+  "notes": "Threat: none to the player directly - the stake is what the priest has been teaching wrongly for years, and to whom. Giver motive: doctrinal honesty; he would rather retract a sermon than keep preaching a comfortable lie about a dead town. Consequence: the answer changes what the temple says about Willow Dale afterward, in prose only - not wired to a flag, so a later pass could hang a world_flags_to_set off it if the answer needs to matter mechanically.",
+  "forbidden_flags": [
+    "gaela_devotee",
+    "morthane_devotee"
+  ],
+  "flag_prerequisites": [
+    "chronos_devotee"
+  ]
 }

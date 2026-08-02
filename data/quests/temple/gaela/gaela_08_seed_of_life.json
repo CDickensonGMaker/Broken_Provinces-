@@ -1,69 +1,85 @@
 {
-	"id": "gaela_08_seed_of_life",
-	"title": "The Eternal Seed",
-	"description": "A plague has struck Thornfield. The healer there has kept a boy named Tam alive for three days on willow tea and little else, and she has run out of anything that might do more. Priestess Elara speaks of a legendary Seed of Life, guarded near the Bandit Hideout, and admits she has never sent anyone to claim it before now because she was never sure until this week that it was worth the asking.",
-	"is_main_quest": false,
-	"quest_source": "npc",
-	"giver_npc_id": "priest_gaela_dalhurst",
-	"giver_npc_type": "priest",
-	"giver_region": "dalhurst",
-	"objectives": [
-		{
-			"id": "find_seed_location",
-			"description": "Search for the Seed of Life's resting place near Bandit Hideout",
-			"type": "explore",
-			"target": "bandit_hideout",
-			"required_count": 1,
-			"is_optional": false
-		},
-		{
-			"id": "defeat_guardian",
-			"description": "Defeat the Ancient Nature Guardian protecting the Seed",
-			"type": "kill",
-			"target": "tree_ent",
-			"required_count": 1,
-			"is_optional": false
-		},
-		{
-			"id": "retrieve_seed",
-			"description": "Retrieve the Seed of Life",
-			"type": "collect",
-			"target": "seed_of_life",
-			"required_count": 1,
-			"is_optional": false
-		},
-		{
-			"id": "deliver_to_thornfield",
-			"description": "Get the Seed to Tam and the others before the willow tea runs out",
-			"type": "talk",
-			"target": "thornfield_healer",
-			"required_count": 1,
-			"is_optional": false
-		},
-		{
-			"id": "report_to_priestess",
-			"description": "Report the miracle to Priestess Elara",
-			"type": "talk",
-			"target": "priest_gaela_dalhurst",
-			"required_count": 1,
-			"is_optional": false
-		}
-	],
-	"turn_in_type": "npc_specific",
-	"turn_in_target": "priest_gaela_dalhurst",
-	"turn_in_zone": "dalhurst",
-	"rewards": {
-		"gold": 350,
-		"xp": 1000,
-		"items": ["seed_of_renewal", "major_healing_herb", "major_healing_herb", "major_healing_herb"],
-		"faction_reputation": {
-			"church_of_gaela": 50,
-			"church_of_three": 40,
-			"thornfield": 50
-		}
-	},
-	"prerequisites": ["gaela_07_spirit_of_land"],
-	"required_flags": ["gaela_devotee"],
-	"next_quest": "gaela_09_famine_threat",
-	"notes": "Threat: named - a specific sick boy, Tam, invented for this quest to replace an unwritten plague. Giver motive: Elara only sends someone for the Seed now that a life is actually on the line, which is its own admission. Consequence: not wired; the delivery is prose-only. Known duplicate of the root file gaela_seed_of_life, deliberately differentiated - this copy is Tam's specific illness and the temple's decision to finally act; the root copy is a different, unnamed sickness in Dalhurst and a townsman's version of the same artifact hunt."
+  "id": "gaela_08_seed_of_life",
+  "title": "The Eternal Seed",
+  "description": "A plague has struck Thornfield. The healer there has kept a boy named Tam alive for three days on willow tea and little else, and she has run out of anything that might do more. Priestess Elara speaks of a legendary Seed of Life, guarded near the Bandit Hideout, and admits she has never sent anyone to claim it before now because she was never sure until this week that it was worth the asking.",
+  "is_main_quest": false,
+  "quest_source": "npc",
+  "giver_npc_id": "priest_gaela_dalhurst",
+  "giver_npc_type": "priest",
+  "giver_region": "dalhurst",
+  "objectives": [
+    {
+      "id": "find_seed_location",
+      "description": "Search for the Seed of Life's resting place near Bandit Hideout",
+      "type": "explore",
+      "target": "bandit_hideout",
+      "required_count": 1,
+      "is_optional": false
+    },
+    {
+      "id": "defeat_guardian",
+      "description": "Defeat the Ancient Nature Guardian protecting the Seed",
+      "type": "kill",
+      "target": "tree_ent",
+      "required_count": 1,
+      "is_optional": false
+    },
+    {
+      "id": "retrieve_seed",
+      "description": "Retrieve the Seed of Life",
+      "type": "collect",
+      "target": "seed_of_life",
+      "required_count": 1,
+      "is_optional": false
+    },
+    {
+      "id": "deliver_to_thornfield",
+      "description": "Get the Seed to Tam and the others before the willow tea runs out",
+      "type": "talk",
+      "target": "thornfield_healer",
+      "required_count": 1,
+      "is_optional": false
+    },
+    {
+      "id": "report_to_priestess",
+      "description": "Report the miracle to Priestess Elara",
+      "type": "talk",
+      "target": "priest_gaela_dalhurst",
+      "required_count": 1,
+      "is_optional": false
+    }
+  ],
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "priest_gaela_dalhurst",
+  "turn_in_zone": "dalhurst",
+  "rewards": {
+    "gold": 350,
+    "xp": 1000,
+    "items": [
+      "seed_of_renewal",
+      "major_healing_herb",
+      "major_healing_herb",
+      "major_healing_herb"
+    ],
+    "faction_reputation": {
+      "church_of_gaela": 50,
+      "church_of_three": 40,
+      "thornfield": 50
+    }
+  },
+  "prerequisites": [
+    "gaela_07_spirit_of_land"
+  ],
+  "required_flags": [
+    "gaela_devotee"
+  ],
+  "next_quest": "gaela_09_famine_threat",
+  "notes": "Threat: named - a specific sick boy, Tam, invented for this quest to replace an unwritten plague. Giver motive: Elara only sends someone for the Seed now that a life is actually on the line, which is its own admission. Consequence: not wired; the delivery is prose-only. Known duplicate of the root file gaela_seed_of_life, deliberately differentiated - this copy is Tam's specific illness and the temple's decision to finally act; the root copy is a different, unnamed sickness in Dalhurst and a townsman's version of the same artifact hunt.",
+  "forbidden_flags": [
+    "chronos_devotee",
+    "morthane_devotee"
+  ],
+  "flag_prerequisites": [
+    "gaela_devotee"
+  ]
 }

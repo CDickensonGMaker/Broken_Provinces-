@@ -1,123 +1,169 @@
 {
-	"id": "chronos_09_timeline_threat",
-	"title": "When Time Bleeds",
-	"description": "Your training has borne its first hard vision: a rift near the Bandit Hideout, and things coming through it that do not belong to this hour. The road between Dalhurst and Millbrook runs within a day's walk of the tear, and every caravan that has used it since spring will keep using it, because nobody told them not to yet. The Priest of Chronos asks you to close it before a wagon crew finds out what is coming through the hard way.",
-	"is_main_quest": false,
-	"quest_source": "npc",
-	"giver_npc_id": "priest_chronos_dalhurst",
-	"giver_npc_type": "civilian",
-	"giver_region": "dalhurst",
-	"faction": "church_of_chronos",
-	"objectives": [
-		{
-			"id": "locate_temporal_rift",
-			"description": "Locate the rift before it reaches the Millbrook road",
-			"type": "reach",
-			"target": "bandit_hideout",
-			"required_count": 1
-		},
-		{
-			"id": "defeat_time_aberrations_wave1",
-			"description": "Defeat the first wave of time-warped creatures (5 enemies)",
-			"type": "kill",
-			"target": "time_aberration",
-			"required_count": 5
-		},
-		{
-			"id": "collect_chronos_sealing_stones",
-			"description": "Collect 3 Chronos Sealing Stones from the area",
-			"type": "collect",
-			"target": "chronos_sealing_stone",
-			"required_count": 3
-		},
-		{
-			"id": "activate_rift_seal",
-			"description": "Activate the sealing ritual at the rift",
-			"type": "solve_puzzle",
-			"target": "temporal_rift_seal",
-			"required_count": 1
-		},
-		{
-			"id": "defeat_rift_guardian",
-			"description": "Defeat the Rift Guardian (boss encounter)",
-			"type": "kill",
-			"target": "temporal_guardian",
-			"required_count": 1
-		},
-		{
-			"id": "report_success",
-			"description": "Return to the Priest of Chronos with news of victory",
-			"type": "talk",
-			"target": "priest_chronos_dalhurst",
-			"required_count": 1
-		}
-	],
-	"turn_in_type": "npc_specific",
-	"turn_in_target": "priest_chronos_dalhurst",
-	"turn_in_zone": "dalhurst",
-	"rewards": {
-		"gold": 500,
-		"xp": 1500,
-		"items": ["timekeepers_aegis"],
-		"faction_reputation": {
-			"church_of_chronos": 50,
-			"church_of_three": 20
-		}
-	},
-	"prerequisites": ["chronos_08_prophet_training"],
-	"flags_required": ["chronos_devotee"],
-	"next_quest": "chronos_10_eternal_vigil",
-	"spawn_on_accept": [
-		{
-			"type": "enemy",
-			"location": "bandit_hideout",
-			"coords": [95, 0, -395],
-			"enemy_type": "time_aberration",
-			"count": 2
-		},
-		{
-			"type": "enemy",
-			"location": "bandit_hideout",
-			"coords": [105, 0, -405],
-			"enemy_type": "time_aberration",
-			"count": 2
-		},
-		{
-			"type": "enemy",
-			"location": "bandit_hideout",
-			"coords": [100, 0, -385],
-			"enemy_type": "time_aberration",
-			"count": 1
-		},
-		{
-			"type": "chest",
-			"location": "bandit_hideout",
-			"coords": [90, 0, -400],
-			"contains": ["chronos_sealing_stone"],
-			"loot_tier": "rare"
-		},
-		{
-			"type": "chest",
-			"location": "bandit_hideout",
-			"coords": [110, 0, -390],
-			"contains": ["chronos_sealing_stone"],
-			"loot_tier": "rare"
-		},
-		{
-			"type": "chest",
-			"location": "bandit_hideout",
-			"coords": [100, 0, -410],
-			"contains": ["chronos_sealing_stone"],
-			"loot_tier": "rare"
-		},
-		{
-			"type": "enemy",
-			"location": "bandit_hideout",
-			"coords": [100, 0, -400],
-			"enemy_type": "temporal_rift_guardian",
-			"count": 1
-		}
-	],
-	"quest_items": ["chronos_sealing_stone"],
-	"notes": "Threat: named and concrete - the Dalhurst-Millbrook caravan road sits within reach of the rift. Giver motive: the priest is spending his most trained champion on this because a wagon crew has no doctrine to protect them, only luck. Consequence: left alone, the rift's reach grows until it touches the road; not wired to a timer, stated as inevitable in the prose per the line's fix - Chronos's people act on foreseen harm without a countdown attached to it."
+  "id": "chronos_09_timeline_threat",
+  "title": "When Time Bleeds",
+  "description": "Your training has borne its first hard vision: a rift near the Bandit Hideout, and things coming through it that do not belong to this hour. The road between Dalhurst and Millbrook runs within a day's walk of the tear, and every caravan that has used it since spring will keep using it, because nobody told them not to yet. The Priest of Chronos asks you to close it before a wagon crew finds out what is coming through the hard way.",
+  "is_main_quest": false,
+  "quest_source": "npc",
+  "giver_npc_id": "priest_chronos_dalhurst",
+  "giver_npc_type": "civilian",
+  "giver_region": "dalhurst",
+  "faction": "church_of_chronos",
+  "objectives": [
+    {
+      "id": "locate_temporal_rift",
+      "description": "Locate the rift before it reaches the Millbrook road",
+      "type": "reach",
+      "target": "bandit_hideout",
+      "required_count": 1
+    },
+    {
+      "id": "defeat_time_aberrations_wave1",
+      "description": "Defeat the first wave of time-warped creatures (5 enemies)",
+      "type": "kill",
+      "target": "time_aberration",
+      "required_count": 5
+    },
+    {
+      "id": "collect_chronos_sealing_stones",
+      "description": "Collect 3 Chronos Sealing Stones from the area",
+      "type": "collect",
+      "target": "chronos_sealing_stone",
+      "required_count": 3
+    },
+    {
+      "id": "activate_rift_seal",
+      "description": "Activate the sealing ritual at the rift",
+      "type": "solve_puzzle",
+      "target": "temporal_rift_seal",
+      "required_count": 1
+    },
+    {
+      "id": "defeat_rift_guardian",
+      "description": "Defeat the Rift Guardian (boss encounter)",
+      "type": "kill",
+      "target": "temporal_guardian",
+      "required_count": 1
+    },
+    {
+      "id": "report_success",
+      "description": "Return to the Priest of Chronos with news of victory",
+      "type": "talk",
+      "target": "priest_chronos_dalhurst",
+      "required_count": 1
+    }
+  ],
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "priest_chronos_dalhurst",
+  "turn_in_zone": "dalhurst",
+  "rewards": {
+    "gold": 500,
+    "xp": 1500,
+    "items": [
+      "timekeepers_aegis"
+    ],
+    "faction_reputation": {
+      "church_of_chronos": 50,
+      "church_of_three": 20
+    }
+  },
+  "prerequisites": [
+    "chronos_08_prophet_training"
+  ],
+  "next_quest": "chronos_10_eternal_vigil",
+  "spawn_on_accept": [
+    {
+      "type": "enemy",
+      "location": "bandit_hideout",
+      "coords": [
+        95,
+        0,
+        -395
+      ],
+      "enemy_type": "time_aberration",
+      "count": 2
+    },
+    {
+      "type": "enemy",
+      "location": "bandit_hideout",
+      "coords": [
+        105,
+        0,
+        -405
+      ],
+      "enemy_type": "time_aberration",
+      "count": 2
+    },
+    {
+      "type": "enemy",
+      "location": "bandit_hideout",
+      "coords": [
+        100,
+        0,
+        -385
+      ],
+      "enemy_type": "time_aberration",
+      "count": 1
+    },
+    {
+      "type": "chest",
+      "location": "bandit_hideout",
+      "coords": [
+        90,
+        0,
+        -400
+      ],
+      "contains": [
+        "chronos_sealing_stone"
+      ],
+      "loot_tier": "rare"
+    },
+    {
+      "type": "chest",
+      "location": "bandit_hideout",
+      "coords": [
+        110,
+        0,
+        -390
+      ],
+      "contains": [
+        "chronos_sealing_stone"
+      ],
+      "loot_tier": "rare"
+    },
+    {
+      "type": "chest",
+      "location": "bandit_hideout",
+      "coords": [
+        100,
+        0,
+        -410
+      ],
+      "contains": [
+        "chronos_sealing_stone"
+      ],
+      "loot_tier": "rare"
+    },
+    {
+      "type": "enemy",
+      "location": "bandit_hideout",
+      "coords": [
+        100,
+        0,
+        -400
+      ],
+      "enemy_type": "temporal_rift_guardian",
+      "count": 1
+    }
+  ],
+  "quest_items": [
+    "chronos_sealing_stone"
+  ],
+  "notes": "Threat: named and concrete - the Dalhurst-Millbrook caravan road sits within reach of the rift. Giver motive: the priest is spending his most trained champion on this because a wagon crew has no doctrine to protect them, only luck. Consequence: left alone, the rift's reach grows until it touches the road; not wired to a timer, stated as inevitable in the prose per the line's fix - Chronos's people act on foreseen harm without a countdown attached to it.",
+  "forbidden_flags": [
+    "gaela_devotee",
+    "morthane_devotee"
+  ],
+  "flag_prerequisites": [
+    "chronos_devotee"
+  ]
 }

@@ -1,57 +1,67 @@
 {
-	"id": "chronos_08_prophet_training",
-	"title": "Glimpses of Tomorrow",
-	"description": "The Priest of Chronos will teach you to see what may come, not just what has passed - but slowly, at three sites, one vision at a time. He has watched acolytes rush this and come back unable to tell a true foresight from their own dread. He is not protecting you from danger. He is protecting you from believing yourself, too soon, about something that has not happened yet.",
-	"is_main_quest": false,
-	"quest_source": "npc",
-	"giver_npc_id": "priest_chronos_dalhurst",
-	"giver_npc_type": "civilian",
-	"giver_region": "dalhurst",
-	"faction": "church_of_chronos",
-	"objectives": [
-		{
-			"id": "meditate_elder_moor",
-			"description": "Meditate at the Elder Moor shrine",
-			"type": "reach",
-			"target": "elder_moor",
-			"required_count": 1
-		},
-		{
-			"id": "meditate_thornfield",
-			"description": "Meditate at the Thornfield sacred grove",
-			"type": "reach",
-			"target": "thornfield",
-			"required_count": 1
-		},
-		{
-			"id": "meditate_crossroads",
-			"description": "Meditate at the Crossroads monument",
-			"type": "reach",
-			"target": "crossroads",
-			"required_count": 1
-		},
-		{
-			"id": "receive_first_vision",
-			"description": "Receive your first true prophetic vision",
-			"type": "talk",
-			"target": "priest_chronos_dalhurst",
-			"required_count": 1
-		}
-	],
-	"turn_in_type": "npc_specific",
-	"turn_in_target": "priest_chronos_dalhurst",
-	"turn_in_zone": "dalhurst",
-	"rewards": {
-		"gold": 350,
-		"xp": 1000,
-		"items": ["prophets_circlet"],
-		"faction_reputation": {
-			"church_of_chronos": 40,
-			"church_of_three": 15
-		}
-	},
-	"prerequisites": ["chronos_07_paradox"],
-	"flags_required": ["chronos_devotee"],
-	"next_quest": "chronos_09_timeline_threat",
-	"notes": "Threat: the training itself, taken too fast, produces acolytes who mistake fear for foresight - the priest has seen it happen. Giver motive: pacing the visions is doctrinal caution, not ceremony for its own sake. Consequence: none wired; the priest's caution is characterization, not a fail state."
+  "id": "chronos_08_prophet_training",
+  "title": "Glimpses of Tomorrow",
+  "description": "The Priest of Chronos will teach you to see what may come, not just what has passed - but slowly, at three sites, one vision at a time. He has watched acolytes rush this and come back unable to tell a true foresight from their own dread. He is not protecting you from danger. He is protecting you from believing yourself, too soon, about something that has not happened yet.",
+  "is_main_quest": false,
+  "quest_source": "npc",
+  "giver_npc_id": "priest_chronos_dalhurst",
+  "giver_npc_type": "civilian",
+  "giver_region": "dalhurst",
+  "faction": "church_of_chronos",
+  "objectives": [
+    {
+      "id": "meditate_elder_moor",
+      "description": "Meditate at the Elder Moor shrine",
+      "type": "reach",
+      "target": "elder_moor",
+      "required_count": 1
+    },
+    {
+      "id": "meditate_thornfield",
+      "description": "Meditate at the Thornfield sacred grove",
+      "type": "reach",
+      "target": "thornfield",
+      "required_count": 1
+    },
+    {
+      "id": "meditate_crossroads",
+      "description": "Meditate at the Crossroads monument",
+      "type": "reach",
+      "target": "crossroads",
+      "required_count": 1
+    },
+    {
+      "id": "receive_first_vision",
+      "description": "Receive your first true prophetic vision",
+      "type": "talk",
+      "target": "priest_chronos_dalhurst",
+      "required_count": 1
+    }
+  ],
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "priest_chronos_dalhurst",
+  "turn_in_zone": "dalhurst",
+  "rewards": {
+    "gold": 350,
+    "xp": 1000,
+    "items": [
+      "prophets_circlet"
+    ],
+    "faction_reputation": {
+      "church_of_chronos": 40,
+      "church_of_three": 15
+    }
+  },
+  "prerequisites": [
+    "chronos_07_paradox"
+  ],
+  "next_quest": "chronos_09_timeline_threat",
+  "notes": "Threat: the training itself, taken too fast, produces acolytes who mistake fear for foresight - the priest has seen it happen. Giver motive: pacing the visions is doctrinal caution, not ceremony for its own sake. Consequence: none wired; the priest's caution is characterization, not a fail state.",
+  "forbidden_flags": [
+    "gaela_devotee",
+    "morthane_devotee"
+  ],
+  "flag_prerequisites": [
+    "chronos_devotee"
+  ]
 }

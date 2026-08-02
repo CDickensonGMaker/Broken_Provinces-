@@ -1,44 +1,54 @@
 {
-	"id": "chronos_repeatable_visions",
-	"title": "Seeking Visions",
-	"description": "The Priest of Chronos keeps asking devotees back for the same reason he keeps a dozen hourglasses running at once - a single reading proves nothing, and a faith built on one vision is a faith built on a guess. Come and sit again. What the sand shows this week is not owed to you, and it will not be the same as last week's.",
-	"is_main_quest": false,
-	"quest_source": "npc",
-	"giver_npc_id": "priest_chronos_dalhurst",
-	"giver_npc_type": "civilian",
-	"giver_region": "dalhurst",
-	"faction": "church_of_chronos",
-	"repeatable": true,
-	"cooldown_days": 7,
-	"objectives": [
-		{
-			"id": "meditate_at_temple",
-			"description": "Meditate at the Temple of Three Gods",
-			"type": "talk",
-			"target": "priest_chronos_dalhurst",
-			"required_count": 1
-		},
-		{
-			"id": "receive_vision",
-			"description": "Receive a vision from Chronos",
-			"type": "talk",
-			"target": "priest_chronos_dalhurst",
-			"required_count": 1
-		}
-	],
-	"turn_in_type": "npc_specific",
-	"turn_in_target": "priest_chronos_dalhurst",
-	"turn_in_zone": "dalhurst",
-	"rewards": {
-		"gold": 25,
-		"xp": 100,
-		"items": ["minor_time_blessing"],
-		"faction_reputation": {
-			"church_of_chronos": 5
-		}
-	},
-	"prerequisites": ["chronos_05_devotion_choice"],
-	"flags_required": ["chronos_devotee"],
-	"next_quest": "",
-	"notes": "This is a system, not a plot - no invented threat attached. Giver motive: the priest asks for repetition because one vision is an anecdote and a dozen are a pattern, which is how his doctrine treats evidence generally. Voice only; the 7-day cooldown is the mechanical shape and needs no story reason beyond it."
+  "id": "chronos_repeatable_visions",
+  "title": "Seeking Visions",
+  "description": "The Priest of Chronos keeps asking devotees back for the same reason he keeps a dozen hourglasses running at once - a single reading proves nothing, and a faith built on one vision is a faith built on a guess. Come and sit again. What the sand shows this week is not owed to you, and it will not be the same as last week's.",
+  "is_main_quest": false,
+  "quest_source": "npc",
+  "giver_npc_id": "priest_chronos_dalhurst",
+  "giver_npc_type": "civilian",
+  "giver_region": "dalhurst",
+  "faction": "church_of_chronos",
+  "repeatable": true,
+  "cooldown_days": 7,
+  "objectives": [
+    {
+      "id": "meditate_at_temple",
+      "description": "Meditate at the Temple of Three Gods",
+      "type": "talk",
+      "target": "priest_chronos_dalhurst",
+      "required_count": 1
+    },
+    {
+      "id": "receive_vision",
+      "description": "Receive a vision from Chronos",
+      "type": "talk",
+      "target": "priest_chronos_dalhurst",
+      "required_count": 1
+    }
+  ],
+  "turn_in_type": "npc_specific",
+  "turn_in_target": "priest_chronos_dalhurst",
+  "turn_in_zone": "dalhurst",
+  "rewards": {
+    "gold": 25,
+    "xp": 100,
+    "items": [
+      "minor_time_blessing"
+    ],
+    "faction_reputation": {
+      "church_of_chronos": 5
+    }
+  },
+  "prerequisites": [
+    "chronos_05_devotion_choice"
+  ],
+  "next_quest": "",
+  "notes": "This is a system, not a plot - no invented threat attached. Giver motive: the priest asks for repetition because one vision is an anecdote and a dozen are a pattern, which is how his doctrine treats evidence generally. Voice only; the 7-day cooldown is the mechanical shape and needs no story reason beyond it.",
+  "forbidden_flags": [
+    "gaela_devotee",
+    "morthane_devotee"
+  ],
+  "flag_prerequisites": [
+    "chronos_devotee"
+  ]
 }
