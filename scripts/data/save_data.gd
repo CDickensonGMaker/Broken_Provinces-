@@ -14,7 +14,9 @@ extends Resource
 ##            not DialogueManager's, and context_variables is carried too
 ## Version 9: FogOfWarSaveData deleted. The painted world map it belonged to was
 ##            removed long ago; the live map reads PlayerGPS.discovered_cells.
-##            The "fog_of_war" key is dropped on load.
+##            WorldSaveData.flags deleted too - SaveManager.world_flags was a
+##            fourth flag store with five writers and no readers. Both keys are
+##            dropped on load.
 ##
 ## SaveManager reads this constant rather than keeping its own copy. It kept one
 ## for a long time, and the two drifted three versions apart, which left a live
@@ -452,10 +454,6 @@ class WorldSaveData:
 	## Dropped items in world (zone_id -> array of item_data)
 	var dropped_items: Dictionary = {}
 
-	## World flags (flag_name -> value)
-	## Used for: unlocked doors, pulled levers, triggered events, etc.
-	var flags: Dictionary = {}
-
 	## Opened containers (container_id -> true)
 	var opened_containers: Dictionary = {}
 
@@ -494,7 +492,6 @@ class WorldSaveData:
 			"discovered_locations": discovered_locations,
 			"killed_enemies": killed_enemies,
 			"dropped_items": dropped_items,
-			"flags": flags,
 			"opened_containers": opened_containers,
 			"unlocked_shortcuts": unlocked_shortcuts,
 			"dungeon_seeds": dungeon_seeds,
@@ -510,7 +507,6 @@ class WorldSaveData:
 		discovered_locations = data.get("discovered_locations", {})
 		killed_enemies = data.get("killed_enemies", {})
 		dropped_items = data.get("dropped_items", {})
-		flags = data.get("flags", {})
 		opened_containers = data.get("opened_containers", {})
 		unlocked_shortcuts = data.get("unlocked_shortcuts", {})
 		dungeon_seeds = data.get("dungeon_seeds", {})

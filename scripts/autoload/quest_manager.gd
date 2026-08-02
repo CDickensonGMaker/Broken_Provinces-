@@ -1783,10 +1783,7 @@ func complete_quest(quest_id: String, completion_type: Enums.QuestCompletionStat
 	if quest.rewards.has("unlock_area"):
 		var unlock_flag: String = quest.rewards["unlock_area"]
 		if not unlock_flag.is_empty():
-			if DialogueManager:
-				DialogueManager.set_flag(unlock_flag)
-			if SaveManager:
-				SaveManager.set_world_flag(unlock_flag, true)
+			DialogueManager.set_flag(unlock_flag)
 
 	# NEW: Discover lore reward - unlock a lore entry in the Codex
 	if quest.rewards.has("discover_lore"):
@@ -1909,10 +1906,7 @@ func fail_quest(quest_id: String, reason: String = "") -> void:
 ## Grant follower reward (placeholder until FollowerManager is implemented)
 func _grant_follower_reward(follower_id: String, quest_id: String) -> void:
 	# Set flag indicating follower is available
-	if DialogueManager:
-		DialogueManager.set_flag("follower_available:" + follower_id)
-	if SaveManager:
-		SaveManager.set_world_flag("follower_unlocked:" + follower_id, true)
+	DialogueManager.set_flag("follower_available:" + follower_id)
 	follower_recruited.emit(follower_id, quest_id)
 
 
@@ -2012,11 +2006,13 @@ func _spawn_consequence_enemy(spawn_data: String) -> void:
 	var enemy_id: String = parts[0]
 	var location_id: String = parts[1] if parts.size() > 1 else ""
 
-	# Store as world flag for level scripts to check and spawn
-	if SaveManager:
-		SaveManager.set_world_flag("spawn_enemy:" + enemy_id, true)
-		if not location_id.is_empty():
-			SaveManager.set_world_flag("spawn_enemy_location:" + enemy_id, location_id)
+	# Store as a world fact for level scripts to check and spawn. This used to
+	# go to SaveManager.world_flags, which nothing anywhere read; WorldState is
+	# the store a level script, a world_condition or a dialogue condition can
+	# actually see. No level script reads it yet - that is content work.
+	WorldState.set_flag("spawn_enemy:" + enemy_id, true)
+	if not location_id.is_empty():
+		WorldState.set_flag("spawn_enemy_location:" + enemy_id, location_id)
 
 
 ## Get active quests

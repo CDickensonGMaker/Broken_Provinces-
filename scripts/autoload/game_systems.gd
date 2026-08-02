@@ -569,11 +569,15 @@ func attempt_persuasion(npc: Node, action_type: String) -> Dictionary:
 	return result
 
 
-## Give an item to player and set world flags (for quest items)
+## Give an item to player and set a flag (for quest items).
+## The flag lands on FlagManager, which is what dialogue conditions and
+## flag_prerequisites read. It used to land on SaveManager.world_flags, a
+## fourth flag store with no readers at all.
+## NOTE: this helper itself has no callers today.
 func give_quest_item(item_id: String, quantity: int = 1, set_flag: String = "") -> bool:
 	if InventoryManager.add_item(item_id, quantity):
 		if not set_flag.is_empty():
-			SaveManager.set_world_flag(set_flag, true)
+			FlagManager.set_flag(set_flag)
 		return true
 	return false
 

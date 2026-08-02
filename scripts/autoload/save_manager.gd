@@ -42,7 +42,6 @@ var death_count: int = 0
 var discovered_locations: Dictionary = {}
 var killed_enemies: Dictionary = {}
 var dropped_items: Dictionary = {}
-var world_flags: Dictionary = {}
 var opened_containers: Dictionary = {}
 var unlocked_shortcuts: Dictionary = {}
 var current_zone_id: String = ""
@@ -561,7 +560,6 @@ func _collect_world_data(world_data) -> void:
 	world_data.discovered_locations = discovered_locations.duplicate()
 	world_data.killed_enemies = killed_enemies.duplicate()
 	world_data.dropped_items = _collect_dropped_items()
-	world_data.flags = world_flags.duplicate()
 	world_data.opened_containers = opened_containers.duplicate()
 	world_data.unlocked_shortcuts = unlocked_shortcuts.duplicate()
 	world_data.dungeon_seeds = dungeon_seeds.duplicate()
@@ -956,7 +954,6 @@ func _apply_world_data(world_data) -> void:
 	discovered_locations = world_data.discovered_locations.duplicate()
 	killed_enemies = world_data.killed_enemies.duplicate()
 	dropped_items = world_data.dropped_items.duplicate()
-	world_flags = world_data.flags.duplicate()
 	opened_containers = world_data.opened_containers.duplicate()
 	unlocked_shortcuts = world_data.unlocked_shortcuts.duplicate()
 	dungeon_seeds = world_data.dungeon_seeds.duplicate()
@@ -1719,8 +1716,14 @@ func _migrate_save_data(data: Dictionary, from_version: int) -> Dictionary:
 	# Version 8 -> 9: FogOfWarSaveData is gone. The painted world map it served
 	# was removed before this key ever carried anything but {}. Drop it rather
 	# than carry a section no class reads.
+	# Version 8 -> 9 also drops world.flags: SaveManager.world_flags was a
+	# fourth flag store with five writers and zero readers anywhere in the
+	# repo. Nothing ever read it, so nothing is lost by not carrying it.
 	if migrated.get("version", 0) == 8:
 		migrated.erase("fog_of_war")
+		var old_world: Variant = migrated.get("world", null)
+		if old_world is Dictionary:
+			(old_world as Dictionary).erase("flags")
 		migrated["version"] = 9
 
 	return migrated
@@ -1847,18 +1850,6 @@ func mark_enemy_killed(enemy_id: String, kill_data: Dictionary = {}) -> void:
 ## Check if enemy was killed
 func was_enemy_killed(enemy_id: String) -> bool:
 	return killed_enemies.has(enemy_id)
-
-## Set a world flag
-func set_world_flag(flag_name: String, value: Variant = true) -> void:
-	world_flags[flag_name] = value
-
-## Get a world flag
-func get_world_flag(flag_name: String, default: Variant = null) -> Variant:
-	return world_flags.get(flag_name, default)
-
-## Check if a world flag is set
-func has_world_flag(flag_name: String) -> bool:
-	return world_flags.has(flag_name)
 
 ## Mark a container as opened
 func mark_container_opened(container_id: String) -> void:
@@ -2027,7 +2018,6 @@ func reset_world_state() -> void:
 	discovered_locations.clear()
 	killed_enemies.clear()
 	dropped_items.clear()
-	world_flags.clear()
 	opened_containers.clear()
 	unlocked_shortcuts.clear()
 	persistent_chest_contents.clear()
