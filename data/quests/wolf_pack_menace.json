@@ -1,7 +1,7 @@
 {
 	"id": "wolf_pack_menace",
 	"title": "Wolf Pack Menace",
-	"description": "Old Yarrow lost four sheep in one night to something that worked the pen latch open instead of breaking it - wolves don't usually bother figuring out latches. Marek's tracked the pack to a leader bigger and smarter than anything he's hunted before, working the farms on Thornfield's southern edge while the loggers to the east deal with a problem of their own. Marek's good, but not stupid enough to go after a pack like this alone.",
+	"description": "Old Yarrow lost four sheep to something that worked his pen latch open instead of breaking it. Marek has tracked the pack south of Thornfield to a leader smarter than anything he has hunted. He is not going in alone.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "marek_hunter",

@@ -1,7 +1,7 @@
 {
 	"id": "willow_dale_investigation",
 	"title": "Missing Caravan",
-	"description": "A worried merchant in Dalhurst reports that his trade caravan went missing near the old Willow Dale ruins. The caravan was carrying valuable goods and the merchant fears bandits or worse. His manifest lists everything the caravan carried, down to the crate - except one line he goes quiet on when you ask about it: 'one case, sealed, no description.' He offers a reward to anyone who can find out what happened to his goods and his men.",
+	"description": "A merchant in Dalhurst has lost a caravan near the Willow Dale ruins - wagons, goods and men. His manifest tallies crate for crate except one line, one case, sealed, no description, that he will not discuss. He wants to know what happened.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "worried_merchant_dalhurst",
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "recover_goods",
-			"description": "Recover the stolen trade goods - and check them against the manifest (0/3)",
+			"description": "Recover the goods and check them against the manifest",
 			"type": "collect",
 			"target": "merchant_goods",
 			"required_count": 3

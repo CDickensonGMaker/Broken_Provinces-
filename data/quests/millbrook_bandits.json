@@ -1,7 +1,7 @@
 {
 	"id": "millbrook_bandits",
 	"title": "Trouble in Millbrook",
-	"description": "A crew has camped in the woods east of Mill Brook and started taking a cut of everything that moves on the road. The hamlet has no guard, no militia it can spare and no idea what to do, so the elder is asking a stranger. She wants the road safe. She has not said how, and if you listen carefully she is being careful not to ask.",
+	"description": "A crew has camped in the woods east of Mill Brook and takes a cut of everything on the road. The hamlet has no guard and nobody to spare. The elder wants the road safe, and has not said how.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "millbrook_elder",

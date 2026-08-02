@@ -1,7 +1,7 @@
 {
 	"id": "elven_ambassador",
 	"title": "The Elven Embassy",
-	"description": "Ambassador Liraethel was riding to Dalhurst to put her seal on a treaty that would let elven traders use the human roads without an escort, and let elven law govern elven people in a human court - the first arrangement of its kind since Silvanost closed its gates to human traffic a generation ago. She never arrived. Severin Vane thinks somebody wanted the treaty dead more than they wanted her dead, which is worse: elves don't forgive an insult delivered by silence, and the Keepers can't afford another decade of a border nobody crosses in either direction.",
+	"description": "Ambassador Liraethel was riding to Dalhurst to seal a treaty and never arrived. Severin Vane thinks somebody wanted the treaty dead more than the woman. Elves do not forgive an insult delivered by silence.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "aldric_vane",

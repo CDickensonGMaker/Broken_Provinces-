@@ -94,7 +94,7 @@
     {
       "id": "want_to_fight",
       "speaker": "Gormund the Pitmaster",
-      "text": "Good! We always need fresh blood. Well, fresh fighters anyway - we've got plenty of blood already. You'll start in the lower tier. Survive a few matches and you'll work your way up to the real money fights.",
+      "text": "Good. Fresh fighters - we've plenty of blood already. You start in the lower tier. Live through a few and we'll talk about the money fights.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -121,7 +121,7 @@
     {
       "id": "arena_rules",
       "speaker": "Gormund the Pitmaster",
-      "text": "Simple. Fight until your opponent yields, dies, or you do. No fleeing the sand - you step off the arena floor and you forfeit. No magic unless it's a mage duel. Weapons and armor are allowed. And most importantly - the crowd loves a show. Give them blood and glory and they'll love you.",
+      "text": "Fight until your man yields, dies, or you do. Step off the sand and you've forfeited. No magic unless it's billed as a mage duel. And give the crowd something - they didn't pay to watch two men breathe hard.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -211,7 +211,7 @@
     {
       "id": "first_fight_offer",
       "speaker": "Gormund the Pitmaster",
-      "text": "Alright. Your first fight will be against another newcomer - keeps things fair. Win or lose, you'll earn 25 gold just for stepping onto the sand. Win, and you get another 25 as prize money. Sound good?",
+      "text": "Your first is against another newcomer, keeps it fair. Twenty-five gold for stepping onto the sand, twenty-five more if you walk off it. Good enough?",
       "is_end": false,
       "auto_continue": "",
       "choices": [

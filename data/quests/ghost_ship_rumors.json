@@ -1,7 +1,7 @@
 {
 	"id": "ghost_ship_rumors",
 	"title": "Ghost Ship Rumors",
-	"description": "Three boats haven't come back to Dalhurst harbor since the mist ship started showing at dawn - the last one, the Merrow's Kiss, went out with two brothers aboard and neither's been seen since. The Harbor Master needs to know if he's looking at smugglers using a ghost story for cover, or something that actually took those men, before he loses a fourth boat to it.",
+	"description": "Three boats have not come back to Dalhurst since that mist ship started showing at dawn. The last was the Merrow's Kiss, two brothers aboard. The Harbor Master needs to know what he is losing them to.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "harbor_master_dalhurst",

@@ -1,7 +1,7 @@
 {
 	"id": "merchant_protection",
 	"title": "Road Guard",
-	"description": "A wealthy merchant named Aldwin Crane needs to transport valuable goods from Thornfield to Dalhurst, but bandit activity has made the roads dangerous. He's willing to pay handsomely for a capable escort. The journey will take you through wild territory, and there's no guarantee the bandits won't try something. Are you up for the job?",
+	"description": "Aldwin Crane has goods to move from Thornfield to Dalhurst and the road has gone bad with bandits. He pays well and does not haggle over it. Walk beside the wagon and keep your eyes up.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "merchant_aldwin",

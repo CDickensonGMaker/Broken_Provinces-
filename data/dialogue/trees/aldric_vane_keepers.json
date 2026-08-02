@@ -7,7 +7,7 @@
     {
       "id": "greeting",
       "speaker": "Severin Vane",
-      "text": "You've been asking questions. Making connections. Tharin trusts you, and that means something. I am Severin Vane, and I represent... interests that operate outside normal channels. We need someone capable, someone who can handle themselves. Interested?",
+      "text": "You've been asking questions, and in the right order. Tharin trusts you, and Tharin does not hand that out. I'm Severin Vane, and I have work that doesn't go through the usual channels.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -82,7 +82,7 @@
     {
       "id": "keepers_intro",
       "speaker": "Severin Vane",
-      "text": "The Keepers. We are an ancient order sworn to protect the realm from threats that kingdoms cannot openly acknowledge. Cults worshipping dark powers. Artifacts that should remain buried. Entities from beyond. We watch from the shadows so others can sleep peacefully. And right now, we have a problem.",
+      "text": "The Keepers. We handle what kingdoms cannot admit is happening - cults, buried relics, doors that ought to stay shut. There are not many of us, and right now we have a problem.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -220,7 +220,7 @@
     {
       "id": "willow_dale_problem",
       "speaker": "Severin Vane",
-      "text": "Willow Dale. An abandoned watchtower northwest of Dalhurst, once a Keeper outpost. It was lost decades ago when something... broke through. We sealed it, but the seals are failing. Cultists have moved in, performing forbidden rituals to summon entities from beyond. If they succeed, the consequences would be catastrophic.",
+      "text": "Willow Dale, northwest of Dalhurst. It was ours once, a watchpost, and we lost it decades ago to something that came through. We sealed it. The seals are failing, and there are cultists in the ruin now.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -247,7 +247,7 @@
     {
       "id": "quest_objectives",
       "speaker": "Severin Vane",
-      "text": "Travel to Willow Dale. Investigate the ruins and find the source of the dark energy - likely an altar or ritual site. Disrupt the ritual by killing the cultists leading it. Bring back evidence of what they were attempting. I need to know how far the corruption has spread. Will you do this?",
+      "text": "Go there. Break whatever rite they're working, and bring me back something I can read. I need to know how far down it goes.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -280,7 +280,7 @@
     {
       "id": "entity_explanation",
       "speaker": "Severin Vane",
-      "text": "Things from the void - the space between realities. Some call them demons, others call them abominations. They hunger for our world, and cults provide the doorway. If a summoning succeeds, the entity consumes everything nearby before we can stop it. Villages disappear. Entire regions become dead zones. We cannot allow that to happen.",
+      "text": "Things from between. A cult opens the door, and what comes through is hungry, and what is nearby stops existing. Villages, mostly. That is the whole of it.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -373,7 +373,7 @@
     {
       "id": "accept_quest",
       "speaker": "Severin Vane",
-      "text": "Good. Willow Dale is northwest of Dalhurst, in the hills. The ruins are easy to spot - dark energy hangs over them like a shroud. Kill the cultists, disrupt their ritual, and bring back proof. And be careful - what they're summoning doesn't discriminate between cultist and hero.",
+      "text": "Northwest of Dalhurst, in the hills. Kill the ones leading the ritual and bring me proof of what they were attempting. And be careful - what they're calling doesn't much care who is holding the knife.",
       "is_end": true,
       "auto_continue": "",
       "choices": []

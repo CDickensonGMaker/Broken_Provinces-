@@ -7,7 +7,7 @@
     {
       "id": "quest_greeting",
       "speaker": "Harbor Master",
-      "text": "You look like someone who can handle trouble. I've got a problem that needs someone with steel in their spine.",
+      "text": "You look like you've handled worse than weather. I've got something I can't put a name to.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -75,7 +75,7 @@
     {
       "id": "ghost_ship_intro",
       "speaker": "Harbor Master",
-      "text": "The fishermen are spooked. They keep seeing a ghost ship - appears at dawn in the mist, drifts silently through the bay, then vanishes. No crew, no sails moving. Just... there. I need to know if it's smugglers playing tricks, pirates, or something worse.",
+      "text": "The fishermen keep seeing a ship at dawn - drifts through the mist, no crew on her, no sail moving, gone before the fog lifts. I need to know whether that's smugglers being clever or something that's actually out there.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -108,7 +108,7 @@
     {
       "id": "previous_attempts",
       "speaker": "Harbor Master",
-      "text": "Sent two men already. First came back with nothing - said he waited all morning and saw only fog. Second one hasn't come back at all. That was three days ago. Whatever's out there, it's real enough to be dangerous.",
+      "text": "I sent two men. The first sat in the fog all morning and saw nothing. The second hasn't come back, and that was three days ago.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -141,7 +141,7 @@
     {
       "id": "quest_details",
       "speaker": "Harbor Master",
-      "text": "Talk to Old Garrett - he's the fisherman who's seen it most. He can tell you where to look. Then search the western coastline for any signs of wreckage, cargo, anything unusual. I need to know what we're dealing with before more people go missing.",
+      "text": "Talk to Old Garrett - he's seen it more than anyone and can tell you where to look. Then walk the western coast and look at what's come ashore. I want to know what this is before I lose another man to it.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -201,7 +201,7 @@
     {
       "id": "accept_quest",
       "speaker": "Harbor Master",
-      "text": "Good. Find Old Garrett on the docks - he's usually mending nets near the fishing boats. He'll tell you where the sightings have been. And be careful. Whatever's out there, it's already claimed at least one man.",
+      "text": "Garrett's on the docks, mending nets by the fishing boats. He'll tell you where the sightings have been. Be careful - it's already had one man off me.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -277,7 +277,7 @@
     {
       "id": "next_steps",
       "speaker": "Harbor Master",
-      "text": "We need help - real help. There's an old lighthouse on the western point. It's been abandoned for years, but if these ghost ship sightings are real, that's where we'll find answers. But I can't ask you to go there. That's a job for someone with experience dealing with the unnatural.",
+      "text": "There's an old lighthouse on the western point, abandoned years back. If any of this is real, that's where it answers from. I'm not going to be the one who asks you to walk into it.",
       "is_end": false,
       "auto_continue": "",
       "choices": [

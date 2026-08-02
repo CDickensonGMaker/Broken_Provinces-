@@ -1,7 +1,7 @@
 {
 	"id": "miners_in_peril",
 	"title": "Frozen Tunnels",
-	"description": "The mines near Duncaster have suffered a cave-in, trapping a group of miners in the lower tunnels. To make matters worse, the collapse has breached an underground ice cavern, and the temperature is dropping fast. The mine foreman needs someone to navigate the unstable tunnels, rescue the trapped miners, and get them out before they freeze to death.",
+	"description": "The lower tunnels came down with five men still in them, and the collapse opened into ice. The foreman says it is getting colder down there by the hour. Go in before the cold finishes what the rock started.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "duncaster_foreman",

@@ -1,7 +1,7 @@
 {
 	"id": "tutorial_cooking",
 	"title": "A Warm Meal",
-	"description": "Martha cooks for most of Elder Moor, and the stores are already thinner than she'd like this early in the season. She's not looking for help at the fire - she's looking for people who won't come to her hungry every time the meat's raw and the bread's out. Cook something yourself, and she'll worry about one less mouth.",
+	"description": "Martha cooks for most of Elder Moor and the stores are already thin this early. She is not after help at the fire - she is after one less mouth turning up when the meat is raw. Cook something yourself.",
 	"is_main_quest": false,
 	"quest_source": "tutorial",
 	"giver_npc_id": "martha_cook",

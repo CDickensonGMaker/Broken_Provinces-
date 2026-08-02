@@ -1,7 +1,7 @@
 {
 	"id": "missing_miner",
 	"title": "The Missing Miner",
-	"description": "Mayor Bjorn of Aberdeen is worried about a miner who went missing three days ago. Erik Stonepick went to prospect in the old abandoned mine shaft east of town and hasn't returned. The mayor fears the worst and offers a reward to anyone who can find out what happened.",
+	"description": "Erik Stonepick went up to the old shaft east of Aberdeen three days ago and never came back. His tools are still where he left them and his stake is still driven. Mayor Bjorn wants to know what happened.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "mayor_bjorn_aberdeen",
@@ -17,7 +17,7 @@
 		},
 		{
 			"id": "search_mine",
-			"description": "Search the mine for signs of Erik - his tools are still where he left them, his stake still driven, and someone's cut four short scratches into the shaft post, close together",
+			"description": "Search the shaft - four fresh scratches on the post",
 			"type": "interact",
 			"target": "erik_journal",
 			"required_count": 1

@@ -137,7 +137,7 @@
     {
       "id": "enter_arena",
       "speaker": "Varn the Scarred",
-      "text": "The Bloodsand Arena is run by Gormund the Pitmaster. He's the one who sets up the fights and takes the bets. Travel south from Elder Moor through the desert. You'll see the arena - hard to miss. Tell Gormund that Varn sent you. He'll give you a shot.",
+      "text": "Gormund the Pitmaster runs it. South from Elder Moor, through the desert - you won't miss it. Tell him Varn sent you and he'll give you a shot.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -170,7 +170,7 @@
     {
       "id": "arena_advice",
       "speaker": "Varn the Scarred",
-      "text": "The arena has rules. No magic unless it's an arcane duel. No fleeing the sand. Fight until your opponent yields or dies - or until you do. Start with the lower tier fights to get a feel for it. And don't underestimate your opponents. Many have died thinking they were better than they were.",
+      "text": "Start in the lower tier and learn the sand before you learn the crowd. No magic, no running, and it ends when somebody yields. Plenty have died certain they were the better fighter.",
       "is_end": false,
       "auto_continue": "",
       "choices": [

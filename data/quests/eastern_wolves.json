@@ -1,7 +1,7 @@
 {
 	"id": "eastern_wolves",
 	"title": "The Eastern Wolf Pack",
-	"description": "Thornfield's crews pushed the cut east this season, past the old boundary markers, and whatever den was back there isn't taking it well. Three loggers have quit the eastern lots outright since the attacks started, and Elric Thornwood can't make quota short-handed. Greta Wolfsbane knows that ground better than anyone in Thornfield - find her before the pack does.",
+	"description": "Thornfield pushed the cut east past the old markers and something back there has taken offense. Three men have quit the eastern lots and Elric cannot make quota short-handed. Greta Wolfsbane knows that ground - find her first.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "elric_thornwood",

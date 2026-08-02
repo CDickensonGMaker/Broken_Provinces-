@@ -1,7 +1,7 @@
 {
 	"id": "tharins_message",
 	"title": "A Message for Thornfield",
-	"description": "Elder Moor cuts more timber than it can sell on its own, and Thornfield's mill is the only buyer close enough to matter before the roads freeze. Tharin's last letter to Elder Vorn went unanswered, and he won't send another logger to ask twice - not when there's a stranger in camp worth testing instead. Carry this one yourself. If Vorn signs with someone else before it reaches him, Elder Moor spends the winter with a woodpile nobody wants.",
+	"description": "Elder Moor cuts more timber than it can sell, and Thornfield's mill is the only buyer close enough before the roads freeze. Tharin's last letter to Elder Vorn went unanswered. Put this one in Vorn's hand yourself.",
 	"is_main_quest": true,
 	"quest_source": "story",
 	"giver_npc_id": "tharin_ironbeard",

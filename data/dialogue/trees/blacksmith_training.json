@@ -7,7 +7,7 @@
     {
       "id": "greeting",
       "speaker": "Blacksmith",
-      "text": "Looking to learn the smith's trade? I might be able to teach you a thing or two, for the right price.",
+      "text": "Looking to learn the trade? I'll teach it for the right coin. The anvil charges the same for lessons as it does for mistakes, mind.",
       "is_end": false,
       "auto_continue": "",
       "choices": [

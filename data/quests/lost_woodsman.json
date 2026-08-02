@@ -1,7 +1,7 @@
 {
 	"id": "lost_woodsman",
 	"title": "The Lost Woodsman",
-	"description": "A logger named Harlen went into the eastern forest three days ago and hasn't returned. Old Yoren believes he knows which trail Harlen took, but is too old to search himself. The forest is dangerous, and Harlen may already be dead - or worse.",
+	"description": "Harlen went into the eastern forest three days ago and has not come out. Old Yoren knows the trail he takes. Yoren's legs do not anymore.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "old_yoren",

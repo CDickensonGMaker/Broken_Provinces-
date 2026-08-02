@@ -1,7 +1,7 @@
 {
 	"id": "tharins_supplies",
 	"title": "Supply Run to Dalhurst",
-	"description": "Half the camp's saws are past sharpening and Tharin's own smith can't spare the steel to forge more, not this deep into the season. Halvard the Supplier in Dalhurst has held a tool shipment since summer, waiting on payment Tharin only now has the coin for. Bring it back before the felling crews start swinging dull blades out of frustration - or keep swinging them anyway and lose fingers to it.",
+	"description": "Half the camp's saws are past sharpening and Tharin's smith has no steel to spare this deep in the season. Halvard in Dalhurst has held a tool shipment since summer, and it is paid for now. Bring it back before somebody loses fingers.",
 	"is_main_quest": true,
 	"quest_source": "story",
 	"giver_npc_id": "tharin_ironbeard",
@@ -17,14 +17,14 @@
 		},
 		{
 			"id": "get_supplies",
-			"description": "Collect the tool shipment from Halvard - it's already paid for, so don't lose it",
+			"description": "Collect the tool shipment from Halvard",
 			"type": "talk",
 			"target": "halvard_supplier_dalhurst",
 			"required_count": 1
 		},
 		{
 			"id": "return_supplies",
-			"description": "Get the tools back to Tharin before the crews run out of sharp ones",
+			"description": "Get the tools back to Tharin",
 			"type": "talk",
 			"target": "tharin_ironbeard",
 			"required_count": 1

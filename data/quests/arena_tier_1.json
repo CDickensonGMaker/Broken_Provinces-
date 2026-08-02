@@ -1,7 +1,7 @@
 {
 	"id": "arena_tier_1",
 	"title": "First Blood",
-	"description": "You've proven yourself to Gormund, which means he's decided you're worth more to him alive and fighting than dead in round one. Three rounds: pit fighters same as you, a beast handler's stock that's cheaper to lose than a fighter, then whoever's holding the tier-one belt and has no intention of handing it over. Gormund sells tickets to all three either way.",
+	"description": "Three rounds. Pit fighters same as you, then a handler's beasts, then whoever is wearing the tier-one belt and means to keep it. Gormund sells tickets either way.",
 	"is_main_quest": false,
 	"quest_source": "arena",
 	"giver_npc_id": "arena_master_bloodsand",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "register_tournament",
-			"description": "Register for the Bloodsand Gauntlet with Gormund",
+			"description": "Register with Gormund at the Bloodsand Arena",
 			"type": "talk",
 			"target": "arena_master_bloodsand",
 			"required_count": 1

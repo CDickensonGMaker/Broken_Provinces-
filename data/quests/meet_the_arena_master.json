@@ -1,7 +1,7 @@
 {
 	"id": "meet_the_arena_master",
 	"title": "Blood and Glory",
-	"description": "Varn survived the Bloodsand Arena; not everyone does. He's sent you south to meet Gormund the Pitmaster, who runs the pit for money and doesn't pretend otherwise.",
+	"description": "Varn fought in the Bloodsand Arena and came out of it; not everyone does. He has sent you south to Gormund the Pitmaster, who runs the sand for money.",
 	"is_main_quest": false,
 	"quest_source": "story",
 	"giver_npc_id": "varn_the_scarred",

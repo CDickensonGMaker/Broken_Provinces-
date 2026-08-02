@@ -1,7 +1,7 @@
 {
 	"id": "supply_line_crisis",
 	"title": "Supply Line Crisis",
-	"description": "Bjorn isn't waiting on Larton to sort out its own troubles - Aberdeen's warehouses are already empty and the goblins at Kazer-Dun have owned the north road for weeks. Fix it from this end: break the blockade, or find the smugglers' route through the swamp nobody's used since before the goblins came. Either way, get word to Larton's Trade Master that Aberdeen can still take a shipment when one exists.",
+	"description": "Aberdeen's warehouses are empty and the goblins have owned the north road for weeks. Break the blockade, or find the smugglers' path through the swamp nobody has walked since. Then tell Larton that Aberdeen can still take a shipment.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "mayor_bjorn_aberdeen",

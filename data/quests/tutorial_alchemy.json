@@ -1,7 +1,7 @@
 {
 	"id": "tutorial_alchemy",
 	"title": "Herbalism Basics",
-	"description": "Sage Brennan has kept Elder Moor's cuts and fevers tended for thirty years, and this deep into autumn his hands shake too badly some mornings to grind herbs fine. He's not looking to be replaced - just to have one more set of hands in camp who knows red herb from rot before the wolves or the roads put someone bleeding in his doorway. He's given you what you need for a first potion.",
+	"description": "Sage Brennan has tended Elder Moor's cuts and fevers for thirty years, and some mornings his hands shake too badly to grind fine. He wants one more set of hands in camp that knows red herb from rot.",
 	"is_main_quest": false,
 	"quest_source": "tutorial",
 	"giver_npc_id": "sage_brennan",

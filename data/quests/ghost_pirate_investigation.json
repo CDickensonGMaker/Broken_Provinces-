@@ -1,7 +1,7 @@
 {
 	"id": "ghost_pirate_investigation",
 	"title": "The Ghost Pirate Menace",
-	"description": "Larton hasn't seen open water in two months. The ghost pirates hold the bay from an island stronghold, and every week the blockade holds is a week less grain in Larton's stores before what's left has to last the whole winter. Mayor Kendrick needs the water open again before hunger does what the pirates haven't - Old Willem knows the bay in the dark and can get you to a stronghold nobody else has come back from.",
+	"description": "Two months and not one boat out of Larton. The dead hold the bay from an island out there, and the stores will not stretch to spring. Old Willem knows the water in the dark.",
 	"is_main_quest": true,
 	"quest_source": "story",
 	"giver_npc_id": "mayor_aldric_larton",

@@ -1,7 +1,7 @@
 {
 	"id": "greenwood_shrine_errand",
 	"title": "The Shrine in the Greenwood",
-	"description": "Old Sage Brennan has not walked as far as the shrine in two winters, and he would like to know it is still standing. It is north of Elder Moor, in the forest, and he says you cannot miss it if you keep the trees on your left. Go and look at it, and come back and tell him.",
+	"description": "Sage Brennan has not walked as far as the shrine in two winters and would like to know it is still standing. It is north of Elder Moor, in the forest. Go and look, and come back and tell him.",
 	"is_main_quest": false,
 	"quest_source": "story",
 	"giver_npc_id": "sage_brennan",

@@ -1,7 +1,7 @@
 {
 	"id": "harbor_ghost_ship",
 	"title": "The Phantom Vessel",
-	"description": "What washed up from the Merrow's Kiss pointed the Harbor Captain here - an abandoned lighthouse the charts still mark as active. Whatever's crewing that ship at night is working out of it, and every week it keeps working, Dalhurst loses another boat it needs for the winter catch.",
+	"description": "What washed up off the Merrow's Kiss points at the old lighthouse west of here, which the charts still mark as manned. Whatever crews that ship at night works out of it. Every week costs Dalhurst another boat.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "harbor_captain",

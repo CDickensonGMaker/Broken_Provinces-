@@ -1,7 +1,7 @@
 {
 	"id": "lake_creature",
 	"title": "Terror in the Lake",
-	"description": "Old Pell hasn't taken his boat out in a week - not since something tore his net in half and left tooth marks in the hull he won't describe twice. Millbrook Lake feeds half the village's tables, and the fishermen who haven't quit yet are one bad morning from joining him on the dock instead of the water. Someone needs to find what's down there before the whole fleet sits idle into winter.",
+	"description": "Old Pell's net came back in halves and he will not describe the marks on his hull twice. The lake feeds half of Millbrook and the boats are all sitting. Find what is down there.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "millbrook_elder",

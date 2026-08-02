@@ -7,7 +7,7 @@
     {
       "id": "greeting",
       "speaker": "Alchemist",
-      "text": "Ah, a seeker of alchemical knowledge? The secrets of potions and elixirs can be yours... for a modest fee, of course.",
+      "text": "Alchemy, is it? I'll sell you a formula gladly - and I'll tell you now, the ones worth having cost more than the ones you'll actually use.",
       "is_end": false,
       "auto_continue": "",
       "choices": [

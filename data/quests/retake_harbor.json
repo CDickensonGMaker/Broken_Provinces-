@@ -1,7 +1,7 @@
 {
 	"id": "retake_harbor",
 	"title": "Retake the Harbor",
-	"description": "The bandits didn't take gold or weapons - they took the warehouses holding what was left of Larton's grain after the blight, moving in the same week the town's guards were stretched thin watching the bay for ghost ships instead of the docks. Captain Harken's survivors know exactly what's behind those doors. Clear the bandits out before they figure out what they're actually sitting on and decide to sell it back.",
+	"description": "The bandits took the warehouses and left the strongboxes, which means they do not know the last of Larton's grain is behind those doors. They moved the week the guards were watching the bay. Get them out before somebody opens a sack.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "mayor_aldric_larton",

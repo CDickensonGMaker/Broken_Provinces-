@@ -1,7 +1,7 @@
 {
 	"id": "tenger_diplomacy",
 	"title": "Desert Parley",
-	"description": "East Hollow sits on the border of Tenger territory, and tensions are rising. The village elder has received word that a Tenger warband approaches - but they carry a white flag, not weapons. This could be a chance for peace, or a trap. Someone needs to meet with the Tenger emissaries and determine their intentions before blood is spilled.",
+	"description": "A Tenger warband is coming up on East Hollow under a white flag. The elder has no way of knowing whether that flag means anything. Go and meet them before somebody here gets brave.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "village_elder_east_hollow",

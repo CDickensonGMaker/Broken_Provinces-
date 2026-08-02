@@ -1,7 +1,7 @@
 {
     "id": "noble_soulstone_request",
     "title": "A Noble's Request",
-    "description": "Lord Hakon Thornwick of Dalhurst requires a greater soulstone for an important enchantment. He is willing to pay handsomely, but warns that keeping such a valuable item for yourself would be... unwise.",
+    "description": "Lord Hakon Thornwick needs a greater soulstone for an enchantment and pays a fair price for one. Bring it to him and you are square. He would not advise keeping it.",
     "is_main_quest": false,
     "quest_source": "npc",
     "giver_npc_id": "noble_hakon",

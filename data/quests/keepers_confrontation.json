@@ -1,7 +1,7 @@
 {
 	"id": "keepers_confrontation",
 	"title": "The Shadow Revealed",
-	"description": "The time for subtlety is over. The Shadowed Hand's leader - a fallen priest named Malachai the Profane - plans to complete his summoning ritual at the old temple ruins near Crossroads in three days. If he succeeds, the entity called the Hollow King will manifest and spread corruption across the land. Severin is mobilizing Keepers from across the region, but you'll lead the assault. Storm the ritual site, stop the summoning, and end Malachai's cult for good. This is no longer an investigation. This is war.",
+	"description": "Malachai the Profane means to finish his summoning at the temple ruins near Crossroads in three days. Severin is calling in every Keeper he can reach, and you are leading the assault. There is no quiet way left.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "aldric_vane",

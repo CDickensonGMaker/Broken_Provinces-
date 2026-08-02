@@ -1,7 +1,7 @@
 {
 	"id": "keepers_infiltration",
 	"title": "Among the Faithful",
-	"description": "The Shadowed Hand is planning something in Millbrook - a gathering of the faithful, Severin calls it. A dozen cultists meeting to perform a ritual under the next full moon. This is your chance to learn their true purpose. Severin wants you to infiltrate the meeting, pretend to be a new recruit, and gather intelligence without blowing your cover. If they suspect you're a spy, you'll be dead before you can call for help. Keep your wits sharp, your story straight, and your blade hidden. This is what the Keepers do best.",
+	"description": "A dozen of the Shadowed Hand are gathering outside Millbrook under the next full moon. Walk in as a new recruit and listen. If they take you for a spy you will not get out a second word.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "aldric_vane",

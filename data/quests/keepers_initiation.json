@@ -1,7 +1,7 @@
 {
 	"id": "keepers_initiation",
 	"title": "The Keeper's Trust",
-	"description": "Severin Vane has revealed himself as a member of the Keepers - an ancient order sworn to protect the realm from threats that kingdoms cannot openly acknowledge. For centuries, they have watched from the shadows, guarding secrets that could unmake the world. Now dark forces stir at Willow Dale, an abandoned watchtower that once belonged to the Keepers themselves. Before it fell to ruin, it served as a watchpost against incursions from beyond. Something has awakened there - cultists performing forbidden rites to summon entities from the void. The seals are already failing; Severin says it's days, not weeks, before whatever comes through reaches the farms outside Dalhurst instead of an empty ruin. Investigate the ruins, disrupt their ritual, and bring evidence of what you find. Prove yourself worthy of the Keepers' trust.",
+	"description": "Severin Vane keeps to an order that watches what kingdoms will not admit to. Willow Dale was theirs once, a watchpost, and something has woken in the ruin of it. Break the rite and bring him proof.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "aldric_vane",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "travel_willow_dale",
-			"description": "Travel to the Willow Dale ruins northwest of Dalhurst before the seals fail entirely",
+			"description": "Travel to the Willow Dale ruins northwest of Dalhurst",
 			"type": "reach",
 			"target": "willow_dale",
 			"required_count": 1

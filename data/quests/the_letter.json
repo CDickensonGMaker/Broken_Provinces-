@@ -1,7 +1,7 @@
 {
 	"id": "keepers_letter_delivery",
 	"title": "A Letter for Dalhurst",
-	"description": "Tharin Ironbeard has asked you to deliver a sealed letter to his contact in Dalhurst, a man named Severin Vane who runs a curiosities shop. The dwarf spoke with unusual gravity, hinting that this concerns 'matters that predate the Empire itself.' The wax seal bears a symbol you've never seen - an eye within a circle of stars, marking it as correspondence of some secret society. Tharin mentioned that Severin collects ancient artifacts and forbidden knowledge - the sort of man who knows things others have forgotten. Three errands in, this is the one Tharin hasn't explained. He told you not to break the seal, and he didn't say what happens if you do - only that you needn't come back to Elder Moor to find out.",
+	"description": "Tharin has a sealed letter for Severin Vane, who keeps a curiosities shop in Dalhurst. He would say only that it concerns matters older than the Empire, and he did not say it lightly. The seal is not to be broken.",
 	"is_main_quest": true,
 	"quest_source": "story",
 	"giver_npc_id": "tharin_ironbeard",

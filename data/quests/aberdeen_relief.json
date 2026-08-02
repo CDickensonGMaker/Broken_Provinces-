@@ -1,7 +1,7 @@
 {
 	"id": "aberdeen_relief",
 	"title": "Aberdeen Relief",
-	"description": "Larton has grain again, finally, and Aberdeen wants to know why none of it has reached them. Mayor Bjorn's messages have gotten shorter each time - the last one didn't ask for help so much as state that the swamp town has maybe a month left and the goblins at Kazer-Dun still own the only road anyone's tried. Someone needs to get supplies through the swamp itself, since the road isn't opening in time.",
+	"description": "Aberdeen has been asking after grain for weeks and Bjorn's letters keep getting shorter. The goblins own the only road anyone has tried. Take what Larton can spare through the swamp instead.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "trade_master_larton",
@@ -38,7 +38,7 @@
 		},
 		{
 			"id": "establish_route",
-			"description": "Mark a path caravans can use without a guide next time (0/3)",
+			"description": "Mark a path caravans can follow next time",
 			"type": "interact",
 			"target": "route_marker",
 			"required_count": 3

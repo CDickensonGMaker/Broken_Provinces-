@@ -1,7 +1,7 @@
 {
 	"id": "tutorial_crafting",
 	"title": "The Smith's Apprentice",
-	"description": "Grom is the only smith Elder Moor has, and between saw blades and axe heads and whatever the logging crews break next, he's behind on his own work before midday most days. He'll teach a stranger the anvil if it means fewer people standing in his doorway waiting on repairs he hasn't gotten to. He's provided you with iron ingots and asks that you craft an iron dagger to prove you understand the process.",
+	"description": "Grom is the only smith Elder Moor has, and he is behind on his own work by midday most days. He will show a stranger the anvil if it means fewer people waiting in his doorway. There is iron on the bench.",
 	"is_main_quest": false,
 	"quest_source": "tutorial",
 	"giver_npc_id": "grom_the_smith",

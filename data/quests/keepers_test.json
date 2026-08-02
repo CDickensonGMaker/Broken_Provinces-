@@ -1,7 +1,7 @@
 {
 	"id": "keepers_test",
 	"title": "Eyes in the Shadows",
-	"description": "Severin Vane has a task that will test your skills as a Keeper. Strange disappearances have been reported across three towns - Dalhurst, Thornfield, and Millbrook. Nobody's connected them yet, because nobody outside the Keepers is looking at all three at once. Your mission: investigate each town, find what ties them together, and report back. Keepers work unseen - draw no attention to yourself.",
+	"description": "Three towns, three people gone, and nobody has laid them side by side yet. Dalhurst, Thornfield, Millbrook. Look at all three and tell Severin what ties them, and draw no attention doing it.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "aldric_vane",
@@ -59,14 +59,14 @@
 		},
 		{
 			"id": "piece_together",
-			"description": "Lay the three sites side by side - every missing person answered a work notice nobody can find posted, for an employer nobody can name",
+			"description": "Lay the three sites side by side",
 			"type": "interact",
 			"target": "investigation_notes",
 			"required_count": 1
 		},
 		{
 			"id": "report_aldric",
-			"description": "Tell Severin it isn't a cult - it's a labor racket working three towns at once",
+			"description": "Tell Severin it is a labor racket, not a cult",
 			"type": "talk",
 			"target": "aldric_vane",
 			"required_count": 1

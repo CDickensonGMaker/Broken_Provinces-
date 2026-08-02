@@ -1,7 +1,7 @@
 {
 	"id": "arena_novice_tournament",
 	"title": "Trial of the Newcomer",
-	"description": "Nine names on Gormund's board tonight, and you're fighting all of them before the sand's done with you. Half are drifters chasing the same purse you are. The other half owe somebody money, and the pit's the fastest way to clear a debt. Gormund takes his cut off the house either way - win or lose, yours or theirs.",
+	"description": "Nine names on Gormund's board tonight and you fight all of them. Half are drifters chasing the same purse. The other half are working off a debt the fast way.",
 	"is_main_quest": false,
 	"quest_source": "arena",
 	"giver_npc_id": "arena_master_bloodsand",

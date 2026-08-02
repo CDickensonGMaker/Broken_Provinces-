@@ -1,7 +1,7 @@
 {
 	"id": "fish_fraud",
 	"title": "Fishy Business",
-	"description": "Something's rotten in Millbrook, and it's not just the fish. The local fishermen are accusing a merchant named Hector of short-changing them on their catches and selling the fish at inflated prices in the city. The town magistrate wants an outsider to investigate - someone without ties to either party who can get to the bottom of this before it turns violent.",
+	"description": "The fishermen say Hector weighs their catch light and sells it high. Hector says they cannot count. The Magistrate wants an outsider to settle it before somebody settles it with a knife.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "magistrate_millbrook",

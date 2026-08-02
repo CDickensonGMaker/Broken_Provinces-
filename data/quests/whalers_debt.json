@@ -1,7 +1,7 @@
 {
 	"id": "whalers_debt",
 	"title": "The Canyon Ledger",
-	"description": "Whalers Abyss is a town built on debts and broken promises. The local moneylender, a shrewd woman named Miriam Goldtongue, has a problem: several debtors have fled into the canyon rather than pay what they owe. She needs someone to track them down and collect - but the canyon is treacherous, and desperate people do desperate things.",
+	"description": "Miriam Goldtongue lends money in a town that runs on it, and two debtors have gone into the canyon rather than pay. Garrett owes seventy-five gold. Selene cleared hers in one lump three weeks back and lives exactly as she did before.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "miriam_goldtongue",
@@ -38,7 +38,7 @@
 		},
 		{
 			"id": "negotiate_selene",
-			"description": "Negotiate with Selene about her debt - though it's already paid. Cleared in one lump three weeks back, and she lives exactly as she lived before. She sold something. She won't say what, and she won't say to whom.",
+			"description": "Ask Selene how a cleared debt got cleared",
 			"type": "talk",
 			"target": "debtor_selene",
 			"required_count": 1

@@ -1,7 +1,7 @@
 {
 	"id": "tharins_wolf_problem",
 	"title": "The Wolf Problem",
-	"description": "Wolves have gotten bold enough to walk the logging roads in daylight, and one of them caught a woodsman named Aldous Fenn by the leg two days ago. He lived, but he won't go back out with the felling crews, and that's one more man Tharin can't afford to lose before winter. He's watched you carry a letter and carry a shipment without losing either. Now he wants to see if you can carry a blade.",
+	"description": "Wolves have got bold enough to walk the logging roads in daylight. One took Aldous Fenn by the leg two days back, and he will not go out with the felling crews again. Tharin wants them thinned.",
 	"is_main_quest": true,
 	"quest_source": "story",
 	"giver_npc_id": "tharin_ironbeard",

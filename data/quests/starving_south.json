@@ -1,7 +1,7 @@
 {
 	"id": "starving_south",
 	"title": "The Starving South",
-	"description": "The blight took the autumn harvest, the ghost pirates have held the bay for two months, and now bandits have the harbor warehouses too - Larton's stores are down to what a few hundred people can stretch across maybe six weeks. The Trade Master doesn't have six weeks to wait on Rotherhine's bureaucracy, but he doesn't have another road either. Petition the Empire, and bring back everything you can carry regardless of what they promise.",
+	"description": "The blight took the harvest, the dead hold the bay, and now bandits have the warehouses. What is left feeds Larton six weeks. Petition the Empire at Rotherhine and bring back whatever you can carry.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "trade_master_larton",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "assess_situation",
-			"description": "Hear the numbers from the Trade Master - what's left, and how long it lasts",
+			"description": "Hear the Trade Master's numbers",
 			"type": "talk",
 			"target": "trade_master_larton",
 			"required_count": 1
