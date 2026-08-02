@@ -409,7 +409,7 @@ class InventorySaveData:
 	## Hotbar assignments (10 slots, each {type, id})
 	var hotbar: Array = []
 
-	## Quick spell slots (4 slots for MagicPanel)
+	## Quick spell slots (4 slots on GameMenu's Magic tab)
 	var spell_slots: Array = []
 
 	## Currently equipped spell ID

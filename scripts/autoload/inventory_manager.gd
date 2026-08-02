@@ -36,7 +36,7 @@ var quick_slots: Array[String] = ["", "", "", ""]
 ## Each slot: {"type": "weapon"|"spell"|"item"|"", "id": String}
 var hotbar: Array[Dictionary] = []
 
-## Quick spell slots (4 slots for MagicPanel) - separate from hotbar
+## Quick spell slots (4 slots on GameMenu's Magic tab) - separate from hotbar
 ## Stores spell IDs that can be cast via dedicated spell keys
 var spell_slots: Array[String] = ["", "", "", ""]
 
@@ -1007,10 +1007,10 @@ func clear_equipped_spell() -> void:
 	equipped_spell_changed.emit(old_spell, null)
 
 # ============================================================================
-# SPELL SLOTS (Quick spell slots for MagicPanel)
+# SPELL SLOTS (Quick spell slots on GameMenu's Magic tab)
 # ============================================================================
 
-## Set a spell slot (0-3 for MagicPanel quick slots)
+## Set a spell slot (0-3 for the Magic tab quick slots)
 func set_spell_slot(slot_index: int, spell_id: String) -> void:
 	if slot_index < 0 or slot_index >= 4:
 		return
@@ -1515,7 +1515,7 @@ func from_dict(data: Dictionary) -> void:
 		if hotbar_data[i] is Dictionary:
 			hotbar[i] = hotbar_data[i].duplicate()
 
-	# Load spell slots (MagicPanel quick slots)
+	# Load spell slots (Magic tab quick slots)
 	spell_slots = ["", "", "", ""]
 	var spell_slots_data: Array = data.get("spell_slots", [])
 	for i in range(min(spell_slots_data.size(), 4)):

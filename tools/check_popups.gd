@@ -33,7 +33,6 @@ const POPUPS: Array[String] = [
 	"res://scripts/ui/humanoid_dialogue.gd",
 	"res://scripts/ui/intro_dialogue_ui.gd",
 	"res://scripts/ui/dialogue_box.gd",
-	"res://scripts/ui/npc_dialogue_ui.gd",
 	"res://scripts/ui/conversation_ui.gd",
 ]
 ## Not listed: the panels under scripts/ui/panels/. They are pages inside
