@@ -1,0 +1,42 @@
+{
+  "id": "mage",
+  "description": "Late to rise, late to stop. Whatever is on the bench does not care what hour it is.",
+  "blocks": [
+    {
+      "from": 0,
+      "to": 8,
+      "action": "sleep",
+      "station": "home"
+    },
+    {
+      "from": 8,
+      "to": 9,
+      "action": "eat",
+      "station": "home"
+    },
+    {
+      "from": 9,
+      "to": 13,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 13,
+      "to": 14,
+      "action": "eat",
+      "station": "work"
+    },
+    {
+      "from": 14,
+      "to": 22,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 22,
+      "to": 24,
+      "action": "idle",
+      "station": "work"
+    }
+  ]
+}

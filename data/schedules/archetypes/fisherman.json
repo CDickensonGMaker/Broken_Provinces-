@@ -1,0 +1,48 @@
+{
+  "id": "fisherman",
+  "description": "Out on the water before anyone else is awake, ashore by mid-afternoon, in the tavern by evening.",
+  "blocks": [
+    {
+      "from": 0,
+      "to": 3,
+      "action": "sleep",
+      "station": "home"
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "action": "eat",
+      "station": "home"
+    },
+    {
+      "from": 4,
+      "to": 13,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 13,
+      "to": 14,
+      "action": "eat",
+      "station": "work"
+    },
+    {
+      "from": 14,
+      "to": 17,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 17,
+      "to": 21,
+      "action": "socialise",
+      "station": "leisure"
+    },
+    {
+      "from": 21,
+      "to": 24,
+      "action": "sleep",
+      "station": "home"
+    }
+  ]
+}

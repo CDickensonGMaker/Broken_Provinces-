@@ -1,0 +1,48 @@
+{
+  "id": "farmer",
+  "description": "Out before light, in before dark, and the middle meal is taken standing in the field.",
+  "blocks": [
+    {
+      "from": 0,
+      "to": 4,
+      "action": "sleep",
+      "station": "home"
+    },
+    {
+      "from": 4,
+      "to": 5,
+      "action": "eat",
+      "station": "home"
+    },
+    {
+      "from": 5,
+      "to": 12,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 12,
+      "to": 13,
+      "action": "eat",
+      "station": "work"
+    },
+    {
+      "from": 13,
+      "to": 18,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 18,
+      "to": 20,
+      "action": "socialise",
+      "station": "leisure"
+    },
+    {
+      "from": 20,
+      "to": 24,
+      "action": "sleep",
+      "station": "home"
+    }
+  ]
+}

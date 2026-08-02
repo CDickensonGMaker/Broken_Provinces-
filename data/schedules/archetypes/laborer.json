@@ -1,0 +1,48 @@
+{
+  "id": "laborer",
+  "description": "Paid by the day and works all of it. Eats where the work is and drinks where the work is not.",
+  "blocks": [
+    {
+      "from": 0,
+      "to": 5,
+      "action": "sleep",
+      "station": "home"
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "action": "eat",
+      "station": "home"
+    },
+    {
+      "from": 6,
+      "to": 12,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 12,
+      "to": 13,
+      "action": "eat",
+      "station": "work"
+    },
+    {
+      "from": 13,
+      "to": 18,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 18,
+      "to": 21,
+      "action": "socialise",
+      "station": "leisure"
+    },
+    {
+      "from": 21,
+      "to": 24,
+      "action": "sleep",
+      "station": "home"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "scholar",
+  "description": "Reads by day and by lamp. Eats where the book is if the book is interesting.",
+  "blocks": [
+    {
+      "from": 0,
+      "to": 7,
+      "action": "sleep",
+      "station": "home"
+    },
+    {
+      "from": 7,
+      "to": 8,
+      "action": "eat",
+      "station": "home"
+    },
+    {
+      "from": 8,
+      "to": 12,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 12,
+      "to": 13,
+      "action": "eat",
+      "station": "work"
+    },
+    {
+      "from": 13,
+      "to": 20,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 20,
+      "to": 22,
+      "action": "idle",
+      "station": "work"
+    },
+    {
+      "from": 22,
+      "to": 24,
+      "action": "sleep",
+      "station": "home"
+    }
+  ]
+}

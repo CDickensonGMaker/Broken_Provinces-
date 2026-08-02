@@ -1,0 +1,54 @@
+{
+  "id": "official",
+  "description": "Keeps hours because the office does. Whatever is not settled by six is settled tomorrow.",
+  "blocks": [
+    {
+      "from": 0,
+      "to": 6,
+      "action": "sleep",
+      "station": "home"
+    },
+    {
+      "from": 6,
+      "to": 7,
+      "action": "eat",
+      "station": "home"
+    },
+    {
+      "from": 7,
+      "to": 8,
+      "action": "travel",
+      "station": "work"
+    },
+    {
+      "from": 8,
+      "to": 12,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 12,
+      "to": 13,
+      "action": "eat",
+      "station": "work"
+    },
+    {
+      "from": 13,
+      "to": 18,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 18,
+      "to": 21,
+      "action": "socialise",
+      "station": "leisure"
+    },
+    {
+      "from": 21,
+      "to": 24,
+      "action": "sleep",
+      "station": "home"
+    }
+  ]
+}

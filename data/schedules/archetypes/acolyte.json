@@ -1,0 +1,42 @@
+{
+  "id": "acolyte",
+  "description": "The chores under the offices: sweeping, candles, the door. Longer hours than the priest and less standing about.",
+  "blocks": [
+    {
+      "from": 0,
+      "to": 5,
+      "action": "sleep",
+      "station": "home"
+    },
+    {
+      "from": 5,
+      "to": 12,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 12,
+      "to": 13,
+      "action": "eat",
+      "station": "work"
+    },
+    {
+      "from": 13,
+      "to": 20,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 20,
+      "to": 22,
+      "action": "socialise",
+      "station": "leisure"
+    },
+    {
+      "from": 22,
+      "to": 24,
+      "action": "sleep",
+      "station": "home"
+    }
+  ]
+}

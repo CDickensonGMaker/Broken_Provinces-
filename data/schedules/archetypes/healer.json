@@ -1,0 +1,48 @@
+{
+  "id": "healer",
+  "description": "At the table whenever anyone is bleeding, which is most hours. Eats beside the patient.",
+  "blocks": [
+    {
+      "from": 0,
+      "to": 6,
+      "action": "sleep",
+      "station": "home"
+    },
+    {
+      "from": 6,
+      "to": 7,
+      "action": "eat",
+      "station": "home"
+    },
+    {
+      "from": 7,
+      "to": 12,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 12,
+      "to": 13,
+      "action": "eat",
+      "station": "work"
+    },
+    {
+      "from": 13,
+      "to": 19,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 19,
+      "to": 21,
+      "action": "idle",
+      "station": "leisure"
+    },
+    {
+      "from": 21,
+      "to": 24,
+      "action": "sleep",
+      "station": "home"
+    }
+  ]
+}

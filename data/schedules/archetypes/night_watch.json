@@ -1,0 +1,42 @@
+{
+  "id": "night_watch",
+  "description": "The other half of the same rota. Awake for the hours the day watch is not, and abed through the middle of the day.",
+  "blocks": [
+    {
+      "from": 0,
+      "to": 6,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 6,
+      "to": 8,
+      "action": "eat",
+      "station": "leisure"
+    },
+    {
+      "from": 8,
+      "to": 16,
+      "action": "sleep",
+      "station": "home"
+    },
+    {
+      "from": 16,
+      "to": 17,
+      "action": "eat",
+      "station": "home"
+    },
+    {
+      "from": 17,
+      "to": 18,
+      "action": "travel",
+      "station": "work"
+    },
+    {
+      "from": 18,
+      "to": 24,
+      "action": "work",
+      "station": "work"
+    }
+  ]
+}

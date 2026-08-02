@@ -1,0 +1,48 @@
+{
+  "id": "noble",
+  "description": "Nothing that must be done and all day not to do it in. Keeps the longest evening in town.",
+  "blocks": [
+    {
+      "from": 0,
+      "to": 8,
+      "action": "sleep",
+      "station": "home"
+    },
+    {
+      "from": 8,
+      "to": 9,
+      "action": "eat",
+      "station": "home"
+    },
+    {
+      "from": 9,
+      "to": 13,
+      "action": "idle",
+      "station": "work"
+    },
+    {
+      "from": 13,
+      "to": 14,
+      "action": "eat",
+      "station": "leisure"
+    },
+    {
+      "from": 14,
+      "to": 18,
+      "action": "idle",
+      "station": "work"
+    },
+    {
+      "from": 18,
+      "to": 23,
+      "action": "socialise",
+      "station": "leisure"
+    },
+    {
+      "from": 23,
+      "to": 24,
+      "action": "sleep",
+      "station": "home"
+    }
+  ]
+}

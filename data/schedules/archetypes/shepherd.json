@@ -1,0 +1,36 @@
+{
+  "id": "shepherd",
+  "description": "With the flock all the daylight there is. Comes down for the evening and goes up again at dawn.",
+  "blocks": [
+    {
+      "from": 0,
+      "to": 4,
+      "action": "sleep",
+      "station": "home"
+    },
+    {
+      "from": 4,
+      "to": 5,
+      "action": "eat",
+      "station": "home"
+    },
+    {
+      "from": 5,
+      "to": 19,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 19,
+      "to": 21,
+      "action": "socialise",
+      "station": "leisure"
+    },
+    {
+      "from": 21,
+      "to": 24,
+      "action": "sleep",
+      "station": "home"
+    }
+  ]
+}

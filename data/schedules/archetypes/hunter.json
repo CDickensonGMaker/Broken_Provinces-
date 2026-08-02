@@ -1,0 +1,42 @@
+{
+  "id": "hunter",
+  "description": "Away with the light and back with the carcass. Sells or drinks the difference.",
+  "blocks": [
+    {
+      "from": 0,
+      "to": 4,
+      "action": "sleep",
+      "station": "home"
+    },
+    {
+      "from": 4,
+      "to": 5,
+      "action": "eat",
+      "station": "home"
+    },
+    {
+      "from": 5,
+      "to": 16,
+      "action": "work",
+      "station": "work"
+    },
+    {
+      "from": 16,
+      "to": 18,
+      "action": "idle",
+      "station": "work"
+    },
+    {
+      "from": 18,
+      "to": 21,
+      "action": "socialise",
+      "station": "leisure"
+    },
+    {
+      "from": 21,
+      "to": 24,
+      "action": "sleep",
+      "station": "home"
+    }
+  ]
+}
