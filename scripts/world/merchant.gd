@@ -723,6 +723,66 @@ func get_world_price_modifier() -> float:
 	return maxf(0.5, modifier)
 
 
+## Rank levels in the thieves' guild at which the two capstone benefits land.
+## Level 3 is roughly mid-ladder; the top of the ladder is the Guildmaster's
+## Shadow at 14 quests and 100 reputation.
+const THIEVES_FENCE_RANK: int = 3
+const THIEVES_COMMAND_RANK: int = 5
+
+## What the guild's own fences pay a ranked member, over the base rate.
+## +20% at the fence rank, +35% once command authority lands. A fence who knows
+## you speak for the Guild does not round down on you.
+const THIEVES_FENCE_BONUS: float = 0.20
+const THIEVES_COMMAND_FENCE_BONUS: float = 0.35
+
+## What the whole Guild's business is worth to a member buying openly - the
+## "guild services" and "share of all Guild jobs" the capstone promises,
+## spent where a player can feel it.
+const THIEVES_SERVICES_DISCOUNT: float = 0.10
+
+
+## Price modifier from guild standing. Returns a multiplier: <1.0 = discount.
+##
+## The thieves' capstone quest, thieves_13_right_hand, promises `guild_vault_access`,
+## `command_authority`, a `share_of_all_guild_jobs` of "10% of all Guild income"
+## and a `personal_safehouse`. Every one of those was prose - the item was
+## granted and nothing it claimed to confer existed anywhere in scripts/. This
+## is the mechanical half: rank buys you a better rate, at the fence first and
+## then everywhere the Guild has reach.
+func get_guild_price_modifier() -> float:
+	var thieves_rank: int = GuildRankManager.get_guild_rank_level("thieves_guild")
+	if thieves_rank < THIEVES_FENCE_RANK:
+		return 1.0
+
+	var modifier := 1.0
+	# The share of Guild income is a standing discount on ordinary trade.
+	if thieves_rank >= THIEVES_COMMAND_RANK:
+		modifier -= THIEVES_SERVICES_DISCOUNT
+	return maxf(0.5, modifier)
+
+
+## What a fence pays a ranked member, as a multiplier on the sell price.
+## Applies only at a fence - a guild rank buys nothing at an honest counter.
+func get_guild_fence_sell_bonus() -> float:
+	if not is_fence():
+		return 1.0
+	var thieves_rank: int = GuildRankManager.get_guild_rank_level("thieves_guild")
+	if thieves_rank >= THIEVES_COMMAND_RANK:
+		return 1.0 + THIEVES_COMMAND_FENCE_BONUS
+	if thieves_rank >= THIEVES_FENCE_RANK:
+		return 1.0 + THIEVES_FENCE_BONUS
+	return 1.0
+
+
+## Is this merchant a fence - somebody who buys what you should not have?
+func is_fence() -> bool:
+	if shop_type == "fence":
+		return true
+	if merchant_id.contains("fence"):
+		return true
+	return faction_id == "thieves_guild"
+
+
 ## Get faction reputation-based price modifier for BUYING
 ## Returns a multiplier: <1.0 = discount, >1.0 = markup
 ## Based on player's standing with the town faction
@@ -806,7 +866,11 @@ func get_speech_sell_modifier() -> float:
 	# World standing works inversely for selling, same as dialogue modifiers
 	var inverted_world := 2.0 - get_world_price_modifier()
 
-	return skill_modifier * inverted_dialogue * faction_mod * inverted_world
+	# Guild standing works the same way, plus what a fence pays its own.
+	var inverted_guild := 2.0 - get_guild_price_modifier()
+
+	var combined: float = skill_modifier * inverted_dialogue * faction_mod * inverted_world
+	return combined * inverted_guild * get_guild_fence_sell_bonus()
 
 ## Get Speech skill buy price modifier (better Speech = lower buy prices)
 ## Formula: Speech -1% per point, PERSUASION -1% per level, NEGOTIATION -3% per level, + dialogue modifiers + faction modifiers, capped at 50% off
@@ -833,9 +897,12 @@ func get_speech_buy_modifier() -> float:
 	# Apply what the world owes him (hold-friend discounts and the like)
 	var world_mod := get_world_price_modifier()
 
+	# Apply what the Guild's own standing buys (thieves_13_right_hand's capstone)
+	var guild_mod := get_guild_price_modifier()
+
 	# Cap at 50% minimum (can't get items for less than half price)
 	# But allow faction penalties to push above 1.0 (for UNFRIENDLY markup)
-	return maxf(0.5, skill_modifier * dialogue_mod * faction_mod * world_mod)
+	return maxf(0.5, skill_modifier * dialogue_mod * faction_mod * world_mod * guild_mod)
 
 ## Get sell price with Speech skill modifier applied
 func get_sell_price_with_speech(inventory_index: int) -> int:

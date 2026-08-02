@@ -15,6 +15,7 @@ signal choice_consequence_applied(quest_id: String, choice_id: String)  # Choice
 signal follower_recruited(follower_id: String, quest_id: String)  # Follower recruited via quest
 signal soulstone_delivered(soulstone_id: String, npc_id: String, quest_id: String)  # Soulstone turned in
 signal puzzle_solved(puzzle_id: String, quest_id: String)  # Puzzle completed
+signal moral_choice_recorded(quest_id: String, choice_id: String)  # Player committed to a branch
 
 ## THE OBJECTIVE VOCABULARY.
 ##
@@ -210,6 +211,22 @@ var quests: Dictionary = {}  # quest_id -> Quest
 
 ## Quest database (loaded from data files)
 var quest_database: Dictionary = {}
+
+## quest_id -> the .json it was parsed from, and quest_id -> that file's raw
+## parsed contents. Filled by the recursive walk in _load_quests_from_directory,
+## because the walk is the only thing that knows where a quest actually lives.
+## get_quest_data() used to guess at "res://data/quests/<id>.json" and silently
+## degrade for every quest in a subdirectory - see the note on it.
+var quest_json_paths: Dictionary = {}
+var quest_raw_json: Dictionary = {}
+
+## quest_id -> the branch the player committed to. Saved.
+var moral_choices: Dictionary = {}
+
+## How far a branch tagged "good" or "evil" moves the morality score. One tier
+## boundary is 40 points wide, so 10 means four consistent choices in the same
+## direction move a person a whole tier - a run of decisions, not one.
+const MORAL_CHOICE_ALIGNMENT_SHIFT: int = 10
 
 ## Currently tracked quest (shown on compass)
 var tracked_quest_id: String = ""
@@ -625,6 +642,8 @@ func _load_quests_from_directory(dir_path: String) -> void:
 					var quest := _parse_quest(json_dict)
 					if not quest.id.is_empty():
 						quest_database[quest.id] = quest
+						quest_json_paths[quest.id] = full_path
+						quest_raw_json[quest.id] = json_dict
 
 		file_name = dir.get_next()
 	dir.list_dir_end()
@@ -1976,12 +1995,116 @@ func apply_choice_consequence(quest_id: String, choice_id: String) -> bool:
 	var quest: Quest = quests[quest_id]
 
 	if not quest.choice_consequences.has(choice_id):
-		return false
+		# Four thieves-guild quests author their branches under `moral_choice`
+		# instead, in a vocabulary of its own. Reach those the same way.
+		return _apply_moral_choice(quest, choice_id)
 
 	var consequence: Dictionary = quest.choice_consequences[choice_id]
 	_execute_choice_consequence(quest_id, choice_id, consequence)
 	_complete_choice_objectives(quest, choice_id)
+	record_moral_choice(quest_id, choice_id)
 	return true
+
+
+## Apply a branch authored under a quest's `moral_choice.consequences` block.
+##
+## `moral_choice` is a second, hand-rolled consequence vocabulary that four
+## thieves-guild quests use and NOTHING has ever read - `thieves_02`,
+## `thieves_04`, `thieves_05` and `thieves_10` describe forgiving a debt,
+## warning a man he is being framed, exposing a slaver, and handing the Guild
+## its own legitimacy, and every one of those choices did precisely nothing.
+## Two sibling quests were migrated to `choice_consequences` and these four were
+## missed.
+##
+## Rather than rewrite the author's intent into the other vocabulary, this
+## executes it. Every field it declares is honoured:
+##
+## | moral_choice field | what it does |
+## |---|---|
+## | `faction_rep` | `{faction_id: delta}` - reputation, the same call the engine vocabulary makes |
+## | `flag_set` | one flag name, set on FlagManager |
+## | `gold_bonus` / `gold_cost` | paid to / taken from the player |
+## | `xp_bonus` | improvement points |
+## | `moral_alignment` | "good" / "evil" - moves the morality score |
+## | `quest_failure` | the branch loses the quest instead of completing it |
+## | `alternative_reward` | `{gold, xp}` paid instead of the quest's own reward |
+## | `future_impact` | prose for the reader; deliberately does nothing |
+func _apply_moral_choice(quest: Quest, choice_id: String) -> bool:
+	var raw: Dictionary = get_quest_data(quest.id)
+	var moral: Dictionary = raw.get("moral_choice", {})
+	if moral.is_empty():
+		return false
+	var consequences: Dictionary = moral.get("consequences", {})
+	if not consequences.has(choice_id):
+		return false
+
+	var branch: Dictionary = consequences[choice_id]
+
+	var faction_rep: Dictionary = branch.get("faction_rep", {})
+	for faction_id: String in faction_rep:
+		FactionManager.modify_reputation(faction_id, int(faction_rep[faction_id]))
+
+	var flag_set: String = str(branch.get("flag_set", ""))
+	if not flag_set.is_empty():
+		FlagManager.set_flag(flag_set, true)
+
+	var gold_bonus: int = int(branch.get("gold_bonus", 0))
+	if gold_bonus > 0:
+		InventoryManager.add_gold(gold_bonus)
+
+	var gold_cost: int = int(branch.get("gold_cost", 0))
+	if gold_cost > 0:
+		InventoryManager.remove_gold(gold_cost)
+
+	var alternative: Dictionary = branch.get("alternative_reward", {})
+	if not alternative.is_empty():
+		var alt_gold: int = int(alternative.get("gold", 0))
+		if alt_gold > 0:
+			InventoryManager.add_gold(alt_gold)
+		var alt_xp: int = int(alternative.get("xp", 0))
+		if alt_xp > 0 and GameManager.player_data:
+			GameManager.player_data.add_ip(alt_xp)
+
+	var xp_bonus: int = int(branch.get("xp_bonus", 0))
+	if xp_bonus > 0 and GameManager.player_data:
+		GameManager.player_data.add_ip(xp_bonus)
+
+	var alignment: String = str(branch.get("moral_alignment", ""))
+	if alignment == "good":
+		MoralityManager.modify_morality(MORAL_CHOICE_ALIGNMENT_SHIFT, "%s: %s" % [quest.id, choice_id])
+	elif alignment == "evil":
+		MoralityManager.modify_morality(-MORAL_CHOICE_ALIGNMENT_SHIFT, "%s: %s" % [quest.id, choice_id])
+
+	record_moral_choice(quest.id, choice_id)
+	_complete_choice_objectives(quest, choice_id)
+
+	if bool(branch.get("quest_failure", false)):
+		fail_quest(quest.id)
+
+	return true
+
+
+## Remember which way the player went, so later content can ask.
+##
+## The choice itself is the point - a player who forgave Garrett's debt should
+## be a different person to the Guild ever after, and that is not expressible as
+## a reputation number alone.
+func record_moral_choice(quest_id: String, choice_id: String) -> void:
+	if quest_id.is_empty() or choice_id.is_empty():
+		return
+	moral_choices[quest_id] = choice_id
+	# Readable from dialogue and conversation pools without a new condition type.
+	FlagManager.set_flag("choice:%s:%s" % [quest_id, choice_id], true)
+	moral_choice_recorded.emit(quest_id, choice_id)
+
+
+## Which branch the player took on a quest, or "" if they never chose.
+func get_moral_choice(quest_id: String) -> String:
+	return str(moral_choices.get(quest_id, ""))
+
+
+func has_moral_choice(quest_id: String, choice_id: String) -> bool:
+	return get_moral_choice(quest_id) == choice_id
 
 
 ## Settle a quest's "choice" objectives once the player has committed to a path
@@ -2317,18 +2440,25 @@ static func normalize_reward_items(items: Variant) -> Array[Dictionary]:
 	return result
 
 
+## The full authored contents of a quest's .json - every key, not just the ones
+## the Quest object models.
+##
+## This used to guess the file's location: "res://data/quests/<id>.json", flat,
+## no subdirectories. Every quest under bounties/, chains/, guild/**,
+## kazan_dun/ and temple/ - which is most of them - failed that existence test
+## and fell through to a four-key stand-in built from the Quest object, losing
+## objectives, prerequisites, giver and turn-in ids, choice_consequences and
+## moral_choice. It never errored; callers just got a quest with no objectives
+## and carried on.
+##
+## The walk that loads the database already knows where every file is, so it
+## records both the path and the parsed contents and this function serves them.
 func get_quest_data(quest_id: String) -> Dictionary:
-	# Check loaded quest data files
-	var quest_file_path := "res://data/quests/%s.json" % quest_id
-	if FileAccess.file_exists(quest_file_path):
-		var file := FileAccess.open(quest_file_path, FileAccess.READ)
-		if file:
-			var json_text := file.get_as_text()
-			file.close()
-			var json := JSON.new()
-			if json.parse(json_text) == OK:
-				return json.data
-	# Fallback - construct from Quest object
+	if quest_raw_json.has(quest_id):
+		var raw: Dictionary = quest_raw_json[quest_id]
+		return raw
+
+	# A quest that was never in the database at all (a runtime bounty, say).
 	if quest_database.has(quest_id):
 		var quest: Quest = quest_database[quest_id]
 		return {
@@ -2338,6 +2468,11 @@ func get_quest_data(quest_id: String) -> Dictionary:
 			"rewards": quest.rewards
 		}
 	return {}
+
+
+## Where a quest's .json lives on disk, or "" for quests that came from nowhere.
+func get_quest_json_path(quest_id: String) -> String:
+	return str(quest_json_paths.get(quest_id, ""))
 
 
 ## Set the quest giver NPC for a quest (used for dynamic quests like bounties)
@@ -2605,7 +2740,8 @@ func to_dict() -> Dictionary:
 		"quests": {},
 		"bounty_cooldowns": bounty_cooldowns.duplicate(),
 		"timed_objectives": _timed_objectives.duplicate(),
-		"paused_timers": _paused_timers.duplicate()
+		"paused_timers": _paused_timers.duplicate(),
+		"moral_choices": moral_choices.duplicate()
 	}
 	for quest_id in quests:
 		var quest: Quest = quests[quest_id]
@@ -2654,10 +2790,11 @@ func from_dict(data: Dictionary) -> void:
 	# Handle both old format (quest_id -> data) and new format ({tracked_quest_id, quests})
 	var quests_data: Dictionary = data.get("quests", data)  # Fallback to old format
 	tracked_quest_id = data.get("tracked_quest_id", "")
+	moral_choices = data.get("moral_choices", {})
 
 	for quest_id in quests_data:
 		# Skip non-quest keys from new format
-		if quest_id == "tracked_quest_id" or quest_id == "quests":
+		if quest_id in ["tracked_quest_id", "quests", "moral_choices", "bounty_cooldowns", "timed_objectives", "paused_timers"]:
 			continue
 
 		if not quest_database.has(quest_id):

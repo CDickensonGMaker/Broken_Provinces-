@@ -30,6 +30,10 @@ enum ShapeType { BOX, CYLINDER }
 @export var trigger_delay: float = 0.2  ## Delay before trap activates after trigger
 @export var reset_time: float = 3.0  ## Time before trap can trigger again (0 = one-shot)
 @export var is_active: bool = true  ## Can be disabled via lever/switch
+## Passive difficulty for the player to spot this trap before standing on it.
+## Beaten by CharacterData.get_trap_detection_bonus() - Knowledge + INTUITION.
+## 0 disables spotting entirely: the trap cannot be seen and always fires.
+@export var detection_dc: int = 12
 
 ## Shape settings
 @export_group("Trigger Zone")
@@ -66,12 +70,15 @@ var _is_triggered: bool = false
 var _cooldown_timer: float = 0.0
 var _trigger_timer: float = 0.0
 var _targets_in_zone: Array[Node3D] = []
+## Set once the player has passed the passive spot check on this trap.
+var _spotted_by_player: bool = false
 var _collision_shape: CollisionShape3D
 
 ## Signals
 signal trap_triggered(trap: TriggeredTrap)
 signal trap_activated(trap: TriggeredTrap, victims: Array[Node3D])
 signal trap_reset(trap: TriggeredTrap)
+signal trap_spotted(trap: TriggeredTrap)  ## Player noticed it instead of standing on it
 
 
 func _ready() -> void:
@@ -180,9 +187,42 @@ func _on_body_entered(body: Node3D) -> void:
 	if body not in _targets_in_zone:
 		_targets_in_zone.append(body)
 
+	# A player who saw it coming does not stand on it. INTUITION's promised
+	# "trap detection bonus" is spent here - CharacterData.get_trap_detection_bonus()
+	# has existed since the skill consolidation and had zero callers, so the
+	# character sheet has been advertising a bonus against nothing at all.
+	if body.is_in_group("player") and _player_spots_trap():
+		return
+
 	# Trigger if not already triggered and not on cooldown
 	if not _is_triggered and _cooldown_timer <= 0:
 		_trigger_trap()
+
+
+## Passive spot check, on the hidden-chest pattern: no verb, no prompt, the
+## player is simply the sort of person who notices. Once spotted, this trap
+## stays spotted - re-rolling every step would be a slot machine, not a skill.
+func _player_spots_trap() -> bool:
+	if detection_dc <= 0:
+		return false
+	if _spotted_by_player:
+		return true
+	if not GameManager.player_data:
+		return false
+
+	var bonus: int = GameManager.player_data.get_trap_detection_bonus()
+	var result: Dictionary = DiceManager.passive_check("Trap Detection", bonus, detection_dc)
+	if not bool(result.get("success", false)):
+		return false
+
+	_spotted_by_player = true
+	trap_spotted.emit(self)
+	var hud: Node = get_tree().get_first_node_in_group("hud")
+	if hud and hud.has_method("show_notification"):
+		hud.show_notification("You spot a trap and step around it.")
+	if AudioManager:
+		AudioManager.play_sfx("menu_select")
+	return true
 
 
 func _on_body_exited(body: Node3D) -> void:

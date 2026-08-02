@@ -46,6 +46,8 @@ const TRANSIENT_MEMBERS: Dictionary = {
 	"quest_database": "rebuilt from data/quests/**.json on every boot",
 	"objective_locations": "a compass position cache, recomputed after a load",
 	"_quest_spawns": "live node references; every one is freed by the scene change a load performs",
+	"quest_json_paths": "an index of where each quest's .json lives, rebuilt by the same walk that fills quest_database",
+	"quest_raw_json": "the authored contents of those files, rebuilt on every boot alongside quest_database",
 }
 
 ## Member name -> the key to_dict writes it under, where they differ.

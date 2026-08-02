@@ -39,6 +39,11 @@ var _last_known_los: Dictionary = {}  # Cache LOS results: "from_id:to_id" -> bo
 ## somebody else in turn cannot inherit the exemption.
 var _armor_paid_target: Node = null
 
+## Set for the duration of a melee take_damage() call, so the receiver can tell
+## a sword from a fireball. Enums.DamageType says what KIND of harm a hit does,
+## never how it arrived, and passive evasion is only allowed against a swing.
+var _melee_strike_target: Node = null
+
 func _ready() -> void:
 	# Try to load damage number scene if it exists
 	if ResourceLoader.exists("res://scenes/ui/damage_number.tscn"):
@@ -70,6 +75,7 @@ func _clear_node_references() -> void:
 	active_enemies.clear()
 	_humanoid_dialogue_pending = false
 	_armor_paid_target = null
+	_melee_strike_target = null
 	clear_all_projectiles()
 
 func _process(delta: float) -> void:
@@ -198,14 +204,18 @@ func apply_melee_damage(
 	# Apply the damage. Armour was charged above, so the receiver must skip its
 	# own armour block for this one call.
 	_armor_paid_target = target
+	_melee_strike_target = target
 	var actual_damage: int = target.take_damage(total_damage, weapon.damage_type, attacker)
 	_armor_paid_target = null
+	_melee_strike_target = null
 
 	# Handle secondary damage (elemental)
 	var secondary: int = weapon.roll_secondary_damage(quality)
 	if secondary > 0:
 		secondary = _apply_damage_type_modifier(secondary, weapon.secondary_damage_type, target)
+		_melee_strike_target = target
 		target.take_damage(secondary, weapon.secondary_damage_type, attacker)
+		_melee_strike_target = null
 		actual_damage += secondary
 
 	# Apply condition if weapon inflicts one
@@ -645,6 +655,12 @@ func is_player_valid() -> bool:
 ## target pays twice for the same swing.
 func is_armor_already_applied(target: Node) -> bool:
 	return _armor_paid_target != null and _armor_paid_target == target
+
+## True while this target is being hit by a melee swing rather than a spell,
+## a projectile, a trap or a fall. Read by PlayerController.take_damage() to
+## decide whether the Dodge skill gets a roll.
+func is_melee_strike(target: Node) -> bool:
+	return _melee_strike_target != null and _melee_strike_target == target
 
 ## Is this thing one of the walking dead? Read off `EnemyData.faction`, which
 ## is the only place the game records it - `political_faction` is who a kill

@@ -109,6 +109,8 @@ var weapon_drawn: bool = false
 
 ## Signal emitted when weapon is drawn or sheathed
 signal weapon_state_changed(is_drawn: bool)
+## A melee swing that the Dodge skill made miss outright.
+signal melee_evaded(attacker: Node)
 
 func _ready() -> void:
 	# Add to player group
@@ -785,6 +787,44 @@ func _set_invulnerable(invulnerable: bool) -> void:
 		hurtbox.monitorable = not invulnerable
 
 ## Combat - Receive damage from enemies
+## Evasion the Dodge skill buys, per level. The character sheet and the rest
+## menu have both promised "+3% dodge chance per level" for as long as the skill
+## has existed; this is that number and nothing else.
+const DODGE_CHANCE_PER_LEVEL: float = 0.03
+
+## Ceiling on passive evasion. Ten levels of Dodge is 30%; the cap exists so a
+## maxed skill plus any later bonus can never make melee stop mattering.
+const DODGE_CHANCE_MAX: float = 0.45
+
+
+## Does this swing miss entirely?
+##
+## RULED 8/2: Dodge is a PASSIVE skill and nothing else. Commit e8cb20f took the
+## active dodge roll out on the grounds that this game's combat identity is
+## Skyrim, not Souls - no i-frames, no verb, no animation, no key. But
+## Enums.Skill.DODGE survived, the sheet went on printing "Dodge Bonus: +N%",
+## and nothing anywhere computed it. Daggerfall's Dodging is a passive chance to
+## be missed, which is exactly what the sheet already describes, so that is what
+## it is. Do not add an input action, and do not name anything here after the
+## five identifiers tools/check_combat.gd forbids.
+func _evades_melee() -> bool:
+	if not GameManager.player_data:
+		return false
+	var dodge_skill: int = GameManager.player_data.get_skill(Enums.Skill.DODGE)
+	if dodge_skill <= 0:
+		return false
+	# A guard is a decision; evasion is a knack. Guarding does not stop you
+	# being nimble, but it does mean the guard was not what saved you.
+	var chance: float = minf(dodge_skill * DODGE_CHANCE_PER_LEVEL, DODGE_CHANCE_MAX)
+	return randf() < chance
+
+
+func _on_melee_evaded(attacker: Node) -> void:
+	melee_evaded.emit(attacker)
+	if AudioManager:
+		AudioManager.play_sfx_3d("miss", global_position)
+
+
 func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> int:
 	# Don't take damage if already dead
 	if is_dead:
@@ -798,6 +838,12 @@ func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> 
 		return 0
 
 	var player_data := GameManager.player_data
+
+	# The Dodge skill, spent. Before the guard, because a swing that never
+	# landed does not spend a guard and does not scratch armour.
+	if CombatManager.is_melee_strike(self) and _evades_melee():
+		_on_melee_evaded(attacker)
+		return 0
 
 	# Guard first, before armour and before every resistance: the guard is a
 	# decision the player made this second, and it should read as the reason

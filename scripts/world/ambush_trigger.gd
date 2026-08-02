@@ -7,6 +7,8 @@ extends Area3D
 signal ambush_triggered(trigger_id: String)
 signal ambush_enemies_spawned(enemy_count: int)
 signal ambush_cleared  # All spawned enemies killed
+## Emitted the instant an ambush springs, saying whether INTUITION saw it coming.
+signal ambush_foreseen(trigger_id: String, forewarned: bool)
 
 ## Trigger identification
 @export var trigger_id: String = ""
@@ -20,6 +22,10 @@ signal ambush_cleared  # All spawned enemies killed
 @export var spawn_delay: float = 0.5  # Delay between enemy spawns for dramatic effect
 @export var trigger_on_player: bool = false  # Also trigger on player (not just escort)
 @export var trigger_on_any_npc: bool = false  # Trigger on any NPC entering
+## Passive difficulty for the player to read the ground before the ambush
+## springs. Beaten by CharacterData.get_trap_detection_bonus() - Knowledge +
+## INTUITION, the same awareness that spots a pressure plate.
+@export var detection_dc: int = 14
 
 ## One-time trigger
 @export var one_time_only: bool = true
@@ -91,10 +97,20 @@ func _trigger_ambush() -> void:
 	has_triggered = true
 	ambush_triggered.emit(trigger_id)
 
-	# Show warning notification
+	# INTUITION's second promise: "ambush detection". Spotting one does not
+	# cancel it - the enemies are already there and already coming - it buys the
+	# seconds before they arrive, which in this combat is the whole of it. The
+	# character sheet has promised this since the PERCEPTION merge and nothing
+	# has ever rolled for it.
+	var forewarned: bool = _player_reads_the_ground()
+	ambush_foreseen.emit(trigger_id, forewarned)
+
 	var hud := get_tree().get_first_node_in_group("hud")
 	if hud and hud.has_method("show_notification"):
-		hud.show_notification("Ambush!")
+		if forewarned:
+			hud.show_notification("Something is wrong here. They are already moving.")
+		else:
+			hud.show_notification("Ambush!")
 
 	# Play ambush sound
 	if AudioManager:
@@ -102,6 +118,17 @@ func _trigger_ambush() -> void:
 
 	# Spawn enemies with delay for dramatic effect
 	_spawn_enemies_sequentially()
+
+
+## Did the player see it coming? Passive, no verb, no prompt.
+func _player_reads_the_ground() -> bool:
+	if detection_dc <= 0:
+		return false
+	if not GameManager.player_data:
+		return false
+	var bonus: int = GameManager.player_data.get_trap_detection_bonus()
+	var result: Dictionary = DiceManager.passive_check("Ambush Detection", bonus, detection_dc)
+	return bool(result.get("success", false))
 
 
 func _spawn_enemies_sequentially() -> void:

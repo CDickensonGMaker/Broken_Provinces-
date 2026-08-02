@@ -2355,6 +2355,72 @@ greeting -> destinations -> confirm_larton -> depart_larton (END + actions)
 
 ---
 
+## DODGE IS PASSIVE (ruled 8/2)
+
+`Enums.Skill.DODGE` is a **passive chance to be missed by a melee swing** -
+`+3%` per level, capped at 45%, rolled in `PlayerController.take_damage()`
+before the guard and before armour. Daggerfall's Dodging, which is what the
+character sheet has described all along: *"+3% dodge chance per level."*
+
+**There is no dodge verb.** Commit `e8cb20f` removed the active roll because
+this game's combat identity is Skyrim, not Souls, and that stays removed.
+`tools/check_combat.gd` fails if `PlayerController` declares `_try_dodge`,
+`_perform_dodge`, `is_dodging`, `_toggle_lock_on` or `lock_on_target`, or if
+a `dodge` input action exists. Do not add one.
+
+Melee is distinguished from spells, arrows, traps and falls by
+`CombatManager.is_melee_strike(target)`, set for the duration of the melee
+`take_damage()` call - the same marker pattern as `is_armor_already_applied()`.
+`Enums.DamageType` says what KIND of harm a hit does, never how it arrived.
+
+## INTUITION HAS TWO CONSUMERS NOW
+
+`CharacterData.get_trap_detection_bonus()` (Knowledge + INTUITION) existed with
+**zero call sites** while the sheet advertised "Detects ambushes and traps".
+
+- `TriggeredTrap.detection_dc` (default 12) - a passive check on entry. Passing
+  it means the player steps around the plate instead of onto it. Spotted stays
+  spotted; re-rolling every step is a slot machine, not a skill.
+- `AmbushTrigger.detection_dc` (default 14) - a passive check as the ambush
+  springs. It does not cancel the ambush (the enemies are already coming); it
+  buys the seconds before they arrive, and emits `ambush_foreseen`.
+
+Both follow `HiddenChest`'s pattern: `DiceManager.passive_check`, no verb, no
+prompt. `detection_dc = 0` disables spotting for that instance.
+
+## MORAL CHOICES ARE RECORDED
+
+`QuestManager.apply_choice_consequence(quest_id, choice_id)` now falls through
+to a quest's `moral_choice.consequences` block when `choice_consequences` has no
+such branch. Four thieves-guild quests author their branches in that second
+vocabulary and **nothing had ever read it** - forgiving Garrett's debt, warning
+Marcus he was being framed, exposing Ashford's trafficking, and handing the
+Guild its legitimacy all did precisely nothing.
+
+Fields honoured: `faction_rep`, `flag_set`, `gold_bonus`, `gold_cost`,
+`xp_bonus`, `alternative_reward`, `moral_alignment` (moves morality by 10),
+`quest_failure`. `future_impact` is prose and deliberately does nothing.
+
+Every branch is remembered in `QuestManager.moral_choices` (saved) and raises
+`choice:<quest_id>:<choice_id>` on FlagManager, so dialogue and reaction pools
+can ask about it with the vocabulary they already have.
+
+**`get_quest_data()` no longer guesses the file's location.** It served
+`res://data/quests/<id>.json`, flat, so every quest under `bounties/`,
+`chains/`, `guild/**`, `kazan_dun/` and `temple/` failed the existence test and
+silently degraded to a four-key stand-in with no objectives. The recursive walk
+that loads the database now records both the path and the parsed contents.
+
+## THIEVES' GUILD RANK IS WORTH SOMETHING
+
+`thieves_13_right_hand`'s `rank_benefits` promised vault access, command
+authority and a share of Guild income; all of it was prose. `Merchant` now has
+`get_guild_price_modifier()` and `get_guild_fence_sell_bonus()`, applied in both
+`get_speech_buy_modifier()` and `get_speech_sell_modifier()` alongside the
+Kazan-Dun world modifier they are modelled on: **+20% from a fence at rank 3,
++35% and a 10% standing discount everywhere at rank 5.** `Merchant.is_fence()`
+decides who counts - a guild rank buys nothing at an honest counter.
+
 ## THE REACTIVE LAYER (conversation)
 
 Reaction lines live in `data/conversation_pools/reactions.json` (topic answers)
