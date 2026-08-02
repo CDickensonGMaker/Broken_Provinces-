@@ -120,16 +120,41 @@ Every Dalhurst record in `data/npc_schedules.json` names `"cell": [-8,-2]`, and
 `validate_content._check_schedules` measures station positions against that
 cell. On this machine the town label is two cells west of the town's people.
 
-**(v) The grounding law has a back door.**
-Eleven in-bounds POIs carry a name and no scene:
-`bandit_camp_desert_south`, `bandit_camp_swamp`, `border_wars_graveyard`,
-`goblin_camp_desert`, `goblin_camp_forest_north`, `goblin_camp_swamp`,
-`keerzhar_bridge`, `ruined_temple_desert`, `ruined_temple_forest`,
-`ruined_temple_north`, `ruined_temple_tenger`. They become named cells on
-Caleb's world map with nothing behind them. `validate_content.gd` reads
-`world_grid.gd` as source text and cannot see them, so THE GROUNDING LAW - the
-one rule this project has been hardest about - is enforced against the
-repository's world and not against the world being played.
+**(v) Half the world is in two places at once.**
+
+This is the finding that replaces the one an earlier draft of this document
+made, and it is worth saying which. That draft claimed eleven of the map's POIs
+were phantoms - names with nothing behind them, invisible to the grounding lint
+because it reads `world_grid.gd` as source text. **Measured against `LOCATIONS`,
+that is wrong: all 56 forge POIs are declared.** The lint was not being routed
+around.
+
+What is true is worse. **27 of the 56 places sit at a different cell in the
+forge map than `world_grid.gd` says they do**, and because the forge path
+returned before `LOCATIONS` ran, the map won:
+
+| place | `world_grid.gd` | forge map |
+|---|---|---|
+| dalhurst | (-8, -2) | (-10, -2) |
+| bloodsand_arena | (0, 3) | (-28, 29) |
+| elven_city | (-11, 14) | (-28, 15) |
+| larton | (-5, 20) | (-9, 15) |
+| duncaster | (-1, 22) | (2, 13) |
+| pirate_stronghold | (-10, 18) | (-16, 15) |
+| smuggler_cove | (-15, 8) | (28, 10) |
+| kings_watch | (5, -7) | (16, -4) |
+| rotherhine | (6, -4) | (17, -13) |
+| pola_perron | (3, -5) | (14, 7) |
+| falkenhaften | (7, -9) | (26, -18) |
+| ... 16 more | | |
+
+Every quest that names a region, every fast-travel destination, every schedule
+station that names a cell, and every `is_covered_by_scene()` answer was
+computed against one of those two tables while the map drew the other.
+
+The 28 POIs carrying no `scene_path` remain a real problem, and it is a
+different one: `LOCATION_SCENES` has entries for most of them, and the forge
+path never read it.
 
 ### 2d. The climate model
 

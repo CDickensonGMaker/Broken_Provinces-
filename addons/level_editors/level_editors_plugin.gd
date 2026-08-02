@@ -15,6 +15,7 @@ var npc_composer_window: Window
 var npc_blueprint_editor_window: Window
 var quest_blueprint_editor_window: Window
 var quest_authoring_window: Window
+var world_overview_window: Window
 
 # Editor docks
 var world_forge_dock: Control
@@ -26,6 +27,7 @@ var npc_composer_dock: Control
 var npc_blueprint_editor_dock: Control
 var quest_blueprint_editor_dock: Control
 var quest_authoring_dock: Control
+var world_overview_dock: Control
 
 # Preloads
 const WorldForgeDock = preload("res://addons/world_forge/world_forge_dock.gd")
@@ -41,6 +43,10 @@ const QuestBlueprintEditorDock = preload("res://addons/authoring_tools/dialogue_
 ## See docs/audits/tool_suite_audit.md section 4.
 const QuestAuthoringDockScript = preload("res://addons/authoring_tools/quest_authoring/quest_authoring_dock.gd")
 
+## Read-only. The only tool that shows the world as a whole rather than one
+## cell, one town or one quest at a time.
+const WorldOverviewDockScript = preload("res://addons/authoring_tools/world_overview/world_overview_dock.gd")
+
 # Menu IDs
 enum MenuID {
 	WORLD_FORGE = 0,
@@ -51,6 +57,7 @@ enum MenuID {
 	NPC_BLUEPRINT_EDITOR = 5,
 	QUEST_BLUEPRINT_EDITOR = 6,
 	QUEST_AUTHORING = 7,
+	WORLD_OVERVIEW = 8,
 	CLOSE_ALL = 10
 }
 
@@ -72,6 +79,8 @@ func _enter_tree() -> void:
 	popup_menu.add_icon_item(null, "Quest Ideas (Blueprint)", MenuID.QUEST_BLUEPRINT_EDITOR)
 	popup_menu.add_icon_item(null, "Quest Authoring", MenuID.QUEST_AUTHORING)
 	popup_menu.add_separator()
+	popup_menu.add_icon_item(null, "World Overview", MenuID.WORLD_OVERVIEW)
+	popup_menu.add_separator()
 	popup_menu.add_item("Close All", MenuID.CLOSE_ALL)
 
 	popup_menu.id_pressed.connect(_on_menu_item_pressed)
@@ -89,6 +98,7 @@ func _enter_tree() -> void:
 	_create_npc_blueprint_editor_window()
 	_create_quest_blueprint_editor_window()
 	_create_quest_authoring_window()
+	_create_world_overview_window()
 
 
 func _exit_tree() -> void:
@@ -126,6 +136,10 @@ func _exit_tree() -> void:
 		quest_authoring_window.queue_free()
 		quest_authoring_window = null
 
+	if world_overview_window:
+		world_overview_window.queue_free()
+		world_overview_window = null
+
 	world_forge_dock = null
 	town_editor_dock = null
 	dungeon_editor_dock = null
@@ -134,6 +148,7 @@ func _exit_tree() -> void:
 	npc_blueprint_editor_dock = null
 	quest_blueprint_editor_dock = null
 	quest_authoring_dock = null
+	world_overview_dock = null
 
 
 func _create_world_forge_window() -> void:
@@ -210,6 +225,8 @@ func _on_menu_item_pressed(id: int) -> void:
 			_show_window(quest_blueprint_editor_window)
 		MenuID.QUEST_AUTHORING:
 			_show_window(quest_authoring_window)
+		MenuID.WORLD_OVERVIEW:
+			_show_window(world_overview_window)
 		MenuID.CLOSE_ALL:
 			_close_all_windows()
 
@@ -246,6 +263,8 @@ func _close_all_windows() -> void:
 		quest_blueprint_editor_window.visible = false
 	if quest_authoring_window:
 		quest_authoring_window.visible = false
+	if world_overview_window:
+		world_overview_window.visible = false
 
 
 func _on_world_forge_close() -> void:
@@ -352,6 +371,29 @@ func _on_quest_blueprint_editor_close() -> void:
 
 func _on_quest_authoring_close() -> void:
 	quest_authoring_window.visible = false
+
+
+func _create_world_overview_window() -> void:
+	world_overview_window = Window.new()
+	world_overview_window.title = "World Overview"
+	world_overview_window.size = Vector2i(1100, 900)
+	world_overview_window.min_size = Vector2i(800, 600)
+	world_overview_window.visible = false
+	world_overview_window.wrap_controls = true
+	world_overview_window.transient = true
+	world_overview_window.exclusive = false
+	world_overview_window.close_requested.connect(_on_world_overview_close)
+
+	world_overview_dock = WorldOverviewDockScript.new()
+	world_overview_dock.name = "WorldOverviewDock"
+	world_overview_window.add_child(world_overview_dock)
+	world_overview_dock.set_anchors_preset(Control.PRESET_FULL_RECT)
+
+	EditorInterface.get_base_control().add_child(world_overview_window)
+
+
+func _on_world_overview_close() -> void:
+	world_overview_window.visible = false
 
 
 ## Public API for external access

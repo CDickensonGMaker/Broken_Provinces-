@@ -18,6 +18,8 @@ Level Editors ▾
   Quest Ideas          a scratchpad for quests you have not written yet
   Quest Authoring      a real quest, checked as you type
   ─────────
+  World Overview       the whole world at once, read-only
+  ─────────
   Close All
 ```
 
@@ -45,6 +47,7 @@ Errors must be **0**, and the warning count must not have gone up.
 | create a named person with dialogue topics | NPC Composer |
 | jot an idea down before you know what it is | NPC Ideas / Quest Ideas |
 | build a dungeon's floorplan | Dungeon Editor |
+| work out what to build next | World Overview |
 
 ---
 
@@ -324,6 +327,53 @@ and `DungeonManager`. This editor is for hand-laid layouts.
 4. Press **Validate**. It fails on no entrance and on unreachable rooms, and
    warns about unconnected doorways and a missing boss room.
 5. Press **Export**.
+
+---
+
+## 8. World Overview - the whole world at once
+
+**What it is for.** Answering the question no other tool can: *where is the
+content, and where is the world empty?* Every other tool edits one thing - one
+cell, one town, one quest. This reads all of them and paints the twenty-by-forty
+grid six different ways.
+
+**How to open it.** Level Editors → World Overview.
+
+**It never writes anything.** Press **Reread the world** after saving in another
+tool and it rebuilds from disk.
+
+| View | What you are looking at |
+|---|---|
+| **Biome** | what the climate model actually decided, cell by cell. The only place its output can be looked at instead of reasoned about |
+| **Danger** | the difficulty gradient outward from Elder Moor |
+| **Places** | green = a hand-built level streams there, blue = it streams procedurally, amber = WIP |
+| **Quests** | how many quests name each place. Red means **none** |
+| **People** | scheduled residents standing in each cell, at the hour on the slider |
+| **Scenes** | which cells a level's footprint actually covers - a 300x300 town covers nine cells, not one |
+
+Hover any cell for its region, biome, danger, place, scene, quest count and the
+people standing in it.
+
+**The two numbers that should decide your week** are in the panel on the right:
+
+- **how many places no quest points at.** As of 8/2 that is **46 of 61**.
+  A place with a scene and a population and no reason to go there is a room
+  nobody has been given a reason to enter.
+- **how many settlements have nobody outdoors** at the hour you have chosen.
+
+### Five steps: find the next thing to build
+
+1. Level Editors → World Overview.
+2. Switch the view to **Quests**. Every red cell is a place with a name, a
+   position, and no quest that mentions it.
+3. Switch to **Places**. A cell that is red in Quests and green in Places has a
+   hand-built level standing empty - the cheapest content in the game to write,
+   because the room already exists.
+4. Switch to **People** and drag the hour to 03:00, then 13:00. 10 people are
+   outdoors at three in the morning and 109 at one in the afternoon; a
+   settlement that does not change between those two has a clock, not a life.
+5. Take the id you picked into Quest Authoring, or the settlement into the Town
+   Editor.
 
 ---
 

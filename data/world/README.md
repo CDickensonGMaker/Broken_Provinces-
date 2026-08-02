@@ -33,8 +33,9 @@ made live as it stands. Measured (docs/audits/tool_suite_audit.md §2):
 - 3296 of its 4096 painted cells fall outside `GRID_MIN..GRID_MAX`;
 - 23 of its 56 places are past the edge of the world, five of which have
   hand-built scenes already sitting in `scenes/levels/`;
-- 28 of its POIs carry no `scene_path`, and 11 of those are in bounds, so they
-  would become named cells with nothing behind them;
+- 28 of its POIs carry no `scene_path`, though `LOCATION_SCENES` has one for
+  most of them - the old forge path never read that table;
+- 27 of its 56 places sit at a different cell than `LOCATIONS` puts them;
 - it puts Dalhurst at (-10,-2) while all forty of Dalhurst's scheduled residents
   stand in (-8,-2).
 
