@@ -74,6 +74,27 @@ under `data/` or `scripts/levels/`**:
 powershell -ExecutionPolicy Bypass -File tools/validate.ps1
 ```
 
+Or run every gate at once - the validator plus all eleven `check_*.tscn`
+probes, one verdict, non-zero exit on any failure:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/run_all_checks.ps1
+```
+
+**It is a real hook now, not honour-system.** `tools/install_hooks.ps1`
+installs `tools/hooks/pre-commit-validate.sh` as a pre-commit gate: it fires
+only when the staged diff touches `data/` or `scripts/levels/`, fails on any
+validator error, and fails if the warning count rose against the committed
+`docs/audits/validation_report.md`. `BP_SKIP_VALIDATE=1` bypasses one commit
+deliberately; nothing bypasses it by accident.
+
+> **Do not install hooks into `.git/hooks/`.** This repository sets
+> `core.hooksPath = .beads/hooks`, so git never looks there and a hook dropped
+> into `.git/hooks/` is a silent no-op - the same shape as every bug the 8/1
+> audits have been hunting. `install_hooks.ps1` resolves `core.hooksPath` and
+> appends its own marked section below the beads-managed one; it is idempotent
+> and never touches the beads block.
+
 It boots Godot 4.5 headless, checks that quest givers are actually spawned,
 reward items and factions actually exist, encounter tables point at real
 enemies, and quest branches are reachable, then writes
