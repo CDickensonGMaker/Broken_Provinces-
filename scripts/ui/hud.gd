@@ -567,10 +567,14 @@ func _update_bars() -> void:
 	if health_label:
 		health_label.text = "%d / %d" % [char_data.current_hp, char_data.max_hp]
 
-	# Stamina bar
+	# Stamina bar. The guard has no bar of its own - the ruling was to reuse
+	# this one - so raising it brightens the bar that is about to pay for it.
 	if stamina_bar:
 		stamina_bar.max_value = char_data.max_stamina
 		stamina_bar.value = char_data.current_stamina
+		var guarding: bool = _cached_player is PlayerController \
+			and (_cached_player as PlayerController).is_blocking
+		stamina_bar.modulate = Color(1.35, 1.35, 1.0) if guarding else Color.WHITE
 
 	# Mana bar
 	if mana_bar:

@@ -207,9 +207,174 @@ func _check_exemption_is_scoped_to_the_target() -> void:
 	bystander.queue_free()
 
 
+## C3. The guard. Built from the player scene itself rather than a stand-in,
+## because the arc is measured off the camera pivot and the stamina comes out
+## of the real character data - a stub would prove neither.
 func _check_block() -> void:
-	pass
+	var player: PlayerController = _spawn_player()
+	if player == null:
+		_expect(false, "the player scene would not instance, so block cannot be checked")
+		return
+
+	var data := GameManager.player_data
+	var attacker := ProbeAttacker.new()
+	add_child(attacker)
+
+	_expect(
+		InputMap.has_action("block") and InputMap.has_action("lock_on"),
+		"the block / lock_on actions are not registered - GameSettings.ensure_runtime_actions did not run"
+	)
+
+	# The pivot looks down -Z at yaw 0, so an attacker at -Z is dead ahead.
+	player.camera_pivot.rotation.y = 0.0
+	attacker.global_position = player.global_position + Vector3(0.0, 0.0, -5.0)
+
+	_expect(not player.is_hit_blocked(attacker.global_position), "a hit is blocked while the guard is down")
+
+	player.is_blocking = true
+	_expect(player.is_hit_blocked(attacker.global_position), "a hit from dead ahead is not blocked")
+
+	# Just inside and just outside the 120-degree arc.
+	var half: float = player.block_arc_degrees * 0.5
+	attacker.global_position = player.global_position + _at_angle(half - 5.0, 5.0)
+	_expect(player.is_hit_blocked(attacker.global_position), "a hit inside the guard arc is not blocked")
+
+	attacker.global_position = player.global_position + _at_angle(half + 5.0, 5.0)
+	_expect(not player.is_hit_blocked(attacker.global_position), "a hit outside the guard arc is blocked anyway")
+
+	attacker.global_position = player.global_position + Vector3(0.0, 0.0, 5.0)
+	_expect(not player.is_hit_blocked(attacker.global_position), "a hit from directly behind is blocked")
+
+	# A blocked hit is halved and costs stamina.
+	data.current_stamina = data.max_stamina
+	player.is_blocking = true
+	attacker.global_position = player.global_position + Vector3(0.0, 0.0, -5.0)
+	var stamina_before: int = data.current_stamina
+	var got_through: int = player._absorb_with_block(20, attacker)
+
+	_expect(
+		got_through == int(20 * (1.0 - player.block_damage_reduction)),
+		"a blocked hit of 20 let %d through, not %d" % [got_through, int(20 * (1.0 - player.block_damage_reduction))]
+	)
+	_expect(
+		data.current_stamina < stamina_before,
+		"a blocked hit cost no stamina - the guard is free"
+	)
+	_expect(
+		not player.block_broken,
+		"the guard broke on a hit the stamina bar could pay for"
+	)
+
+	# Emptying the bar breaks the guard.
+	data.current_stamina = 2
+	player.is_blocking = true
+	player.block_broken = false
+	player._absorb_with_block(20, attacker)
+	_expect(player.block_broken, "the guard did not break when stamina ran out")
+	_expect(not player.is_blocking, "the guard is still up after breaking")
+
+	# And it stays broken while the key is held, which in a headless run means
+	# while nothing releases it.
+	player._update_block()
+	_expect(not player.is_blocking, "a broken guard came back up without the key being released")
+
+	attacker.queue_free()
+	player.queue_free()
 
 
+## C4. The lock. Acquisition rules and all four documented breaks.
 func _check_lock_on() -> void:
-	pass
+	var player: PlayerController = _spawn_player()
+	if player == null:
+		_expect(false, "the player scene would not instance, so lock-on cannot be checked")
+		return
+
+	CombatManager.active_enemies.clear()
+
+	var near := _probe_enemy(0)
+	near.global_position = player.global_position + Vector3(0.0, 0.0, -6.0)
+	var far := _probe_enemy(0)
+	far.global_position = player.global_position + Vector3(0.0, 0.0, -12.0)
+	var beyond := _probe_enemy(0)
+	beyond.global_position = player.global_position + Vector3(0.0, 0.0, -40.0)
+	CombatManager.active_enemies.assign([near, far, beyond] as Array[Node])
+
+	player._toggle_lock_on()
+	_expect(player.lock_on_target == near, "lock-on did not take the nearest enemy in range")
+
+	# Retoggle releases.
+	player._toggle_lock_on()
+	_expect(player.lock_on_target == null, "pressing lock-on again did not release the lock")
+
+	# Out of acquire range is not acquirable.
+	CombatManager.active_enemies.assign([beyond] as Array[Node])
+	player._toggle_lock_on()
+	_expect(
+		player.lock_on_target == null,
+		"an enemy %.0fm away was locked with a range of %.0fm" % [40.0, player.lock_on_range]
+	)
+
+	# Break on distance.
+	CombatManager.active_enemies.assign([near] as Array[Node])
+	player._toggle_lock_on()
+	_expect(player.lock_on_target == near, "lock-on failed to reacquire")
+	near.global_position = player.global_position + Vector3(0.0, 0.0, -(player.lock_on_break_range + 5.0))
+	player._update_lock_on(0.016)
+	_expect(player.lock_on_target == null, "the lock survived the target walking past break range")
+
+	# Break on death.
+	near.global_position = player.global_position + Vector3(0.0, 0.0, -6.0)
+	player._toggle_lock_on()
+	_expect(player.lock_on_target == near, "lock-on failed to reacquire after a distance break")
+	near.current_state = EnemyBase.AIState.DEAD
+	player._update_lock_on(0.016)
+	_expect(player.lock_on_target == null, "the lock survived the target dying")
+
+	# Break on a freed target.
+	near.current_state = EnemyBase.AIState.IDLE
+	player._toggle_lock_on()
+	_expect(player.lock_on_target == near, "lock-on failed to reacquire after a death break")
+	CombatManager.active_enemies.clear()
+	near.free()
+	player._update_lock_on(0.016)
+	_expect(player.lock_on_target == null, "the lock survived the target being freed")
+
+	# The camera leans rather than snaps: one frame of bias must move the yaw
+	# some of the way and not all of it.
+	var pivot := player.camera_pivot
+	pivot.set("yaw", 0.0)
+	var target_point: Vector3 = pivot.global_position + Vector3(-10.0, 0.0, 0.0)
+	pivot.call("bias_toward", target_point, 0.016, player.lock_on_camera_bias)
+	var moved: float = absf(float(pivot.get("yaw")))
+	_expect(moved > 0.0, "one frame of camera bias moved the view not at all")
+	_expect(moved < PI * 0.5 * 0.9, "one frame of camera bias snapped the view onto the target")
+
+	far.queue_free()
+	beyond.queue_free()
+	player.queue_free()
+	CombatManager.active_enemies.clear()
+
+
+## A point `degrees` off the pivot's forward (-Z at yaw 0), `distance` away.
+func _at_angle(degrees: float, distance: float) -> Vector3:
+	var radians: float = deg_to_rad(degrees)
+	return Vector3(sin(radians), 0.0, -cos(radians)) * distance
+
+
+## Instance the real player scene, and give it character data to spend.
+func _spawn_player() -> PlayerController:
+	if GameManager.player_data == null:
+		GameManager.player_data = CharacterData.new()
+	GameManager.player_data.max_stamina = 100
+	GameManager.player_data.current_stamina = 100
+
+	# SceneManager's path, not `scripts/player/player.tscn` - that one is an
+	# older stub with none of the child nodes and nothing loads it.
+	var scene: PackedScene = load(SceneManager.PLAYER_SCENE_PATH)
+	if scene == null:
+		return null
+	var player := scene.instantiate() as PlayerController
+	if player == null:
+		return null
+	add_child(player)
+	return player

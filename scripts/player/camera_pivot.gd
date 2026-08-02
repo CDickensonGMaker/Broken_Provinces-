@@ -288,6 +288,33 @@ func get_fps_arms() -> FirstPersonArms:
 	return _fps_arms
 
 
+## Lean the view toward a world point without taking it away from the player.
+##
+## This is the soft half of soft lock-on. `set_yaw` snaps, which is right for a
+## zone transition and wrong for combat: a snap fights the mouse and makes the
+## player's own aim feel broken. Here the yaw and pitch are lerped a little way
+## toward the target each frame, so releasing the mouse drifts the camera onto
+## the enemy and moving the mouse still wins immediately.
+##
+## `rate` is per second; the lerp is framerate-independent.
+func bias_toward(target_position: Vector3, delta: float, rate: float = 3.0) -> void:
+	var to_target: Vector3 = target_position - global_position
+	if to_target.length_squared() < 0.0001:
+		return
+
+	var desired_yaw: float = atan2(-to_target.x, -to_target.z)
+	var horizontal: float = Vector2(to_target.x, to_target.z).length()
+	var desired_pitch: float = atan2(to_target.y, horizontal)
+
+	var weight: float = 1.0 - exp(-rate * delta)
+
+	# lerp_angle takes the short way round, so a target directly behind does
+	# not spin the camera the long way.
+	yaw = lerp_angle(yaw, desired_yaw, weight)
+	pitch = lerpf(pitch, desired_pitch, weight)
+	_clamp_and_apply()
+
+
 ## Set the camera yaw (horizontal rotation) directly
 ## Used by SceneManager to sync camera with player facing direction after zone transitions
 func set_yaw(new_yaw: float) -> void:

@@ -365,7 +365,44 @@ question for Caleb is which of these is the melee formula:
 3. Apply armour once **in CombatManager** and stop `EnemyBase.take_damage()`
    from doing it — the only version where `armor_pierce` means anything.
 
-### 3b. Player block and lock-on (task 62/63) — deferred, not built
+### 3b. Player block and lock-on — **RULED-AND-BUILT**
+
+**Block.** Hold `Q`. A hit arriving inside a **120° frontal arc** — measured off
+where the player is *looking*, because in first person that is the only facing
+he can feel — is **halved**, and costs stamina scaled to the incoming damage
+(`block_stamina_per_damage`, 1.5 per point). Raising the guard is free; only a
+hit that lands on it is paid for, so standing behind a shield forever buys
+nothing and holding through a flurry is the decision. When the bar cannot pay,
+**the guard breaks with a stagger** and stays down until the key is released —
+a player cannot mash back through a break. **No parry in v1:** a timing window
+is a separate feature with its own read and its own tuning, and adding it later
+disturbs none of this. Player-side only; enemies already block via `EnemyData`.
+
+**HUD:** the existing stamina bar brightens while the guard is up. That is the
+whole indicator, and it is the bar that is about to pay.
+
+**Lock-on.** Press `V`. The nearest enemy with line of sight within **15 m**
+becomes the target; the camera is **biased** toward it (an exponential lerp on
+yaw and pitch, framerate-independent) and never snapped, so the mouse always
+wins and letting go of it drifts the view onto the enemy. **Movement is
+untouched** — there is no strafe-lock. It breaks on death, on a freed target,
+past **20 m**, after **2 s** with no line of sight, or on pressing `V` again.
+The compass carries a gold `◈` on the target, drawn regardless of INTUITION and
+without range fade, because the player pressed a key to say *that one*.
+
+**One thing fought back:** batch 4 deleted `block` and `lock_on` from
+`project.godot`'s InputMap, and `project.godot` is not to be edited. They are
+registered at boot instead by `GameSettings.ensure_runtime_actions()` —
+`Q` and `V` — the same shape `SaveManager` already uses for quick-save. Both
+are back in `REBINDABLE_ACTIONS`, so the options menu can rebind them and
+`user://settings.cfg` keeps the change.
+
+`tools/check_combat.tscn` covers both: the arc at four angles, the halving, the
+stamina spend, the break, the guard staying broken, acquisition, the range
+gate, and all four breaks — plus that one frame of camera bias moves the view
+*some* of the way and not all of it.
+
+### 3b (original text, kept for the reasoning)
 
 `block` and `lock_on` are bound keys with no implementing code anywhere.
 `block`/`block_chance` exist only on `EnemyData` — enemies block the player and

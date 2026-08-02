@@ -31,12 +31,35 @@ const DEFAULT_UI_SCALE := 0.68
 ## Only actions the game actually reads - batch 4 removed block, lock_on and
 ## toggle_camera_mode rather than shipping keys that did nothing, and this list
 ## must never grow back past what the input code handles.
+##
+## `block` and `lock_on` are back because PlayerController implements them now.
 const REBINDABLE_ACTIONS: Array[String] = [
 	"move_forward", "move_backward", "move_left", "move_right",
 	"jump", "sprint", "crouch", "dodge",
-	"light_attack", "heavy_attack", "interact",
+	"light_attack", "heavy_attack", "block", "lock_on", "interact",
 	"menu", "pause",
 ]
+
+## Actions the code reads that `project.godot` does not declare, with the key
+## each defaults to. Registered at boot rather than written into the project
+## file - the same shape SaveManager uses for quick_save/quick_load.
+const RUNTIME_ACTION_DEFAULTS: Dictionary = {
+	"block": KEY_Q,
+	"lock_on": KEY_V,
+}
+
+
+## Register any action in RUNTIME_ACTION_DEFAULTS the InputMap does not have.
+## Idempotent, and it never touches an action that already exists - so a
+## player's rebind, loaded a moment later, wins.
+static func ensure_runtime_actions() -> void:
+	for action: String in RUNTIME_ACTION_DEFAULTS:
+		if InputMap.has_action(action):
+			continue
+		InputMap.add_action(action)
+		var event := InputEventKey.new()
+		event.physical_keycode = RUNTIME_ACTION_DEFAULTS[action]
+		InputMap.action_add_event(action, event)
 
 
 static func display_name_for_action(action: String) -> String:
@@ -51,6 +74,8 @@ static func display_name_for_action(action: String) -> String:
 		"dodge": return "Dodge"
 		"light_attack": return "Attack"
 		"heavy_attack": return "Heavy Attack"
+		"block": return "Block"
+		"lock_on": return "Lock On"
 		"interact": return "Interact"
 		"menu": return "Menu"
 		"pause": return "Pause"
@@ -118,6 +143,7 @@ static func apply_window_settings(tree: SceneTree) -> void:
 ## Safe with no file present - every value falls back to the project default.
 static func apply_all(tree: SceneTree) -> void:
 	apply_window_settings(tree)
+	ensure_runtime_actions()
 
 	var cfg := ConfigFile.new()
 	var loaded: bool = cfg.load(SETTINGS_PATH) == OK

@@ -73,6 +73,39 @@ var current_ladder: Node3D = null  # Reference to the Ladder we're on
 ## heavy swing should cost is Caleb's call (dispositions 3e).
 @export var heavy_attack_cooldown_multiplier: float = 2.0
 
+# --- Block (ruling 3b) ---
+## Hold to guard. Enemies have had `block`/`block_chance` on EnemyData since the
+## start; the player had nothing, so the only answer to a swing was to not be
+## there. This is the answer that costs something instead.
+##
+## No parry in v1: a timing window is a different feature with its own read,
+## its own animation and its own tuning, and adding it later does not disturb
+## any of this.
+@export var block_damage_reduction: float = 0.5   ## Fraction of a blocked hit absorbed
+@export var block_arc_degrees: float = 120.0      ## Total frontal arc a guard covers
+@export var block_stamina_per_damage: float = 1.5 ## Stamina spent per point of incoming damage
+@export var block_break_stagger: float = 1.0      ## Stagger power when the guard breaks
+var is_blocking: bool = false
+## Set when stamina runs out under a blocked hit. The guard stays down until the
+## key is released, so a player cannot mash through a break.
+var block_broken: bool = false
+
+signal block_state_changed(blocking: bool)
+signal block_broken_signal
+
+# --- Soft lock-on (ruling 3b) ---
+## A toggle, not a hold, and soft: the camera is *biased* toward the target and
+## never snapped to it, and movement is untouched. A hard lock would fight the
+## mouse and make the player's own aim feel broken.
+@export var lock_on_range: float = 15.0        ## How far a target can be acquired
+@export var lock_on_break_range: float = 20.0  ## How far before the lock drops
+@export var lock_on_los_grace: float = 2.0     ## Seconds out of sight before the lock drops
+@export var lock_on_camera_bias: float = 3.0   ## Lerp rate of the camera nudge
+var lock_on_target: Node3D = null
+var _lock_on_blind_timer: float = 0.0
+
+signal lock_on_changed(target: Node3D)
+
 # --- Interaction tuning ---
 @export var interaction_range: float = 2.5  # How far player can interact
 
@@ -101,6 +134,11 @@ signal weapon_state_changed(is_drawn: bool)
 func _ready() -> void:
 	# Add to player group
 	add_to_group("player")
+
+	# `block` and `lock_on` are read below and are not declared in
+	# project.godot. Registering them is idempotent, and a dev scene that never
+	# runs GameSettings.apply_all still gets working keys.
+	GameSettings.ensure_runtime_actions()
 
 	# Configure floor snapping for terrain traversal
 	# Without this, player hops over small terrain bumps
@@ -141,6 +179,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("heavy_attack") and can_attack:
 		_do_light_attack(true)
 
+	# Lock-on toggle. Pressing it while locked releases, which is one of the
+	# four documented ways the lock ends.
+	if event.is_action_pressed("lock_on"):
+		_toggle_lock_on()
+
 	# Interaction input
 	if event.is_action_pressed("interact"):
 		_try_interact()
@@ -172,6 +215,10 @@ func _physics_process(delta: float) -> void:
 	# --- Dodge input (disabled while climbing) ---
 	if Input.is_action_just_pressed("dodge") and not is_climbing:
 		_try_dodge()
+
+	# --- Guard, and the lock the camera leans on ---
+	_update_block()
+	_update_lock_on(delta)
 
 	# --- Post-hit invulnerability ---
 	if is_hit_invulnerable:
@@ -709,6 +756,164 @@ func _update_interaction_prompt() -> void:
 		if hud.has_method("hide_interaction_prompt"):
 			hud.hide_interaction_prompt()
 
+# =============================================================================
+# BLOCK
+# =============================================================================
+
+## Hold-to-block. Raising the guard is free; only a hit that lands on it costs
+## stamina, so standing behind a shield forever buys nothing and staying up
+## through a flurry is the decision.
+func _update_block() -> void:
+	var held: bool = Input.is_action_pressed("block")
+
+	# A broken guard stays broken until the key comes up. Otherwise a player
+	# who holds through the break simply re-guards on the next frame and the
+	# break costs a stagger and nothing else.
+	if block_broken and not held:
+		block_broken = false
+
+	var can_guard: bool = held \
+		and not block_broken \
+		and not is_dodging \
+		and not is_climbing \
+		and not is_dead \
+		and _current_stamina() > 0
+
+	if can_guard == is_blocking:
+		return
+
+	is_blocking = can_guard
+	block_state_changed.emit(is_blocking)
+
+
+## True when a hit arriving from `from_position` lands inside the guard's arc.
+## The arc is measured off where the player is looking, because in first person
+## that is the only facing the player can feel.
+func is_hit_blocked(from_position: Vector3) -> bool:
+	if not is_blocking:
+		return false
+
+	var to_source: Vector3 = from_position - global_position
+	to_source.y = 0.0
+	if to_source.length_squared() < 0.0001:
+		# On top of the player: no direction to judge, so the guard holds.
+		return true
+
+	var yaw: float = camera_pivot.rotation.y
+	var facing := Vector3(sin(yaw), 0.0, cos(yaw)) * -1.0
+	var angle: float = rad_to_deg(facing.angle_to(to_source.normalized()))
+	return angle <= block_arc_degrees * 0.5
+
+
+## Spend the guard's stamina for a hit of `incoming` damage, and break it if
+## that empties the bar. Returns the damage that gets through.
+func _absorb_with_block(incoming: int, attacker: Node) -> int:
+	var cost: int = maxi(1, int(ceil(incoming * block_stamina_per_damage)))
+	var stamina: int = _current_stamina()
+
+	if not DEBUG_UNLIMITED_STAMINA and GameManager.player_data:
+		GameManager.player_data.use_stamina(mini(cost, stamina))
+
+	AudioManager.play_sfx_3d("block", global_position)
+
+	# The bar could not pay in full: the guard breaks, and the stagger is what
+	# tells the player it did.
+	if not DEBUG_UNLIMITED_STAMINA and cost >= stamina:
+		block_broken = true
+		is_blocking = false
+		block_state_changed.emit(false)
+		block_broken_signal.emit()
+		apply_stagger(block_break_stagger)
+
+	return maxi(1, int(incoming * (1.0 - block_damage_reduction)))
+
+
+func _current_stamina() -> int:
+	if DEBUG_UNLIMITED_STAMINA:
+		return 9999
+	if not GameManager.player_data:
+		return 0
+	return GameManager.player_data.current_stamina
+
+
+# =============================================================================
+# SOFT LOCK-ON
+# =============================================================================
+
+## Toggle: acquire the nearest visible enemy in range, or drop the one held.
+func _toggle_lock_on() -> void:
+	if lock_on_target != null:
+		_clear_lock_on()
+		return
+
+	var best: Node3D = null
+	var best_distance: float = lock_on_range
+
+	for candidate: Node in CombatManager.active_enemies:
+		if not is_instance_valid(candidate) or not (candidate is Node3D):
+			continue
+		if candidate.has_method("is_dead") and candidate.is_dead():
+			continue
+
+		var node := candidate as Node3D
+		var distance: float = global_position.distance_to(node.global_position)
+		if distance > best_distance:
+			continue
+		if not CombatManager.has_line_of_sight(self, node):
+			continue
+
+		best = node
+		best_distance = distance
+
+	if best == null:
+		return
+
+	lock_on_target = best
+	_lock_on_blind_timer = 0.0
+	lock_on_changed.emit(lock_on_target)
+
+
+func _clear_lock_on() -> void:
+	if lock_on_target == null:
+		return
+	lock_on_target = null
+	_lock_on_blind_timer = 0.0
+	lock_on_changed.emit(null)
+
+
+## The four ways a lock ends: the target dies or is freed, it walks out of
+## break range, it stays out of sight for the grace period, or the player
+## presses the key again (handled in _toggle_lock_on).
+func _update_lock_on(delta: float) -> void:
+	if lock_on_target == null:
+		return
+
+	if not is_instance_valid(lock_on_target):
+		_clear_lock_on()
+		return
+
+	if lock_on_target.has_method("is_dead") and lock_on_target.is_dead():
+		_clear_lock_on()
+		return
+
+	if global_position.distance_to(lock_on_target.global_position) > lock_on_break_range:
+		_clear_lock_on()
+		return
+
+	if CombatManager.has_line_of_sight(self, lock_on_target):
+		_lock_on_blind_timer = 0.0
+	else:
+		_lock_on_blind_timer += delta
+		if _lock_on_blind_timer >= lock_on_los_grace:
+			_clear_lock_on()
+			return
+
+	# Soft: a nudge toward the target, never a snap onto it. The player keeps
+	# the mouse, and letting go of it does not fight anything.
+	if camera_pivot.has_method("bias_toward"):
+		camera_pivot.bias_toward(lock_on_target.global_position, delta, lock_on_camera_bias)
+
+
 ## Attempt to perform a dodge (roll or sidestep)
 func _try_dodge() -> void:
 	# Can't dodge if overencumbered
@@ -778,6 +983,12 @@ func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> 
 		return 0
 
 	var player_data := GameManager.player_data
+
+	# Guard first, before armour and before every resistance: the guard is a
+	# decision the player made this second, and it should read as the reason
+	# the hit was small.
+	if is_blocking and attacker is Node3D and is_hit_blocked((attacker as Node3D).global_position):
+		amount = _absorb_with_block(amount, attacker)
 
 	# Apply armor reduction for physical damage only, and only if the caller has
 	# not already charged it. Armour mitigates exactly once.
