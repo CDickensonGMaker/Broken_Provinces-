@@ -16,6 +16,8 @@ extends Node
 ##       no lock-on. The identity is Skyrim/Daggerfall, not Souls (Caleb, 8/2)
 ##   C5  a blow does not pass through a wall, on either side of the fight
 ##   C6  an enemy is never spawned inside static geometry
+##   C7  a hit the enemy delivers is MARKED as melee, which is the only thing
+##       the passive Dodge skill is gated on. Measured 8/2 at 0.00% reached
 ##
 ## C1 exists because melee paid armour twice for the whole of batch 4 - once in
 ## `apply_melee_damage` (honouring `armor_pierce`) and again in the receiver's
@@ -59,6 +61,8 @@ func _run() -> void:
 	await _check_hit_line()
 	await _settle()
 	await _check_spawn_safety()
+	await _settle()
+	await _check_melee_is_marked()
 
 	print("")
 	print("Checks run: %d" % _checks)
@@ -456,3 +460,51 @@ func _check_spawn_safety() -> void:
 		"C6: a clear position is returned unchanged")
 
 	room.queue_free()
+
+
+## ============================================================================
+## C7. AN ENEMY SWING IS A MELEE STRIKE
+## ============================================================================
+
+## Dodge is a passive +3% per level, capped at 45%, rolled in take_damage BEFORE
+## the guard and before armour - and gated on CombatManager.is_melee_strike().
+## Only apply_melee_damage set that marker, and no enemy attack goes through it:
+## _direct_hit_check, Hitbox's unarmed leg and Hurtbox all called take_damage
+## straight. Measured on the real receiver at dodge 5, 10 and 15, the documented
+## 15/30/45% fired 0.00%, 0.00% and 0.00%.
+func _check_melee_is_marked() -> void:
+	var player := _spawn_player()
+	if player == null:
+		_expect(false, "C7: the player scene loads")
+		return
+	await _settle()
+
+	var attacker := Node3D.new()
+	add_child(attacker)
+	attacker.global_position = player.global_position + Vector3(2.0, 0.0, 0.0)
+
+	var data: CharacterData = GameManager.player_data
+	var kept_hp: int = data.max_hp
+	data.max_hp = 1 << 24
+	data.current_hp = data.max_hp
+	data.set_skill(Enums.Skill.DODGE, 15)  # 45%, the cap
+
+	var direct_evaded: int = 0
+	var marked_evaded: int = 0
+	for _i: int in 400:
+		player.is_hit_invulnerable = false
+		if player.take_damage(10, Enums.DamageType.PHYSICAL, attacker) == 0:
+			direct_evaded += 1
+		player.is_hit_invulnerable = false
+		if CombatManager.deliver_melee_hit(attacker, player, 10, Enums.DamageType.PHYSICAL) == 0:
+			marked_evaded += 1
+
+	_expect(direct_evaded == 0,
+		"C7: an unmarked hit never dodges (got %d/400)" % direct_evaded)
+	_expect(marked_evaded > 120 and marked_evaded < 240,
+		"C7: a marked hit dodges near the 45%% cap (got %d/400)" % marked_evaded)
+
+	data.set_skill(Enums.Skill.DODGE, 0)
+	data.max_hp = kept_hp
+	attacker.queue_free()
+	player.queue_free()

@@ -150,9 +150,9 @@ func _apply_hit(target: Node) -> void:
 	# Calculate final damage (may be modified by backstab)
 	var final_damage: int = _calculate_backstab_damage(damage, owner_entity, target)
 
-	# Apply damage if target can receive it
-	if target.has_method("take_damage"):
-		target.take_damage(final_damage, damage_type, owner_entity)
+	# Apply damage if target can receive it. Through CombatManager so the hit is
+	# marked as melee - Dodge is gated on that marker.
+	CombatManager.deliver_melee_hit(owner_entity, target, final_damage, damage_type)
 
 	# Apply stagger
 	if stagger_power > 0 and target.has_method("apply_stagger"):

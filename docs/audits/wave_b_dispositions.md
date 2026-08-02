@@ -887,3 +887,47 @@ It does now.
 | T-2 | **The legacy world map is parked, not merged.** `data/world/world_forge_map.legacy.json` is 4096 painted cells and 56 POIs of real work that lived in `user://` and had never been in the repository. 3296 of its cells and 27 of its place positions disagree with the world as declared - Dalhurst by two cells, Bloodsand Arena by thirty-eight. | Making it live is the same decision as T-1 and should be taken with it. World Forge's **Import legacy map** loads it and **Check map** counts the disagreements, so the call can be made with the numbers on screen |
 | T-3 | **Forty-six of sixty-one places have no quest naming them**, several with hand-built levels standing empty. Measured by the new World Overview tool. | Not a bug - a content queue, and which of the forty-six matter is his |
 | T-4 | **Thirteen of the eighteen NPCs in `data/npcs/` are spawned by nothing.** `aleric_vale`, `bram_ashford`, `elric_thornwood`, `greta_wolfsbane`, `old_yoren`, `sister_edith` and seven more have a `.tres`, a display name and a zone, and no scene or script anywhere mentions their id. | Whether each should be placed or deleted is his. They cost nothing while they sit there, and they are why "give the town's people a day" found no gap to fill: the ones with a day are the ones that exist |
+
+
+---
+
+## 8/2 (evening) - the first real playtest
+
+### Measured, so nobody has to argue about it
+
+The near-instakill report came with a hypothesis: that the armour-once fix
+(c19eba4) had removed double-mitigation from the PLAYER-RECEIVING path too,
+roughly doubling what an enemy swing costs. `tools/probes/mitigation_probe.tscn`
+runs 20,000 real `take_damage()` calls per configuration through the real
+`PlayerController`.
+
+**The hypothesis is false.** c19eba4 changed the leg that DEALS a swing.
+An enemy swing has never travelled that leg: `EnemyBase._direct_hit_check`,
+`Hitbox`'s unarmed leg and `Hurtbox` all call the player's `take_damage`
+directly, so `_armor_paid_target` is null and armour has always been charged
+exactly once on the receiving path - before the fix and after it. Mitigation at
+armour 10 is 24.0 of a 27-damage mace, which is what `100/(100+armour)` says it
+should be. The fix cost the player nothing.
+
+What the same measurement found instead:
+
+| Dodge skill | Documented | Actually fired (before) | After |
+|---|---|---|---|
+| 5 | 15.0% | 0.00% | 15.4% |
+| 10 | 30.0% | 0.00% | 30.8% |
+| 15 (cap) | 45.0% | 0.00% | 45.6% |
+
+Dodge is gated on `CombatManager.is_melee_strike()`, and only
+`apply_melee_damage` set that marker - so the ruled, documented, character-sheet
+passive worth up to 45% has never once applied to a blow the player received.
+Fixed: enemy melee now delivers through `CombatManager.deliver_melee_hit()`,
+which marks the strike and charges no armour. `check_combat` C7 holds it.
+
+### Opened by this pass - these need Caleb
+
+| # | Question | The numbers |
+|---|---|---|
+| P-1 | **Is `skeleton_warrior` meant to be a starting-area enemy?** Its Mace Swing is `4d10+5` on a **1.0 second** cooldown: mean 27.06, range 9..45. A starting character has 95 HP (vitality 3, grit 3). That is **3.53 swings, 3.5 seconds** at armour 0, and 4.59 swings at armour 30. It is what a wilderness Cursed Totem spawns, and totems are seeded near ruins from cell (0,0) outward. Not retuned - a crypt-guard statline may be exactly right for a crypt guard, and the answer might be "totems do not belong near Elder Moor" rather than "the skeleton is too strong" | mean 27.06 dmg, 1.0s cooldown, 120 HP, armour 15, 20% physical resistance |
+| P-2 | **Enemy damage does not scale with anything.** `EnemyBase._initialize_from_data` computes `base_damage` from the first attack, writes the comment *"Damage scaling is handled at attack time, not here"*, and nothing at attack time reads it - `_activate_attack_hitbox` uses `current_attack.roll_damage()` raw. HP scales with `zone_danger`; damage does not. So a skeleton hits for 27 in a danger-1 cell and 27 in a danger-10 cell | `enemy_base.gd:392-403` |
+| P-3 | **`EnemyAttackData.requires_los` is declared and never read.** Every attack in the game sets it true. Damage now tests its own line through `CombatManager.has_hit_line()`, which supersedes it - the field should either be deleted or become the switch that turns that test off for an attack that is meant to reach through cover | `enemy_attack_data.gd:38` |
+| P-4 | **Two hurtbox layer conventions disagree.** `enemy_base.tscn`'s hurtbox is layer 64; `cursed_totem.gd`'s is layer 128. The player's melee hitbox masks `65` (world + 64), so **a sword cannot touch a cursed totem or a goblin totem at all** - only projectiles can | `enemy_base.tscn`, `cursed_totem.gd:152-179`, `player.tscn:60-70` |

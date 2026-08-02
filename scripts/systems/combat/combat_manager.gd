@@ -878,6 +878,25 @@ func has_line_of_sight(from_node: Node3D, to_node: Node3D) -> bool:
 	_last_known_los[cache_key] = has_los
 	return has_los
 
+## Deliver a melee hit that this manager did not roll, marked as melee.
+##
+## Enemy swings never come through apply_melee_damage: EnemyBase._direct_hit_check
+## and the unarmed Hitbox/Hurtbox legs call take_damage directly. That left
+## is_melee_strike() false for every blow the player ever receives, and the passive
+## Dodge skill is gated on it - measured on 20,000 swings at skill levels 0, 5, 10
+## and 15, a documented 45%-at-cap chance to be missed fired 0.00% of the time.
+##
+## Armour is deliberately NOT marked here: this leg does not charge it, so the
+## receiver must, exactly once, which is the c19eba4 ruling.
+func deliver_melee_hit(attacker: Node, target: Node, amount: int, damage_type: Enums.DamageType) -> int:
+	if target == null or not target.has_method("take_damage"):
+		return 0
+	_melee_strike_target = target
+	var dealt: int = target.take_damage(amount, damage_type, attacker)
+	_melee_strike_target = null
+	return dealt
+
+
 ## THE HIT LINE. A blow only lands if there is unobstructed world between the
 ## attacker and what it is hitting.
 ##

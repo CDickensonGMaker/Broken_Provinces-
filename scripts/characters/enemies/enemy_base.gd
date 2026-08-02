@@ -2296,8 +2296,9 @@ func _direct_hit_check(target: Node3D, dmg: int, dmg_type: Enums.DamageType) -> 
 		return
 
 	hitbox.hit_targets.append(target)
-	if target.has_method("take_damage"):
-		target.take_damage(dmg, dmg_type, self)
+	# Through CombatManager, so the blow is MARKED as melee and the player's
+	# Dodge skill gets the roll it is documented to get.
+	CombatManager.deliver_melee_hit(self, target, dmg, dmg_type)
 
 func _end_attack() -> void:
 	is_attacking = false

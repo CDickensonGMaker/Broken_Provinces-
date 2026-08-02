@@ -71,7 +71,7 @@ func _on_area_entered(area: Area3D) -> void:
 			if owner_entity in hb.hit_targets:
 				return  # Already damaged by hitbox
 			hb.hit_targets.append(owner_entity)
-		owner_entity.take_damage(damage, damage_type, attacker)
+		CombatManager.deliver_melee_hit(attacker, owner_entity, damage, damage_type)
 
 ## Set owner entity
 func set_owner_entity(entity: Node) -> void:
