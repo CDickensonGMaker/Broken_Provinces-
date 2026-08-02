@@ -289,6 +289,11 @@ class PlayerSaveData:
 	var level: int = 1
 	var improvement_points: int = 0
 
+	## Total IP ever earned - the sole input to the level threshold table and to
+	## the XP bar's in-level progress. Dropped by both hand-copies until save
+	## format 8, so every load reset the player's banked progress to zero.
+	var total_ip_earned: int = 0
+
 	## Skills dictionary (skill_id -> level)
 	var skills: Dictionary = {}
 
@@ -324,6 +329,7 @@ class PlayerSaveData:
 			"max_spell_slots": max_spell_slots,
 			"level": level,
 			"improvement_points": improvement_points,
+			"total_ip_earned": total_ip_earned,
 			"skills": skills,
 			"conditions": conditions,
 			"known_spells": known_spells,
@@ -352,6 +358,7 @@ class PlayerSaveData:
 		max_spell_slots = data.get("max_spell_slots", 5)
 		level = data.get("level", 1)
 		improvement_points = data.get("improvement_points", 0)
+		total_ip_earned = data.get("total_ip_earned", 0)
 		skills = data.get("skills", {})
 		conditions = data.get("conditions", {})
 		known_spells = data.get("known_spells", [])

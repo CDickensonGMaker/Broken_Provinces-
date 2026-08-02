@@ -507,6 +507,7 @@ func _collect_player_data(player_data) -> void:
 	player_data.max_spell_slots = pd.max_spell_slots
 	player_data.level = pd.level
 	player_data.improvement_points = pd.improvement_points
+	player_data.total_ip_earned = pd.total_ip_earned
 	player_data.skills = pd.skills.duplicate()
 	player_data.conditions = pd.conditions.duplicate()
 
@@ -835,6 +836,7 @@ func _apply_player_data(player_data) -> void:
 	pd.max_spell_slots = player_data.max_spell_slots
 	pd.level = player_data.level
 	pd.improvement_points = player_data.improvement_points
+	pd.total_ip_earned = player_data.total_ip_earned
 	pd.skills = player_data.skills.duplicate()
 	pd.conditions = player_data.conditions.duplicate()
 
@@ -1612,6 +1614,17 @@ func _migrate_save_data(data: Dictionary, from_version: int) -> Dictionary:
 				"context_variables": {}
 			}
 		migrated.erase("dialogue")
+
+		# total_ip_earned was never written before format 8. It cannot be
+		# recovered exactly, but level was saved, so back-solve the floor of the
+		# level the player reached: he keeps his level and loses at most the
+		# progress banked toward the next one, instead of losing all of it.
+		if migrated.has("player"):
+			var old_player: Dictionary = migrated["player"]
+			if not old_player.has("total_ip_earned"):
+				var old_level: int = int(old_player.get("level", 1))
+				var index: int = clampi(old_level - 1, 0, CharacterData.IP_PER_LEVEL.size() - 1)
+				old_player["total_ip_earned"] = CharacterData.IP_PER_LEVEL[index]
 
 		migrated["version"] = 8
 
