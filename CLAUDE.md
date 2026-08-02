@@ -209,13 +209,45 @@ max_carry_weight = 50 + (Grit * 10)
 - `scripts/ui/corpse_loot_ui.gd` - Search interface (dark/gore themed)
 
 ## AUDIO EVENT NAMING CONVENTION
-Use these standardized event names:
+
+Gameplay code plays **event names**, never file paths:
+
 - `player_hit`, `player_attack`, `player_death`
 - `enemy_hit`, `enemy_death`, `enemy_attack`
 - `item_pickup`, `item_drop`, `item_use`
 - `menu_open`, `menu_close`, `menu_select`
 - `projectile_fire`, `projectile_hit`
 - `footstep_stone`, `footstep_wood`, `footstep_grass`
+
+**THE RULE (settled 8/1, batch 4): `play_sfx()` and `play_sfx_3d()` take an
+event name or a `res://` path, and the event name is the one to write.**
+
+Until 8/1 this convention was spoken by call sites and understood by nobody:
+`play_sfx("player_hit")` treated the string as a resource path, failed
+`ResourceLoader.exists()`, and returned silence. `play_event()` - the one
+function that mapped names to paths - had zero callers.
+
+`AudioManager._load_sound()` now resolves a non-path string through
+`resolve_event_path()`: alias -> the event's own asset -> a declared
+substitute -> nothing, warned once. So both spellings work and the *name* is
+the API. Do not convert call sites to `play_event()`; do not add a second
+resolver anywhere else.
+
+Where the sound lives is `AudioManager`'s business alone:
+
+| Table | Meaning |
+|---|---|
+| `EVENTS` | event -> the asset it wants, whether or not that file exists yet |
+| `EVENT_ALIASES` | other spellings call sites use, mapped to the canonical event |
+| `EVENT_SUBSTITUTES` | what plays until the real asset lands - every entry is a row in the art manifest |
+| `MISSING_SFX` | no asset, no honest stand-in: silent on purpose, one warning, one manifest row |
+
+Adding a sound means adding an `EVENTS` entry, and either shipping the file or
+adding it to `MISSING_SFX` with a manifest row. The gate:
+
+```powershell
+& $godot45 --headless --path . res://tools/check_audio_events.tscn
+```
 
 ## SAVE DATA ZONES
 Each scene must have a unique `zone_id` for save data tracking.
