@@ -182,18 +182,6 @@ class Objective:
 	#   - guaranteed_count: int - minimum number to spawn (for enemies)
 
 
-## Navigation data for compass/minimap
-class QuestNavigation:
-	var quest_id: String = ""
-	var quest_title: String = ""
-	var is_main_quest: bool = false
-	var is_ready_for_turnin: bool = false
-	var destination_type: String = ""  # "objective", "turn_in", "zone_exit"
-	var destination_position: Vector3 = Vector3.ZERO
-	var destination_zone: String = ""  # Empty if in current zone
-	var destination_name: String = ""
-
-
 ## Active quests
 var quests: Dictionary = {}  # quest_id -> Quest
 
@@ -1160,9 +1148,8 @@ func _resolve_objective_location(obj: Objective) -> Dictionary:
 ## Resolve enemy spawn location
 ## Note: Enemy locations are found dynamically in scenes, not from a registry
 func _resolve_enemy_location(_enemy_type: String) -> Dictionary:
-	# Enemy spawn locations are determined at runtime by checking active enemies
-	# and spawn points in loaded scenes. Return empty - navigation will use
-	# _find_enemy_spawn_position() which searches live scene data.
+	# Enemy spawn locations are determined at runtime. The live compass resolves
+	# them itself in hud_navigation._find_objective_in_current_zone().
 	return {}
 
 
@@ -1176,9 +1163,8 @@ func _resolve_item_location(item_id: String) -> Dictionary:
 ## Resolve NPC location
 ## Note: NPC locations are found dynamically in scenes, not from a registry
 func _resolve_npc_location(_npc_id: String) -> Dictionary:
-	# NPC locations are determined at runtime by searching the "npcs" group
-	# in loaded scenes. Return empty - navigation will use _find_npc_position()
-	# which searches live scene data.
+	# NPC locations are determined at runtime. The live compass resolves them
+	# itself in hud_navigation._find_objective_in_current_zone().
 	return {}
 
 
@@ -2401,263 +2387,6 @@ func _are_primary_objectives_complete(quest_id: String) -> bool:
 		if not obj.is_satisfied():
 			return false
 	return true
-
-
-# =============================================================================
-# NAVIGATION API - For Compass and Minimap
-# =============================================================================
-
-## Get navigation data for the currently tracked quest (for compass)
-func get_tracked_quest_navigation() -> QuestNavigation:
-	if tracked_quest_id.is_empty():
-		return null
-
-	var quest: Quest = quests.get(tracked_quest_id)
-	if not quest or quest.state != Enums.QuestState.ACTIVE:
-		return null
-
-	return _build_quest_navigation(quest)
-
-
-## Get navigation data for all active quests (for minimap)
-func get_active_quests_with_positions() -> Array[QuestNavigation]:
-	var nav_list: Array[QuestNavigation] = []
-
-	for quest_id in quests:
-		var quest: Quest = quests[quest_id]
-		if quest.state != Enums.QuestState.ACTIVE:
-			continue
-
-		var nav: QuestNavigation = _build_quest_navigation(quest)
-		if nav:
-			nav_list.append(nav)
-
-	return nav_list
-
-
-## Build navigation data for a quest
-func _build_quest_navigation(quest: Quest) -> QuestNavigation:
-	var nav := QuestNavigation.new()
-	nav.quest_id = quest.id
-	nav.quest_title = quest.title
-	nav.is_main_quest = quest.is_main_quest
-
-	# Check if ready for turn-in
-	nav.is_ready_for_turnin = _are_primary_objectives_complete(quest.id)
-
-	if nav.is_ready_for_turnin:
-		# Point to turn-in location
-		nav.destination_type = "turn_in"
-		nav.destination_zone = quest.turn_in_zone
-		_set_turnin_destination(nav, quest)
-	else:
-		# Point to next incomplete objective
-		nav.destination_type = "objective"
-		_set_objective_destination(nav, quest)
-
-	return nav
-
-
-## Set destination for turn-in based on turn_in_type
-func _set_turnin_destination(nav: QuestNavigation, quest: Quest) -> void:
-	var current_zone: String = _get_current_zone_id()
-
-	match quest.turn_in_type:
-		Enums.TurnInType.NPC_SPECIFIC:
-			nav.destination_name = quest.turn_in_target
-			# Find the specific NPC in the world
-			var npc_pos: Vector3 = _find_npc_position(quest.turn_in_target)
-			if npc_pos != Vector3.ZERO:
-				nav.destination_position = npc_pos
-			elif not quest.turn_in_zone.is_empty() and quest.turn_in_zone != current_zone:
-				nav.destination_zone = quest.turn_in_zone
-
-		Enums.TurnInType.NPC_TYPE_IN_REGION:
-			nav.destination_name = quest.turn_in_target  # e.g., "guard", "merchant"
-			# Find any NPC of this type in the current zone
-			var npc_pos: Vector3 = _find_npc_type_position(quest.turn_in_target, quest.turn_in_region)
-			if npc_pos != Vector3.ZERO:
-				nav.destination_position = npc_pos
-			elif not quest.turn_in_zone.is_empty() and quest.turn_in_zone != current_zone:
-				nav.destination_zone = quest.turn_in_zone
-
-		Enums.TurnInType.WORLD_OBJECT:
-			nav.destination_name = quest.turn_in_target
-			# Find the world object
-			var obj_pos: Vector3 = _find_world_object_position(quest.turn_in_target)
-			if obj_pos != Vector3.ZERO:
-				nav.destination_position = obj_pos
-			elif not quest.turn_in_zone.is_empty() and quest.turn_in_zone != current_zone:
-				nav.destination_zone = quest.turn_in_zone
-
-		Enums.TurnInType.AUTO_COMPLETE:
-			# No destination needed - quest auto-completes
-			pass
-
-
-## Set destination for the next incomplete objective
-func _set_objective_destination(nav: QuestNavigation, quest: Quest) -> void:
-	for obj in quest.objectives:
-		if obj.is_completed or obj.is_optional:
-			continue
-
-		nav.destination_name = obj.description
-
-		match obj.type:
-			"kill":
-				# Find enemy spawn location
-				var enemy_pos: Vector3 = _find_enemy_spawn_position(obj.target)
-				if enemy_pos != Vector3.ZERO:
-					nav.destination_position = enemy_pos
-				else:
-					# Check if there's a zone hint in objective description or quest data
-					pass
-
-			"collect":
-				# Find item in world or drop location
-				var item_pos: Vector3 = _find_item_position(obj.target)
-				if item_pos != Vector3.ZERO:
-					nav.destination_position = item_pos
-
-			"talk":
-				# Find NPC
-				var npc_pos: Vector3 = _find_npc_position(obj.target)
-				if npc_pos != Vector3.ZERO:
-					nav.destination_position = npc_pos
-				elif obj.target_zone != "":
-					# NPC not in current scene - use target zone for navigation
-					nav.destination_zone = obj.target_zone
-					nav.destination_name = obj.description
-
-			"reach", "explore":
-				# Find location marker
-				var loc_pos: Vector3 = _find_location_position(obj.target)
-				if loc_pos != Vector3.ZERO:
-					nav.destination_position = loc_pos
-
-			"interact":
-				# Find interactable object
-				var obj_pos: Vector3 = _find_world_object_position(obj.target)
-				if obj_pos != Vector3.ZERO:
-					nav.destination_position = obj_pos
-
-		# Only process first incomplete objective
-		break
-
-
-## Get current zone ID from GameManager or scene
-func _get_current_zone_id() -> String:
-	if GameManager and GameManager.has_method("get_current_zone_id"):
-		return GameManager.get_current_zone_id()
-	# Fallback to scene name
-	var tree: SceneTree = get_tree()
-	if tree and tree.current_scene:
-		return tree.current_scene.name.to_lower()
-	return ""
-
-
-## Find position of a specific NPC by ID
-func _find_npc_position(npc_id: String) -> Vector3:
-	var npcs: Array[Node] = get_tree().get_nodes_in_group("npcs")
-	for npc in npcs:
-		var node_npc_id: String = npc.get("npc_id") if "npc_id" in npc else ""
-		if node_npc_id == npc_id and npc is Node3D:
-			return (npc as Node3D).global_position
-	return Vector3.ZERO
-
-
-## Find position of any NPC of a specific type (optionally in a region)
-func _find_npc_type_position(npc_type: String, region: String = "") -> Vector3:
-	var npcs: Array[Node] = get_tree().get_nodes_in_group("npcs")
-	for npc in npcs:
-		var node_type: String = npc.get("npc_type") if "npc_type" in npc else ""
-		var node_region: String = npc.get("region_id") if "region_id" in npc else ""
-
-		if node_type == npc_type:
-			if region.is_empty() or node_region == region:
-				if npc is Node3D:
-					return (npc as Node3D).global_position
-	return Vector3.ZERO
-
-
-## Find position of a world object by ID
-func _find_world_object_position(object_id: String) -> Vector3:
-	# Check bounty boards
-	var bounty_boards: Array[Node] = get_tree().get_nodes_in_group("bounty_boards")
-	for board in bounty_boards:
-		var board_id: String = board.get("object_id") if "object_id" in board else ""
-		if board_id == object_id and board is Node3D:
-			return (board as Node3D).global_position
-
-	# Check interactables
-	var interactables: Array[Node] = get_tree().get_nodes_in_group("interactables")
-	for obj in interactables:
-		var obj_id: String = obj.get("object_id") if "object_id" in obj else ""
-		if obj.name.to_lower() == object_id or obj_id == object_id:
-			if obj is Node3D:
-				return (obj as Node3D).global_position
-
-	return Vector3.ZERO
-
-
-## Find position where enemies of a certain type spawn
-func _find_enemy_spawn_position(enemy_id: String) -> Vector3:
-	# First check if there's a live enemy of this type
-	var enemies: Array[Node] = get_tree().get_nodes_in_group("enemies")
-	for enemy in enemies:
-		var enemy_data: Variant = null
-		if enemy.has_method("get_enemy_data"):
-			enemy_data = enemy.get_enemy_data()
-		elif "enemy_data" in enemy:
-			enemy_data = enemy.get("enemy_data")
-
-		if enemy_data and enemy_data.get("id", "").begins_with(enemy_id):
-			if enemy is Node3D:
-				return (enemy as Node3D).global_position
-
-	# Fall back to spawn points if no live enemy found
-	var spawn_points: Array[Node] = get_tree().get_nodes_in_group("enemy_spawns")
-	for spawn in spawn_points:
-		var spawn_enemy: String = spawn.get("enemy_id") if "enemy_id" in spawn else ""
-		if spawn_enemy.begins_with(enemy_id) and spawn is Node3D:
-			return (spawn as Node3D).global_position
-
-	return Vector3.ZERO
-
-
-## Find position of an item in the world
-func _find_item_position(item_id: String) -> Vector3:
-	# Check dropped items
-	var items: Array[Node] = get_tree().get_nodes_in_group("items")
-	for item in items:
-		var item_data_id: String = item.get("item_id") if "item_id" in item else ""
-		if item_data_id == item_id and item is Node3D:
-			return (item as Node3D).global_position
-
-	# Check chests/containers that might have the item
-	# (This is complex and would require container content checking)
-
-	return Vector3.ZERO
-
-
-## Find position of a location marker
-func _find_location_position(location_id: String) -> Vector3:
-	# Check for location markers in the scene
-	var markers: Array[Node] = get_tree().get_nodes_in_group("location_markers")
-	for marker in markers:
-		var marker_id: String = marker.get("location_id") if "location_id" in marker else ""
-		if marker_id == location_id or marker.name.to_lower() == location_id:
-			if marker is Node3D:
-				return (marker as Node3D).global_position
-
-	# Also check exits/doors as locations
-	var exits: Array[Node] = get_tree().get_nodes_in_group("exits")
-	for exit in exits:
-		var exit_id: String = exit.get("target_zone") if "target_zone" in exit else ""
-		if exit_id == location_id and exit is Node3D:
-			return (exit as Node3D).global_position
-
-	return Vector3.ZERO
 
 
 # =============================================================================

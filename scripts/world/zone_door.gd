@@ -38,6 +38,10 @@ var _time: float = 0.0
 func _ready() -> void:
 	add_to_group("interactable")
 	add_to_group("doors")
+	# "doors" is every door including LockableDoor, which is a house door and
+	# not a way out of the zone. The minimap and the explore-objective marker
+	# want zone transitions only, so ZoneDoor registers under that name too.
+	add_to_group("zone_doors")
 
 	# Setup collision for blocking player movement
 	collision_layer = 1  # World layer
