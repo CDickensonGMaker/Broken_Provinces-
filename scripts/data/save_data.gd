@@ -109,6 +109,12 @@ var world_state_data = null  # WorldStateSaveData
 ## Fast travel section (journey in progress, caravan routes)
 var fast_travel_data = null  # FastTravelSaveData
 
+## Tournament section (arena fame, winnings)
+var tournament_data = null  # TournamentSaveData
+
+## Cave section (visited areas, per-area state)
+var cave_data = null  # CaveSaveData
+
 ## Audio settings section
 @export_group("Settings")
 @export var audio_settings: Dictionary = {}
@@ -142,6 +148,8 @@ func _init() -> void:
 	weather_data = WeatherSaveData.new()
 	world_state_data = WorldStateSaveData.new()
 	fast_travel_data = FastTravelSaveData.new()
+	tournament_data = TournamentSaveData.new()
+	cave_data = CaveSaveData.new()
 
 ## Convert to dictionary for JSON serialization
 func to_dict() -> Dictionary:
@@ -178,6 +186,8 @@ func to_dict() -> Dictionary:
 		"weather": weather_data.to_dict() if weather_data else {},
 		"world_state": world_state_data.to_dict() if world_state_data else {},
 		"fast_travel": fast_travel_data.to_dict() if fast_travel_data else {},
+		"tournament": tournament_data.to_dict() if tournament_data else {},
+		"caves": cave_data.to_dict() if cave_data else {},
 		"audio_settings": audio_settings
 	}
 
@@ -244,6 +254,10 @@ func from_dict(data: Dictionary) -> void:
 		world_state_data.from_dict(data.get("world_state", {}))
 	if fast_travel_data:
 		fast_travel_data.from_dict(data.get("fast_travel", {}))
+	if tournament_data:
+		tournament_data.from_dict(data.get("tournament", {}))
+	if cave_data:
+		cave_data.from_dict(data.get("caves", {}))
 
 	audio_settings = data.get("audio_settings", {})
 
@@ -1222,6 +1236,72 @@ class FastTravelSaveData:
 		caravan_destination = data.get("caravan_destination", "")
 		caravan_segments = data.get("caravan_segments", [])
 		caravan_current_segment = data.get("caravan_current_segment", 0)
+
+
+## Tournament (Bloodsand Arena) save data structure
+##
+## arena_fame and total_gold_earned are progression, not session state. Nothing
+## called TournamentManager's save hooks, so the arena's entire sense of the
+## player's standing reset to zero on every load - including the winnings the
+## 8/1 fix had just made it actually pay out.
+class TournamentSaveData:
+	## Standing in the arena, drives the rank title
+	var arena_fame: int = 0
+
+	## Lifetime arena winnings
+	var total_gold_earned: int = 0
+
+	## Whether a tournament was running when the game was saved
+	var is_tournament_active: bool = false
+
+	## Wave reached in that tournament
+	var current_wave: int = 0
+
+	## Whether the arena had the player's equipment locked
+	var is_equipment_locked: bool = false
+
+	func to_dict() -> Dictionary:
+		return {
+			"arena_fame": arena_fame,
+			"total_gold_earned": total_gold_earned,
+			"is_tournament_active": is_tournament_active,
+			"current_wave": current_wave,
+			"is_equipment_locked": is_equipment_locked
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		arena_fame = data.get("arena_fame", 0)
+		total_gold_earned = data.get("total_gold_earned", 0)
+		is_tournament_active = data.get("is_tournament_active", false)
+		current_wave = data.get("current_wave", 0)
+		is_equipment_locked = data.get("is_equipment_locked", false)
+
+
+## Cave save data structure
+##
+## Per-area persistent state. Same shape as the two above: working save hooks,
+## no caller, so every cave was fresh on every load.
+class CaveSaveData:
+	## Areas the player has entered (area_id -> timestamp)
+	var visited_areas: Dictionary = {}
+
+	## Enemy faction of the cave the player is in
+	var cave_faction: String = "natural"
+
+	## Danger level of that cave (1-10)
+	var cave_danger_level: int = 3
+
+	func to_dict() -> Dictionary:
+		return {
+			"visited_areas": visited_areas,
+			"cave_faction": cave_faction,
+			"cave_danger_level": cave_danger_level
+		}
+
+	func from_dict(data: Dictionary) -> void:
+		visited_areas = data.get("visited_areas", {})
+		cave_faction = data.get("cave_faction", "natural")
+		cave_danger_level = data.get("cave_danger_level", 3)
 
 
 ## Weather system save data structure

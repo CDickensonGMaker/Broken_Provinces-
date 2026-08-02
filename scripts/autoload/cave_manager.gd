@@ -436,20 +436,19 @@ func get_nav_markers() -> Array[Node]:
 
 
 ## Get save data for persistence
+##
+## Only what load_save_data reads back. It used to write "areas" (every
+## CaveArea serialised) and "active_cave_id" as well, and read neither:
+## area_data is rebuilt from the cave model's CaveArea_* markers every time a
+## cave registers, and _find_area_markers_recursive restores each area's
+## visited state from visited_areas. A key nothing reads is the same trap as a
+## field nothing writes.
 func get_save_data() -> Dictionary:
-	var data: Dictionary = {
-		"active_cave_id": active_cave_id,
+	return {
 		"cave_faction": cave_faction,
 		"cave_danger_level": cave_danger_level,
-		"visited_areas": visited_areas.duplicate(),
-		"areas": {}
+		"visited_areas": visited_areas.duplicate()
 	}
-
-	for area_id: String in area_data:
-		var area: CaveArea = area_data[area_id]
-		data.areas[area_id] = area.to_dict()
-
-	return data
 
 
 ## Load save data

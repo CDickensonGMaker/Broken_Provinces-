@@ -483,6 +483,14 @@ func _collect_save_data():
 	if save_data.fast_travel_data:
 		_collect_fast_travel_data(save_data.fast_travel_data)
 
+	# Tournament data (arena fame, winnings)
+	if save_data.tournament_data:
+		_collect_tournament_data(save_data.tournament_data)
+
+	# Cave data (visited areas, per-area state)
+	if save_data.cave_data:
+		_collect_cave_data(save_data.cave_data)
+
 	return save_data
 
 ## Collect player data
@@ -826,6 +834,52 @@ func _apply_save_data(save_data) -> void:
 	# Restore fast travel state
 	if save_data.fast_travel_data:
 		_apply_fast_travel_data(save_data.fast_travel_data)
+
+	# Restore tournament state
+	if save_data.tournament_data:
+		_apply_tournament_data(save_data.tournament_data)
+
+	# Restore cave state
+	if save_data.cave_data:
+		_apply_cave_data(save_data.cave_data)
+
+
+## Collect tournament data
+func _collect_tournament_data(tournament_save_data) -> void:
+	var t_dict: Dictionary = TournamentManager.get_save_data()
+	tournament_save_data.arena_fame = t_dict.get("arena_fame", 0)
+	tournament_save_data.total_gold_earned = t_dict.get("total_gold_earned", 0)
+	tournament_save_data.is_tournament_active = t_dict.get("is_tournament_active", false)
+	tournament_save_data.current_wave = t_dict.get("current_wave", 0)
+	tournament_save_data.is_equipment_locked = t_dict.get("is_equipment_locked", false)
+
+
+## Apply tournament data
+func _apply_tournament_data(tournament_save_data) -> void:
+	TournamentManager.load_save_data({
+		"arena_fame": tournament_save_data.arena_fame,
+		"total_gold_earned": tournament_save_data.total_gold_earned,
+		"is_tournament_active": tournament_save_data.is_tournament_active,
+		"current_wave": tournament_save_data.current_wave,
+		"is_equipment_locked": tournament_save_data.is_equipment_locked
+	})
+
+
+## Collect cave data
+func _collect_cave_data(cave_save_data) -> void:
+	var c_dict: Dictionary = CaveManager.get_save_data()
+	cave_save_data.visited_areas = c_dict.get("visited_areas", {})
+	cave_save_data.cave_faction = c_dict.get("cave_faction", "natural")
+	cave_save_data.cave_danger_level = c_dict.get("cave_danger_level", 3)
+
+
+## Apply cave data
+func _apply_cave_data(cave_save_data) -> void:
+	CaveManager.load_save_data({
+		"visited_areas": cave_save_data.visited_areas,
+		"cave_faction": cave_save_data.cave_faction,
+		"cave_danger_level": cave_save_data.cave_danger_level
+	})
 
 
 ## Collect fast travel data
