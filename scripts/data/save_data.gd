@@ -590,6 +590,12 @@ class CrimeSaveData:
 	## Confiscated items while in jail (region_id -> items array)
 	var confiscated_items: Dictionary = {}
 
+	## Where to put the player back when his time is served. CrimeManager wrote
+	## both of these into its to_dict from the start; nothing read them out, so
+	## saving while jailed lost the way home.
+	var return_scene: String = ""
+	var return_position: Vector3 = Vector3.ZERO
+
 	func to_dict() -> Dictionary:
 		return {
 			"bounties": bounties,
@@ -597,7 +603,13 @@ class CrimeSaveData:
 			"is_jailed": is_jailed,
 			"jail_region": jail_region,
 			"jail_time_remaining": jail_time_remaining,
-			"confiscated_items": confiscated_items
+			"confiscated_items": confiscated_items,
+			"return_scene": return_scene,
+			"return_position": {
+				"x": return_position.x,
+				"y": return_position.y,
+				"z": return_position.z
+			}
 		}
 
 	func from_dict(data: Dictionary) -> void:
@@ -607,6 +619,13 @@ class CrimeSaveData:
 		jail_region = data.get("jail_region", "")
 		jail_time_remaining = data.get("jail_time_remaining", 0.0)
 		confiscated_items = data.get("confiscated_items", {})
+		return_scene = data.get("return_scene", "")
+		var pos_data: Dictionary = data.get("return_position", {})
+		return_position = Vector3(
+			pos_data.get("x", 0.0),
+			pos_data.get("y", 0.0),
+			pos_data.get("z", 0.0)
+		)
 
 
 ## Flag save data structure (FlagManager)

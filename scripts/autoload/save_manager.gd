@@ -623,6 +623,13 @@ func _collect_crime_data(crime_data) -> void:
 	crime_data.jail_region = crime_dict.get("jail_region", "")
 	crime_data.jail_time_remaining = crime_dict.get("jail_time_remaining", 0.0)
 	crime_data.confiscated_items = crime_dict.get("confiscated_items", {})
+	crime_data.return_scene = crime_dict.get("return_scene", "")
+	var return_pos: Dictionary = crime_dict.get("return_position", {})
+	crime_data.return_position = Vector3(
+		return_pos.get("x", 0.0),
+		return_pos.get("y", 0.0),
+		return_pos.get("z", 0.0)
+	)
 
 
 ## Collect flag data
@@ -928,7 +935,13 @@ func _apply_crime_data(crime_data) -> void:
 		"is_jailed": crime_data.is_jailed,
 		"jail_region": crime_data.jail_region,
 		"jail_time_remaining": crime_data.jail_time_remaining,
-		"confiscated_items": crime_data.confiscated_items
+		"confiscated_items": crime_data.confiscated_items,
+		"return_scene": crime_data.return_scene,
+		"return_position": {
+			"x": crime_data.return_position.x,
+			"y": crime_data.return_position.y,
+			"z": crime_data.return_position.z
+		}
 	})
 
 
