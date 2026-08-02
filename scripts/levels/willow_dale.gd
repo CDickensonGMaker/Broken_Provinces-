@@ -62,6 +62,7 @@ func _ready() -> void:
 	_spawn_cultists()
 	_spawn_loot()
 	_spawn_quest_objectives()
+	_spawn_caravan_survivor()
 	_spawn_cursed_totem()
 	_spawn_environmental_lore()
 	_create_lighting()
@@ -1070,3 +1071,16 @@ func _spawn_lore_item(pos: Vector3, item_id: String, display_name: String, lore_
 	area_col.position.y = 0.3
 	area.add_child(area_col)
 	item.add_child(area)
+
+
+## One man walked out of the Dalhurst caravan and did not walk far. The
+## investigation's optional objective asks whether anyone survived; the answer
+## is yes, barely, and he cannot tell you much.
+func _spawn_caravan_survivor() -> void:
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(6, 0, 44), "Yoren the Carter", "caravan_survivor",
+		ZONE_ID, "common_folk", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["shaking", "concussed", "grateful"],
+		["willow_dale", "caravan", "undead", "local_area"],
+		"I got under the cart. That is the whole of my heroism. They walked past me for an hour and I counted every one.",
+		[], true, 55)

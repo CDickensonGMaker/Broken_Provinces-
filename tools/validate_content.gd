@@ -169,11 +169,11 @@ func _register_npc_id(id: String, source: String) -> void:
 	npc_ids[id] = source
 
 
-## Extracts the npc id argument from QuestGiver spawn factory calls. Both
+## Extracts the npc id argument from NPC spawn factory calls. All three
 ## factories take the id as argument index 3; spawn_quest_giver derives one from
 ## the display name when the id is left blank.
 func _collect_spawn_call_ids(text: String, source: String) -> void:
-	for fn: String in ["spawn_quest_giver", "spawn_from_registry"]:
+	for fn: String in ["spawn_quest_giver", "spawn_from_registry", "spawn_townsfolk"]:
 		var search_from: int = 0
 		while true:
 			var idx: int = text.find(fn + "(", search_from)

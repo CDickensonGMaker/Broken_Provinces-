@@ -22,6 +22,7 @@ func _ready() -> void:
 	SaveManager.set_current_zone(ZONE_ID, "Whalers Abyss")
 	_setup_spawn_points()
 	_spawn_npcs()
+	_spawn_residents()
 	_spawn_merchants()
 	_spawn_interactables()
 	_spawn_doors()
@@ -312,3 +313,16 @@ func _setup_navigation() -> void:
 func _bake_navigation() -> void:
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
+
+
+## The town's civic figure. Whaler's Abyss is a canyon full of people who came
+## here to not be found, so its mayor governs mostly by not asking.
+func _spawn_residents() -> void:
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(12, MIDDLE_LEVEL, -8), "Mayor Ysolde Kerr",
+		"whaelers_abyss_mayor", ZONE_ID, "human_empire",
+		NPCKnowledgeProfile.Archetype.NOBLE,
+		["dry", "incurious", "capable"],
+		["whalers_abyss", "canyon", "mining", "surveyors", "local_area"],
+		"Mayor of a hole in the ground. People come down here to stop being asked questions, so I try not to ask many.",
+		[], true, 45)

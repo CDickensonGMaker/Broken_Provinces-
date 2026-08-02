@@ -45,6 +45,7 @@ func _ready() -> void:
 	# Apply materials to CSG nodes (they default to white in .tscn)
 	_apply_materials()
 	_spawn_npcs()
+	_spawn_residents()
 	_spawn_interactables()
 	_spawn_doors()
 	_spawn_locked_doors()
@@ -622,3 +623,53 @@ func _setup_cell_streaming() -> void:
 	CellStreamer.start_streaming(my_coords)
 
 
+
+
+## Residents the quest chains named by role. Thornfield is the eastern town:
+## a market, a smithy, farms on the slope and, since the Circle opened a house
+## here, one wizard who would rather be in Dalhurst.
+func _spawn_residents() -> void:
+	var npcs_container: Node3D = get_node_or_null("NPCs")
+	if not npcs_container:
+		npcs_container = Node3D.new()
+		npcs_container.name = "NPCs"
+		add_child(npcs_container)
+
+	# The Circle's third wizard, and the only one east of the Crossroads.
+	# Dalhurst has Master Aldric and Master Helvant; she has an apprentice and
+	# a leaking roof.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(-10, 0, -8), "Master Lavinia Wyke", "thornfield_wizard",
+		ZONE_ID, "arcane_circle", NPCKnowledgeProfile.Archetype.SCHOLAR,
+		["exacting", "prickly", "protective"],
+		["thornfield", "magic", "arcane_circle", "apprentices", "local_area"],
+		"The Circle posted me east and forgot me. I have one apprentice, and I would like him returned in the condition he left.",
+		["rescue_wizard_apprentice_1"], false, 45, "formal")
+
+	# The inn on the market side. He hears the town before the watch does.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(3, 0, 9), "Godfrey Larke", "thornfield_innkeeper",
+		ZONE_ID, "common_folk", NPCKnowledgeProfile.Archetype.INNKEEPER,
+		["genial", "gossipy", "unflappable"],
+		["thornfield", "innkeeper", "rumors", "travelers", "local_area"],
+		"Everyone who comes east comes through my door, and everyone who comes through my door talks. Buy a drink and you can have both.",
+		[], true, 60)
+
+	# The healer. Thornfield has no temple, so she is the whole of its medicine.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(-3, 0, 11), "Nuala Birch", "thornfield_healer",
+		ZONE_ID, "common_folk", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["gentle", "exhausted", "direct"],
+		["thornfield", "medicine", "herbs", "sickness", "local_area"],
+		"Half this street has the wasting cough and I am out of everything that touches it. If you are carrying, say so now.",
+		[], true, 55)
+
+	# The farms on the slope above town, and the man who lost a crew to whatever
+	# came out of the treeline
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(14, 0, -12), "Struan Ryke", "thornfield_farmer",
+		ZONE_ID, "common_folk", NPCKnowledgeProfile.Archetype.FARMER,
+		["stoic", "haunted", "plain"],
+		["thornfield", "farming", "local_area", "beasts"],
+		"I do not know what it was. I know how far it carried a full-grown ox, and I would rather have not learned that.",
+		[], true, 50)

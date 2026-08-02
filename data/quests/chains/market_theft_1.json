@@ -13,7 +13,7 @@
 			"id": "question_witness1",
 			"description": "Question the first witness",
 			"type": "talk",
-			"target": "millbrook_civilian",
+			"target": "millbrook_witness",
 			"target_zone": "millbrook",
 			"required_count": 1
 		}

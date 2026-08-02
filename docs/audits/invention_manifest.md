@@ -156,3 +156,93 @@ Not activated, and each needs something no file supplies:
 **Nothing here was invented to make a number move.** Where a branch could not be
 reached without inventing a person, a place or a ruling, it stayed unreachable
 and went in this table.
+
+---
+
+## Wave B backlog — stage 1: the eight missing factions
+
+| What | Where | Why it was needed | Basis |
+|---|---|---|---|
+| **Merchant Guild** — chartered traders, Blacklisted→Guild Master, joinable at 25 | `data/factions/merchant_guild.tres` | 18 reputation changes named it (10 as `merchant_guild`, 8 as the near-miss `merchants_guild`, now repointed) and every one was dropped on the floor | The caravan/courier/market chains already treat it as an institution with standing |
+| **The Common Folk** — not an organisation, unjoinable, Feared→The Province's Own | `data/factions/common_folk.tres` | 10 bounties and rescue chains thank "the common folk" | CLAUDE.md's faction reputation system; the hamlets already exist as factions, this is what they share |
+| **The Noble Houses** — sub-faction of `human_empire`, starts at −10 | `data/factions/nobility.tres` | The soulstone request and the gala heist both move noble reputation | Bible: a crumbling empire with an empty throne for twenty years — the houses stopped waiting for orders |
+| **Hunters' Lodge** — a board and a bounty box, joinable at 25 | `data/factions/hunters_guild.tres` | Three wolf/wyvern bounties pay into it | The bounty board already exists as an interactable; this is who runs the beast half of it |
+| **The Athenaeum** (`scholars_guild`) — libraries and antiquarians | `data/factions/scholars_guild.tres` | `cursed_tome_3` pays into it | `scenes/levels/athenaeum.tscn` already exists; this is its faction |
+| **The Shadowed Hand** — hidden cult, starts at −20 | `data/factions/shadowed_hand_cult.tres` | Four Keeper quests move its standing | The Keepers already have an enemy in the quest data with no resource behind it |
+| **Aberdeen**, **Larton** — settlement factions on the relief road | `data/factions/aberdeen.tres`, `larton.tres` | `supply_line_crisis` pays both | Both are real grid locations with built scenes |
+
+**Deliberately NOT invented:** who leads any of them; where the Shadowed Hand's
+cult meets; whether the Merchant Guild has a hall the player can enter.
+
+---
+
+## Wave B backlog — stage 2: the residents the quests named by role
+
+Thirty-eight quest references wanted "the merchant in Dalhurst", "the healer in
+Mill Brook", "the guard captain". Each is now a named person standing where their
+quests expect them, with a conversation archetype — so the Wave C tiers give them
+their trade's voice for free — and one line in their own words. None has art of
+its own; see `art_replacement_manifest.md`.
+
+**Engine, for this stage:** `Townsfolk.spawn_townsfolk()`
+(`scripts/npcs/townsfolk.gd`) — one call for the six things every resident needs.
+`tools/validate_content.gd` was taught to read ids out of it, exactly as it
+already does for `spawn_quest_giver` and `spawn_from_registry`.
+
+### Repointed, not invented
+
+`dalhurst_innkeeper`→`innkeeper_dalhurst` · `thornfield_merchant`→`thornfield_trader` ·
+`millbrook_farmer`→`farmer_edda` · `mine_foreman_duncaster`→`duncaster_foreman` ·
+`logging_foreman` and `logging_foreman_elder_moor`→`foreman_garvek` ·
+`guild_members`→`thieves_guild_recruiter` (thieves_13 wanted a roster, and the
+Guild's recruiter already keeps one) · `garrett_sailor`→`debtor_garrett` — the
+Whaler's Abyss debtor **is** the Crossroads debtor, because a man who owes the
+Guild two hundred gold does not stay at the Crossroads; quest prose updated to
+match.
+
+### Split, because one id carried more than one person
+
+| Old id | Now | Why |
+|---|---|---|
+| `millbrook_civilian` (6 refs) | `millbrook_widow` (Hild Marrow), `millbrook_witness` (Colm the Stallhand), `millbrook_mother` (Anwen Fell) | A widow, a market witness and the mother of a taken child were three griefs sharing one id. They are three women |
+| `elder_moor_civilian` (6 refs) | `elder_moor_old_woman` (Hester Crow), `elder_moor_woodsmans_wife` (Bridget Hale) | The heirloom's "old woman" and the woodsman's family are not the same household |
+
+### Invented residents
+
+| Who | id | Where | The one thing that makes them a person |
+|---|---|---|---|
+| **Corvin Ashford**, market merchant | `dalhurst_merchant` | Dalhurst market | Four chains wanted "the merchant in Dalhurst"; he owns all four, and is one man having a very bad year rather than four flat people |
+| **Lector Ysolde Bramwell** | `dalhurst_scholar` | Dalhurst reading room | RULING: the Dalhurst library **is** the Athenaeum's reading room, not a second building. She buys books the temple would rather she did not |
+| **Padraig**, beggar | `dalhurst_witness` | A Dalhurst doorway | "Somebody saw something" is a man who gets looked past all day and knows what that is worth |
+| **Old Ketch Dougal** | `old_fisherman_dalhurst` | Dalhurst quays | RULING: not Larton's Old Salt Willem — two ports, two old men |
+| **Nerys Corrin** | `widow_dalhurst` | Dalhurst | The restless soul's widow. People tell her kindly that they have seen him, which is worse |
+| **Sergeant Baird Holt** | `iron_company_veteran` | Dalhurst billet | Knows every man in the billet, which is exactly why the betrayal quest hurts |
+| **Kerenza Doyle** | `guild_witness` | Dalhurst guild hall | Indiscreet; the only one saying the missing-adventurer number out loud |
+| **Ivo Renn**, clerk | `inside_contact` | Dalhurst magistrate's office | The Guild's plant is a clerk, because nobody has ever wondered where a clerk goes at night |
+| **Quillan the Ferret** | `informant_crossroads` | Dalhurst, works the Crossroads road | Sells the same story twice and both buyers are happy |
+| **Greta Vance** | `millbrook_merchant` | Mill Brook stall | Counts the goods in at dusk and the two numbers disagree |
+| **Colm the Stallhand** | `millbrook_witness` | Mill Brook stall | Will name the thief, and has to stand at that stall tomorrow |
+| **Sister Rowena Ash** | `millbrook_priest` | Mill Brook shrine | RULING: Mill Brook's shrine keeps **Gaela** — it is a milling and fishing hamlet, and Gaela decides whether there is anything to mill |
+| **Sorcha Linn**, herbwife | `millbrook_healer` | Mill Brook | RULING: healer and priest are two people. The shrine prays; she boils something bitter |
+| **Tavish Moor**, shepherd | `millbrook_shepherd` | The pasture above the brook | Counts to forty-one and calls that a good morning |
+| **Hamish Roke**, innkeep | `millbrook_innkeeper` | Mill Brook | RULING: yes, the hamlet has an inn — four beds, three of them usually free |
+| **Eamon Quist** | `head_fisherman_millbrook` | Mill Brook docks | Hector's counterweight: thirty years of weighing fish against one merchant's scales |
+| **Watch-Captain Ingram Vell** | `guard_captain_millbrook` | Mill Brook road | He is the whole watch, and says so as arithmetic rather than as an excuse |
+| **Widow Hild Marrow** | `millbrook_widow` | Mill Brook | Knows the locket is not worth the fee and asks anyway |
+| **Goodwife Anwen Fell** | `millbrook_mother` | Mill Brook | "She went to the brook for water and she did not come back up the path" |
+| **Watch-Captain Osbert Dunmoor** | `elder_moor_guard` | Elder Moor camp | RULING: the watchman `guard_elder_moor_1` stays a GuardNPC; the chain's "guard captain" is his officer, and the chain exists *because* neither of them can leave the camp |
+| **Goodwife Hester Crow** | `elder_moor_old_woman` | Elder Moor | Knows exactly what the ring is worth and that is not why she wants it |
+| **Bridget Hale** | `elder_moor_woodsmans_wife` | Elder Moor lumber camp | "The north crew came back without him, and nobody will say more than that" |
+| **Master Lavinia Wyke** | `thornfield_wizard` | Thornfield | RULING: a **third** Circle wizard, posted east and forgotten. Dalhurst's two are both Dalhurst's |
+| **Godfrey Larke**, innkeep | `thornfield_innkeeper` | Thornfield market | Everyone who comes east comes through his door, and everyone who comes through his door talks |
+| **Nuala Birch**, healer | `thornfield_healer` | Thornfield | Thornfield has no temple, so she is the whole of its medicine and she is out of everything |
+| **Struan Ryke**, farmer | `thornfield_farmer` | Thornfield slope | Knows how far the thing carried a full-grown ox, and would rather not have learned it |
+| **Trade Master Petra Halloran** | `trade_master_larton` | Larton wharf | RULING: Trade Master is a **Larton port office**, not an imperial rank. Every week she decides which town eats |
+| **Magistrate Uther Craine** | `imperial_magistrate` | Larton | RULING: the empire's civil authority in the south is one man with a seal and no soldiers. "Where it goes after that has not been answered in nineteen years" — the empty throne, felt at a desk |
+| **Mayor Ysolde Kerr** | `whaelers_abyss_mayor` | Whaler's Abyss | Governs a canyon full of people who came there to stop being asked questions, so she does not ask many |
+| **Yoren the Carter** | `caravan_survivor` | Willow Dale ruins | RULING: yes, one man survived. He got under the cart and counted every one of them walking past |
+
+**Deliberately NOT invented:** any Crossroads settlement (the grid calls the
+Crossroads a cultist-ruined dungeon and three quests want a tavern there — held
+in `wave_b_dispositions.md`); Mill Brook's shrine building; a Thornfield temple;
+the Athenaeum's relationship to the Arcane Circle beyond "allied".

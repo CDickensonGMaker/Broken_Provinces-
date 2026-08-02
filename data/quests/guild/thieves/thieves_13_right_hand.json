@@ -21,7 +21,7 @@
     {
       "id": "obj_recruit_team",
       "type": "talk",
-      "target": "guild_members",
+      "target": "thieves_guild_recruiter",
       "description": "Recruit team members (specialists improve success chance)"
     },
     {

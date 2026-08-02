@@ -1,7 +1,7 @@
 {
   "id": "thieves_04_debt_collection",
   "title": "The Sailor's Debt",
-  "description": "A sailor named Garrett owes the Guild a substantial sum. He's been hiding at the Crossroads tavern. Collect the debt - by persuasion, intimidation, or taking it from his possessions.",
+  "description": "A sailor named Garrett owes the Guild a substantial sum. He's been run south and gone to ground in Whaler's Abyss. Collect the debt - by persuasion, intimidation, or taking it from his possessions.",
   "giver_npc_id": "raven_thief_contact",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",
@@ -10,8 +10,8 @@
     {
       "id": "obj_find_garrett",
       "type": "talk",
-      "target": "garrett_sailor",
-      "description": "Find Garrett at the Crossroads tavern"
+      "target": "debtor_garrett",
+      "description": "Find Garrett in Whaler's Abyss"
     },
     {
       "id": "obj_collect_debt",

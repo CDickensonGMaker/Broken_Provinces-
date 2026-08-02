@@ -54,6 +54,8 @@ func _ready() -> void:
 	_spawn_guards()
 	# Spawn the Priest of Morthane who keeps the shrine and gives the death-rites line
 	_spawn_priest_of_morthane()
+	# Spawn the residents the quest chains named by role and never wrote
+	_spawn_residents()
 
 	# Spawn fall leaves on the ground for forest atmosphere
 	_spawn_fall_leaves()
@@ -778,3 +780,45 @@ func _spawn_priest_of_morthane() -> void:
 	borin_profile.knowledge_tags = ["elder_moor", "dwarves", "kazan_dun", "mountain_pass"]
 	borin_profile.base_disposition = 50
 	borin.npc_profile = borin_profile
+
+
+## Residents the quest chains named by role. Elder Moor is a logging camp with a
+## hamlet grown up beside it, so its people are the camp's people.
+func _spawn_residents() -> void:
+	var npcs_container: Node3D = get_node_or_null("NPCs")
+	if not npcs_container:
+		npcs_container = Node3D.new()
+		npcs_container.name = "NPCs"
+		add_child(npcs_container)
+
+	# The bandit_justice chain calls him "the guard captain". The camp has one
+	# watchman on the books and this man over him, which is the whole reason the
+	# chain exists: he cannot leave the camp to chase anyone.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(7, 0, 8), "Watch-Captain Osbert Dunmoor",
+		"elder_moor_guard", ZONE_ID, "town_guard",
+		NPCKnowledgeProfile.Archetype.GUARD,
+		["dutiful", "overstretched", "fair"],
+		["elder_moor", "law", "bandits", "roads", "local_area"],
+		"One watchman, one captain and forty miles of road. Say what you have seen and I will write it down, at least.",
+		["bandit_justice_1"], false, 50, "formal")
+
+	# family_heirloom's "old woman"
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(-6, 0, 14), "Goodwife Hester Crow",
+		"elder_moor_old_woman", ZONE_ID, "common_folk",
+		NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["sharp-tongued", "proud", "lonely"],
+		["elder_moor", "local_area", "old_families"],
+		"My mother's ring. Do not tell me it is only a ring. I know exactly what it is worth and that is not why I want it.",
+		["family_heirloom_1"], false, 40)
+
+	# rescue_woodsman's "woodsman's family" - one woman at the lumber camp
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(9, 0, 46), "Bridget Hale",
+		"elder_moor_woodsmans_wife", ZONE_ID, "common_folk",
+		NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["steady", "frightened", "practical"],
+		["elder_moor", "logging", "local_area"],
+		"He went out with the north crew and the north crew came back without him. Nobody will say more than that.",
+		["rescue_woodsman_1"], false, 50)

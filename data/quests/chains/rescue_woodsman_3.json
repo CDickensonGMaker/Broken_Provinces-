@@ -13,13 +13,13 @@
 			"id": "return",
 			"description": "Return to the lumber camp in Elder Moor",
 			"type": "talk",
-			"target": "elder_moor_civilian",
+			"target": "elder_moor_woodsmans_wife",
 			"target_zone": "elder_moor",
 			"required_count": 1
 		}
 	],
 	"turn_in_type": "npc_specific",
-	"turn_in_target": "elder_moor_civilian",
+	"turn_in_target": "elder_moor_woodsmans_wife",
 	"turn_in_zone": "elder_moor",
 	"rewards": {
 		"gold": 200,

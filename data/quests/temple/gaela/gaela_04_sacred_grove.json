@@ -20,7 +20,7 @@
 			"id": "speak_to_loggers",
 			"description": "Speak to the Logging Foreman in Elder Moor",
 			"type": "talk",
-			"target": "logging_foreman_elder_moor",
+			"target": "foreman_garvek",
 			"required_count": 1,
 			"is_optional": false
 		},

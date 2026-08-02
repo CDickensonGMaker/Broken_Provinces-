@@ -32,3 +32,50 @@ for real portraits/sheets:
 
 All five are dwarves or bandits standing in a hall or a camp; none of them read
 as such at a glance. A dwarf sheet and a bandit sheet would cover the lot.
+
+### Wave B backlog residents (stage 2, 30 people)
+
+Thirty named residents were added to Dalhurst, Mill Brook, Elder Moor,
+Thornfield, Larton, Whaler's Abyss and the Willow Dale ruins, all drawn on the
+same default quest-giver sheet. Nothing here is broken art - it is *absent* art,
+and it is the largest single block of look-alike NPCs in the game. Priest,
+beggar, shepherd, herbwife, clerk, sergeant and magistrate all read as the same
+townsman today.
+
+Highest-value sheets, in order: **a market/merchant sheet**, **a priest or
+robed sheet**, **a labourer sheet** (shepherd, fisherman, carter, stallhand),
+**an officer sheet** (two watch-captains and a sergeant), **an old-woman sheet**
+(three widows and a goodwife).
+
+| NPC id | Character | Currently drawn as |
+|---|---|---|
+| `dalhurst_merchant` | Corvin Ashford, market merchant | Default quest-giver sprite (8x2) |
+| `dalhurst_scholar` | Lector Ysolde Bramwell, Athenaeum reading room | Default quest-giver sprite (8x2) |
+| `dalhurst_witness` | Padraig, beggar in a doorway | Default quest-giver sprite (8x2) |
+| `old_fisherman_dalhurst` | Old Ketch Dougal, Dalhurst quays | Default quest-giver sprite (8x2) |
+| `widow_dalhurst` | Nerys Corrin, the ghost widow | Default quest-giver sprite (8x2) |
+| `iron_company_veteran` | Sergeant Baird Holt, Iron Company | Default quest-giver sprite (8x2) |
+| `guild_witness` | Kerenza Doyle, Adventurers Guild rank-and-file | Default quest-giver sprite (8x2) |
+| `inside_contact` | Ivo Renn, clerk and Guild plant | Default quest-giver sprite (8x2) |
+| `informant_crossroads` | Quillan the Ferret, informant | Default quest-giver sprite (8x2) |
+| `millbrook_merchant` | Greta Vance, stallholder | Default quest-giver sprite (8x2) |
+| `millbrook_witness` | Colm the Stallhand | Default quest-giver sprite (8x2) |
+| `millbrook_priest` | Sister Rowena Ash, Gaela shrine | Default quest-giver sprite (8x2) |
+| `millbrook_healer` | Sorcha Linn, herbwife | Default quest-giver sprite (8x2) |
+| `millbrook_shepherd` | Tavish Moor, shepherd | Default quest-giver sprite (8x2) |
+| `millbrook_innkeeper` | Hamish Roke, innkeep | Default quest-giver sprite (8x2) |
+| `head_fisherman_millbrook` | Eamon Quist, head fisherman | Default quest-giver sprite (8x2) |
+| `guard_captain_millbrook` | Watch-Captain Ingram Vell | Default quest-giver sprite (8x2) |
+| `millbrook_widow` | Widow Hild Marrow | Default quest-giver sprite (8x2) |
+| `millbrook_mother` | Goodwife Anwen Fell | Default quest-giver sprite (8x2) |
+| `elder_moor_guard` | Watch-Captain Osbert Dunmoor | Default quest-giver sprite (8x2) |
+| `elder_moor_old_woman` | Goodwife Hester Crow | Default quest-giver sprite (8x2) |
+| `elder_moor_woodsmans_wife` | Bridget Hale | Default quest-giver sprite (8x2) |
+| `thornfield_wizard` | Master Lavinia Wyke, Arcane Circle | Default quest-giver sprite (8x2) |
+| `thornfield_innkeeper` | Godfrey Larke, innkeep | Default quest-giver sprite (8x2) |
+| `thornfield_healer` | Nuala Birch, healer | Default quest-giver sprite (8x2) |
+| `thornfield_farmer` | Struan Ryke, farmer | Default quest-giver sprite (8x2) |
+| `trade_master_larton` | Trade Master Petra Halloran | Default quest-giver sprite (8x2) |
+| `imperial_magistrate` | Magistrate Uther Craine | Default quest-giver sprite (8x2) |
+| `whaelers_abyss_mayor` | Mayor Ysolde Kerr | Default quest-giver sprite (8x2) |
+| `caravan_survivor` | Yoren the Carter, Willow Dale survivor | Default quest-giver sprite (8x2) |

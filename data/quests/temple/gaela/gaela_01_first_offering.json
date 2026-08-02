@@ -28,7 +28,7 @@
 			"id": "help_farmer",
 			"description": "Speak with a struggling farmer near Millbrook",
 			"type": "talk",
-			"target": "millbrook_farmer",
+			"target": "farmer_edda",
 			"required_count": 1,
 			"is_optional": false
 		},

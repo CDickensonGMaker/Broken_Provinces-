@@ -4,7 +4,7 @@
 	"description": "A grieving widow lost her late husband's locket while traveling. She believes it fell somewhere near Millbrook. It contains a portrait of him - her only memento.",
 	"is_main_quest": false,
 	"quest_source": "npc",
-	"giver_npc_id": "millbrook_civilian",
+	"giver_npc_id": "millbrook_widow",
 	"giver_npc_type": "civilian",
 	"giver_region": "millbrook",
 	"faction": "common_folk",

@@ -13,13 +13,13 @@
 			"id": "return_locket",
 			"description": "Return the locket to the widow",
 			"type": "talk",
-			"target": "millbrook_civilian",
+			"target": "millbrook_widow",
 			"target_zone": "millbrook",
 			"required_count": 1
 		}
 	],
 	"turn_in_type": "npc_specific",
-	"turn_in_target": "millbrook_civilian",
+	"turn_in_target": "millbrook_widow",
 	"turn_in_zone": "millbrook",
 	"rewards": {
 		"gold": 75,

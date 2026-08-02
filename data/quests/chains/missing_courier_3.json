@@ -13,13 +13,13 @@
 			"id": "deliver_letter",
 			"description": "Deliver the letter to the recipient in Thornfield",
 			"type": "talk",
-			"target": "thornfield_merchant",
+			"target": "thornfield_trader",
 			"target_zone": "thornfield",
 			"required_count": 1
 		}
 	],
 	"turn_in_type": "npc_specific",
-	"turn_in_target": "thornfield_merchant",
+	"turn_in_target": "thornfield_trader",
 	"turn_in_zone": "thornfield",
 	"rewards": {
 		"gold": 125,

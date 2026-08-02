@@ -26,7 +26,7 @@
 			"id": "resolve_conflict",
 			"description": "Resolve the conflict over the sacred grove",
 			"type": "talk",
-			"target": "logging_foreman",
+			"target": "foreman_garvek",
 			"required_count": 1
 		},
 		{

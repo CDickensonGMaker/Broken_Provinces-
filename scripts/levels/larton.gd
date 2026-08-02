@@ -42,6 +42,7 @@ func _ready() -> void:
 	_setup_spawn_point_metadata()
 	_setup_navigation()
 	_spawn_npcs()
+	_spawn_residents()
 	_spawn_environment()
 	_setup_cell_streaming()
 
@@ -395,3 +396,37 @@ func _spawn_environment() -> void:
 		building_mat.albedo_color = Color(0.45, 0.38, 0.32)  # Weathered gray-brown
 		building.material = building_mat
 		add_child(building)
+
+
+## Residents the southern relief quests named by role. Larton is the port the
+## relief road starts at, so the two people who decide whether Aberdeen eats
+## this month both stand here.
+func _spawn_residents() -> void:
+	var npcs_container: Node3D = get_node_or_null("NPCs")
+	if not npcs_container:
+		npcs_container = Node3D.new()
+		npcs_container.name = "NPCs"
+		add_child(npcs_container)
+
+	# Trade Master is a Larton office, not an imperial rank: the port appoints
+	# whoever last kept the manifests straight, and she has kept them straight
+	# through two bad winters.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(-36, 0.3, 38), "Trade Master Petra Halloran",
+		"trade_master_larton", ZONE_ID, "larton",
+		NPCKnowledgeProfile.Archetype.MERCHANT,
+		["decisive", "worn down", "unsentimental"],
+		["larton", "trade", "supply_lines", "aberdeen", "famine", "local_area"],
+		"Every week I decide which town eats. Do not tell me it is a hard job. Tell me what is in your cart.",
+		["starving_south", "aberdeen_relief"], false, 50, "formal")
+
+	# The empire's civil authority in the south, such as it is: one magistrate
+	# with a seal, a stack of unanswered petitions and no soldiers of his own.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(12, 0.5, -2), "Magistrate Uther Craine",
+		"imperial_magistrate", ZONE_ID, "human_empire",
+		NPCKnowledgeProfile.Archetype.NOBLE,
+		["formal", "evasive", "quietly ashamed"],
+		["larton", "law", "empire", "petitions", "local_area"],
+		"I will hear the petition. I will seal the petition. Where it goes after that has not been answered in nineteen years.",
+		[], true, 40, "formal")

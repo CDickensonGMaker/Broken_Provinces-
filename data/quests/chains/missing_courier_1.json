@@ -13,7 +13,7 @@
 			"id": "ask_innkeeper",
 			"description": "Ask the innkeeper about the courier",
 			"type": "talk",
-			"target": "dalhurst_innkeeper",
+			"target": "innkeeper_dalhurst",
 			"target_zone": "dalhurst",
 			"required_count": 1
 		}

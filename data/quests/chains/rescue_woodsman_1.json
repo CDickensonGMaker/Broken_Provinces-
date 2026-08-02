@@ -4,7 +4,7 @@
 	"description": "A woodsman has been captured by bandits near the eastern camp. His family is desperate. Locate their hideout.",
 	"is_main_quest": false,
 	"quest_source": "npc",
-	"giver_npc_id": "elder_moor_civilian",
+	"giver_npc_id": "elder_moor_woodsmans_wife",
 	"giver_npc_type": "civilian",
 	"giver_region": "elder_moor",
 	"faction": "common_folk",

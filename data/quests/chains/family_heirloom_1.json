@@ -4,7 +4,7 @@
 	"description": "An old woman lost her grandmother's ring while fleeing from bandits. She thinks she dropped it near the Crossroads. Please find it for her.",
 	"is_main_quest": false,
 	"quest_source": "npc",
-	"giver_npc_id": "elder_moor_civilian",
+	"giver_npc_id": "elder_moor_old_woman",
 	"giver_npc_type": "civilian",
 	"giver_region": "elder_moor",
 	"faction": "common_folk",

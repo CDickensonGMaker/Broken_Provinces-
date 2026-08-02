@@ -38,6 +38,7 @@ func _ready() -> void:
 	_setup_navigation()
 	_setup_building_collision()  # Add collision to GLB buildings
 	_spawn_npcs()
+	_spawn_residents()
 	_spawn_thieves_guild()
 	_spawn_master_helvant()
 	_spawn_locked_doors()
@@ -1462,3 +1463,101 @@ func _decorate_temple_of_three_gods() -> void:
 		wall_banner.position = Vector3(0, 4, -6.4)
 		wall_banner.rotation_degrees = Vector3(0, 180, 0)  # Face outward
 		decorations.add_child(wall_banner)
+
+
+## Residents the quest chains named by role and never wrote. Dalhurst is the
+## Act I hub, so most of the province's unnamed "the merchant", "the scholar",
+## "the witness" live here, in the market, the reading room and on the quays.
+func _spawn_residents() -> void:
+	var npcs_container: Node3D = get_node_or_null("NPCs")
+	if not npcs_container:
+		npcs_container = Node3D.new()
+		npcs_container.name = "NPCs"
+		add_child(npcs_container)
+
+	# Four chains - a lost courier, a stolen ledger, a taken daughter - all
+	# wanted "the merchant in Dalhurst". They are one man having a very bad year.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(36, 0, 12), "Corvin Ashford", "dalhurst_merchant",
+		ZONE_ID, "merchant_guild", NPCKnowledgeProfile.Archetype.MERCHANT,
+		["harried", "generous", "proud"],
+		["dalhurst", "trade", "caravans", "market", "local_area"],
+		"Four ships in, two carts out, and every week something on that list goes missing. Sit down. I will tell you which one hurts most.",
+		["missing_courier_1", "rescue_merchant_daughter_1", "stolen_ledger_1"],
+		false, 55)
+
+	# The Dalhurst library is the Athenaeum's reading room, and this is who
+	# keeps it. She buys books the temple would rather she did not.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(48, 0, -14), "Lector Ysolde Bramwell", "dalhurst_scholar",
+		ZONE_ID, "scholars_guild", NPCKnowledgeProfile.Archetype.SCHOLAR,
+		["precise", "acquisitive", "unshockable"],
+		["dalhurst", "books", "history", "athenaeum", "magic", "local_area"],
+		"The reading room is Athenaeum property, whatever the town calls it. Bring me anything written and I will find you a chair.",
+		["cursed_tome_1"], false, 50, "formal")
+
+	# Somebody always saw something. In Dalhurst it is usually him, because he
+	# is sitting in the same doorway all day.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(30, 0, -2), "Padraig", "dalhurst_witness",
+		ZONE_ID, "common_folk", NPCKnowledgeProfile.Archetype.BEGGAR,
+		["observant", "wary", "hungry"],
+		["dalhurst", "rumors", "streets", "local_area"],
+		"Nobody looks at me, so I get to look at everybody. That is worth something, and I am telling you what it is worth.",
+		[], true, 35)
+
+	# The old salt on the Dalhurst quays. Larton has its own; this is not him.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(-24, 0, 22), "Old Ketch Dougal", "old_fisherman_dalhurst",
+		ZONE_ID, "common_folk", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["superstitious", "garrulous", "weathered"],
+		["dalhurst", "fishing", "harbor", "ghost_ship", "sea", "local_area"],
+		"Forty years on that water and I have seen a ship with no wake. Argue with me and I will describe her rigging.",
+		[], true, 50)
+
+	# The restless soul on the night streets had a wife. She is still here.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(20, 0, -30), "Nerys Corrin", "widow_dalhurst",
+		ZONE_ID, "common_folk", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["composed", "bitter", "sleepless"],
+		["dalhurst", "local_area"],
+		"People tell me they have seen him. They tell me kindly, which is worse.",
+		[], true, 45)
+
+	# The Iron Company keeps a squad in Dalhurst between contracts
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(58, 0, 22), "Sergeant Baird Holt", "iron_company_veteran",
+		ZONE_ID, "iron_company", NPCKnowledgeProfile.Archetype.GUARD,
+		["blunt", "loyal", "suspicious"],
+		["dalhurst", "iron_company", "mercenaries", "soldiering", "local_area"],
+		"Twelve years under the Company banner. I know every man in this billet, which is why I do not like this business one bit.",
+		[], true, 45)
+
+	# Rank-and-file Adventurers' Guild, standing where the contracts are posted
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(62, 0, 20), "Kerenza Doyle", "guild_witness",
+		ZONE_ID, "adventurers_guild", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["chatty", "ambitious", "indiscreet"],
+		["dalhurst", "adventurers_guild", "contracts", "rumors", "local_area"],
+		"Three of ours went out on board contracts last month and none of the three came back to sign off. Nobody has said that out loud but me.",
+		[], true, 50)
+
+	# The Guild's plant in the magistrate's office. He is a clerk. That is the
+	# entire trick: nobody has ever wondered where a clerk goes at night.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(44, 0, -24), "Ivo Renn", "inside_contact",
+		ZONE_ID, "thieves_guild", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["mild", "meticulous", "frightened"],
+		["dalhurst", "law", "guard_schedules", "thieves_guild"],
+		"Do not stand close to me. Walk past, and say it to the wall.",
+		[], true, 40, "formal")
+
+	# The mage line's informant. He works the Crossroads road and drinks in
+	# Dalhurst, which is where anyone can actually find him.
+	Townsfolk.spawn_townsfolk(
+		npcs_container, Vector3(-12, 0, -36), "Quillan the Ferret", "informant_crossroads",
+		ZONE_ID, "thieves_guild", NPCKnowledgeProfile.Archetype.THIEF,
+		["greedy", "quick", "unreliable"],
+		["dalhurst", "crossroads", "roads", "rumors", "shadow_circle"],
+		"I sell the same story twice and both buyers are happy. Yours will be the true version, obviously.",
+		[], true, 35)

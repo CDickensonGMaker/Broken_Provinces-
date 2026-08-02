@@ -31,6 +31,7 @@ func _ready() -> void:
 	_setup_spawn_points()
 	_spawn_merchants()
 	_spawn_npcs()
+	_spawn_residents()
 	_spawn_fast_travel_shrine()
 	_spawn_rest_spot()
 	_spawn_locked_doors()
@@ -235,6 +236,102 @@ func _spawn_npcs() -> void:
 	hector_profile.base_disposition = 40
 	hector_profile.speech_style = "casual"
 	hector.npc_profile = hector_profile
+
+
+## The residents whose roles the quest chains named but nobody had written.
+## Mill Brook is a hamlet: everyone here does one job and everyone knows whose
+## fault the last bad week was.
+func _spawn_residents() -> void:
+	# The market stall the thefts happen at
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(7, 0, 6), "Greta Vance", "millbrook_merchant", ZONE_ID,
+		"merchant_guild", NPCKnowledgeProfile.Archetype.MERCHANT,
+		["blunt", "watchful", "unsentimental"],
+		["millbrook", "trade", "market", "local_area"],
+		"I lay the goods out, I count them in at dusk, and lately the two numbers disagree.",
+		["market_theft_1"], false, 45)
+
+	# The stallhand who saw the theft and would rather not have
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(9, 0, 7), "Colm the Stallhand", "millbrook_witness", ZONE_ID,
+		"common_folk", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["nervous", "young", "honest"],
+		["millbrook", "market", "local_area"],
+		"I saw who took it. I also have to stand at this stall tomorrow, so think on that before you use my name.",
+		[], true, 40)
+
+	# Gaela's shrine keeper. Mill Brook grinds grain and pulls fish; the god it
+	# keeps a roof for is the one who decides whether there is any.
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(2, 0, 13), "Sister Rowena Ash", "millbrook_priest", ZONE_ID,
+		"church_of_gaela", NPCKnowledgeProfile.Archetype.PRIEST,
+		["patient", "plain-spoken", "stubborn"],
+		["millbrook", "gaela", "harvest", "rites", "local_area"],
+		"Gaela's shrine here is one room and a threshing floor. It is enough. She was never a god who wanted marble.",
+		["rescue_sacrifice_victim_1"], false, 55, "formal")
+
+	# The herbwife. The shrine keeps the rites; she keeps the medicine.
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(-2, 0, 12), "Sorcha Linn", "millbrook_healer", ZONE_ID,
+		"common_folk", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["brisk", "practical", "tired"],
+		["millbrook", "herbs", "medicine", "local_area"],
+		"Sister Rowena prays over them and I boil something bitter. Between us they usually keep.",
+		[], true, 55)
+
+	# The pasture above the brook
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(18, 0, -14), "Tavish Moor", "millbrook_shepherd", ZONE_ID,
+		"common_folk", NPCKnowledgeProfile.Archetype.FARMER,
+		["solitary", "weather-wise", "dry"],
+		["millbrook", "pasture", "livestock", "wolves", "local_area"],
+		"Forty-one head this morning. Forty-one is a good morning.",
+		["gaela_bonus_shepherd_quest"], false, 45)
+
+	# Yes, the hamlet has an inn. One room, four beds, and the only fire in
+	# Mill Brook that anyone sits around after dark.
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(4, 0, 16), "Hamish Roke", "millbrook_innkeeper", ZONE_ID,
+		"common_folk", NPCKnowledgeProfile.Archetype.INNKEEPER,
+		["talkative", "shrewd", "welcoming"],
+		["millbrook", "innkeeper", "rumors", "travelers", "local_area"],
+		"Four beds, and three of them are usually free. That means I hear everything the fourth one says.",
+		[], true, 60)
+
+	# Hector's accusers have a spokesman
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(-13, 0, -13), "Eamon Quist", "head_fisherman_millbrook", ZONE_ID,
+		"common_folk", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["gruff", "proud", "aggrieved"],
+		["millbrook", "fishing", "lake", "trade", "local_area"],
+		"Thirty years I have weighed fish. I know what a stone feels like in the hand, and Hector's is light.",
+		[], true, 40)
+
+	# Mill Brook's entire law, standing where the road comes in
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(11, 0, 1), "Watch-Captain Ingram Vell", "guard_captain_millbrook", ZONE_ID,
+		"town_guard", NPCKnowledgeProfile.Archetype.GUARD,
+		["methodical", "underfunded", "unimpressed"],
+		["millbrook", "law", "crime", "local_area"],
+		"I am the watch. All of it. So when I say I have no time to chase this, understand it is arithmetic and not laziness.",
+		[], true, 45, "formal")
+
+	# Three griefs that used to share one id. They are three women.
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(-4, 0, 9), "Widow Hild Marrow", "millbrook_widow", ZONE_ID,
+		"common_folk", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["grieving", "precise", "private"],
+		["millbrook", "local_area"],
+		"It is a locket. It is not worth what you would charge to find it, and I am asking anyway.",
+		["lost_locket_1"], false, 45)
+
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(13, 0, 10), "Goodwife Anwen Fell", "millbrook_mother", ZONE_ID,
+		"common_folk", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["frantic", "sleepless", "grateful"],
+		["millbrook", "local_area"],
+		"She went to the brook for water and she did not come back up the path. That is the whole of what I know.",
+		[], true, 50)
 
 
 ## Spawn fast travel shrine at marker position

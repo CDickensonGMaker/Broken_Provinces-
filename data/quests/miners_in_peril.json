@@ -4,7 +4,7 @@
 	"description": "The mines near Duncaster have suffered a cave-in, trapping a group of miners in the lower tunnels. To make matters worse, the collapse has breached an underground ice cavern, and the temperature is dropping fast. The mine foreman needs someone to navigate the unstable tunnels, rescue the trapped miners, and get them out before they freeze to death.",
 	"is_main_quest": false,
 	"quest_source": "npc",
-	"giver_npc_id": "mine_foreman_duncaster",
+	"giver_npc_id": "duncaster_foreman",
 	"giver_npc_type": "quest_giver",
 	"giver_region": "duncaster",
 	"objectives": [
@@ -12,7 +12,7 @@
 			"id": "get_briefing",
 			"description": "Get a briefing from the mine foreman",
 			"type": "talk",
-			"target": "mine_foreman_duncaster",
+			"target": "duncaster_foreman",
 			"required_count": 1
 		},
 		{
@@ -52,7 +52,7 @@
 		}
 	],
 	"turn_in_type": "npc_specific",
-	"turn_in_target": "mine_foreman_duncaster",
+	"turn_in_target": "duncaster_foreman",
 	"turn_in_zone": "duncaster",
 	"rewards": {
 		"gold": 225,

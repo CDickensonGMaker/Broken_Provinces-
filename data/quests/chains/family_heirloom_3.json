@@ -13,13 +13,13 @@
 			"id": "return_ring",
 			"description": "Return the ring to the old woman",
 			"type": "talk",
-			"target": "elder_moor_civilian",
+			"target": "elder_moor_old_woman",
 			"target_zone": "elder_moor",
 			"required_count": 1
 		}
 	],
 	"turn_in_type": "npc_specific",
-	"turn_in_target": "elder_moor_civilian",
+	"turn_in_target": "elder_moor_old_woman",
 	"turn_in_zone": "elder_moor",
 	"rewards": {
 		"gold": 100,
