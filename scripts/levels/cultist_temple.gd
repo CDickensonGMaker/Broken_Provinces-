@@ -47,6 +47,8 @@ func _ready() -> void:
 	_setup_chests()
 	_setup_vegetation()
 	_setup_wildlife()
+	_spawn_crossroads_cast()
+	_spawn_rescue_hostages()
 
 
 func _setup_spawn_point() -> void:
@@ -361,3 +363,83 @@ func _spawn_ambient_rat(pos: Vector3) -> void:
 	billboard.rotation_degrees.y = randf_range(0, 360)
 
 	wildlife_container.add_child(billboard)
+
+
+## This script serves three cultist scenes. Only one of them - the ruined
+## intersection at grid (-5, -2) - is the Crossroads the quests mean.
+##
+## Five quests send the player to "the Crossroads" to meet somebody: a troll on
+## the bridge, an informant in the inn, a necromancer near the junction, a rival
+## mercenary captain and an enemy commander. The Crossroads on the grid is this
+## ruined intersection - there is no wayhouse, no inn and no bridge geometry, and
+## building them is level design. These five stand on grey-box marks in the
+## ruins so their quests are walkable today; the buildings are Caleb's call and
+## are recorded in docs/audits/wave_b_dispositions.md.
+func _spawn_crossroads_cast() -> void:
+	if name != "CultistRuinsCorner":
+		return
+
+	# Gurm holds the crossing. He talks, because guild_contract_troll has a
+	# bribe branch and a fair-toll branch, and a monster cannot take a toll.
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(-18, 0, 14), "Gurm", "bridge_troll", "crossroads",
+		"goblins", NPCKnowledgeProfile.Archetype.GENERIC_VILLAGER,
+		["slow", "literal", "immovable"],
+		["crossroads", "bridge", "toll"],
+		"Bridge is mine. Was mine before road. You pay, or you swim, or we find out which.",
+		[], true, 25)
+
+	# Tomas drinks where the roads meet. Whether he is a talk target or a body
+	# depends entirely on which branch the player takes.
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(12, 0, 10), "Tomas Redd", "tomas_informant", "crossroads",
+		"thieves_guild", NPCKnowledgeProfile.Archetype.THIEF,
+		["chatty", "drunk", "doomed"],
+		["crossroads", "thieves_guild", "rumors", "roads"],
+		"You are the third person to buy me a drink this month and none of you wanted conversation.",
+		[], true, 40)
+
+	# One necromancer, two quests. He was called Aeris in one of them; he is
+	# Valdris in both now.
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(4, 0, -22), "Valdris", "necromancer_valdris", "crossroads",
+		"shadowed_hand_cult", NPCKnowledgeProfile.Archetype.SCHOLAR,
+		["reasonable", "unrepentant", "patient"],
+		["crossroads", "necromancy", "undead", "morthane"],
+		"Your priest calls it desecration. I call it refusing to waste a person. We are describing the same act.",
+		[], true, 30, "formal")
+
+	# The rival mercenary company, met on the road rather than in a hall
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(-8, 0, -6), "Captain Vashka Kolt", "black_wolf_captain", "crossroads",
+		"iron_company", NPCKnowledgeProfile.Archetype.GUARD,
+		["hard", "professional", "contemptuous"],
+		["crossroads", "mercenaries", "black_wolves", "contracts"],
+		"Steele sent a messenger instead of coming himself. That tells me everything about how this ends.",
+		[], true, 30)
+
+	# The other house's commander in the noble war
+	Townsfolk.spawn_townsfolk(
+		self, Vector3(16, 0, -14), "Commander Roderic Brackmoor", "enemy_commander",
+		"crossroads", "nobility", NPCKnowledgeProfile.Archetype.NOBLE,
+		["exhausted", "correct", "unyielding"],
+		["crossroads", "war", "nobility", "brackmoor"],
+		"Say your terms. I have four hundred men behind that ridge and I would like to keep as many as you will let me.",
+		[], true, 35, "formal")
+
+
+## Two rescue chains end on a cultist altar. This script serves three scenes, so
+## each hostage is pinned to the one their quest means. Grey-box positions - the
+## room around them is level design and is Caleb's.
+func _spawn_rescue_hostages() -> void:
+	match name:
+		"CultistTemple":
+			# rescue_missing_child_2: the child locked in the temple
+			HostageNPC.spawn_hostage(
+				self, Vector3(0, 1, -6), "hostage_missing_child", "The Missing Child",
+				"rescue_missing_child_2", "free_child")
+		"CultistTemple2":
+			# rescue_sacrifice_victim_2: already on the stone when you arrive
+			HostageNPC.spawn_hostage(
+				self, Vector3(0, 0.2, -6), "hostage_sacrifice_victim", "The Sacrifice",
+				"rescue_sacrifice_victim_2", "free_victim")

@@ -113,3 +113,20 @@ the worst of it:
 | `necromancer_valdris` | Valdris the necromancer | Default quest-giver sprite (8x2) |
 | `dying_merchant_ilsabet` | Ilsabet Corr, dying merchant | Default quest-giver sprite (8x2) |
 | `khan_toghrul` | Khan Toghrul - an eight-foot BEAR-MAN drawn as a human townsman | Default quest-giver sprite (8x2) |
+
+### Wave B backlog, stage 4 - hostage placement (grey-box)
+
+Seven hostages are now placed. Their **sprites already exist** and are correct
+(`assets/sprites/npcs/civilians/Hostages/`) - what is grey-box is the
+*position*: a mark on the floor in the room the quest means, with no cage, no
+altar dressing, no rope and no cell around them.
+
+| Hostage | Scene | Placed at | What the room needs |
+|---|---|---|---|
+| `hostage_merchant_daughter` | `bandit_camp_north` | (-9, 1, 6) | A tied-up mark, a tent or a cart to be held behind |
+| `hostage_soldier` | `bandit_camp_south` | (-10, 1, 7) | Same, plus stripped kit on the ground |
+| `kidnapped_merchant` | `bandit_hideout_level_1` | (-6, 1.2, -16) | The quest calls it a "hostage cell". There is no cell |
+| `hostage_woodsman` | `bandit_hideout_level_2` | (-7, 0, 6) | Boss lair corner |
+| `hostage_wizard_apprentice` | `cult_hideout` | (4, 0, -8) | The cultists are draining him - a ritual frame, chalk, candles |
+| `hostage_missing_child` | `cultist_temple` | (0, 1, -6) | A locked room |
+| `hostage_sacrifice_victim` | `cultist_temple_2` | (0, 0.2, -6) | She is on the stone when you arrive. There is no stone |

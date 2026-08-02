@@ -28,6 +28,7 @@ func _ready() -> void:
 		AudioManager.play_zone_music("horror")
 
 	_setup_spawn_points()
+	_spawn_rescue_hostage()
 	_setup_enemy_spawns()
 	_setup_doors()
 	_setup_chests()
@@ -189,3 +190,15 @@ func get_spawn_point(spawn_id: String) -> Node3D:
 		if child.name.to_lower() == spawn_id or child.get_meta("spawn_id", "") == spawn_id:
 			return child
 	return spawn_points.get_node_or_null("DefaultSpawn")
+
+
+## The rescue chains' second legs all end with a hostage nobody had placed.
+## These are grey-box positions - a mark on the floor in the room the quest
+## means, so the chain is walkable. Where the hostage should actually sit, and
+## what the room looks like around them, is level design and is Caleb's.
+func _spawn_rescue_hostage() -> void:
+	# rescue_wizard_apprentice_2: the cultists are draining him, so he is in
+	# the hideout rather than on a temple altar
+	HostageNPC.spawn_hostage(
+		self, Vector3(4, 0, -8), "hostage_wizard_apprentice", "The Apprentice",
+		"rescue_wizard_apprentice_2", "free_apprentice")

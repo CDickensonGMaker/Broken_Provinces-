@@ -189,11 +189,21 @@ func _register_npc_id(id: String, source: String) -> void:
 	npc_ids[id] = source
 
 
-## Extracts the npc id argument from NPC spawn factory calls. All three
-## factories take the id as argument index 3; spawn_quest_giver derives one from
-## the display name when the id is left blank.
+## Which argument of each NPC spawn factory carries the id. The QuestGiver
+## family takes it at index 3; HostageNPC takes it at index 2.
+const SPAWN_FACTORY_ID_ARG: Dictionary = {
+	"spawn_quest_giver": 3,
+	"spawn_from_registry": 3,
+	"spawn_townsfolk": 3,
+	"spawn_hostage": 2,
+}
+
+
+## Extracts the npc id argument from NPC spawn factory calls.
+## spawn_quest_giver derives one from the display name when the id is blank.
 func _collect_spawn_call_ids(text: String, source: String) -> void:
-	for fn: String in ["spawn_quest_giver", "spawn_from_registry", "spawn_townsfolk"]:
+	for fn: String in SPAWN_FACTORY_ID_ARG:
+		var id_index: int = SPAWN_FACTORY_ID_ARG[fn]
 		var search_from: int = 0
 		while true:
 			var idx: int = text.find(fn + "(", search_from)
@@ -202,9 +212,9 @@ func _collect_spawn_call_ids(text: String, source: String) -> void:
 			var open_paren: int = idx + fn.length()
 			var args: Array[String] = _split_call_args(text, open_paren)
 			search_from = idx + fn.length()
-			if args.size() < 4:
+			if args.size() <= id_index:
 				continue
-			var id_arg: String = _literal_of(args[3])
+			var id_arg: String = _literal_of(args[id_index])
 			if id_arg.is_empty() and fn == "spawn_quest_giver":
 				id_arg = _literal_of(args[2]).to_lower().replace(" ", "_")
 			_register_npc_id(id_arg, source)

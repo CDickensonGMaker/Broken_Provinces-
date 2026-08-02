@@ -24,6 +24,7 @@ func _ready() -> void:
 	chest_positions = get_node_or_null("ChestPositions")
 
 	SaveManager.set_current_zone(ZONE_ID, "Bandit Hideout - Boss Lair")
+	_spawn_rescue_hostage()
 
 	# Play dungeon music
 	AudioManager.play_zone_music("dungeon")
@@ -275,3 +276,14 @@ func _setup_navigation() -> void:
 	var nav_region := get_node_or_null("NavigationRegion3D") as NavigationRegion3D
 	if nav_region and nav_region.navigation_mesh:
 		nav_region.bake_navigation_mesh()
+
+
+## The rescue chains' second legs all end with a hostage nobody had placed.
+## These are grey-box positions - a mark on the floor in the room the quest
+## means, so the chain is walkable. Where the hostage should actually sit, and
+## what the room looks like around them, is level design and is Caleb's.
+func _spawn_rescue_hostage() -> void:
+	# rescue_woodsman_2: the boss lair, where the crew keep what they took
+	HostageNPC.spawn_hostage(
+		self, Vector3(-7, 0, 6), "hostage_woodsman", "The Woodsman",
+		"rescue_woodsman_2", "rescue")

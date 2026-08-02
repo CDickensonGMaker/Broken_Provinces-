@@ -15,6 +15,7 @@ func _ready() -> void:
 	_setup_environment()
 	_spawn_enemies_from_markers()
 	_spawn_chests_from_markers()
+	_spawn_rescue_hostage()
 	_spawn_doors_from_markers()
 	_setup_navigation()
 	_setup_cell_streaming()
@@ -202,3 +203,14 @@ func _setup_cell_streaming() -> void:
 	var my_coords: Vector2i = WorldGrid.get_location_coords("bandit_camp_south")
 	CellStreamer.register_main_scene_cell(my_coords, self)
 	CellStreamer.start_streaming(my_coords)
+
+
+## The rescue chains' second legs all end with a hostage nobody had placed.
+## These are grey-box positions - a mark on the floor in the room the quest
+## means, so the chain is walkable. Where the hostage should actually sit, and
+## what the room looks like around them, is level design and is Caleb's.
+func _spawn_rescue_hostage() -> void:
+	# rescue_soldier_2: the camp with a Bandit Captain in it
+	HostageNPC.spawn_hostage(
+		self, Vector3(-10, 1, 7), "hostage_soldier", "Captured Soldier",
+		"rescue_soldier_2", "free_soldier")
