@@ -31,6 +31,11 @@ const SCENE_DIRS: Array[String] = ["res://scenes"]
 
 const ENCOUNTER_MANAGER_PATH := "res://scripts/autoload/encounter_manager.gd"
 const DIALOGUE_LOADER_PATH := "res://scripts/dialogue/dialogue_loader.gd"
+const QUEST_MANAGER_PATH := "res://scripts/autoload/quest_manager.gd"
+
+## Keys that are notes to the reader by convention, allowed anywhere a
+## vocabulary is otherwise closed. Everything else must be dispatched.
+const ANNOTATION_KEYS: Array[String] = ["notes", "description", "note", "comment"]
 
 ## NPC ids produced at runtime by format strings or marker-name defaults that no
 ## static scan can see. Referencing quests are reported as warnings, not errors.
@@ -290,7 +295,77 @@ func _literal_of(arg: String) -> String:
 var staging_quest_count: int = 0
 
 
+## The objective-type and reward-key vocabularies, read out of quest_manager.gd
+## itself so this check cannot rot when either one grows. Populated once.
+var handled_objective_types: Dictionary = {}
+var deferred_objective_types: Dictionary = {}
+var reward_keys: Dictionary = {}
+
+
+## Reads the vocabularies out of the engine's own source.
+##
+## Tasks 46-50 were five instances of one thing: content names a key or a type
+## the code does not dispatch, and nothing says so. The validator already read
+## every one of these files; it checked that ids RESOLVE, never that keys are
+## DISPATCHED. Both lists are parsed from source rather than copied here,
+## because a copied vocabulary is the same trap one level up.
+func _collect_engine_vocabularies() -> void:
+	var text: String = _read_text(QUEST_MANAGER_PATH)
+	if text.is_empty():
+		_fail("QUEST_VOCAB", QUEST_MANAGER_PATH, "", "quest manager not readable")
+		return
+
+	handled_objective_types = _parse_const_strings(text, "HANDLED_OBJECTIVE_TYPES")
+	deferred_objective_types = _parse_const_strings(text, "DEFERRED_OBJECTIVE_TYPES")
+
+	# complete_quest() reads its rewards as quest.rewards.has("<key>").
+	var reward_re := RegEx.new()
+	reward_re.compile("quest\\.rewards\\.has\\(\"([a-z_]+)\"\\)")
+	for m: RegExMatch in reward_re.search_all(text):
+		reward_keys[m.get_string(1)] = true
+
+	if handled_objective_types.is_empty():
+		_fail("QUEST_VOCAB", QUEST_MANAGER_PATH, "HANDLED_OBJECTIVE_TYPES",
+				"could not parse the objective type vocabulary")
+	if reward_keys.is_empty():
+		_fail("QUEST_VOCAB", QUEST_MANAGER_PATH, "rewards",
+				"could not parse the reward key vocabulary from complete_quest()")
+
+
+## Collects the quoted strings inside a named const block, whether it is
+## declared as an Array (values) or a Dictionary (keys).
+func _parse_const_strings(text: String, const_name: String) -> Dictionary:
+	var found: Dictionary = {}
+	var start: int = text.find("const %s" % const_name)
+	if start == -1:
+		return found
+
+	# The first bracket after the name belongs to the TYPE HINT
+	# (`: Array[String] =`), so anchor on the assignment instead.
+	var assign: int = text.find("=", start)
+	if assign == -1:
+		return found
+	var open_bracket: int = assign
+	while open_bracket < text.length() and text[open_bracket] != "[" and text[open_bracket] != "{":
+		open_bracket += 1
+	if open_bracket >= text.length():
+		return found
+
+	var closer: String = "]" if text[open_bracket] == "[" else "}"
+	var end: int = text.find(closer, open_bracket)
+	if end == -1:
+		return found
+
+	var body: String = text.substr(open_bracket, end - open_bracket)
+	var re := RegEx.new()
+	re.compile("\"([a-z_]+)\"")
+	for m: RegExMatch in re.search_all(body):
+		found[m.get_string(1)] = true
+	return found
+
+
 func _check_quests() -> void:
+	_collect_engine_vocabularies()
 	staging_quest_count = _walk(QUEST_DIR, ".json").size() - _walk(QUEST_DIR, ".json", true).size()
 
 	for path: String in _walk(QUEST_DIR, ".json", true):
@@ -313,6 +388,20 @@ func _check_quests() -> void:
 			var obj_type: String = objective.get("type", "")
 			var target: String = objective.get("target", "")
 			var where: String = "objective[%s].target" % objective.get("id", "?")
+
+			# An objective whose type no driver handles sits at 0/1 forever and
+			# never throws. Ten of these shipped, and four Thieves Guild quests
+			# and two Mage capstones could not be completed at all.
+			if obj_type.is_empty():
+				_fail("QUEST_OBJECTIVE", path, objective.get("id", "?"), "objective has no type")
+			elif not handled_objective_types.has(obj_type):
+				if deferred_objective_types.has(obj_type):
+					_warn("QUEST_OBJECTIVE", path, obj_type,
+							"%s is deferred in QuestManager.DEFERRED_OBJECTIVE_TYPES - the quest cannot be completed until it is implemented" % where)
+				else:
+					_fail("QUEST_OBJECTIVE", path, obj_type,
+							"%s uses an objective type QuestManager dispatches nowhere, so it can never be completed" % where)
+
 			match obj_type:
 				"talk":
 					_expect_npc(target, path, where)
@@ -322,6 +411,16 @@ func _check_quests() -> void:
 					_expect_item(target, path, where, true)
 
 		var rewards: Dictionary = quest.get("rewards", {})
+
+		# complete_quest reads nine keys. Three quests spelled faction_reputation
+		# as `reputation` or `reputation_changes` and were never granted it.
+		for reward_key: Variant in rewards.keys():
+			var key_name: String = String(reward_key)
+			if reward_keys.has(key_name) or ANNOTATION_KEYS.has(key_name):
+				continue
+			_fail("QUEST_REWARD", path, key_name,
+					"rewards.%s is not read by complete_quest(), so the reward is silently never granted" % key_name)
+
 		var reward_items: Array = rewards.get("items", [])
 		for entry: Variant in reward_items:
 			if entry is String:
@@ -356,9 +455,15 @@ func _check_choice_consequences(quest: Dictionary, path: String) -> void:
 		var consequence: Dictionary = entry
 
 		for consequence_key: Variant in consequence.keys():
-			if not CONSEQUENCE_KEYS.has(String(consequence_key)):
-				_warn("QUEST_CHOICE", path, String(choice_id),
-						"key \"%s\" is not executed by QuestManager (documentation only)" % consequence_key)
+			var key_name: String = String(consequence_key)
+			if CONSEQUENCE_KEYS.has(key_name):
+				continue
+			if ANNOTATION_KEYS.has(key_name):
+				# A note to the reader is fine; a key that looks like an effect
+				# and is not, is not.
+				continue
+			_fail("QUEST_CHOICE", path, String(choice_id),
+					"consequence key \"%s\" is executed by nothing - either it is an effect QuestManager does not run, or it should be named notes/description" % key_name)
 
 		var rep: Dictionary = consequence.get("reputation_changes", {})
 		for faction_id: Variant in rep.keys():
