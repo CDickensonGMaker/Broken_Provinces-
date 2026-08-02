@@ -122,6 +122,12 @@ func apply_melee_damage(
 	if is_heavy_attack:
 		total_damage = int(total_damage * 1.5)
 
+	# BUFF_DAMAGE from a consumable, as a fraction (0.25 = +25%)
+	if attacker_data:
+		var damage_buff: float = attacker_data.get_buff(CharacterData.BUFF_DAMAGE)
+		if damage_buff > 0.0:
+			total_damage = int(total_damage * (1.0 + damage_buff))
+
 	# Backstab bonus (Stealth skill based)
 	if is_backstab and attacker_data:
 		var stealth_skill: int = attacker_data.get_skill(Enums.Skill.STEALTH)

@@ -517,6 +517,7 @@ func _collect_player_data(player_data) -> void:
 	player_data.total_ip_earned = pd.total_ip_earned
 	player_data.skills = pd.skills.duplicate()
 	player_data.conditions = pd.conditions.duplicate()
+	player_data.active_buffs = pd.active_buffs.duplicate(true)
 
 	# Known spells from SpellCaster
 	var player: Node = null
@@ -927,6 +928,7 @@ func _apply_player_data(player_data) -> void:
 	pd.total_ip_earned = player_data.total_ip_earned
 	pd.skills = player_data.skills.duplicate()
 	pd.conditions = player_data.conditions.duplicate()
+	pd.active_buffs = player_data.active_buffs.duplicate(true)
 
 	# Store known spells to apply after scene loads
 	pending_known_spells = player_data.known_spells.duplicate()

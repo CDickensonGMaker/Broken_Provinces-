@@ -86,6 +86,7 @@ var quest_tracker_progress: Label
 ## Conditions display (below mana bar)
 var conditions_container: HBoxContainer = null
 var condition_labels: Dictionary = {}  # Condition enum -> PanelContainer
+var buff_labels: Dictionary = {}  # buff_id String -> PanelContainer
 
 ## Stealth indicator (HIDDEN text when player is hidden)
 var stealth_indicator: Label = null
@@ -740,6 +741,78 @@ func _update_conditions() -> void:
 		else:
 			# Create new label
 			_create_condition_label(condition, time_left)
+
+	_update_buff_labels(char_data)
+
+
+## Timed buffs share the conditions strip. They are keyed by String rather than
+## by Enums.Condition, so they get their own dictionary rather than being
+## squeezed into the condition enum.
+func _update_buff_labels(char_data: CharacterData) -> void:
+	var active: Dictionary = char_data.active_buffs
+
+	var expired: Array = []
+	for buff_id: String in buff_labels.keys():
+		if not active.has(buff_id):
+			expired.append(buff_id)
+	for buff_id: String in expired:
+		var panel: Control = buff_labels[buff_id]
+		if is_instance_valid(panel):
+			panel.queue_free()
+		buff_labels.erase(buff_id)
+
+	for buff_id: String in active.keys():
+		var entry: Dictionary = active[buff_id]
+		var remaining: float = float(entry.get("remaining", 0.0))
+		if buff_labels.has(buff_id):
+			var panel: PanelContainer = buff_labels[buff_id]
+			if not is_instance_valid(panel):
+				buff_labels.erase(buff_id)
+				continue
+			var label := panel.get_node_or_null("ConditionLabel") as Label
+			if label:
+				label.text = "%s %.0fs" % [_get_buff_name(buff_id), remaining]
+		else:
+			_create_buff_label(buff_id, remaining)
+
+
+func _create_buff_label(buff_id: String, remaining: float) -> void:
+	var panel := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.1, 0.3, 0.1, 0.8)  # Dark green, same as buff conditions
+	style.corner_radius_top_left = 4
+	style.corner_radius_top_right = 4
+	style.corner_radius_bottom_left = 4
+	style.corner_radius_bottom_right = 4
+	style.content_margin_left = 6
+	style.content_margin_right = 6
+	style.content_margin_top = 2
+	style.content_margin_bottom = 2
+	panel.add_theme_stylebox_override("panel", style)
+
+	var label := Label.new()
+	label.name = "ConditionLabel"
+	label.text = "%s %.0fs" % [_get_buff_name(buff_id), remaining]
+	label.add_theme_color_override("font_color", Color(0.5, 0.9, 0.5))
+	label.add_theme_font_size_override("font_size", 14)
+	panel.add_child(label)
+
+	conditions_container.add_child(panel)
+	buff_labels[buff_id] = panel
+
+
+func _get_buff_name(buff_id: String) -> String:
+	match buff_id:
+		CharacterData.BUFF_GRIT: return "+GRIT"
+		CharacterData.BUFF_AGILITY: return "+AGILITY"
+		CharacterData.BUFF_WILL: return "+WILL"
+		CharacterData.BUFF_ARMOR: return "+ARMOR"
+		CharacterData.BUFF_DAMAGE: return "+DAMAGE"
+		CharacterData.BUFF_RESIST_FIRE: return "FIRE WARD"
+		CharacterData.BUFF_RESIST_FROST: return "FROST WARD"
+		CharacterData.BUFF_RESIST_POISON: return "POISON WARD"
+		CharacterData.BUFF_INVISIBILITY: return "UNSEEN"
+		_: return buff_id.to_upper()
 
 ## Create a condition label with colored panel
 func _create_condition_label(condition: Enums.Condition, time_left: float) -> void:

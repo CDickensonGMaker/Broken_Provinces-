@@ -8,6 +8,8 @@ signal stamina_changed(old_stamina: int, new_stamina: int, max_stamina: int)
 signal mana_changed(old_mana: int, new_mana: int, max_mana: int)
 signal condition_applied(condition: Enums.Condition)
 signal condition_removed(condition: Enums.Condition)
+signal buff_applied(buff_id: String, amount: float, duration: float)
+signal buff_expired(buff_id: String)
 signal stat_changed(stat: Enums.Stat, old_value: int, new_value: int)
 signal skill_changed(skill: Enums.Skill, old_value: int, new_value: int)
 signal level_up(new_level: int)
@@ -67,6 +69,39 @@ var conditions: Dictionary = {}
 ## DOT (Damage Over Time) configuration
 const DOT_TICK_INTERVAL: float = 1.5  # Seconds between damage ticks
 var dot_tick_timers: Dictionary = {}  # Tracks time until next tick per condition
+
+## ============================================================================
+## TIMED BUFFS
+## ============================================================================
+## Potions and blessings that raise a stat, armour, damage or a resistance for
+## a while. Separate from `conditions`, which is the status-effect track
+## (poisoned, bleeding, staggered) and is keyed by Enums.Condition.
+##
+## Nine ItemData.ConsumableEffect values described exactly this in their
+## tooltips and applied nothing at all - a Blessing of Gaela cost 250 gold for
+## ten minutes of nothing. This is the container they were missing.
+##
+## Shape: buff_id -> { "amount": float, "remaining": float }
+## Reapplying a buff takes the better amount and the longer remaining time, so
+## drinking a second, weaker potion never downgrades the first.
+
+const BUFF_GRIT := "grit"
+const BUFF_AGILITY := "agility"
+const BUFF_WILL := "will"
+const BUFF_ARMOR := "armor"
+const BUFF_DAMAGE := "damage"          # fraction, 0.25 = +25%
+const BUFF_RESIST_FIRE := "resist_fire"
+const BUFF_RESIST_FROST := "resist_frost"
+const BUFF_RESIST_POISON := "resist_poison"
+const BUFF_INVISIBILITY := "invisibility"
+
+## Damage reduction a RESIST_* buff grants against its damage type.
+const RESIST_BUFF_REDUCTION: float = 0.5
+
+## How much harder the player is to see while invisible (multiplies visibility).
+const INVISIBILITY_VISIBILITY_MULT: float = 0.15
+
+var active_buffs: Dictionary = {}
 
 func _init() -> void:
 	# Initialize all skills to 0
@@ -171,7 +206,16 @@ func get_effective_stat(stat: Enums.Stat) -> int:
 		Enums.Stat.KNOWLEDGE: stat_name = "knowledge"
 		Enums.Stat.VITALITY: stat_name = "vitality"
 		_: return base_value
-	return base_value + InventoryManager.get_equipment_stat_bonus(stat_name)
+
+	# Timed buffs raise the same three stats potion tooltips promise. GRIT is
+	# BUFF_STRENGTH's target because Grit is this game's strength stat.
+	var buff_bonus: float = 0.0
+	match stat:
+		Enums.Stat.GRIT: buff_bonus = get_buff(BUFF_GRIT)
+		Enums.Stat.AGILITY: buff_bonus = get_buff(BUFF_AGILITY)
+		Enums.Stat.WILL: buff_bonus = get_buff(BUFF_WILL)
+
+	return base_value + InventoryManager.get_equipment_stat_bonus(stat_name) + int(buff_bonus)
 
 ## Set stat value by enum
 func set_stat(stat: Enums.Stat, value: int) -> void:
@@ -376,6 +420,72 @@ func get_movement_speed_multiplier() -> float:
 	var athletics_skill := get_skill(Enums.Skill.ATHLETICS)
 	return 1.0 + (eff_agility * 0.02) + (athletics_skill * 0.03)
 
+## Apply (or refresh) a timed buff. Takes the better amount and the longer
+## remaining time, so a weaker potion never downgrades a stronger one.
+func apply_buff(buff_id: String, amount: float, duration: float) -> void:
+	if duration <= 0.0:
+		return
+	var existing: Dictionary = active_buffs.get(buff_id, {})
+	var best_amount: float = maxf(amount, float(existing.get("amount", 0.0)))
+	var best_remaining: float = maxf(duration, float(existing.get("remaining", 0.0)))
+	active_buffs[buff_id] = {"amount": best_amount, "remaining": best_remaining}
+	buff_applied.emit(buff_id, best_amount, best_remaining)
+
+
+## Current magnitude of a buff, or 0.0 if it is not running.
+func get_buff(buff_id: String) -> float:
+	var entry: Dictionary = active_buffs.get(buff_id, {})
+	return float(entry.get("amount", 0.0))
+
+
+func has_buff(buff_id: String) -> bool:
+	return active_buffs.has(buff_id)
+
+
+## Seconds left on a buff, or 0.0.
+func get_buff_remaining(buff_id: String) -> float:
+	var entry: Dictionary = active_buffs.get(buff_id, {})
+	return float(entry.get("remaining", 0.0))
+
+
+func remove_buff(buff_id: String) -> void:
+	if active_buffs.erase(buff_id):
+		buff_expired.emit(buff_id)
+
+
+func clear_buffs() -> void:
+	for buff_id: String in active_buffs.keys():
+		buff_expired.emit(buff_id)
+	active_buffs.clear()
+
+
+## Tick every buff down. Called from update_conditions so there is one clock.
+func update_buffs(delta: float) -> void:
+	if active_buffs.is_empty():
+		return
+	var expired: Array[String] = []
+	for buff_id: String in active_buffs.keys():
+		var entry: Dictionary = active_buffs[buff_id]
+		entry["remaining"] = float(entry["remaining"]) - delta
+		if float(entry["remaining"]) <= 0.0:
+			expired.append(buff_id)
+	for buff_id: String in expired:
+		remove_buff(buff_id)
+
+
+## Damage reduction (0.0 - 1.0) this character's buffs grant against a type.
+func get_buff_damage_resistance(damage_type: Enums.DamageType) -> float:
+	var buff_id: String = ""
+	match damage_type:
+		Enums.DamageType.FIRE: buff_id = BUFF_RESIST_FIRE
+		Enums.DamageType.FROST: buff_id = BUFF_RESIST_FROST
+		Enums.DamageType.POISON: buff_id = BUFF_RESIST_POISON
+		_: return 0.0
+	if not has_buff(buff_id):
+		return 0.0
+	return RESIST_BUFF_REDUCTION
+
+
 ## Apply a condition with duration
 func apply_condition(condition: Enums.Condition, duration: float) -> void:
 	conditions[condition] = duration
@@ -397,6 +507,8 @@ func has_condition(condition: Enums.Condition) -> bool:
 ## Update conditions (call every frame with delta)
 ## Returns a dictionary of DOT damage to apply: { DamageType: damage_amount }
 func update_conditions(delta: float) -> Dictionary:
+	update_buffs(delta)
+
 	var dot_damage: Dictionary = {}
 	var to_remove: Array = []
 

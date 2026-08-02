@@ -109,6 +109,9 @@ func perform_rest(rest_type: RestType, hours_to_wait: float = 8.0) -> Dictionary
 	# Clear conditions on full rest or fireplace rest
 	if rest_type in [RestType.INN_BED, RestType.WILD_FIREPLACE]:
 		player.conditions.clear()
+		# Buffs tick on real seconds; a night's sleep advances game time in an
+		# instant, so a ten-minute potion would otherwise survive it intact.
+		player.clear_buffs()
 
 	# Advance game time
 	GameManager.advance_time(hours_to_wait)

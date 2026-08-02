@@ -498,6 +498,7 @@ func _finish_resting() -> void:
 
 		# Clear conditions
 		player.conditions.clear()
+		player.clear_buffs()
 
 	# Show notification
 	var hud := get_tree().get_first_node_in_group("hud")

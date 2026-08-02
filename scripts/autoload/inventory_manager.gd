@@ -795,9 +795,54 @@ func _apply_item_effect(item: ItemData) -> bool:
 				player_data.remove_condition(cond)
 			return true
 
-		# Buff effects would need a buff system on the player
+		# Timed buffs. Every one of these generated a tooltip promising a real
+		# effect and applied nothing until 8/2 - a Blessing of Gaela cost 250
+		# gold for ten minutes of nothing. effect_value[2] is the flat
+		# magnitude, effect_duration the seconds; the resistances and
+		# invisibility are on/off and carry magnitude 1.
+		ItemData.ConsumableEffect.BUFF_STRENGTH:
+			return _apply_buff(item, CharacterData.BUFF_GRIT, float(item.effect_value[2]))
+
+		ItemData.ConsumableEffect.BUFF_AGILITY:
+			return _apply_buff(item, CharacterData.BUFF_AGILITY, float(item.effect_value[2]))
+
+		ItemData.ConsumableEffect.BUFF_WILL:
+			return _apply_buff(item, CharacterData.BUFF_WILL, float(item.effect_value[2]))
+
+		ItemData.ConsumableEffect.BUFF_ARMOR:
+			return _apply_buff(item, CharacterData.BUFF_ARMOR, float(item.effect_value[2]))
+
+		ItemData.ConsumableEffect.BUFF_DAMAGE:
+			return _apply_buff(item, CharacterData.BUFF_DAMAGE, item.effect_percent)
+
+		ItemData.ConsumableEffect.RESIST_FIRE:
+			return _apply_buff(item, CharacterData.BUFF_RESIST_FIRE, 1.0)
+
+		ItemData.ConsumableEffect.RESIST_FROST:
+			return _apply_buff(item, CharacterData.BUFF_RESIST_FROST, 1.0)
+
+		ItemData.ConsumableEffect.RESIST_POISON:
+			return _apply_buff(item, CharacterData.BUFF_RESIST_POISON, 1.0)
+
+		ItemData.ConsumableEffect.INVISIBILITY:
+			return _apply_buff(item, CharacterData.BUFF_INVISIBILITY, 1.0)
+
 		_:
 			return false
+
+
+## Route a consumable's buff onto CharacterData's timed-buff container.
+## Refuses a zero duration rather than applying a buff that ends instantly -
+## an item authored without effect_duration is a data bug, not a free effect.
+func _apply_buff(item: ItemData, buff_id: String, amount: float) -> bool:
+	var player_data := GameManager.player_data
+	if not player_data:
+		return false
+	if item.effect_duration <= 0.0:
+		push_warning("[InventoryManager] '%s' has a buff effect but no effect_duration; nothing applied" % item.id)
+		return false
+	player_data.apply_buff(buff_id, amount, item.effect_duration)
+	return true
 
 ## Use a repair kit on equipped items
 ## Repairs the most damaged piece of equipment
@@ -1140,6 +1185,8 @@ func get_equipped_weapon_quality() -> Enums.ItemQuality:
 ## Get total armor value
 func get_total_armor_value() -> int:
 	var total := 0
+	if GameManager.player_data:
+		total += int(GameManager.player_data.get_buff(CharacterData.BUFF_ARMOR))
 	for slot in ["head", "body", "hands", "feet", "off_hand", "ring_1", "ring_2", "amulet"]:
 		if not equipment[slot].is_empty():
 			var armor: ArmorData = equipment[slot].get("data")

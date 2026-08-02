@@ -168,6 +168,7 @@ func _on_rest_confirmed() -> void:
 		GameManager.player_data.current_stamina = GameManager.player_data.max_stamina
 		GameManager.player_data.current_spell_slots = GameManager.player_data.max_spell_slots
 		GameManager.player_data.conditions.clear()
+		GameManager.player_data.clear_buffs()
 		SaveManager.increment_rest_count()
 
 	_show_notification("You feel well rested!")

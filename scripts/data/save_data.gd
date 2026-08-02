@@ -319,6 +319,9 @@ class PlayerSaveData:
 	## Active conditions (condition_id -> time_remaining)
 	var conditions: Dictionary = {}
 
+	## Active timed buffs (buff_id -> {amount, remaining})
+	var active_buffs: Dictionary = {}
+
 	## Known spell IDs
 	var known_spells: Array = []
 
@@ -351,6 +354,7 @@ class PlayerSaveData:
 			"total_ip_earned": total_ip_earned,
 			"skills": skills,
 			"conditions": conditions,
+			"active_buffs": active_buffs,
 			"known_spells": known_spells,
 			"position": {"x": position.x, "y": position.y, "z": position.z},
 			"rotation_y": rotation_y,
@@ -380,6 +384,7 @@ class PlayerSaveData:
 		total_ip_earned = data.get("total_ip_earned", 0)
 		skills = data.get("skills", {})
 		conditions = data.get("conditions", {})
+		active_buffs = data.get("active_buffs", {})
 		known_spells = data.get("known_spells", [])
 
 		var pos_data: Dictionary = data.get("position", {})

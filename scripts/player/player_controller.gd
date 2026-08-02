@@ -794,6 +794,11 @@ func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> 
 		var will_resist := player_data.get_magic_resistance()
 		amount = int(amount * (1.0 - will_resist))
 
+	# Timed resistance buffs (RESIST_FIRE / RESIST_FROST / RESIST_POISON)
+	var buff_resist := player_data.get_buff_damage_resistance(damage_type)
+	if buff_resist > 0.0:
+		amount = int(amount * (1.0 - buff_resist))
+
 	# Minimum 1 damage
 	amount = max(1, amount)
 
@@ -1109,6 +1114,11 @@ func _update_visibility() -> void:
 		stealth_skill,
 		light_level
 	)
+
+	# An invisibility potion does not make the player unhittable - it makes him
+	# very hard to see, which is what the stealth system already models.
+	if GameManager.player_data.has_buff(CharacterData.BUFF_INVISIBILITY):
+		current_visibility *= CharacterData.INVISIBILITY_VISIBILITY_MULT
 
 	is_hidden = StealthConstants.is_hidden(current_visibility)
 

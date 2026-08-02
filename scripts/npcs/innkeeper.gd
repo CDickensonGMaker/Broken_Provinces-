@@ -404,6 +404,7 @@ func _on_rest_confirmed() -> void:
 
 		# Clear temporary conditions
 		GameManager.player_data.conditions.clear()
+		GameManager.player_data.clear_buffs()
 
 		# Track rest for save data
 		SaveManager.increment_rest_count()
