@@ -1,7 +1,7 @@
 {
 	"id": "family_heirloom_2",
 	"title": "Retrieve the Ring",
-	"description": "You found a chest near the Crossroads. Search it for the family ring.",
+	"description": "The chest is where she said it would be, kicked into the brush and never opened by whoever ran her off the road. The ring is inside. The gold band is untouched - but the stone that sat in the setting is gone, worked out clean rather than torn, like whoever did it wanted the stone and nothing else.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "get_ring",
-			"description": "Retrieve the family ring from the chest",
+			"description": "Take the ring from the chest - mind the empty setting",
 			"type": "collect",
 			"target": "gold_ring",
 			"required_count": 1
@@ -28,5 +28,6 @@
 	},
 	"prerequisites": ["family_heirloom_1"],
 	"next_quest": "family_heirloom_3",
-	"quest_items": ["gold_ring"]
+	"quest_items": ["gold_ring"],
+	"notes": "Soulstone touchpoint (docs/design/quest_web.md #3): the setting is empty, the gold untouched, and nothing in the text names what the stone was or who took it. Never explained, never flagged, gates nothing."
 }

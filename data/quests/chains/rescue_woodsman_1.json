@@ -1,7 +1,7 @@
 {
 	"id": "rescue_woodsman_1",
 	"title": "The Kidnapped Woodsman",
-	"description": "A woodsman has been captured by bandits near the eastern camp. His family is desperate. Locate their hideout.",
+	"description": "Tomas didn't come back from the eastern stands three nights running, and his axe mule came back without him. His wife knows what a woodsman missing that long usually means. She's asking a stranger to go look because the not-knowing has gotten worse than the knowing would be, and because there's nobody left to cut wood before winter if she waits on the guard.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "elder_moor_woodsmans_wife",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "find_hideout",
-			"description": "Locate the bandit hideout east of Thornfield",
+			"description": "Locate the bandit hideout that took Tomas, east of Thornfield",
 			"type": "reach",
 			"target": "bandit_camp_east",
 			"required_count": 1
@@ -27,5 +27,6 @@
 		"faction_reputation": {}
 	},
 	"prerequisites": [],
-	"next_quest": "rescue_woodsman_2"
+	"next_quest": "rescue_woodsman_2",
+	"notes": "Rescue kind 4 of 4: straight and grim. No twist - a man is taken, his wife asks a stranger because there's no one else to ask, and the stakes are plain: no woodsman, no winter wood. Giver motive stated directly in her own words. Consequence of refusal: the household loses its only earner before the cold sets in."
 }

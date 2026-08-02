@@ -1,7 +1,7 @@
 {
 	"id": "stolen_ledger_2",
 	"title": "Recover the Ledger",
-	"description": "The bandits abandoned a chest nearby. Find it and retrieve the trade ledger.",
+	"description": "The bandits left a chest by the road, and it still has the coin in it. Only the paper is gone. Someone has cut four short scratches into the lid, close together, like a tally that stopped at four - not that there's anyone here to ask why.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "get_ledger",
-			"description": "Retrieve the trade ledger",
+			"description": "Retrieve the trade ledger from the abandoned chest",
 			"type": "collect",
 			"target": "trade_ledger",
 			"required_count": 1
@@ -28,5 +28,6 @@
 	},
 	"prerequisites": ["stolen_ledger_1"],
 	"next_quest": "stolen_ledger_3",
-	"quest_items": ["trade_ledger"]
+	"quest_items": ["trade_ledger"],
+	"notes": "Soulstone-thread touchpoint 2 of 2 (Tell 1: only the stone was taken - here the coin, not the paper; Tell 3: the four-scratch mark). Neither detail is remarked on by the text; the coin sitting untouched is simply odd bandit behavior on the page, and the scratches are unexplained set dressing."
 }

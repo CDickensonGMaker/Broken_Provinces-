@@ -1,7 +1,7 @@
 {
 	"id": "rescue_sacrifice_victim_1",
 	"title": "The Ritual Sacrifice",
-	"description": "Cultists have kidnapped a young woman for their dark rituals. A priest in Millbrook begs you to save her before the next full moon. They've taken her to a ruined temple to the north.",
+	"description": "Fenna Voss followed a traveling preacher out of Millbrook three weeks ago, chasing a god kinder than the one she grew up with. His people camp in the ruined temple north of town, and word came back last night that they mean to bleed her for it at the next full moon. The priest asking you to go is ashamed to ask - he confirmed her the year she came of age, and he cannot make himself tell her father she may not want saving.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "millbrook_priest",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "find_temple",
-			"description": "Find the cultist temple north of Millbrook",
+			"description": "Track the cult to the ruined temple north of Millbrook",
 			"type": "reach",
 			"target": "cultist_temple_north",
 			"required_count": 1
@@ -28,5 +28,6 @@
 	},
 	"prerequisites": [],
 	"next_quest": "rescue_sacrifice_victim_2",
-	"spawn_on_accept": []
+	"spawn_on_accept": [],
+	"notes": "Rescue kind 1 of 4: the captive does not want to come back. Threat: Fenna is due to die at the ritual whether or not she consents to it. Giver motive: the priest's own guilt at confirming her, and shame at telling her father the truth. Consequence of refusal: she dies believing what she was told; no path exists yet to let a rescued-but-unwilling victim choose to stay, which would need a real branch - recorded as a second path this pass could not wire."
 }

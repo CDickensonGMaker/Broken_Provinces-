@@ -1,7 +1,7 @@
 {
 	"id": "cursed_tome_3",
 	"title": "Return the Tome",
-	"description": "You have the cursed tome. Return it to the scholar in Dalhurst for safekeeping.",
+	"description": "You have the tome. Get it back to the scholar in Dalhurst - it belongs behind a locked shelf, not loose in anyone's hands, yours included.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "return",
-			"description": "Return the tome to the scholar",
+			"description": "Return the tome to the scholar before you're tempted to read it yourself",
 			"type": "talk",
 			"target": "dalhurst_scholar",
 			"target_zone": "dalhurst",
@@ -30,5 +30,6 @@
 		}
 	},
 	"prerequisites": ["cursed_tome_2"],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Closes cursed_tome_1's threat - see that file's notes."
 }

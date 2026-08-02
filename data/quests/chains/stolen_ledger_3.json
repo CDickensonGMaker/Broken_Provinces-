@@ -1,7 +1,7 @@
 {
 	"id": "stolen_ledger_3",
 	"title": "Return the Ledger",
-	"description": "You found the ledger. Return it to the merchant in Dalhurst before he loses his business.",
+	"description": "The merchant all but takes the ledger out of your hands, and it's a moment too long before he starts turning pages instead of thanking you. He says everything he needs is there. He doesn't say which page he checked first, and he doesn't offer to show you.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "return_ledger",
-			"description": "Return the ledger to the merchant",
+			"description": "Return the ledger to the merchant before his creditors stop waiting",
 			"type": "talk",
 			"target": "dalhurst_merchant",
 			"target_zone": "dalhurst",
@@ -31,5 +31,6 @@
 	},
 	"prerequisites": ["stolen_ledger_2"],
 	"next_quest": "",
-	"quest_items": ["trade_ledger"]
+	"quest_items": ["trade_ledger"],
+	"notes": "Closing beat plays the relief and the evasion both straight, per quest_web.md's instruction for this file - no answer is given for which page he needed, and nothing in the data can be, since the ledger is one item with no page-level state."
 }

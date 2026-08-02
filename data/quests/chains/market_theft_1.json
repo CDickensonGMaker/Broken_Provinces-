@@ -1,7 +1,7 @@
 {
 	"id": "market_theft_1",
 	"title": "Theft at the Market",
-	"description": "A merchant's valuable goods were stolen from the market. He suspects one of the locals but needs proof. Question witnesses to find the truth.",
+	"description": "Somebody cleared out half a stall at the Mill Brook market two nights back. The merchant has a guess who, and a guess is not proof - accusing the wrong neighbour in a hamlet this size costs him more custom than the goods were worth. He wants someone found who actually saw something.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "millbrook_merchant",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "question_witness1",
-			"description": "Question the first witness",
+			"description": "Question the witness before you go accusing anybody",
 			"type": "talk",
 			"target": "millbrook_witness",
 			"target_zone": "millbrook",
@@ -28,5 +28,6 @@
 		"faction_reputation": {}
 	},
 	"prerequisites": [],
-	"next_quest": "market_theft_2"
+	"next_quest": "market_theft_2",
+	"notes": "Threat: theft from a market stall the merchant can't afford to lose again. Giver motive: trade politics - a wrong accusation against a neighbor costs more than the goods. Consequence of refusal: unwired - he keeps guessing and keeps quiet about it."
 }

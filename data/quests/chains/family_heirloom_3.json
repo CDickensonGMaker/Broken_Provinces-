@@ -1,7 +1,7 @@
 {
 	"id": "family_heirloom_3",
 	"title": "Return the Heirloom",
-	"description": "You found the ring! Return it to the old woman in Elder Moor. Be careful not to lose or sell it.",
+	"description": "Give the old woman her ring back. Say nothing about the empty setting unless she asks - and she will.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "return_ring",
-			"description": "Return the ring to the old woman",
+			"description": "Return the ring - empty setting and all",
 			"type": "talk",
 			"target": "elder_moor_old_woman",
 			"target_zone": "elder_moor",
@@ -31,5 +31,6 @@
 	},
 	"prerequisites": ["family_heirloom_2"],
 	"next_quest": "",
-	"quest_items": ["gold_ring"]
+	"quest_items": ["gold_ring"],
+	"notes": "She gets back a ring missing its stone. The quest never asks why - see family_heirloom_2 notes."
 }

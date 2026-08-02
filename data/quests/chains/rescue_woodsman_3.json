@@ -1,7 +1,7 @@
 {
 	"id": "rescue_woodsman_3",
 	"title": "Return the Woodsman",
-	"description": "The woodsman is safe. Return to Elder Moor and inform his family.",
+	"description": "Tomas is alive, walking on his own, saying little. Bring him home to his wife and let her see for herself instead of taking a stranger's word for it.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "return",
-			"description": "Return to the lumber camp in Elder Moor",
+			"description": "Bring Tomas home to his wife in Elder Moor",
 			"type": "talk",
 			"target": "elder_moor_woodsmans_wife",
 			"target_zone": "elder_moor",
@@ -30,5 +30,6 @@
 		}
 	},
 	"prerequisites": ["rescue_woodsman_2"],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Closing beat pays off the wife's fear plainly - he comes home, she sees him, nothing is undercut or complicated. This is the chain deliberately left without a twist."
 }

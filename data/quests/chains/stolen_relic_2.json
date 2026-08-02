@@ -1,7 +1,7 @@
 {
 	"id": "stolen_relic_2",
 	"title": "Recover the Sacred Relic",
-	"description": "The cultists have hidden the relic somewhere in the temple. Clear out the cultists and find it.",
+	"description": "The relic isn't buried, just guarded. Cut through the cultists and take it back before they can finish whatever they had planned for it.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "kill_cultists",
-			"description": "Kill the cultists guarding the relic",
+			"description": "Kill the cultists guarding the seed-relic",
 			"type": "kill",
 			"target": "cultist",
 			"required_count": 4
 		},
 		{
 			"id": "get_relic",
-			"description": "Retrieve the sacred relic",
+			"description": "Retrieve the seed-relic before the planting",
 			"type": "collect",
 			"target": "sacred_relic",
 			"required_count": 1
@@ -35,5 +35,6 @@
 	},
 	"prerequisites": ["stolen_relic_1"],
 	"next_quest": "stolen_relic_3",
-	"quest_items": ["sacred_relic"]
+	"quest_items": ["sacred_relic"],
+	"notes": "Middle beat keeps the deadline live in the prose (planting, three weeks) since no clock exists in the data to enforce it."
 }

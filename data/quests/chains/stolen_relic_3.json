@@ -1,7 +1,7 @@
 {
 	"id": "stolen_relic_3",
 	"title": "Return the Relic",
-	"description": "You've recovered the sacred relic. Return it to one of the priests at the Temple of the Three Gods in Dalhurst.",
+	"description": "The relic is back, and whole. Return it to Gaela's priestess in Dalhurst so she has it in hand before the planting.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "priest_gaela_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "return",
-			"description": "Return the relic to Priestess of Gaela",
+			"description": "Return the relic to the priestess before the planting",
 			"type": "talk",
 			"target": "priest_gaela_dalhurst",
 			"target_zone": "dalhurst",
@@ -30,5 +30,6 @@
 		}
 	},
 	"prerequisites": ["stolen_relic_2"],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Closing beat delivers the relic in time. No branch exists for arriving late; the deadline is prose pressure only, recorded here as a second path (a failed-blessing outcome) this pass could not wire."
 }

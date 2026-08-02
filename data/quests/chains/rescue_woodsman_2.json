@@ -1,7 +1,7 @@
 {
 	"id": "rescue_woodsman_2",
 	"title": "Free the Woodsman",
-	"description": "You've found the hideout. Defeat the bandits and rescue the woodsman.",
+	"description": "The camp is small and mean, same as any bandit camp. Cut through them and see whether the man in the pit is still worth walking home.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "kill_bandits",
-			"description": "Defeat the bandits",
+			"description": "Kill the bandits holding him",
 			"type": "kill",
 			"target": "human_bandit",
 			"required_count": 5
 		},
 		{
 			"id": "rescue",
-			"description": "Free the woodsman",
+			"description": "Pull Tomas out, whatever state he's in",
 			"type": "talk",
 			"target": "hostage_woodsman",
 			"required_count": 1
@@ -43,5 +43,6 @@
 			"name": "Woodsman",
 			"objective_id": "rescue"
 		}
-	]
+	],
+	"notes": "Straight rescue, no reversal - the middle beat is exactly what the first beat promised."
 }

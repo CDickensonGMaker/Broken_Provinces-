@@ -1,7 +1,7 @@
 {
 	"id": "road_safety_1",
 	"title": "Road Safety",
-	"description": "Bandits have established an outpost that overlooks the eastern road. Merchants are being robbed daily. Find their outpost.",
+	"description": "The rise east of Thornfield has watched the road since before the captain's time, and whoever holds it can see three miles of traffic coming. It isn't held by Thornfield anymore. The captain has eleven men for a wall that wants twenty, and not one he can send up that hill without leaving a gate empty, so he's paying a stranger to find out who's sitting on his lookout.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "thornfield_guard_captain",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "find_outpost",
-			"description": "Find the bandit outpost",
+			"description": "Find who's holding the lookout post east of town",
 			"type": "reach",
 			"target": "bandit_camp_east",
 			"required_count": 1
@@ -27,5 +27,6 @@
 		"faction_reputation": {}
 	},
 	"prerequisites": [],
-	"next_quest": "road_safety_2"
+	"next_quest": "road_safety_2",
+	"notes": "Distinguished from bandit_justice (caravan raiding, Elder Moor): this is a manpower problem, not a robbery problem. The captain has lost his overwatch of the eastern road and has no spare men to retake it, not a string of ambushed wagons to avenge. Giver motive: he cannot pull a man off the wall without thinning the garrison. Consequence of refusal: Thornfield stays blind to whatever comes down that road next, silently, with no dramatic robbery to point at."
 }

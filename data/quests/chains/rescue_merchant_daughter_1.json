@@ -1,7 +1,7 @@
 {
 	"id": "rescue_merchant_daughter_1",
 	"title": "Find the Kidnappers",
-	"description": "The merchant's daughter has been kidnapped by bandits. They demand a ransom, but the merchant has asked you to rescue her instead. Find their camp to the north.",
+	"description": "Bandits north of Dalhurst have a merchant's daughter and have named a price he could pay twice over without missing a meal. He is not paying it. Every merchant who pays once pays again within the year, he says, and he will not spend the rest of his life buying her back a season at a time. So he is paying a stranger instead, and living with what that means.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "dalhurst_merchant",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "find_camp",
-			"description": "Find the bandit camp north of Dalhurst",
+			"description": "Find the bandit camp north of Dalhurst before they lose patience with the merchant's silence",
 			"type": "reach",
 			"target": "bandit_camp_north",
 			"required_count": 1
@@ -28,5 +28,6 @@
 	},
 	"prerequisites": [],
 	"next_quest": "rescue_merchant_daughter_2",
-	"spawn_on_accept": []
+	"spawn_on_accept": [],
+	"notes": "Threat: a merchant's daughter held for ransom he can afford but has decided not to pay. Giver motive: refusing on principle - paying once marks you as a payer for good - and hiring a stranger's sword instead of his own gold. Consequence of refusal to act: unwired - the bandits keep her as long as they think a price is coming."
 }

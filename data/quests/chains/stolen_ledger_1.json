@@ -1,7 +1,7 @@
 {
 	"id": "stolen_ledger_1",
 	"title": "The Stolen Ledger",
-	"description": "A merchant's trade ledger was stolen by bandits. Without it, he cannot prove his debts and may lose everything. The bandits fled toward the Sunken Crypts.",
+	"description": "Bandits took the merchant's trade ledger on the Sunken Crypts road three nights back, and without it he says he cannot prove half of what Dalhurst owes him. That's not what he fears losing most, though he'll only say it once: one leaf records a sale at three times what the goods were worth, paid in new imperial coin, to a buyer who gave no house and no name. He says it, then goes back to talking about the debts.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "dalhurst_merchant",
@@ -37,5 +37,6 @@
 			"loot_tier": "uncommon"
 		}
 	],
-	"quest_items": ["trade_ledger"]
+	"quest_items": ["trade_ledger"],
+	"notes": "Soulstone-thread touchpoint 1 of 2 in this chain (Tell 2: the buyer who pays triple, per docs/design/quest_web.md). The merchant's stated fear is the debts; the one sentence he lets slip about the overpriced, unnamed sale is never returned to by him and never explained by the text. Threat: the debts themselves, which the missing ledger cannot prove. Giver motive: a trader who cannot afford the guard's fee structure and has nowhere else to turn."
 }

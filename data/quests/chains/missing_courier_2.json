@@ -1,7 +1,7 @@
 {
 	"id": "missing_courier_2",
 	"title": "Find the Courier",
-	"description": "The innkeeper said the courier headed toward the Old Watchtower. Search the area for any sign of him.",
+	"description": "The innkeeper's right about the watchtower - the courier's there, at the bottom of the stair, and he's been dead longer than four days. His purse is still on his belt, coin and all. Nobody robbed him. He fell, or he was pushed, and either way the letter's still sealed in his coat.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "find_body",
-			"description": "Search near the Old Watchtower",
+			"description": "Search the Old Watchtower for the courier",
 			"type": "reach",
 			"target": "old_watchtower",
 			"required_count": 1
 		},
 		{
 			"id": "collect_letter",
-			"description": "Retrieve the courier's letter",
+			"description": "Take the letter - it's the only reason anyone will ever ask what happened to him",
 			"type": "collect",
 			"target": "sealed_letter",
 			"required_count": 1
@@ -43,5 +43,6 @@
 			"contains": ["sealed_letter"],
 			"loot_tier": "common"
 		}
-	]
+	],
+	"notes": "Turn (per REWRITE_SPEC): the courier was not robbed - purse and letter both intact. Reads as accident or misadventure, not banditry. Left unresolved. No bible basis - local colour."
 }

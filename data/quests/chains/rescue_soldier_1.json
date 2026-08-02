@@ -1,7 +1,7 @@
 {
 	"id": "rescue_soldier_1",
 	"title": "Missing Soldier",
-	"description": "A soldier on patrol has gone missing. The guard captain suspects he was captured by bandits. Track him down.",
+	"description": "Corporal Wex Bramwell and Private Toma Idle rode the south road six days ago and never came back. Their horses did, saddles empty, two mornings later. The garrison is short-handed and the captain cannot spare a squad to go looking without leaving the wall thin, so he is paying a stranger to find out how many of his men are still breathing.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "thornfield_guard_captain",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "find_soldier",
-			"description": "Track the soldier to the southern bandit camp",
+			"description": "Track the missing patrol to the southern bandit camp",
 			"type": "reach",
 			"target": "bandit_camp_south",
 			"required_count": 1
@@ -27,5 +27,6 @@
 		"faction_reputation": {}
 	},
 	"prerequisites": [],
-	"next_quest": "rescue_soldier_2"
+	"next_quest": "rescue_soldier_2",
+	"notes": "Rescue kind 2 of 4: too late for part of it. Two men rode out, one is already dead by the time the player arrives (revealed in part 2, not part 1). Giver motive: the captain is short-handed and cannot pull a squad off the wall to look himself. Consequence of refusal: the garrison writes off both men as deserters and stops patrolling that stretch of road."
 }

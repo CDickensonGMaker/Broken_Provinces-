@@ -1,7 +1,7 @@
 {
 	"id": "rescue_missing_child_3",
 	"title": "Return the Child",
-	"description": "You've rescued the child from a terrible fate. Return her to her mother in Millbrook.",
+	"description": "Bring Elin home. Her mother will want the story to be simple - hooded men, stolen in the night. It wasn't, and that's yours to tell or not.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "return",
-			"description": "Return the child to her mother in Millbrook",
+			"description": "Return Elin to her mother",
 			"type": "talk",
 			"target": "millbrook_mother",
 			"target_zone": "millbrook",
@@ -30,5 +30,6 @@
 		}
 	},
 	"prerequisites": ["rescue_missing_child_2"],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Closes rescue_missing_child_1's thread. Whether the player corrects the hamlet's story is left to the player - not a data branch, not gated."
 }

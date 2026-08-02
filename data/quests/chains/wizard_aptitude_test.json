@@ -1,7 +1,7 @@
 {
 	"id": "wizard_aptitude_test",
 	"title": "The Spark Within",
-	"description": "Master Helvant, a wizard in Dalhurst, is willing to test your aptitude for magic. He claims that true magical talent reveals itself through three trials of mind, will, and connection to the arcane. Pass his tests and he may take you on as an apprentice.",
+	"description": "Helvant has turned away three would-be students this year, each one certain of a spark that wasn't there. He has outlived two apprentices who never got past their first real spell, and there is no Circle behind him to absorb a bad choice - just an old man and however many years he has left to teach in. Bring him a moonpetal from the Crossroads shrine and silver dust cut from something undead you put down yourself, and he'll know inside the hour whether you're worth the time.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "master_helvant_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "collect_moonpetal",
-			"description": "Collect a moonpetal flower from the Crossroads shrine",
+			"description": "Find a moonpetal flower at the Crossroads shrine - the easy half of the test",
 			"type": "collect",
 			"target": "moonpetal_flower",
 			"required_count": 1,

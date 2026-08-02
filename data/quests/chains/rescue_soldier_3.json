@@ -1,7 +1,7 @@
 {
 	"id": "rescue_soldier_3",
 	"title": "Report to the Guard Captain",
-	"description": "The soldier is safe. Return to Thornfield and report to the guard captain.",
+	"description": "Wex is alive. Toma is not. Return to Thornfield and report to the guard captain, and let him decide what Toma's mother is told.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "report",
-			"description": "Report to the guard captain in Thornfield",
+			"description": "Report the patrol's fate to the guard captain",
 			"type": "talk",
 			"target": "thornfield_guard_captain",
 			"target_zone": "thornfield",
@@ -30,5 +30,6 @@
 		}
 	},
 	"prerequisites": ["rescue_soldier_2"],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Closing beat carries the cost: a captain who gets one man back and has to write a letter about the other. No mechanical consequence for Toma's death is wired - recorded as a second path (a condolence/blame branch with the captain) this pass could not build."
 }

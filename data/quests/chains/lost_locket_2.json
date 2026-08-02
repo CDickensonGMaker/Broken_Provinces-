@@ -1,7 +1,7 @@
 {
 	"id": "lost_locket_2",
 	"title": "Find the Locket",
-	"description": "You're near where the widow lost the locket. Search the area carefully.",
+	"description": "The locket is in the chest at the bridge crossing, latch still shut. Open it and the portrait inside isn't the man she described - younger, dark-haired, a face that's never been seen in Millbrook. Whoever this locket belonged to, take it back to her and let her tell you what it means.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "get_locket",
-			"description": "Find the locket",
+			"description": "Take the locket - the portrait inside raises questions of its own",
 			"type": "collect",
 			"target": "silver_necklace",
 			"required_count": 1
@@ -28,5 +28,6 @@
 	},
 	"prerequisites": ["lost_locket_1"],
 	"next_quest": "lost_locket_3",
-	"quest_items": ["silver_necklace"]
+	"quest_items": ["silver_necklace"],
+	"notes": "Turn (per REWRITE_SPEC): the portrait in the locket is not her husband. Left unresolved in the text - not explained, not flagged, not gated. No bible basis - local colour."
 }

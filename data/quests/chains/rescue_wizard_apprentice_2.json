@@ -1,7 +1,7 @@
 {
 	"id": "rescue_wizard_apprentice_2",
 	"title": "Free the Apprentice",
-	"description": "The cultists are draining the apprentice's magical energy for their dark rituals. Stop them and rescue him.",
+	"description": "The cultists have not chained Perrin to anything. They are watching the working take his color and calling it a wonder, same as he is. Kill your way to the circle and pull him out of it before it finishes what he started.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,21 +11,21 @@
 	"objectives": [
 		{
 			"id": "kill_cultists",
-			"description": "Kill the cultists",
+			"description": "Kill the onlookers before they can stop you",
 			"type": "kill",
 			"target": "cultist",
 			"required_count": 4
 		},
 		{
 			"id": "kill_leader",
-			"description": "Kill the Cult Leader",
+			"description": "Kill the man running the working",
 			"type": "kill",
 			"target": "cult_leader",
 			"required_count": 1
 		},
 		{
 			"id": "free_apprentice",
-			"description": "Free the wizard's apprentice",
+			"description": "Break the circle and get Perrin out",
 			"type": "talk",
 			"target": "hostage_wizard_apprentice",
 			"required_count": 1
@@ -50,5 +50,6 @@
 			"name": "Wizard's Apprentice",
 			"objective_id": "free_apprentice"
 		}
-	]
+	],
+	"notes": "The fight here is against people who thought they were helping him, not against captors in the ordinary sense. Perrin's condition after the working - what it took from him - is left open; a follow-up could show lasting cost, but nothing in this pass wires it."
 }

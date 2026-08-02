@@ -1,7 +1,7 @@
 {
 	"id": "lost_locket_3",
 	"title": "Return the Locket",
-	"description": "You found the precious locket. Return it to the grieving widow in Millbrook.",
+	"description": "Bring the locket back to the widow. She asked for her husband's portrait. Decide whether that's what you're handing her.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "return_locket",
-			"description": "Return the locket to the widow",
+			"description": "Return the locket - and whatever you decide to tell her about it",
 			"type": "talk",
 			"target": "millbrook_widow",
 			"target_zone": "millbrook",
@@ -31,5 +31,6 @@
 	},
 	"prerequisites": ["lost_locket_2"],
 	"next_quest": "",
-	"quest_items": ["silver_necklace"]
+	"quest_items": ["silver_necklace"],
+	"notes": "Closes lost_locket_1's thread. Whether the player tells her about the portrait is left to the player - not a data branch, not gated."
 }

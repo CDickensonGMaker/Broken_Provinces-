@@ -1,7 +1,7 @@
 {
 	"id": "bandit_justice_1",
 	"title": "Bandit Justice",
-	"description": "The guard captain wants a bandit camp north of the moor scouted. They've been raiding caravans and the empire has had enough.",
+	"description": "Three wagons haven't made the north road this month, and the last driver's mule came back to Elder Moor alone. The empire pays for eyes on a problem before it pays for swords - I need a count on that camp before I requisition more men than this town can spare. Every week they sit up there is a week the road stays closed.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "elder_moor_guard",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "scout_camp",
-			"description": "Scout the bandit camp location",
+			"description": "Get eyes on the bandit camp without starting a fight you can't win alone",
 			"type": "reach",
 			"target": "bandit_camp_north",
 			"required_count": 1
@@ -27,5 +27,6 @@
 		"faction_reputation": {}
 	},
 	"prerequisites": [],
-	"next_quest": "bandit_justice_2"
+	"next_quest": "bandit_justice_2",
+	"notes": "Threat: a bandit camp on the north road has killed at least one driver and stopped wagons reaching Elder Moor. Giver motive: the guard captain can't requisition outside help without a scouted headcount - the town has no men to spare on a guess. Consequence of refusal: the road stays closed and the raids escalate; not wired to data, recorded here."
 }

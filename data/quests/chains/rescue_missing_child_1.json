@@ -1,7 +1,7 @@
 {
 	"id": "rescue_missing_child_1",
 	"title": "The Missing Child",
-	"description": "A child has vanished from Millbrook. Witnesses saw hooded figures near the forest. Elder Bram begs you to find her before something terrible happens.",
+	"description": "Elin didn't come home two nights running and half the hamlet's convinced hooded men dragged her into the woods. I've heard her talk about lights past the tree line for a month and I never asked who was showing them to her. Find the ruin in the forest. Find out if anyone made her go.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "millbrook_elder",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "find_temple",
-			"description": "Search the cultist ruins in the forest",
+			"description": "Search the cultist ruins in the forest for Elin",
 			"type": "reach",
 			"target": "cultist_temple_central",
 			"required_count": 1
@@ -28,5 +28,6 @@
 	},
 	"prerequisites": [],
 	"next_quest": "rescue_missing_child_2",
-	"spawn_on_accept": []
+	"spawn_on_accept": [],
+	"notes": "Threat: a girl missing two nights, the hamlet assuming abduction. Giver motive: the elder's own guilt at never asking about the lights she mentioned, and no militia to send. Consequence of refusal: unwired. Invented: the girl's name, Elin - no bible basis, local colour."
 }

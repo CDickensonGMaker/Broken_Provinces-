@@ -1,7 +1,7 @@
 {
 	"id": "lost_locket_1",
 	"title": "The Lost Locket",
-	"description": "A grieving widow lost her late husband's locket while traveling. She believes it fell somewhere near Millbrook. It contains a portrait of him - her only memento.",
+	"description": "A widow in Mill Brook lost her husband's locket on the road out of town, near the old troll bridge crossing. Ten years married, and the portrait inside is the only likeness of him she has left. She cannot walk that far anymore, and she is asking a stranger to walk it for her.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "millbrook_widow",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "search_area",
-			"description": "Search the roads near Millbrook for the locket",
+			"description": "Search the road near the troll bridge crossing for the locket",
 			"type": "reach",
 			"target": "troll_bridge",
 			"required_count": 1
@@ -37,5 +37,6 @@
 			"loot_tier": "common"
 		}
 	],
-	"quest_items": ["silver_necklace"]
+	"quest_items": ["silver_necklace"],
+	"notes": "Threat: a widow, ten years married, has lost her only portrait of her husband and can no longer make the walk to search for it herself. Giver motive: grief and frailty, not urgency. Consequence of refusal: unwired - she keeps nothing of him."
 }

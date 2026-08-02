@@ -1,7 +1,7 @@
 {
 	"id": "cursed_tome_1",
 	"title": "The Cursed Tome",
-	"description": "A dangerous book of dark magic was stolen from Dalhurst's library. The thief was tracked to a cultist temple west of town. Recover the tome before they can use its forbidden knowledge.",
+	"description": "The Ashgrave Cantos went missing from the restricted shelf three nights ago, and the boy who catalogued it hasn't stopped shaking since. It isn't dangerous the way a sword is dangerous - the last person who read from it aloud without training lost the rest of that week. The cultists west of town took it for a reason. I need to know what that reason is before they finish reading it.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "dalhurst_scholar",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "find_temple",
-			"description": "Find the cultist temple west of Dalhurst",
+			"description": "Find the cultist temple west of Dalhurst - do not go in blind",
 			"type": "reach",
 			"target": "cultist_temple_west",
 			"required_count": 1
@@ -36,5 +36,6 @@
 			"loot_tier": "rare"
 		}
 	],
-	"quest_items": ["cursed_tome"]
+	"quest_items": ["cursed_tome"],
+	"notes": "Threat: a grimoire that costs an untrained reader their wits is loose in a cult's hands. Giver motive: the scholar catalogued it, feels responsible, and doesn't trust the city watch to treat a book as a threat. Consequence of refusal: unwired - the cult keeps reading from it. Invented: the tome's name (Ashgrave Cantos) and the shaken cataloguer boy - no bible basis, local colour."
 }

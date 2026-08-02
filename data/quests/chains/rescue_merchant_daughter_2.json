@@ -1,7 +1,7 @@
 {
 	"id": "rescue_merchant_daughter_2",
 	"title": "Rescue the Merchant's Daughter",
-	"description": "You've found the bandit camp. Clear out the bandits and free the merchant's daughter from captivity.",
+	"description": "The camp's exactly where the scouting put it. Break it, and get to the merchant's daughter before anyone decides a stranger showing up without ransom coin means the money isn't coming at all.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,21 +11,21 @@
 	"objectives": [
 		{
 			"id": "kill_bandits",
-			"description": "Kill the bandits holding her captive",
+			"description": "Clear the bandits before they turn on the hostage",
 			"type": "kill",
 			"target": "human_bandit",
 			"required_count": 4
 		},
 		{
 			"id": "kill_boss",
-			"description": "Defeat the Bandit Boss",
+			"description": "Kill the one holding the ransom terms",
 			"type": "kill",
 			"target": "bandit_boss",
 			"required_count": 1
 		},
 		{
 			"id": "free_hostage",
-			"description": "Free the merchant's daughter",
+			"description": "Free the merchant's daughter - no ransom paid, no ransom coming",
 			"type": "talk",
 			"target": "hostage_merchant_daughter",
 			"required_count": 1
@@ -50,5 +50,6 @@
 			"name": "Merchant's Daughter",
 			"objective_id": "free_hostage"
 		}
-	]
+	],
+	"notes": "Continuation of rescue_merchant_daughter_1 - the merchant's refusal to pay is the reason the camp is still holding her when the player arrives."
 }

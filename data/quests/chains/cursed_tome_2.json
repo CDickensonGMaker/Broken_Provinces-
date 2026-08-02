@@ -1,7 +1,7 @@
 {
 	"id": "cursed_tome_2",
 	"title": "Recover the Tome",
-	"description": "The cultists guard the tome jealously. Defeat them and retrieve the dangerous book.",
+	"description": "The cultists have the tome open on a stone altar, and someone's reading from it in turns, like they're afraid to let it sit too long in one man's head. Kill them before they finish and take the book before anyone else opens it.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "kill_cultists",
-			"description": "Kill the cultists",
+			"description": "Kill the cultists guarding the altar",
 			"type": "kill",
 			"target": "cultist",
 			"required_count": 4
 		},
 		{
 			"id": "get_tome",
-			"description": "Retrieve the cursed tome",
+			"description": "Take the tome off the altar before they finish with it",
 			"type": "collect",
 			"target": "cursed_tome",
 			"required_count": 1
@@ -35,5 +35,6 @@
 	},
 	"prerequisites": ["cursed_tome_1"],
 	"next_quest": "cursed_tome_3",
-	"quest_items": ["cursed_tome"]
+	"quest_items": ["cursed_tome"],
+	"notes": "Continuation of cursed_tome_1 - see that file's notes."
 }

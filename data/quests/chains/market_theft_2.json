@@ -1,7 +1,7 @@
 {
 	"id": "market_theft_2",
 	"title": "Track the Thief",
-	"description": "The witness saw someone suspicious heading toward the Darkwood Grove. Track them down and recover the stolen goods.",
+	"description": "The trail leads to Darkwood Grove. Everything on the merchant's list turns up in the thieves' camp except one small locked case - and the one left alive swears he was paid to take that case alone and told to leave the rest of the stall untouched. Recover what you can.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,21 +11,21 @@
 	"objectives": [
 		{
 			"id": "find_thief",
-			"description": "Track the thief to Darkwood Grove",
+			"description": "Track the theft to Darkwood Grove",
 			"type": "reach",
 			"target": "darkwood_grove",
 			"required_count": 1
 		},
 		{
 			"id": "kill_thief",
-			"description": "Defeat the thief (or their accomplices)",
+			"description": "Deal with whoever's still holding the goods",
 			"type": "kill",
 			"target": "human_bandit",
 			"required_count": 2
 		},
 		{
 			"id": "recover_goods",
-			"description": "Recover the stolen goods",
+			"description": "Recover the stolen goods - what's left of them",
 			"type": "collect",
 			"target": "stolen_goods",
 			"required_count": 1
@@ -50,5 +50,6 @@
 			"contains": ["stolen_goods"],
 			"loot_tier": "uncommon"
 		}
-	]
+	],
+	"notes": "Soulstone touchpoint (docs/design/quest_web.md #4): the small locked case is the one thing not recovered, and the thief says he was paid for it alone. Never named, never explained, gates nothing."
 }

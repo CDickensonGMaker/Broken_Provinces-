@@ -1,7 +1,7 @@
 {
 	"id": "rescue_missing_child_2",
 	"title": "Save the Child",
-	"description": "The cultists have the child locked in their temple. Kill them and rescue her before it's too late.",
+	"description": "Elin's in the ruin, and she didn't get there in chains - she followed the lights on her own two feet, same as she told the hamlet she would if anyone had listened. Whatever she was promised, the cult leader isn't in a hurry to let her walk back out. Break the ones holding the door and get her free.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,21 +11,21 @@
 	"objectives": [
 		{
 			"id": "kill_cultists",
-			"description": "Kill the cultists",
+			"description": "Kill the cultists guarding the ruin",
 			"type": "kill",
 			"target": "cultist",
 			"required_count": 4
 		},
 		{
 			"id": "kill_leader",
-			"description": "Kill the Cult Leader",
+			"description": "Kill the cult leader before he decides Elin isn't leaving",
 			"type": "kill",
 			"target": "cult_leader",
 			"required_count": 1
 		},
 		{
 			"id": "free_child",
-			"description": "Rescue the child",
+			"description": "Get Elin out",
 			"type": "talk",
 			"target": "hostage_missing_child",
 			"required_count": 1
@@ -50,5 +50,6 @@
 			"name": "Missing Child",
 			"objective_id": "free_child"
 		}
-	]
+	],
+	"notes": "Turn (per REWRITE_SPEC): Elin followed the cult on her own; the hamlet's assumption of abduction is wrong. She still needs rescuing once the cult won't let her leave. No bible basis - local colour."
 }

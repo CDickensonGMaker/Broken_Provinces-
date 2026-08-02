@@ -1,7 +1,7 @@
 {
 	"id": "road_safety_3",
 	"title": "Collect Your Bounty",
-	"description": "The road is safe once more. Return to Thornfield and collect your reward.",
+	"description": "The rise is Thornfield's again. Report to the captain, who still doesn't have the men to keep it held without someone like you doing this again next season.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "report",
-			"description": "Collect your bounty from the guard captain",
+			"description": "Report the lookout retaken to the guard captain",
 			"type": "talk",
 			"target": "thornfield_guard_captain",
 			"target_zone": "thornfield",
@@ -31,5 +31,6 @@
 		}
 	},
 	"prerequisites": ["road_safety_2"],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Closing beat states the unresolved problem plainly: the position is retaken but the garrison is still short, so the fix does not outlast the player's involvement. Consequence of a future refusal to help again is implied, not wired."
 }

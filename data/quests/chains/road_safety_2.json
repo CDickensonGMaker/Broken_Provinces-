@@ -1,7 +1,7 @@
 {
 	"id": "road_safety_2",
 	"title": "Eliminate the Threat",
-	"description": "You've found the outpost. Eliminate the bandits to make the road safe again.",
+	"description": "Whoever dug in on that rise means to keep it. Clear them out and take the lookout back for Thornfield, since the captain has nobody else to send to hold it after you.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,14 +11,14 @@
 	"objectives": [
 		{
 			"id": "kill_bandits",
-			"description": "Kill the bandits",
+			"description": "Clear the outpost",
 			"type": "kill",
 			"target": "human_bandit",
 			"required_count": 5
 		},
 		{
 			"id": "kill_captain",
-			"description": "Kill the Bandit Captain",
+			"description": "Kill whoever's in charge up there",
 			"type": "kill",
 			"target": "bandit_captain",
 			"required_count": 1
@@ -34,5 +34,6 @@
 		"faction_reputation": {}
 	},
 	"prerequisites": ["road_safety_1"],
-	"next_quest": "road_safety_3"
+	"next_quest": "road_safety_3",
+	"notes": "The fight is about ground, not vengeance - retaking a position the garrison cannot spare men to hold, not punishing a crew for robbing merchants."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "rescue_merchant_daughter_3",
 	"title": "Return to the Merchant",
-	"description": "You've rescued the merchant's daughter. Return to Dalhurst and report the good news.",
+	"description": "Bring her back to Dalhurst. The merchant will thank you loudly, where people can hear him do it, and probably not know what to say to her once they're alone. He got his daughter back and never opened his strongbox. That will cost him something in his own house that gold never has to cover.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "return",
-			"description": "Return to the merchant in Dalhurst",
+			"description": "Return to the merchant in Dalhurst - and to his daughter",
 			"type": "talk",
 			"target": "dalhurst_merchant",
 			"target_zone": "dalhurst",
@@ -30,5 +30,6 @@
 		}
 	},
 	"prerequisites": ["rescue_merchant_daughter_2"],
-	"next_quest": ""
+	"next_quest": "",
+	"notes": "Whole-chain directive (REWRITE_SPEC): the merchant chose not to pay the ransom and sent a stranger instead. This file is where that choice is meant to cost him, in the household, unwired - see rescue_merchant_daughter_1's notes for the giver motive behind it."
 }

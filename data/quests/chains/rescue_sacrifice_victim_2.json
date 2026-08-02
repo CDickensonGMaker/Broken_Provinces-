@@ -1,7 +1,7 @@
 {
 	"id": "rescue_sacrifice_victim_2",
 	"title": "Stop the Sacrifice",
-	"description": "You've found the temple. The cultists are preparing their victim for sacrifice. Kill them and free her before it's too late.",
+	"description": "The temple is real and so is the altar. What the priest did not know is that Fenna is not chained to it - she knelt there on her own, and she will not thank you for what happens next. Kill the cultists standing between you and her, then see if she still wants to leave.",
 	"is_main_quest": false,
 	"quest_source": "chain",
 	"giver_npc_id": "",
@@ -11,21 +11,21 @@
 	"objectives": [
 		{
 			"id": "kill_cultists",
-			"description": "Kill the cultists",
+			"description": "Cut through the cultists guarding the altar",
 			"type": "kill",
 			"target": "cultist",
 			"required_count": 5
 		},
 		{
 			"id": "kill_priest",
-			"description": "Kill the Dark Priest",
+			"description": "Kill the priest who talked her into this",
 			"type": "kill",
 			"target": "cult_leader",
 			"required_count": 1
 		},
 		{
 			"id": "free_victim",
-			"description": "Free the sacrifice victim",
+			"description": "Get Fenna away from the altar, whether she wants to go or not",
 			"type": "talk",
 			"target": "hostage_sacrifice_victim",
 			"required_count": 1
@@ -50,5 +50,6 @@
 			"name": "Sacrifice Victim",
 			"objective_id": "free_victim"
 		}
-	]
+	],
+	"notes": "Middle beat of the captive-does-not-want-to-come-back rescue. She is not a prisoner in any mechanical sense - the fight is against the cult, not for her consent, and the prose carries the distinction the data cannot."
 }

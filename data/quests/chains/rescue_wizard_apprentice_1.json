@@ -1,7 +1,7 @@
 {
 	"id": "rescue_wizard_apprentice_1",
 	"title": "The Missing Apprentice",
-	"description": "A wizard's apprentice went missing while gathering herbs. The wizard suspects cultists captured him for his magical knowledge. They were last seen heading toward the southern temple ruins.",
+	"description": "Perrin took himself south to the cultists in the ruin - they didn't take him. He went because his master would not teach him the working he wanted, and the cultists said they would. What the wizard fears now is not that they are holding him against his will. It's that the working is real, and it does not care whose idea it was.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "thornfield_wizard",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "find_temple",
-			"description": "Find the cultist temple to the south",
+			"description": "Find the temple south of Thornfield before the working finishes with him",
 			"type": "reach",
 			"target": "cultist_temple_south",
 			"required_count": 1
@@ -28,5 +28,6 @@
 	},
 	"prerequisites": [],
 	"next_quest": "rescue_wizard_apprentice_2",
-	"spawn_on_accept": []
+	"spawn_on_accept": [],
+	"notes": "Rescue kind 3 of 4: the captors were not the danger. Perrin went to the cultists willingly, seeking a working his own master refused to teach him; the cultists are running the ritual he asked for, not holding him prisoner. Giver motive: the wizard is implicated in why Perrin left, and cannot say that part aloud. Consequence of refusal: the working completes on its own timeline regardless of who is or isn't present to stop it."
 }
