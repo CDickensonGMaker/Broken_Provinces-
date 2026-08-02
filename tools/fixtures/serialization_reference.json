@@ -1,0 +1,159 @@
+{
+  "_README": [
+    "Values used by tools/check_serialization.tscn to dirty every serialised",
+    "field before a round trip. Every non-transient field of every registered",
+    "class must have a value here - a field with no value fails the guard,",
+    "which is the reminder to write one. The guard can only protect fields it",
+    "knows about.",
+    "JSON has no Vector3, so one is spelled {\"__vec3\": [x, y, z]}, and a",
+    "Vector2i {\"__vec2i\": [x, y]}. Typed arrays keep their element type: the",
+    "checker builds the new array from the field's current value."
+  ],
+
+  "CrimeManager": {
+    "bounties": {"serial_region": 640},
+    "last_crimes": {"serial_region": 3},
+    "confiscated_items": {"serial_region": [{"item_id": "serial_knife", "quantity": 2}]},
+    "is_jailed": true,
+    "jail_region": "serial_region",
+    "jail_time_remaining": 19.5,
+    "return_scene": "res://scenes/levels/elder_moor.tscn",
+    "return_position": {"__vec3": [12.5, 1.0, -34.25]}
+  },
+
+  "FactionManager": {
+    "player_reputations": {"serial_faction": 42},
+    "faction_memberships": {"serial_faction": {"rank": "Serial", "joined_time": 12.0}},
+    "last_crime_day": {"serial_faction": 6},
+    "last_decay_day": {"serial_faction": 4},
+    "ongoing_effects": {"serial_effect": {"type": "gold", "amount": 25, "source": "serial"}},
+    "faction_hostility": {"serial_faction": 55}
+  },
+
+  "WorldState": {
+    "flags": {"serial_world_fact": true, "serial_state": "razed", "serial_count": 3},
+    "world_modifications": {"serial_pass": {"cells": [[3, -4]], "passable": true}}
+  },
+
+  "FlagManager": {
+    "flags": {"serial_flag": true, "thieves_guild_rank_burglar": true},
+    "context_variables": {"merchant_id": "serial_smith"}
+  },
+
+  "ConversationSystem": {
+    "npc_memory": {"serial_npc:serial_line": "He said something once."},
+    "npc_memory_heard_count": {"serial_npc:serial_line": 3},
+    "conversation_flags": {"disposition:serial_npc": 40},
+    "player_known_topics": ["serial_topic"]
+  },
+
+  "WeatherManager": {
+    "current_weather": 2,
+    "_target_weather": 3,
+    "_time_until_change": 61.5,
+    "_transitioning": true,
+    "_transition_progress": 0.25
+  },
+
+  "SoulstoneEconomy": {
+    "soulstone_registry": {"serial_stone": {"tier": 3, "owner_type": 1, "owner_id": "player", "is_quest_target": false, "quest_id": ""}},
+    "quest_targets": {"serial_quest": "serial_stone"},
+    "distribution_counts": {"quest_rewards": 7}
+  },
+
+  "GuildRankManager": {
+    "guild_quest_counts": {"thieves_guild": 9},
+    "guild_rank_levels": {"thieves_guild": 3}
+  },
+
+  "MoralityManager": {
+    "morality_score": -37,
+    "hours_since_last_decay": 5.5
+  },
+
+  "CodexManager": {
+    "discovered_recipes": {"alchemy": ["serial_recipe"]},
+    "discovered_lore": {"history": ["serial_lore"]},
+    "bestiary_entries": {"serial_beast": {"kills": 4}}
+  },
+
+  "JournalManager": {
+    "notes": [{"id": 1, "title": "Serial note", "body": "Written by the guard."}],
+    "next_note_id": 2,
+    "bestiary": {"serial_beast": {"seen": true}},
+    "unlocked_codex_entries": ["serial_codex_entry"]
+  },
+
+  "StatsTracker": {
+    "stats": {"enemies_killed": 17, "deaths": 2, "gold_earned": 940, "distance_traveled": 1234.5}
+  },
+
+  "FastTravelManager": {
+    "is_traveling": true,
+    "travel_destination": "dalhurst",
+    "travel_hours_remaining": 3.5,
+    "caravan_routes": {"serial_route": {"to": "dalhurst", "cost": 40}},
+    "is_caravan_traveling": true,
+    "caravan_destination": "dalhurst",
+    "caravan_segments": [{"__vec2i": [1, 2]}, {"__vec2i": [3, 4]}],
+    "caravan_current_segment": 1
+  },
+
+  "TournamentManager": {
+    "arena_fame": 321,
+    "total_gold_earned": 1234,
+    "is_tournament_active": true,
+    "current_wave": 3,
+    "is_equipment_locked": true
+  },
+
+  "CaveManager": {
+    "cave_faction": "goblin",
+    "cave_danger_level": 8,
+    "visited_areas": {"serial_area": 99.0}
+  },
+
+  "CharacterData": {
+    "character_name": "Serial Tester",
+    "race": 1,
+    "career": 2,
+    "grit": 6,
+    "agility": 7,
+    "will": 8,
+    "speech": 9,
+    "knowledge": 5,
+    "vitality": 4,
+    "max_hp": 133,
+    "current_hp": 77,
+    "max_stamina": 120,
+    "current_stamina": 61,
+    "max_mana": 88,
+    "current_mana": 44,
+    "max_spell_slots": 7,
+    "current_spell_slots": 3,
+    "level": 4,
+    "improvement_points": 250,
+    "total_ip_earned": 4200,
+    "skills": {"3": 6},
+    "conditions": {"2": 12.5}
+  },
+
+  "FollowerNPC": {
+    "follower_id": "serial_follower",
+    "follower_name": "Serial",
+    "combat_style": "ranged",
+    "follower_damage": 14,
+    "follower_armor": 6,
+    "weapon_type": "bow",
+    "weapon_attack_range": 12.5,
+    "attack_speed_mult": 1.4,
+    "abilities": ["serial_ability"],
+    "ability_cooldowns": {"serial_ability": 8.0},
+    "combat_lines": ["Get behind me."],
+    "idle_lines": ["Quiet road today."],
+    "current_state": 2,
+    "current_health": 31,
+    "max_health": 62,
+    "is_essential": true
+  }
+}

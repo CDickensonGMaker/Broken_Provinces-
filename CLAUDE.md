@@ -1913,6 +1913,39 @@ forgotten in the copy fails the day it is written.
 to `tools/fixtures/quest_field_reference.json`**, or the guard fails, telling
 you so. That is the point: the guard can only protect fields it knows about.
 
+The same check also reflects over **QuestManager's own member state**. Every
+script variable on the singleton must be written by `to_dict`, come back
+through `from_dict`, or be named in its `TRANSIENT_MEMBERS` with a reason.
+
+**The general serialisation guard:**
+
+```powershell
+& $godot45 --headless --path . res://tools/check_serialization.tscn
+```
+
+`tools/check_serialization.tscn` is the same discipline over every other class
+with a save section - CharacterData, CrimeManager, FactionManager, WorldState,
+FlagManager, ConversationSystem, WeatherManager, SoulstoneEconomy,
+GuildRankManager, MoralityManager, CodexManager, JournalManager, StatsTracker,
+FastTravelManager, TournamentManager, CaveManager and FollowerNPC. For each it
+asserts three things:
+
+1. every field declared in the class's own script is written by its serialiser
+   or named in `transient` **with a written reason**;
+2. every field survives the class's own `to_dict` -> `from_dict`;
+3. every field survives the real `SaveManager.save_game()` / `load_game()`
+   pair, on disk, as JSON.
+
+Point 3 is the one that matters. Every save bug found in Batch 2 was a class
+with a perfectly correct `to_dict` that SaveManager never called, or read
+three keys out of. A guard that only tested the class would have passed on
+all of them.
+
+**When you add a saved field to any registered class you must also add a value
+for it to `tools/fixtures/serialization_reference.json`.** Dictionary fields
+are compared by containment, because several managers legitimately seed their
+own defaults on load.
+
 **New Quest Features (Implemented):**
 
 **Objective Types:**
