@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FactionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/faction_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "undead"
+display_name = "The Restless Dead"
+description = "Not an army and not a court - a condition, spreading. Skeletons that still keep their post, drowned crews that still make for harbour, things in barrows that were somebody's grandfather. They hold no council and sign no treaty, and every living faction that has met them names them an enemy for the same reason: the dead who will not lie down consume the living who must. Morthane's church hunts them as a violation of the cycle rather than as a rival power. Nothing here can be joined, bargained with, or made friendly - the reputation exists so the world can measure how much of it there is."
+parent_faction = ""
+allies = []
+enemies = ["human_empire", "town_guard", "church_of_three", "church_of_chronos", "church_of_gaela", "church_of_morthane", "the_keepers", "arcane_circle", "elves", "adventurers_guild", "common_folk"]
+neutrals = ["goblins", "shadowed_hand_cult"]
+alignment = -80
+ranks = [{"name": "Prey", "min_reputation": -100, "benefits": []}, {"name": "Unnoticed", "min_reputation": -20, "benefits": []}, {"name": "Unquiet", "min_reputation": 20, "benefits": []}]
+default_reputation = 0
+joinable = false
+join_threshold = 100
+is_hidden = false
+faction_color = Color(0.45, 0.5, 0.55, 1.0)

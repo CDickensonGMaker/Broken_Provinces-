@@ -54,10 +54,11 @@ const DEITIES: Array[String] = ["chronos", "gaela", "morthane"]
 ## The point of the list is that it is closed: a NEW dead id fails this check.
 ## An entry that stops being needed also fails, as a stale excuse.
 const KNOWN_DEAD_CASCADE_IDS: Dictionary = {
-	# Used everywhere as an enemy *category* (spawners, loot tables, encounter
-	# tables) and nowhere as a political faction. There is no undead.tres, and
-	# writing one would be inventing a faction.
-	"undead": "enemy category, not a political faction",
+	# `undead` used to sit here as "enemy category, not a political faction".
+	# It is a faction now (data/factions/undead.tres): the six lists that named
+	# it resolve, and player reputation with it starts at 0 and is moved by
+	# nothing yet, which is content and not a defect.
+	#
 	# Both are listed as allies of human_empire - parts of itself. Repointing
 	# either at human_empire would make that faction list itself.
 	"the_crown": "names a part of human_empire; no separate faction is intended",
