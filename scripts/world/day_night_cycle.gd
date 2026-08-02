@@ -236,13 +236,22 @@ func _setup_lighting() -> void:
 	_create_cloud_dome()
 
 
+## Placeholder disc, 64x64, four flat bands and a few maria. Logged in
+## docs/audits/art_replacement_manifest.md for a real moon.
+const MOON_TEXTURE_PATH := "res://assets/textures/sky/moon.png"
+
+
 ## Create moon sprite that appears at night
 func _create_moon() -> void:
 	moon_sprite = Sprite3D.new()
 	moon_sprite.name = "Moon"
 
-	# Try to load moon texture, fallback to white circle
-	var moon_tex: Texture2D = load("res://assets/textures/sky/moon.png")
+	# Try to load moon texture, fallback to white circle. The existence check
+	# matters: load() on a missing path pushes an engine error before it returns
+	# null, so the fallback worked while every outdoor scene logged on boot.
+	var moon_tex: Texture2D = null
+	if ResourceLoader.exists(MOON_TEXTURE_PATH):
+		moon_tex = load(MOON_TEXTURE_PATH)
 	if moon_tex:
 		moon_sprite.texture = moon_tex
 	else:

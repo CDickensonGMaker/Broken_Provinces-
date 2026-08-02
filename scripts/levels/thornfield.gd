@@ -63,7 +63,7 @@ func _apply_materials() -> void:
 	ground_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 
 	# Apply fallen leaves texture to ground (same as Elder Moor)
-	var leaves_tex: Texture2D = load("res://assets/sprites/environment/ground/leaves_full.png")
+	var leaves_tex: Texture2D = load("res://assets/textures/environment/floors/leaves_full.png")
 	if leaves_tex:
 		ground_mat.albedo_texture = leaves_tex
 		ground_mat.albedo_color = Color(0.85, 0.75, 0.6)  # Warm autumn tint

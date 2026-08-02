@@ -387,7 +387,7 @@ func _spawn_enemy(pos: Vector3, enemy_type: String) -> void:
 			sprite_path = "res://assets/sprites/enemies/undead/skeleton_shade_walking.png"
 		"skeleton_warrior":
 			data_path = "res://data/enemies/skeleton_warrior.tres"
-			sprite_path = "res://assets/sprites/enemies/undead/skeleton_warrior.png"
+			sprite_path = "res://assets/sprites/enemies/undead/skeleton_walking.png"
 			h_frames = 8
 			v_frames = 12
 		"flaming_skull":
@@ -428,7 +428,7 @@ func _spawn_enemy(pos: Vector3, enemy_type: String) -> void:
 func _spawn_boss(pos: Vector3) -> void:
 	# For now, use Vampire Lord as boss placeholder
 	# TODO: Create unique "Drowned One" boss for this dungeon
-	var sprite_texture: Texture2D = load("res://assets/sprites/enemies/undead/vampire_lord_alt.png")
+	var sprite_texture: Texture2D = load("res://assets/sprites/enemies/undead/vampirelord_walking.png")
 	if not sprite_texture:
 		push_warning("[SunkenCrypt] Failed to load boss sprite")
 		return
@@ -438,7 +438,7 @@ func _spawn_boss(pos: Vector3) -> void:
 		pos,
 		"res://data/enemies/vampire_lord.tres",
 		sprite_texture,
-		5, 3
+		5, 1
 	)
 
 	if boss:

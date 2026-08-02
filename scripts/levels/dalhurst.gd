@@ -1410,7 +1410,7 @@ func _decorate_temple_of_three_gods() -> void:
 		decorations.add_child(hanging_center)
 
 	# === ALTAR DECORATION (stone altar/lectern on the altar surface) ===
-	var altar_tex: Texture2D = load("res://assets/sprites/props/monastery/monastary_altar1.png")
+	var altar_tex: Texture2D = load("res://assets/sprites/props/monastery/monastary_altar1.png.png")
 	if altar_tex:
 		var altar_prop: Sprite3D = Sprite3D.new()
 		altar_prop.name = "AltarDecoration"

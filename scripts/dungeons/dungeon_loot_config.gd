@@ -363,7 +363,7 @@ const ENEMY_SPRITE_DATA: Dictionary = {
 		"h_frames": 1, "v_frames": 1
 	},
 	"res://data/enemies/goblin_archer.tres": {
-		"sprite_path": "res://assets/sprites/goblin_archer_Fixed.png",
+		"sprite_path": "res://assets/sprites/enemies/goblins/goblin_archer.png",
 		"h_frames": 1, "v_frames": 1
 	},
 	"res://data/enemies/goblin_mage.tres": {

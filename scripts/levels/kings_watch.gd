@@ -124,7 +124,7 @@ func _spawn_enemies() -> void:
 		enemies_container.name = "Enemies"
 		add_child(enemies_container)
 
-	var skeleton_texture: Texture2D = load("res://assets/sprites/enemies/undead/skeleton_warrior.png")
+	var skeleton_texture: Texture2D = load("res://assets/sprites/enemies/undead/skeleton_walking.png")
 	var bandit_texture: Texture2D = load("res://assets/sprites/enemies/humanoid/human_bandit_alt.png")
 
 	var enemy_count: int = 0
@@ -138,10 +138,10 @@ func _spawn_enemies() -> void:
 			if child.name.begins_with("Skeleton_"):
 				enemy_data_path = "res://data/enemies/skeleton_warrior.tres"
 				texture = skeleton_texture
-				h_frames = 4
-				v_frames = 4
+				h_frames = 8
+				v_frames = 1
 			elif child.name.begins_with("Bandit_"):
-				enemy_data_path = "res://data/enemies/bandit.tres"
+				enemy_data_path = "res://data/enemies/human_bandit.tres"
 				texture = bandit_texture
 				h_frames = 4
 				v_frames = 4

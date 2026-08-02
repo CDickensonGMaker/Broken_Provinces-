@@ -182,8 +182,8 @@ func _add_collision_to_meshes(node: Node) -> void:
 func _spawn_fall_leaves() -> void:
 	# Fall leaf textures
 	var leaf_textures: Array[String] = [
-		"res://assets/sprites/environment/ground/leaves_full.png",
-		"res://assets/sprites/environment/ground/leaves_half.png"
+		"res://assets/textures/environment/floors/leaves_full.png",
+		"res://assets/textures/environment/floors/leaves_half.png"
 	]
 
 	# Container for leaves

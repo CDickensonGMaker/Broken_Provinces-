@@ -164,7 +164,7 @@ const LOCATION_SCENES: Dictionary = {
 	# === EXTENDED LOCATIONS ===
 	# Major cities
 	"falkenhaften": "res://scenes/levels/falkenhaften.tscn",
-	"kazan_dun": "res://scenes/levels/kazan_dun.tscn",
+	"kazan_dun": "res://scenes/levels/kazan_dun_entrance.tscn",
 	# Towns
 	"aberdeen": "res://scenes/levels/aberdeen.tscn",
 	"larton": "res://scenes/levels/larton.tscn",

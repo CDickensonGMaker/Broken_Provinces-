@@ -17,7 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://bfmqts8aecuso" path="res://assets/models/terrain/elder_moor.glb" id="17_terrain"]
 [ext_resource type="Texture2D" uid="uid://c3na2ocy8smu6" path="res://assets/sprites/npcs/civilians/blacksmith.png" id="18"]
 [ext_resource type="Texture2D" uid="uid://b3xt3h704ibtj" path="res://assets/sprites/npcs/named/old_man_sage.png" id="19"]
-[ext_resource type="Texture2D" uid="uid://d2b37wh8eptdo" path="res://assets/sprites/environment/ground/leaves_full.png" id="20_leaves"]
+[ext_resource type="Texture2D" uid="uid://d2b37wh8eptdo" path="res://assets/textures/environment/floors/leaves_full.png" id="20_leaves"]
 
 [sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
 sky_top_color = Color(0.3, 0.4, 0.5, 1)
