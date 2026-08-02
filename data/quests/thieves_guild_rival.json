@@ -1,7 +1,7 @@
 {
 	"id": "thieves_guild_rival",
 	"title": "Turf War",
-	"description": "A rival crew from Thornfield has moved into Dalhurst territory, running protection rackets on merchants the Guild already controls. They're bold, well-armed, and led by a woman named 'Red Mara' who has no respect for established boundaries. The fence wants you to handle it. You could hit their operation directly - burn their stash house, kill their enforcers. Or negotiate a territorial agreement if you're persuasive. There's even a third option: if you can defeat Red Mara in single combat and she yields, her crew might join the Guild instead. Power, diplomacy, or violence - pick your weapon.",
+	"description": "A crew out of Thornfield has moved onto merchants we already collect from, and they are armed and they are not asking. Red Mara leads them, and she was warned once. Handle it before it becomes a habit.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "thieves_guild_fence",

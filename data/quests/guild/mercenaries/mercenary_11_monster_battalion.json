@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_11_monster_battalion",
 	"title": "The Horde",
-	"description": "Forty-one people, one mill, and a militia of nine men who are also the harvest - that's Mill Brook, and a goblin-and-orc warband three times the militia's number is two days out on the eastern road. Elder Bram couldn't pay the Company's full rate if he sold the mill itself, so this contract runs on a standing arrangement with Dalhurst's grain buyers, who lose their winter flour if Mill Brook burns. Steele is sending the full Company. Nine militiamen and forty-one people are not going to hold this alone.",
+	"description": "Millbrook is forty-one people, one mill and nine militiamen who are also the harvest, and a warband three times their number is two days out. Elder Bram cannot pay our rate; Dalhurst's grain buyers can. I'm sending the full Company.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",

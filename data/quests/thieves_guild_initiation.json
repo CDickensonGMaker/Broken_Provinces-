@@ -1,7 +1,7 @@
 {
 	"id": "thieves_guild_initiation",
 	"title": "Light Fingers",
-	"description": "The Thieves Guild of Dalhurst operates in the shadows, but they're always looking for new talent. A hooded figure in the market district has noticed your... flexible morals. If you want to join, you'll need to prove you have what it takes. Steal a ledger from a local merchant without getting caught. Simple enough - for someone with light fingers.",
+	"description": "You have the look of someone who sees a locked door as an invitation. A merchant on the market square keeps a ledger of dealings he would rather the watch never read. Take it without being seen and you are one of us.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "thieves_guild_recruiter",

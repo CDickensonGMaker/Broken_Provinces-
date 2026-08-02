@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_06_hostage_rescue",
 	"title": "No One Left Behind",
-	"description": "The merchant Voss paid the Bandit Hideout crew's ransom demand once already and they came back for more, holding his daughter Petra until he pays twice over. He's out of coin and out of time - the deadline is two days off. Steele isn't sending you for Voss's sake; a client who loses his daughter on the Company's watch never hires again, and neither does anyone who hears about it.",
+	"description": "Voss paid the Bandit Hideout crew's ransom once and they came back for more. They have his daughter Petra, and he has two days and no coin left. A client who loses a daughter on our watch never hires again.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",

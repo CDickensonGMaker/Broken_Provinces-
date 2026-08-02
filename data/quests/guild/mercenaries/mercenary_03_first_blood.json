@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_03_first_blood",
 	"title": "Baptism of Steel",
-	"description": "Training's over. The client is Halworth's timber concern out of Elder Moor - a bandit outpost has been stripping their wagons on the logging road for three weeks straight, and the mill's paid crew hasn't drawn full wages since. Halworth is paying the Company's full rate to make it stop. Follow orders, hold formation, don't break ranks - that's the whole lesson from drill, paid for in someone else's coin this time.",
+	"description": "Halworth's timber concern is paying our full rate: a bandit outpost has been stripping his wagons on the logging road for three weeks, and his crew hasn't drawn full wages since. Follow orders. Hold formation.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",

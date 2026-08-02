@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_01_enlistment",
 	"title": "Sign the Contract",
-	"description": "The Iron Company lost forty soldiers at Thornfield twelve years back and has never filled the roster back up. Captain Steele doesn't take just anyone to make the numbers - a recruit who breaks formation gets someone else killed, and he's buried enough of his own. He wants to see you take a beating from three training soldiers without running. That's the whole test.",
+	"description": "I lost forty soldiers at Thornfield and never filled the roster back. A recruit who breaks formation gets someone else killed, and I have buried enough of my own. Three training soldiers, and you don't run - that's the test.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",

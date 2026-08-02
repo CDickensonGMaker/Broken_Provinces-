@@ -1,7 +1,7 @@
 {
   "id": "thieves_09_informant",
   "title": "Loose Lips",
-  "description": "Someone is selling Guild secrets. Vex has narrowed it down to three suspects in Millbrook. Investigate, identify the traitor, and decide their fate. Execute them, turn them into a double agent, or let them go.",
+  "description": "Someone is selling Guild secrets and jobs are going wrong in Millbrook. Three people there could be doing it: Felix, Mara, Tobin. Find out which, and settle it yourself.",
   "giver_npc_id": "shadowmaster_vex",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",
@@ -18,7 +18,7 @@
       "type": "interact",
       "target": "informant_suspect_clue",
       "required_count": 3,
-      "description": "Investigate three suspects: Felix the Fence, Mara the Smuggler, and Tobin the Pickpocket",
+      "description": "Look into Felix, Mara and Tobin in Millbrook",
       "notes": "Three QuestInteractables share object_id informant_suspect_clue, one per clue_location in investigation_clues below"
     },
     {

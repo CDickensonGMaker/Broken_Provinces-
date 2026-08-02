@@ -1,7 +1,7 @@
 {
   "id": "thieves_06_warehouse_job",
   "title": "The Dalhurst Job",
-  "description": "Graymoor Trading Company's warehouse is stacked with silk and spices for market day, and Vex wants five crates of it in the Guild's hands before the sale. However you get in the door - quiet or loud or lying your way past the gate - the job only ends one way: five crates out, to the safehouse, before Graymoor notices what's missing.",
+  "description": "Graymoor's warehouse is stacked with silk and spices for market day. I want five crates of it at the safehouse before the sale, and before anyone counts. How you get through the door is yours.",
   "giver_npc_id": "shadowmaster_vex",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",

@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_13_second_command",
 	"title": "The Iron Will",
-	"description": "Steele has fielded every contract himself for fifteen years, since Hadrian Iron died with an arrow in his throat and left the Company to him. He's tired in a way he won't say out loud, and the Crossroads cost the Company men he can't easily replace. He wants someone he trusts running contracts while he handles the ledger and the clients - and the only way the Company knows to settle who that is, is a duel with the Captain himself.",
+	"description": "Hadrian Iron died with an arrow in his throat and left me the Company fifteen years ago. I have fielded every contract since, and I am tired in a way I will not say twice. The Company settles this with a duel.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",

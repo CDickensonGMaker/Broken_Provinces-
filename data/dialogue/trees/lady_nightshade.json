@@ -210,7 +210,7 @@
     {
       "id": "quest_11_offer",
       "speaker": "Lady Nightshade",
-      "text": "You've proven yourself capable of the impossible. So let me give you something truly impossible. Legend speaks of an ancient vault beneath Elder Moor - no thief has ever cracked it. Generations have tried and failed. I believe you can succeed.",
+      "text": "There is a vault under Elder Moor that has taken three generations of us and given nothing back. I need the coffers filled and I have run out of honest ideas. Go and open it.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -508,7 +508,7 @@
     {
       "id": "quest_13_offer",
       "speaker": "Lady Nightshade",
-      "text": "You've done everything I've asked and more. It's time for the final test. The most ambitious heist in guild history. A treasure convoy traveling from Kazer-Dun through Elder Moor. Plan it, execute it, and you'll become my right hand.",
+      "text": "There is a treasure convoy coming out of Kazer-Dun through Elder Moor, carrying dwarven work nobody is meant to know has moved. I want it. Plan it yourself - I will not be holding your hand.",
       "is_end": false,
       "auto_continue": "",
       "choices": [

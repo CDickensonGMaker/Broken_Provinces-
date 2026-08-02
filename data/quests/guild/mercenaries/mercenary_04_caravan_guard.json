@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_04_caravan_guard",
 	"title": "Gold on the Road",
-	"description": "Talbot Ashe is paying the Company's full escort rate rather than the road wardens' half-price one, because the road wardens have lost two shipments this month and Ashe can't afford to be the third. His cargo doesn't matter to Steele - Ashe's coin does, and Ashe's coin only comes if Ashe is alive to pay it in Thornfield. Bandits have hit the eastern road twice already.",
+	"description": "Talbot Ashe is paying our full escort rate because the road wardens have lost two shipments this month and he can't afford to be the third. His cargo is his business. His coin only comes if he reaches Thornfield alive.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",

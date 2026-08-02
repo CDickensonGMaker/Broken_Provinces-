@@ -1,7 +1,7 @@
 {
   "id": "thieves_10_government_job",
   "title": "State Secrets",
-  "description": "Magistrate Holt keeps a decree locked in his office vault that gives the crown the legal right to seize Guild assets and arrest its members without trial - signed, sealed, waiting on the right excuse to be enacted. Lady Nightshade wants it gone before that excuse arrives. This is the most heavily guarded target the Guild has ever put you against, and she's not sending a footpad because a footpad would not come back.",
+  "description": "Magistrate Holt keeps a decree in his office vault that lets the crown seize everything we have and take our people without a trial. It is signed and waiting on an excuse. I want it out of that vault.",
   "giver_npc_id": "guildmaster_nightshade",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",

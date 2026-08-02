@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_08_rival_company",
 	"title": "Blood and Honor",
-	"description": "The Black Wolves' captain, Yorin Hask, undercut the Company on the last two contracts that came through Dalhurst by quoting half rate and skimping the escort. Steele doesn't care about honor here - he cares that clients who hire cheap and lose cargo blame the Iron Company's name by association. He's sending you to the Crossroads to confront Hask. What that confrontation becomes is between you and Hask; the Company only wants it to stop.",
+	"description": "Yorin Hask and his Black Wolves undercut us on two contracts through Dalhurst by quoting half rate and skimping the escort. When his clients lose cargo, they blame the Iron Company's name. Meet him at the Crossroads and stop it.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",

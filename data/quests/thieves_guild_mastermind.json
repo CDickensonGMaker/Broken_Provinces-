@@ -1,7 +1,7 @@
 {
 	"id": "thieves_guild_mastermind",
 	"title": "The Big Score",
-	"description": "The Guild's mastermind of operations has the job of a lifetime for you. Lord Ashford of Thornfield is hosting a gala at his estate - nobles from across the region, pockets heavy with gold and jewelry. But the real prize is Ashford's vault: a collection of artifacts worth more than the rest of his fortune combined. This is the big score. You'll need to infiltrate the party, bypass the vault's defenses, and escape with the goods before dawn. High risk. High reward. The kind of job that makes legends... or gets you hanged. Are you ready?",
+	"description": "Lord Ashford is hosting a gala at his estate outside Thornfield, and half the region's nobles will be standing in it. The vault under that house holds more than the rest of his fortune together. Be out before dawn.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_nightshade",

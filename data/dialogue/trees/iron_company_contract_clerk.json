@@ -7,7 +7,7 @@
     {
       "id": "greeting",
       "speaker": "Contract Officer",
-      "text": "The Iron Company always has work for proven soldiers. We handle military contracts - escort duty, siege support, monster battalions. Looking for action?",
+      "text": "Name, rank, and what you can carry - that's all I write down, and I have written down men who never came back for their pay. The contracts are on the ledger. What do you need?",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -399,7 +399,7 @@
     {
       "id": "farewell",
       "speaker": "Contract Officer",
-      "text": "Steel and honor, soldier. The Company awaits your return.",
+      "text": "Steel and honor. I'll keep your line open on the ledger.",
       "is_end": true,
       "auto_continue": "",
       "choices": []

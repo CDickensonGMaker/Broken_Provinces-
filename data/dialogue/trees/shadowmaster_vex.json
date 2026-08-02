@@ -69,7 +69,7 @@
     {
       "id": "bigger_jobs",
       "speaker": "Shadowmaster Vex",
-      "text": "Good. I've got something perfect for your talents. A merchant warehouse in Dalhurst, full of valuable imported goods. I want you to plan and execute a heist. Your choice: quick smash-and-grab, careful infiltration, or social deception.",
+      "text": "Good. There's a warehouse in Dalhurst holding imported goods worth more than the men watching it. Scout it, then take it. How you get through the door is your business.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -277,7 +277,7 @@
     {
       "id": "quest_08_offer",
       "speaker": "Shadowmaster Vex",
-      "text": "We have a problem. The Crimson Blades - a rival gang - are muscling in on Guild territory around Crossroads. I want them dealt with. Sabotage their operations, steal their goods, or negotiate a truce. Your choice shapes the Guild's reputation.",
+      "text": "The Crimson Blades have set up on our ground around the Crossroads and are collecting from people who already pay us. Find them. I want it stopped; I am not fussy about how.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -586,7 +586,7 @@
     {
       "id": "work_overview",
       "speaker": "Shadowmaster Vex",
-      "text": "I handle jobs that require more than sticky fingers. Warehouse heists, noble estates, rival gangs, internal security. The work that separates amateur pickpockets from professional thieves. Interested?",
+      "text": "Anything that needs a plan and a second plan. Warehouses, noble houses, rivals, and the ugly business of watching our own. I know more than I say, and I say very little.",
       "is_end": false,
       "auto_continue": "",
       "choices": [

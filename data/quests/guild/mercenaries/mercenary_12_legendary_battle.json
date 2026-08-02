@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_12_legendary_battle",
 	"title": "Hold the Line",
-	"description": "Bandits, deserters and dark cultists are converging on the Crossroads from three roads at once, and if it falls the whole region's trade dies with it. Steele is committing every soldier the Company has, including Denna and Oskar - the two recruits who made it back from Thornfield under your command and have fought under you ever since. He's telling you plainly: not everyone standing here tonight gets to walk away from it.",
+	"description": "Bandits, deserters and cultists are converging on the Crossroads from three roads at once, and the region's trade dies with it. I'm committing every soldier I have, Denna and Oskar included. Not everyone standing there tonight walks away.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",

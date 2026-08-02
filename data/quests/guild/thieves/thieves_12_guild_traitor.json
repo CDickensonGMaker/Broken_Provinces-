@@ -1,7 +1,7 @@
 {
   "id": "thieves_12_guild_traitor",
   "title": "Shadows Within",
-  "description": "The Guildmaster summons you urgently. Someone high in the Guild hierarchy is working with the authorities - feeding them information, sabotaging jobs. She suspects her own inner circle. Investigate three lieutenants: Vex, Raven, and Magnus. The truth will shock you.",
+  "description": "Someone in my inner circle is feeding the authorities and sabotaging jobs. That is Vex, Raven or Magnus, and I have known all three for years. Find out which, quietly, and do not tip them.",
   "giver_npc_id": "guildmaster_nightshade",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",

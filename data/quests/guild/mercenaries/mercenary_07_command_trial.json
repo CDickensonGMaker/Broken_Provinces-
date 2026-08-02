@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_07_command_trial",
 	"title": "Lead from the Front",
-	"description": "Four recruits, fresh off the same drills you ran: Denna, Oskar, Petrik, Ythan. Captain Steele is putting them under you against a goblin camp near Thornfield, and he's told you plainly that not all four are guaranteed to walk back - that's not a threat, it's the job. Lead them well and some of them see their next contract. Lead them badly and Steele buries recruits instead of training new ones.",
+	"description": "Four recruits off the same drills you ran - Denna, Oskar, Petrik, Ythan - and a goblin camp near Thornfield. They're yours. I'm not promising you that all four walk back.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",

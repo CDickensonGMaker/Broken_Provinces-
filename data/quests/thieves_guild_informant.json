@@ -1,7 +1,7 @@
 {
 	"id": "thieves_guild_informant",
 	"title": "Loose Lips",
-	"description": "The Guild has a problem: someone's been selling secrets. Guard patrols have been too well-prepared, safe houses compromised, jobs falling apart before they start. The fence has identified the rat - a former member named Tomas, now drinking away his guilt at the Crossroads inn. Your orders are clear: silence him. Permanently. But there are alternatives, if you're creative. A bribe might buy his silence and future service. Or intimidate him into fleeing the region entirely. The Guild wants results - dead, bought, or gone. Your choice how to deliver.",
+	"description": "Guard patrols have been too well prepared and safe houses too easy to find. Tomas used to be one of ours; now he drinks at the Crossroads inn. He does not talk to anybody again.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "thieves_guild_fence",
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "deal_with_tomas",
-			"description": "Deal with Tomas (kill, bribe, or intimidate)",
+			"description": "Settle with Tomas",
 			"type": "kill",
 			"target": "tomas_informant",
 			"required_count": 1,

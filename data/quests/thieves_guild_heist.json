@@ -1,7 +1,7 @@
 {
 	"id": "thieves_guild_heist",
 	"title": "The Dalhurst Job",
-	"description": "The Guild has a lucrative target: Merchant Lord Harwick, a wealthy trader who's been shorting protection payments. His manor sits in the Dalhurst merchant district, stuffed with coin and valuables. The job is yours to plan. Go in quiet through the servant's entrance at night, or disguise yourself as a guest during his evening parties, or simply smash a window and grab what you can before the guards arrive. The Guild doesn't care about method - only results. Just remember: the cleaner the job, the better your reputation.",
+	"description": "Merchant Lord Harwick has been shorting his protection payments, and his manor in the Dalhurst merchant district is stuffed with the difference. Take his ledger and enough coin to hurt. Quiet pays better than loud.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "thieves_guild_fence",
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "choose_approach",
-			"description": "Decide your approach and execute the heist",
+			"description": "Get inside Harwick's manor",
 			"type": "interact",
 			"target": "manor_vault",
 			"required_count": 1

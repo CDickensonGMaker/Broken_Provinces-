@@ -1,7 +1,7 @@
 {
   "id": "thieves_repeatable_jobs",
   "title": "Guild Contracts",
-  "description": "The Guild's contract board always has work on it for members who've earned the standing - theft, smuggling, debt collection, reconnaissance, a message that needs delivering with weight behind it. Whatever is chalked up today, the shape of it never changes: go and look at the mark, take the thing the contract names, come back and chalk it off.",
+  "description": "There is always something chalked on the board for members who have earned the standing - theft, smuggling, a debt, a message with weight behind it. Whatever it is today, the shape does not change. Look at the mark, take what is named, come back.",
   "giver_npc_id": "guild_contract_board",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",

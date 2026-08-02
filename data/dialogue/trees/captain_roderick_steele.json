@@ -215,7 +215,7 @@
     {
       "id": "enlistment_offer",
       "speaker": "Captain Steele",
-      "text": "We've got a goblin raiding party that's been hitting supply lines east of Dalhurst. Standard vermin, but organized. Take them out - all of them, including their warchief. Bring back the warchief's battle standard as proof. Do that alone and without dying, and you'll have earned your place.",
+      "text": "There's a goblin party hitting supply lines east of Dalhurst. Organized, which is the part I don't like. Kill them, warchief included, and bring me his standard. Do it alone and you've earned your place.",
       "is_end": false,
       "auto_continue": "",
       "choices": [

@@ -1,7 +1,7 @@
 {
   "id": "thieves_04_debt_collection",
   "title": "The Sailor's Debt",
-  "description": "Garrett borrowed 200 gold from the Guild three weeks ago, claiming it was for ship repairs, and drank every coin of it instead. He's gone to ground in Whaler's Abyss rather than face what he owes. The Guild doesn't care why he needed it - a debt that goes unpaid once goes unpaid by everyone, and Raven wants that word to never get around.",
+  "description": "Garrett took two hundred gold off us for ship repairs three weeks ago and drank it. He has gone to ground in Whaler's Abyss rather than face me. A debt unpaid once goes unpaid by everybody.",
   "giver_npc_id": "raven_thief_contact",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",

@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_repeatable_contracts",
 	"title": "Company Contracts",
-	"description": "There's always a client on Steele's ledger who needs professionals and can pay for them - the Company doesn't run on glory contracts, it runs on the steady ones nobody writes songs about. Take what's on the board, do the job clean, and the pay is consistent. That's the whole trade once the war stories stop.",
+	"description": "There's always a client on the ledger who needs professionals and can pay for them. The Company doesn't run on the contracts they write songs about. Take what's on the board and do it clean.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",

@@ -281,7 +281,7 @@
     {
       "id": "quest_03_offer",
       "speaker": "Raven",
-      "text": "The Guild needs a new fence in Thornfield. I need you to smuggle this package of goods to our contact there - a man named Silas. Guards patrol the road, so you'll need to be clever. Get the package to Silas, get confirmation, report back.",
+      "text": "We need a fence in Thornfield. Take this to a man called Silas and bring back his word that he has it. The road is patrolled - that part is yours, not mine.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -512,7 +512,7 @@
     {
       "id": "quest_05_offer",
       "speaker": "Raven",
-      "text": "This one requires subtlety. A merchant in Millbrook has been causing problems for Guild operations. We have leverage on him - certain... indiscretions. Deliver this sealed letter to his home and make it clear that compliance is expected. Classic blackmail.",
+      "text": "A merchant in Millbrook has been making our work harder than it needs to be. He has been careless about something, and this letter says so. Put it in his hand and stay while he reads it.",
       "is_end": false,
       "auto_continue": "",
       "choices": [

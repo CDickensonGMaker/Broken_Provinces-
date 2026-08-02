@@ -85,7 +85,7 @@
     {
       "id": "initiation_offer",
       "speaker": "Hooded Figure",
-      "text": "Simple job. There's a merchant named Hartwin who runs a general goods shop in the market district. He keeps a ledger documenting all his transactions - including some rather... dubious dealings. We want that ledger. Steal it without getting caught, and you're in.",
+      "text": "A shopkeeper on the market square keeps a ledger with more in it than goods. We want the ledger. Take it without being seen and you are in.",
       "is_end": false,
       "auto_continue": "",
       "choices": [

@@ -1,7 +1,7 @@
 {
   "id": "thieves_03_fence_connection",
   "title": "Moving Goods",
-  "description": "Everything the Guild lifts in Thornfield right now has to be hauled back to Dalhurst to sell, and every mile of that is a mile a patrol can search you. Silas will take the trade off the Guild's hands locally if he trusts you're real - which means one delivery, clean, through guards who fine and search anyone carrying the wrong bag at the wrong hour.",
+  "description": "Everything we lift in Thornfield gets hauled back to Dalhurst to sell, and every mile of that is a mile a patrol can search you. Silas will take the trade locally if he believes you are real. One delivery.",
   "giver_npc_id": "raven_thief_contact",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",

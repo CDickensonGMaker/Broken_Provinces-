@@ -1,7 +1,7 @@
 {
   "id": "thieves_13_right_hand",
   "title": "The Guildmaster's Trust",
-  "description": "You've proven yourself time and again. Guildmaster Nightshade has one final test - the most ambitious heist in Guild history. A treasure convoy carrying priceless artifacts travels from Kazer-Dun Entrance through Elder Moor. Plan the heist, assemble your team, and execute it perfectly. Success means becoming Nightshade's right hand.",
+  "description": "A treasure convoy runs from Kazer-Dun Entrance through Elder Moor carrying artifacts out of the dwarven vaults. I want it taken. Do this and you run operations at my side.",
   "giver_npc_id": "guildmaster_nightshade",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",
@@ -16,20 +16,20 @@
     {
       "id": "obj_choose_ambush_site",
       "type": "choice",
-      "description": "Choose ambush location (affects difficulty and rewards)"
+      "description": "Choose where to take the convoy"
     },
     {
       "id": "obj_recruit_team",
       "type": "talk",
       "target": "thieves_guild_recruiter",
-      "description": "Recruit team members (specialists improve success chance)"
+      "description": "Recruit the specialists you need"
     },
     {
       "id": "obj_acquire_resources",
       "type": "collect",
       "target": "heist_supplies",
       "required_count": 1,
-      "description": "Acquire necessary supplies (rope, smoke bombs, etc.)"
+      "description": "Acquire rope, smoke and whatever else it takes"
     },
     {
       "id": "obj_execute_heist",

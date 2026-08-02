@@ -63,7 +63,7 @@
           "actions": []
         },
         {
-          "text": "[Smuggling] Transport package from Dalhurst to Thornfield - 175 gold",
+          "text": "[Smuggling] Deliver a package from Dalhurst to Thornfield - 175 gold",
           "next": "smuggling_details",
           "conditions": [],
           "actions": []

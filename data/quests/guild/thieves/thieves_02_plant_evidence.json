@@ -1,7 +1,7 @@
 {
   "id": "thieves_02_plant_evidence",
   "title": "Framed",
-  "description": "The city guard has been asking questions around the jeweler's row since the last string of thefts, and Raven wants that attention pointed somewhere that isn't the Guild. Marcus the blacksmith fits: he delivered hinges to that street the same week, he owes the jeweler for scrap he never paid off, and he has a wife and two children who will lose the forge along with him. He did nothing. That is exactly why he was picked.",
+  "description": "The guard has been asking questions on the jeweler's row and I want them asking somewhere else. Marcus the blacksmith delivered hinges to that street and owes the jeweler for scrap. He did nothing, which is why he fits.",
   "giver_npc_id": "raven_thief_contact",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",

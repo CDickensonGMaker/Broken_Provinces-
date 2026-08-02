@@ -1,7 +1,7 @@
 {
   "id": "thieves_05_blackmail",
   "title": "Leverage",
-  "description": "Lord Ashford has been leaning on Guild fences in Thornfield through the city watch, and Vex wants him leaned on back. Break into his manor, find whatever he's hiding in that study, and bring it to her. The letters turn out to be proof of slave trafficking - worse than Vex expected, and it changes nothing about the job. She wants leverage, not justice, and the only wired ending here is handing it to her.",
+  "description": "Lord Ashford has been leaning on our fences in Thornfield through the city watch. Get into his manor, find whatever he keeps in that study, and bring it to me. I want leverage, not justice.",
   "giver_npc_id": "shadowmaster_vex",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",

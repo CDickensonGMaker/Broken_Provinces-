@@ -1,7 +1,7 @@
 {
   "id": "thieves_01_light_fingers",
   "title": "Light Fingers",
-  "description": "Raven doesn't vouch for strangers to the Guild - not until she's watched them work. Horace's real ledger, the one with what he actually pays his apprentices and what he actually owes the tax collector, is the target: not for its value, but because taking it clean off a man who counts his coin every night proves you can be trusted with something that matters.",
+  "description": "Horace counts his coin every night. His real ledger - what he pays his apprentices, what he owes the tax collector - comes to me, clean, and off him. Then I will vouch for you.",
   "giver_npc_id": "raven_thief_contact",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",

@@ -1,7 +1,7 @@
 {
   "id": "thieves_08_rival_gang",
   "title": "Turf War",
-  "description": "The Crimson Blades, a rival gang, are muscling in on Guild territory around Crossroads. Vex wants them dealt with - sabotage their operations, steal their goods, or negotiate a truce. Your choice shapes the Guild's reputation.",
+  "description": "The Crimson Blades have moved onto our ground around the Crossroads and are taking coin that was ours. Find where they sleep. I do not much mind how they stop, only that they stop.",
   "giver_npc_id": "shadowmaster_vex",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",
@@ -16,7 +16,7 @@
     {
       "id": "obj_deal_with_rivals",
       "type": "choice",
-      "description": "Choose how to handle the rival gang"
+      "description": "Settle with the Crimson Blades"
     },
     {
       "id": "obj_report_outcome",

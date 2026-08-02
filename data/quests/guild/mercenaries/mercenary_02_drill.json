@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_02_drill",
 	"title": "Sword and Shield",
-	"description": "You're in. Now Steele has to make sure you don't cost anyone their life on the first real contract. Five veterans will run you through formation drills hard enough to leave bruises, because a recruit who's never been hit doesn't know how to hold a line when it matters. The obstacle course after is the easy part.",
+	"description": "You're in. A recruit who has never been hit doesn't know how to hold a line, so five veterans will drill you until you do. The obstacle course after is the easy part.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",

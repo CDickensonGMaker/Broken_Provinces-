@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_05_siege_support",
 	"title": "Breach the Walls",
-	"description": "The client is Ser Aldous Marrow, who holds the tenant land outside Willow Dale and has lost six families off it since the bandits fortified the hills there. He's paying the Company's siege rate - equipment, coordinated assault, the works - because his own guards tried the stronghold once and came back short three men. Break their defenses and there's land left to farm.",
+	"description": "Ser Aldous Marrow has lost six families off his tenant land since the bandits fortified the hills above Willow Dale. His own guards tried the stronghold once and came back three men short. He's paying our siege rate.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",

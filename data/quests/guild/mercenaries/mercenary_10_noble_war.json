@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_10_noble_war",
 	"title": "Proxy War",
-	"description": "House Corliss and House Vantry have argued over the grazing uplands above Mill Brook for two generations, and this year Vantry dammed the upper stream to water their own herds first. Corliss can't prove it's illegal and won't wait for a magistrate to decide, so they've hired the Iron Company instead. Steele took the contract because Corliss's coin is real and the dispute isn't his to judge - the shepherds who graze that land answer to whichever house wins, and neither side has asked them what they want.",
+	"description": "House Vantry dammed the upper stream above Millbrook to water their own herds first, and House Corliss will not wait on a magistrate. Corliss's coin is real and the dispute is not mine to judge. Nobody has asked the shepherds.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",

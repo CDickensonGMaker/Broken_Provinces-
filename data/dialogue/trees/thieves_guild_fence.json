@@ -142,7 +142,7 @@
     {
       "id": "sailors_debt_offer",
       "speaker": "Fence",
-      "text": "Simple. Find Brennan. Get the gold. Use whatever means necessary - persuasion, intimidation, force. Just don't cause a scene that brings the guards down on us. Bring me the 150 gold and you'll get your cut. Do we have a deal?",
+      "text": "Find him, get the gold, bring it here. I do not need to hear how. What I need is no guards, and no story going round the harbour.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -267,7 +267,7 @@
     {
       "id": "guild_info",
       "speaker": "Fence",
-      "text": "The Thieves Guild operates in every major city. We handle... acquisitions. Information. Favors. We don't steal from our own, and we don't bring heat from the guards. Follow those rules and you'll do well.",
+      "text": "We take work. We do not take from our own, and we do not bring the watch to this door. That is the whole of it, and it is more than I usually tell anyone standing where you are.",
       "is_end": false,
       "auto_continue": "",
       "choices": [

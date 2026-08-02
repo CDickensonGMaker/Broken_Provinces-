@@ -1,7 +1,7 @@
 {
   "id": "thieves_11_impossible_vault",
   "title": "The Impossible Vault",
-  "description": "Stealing the decree out from under the crown cost the Guild - bribed guards, a burned inside contact, safehouses abandoned in a hurry - and Nightshade needs the coffers filled before the next debt comes due. She's decided the vault beneath Elder Moor, the one three generations of thieves have failed to open, is where that gold comes from. No one is racing you to it. No one else has found the entrance in a hundred years.",
+  "description": "Taking that decree cost us - bribed guards, a burned contact, safehouses left in a hurry - and the coffers are thin. The vault under Elder Moor has beaten three generations of thieves. Nobody has found the door in a hundred years.",
   "giver_npc_id": "guildmaster_nightshade",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",

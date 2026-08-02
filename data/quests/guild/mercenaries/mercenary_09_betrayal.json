@@ -1,7 +1,7 @@
 {
 	"id": "mercenary_09_betrayal",
 	"title": "The Turncloak",
-	"description": "Two contracts in a row went bad in exactly the way that only happens when the other side already knew the route. Steele thinks it's Corporal Dain Wexley - four years in the Company, and four years of a moneylender in Dalhurst who's owned him since before he enlisted. Steele won't say the debt out loud until you bring back something that proves it; he's buried men for less than a rumor and he's not doing it again. Find the proof, then find out what Dain has to say for himself.",
+	"description": "Two contracts in a row went bad the way they only go bad when the other side already knew the route. Corporal Dain Wexley has owed a Dalhurst moneylender since before he enlisted. Bring me proof before you bring me a name.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "captain_roderick_steele",
