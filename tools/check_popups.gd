@@ -34,6 +34,7 @@ const POPUPS: Array[String] = [
 	"res://scripts/ui/intro_dialogue_ui.gd",
 	"res://scripts/ui/dialogue_box.gd",
 	"res://scripts/ui/conversation_ui.gd",
+	"res://scripts/ui/options_menu.gd",
 ]
 ## Not listed: the panels under scripts/ui/panels/. They are pages inside
 ## GameMenu, not popups - they have no chrome of their own and several build

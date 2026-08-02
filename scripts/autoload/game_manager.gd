@@ -55,8 +55,14 @@ const GOBLIN_CAMP_LOCATIONS: Array[String] = [
 ]
 
 func _ready() -> void:
-	# Set default UI scale to 68%
-	get_tree().root.content_scale_factor = 0.68
+	# Player preferences - window size, vsync, UI scale, volumes, keybinds -
+	# live in user://settings.cfg, not in the save file, and are applied before
+	# any menu exists. With no file present every value falls back to the
+	# project default, including the 68% UI scale this used to hardcode.
+	GameSettings.apply_window_settings(get_tree())
+	# The rest needs AudioManager and DiceManager, which do not exist yet:
+	# GameManager is the first autoload in the list.
+	GameSettings.apply_all.call_deferred(get_tree())
 
 	# Set custom cursor
 	_setup_custom_cursor()

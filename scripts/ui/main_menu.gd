@@ -83,6 +83,13 @@ func _ready() -> void:
 	load_btn.pressed.connect(_on_load_game)
 	menu_container.add_child(load_btn)
 
+	# OPTIONS button - the options screen was reachable only mid-game until 8/2,
+	# which meant a player could not change the window size or the volume
+	# without starting a run first.
+	var options_btn := _create_menu_button("OPTIONS")
+	options_btn.pressed.connect(_on_options)
+	menu_container.add_child(options_btn)
+
 	# Spacer
 	var spacer := Control.new()
 	spacer.custom_minimum_size = Vector2(0, 20)
@@ -121,6 +128,14 @@ func _ready() -> void:
 	version_label.add_theme_font_size_override("font_size", 12)
 	version_label.add_theme_color_override("font_color", Color(0.4, 0.4, 0.4))
 	add_child(version_label)
+
+
+func _on_options() -> void:
+	AudioManager.play_ui_confirm()
+	var options := OptionsMenu.new()
+	options.name = "OptionsMenu"
+	add_child(options)
+	options.show_popup()
 
 
 func _create_menu_button(text: String) -> Button:
