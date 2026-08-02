@@ -780,18 +780,19 @@ func _create_exits() -> void:
 		exit.collision_layer = 0
 		exit.collision_mask = 2  # Player layer
 		exit.monitoring = true
-		exit.body_entered.connect(_on_exit_entered.bind(direction))
+		exit.body_entered.connect(_on_exit_entered)
 
 		add_child(exit)
 
 
-func _on_exit_entered(body: Node3D, direction: int) -> void:
+func _on_exit_entered(body: Node3D) -> void:
 	if not body.is_in_group("player"):
 		return
 
-	# Transition to wilderness
-	if SceneManager:
-		SceneManager.transition_to_adjacent_room(direction)
+	# Hand the player back to cell streaming, the way ZoneDoor does.
+	# Each exit still carries its "exit_direction" meta for a future
+	# walk-into-the-adjacent-cell exit.
+	SceneManager.return_to_wilderness()
 
 
 func _spawn_npcs() -> void:

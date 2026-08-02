@@ -216,8 +216,7 @@ func _teleport_player(player: Node3D) -> void:
 			portal_teleported.emit(self, destination_position)
 	else:
 		## Cross-scene teleport via SceneManager
-		if SceneManager:
-			SceneManager.goto_scene(destination_scene, destination_spawn_id)
+		SceneManager.change_scene(destination_scene, destination_spawn_id)
 		portal_teleported.emit(self, destination_position)
 
 	activate()
