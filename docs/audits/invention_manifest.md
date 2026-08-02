@@ -430,3 +430,210 @@ in `wave_b_dispositions.md`; and the lore relics that touch bible `[OPEN]`s
 (`sacred_hourglass`, `paradox_stone`, `crown_of_mountain_kings`,
 `hammer_of_first_king`, `soulbound_phylactery`). Those remain validator
 *warnings*, which is where they belong.
+
+---
+
+## Quest-quality pass, 8/2 - every name written into 182 quests
+
+The quest pass (`docs/audits/quest_quality_audit.md`, `docs/design/quest_web.md`)
+rewrote 180 errand quests and touched two more for the soulstone undercurrent.
+Giving a quest a threat means giving it somebody to threaten, so this pass
+invented a great many farmers, foremen, captains and dead men.
+
+**Everything below is prose colour.** Not one row invented an item id, NPC id,
+faction id or enemy id - the validator held at 0 errors and the warning count did
+not rise, which is the mechanical proof of it. Every name here exists only inside
+a `description` or a `notes` string; nothing in the game looks any of them up. A
+name Caleb dislikes is a find-and-replace in one file.
+
+**Three things this pass deliberately did not invent:**
+
+1. Any answer to a bible `[OPEN]`. `elven_ambassador` and `dwarf_messenger` were
+   where the temptation was strongest - the treaty is written as road access and
+   jurisdiction, and the dwarf message is stated in outline and takes no position
+   on the succession.
+2. The soulstone undercurrent's owner. Twelve quests carry a detail; nothing
+   anywhere carries a buyer. See `docs/audits/wave_b_dispositions.md` 2l.
+3. What the soulstones do for the goblin king. Untouched, and Kazan-Dun was
+   deliberately left with no touchpoint in it so that the province-wide buying
+   cannot be read as an answer to the siege.
+
+Rows are grouped by the batch that wrote them. Formats differ slightly between
+groups because eight writers filled them in; the four columns are the same
+everywhere - **what · where it lives · why it was needed · what it is built on**.
+
+
+### Bounty board (14 quests)
+
+| What | Where it lives | Why it was needed | What in the bible it is built on |
+|---|---|---|---|
+| Captain Bess Ordell (Thornfield guard captain) | `bandit_patrol.json` description/notes | Notice needed a named voice for the guard-captain's irritation and the soulstone touchpoint (audit row #5) | No bible basis - local colour; faction is `human_empire`, town is Thornfield per existing data |
+| Caravan-master Otto Praed, the Hollow Vein mine | `basilisk_lair.json` description/notes | Merchant Guild notice needed a named payer and a named mine to give the dead miners and lost shipments a stake | No bible basis - local colour; Dalhurst is the existing merchant hub |
+| Ferris Coale (missing villager) | `cultist_activity.json` description/notes | Millbrook common-folk notice needed a named person lost to the temple, not an abstraction | No bible basis - local colour |
+| Guildmaster Tam Ashby, three unnamed trappers | `dire_wolf_pack.json` description/notes | Hunters' Guild voice needed a professional reason (trap lines lost) distinct from the ordinary-wolf bounty in the same town | No bible basis - local colour |
+| Watch-Sergeant Coel Renn | `goblin_scouts.json` description/notes | Human Empire militia notice needed a named officer whose count of paired scouts makes the "column behind them" stake concrete | No bible basis - local colour |
+| Dalhurst apothecary (unnamed), fever among Millbrook mill workers | `medicine_delivery.json` description/notes | Turn-in-to-NPC quest needed a real illness, a source and a worsening clock in prose (no data hook existed to wire it) | No bible basis - local colour |
+| Garrison Captain Yorick Dane, Hollow's Bend | `ogre_menace.json` description/notes | Elder Moor human_empire notice needed a distinct captain and place-name from the other Elder Moor human_empire bounty (urgent_dispatch) | No bible basis - local colour |
+| Warehouse-master Corin Petsch | `rat_extermination.json` description/notes | Merchant Guild notice needed a named account holder to make "coin nobody stole, just eaten" land | No bible basis - local colour |
+| Foreman Alsett, Cutter's Claim mine | `spider_infestation.json` description/notes | Merchant Guild notice needed a distinct mine name and foreman from basilisk_lair's Hollow Vein, in the same town | No bible basis - local colour |
+| Widow Sarel | `undead_rising.json` description/notes | Common-folk notice needed a named villager who personally re-buried her own husband, to carry the stake instead of an abstract totem | No bible basis - local colour. Notes explicitly avoid naming who made the totem, since that risks the bible's open goblin-king/soulstone mechanism |
+| Elder Moor watch turning back a supply column for Thornfield's garrison | `urgent_dispatch.json` description/notes | The original text asserted "urgent" with no content; needed a concrete reason two garrisons would correspond, without touching the soulstone thread (which is exclusive to bandit_patrol per the brief) | No bible basis - local colour; both towns and the human_empire faction already exist |
+| Hale farmstead, three sheep and a plow-ox | `wyvern_hunt.json` description/notes | Hunters' Guild notice needed a named farm and a concrete loss, plus the guild's own memory of wyverns escalating from deer to livestock | No bible basis - local colour |
+
+No bible `[OPEN]` was touched or resolved. No item/NPC/faction/enemy id was invented - every proper name above is prose colour only, never referenced as a data id.
+
+
+### Three-beat chains, first eight (24 quests)
+
+| What | Where it lives | Why it was needed | What in the bible it is built on |
+|---|---|---|---|
+| Tome name "The Ashgrave Cantos" | `cursed_tome_1.json` description | The stolen book needed a concrete name so the scholar's fear reads as specific, not generic "dark magic" | No bible basis - local colour |
+| Shaken cataloguer boy (unnamed) | `cursed_tome_1.json` description | Gives the scholar's motive a source (he feels responsible for the loss) and shows the tome's danger without naming a mechanism | No bible basis - local colour |
+| Effect of reading the tome untrained ("lost the rest of that week") | `cursed_tome_1.json` description | Concrete, small-scale consequence for the threat, in place of "forbidden knowledge" | No bible basis - local colour |
+| Old woman's ring is her mother's/grandmother's, three generations | `family_heirloom_1.json` description | Grounds the giver's motive (shame at asking) in something specific rather than "an heirloom" | No bible basis - local colour |
+| Empty ring setting / missing stone | `family_heirloom_2.json` description | Soulstone touchpoint directed by `docs/design/quest_web.md` #3 - mandated by the brief, not invented content in the "new fact" sense | Built on `docs/design/quest_web.md` Tell 1 and the SoulstoneEconomy system |
+| Widow married ten years, locket portrait is not her husband | `lost_locket_1.json` / `lost_locket_2.json` description | REWRITE_SPEC-directed "turn" (one of the three examples given verbatim in the spec: "a locket with a portrait in it that is not the husband") | No bible basis - local colour, per spec's own example |
+| Locked case not recovered, thief paid to leave the rest | `market_theft_2.json` description | Soulstone touchpoint directed by `docs/design/quest_web.md` #4 | Built on `docs/design/quest_web.md` Tell 1 and the SoulstoneEconomy system |
+| Courier not robbed (purse and letter both intact); death reads as accident | `missing_courier_1.json` / `missing_courier_2.json` description | REWRITE_SPEC-directed "turn" (one of the three examples given verbatim: "a courier who was not robbed") | No bible basis - local colour, per spec's own example |
+| Merchant's stated reason for refusing to pay ransom ("every merchant who pays once pays again") | `rescue_merchant_daughter_1.json` description | REWRITE_SPEC mandate for this chain: the merchant's choice not to pay is the whole story and must cost him something in the prose | No bible basis - local colour, mandated by the batch brief |
+| Merchant's household cost (can't speak to his daughter once alone) | `rescue_merchant_daughter_3.json` description | Same mandate - the "cost" landing in part 3 | No bible basis - local colour |
+| Girl's name "Elin" | `rescue_missing_child_1/2/3.json` | The chain needed a name to carry the turn (village assumption of abduction vs. what actually happened) across three files without a giver voice in parts 2-3 | No bible basis - local colour |
+| Elin followed the cult's lights on her own, was not dragged off | `rescue_missing_child_1.json` / `rescue_missing_child_2.json` description | REWRITE_SPEC-directed "turn," adapted from the spec's "ransom note in her own handwriting" example - the point being the village's assumption of abduction is wrong even though rescue is still necessary | No bible basis - local colour, per spec's own example shape |
+| Guard's reasoning for requisitioning scouted intel before requesting help (bandit_justice) | `bandit_justice_1.json` description | Giver motive requirement - guard voice, empire authority procedural tone | No bible basis - local colour |
+| Merchant's trade-politics reasoning (accusing wrong neighbor costs custom) | `market_theft_1.json` description | Giver motive requirement - merchant voice | No bible basis - local colour |
+
+
+### Three-beat chains, last seven (21 quests)
+
+| What | Where it lives | Why it was needed | What in the bible it is built on |
+|---|---|---|---|
+| Fenna Voss, name and situation (followed a preacher, taken for sacrifice at full moon, does not want rescuing) | `rescue_sacrifice_victim_1/2/3.json` prose | Audit verdict required naming the victim and giving the chain a distinct rescue "kind" (does not want to come back), per batch brief instruction to differentiate the four rescue chains | No bible basis - local colour. Cult/ritual/full-moon premise already existed in the file; the willing-victim twist and her name are new. |
+| Corporal Wex Bramwell and Private Toma Idle, names and fates (two-man patrol, one already dead on arrival) | `rescue_soldier_1/2/3.json` prose | Batch brief required a "too late for part of it" rescue kind; original file had one unnamed soldier and no second victim | No bible basis - local colour. Thornfield garrison/guard captain context already existed. |
+| Perrin, name and backstory (apprentice who sought the cultists out himself after his master refused to teach him a working) | `rescue_wizard_apprentice_1/2/3.json` prose | Batch brief required a "captors were not the danger" rescue kind; original framed cultists as straightforward kidnappers | No bible basis - local colour. Thornfield wizard/mages circle context already existed. |
+| Tomas, name (woodsman husband, straightforward captured-and-recovered) | `rescue_woodsman_1/2/3.json` prose | Batch brief required giving the wife-giver a voice and naming the husband for the "straight and grim" rescue kind | No bible basis - local colour. Elder Moor woodsman's wife giver NPC already existed. |
+| The eastern lookout rise/outpost as a strategic overwatch position (not merely a bandit camp robbing travelers), and the captain's manpower figure ("eleven men for a wall that wants twenty") | `road_safety_1/2/3.json` prose | Batch brief required distinguishing road_safety from bandit_justice (a different chain about caravan raiding out of Elder Moor); reframed as a garrison-manpower problem | No bible basis - local colour, invented to differentiate two mechanically identical chains per explicit batch instruction. |
+| The merchant's overpriced, unnamed sale (one ledger leaf, sold at 3x value, paid in new imperial coin, buyer named no house) and the abandoned chest's untouched coin + four-scratch mark | `stolen_ledger_1.json`, `stolen_ledger_2.json` prose | Mandated soulstone-undercurrent touchpoints, exact content specified verbatim by the batch brief and `docs/design/quest_web.md` touchpoints #1-2 | Built directly on `docs/design/quest_web.md`'s soulstone-undercurrent brief (Tells 1-3) and the bible's soulstone-scarcity premise (SoulstoneEconomy, Kazan-Dun goblin king wanting soulstones). Never names soulstones, patterns, or a buyer, per the brief's hard rules. |
+| The seed-relic's function (spoken blessing over the spring planting, three-week deadline) and the priestess not trusting the guard's speed | `stolen_relic_1/2/3.json` prose | Original file's relic had no name, no function and no reason a cult wanted it specifically (audit verdict); needed a concrete, nameable stake per the rewrite spec's bar | No bible basis - local colour. Temple of Gaela / harvest themes already exist elsewhere in the game (gaela quest line), so a Gaela-priestess relic tied to planting is consistent with established temple flavor, not new to the world. |
+
+
+### Adventurer's Guild (14 quests)
+
+| What | Where it lives | Why needed | Built on |
+|---|---|---|---|
+| Oda Renn, a hauler who paid the Guild to clear a wolf den | `data/quests/guild_initiation.json` | Spec required `guild_initiation` and `adventurers_01_proving_ground` to read as two different contracts with two different clients rather than a merged duplicate. Vorn's own dialogue already frames the wolves as "killing merchants" without naming one. | Existing wolf-pack threat already in both quest files and `guildmaster_vorn.json` dialogue; no new id, prose only. |
+| Corrin Dale, a grain factor whose warehouse is losing stock to rats | `data/quests/guild/adventurers/adventurers_02_pest_control.json` | Audit: "the merchants are 'desperate' in the abstract." Needed one named person losing something specific per quest. | Existing warehouse/merchant setup in the quest and Vorn's dialogue ("merchants are terrified"). |
+| Ansel Crake, a Millbrook shepherd who lost his flock | `data/quests/guild/adventurers/adventurers_06_monster_hunt.json` | Audit: "livestock mutilated... no Millbrook person attached." | Millbrook already an established town with an elder NPC in the quest's own objectives. |
+| Toman Ashcroft, a Thornfield farmer who lost eleven sheep and both dogs; Thornfield's council vote to abandon the eastern fields at first frost | `data/quests/guild_contract_elite.json` | Audit: "no farmer, no lost herd, no consequence for leaving it alive." | Existing Thornfield farmlands/farmer NPC target already referenced in the quest's own objectives. |
+| Kettil Marsh, the mine foreman who pulled his crew after losing two miners | `data/quests/guild_contract_spiders.json` | Audit: "the fled miners are the stake and never appear." | Existing abandoned-mine premise already in the quest text. |
+| Grain factors (unnamed collective) who pooled coin to end the raids on the Millbrook south road; the soulstone-buyer detail (new-struck, non-Dalhurst coin, unnamed hirer) | `data/quests/guild_contract_bandits.json` | Audit: "the merchants who are being ambushed are never named." Soulstone touchpoint #6 mandated by `docs/design/quest_web.md`, exact wording assigned to this quest id. | Existing bandit-camp/captain premise in the quest; soulstone detail is verbatim per the quest_web.md brief, not new invention beyond assigning it prose placement. |
+| Iron Blades buying a second key-fragment map off a Thornfield fence (rival threat) | `data/quests/guild/adventurers/adventurers_12_legendary_contract.json` | Audit: "a loot run dressed as a legend. Nobody in the world is affected either way." Needed a client-facing stake for a dungeon-mapping contract per batch instructions ("somebody wants it mapped, and wants it mapped before somebody else does"). | Iron Blades already an established rival guild introduced in `adventurers_09_rival_guild.json`; no new faction or id, prose only. |
+| The Thieves Guild has already sent someone to scout the new Willow Dale section | `data/quests/guild/adventurers/adventurers_07_dungeon_delve.json` | Same instruction as above, applied to the earlier dungeon-delve quest. Audit: "Map it, clear it, keep what you find. No threat at all." | Thieves Guild already an established faction/questline in this game; no new id, prose only ("Vorn has heard, from where he won't say"). |
+| Three reports of a winged creature over the Kazer-Dun quarry camp; stonecutters idled | `data/quests/guild/adventurers/adventurers_10_dragon_rumor.json` | Audit: "'Don't engage' is set up and never becomes a decision. Trophy hunt." Needed a nameable group at risk. | Kazer-Dun entrance region already exists and is the quest's own target zone; "quarry camp" is local colour, no bible basis beyond the region existing. |
+| Vorn hasn't fought a real bout in six years; the Guild's best contracts go to whoever wins the Champion trial, displacing waiting Elites | `data/quests/guild/adventurers/adventurers_13_champion.json` | Audit: "A title fight... carries no threat and no world consequence." Batch brief: "what happens to the person you displace." | The quest's own objective already targets Vorn himself (`vorn_champion_form`), not Katrina (who appears instead in `guild_elite_trial.json`'s dialogue) - this rewrite worked with the data's actual target rather than the possibly-inconsistent dialogue reference. No bible basis - local colour. |
+| Katrina Steelwind undefeated three years running; a loss costs her authority over the fighters beneath her | `data/quests/guild_elite_trial.json` | Audit: "Rite with no world consequence." Batch brief: "what the Guild does with a Champion, and what happens to the person you displace." | Katrina Steelwind already named and established as reigning champion in `guildmaster_vorn.json` dialogue and this quest's existing objectives; no new id. |
+
+No new item ids, NPC ids, faction ids, or enemy ids were created. No bible `[OPEN]` item was touched or resolved.
+
+
+### Arcane Circle and the Helvant apprenticeship (17 quests)
+
+- **Harmon Voss** (harbormaster, Dalhurst) · `data/quests/chains/wizard_field_test.json` description + `light_harbor_beacon` objective · the brief required naming the villager behind each of the four field-test beats · no bible basis - local colour.
+- **Ysolt Bracken** (well-owner, Thornfield) · `data/quests/chains/wizard_field_test.json` description + `purify_thornfield_well` objective · same · no bible basis - local colour.
+- **Denner Cobb** (carter, Crossroads) · `data/quests/chains/wizard_field_test.json` description + `clear_road_obstacle` objective, and `notes` · same, and specifically the brief's instruction that one named villager be written ungrateful despite being helped · no bible basis - local colour.
+- **Two archivists burned** (unnamed, Athenaeum basement) · `data/quests/guild/mages/mage_08_magical_disaster.json` description + notes · brief required "somebody is already hurt" for this quest specifically, replacing the old unearned "time is of the essence" framing · no bible basis - local colour, deliberately left unnamed since the quest has no room to develop them as characters.
+- **A dead Circle courier, branded with a Shadow Circle sigil** (unnamed) and **a Dalhurst patron waiting on a paid-for shipment** (unnamed) · `data/quests/guild/mages/mage_09_rival_circle.json` description + objectives · gave the Shadow Circle a concrete goal (poaching the Circle's own patron) per the audit's complaint that they "want nothing beyond something catastrophic" · no bible basis - local colour, built on the CLAUDE.md-documented fact that soulstone/enchanting patrons already exist in this world (`noble_soulstone_request`).
+- **Two missing caravan guards at the Crossroads shrine** (unnamed) · `data/quests/guild/mages/mage_11_planar_breach.json` description + objectives · brief required grounding the planar breach in named local stakes ("a breach near the Crossroads means the Crossroads, which has people in it") · no bible basis - local colour.
+- **Three council Magisters watching Elara's handling of the Shadow Circle incident**, **two Magisters who voted against sponsoring the player**, **two Adepts broken by grief after failing the Theorem of Infinite Recursion**, **an outside party asking after Willow Dale ahead of the player** (all unnamed) · spread across `mage_06`, `mage_09`, `mage_12`, `mage_13` descriptions/notes · gave the Circle the internal politics and rivals-inside-the-institution texture the brief specifically asked for ("Elara has rivals inside it and a reputation to protect. A Novice is a liability to her.") · no bible basis - local colour, consistent with the existing dialogue file's own reference to "the council debates" and "who might succeed me."
+- **The Circle's stone-cutter refusing to sell to them, and an unnamed buyer paying triple for the whole cut** · `data/quests/guild/mages/mage_03_reagent_gathering.json` description + notes · this is the assigned soulstone-undercurrent touchpoint (quest_web.md row 7, tell 2), written as an unexplained budget complaint per the brief's rules - no buyer named, no pattern called, nothing sinister · built directly on `docs/design/quest_web.md`'s own brief for this exact quest id.
+- **A Dalhurst merchant patron who already paid for the ring in `mage_04`**, **the Journeyman's endowment/patron in `mage_07`** (both unnamed) · gave institutional stakes (a paying customer, a lapsing grant) to two previously stakes-free quests · no bible basis - local colour, consistent with the Circle-has-patrons framing the brief assigned this batch.
+
+No item ids, NPC ids, faction ids or enemy ids were invented. No quest branch was added; `mage_10_forbidden_tome`'s notes record the unwired moral-choice branch that already existed in the file's own claims (necromancy/blood magic/dimensional-travel choice at `moral_choice`) without adding a `choice_consequences` entry.
+
+
+### Iron Company and Thieves Guild (24 quests)
+
+| what | where it lives | why it was needed | bible basis |
+|---|---|---|---|
+| Iron Company down forty soldiers since the Thornfield Rebellion, still short-handed | mercenary_01_enlistment.json, mercenary_02_drill.json (description/notes) | Gives Steele's recruiting a reason beyond "test combat prowess" | Reuses Captain Steele's own dialogue (captain_roderick_steele.json: "lost forty good soldiers" at Thornfield, twelve years ago). No new invention, only reused facts. |
+| Halworth timber concern (client), bandit toll on the Elder Moor logging road | mercenary_03_first_blood.json | Named client + threat for a contract that had neither | No bible basis - local colour |
+| Ser Aldous Marrow, tenant landholder near Willow Dale, six families driven off his land | mercenary_05_siege_support.json | Named client + threat for the stronghold assault | No bible basis - local colour |
+| Merchant Voss and his daughter Petra, held twice for ransom by the Bandit Hideout crew | mercenary_06_hostage_rescue.json | Named hostage + escalating threat + deadline | No bible basis - local colour |
+| Recruits Denna, Oskar, Petrik, Ythan under player command | mercenary_07_command_trial.json, reused in mercenary_12_legendary_battle.json | Step 3 directive: name the recruits, be honest some may not return; Denna/Oskar reused later as continuity | No bible basis - local colour |
+| Corporal Dain Wexley, the Iron Company traitor, in debt to a Dalhurst moneylender since before he enlisted | mercenary_09_betrayal.json | Step 3 directive: give the traitor a name and a person's motive, not a plot device | No bible basis - local colour |
+| Houses Corliss and Vantry, dispute over grazing uplands above Mill Brook (a dammed stream) | mercenary_10_noble_war.json | Step 3 directive: name the two houses and give each a distinct grievance | No bible basis - local colour. Deliberately placed in the uplands *above* Millbrook, not inside the hamlet itself, so it does not contradict millbrook_bandits.json / millbrook_elder.json's elder-run, noble-free hamlet. |
+| Iron Company contract to defend Mill Brook funded by a standing Dalhurst grain-buyers' arrangement (since Mill Brook itself can't afford Company rates) | mercenary_11_monster_battalion.json | Explains how an impoverished hamlet affords a mercenary company, without contradicting Bram's established poverty | No bible basis - local colour. The "forty-one people, one mill, nine-man militia who are also the harvest" facts themselves are reused verbatim from millbrook_bandits.json / millbrook_elder.json, not invented. |
+| Steele became Captain fifteen years ago after Hadrian Iron's death; worn down after the Crossroads battle, wants a trusted second | mercenary_13_second_command.json | Giver motive for the capstone duel | Reuses captain_roderick_steele.json dialogue facts (became_captain node) rather than inventing new ones. |
+| Horace's ledger records his real payroll and tax debts (not just "a ledger") | thieves_01_light_fingers.json | Gives the theft target a concrete, small stake per the bar's "name a specific thing" rule | No bible basis - local colour |
+| Marcus the blacksmith given a wife, two children, and a forge; framed because he delivered hinges near the jeweler's row and owed the jeweler for scrap | thieves_02_plant_evidence.json | Explicit Step 4 directive: give Marcus a family and a shop, make the frame-up's cost concrete | No bible basis - local colour |
+| Garrett's 200-gold debt explained as a lie about "ship repairs," spent on drink instead (reused from raven_thief_contact.json dialogue, not invented fresh) | thieves_04_debt_collection.json | Grounds the debt in a reason already established elsewhere in the game | Reused from raven_thief_contact.json dialogue (quest_04_story node), not new invention |
+| Lord Ashford's letters explicitly named as proof of slave trafficking in the description (previously only in the decorative moral_choice block) | thieves_05_blackmail.json | Moves an existing fact from an unwired decorative field into the actual deliverable prose | Already present in the file's own moral_choice block - relocated, not invented |
+| Magistrate Holt, named magistrate holding the royal decree | thieves_10_government_job.json | The magistrate was unnamed generic prose; naming him matches lady_nightshade.json's established (but nameless) magistrate character | No bible basis - local colour |
+| The royal decree's actual content (crown seizes Guild assets, arrests members without trial) moved into the main description | thieves_10_government_job.json | Previously the "threat" only existed in an unwired moral_choice block; the audit specifically flagged this as the threat that "cannot land" | Already present in the file's own moral_choice block - relocated, not invented |
+| Guild coffers strained by the cost of stealing the royal decree (bribed guards, a burned contact, abandoned safehouses), motivating the vault job | thieves_11_impossible_vault.json | Gives "the Guildmaster believes you can" a concrete reason tied to the preceding quest in the chain rather than legend for its own sake | No bible basis - local colour, but deliberately chained to thieves_10's established events rather than invented independently |
+
+No soulstone-undercurrent touchpoints in this batch (none of these 24 quest ids appear in `docs/design/quest_web.md`'s touchpoint table), and none were added.
+
+
+### Temples of Chronos, Gaela and Morthane (37 quests)
+
+- The Hollis family (Elder Moor farmers, grain failed to sprout) · `gaela_09_famine_threat.json` · audit named this quest's exact failure ("three towns investigated, none characterised, nobody starves") - needed one named household per town · no bible basis - local colour, parallel to the already-established farmer_edda thread from gaela_01-03
+- Tam (sick boy in Thornfield, healer running out of remedies) · `gaela_08_seed_of_life.json` · audit: "no sick person is written" · no bible basis - local colour
+- Osk and two tenement neighbours (Dalhurst dockworkers, sick, facing eviction) · `gaela_seed_of_life.json` (root duplicate of gaela_08) · needed a distinct townsman's-angle patient set so the duplicate pair reads as two different sicknesses, not one file twice · no bible basis - local colour
+- A tanner family, three unburied dead west of Crossroads, abandoned by their traveling party when fever hit · `morthane_01_last_rites.json` · audit: "who they were and why nobody came for them IS the quest" - the file had unburied dead nobody buried and no identity · no bible basis - local colour, written to fit Morthane's doctrine that rites are owed regardless of who the dead were
+- A Millbrook shepherd's flock as his entire livelihood (no wool, no mutton, no breeding stock if lost) · `gaela_bonus_shepherd_quest.json` · audit: "the shepherd's livelihood is the obvious stake and is unstated" · no bible basis - local colour
+- Dalhurst autumn festival cancelled the previous two years, now resuming · `gaela_bonus_bountiful_harvest.json` · audit: "gathers for a festival that is never held" · no bible basis - local colour
+- A Millbrook boatman (grain-barge ferryman, unnamed) reporting thinning cargo along his route · `gaela_blight.json` (root duplicate of gaela_06) · needed a distinct townsman's-angle giver-frame for the duplicate pair (temple copy already uses a devotee-led investigation naming an abandoned smallholding) · no bible basis - local colour
+- An abandoned smallholding at Willow Dale's edge, family salted their soil and moved to Dalhurst · `gaela_06_blight_source.json` · audit: "no victim named" · no bible basis - local colour
+- A widow on Cooper's Row, Dalhurst, hearing her dead husband's footsteps three nights running · `morthane_restless_soul.json` (root duplicate of morthane_02) · needed the townsman's-grief angle distinct from the temple copy's doctrinal-distinction framing · no bible basis - local colour
+- Two lay brothers of the Dalhurst Morthane temple who died on grave duty during the undead incursion · `morthane_cycle_broken.json` · audit: "a massive undead incursion... with no settlement written into it" - needed a concrete cost · no bible basis - local colour
+- Father Aldwin as Aberdeen's last remaining priest of Chronos (colleagues already dead) · `aberdeens_blessing.json` · audit gave no specific stake beyond a generic relic-recovery; needed to explain why the relic matters to him personally · no bible basis - local colour; Father Aldwin's name/id already existed in the file, only his backstory is new
+- The lich aspirant's motive stated as ordinary fear of death rather than unstated villainy · `morthane_07_lich_rumor.json` · audit: "no reason given for wanting it" · no bible basis - local colour, consistent with Morthane doctrine (condemns undeath regardless of the sympathetic reason behind it)
+- The rebirth ritual's real failure rate (priest has performed it twice, lost one celebrant) · `morthane_08_rebirth_ritual.json` · audit: "no stake, no chance for it to go wrong" · no bible basis - local colour
+- Crossroads' watch line and Thornfield's cemetery-keeper as concrete stakes in the undead-wave defense · `morthane_09_undead_army.json` · audit: "neither town has a person in it" · no bible basis - local colour
+
+## Soulstone touchpoint (per docs/design/quest_web.md, touchpoint 8)
+
+Written into `data/quests/temple/morthane/morthane_03_cemetery_duty.json` description only, per the quest_web brief: grave robbers left rings, coin and plate but took the small stones set into the grave-boards; four short scratches cut into the cemetery gate post, close together, like a tally that stopped at four. Never named, never explained, priest is furious about desecration and not curious about the economics. Not repeated in `temple_undead_menace.json`, which overlaps the same premise (Dalhurst cemetery, not Thornfield) but carries no soulstone detail, per the brief's instruction not to duplicate it.
+
+## Duplicates deliberately differentiated (notes recorded in each file)
+
+- `chronos_03_late_delivery.json` (temple, Thornfield mill wheel) / `temple_prophecy_chronos.json` (root, internal Chronist-order standing)
+- `gaela_06_blight_source.json` (temple, Willow Dale smallholding, devotee investigation) / `gaela_blight.json` (root, Millbrook boatman's report)
+- `gaela_08_seed_of_life.json` (temple, Tam's plague in Thornfield) / `gaela_seed_of_life.json` (root, Osk's tenement sickness in Dalhurst)
+- `morthane_02_restless_spirit.json` (temple, doctrinal distinction between lingering soul and undeath) / `morthane_restless_soul.json` (root, the widow's grief)
+- `morthane_03_cemetery_duty.json` (Thornfield cemetery, soulstone touchpoint) overlaps `temple_undead_menace.json` (Dalhurst cemetery) - not an exact duplicate, no detail repeated
+
+
+### Towns and standalone (31 quests)
+
+| What | Where | Why | Bible basis |
+|---|---|---|---|
+| Aldous Fenn, woodsman mauled by wolves | tharins_wolf_problem.json | Named victim for the trust-test wolf quest, distinct from logging_troubles' dead woodsmen | No bible basis - local colour |
+| Corin Talbot, dead woodsman with a wife and unfinished quota | logging_troubles.json | Named one of the two dead woodsmen the original description left abstract | No bible basis - local colour |
+| Old Yarrow, farmer who lost four sheep to a latch-opening wolf | wolf_pack_menace.json | Named victim distinguishing this pack (farms, south Thornfield) from eastern_wolves (loggers, east) | No bible basis - local colour |
+| Eastern cut/den encroachment as cause of eastern_wolves' aggression | eastern_wolves.json | Distinct cause from wolf_pack_menace and tharins_wolf_problem per spec's instruction to make the three wolf quests different problems | No bible basis - local colour |
+| Sage Brennan's shaking hands (aging) | tutorial_alchemy.json | Giver motive for teaching a stranger, per spec | No bible basis - local colour |
+| Martha's thin winter stores / short-handedness | tutorial_cooking.json | Giver motive for teaching a stranger, per spec | No bible basis - local colour |
+| Grom's backlog of repairs, one smith for the camp | tutorial_crafting.json | Giver motive for teaching a stranger, per spec | No bible basis - local colour |
+| Merrow's Kiss and two missing brothers | ghost_ship_rumors.json / harbor_ghost_ship.json | Named victims/stake for the ghost-ship two-parter | No bible basis - local colour |
+| Larton's stores estimated at ~6 weeks for a few hundred people | starving_south.json | Concrete stake, small numbers per voice spec | No bible basis - local colour |
+| Aberdeen down to ~1 month of stores | aberdeen_relief.json | Concrete stake, small numbers per voice spec | No bible basis - local colour |
+| Larton/Aberdeen four quests read as one regional crisis (blight + blockade + bandit warehouse seizure + goblin-blocked road) | starving_south.json, aberdeen_relief.json, supply_line_crisis.json, retake_harbor.json | Spec's explicit instruction to cross-reference the cluster into one situation from four desks | No bible basis - local colour; ghost_pirate_investigation (already-shipped blockade) used as the root cause tying it together |
+| Ambassador Liraethel's treaty content: elven road access + elven law over elven people in human courts | elven_ambassador.json | Gave the treaty concrete stakes without touching the elixir, the missing king, or the elf claimant/son (all bible [OPEN]) | Bible: "elves not fond of humans generally" - treaty framed as easing that friction, not resolving succession/elixir |
+| Willow Dale seals failing "days, not weeks", threat reaching farms outside Dalhurst | keepers_initiation.json | Stated consequence per audit; matches aldric_vane_keepers.json's own "villages disappear" line | Built on existing dialogue file's own claims, not new invention beyond a timeframe |
+| keepers_test finding: fake job postings, a labor-trafficking racket across three towns | keepers_test.json | Audit required the finding be stated; this is a plain, non-supernatural read consistent with "Keepers work unseen" | No bible basis - local colour |
+| Oswald Pell, injured carter | bandit_trouble.json | Named victim for a bounty-board quest with no other voice | No bible basis - local colour |
+| Old Pell, fisherman who won't go back on the water | lake_creature.json | Named victim/stake | No bible basis - local colour |
+| Borin Stonehammer's message content, stated only in outline (goblins past the passes, Kazer-Dun needs aid) | dwarf_messenger.json | Gave the letter stakes without naming the dwarf king or resolving the kazan_dun_* succession arc | Bible: goblin siege of the dwarf hold; deliberately left agnostic on who holds the gate to avoid contradicting kazan_dun_02/03/04 |
+
+## Soulstone touchpoints (per docs/design/quest_web.md - not new invention, executing the brief's exact assigned details)
+
+| Quest | Detail written | Row |
+|---|---|---|
+| missing_miner.json | Erik's claim worked over carefully; tools/stake left; four scratches on the shaft post | Row 9 |
+| willow_dale_investigation.json | Manifest tallies except "one case, sealed, no description"; merchant won't discuss it | Row 10 |
+| sailors_debt.json (touchpoint only) | Brennan's unexplained fortnight-old money; buyer wasn't the payer | Row 11 |
+| whalers_debt.json (touchpoint only) | Selene's debt cleared in one lump three weeks back; won't say what she sold or to whom | Row 12 |
+
+No new NPC ids, item ids, faction ids, or enemy ids were introduced anywhere in this batch. All names above are prose-only characters inside description/objective text, not data references. No `choice_consequences` entries were added; no objectives were added or removed; no bible `[OPEN]` was resolved.
+
