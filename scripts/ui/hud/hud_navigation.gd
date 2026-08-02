@@ -368,8 +368,8 @@ func _get_friendly_region_name(zone_id: String) -> String:
 		# Bandit Hideout
 		"bandit_hideout": "Bandit Hideout",
 		"bandit_hideout_exterior": "Bandit Hideout",
-		# Kazer-Dun
-		"kazer_dun_entrance": "Kazer-Dun Entrance",
+		# Kazan-Dun
+		"kazan_dun_entrance": "Kazan-Dun Entrance",
 		"kazan_dun": "Kazan-Dun",
 		"city_kazan_dun": "Kazan-Dun",
 		# Crossroads

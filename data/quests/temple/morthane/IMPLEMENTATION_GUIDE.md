@@ -41,7 +41,7 @@ Quick reference for implementing the Morthane quest chain in Catacombs of Gore.
 3. **Undead Lord Malthor** (`undead_lord_malthor`)
    - Level: 30-35
    - HP: 400-500
-   - Found in: Kazer-Dun Entrance catacombs (Quest 10 final boss)
+   - Found in: Kazan-Dun Entrance catacombs (Quest 10 final boss)
    - Faction: Undead
    - Special: Strongest undead, multi-phase fight
 
@@ -117,8 +117,8 @@ These are typically Node3D markers with metadata or Area3D triggers.
 - `corruption_nexus` - Source of undead (Quest 9)
 - `corruption_nexus_purified` - After cleansing (Quest 9)
 
-### Kazer-Dun Entrance
-- `kazer_dun_catacombs` - Entrance to deep catacombs (Quest 10)
+### Kazan-Dun Entrance
+- `kazan_dun_catacombs` - Entrance to deep catacombs (Quest 10)
 - `morthane_champion_altar` - Final blessing altar (Quest 10)
 
 ---
@@ -341,6 +341,6 @@ If adding VO for the Priest of Morthane:
 **Geographic Coverage:**
 - Elder Moor (quest hub)
 - Dalhurst, Thornfield, Millbrook, Crossroads
-- Willow Dale, Bandit Hideout, Kazer-Dun Entrance
+- Willow Dale, Bandit Hideout, Kazan-Dun Entrance
 
-All content stays north of Kazer-Dun as required.
+All content stays north of Kazan-Dun as required.

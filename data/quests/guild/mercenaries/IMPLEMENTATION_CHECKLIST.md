@@ -36,7 +36,7 @@ All quest JSON files created in `data/quests/guild/mercenaries/`:
 - [x] All quests have faction: "iron_company"
 - [x] Quest chain properly linked with `next_quest` field
 - [x] Prerequisites correctly reference previous quests
-- [x] All quests stay within geographic boundaries (Elder Moor, Dalhurst, Thornfield, Millbrook, Crossroads, Willow Dale, Bandit Hideout, Kazer-Dun Entrance)
+- [x] All quests stay within geographic boundaries (Elder Moor, Dalhurst, Thornfield, Millbrook, Crossroads, Willow Dale, Bandit Hideout, Kazan-Dun Entrance)
 
 ### Reward Scaling ✓
 | Rank | Quest Range | Gold | XP | Rep |
@@ -242,9 +242,9 @@ All quests stay within allowed zones:
 - Crossroads ✓
 - Willow Dale ✓
 - Bandit Hideout ✓
-- Kazer-Dun Entrance (boundary) ✓
+- Kazan-Dun Entrance (boundary) ✓
 
-**No quests send player south of Kazer-Dun.** ✓
+**No quests send player south of Kazan-Dun.** ✓
 
 ---
 

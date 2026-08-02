@@ -1,7 +1,7 @@
 {
 	"id": "adventurers_10_dragon_rumor",
 	"title": "Smoke on the Horizon",
-	"description": "Three reports this week put something winged over the Kazer-Dun quarry camp, and the stonecutters have stopped working the north face. If it is a dragon, Vorn pulls the camp today. Get eyes on it first.",
+	"description": "Three reports this week put something winged over the Kazan-Dun quarry camp, and the stonecutters have stopped working the north face. If it is a dragon, Vorn pulls the camp today. Get eyes on it first.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,9 +10,9 @@
 	"objectives": [
 		{
 			"id": "investigate_sightings",
-			"description": "Reach the Kazer-Dun quarry camp",
+			"description": "Reach the Kazan-Dun quarry camp",
 			"type": "reach",
-			"target": "kazer_dun_entrance",
+			"target": "kazan_dun_entrance",
 			"required_count": 1,
 			"is_optional": false
 		},
@@ -66,5 +66,5 @@
 		"adventurers_09_rival_guild"
 	],
 	"next_quest": "adventurers_11_guild_politics",
-	"notes": "Rank: Elite. Major boss fight. Wyvern is extremely dangerous - recommend level 20+ and good equipment. Dragonscale shield is legendary-tier defensive item. Nest near Kazer-Dun entrance. Threat: a working quarry camp idled by an unidentified flier, with a true dragon as the worst case. Giver motive: Vorn needs a correct identification before he commits to evacuating a paying camp. Consequence: misidentifying it costs either a needless evacuation or a dead stonecutter - stated in prose; the 'don't engage if it's a dragon' branch cannot be wired, since the target is always the wyvern and no second objective may be added. Deferred."
+	"notes": "Rank: Elite. Major boss fight. Wyvern is extremely dangerous - recommend level 20+ and good equipment. Dragonscale shield is legendary-tier defensive item. Nest near Kazan-Dun entrance. Threat: a working quarry camp idled by an unidentified flier, with a true dragon as the worst case. Giver motive: Vorn needs a correct identification before he commits to evacuating a paying camp. Consequence: misidentifying it costs either a needless evacuation or a dead stonecutter - stated in prose; the 'don't engage if it's a dragon' branch cannot be wired, since the target is always the wyvern and no second objective may be added. Deferred."
 }

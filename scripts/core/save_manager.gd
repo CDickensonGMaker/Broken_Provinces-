@@ -283,6 +283,7 @@ func load_game(slot: int) -> bool:
 	if version < SAVE_VERSION:
 		raw_data = _migrate_save_data(raw_data, version)
 	_remap_layout_paths(raw_data)
+	raw_data = _remap_renamed_ids(raw_data)
 
 	var save_data = SaveDataClass.new()
 	save_data.from_dict(raw_data)
@@ -330,6 +331,7 @@ func get_save_info(slot: int) -> Dictionary:
 	# This path never migrates, so the remap has to be here too - see the note
 	# on _remap_layout_paths.
 	_remap_layout_paths(raw_data)
+	raw_data = _remap_renamed_ids(raw_data)
 	var save_data = SaveDataClass.new()
 	save_data.from_dict(raw_data)
 
@@ -1825,6 +1827,52 @@ func _remap_layout_paths(value: Variant) -> Variant:
 			a[i] = _remap_layout_paths(a[i])
 		return a
 	return value
+
+## Identifiers that have been renamed, oldest spelling first. Substrings, not
+## prefixes: an id like `dungeon_clear_kazer_dun_03` carries the old spelling in the
+## middle, and so does the display string "Kazer-Dun Entrance".
+##
+## The dwarf hold was spelled two ways for as long as it has existed - `kazan` in
+## every filename, scene path, quest folder and world flag, `kazer` in WorldGrid's
+## location ids and in every line the player reads. Caleb ruled on 8/2 that Kazan is
+## the spelling ("misspelled all over"). A save written before that ruling holds the
+## old ids in its discovered locations, its fast-travel list, its active quests'
+## targets and zones, and its dungeon-clear flags.
+const RENAMED_ID_REMAP: Array = [
+	["kazer_dun", "kazan_dun"],
+	["Kazer-Dun", "Kazan-Dun"],
+	["KAZER-DUN", "KAZAN-DUN"],
+]
+
+
+## Rewrite renamed identifiers anywhere in a parsed save, in values AND IN KEYS.
+##
+## Keys matter here in a way they did not for the layout remap: discovered locations,
+## world modifications and zone state are all dictionaries keyed by id, so a
+## value-only walk would migrate the label and leave the map entry unreachable.
+##
+## Idempotent - the new spelling contains no old spelling - so it runs on both parse
+## paths unconditionally, for the same reason _remap_layout_paths does.
+func _remap_renamed_ids(value: Variant) -> Variant:
+	if value is String:
+		var s: String = value
+		for pair: Array in RENAMED_ID_REMAP:
+			if s.contains(pair[0]):
+				s = s.replace(pair[0], pair[1])
+		return s
+	if value is Dictionary:
+		var d: Dictionary = value
+		var out: Dictionary = {}
+		for key: Variant in d.keys():
+			out[_remap_renamed_ids(key)] = _remap_renamed_ids(d[key])
+		return out
+	if value is Array:
+		var a: Array = value
+		for i: int in range(a.size()):
+			a[i] = _remap_renamed_ids(a[i])
+		return a
+	return value
+
 
 ## Get current play time (including current session)
 func get_total_playtime() -> float:

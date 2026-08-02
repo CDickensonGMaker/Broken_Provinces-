@@ -508,7 +508,7 @@
     {
       "id": "quest_13_offer",
       "speaker": "Lady Nightshade",
-      "text": "There is a treasure convoy coming out of Kazer-Dun through Elder Moor, carrying dwarven work nobody is meant to know has moved. I want it. Plan it yourself - I will not be holding your hand.",
+      "text": "There is a treasure convoy coming out of Kazan-Dun through Elder Moor, carrying dwarven work nobody is meant to know has moved. I want it. Plan it yourself - I will not be holding your hand.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -610,7 +610,7 @@
     {
       "id": "quest_13_accept",
       "speaker": "Lady Nightshade",
-      "text": "Scout the convoy route from Kazer-Dun entrance through Elder Moor. Choose your ambush site - each location has advantages and risks. Recruit your team, acquire supplies, and execute the heist. Deliver the artifacts to the guild vault. Success means everything.",
+      "text": "Scout the convoy route from Kazan-Dun entrance through Elder Moor. Choose your ambush site - each location has advantages and risks. Recruit your team, acquire supplies, and execute the heist. Deliver the artifacts to the guild vault. Success means everything.",
       "is_end": true,
       "auto_continue": "",
       "choices": []

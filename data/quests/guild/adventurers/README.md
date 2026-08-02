@@ -3,7 +3,7 @@
 **Faction:** `adventurers_guild`
 **Headquarters:** Dalhurst (Adventurer's Guild Hall)
 **Quest Giver:** Guildmaster Vorn (`guildmaster_vorn_dalhurst`)
-**Geographic Scope:** Elder Moor, Dalhurst, Thornfield, Millbrook, Crossroads, Willow Dale, Bandit Hideout, Kazer-Dun Entrance
+**Geographic Scope:** Elder Moor, Dalhurst, Thornfield, Millbrook, Crossroads, Willow Dale, Bandit Hideout, Kazan-Dun Entrance
 
 ---
 
@@ -227,8 +227,8 @@ The Adventurer's Guild is the most accessible faction - mercenary work, monster 
 - `wyvern` (1x, raid-tier boss)
 
 **Required Locations:**
-- `kazer_dun_entrance` (investigation start)
-- `wyvern_nest` (boss lair near Kazer-Dun)
+- `kazan_dun_entrance` (investigation start)
+- `wyvern_nest` (boss lair near Kazan-Dun)
 - `wyvern_observation` (tracking marker)
 
 **Required Items:**
@@ -363,7 +363,7 @@ All enemies already exist in `data/enemies/`:
 | `willow_dale_vault_puzzle` | Willow Dale | Optional puzzle room |
 | `crossroads_ogre_camp` | Crossroads | Ogre's camp |
 | `secret_meeting_site` | Dalhurst outskirts | Corruption meeting place |
-| `wyvern_nest` | Kazer-Dun entrance area | Wyvern lair |
+| `wyvern_nest` | Kazan-Dun entrance area | Wyvern lair |
 | `wyvern_observation` | Near nest | Tracking marker |
 | `willow_dale_sealed_door` | Willow Dale | Locked entrance to deepest level |
 | `willow_dale_throne_room` | Willow Dale | Final boss chamber |
@@ -425,9 +425,9 @@ All quests stay within the specified region:
 - Crossroads ✓
 - Willow Dale ✓
 - Bandit Hideout (referenced)
-- Kazer-Dun Entrance ✓
+- Kazan-Dun Entrance ✓
 
-**NO quests send players south of Kazer-Dun.**
+**NO quests send players south of Kazan-Dun.**
 
 ---
 

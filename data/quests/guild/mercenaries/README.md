@@ -142,7 +142,7 @@ All quests restricted to northern region:
 - **Crossroads** - Pivotal battles
 - **Willow Dale** - Tactical operations
 - **Bandit Hideout** - Infiltration missions
-- **Kazer-Dun Entrance** - Boundary (do NOT go south)
+- **Kazan-Dun Entrance** - Boundary (do NOT go south)
 
 ---
 

@@ -162,7 +162,6 @@ func _setup_cell_streaming() -> void:
 		push_warning("[%s] CellStreamer not found" % ZONE_ID)
 		return
 
-	# Use WorldGrid location_id (note: WorldGrid uses "kazer" spelling)
-	var my_coords: Vector2i = WorldGrid.get_location_coords("kazer_dun_entrance")
+	var my_coords: Vector2i = WorldGrid.get_location_coords("kazan_dun_entrance")
 	CellStreamer.register_main_scene_cell(my_coords, self)
 	CellStreamer.start_streaming(my_coords)

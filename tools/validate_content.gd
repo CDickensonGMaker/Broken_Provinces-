@@ -971,7 +971,7 @@ func _warn(category: String, path: String, subject: String, message: String) -> 
 # does not police word order.
 
 ## Reduce a display name to the lowercase word tokens it contributes.
-## "Wyvern's Roost" -> [wyverns, wyvern, roost]; "Kazer-Dun" -> [kazer, dun];
+## "Wyvern's Roost" -> [wyverns, wyvern, roost]; "Kazan-Dun" -> [kazan, dun];
 ## "elder_moor" -> [elder, moor].
 func _name_tokens(name: String) -> Array[String]:
 	var tokens: Array[String] = []

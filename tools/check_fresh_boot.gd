@@ -264,6 +264,49 @@ func _old_layout_save() -> void:
 
 	SaveManager.delete_save(SLOT)
 
+	_renamed_ids()
+
+
+## A save written before the 8/2 Kazer -> Kazan ruling still finds the dwarf hold.
+##
+## check_no_broken_paths: skip - the fixture deliberately spells the old ids.
+##
+## Ids are not paths, so _remap_layout_paths cannot see them, and they appear as
+## dictionary KEYS as often as values: discovered locations, world modifications and
+## zone state are all keyed by id. A value-only walk would migrate the label a save
+## displays and leave the map entry it points at unreachable.
+func _renamed_ids() -> void:
+	var old: Dictionary = {
+		"current_location_id": "kazer_dun_entrance",
+		"discovered_locations": {
+			"kazer_dun_entrance": {"name": "Kazer-Dun Entrance", "region": "The Deep Road"},
+			"elder_moor": {"name": "Elder Moor"},
+		},
+		"flags": ["dungeon_clear_kazer_dun_01", "elder_moor_visited"],
+		"quest": {"objectives": [{"target_zone": "kazer_dun_entrance"}]},
+	}
+	var moved: Dictionary = SaveManager._remap_renamed_ids(old)
+
+	_check("a renamed id is migrated in a value",
+		moved["current_location_id"] == "kazan_dun_entrance")
+	_check("a renamed id is migrated as a dictionary KEY",
+		moved["discovered_locations"].has("kazan_dun_entrance"))
+	_check("the old key is gone", not moved["discovered_locations"].has("kazer_dun_entrance"))
+	_check("the location it names is real",
+		WorldGrid.get_location_coords("kazan_dun_entrance") == Vector2i(-5, 9))
+	_check("a display string is migrated",
+		moved["discovered_locations"]["kazan_dun_entrance"]["name"] == "Kazan-Dun Entrance")
+	_check("an id carrying the old spelling mid-string is migrated",
+		moved["flags"][0] == "dungeon_clear_kazan_dun_01")
+	_check("a nested objective zone is migrated",
+		moved["quest"]["objectives"][0]["target_zone"] == "kazan_dun_entrance")
+	_check("an untouched key survives", moved["discovered_locations"].has("elder_moor"))
+
+	var twice: Dictionary = SaveManager._remap_renamed_ids(moved)
+	_check("the id remap is idempotent",
+		twice["current_location_id"] == moved["current_location_id"]
+		and twice["discovered_locations"].has("kazan_dun_entrance"))
+
 
 func _check(what: String, passed: bool) -> void:
 	_checks += 1

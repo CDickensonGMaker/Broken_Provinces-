@@ -48,7 +48,7 @@
 | 7 | Paradox Stone | Puzzle/Choice | Crossroads | 300g, 900 XP, **CHOICE: blessing or talisman** |
 | 8 | Glimpses of Tomorrow | Training | Elder Moor, Thornfield, Crossroads | 350g, 1000 XP, circlet |
 | 9 | When Time Bleeds | Epic Multi-stage | Bandit Hideout | 500g, 1500 XP, legendary aegis |
-| 10 | Eternal Vigil | Final Boss | Kazer-Dun | 750g, 2000 XP, **CHAMPION TITLE** |
+| 10 | Eternal Vigil | Final Boss | Kazan-Dun | 750g, 2000 XP, **CHAMPION TITLE** |
 | 11 | Seeking Visions | Repeatable | Dalhurst | 25g, 100 XP, blessing |
 
 ---
@@ -174,10 +174,10 @@
 - Crossroads
 - Willow Dale
 - Bandit Hideout
-- Kazer-Dun Entrance
+- Kazan-Dun Entrance
 
 **DO NOT USE:**
-- Anything south of Kazer-Dun
+- Anything south of Kazan-Dun
 - Western coastal areas
 - Eastern highlands beyond Thornfield
 

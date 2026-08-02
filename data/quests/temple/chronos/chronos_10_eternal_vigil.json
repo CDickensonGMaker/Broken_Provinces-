@@ -1,7 +1,7 @@
 {
   "id": "chronos_10_eternal_vigil",
   "title": "The Eternal Vigil",
-  "description": "An old shrine below the Kazer-Dun Entrance still turns its hourglass, and everyone in that pass sets their hours by it without knowing. If that glass breaks, nobody below can trust the hour again. I cannot go myself.",
+  "description": "An old shrine below the Kazan-Dun Entrance still turns its hourglass, and everyone in that pass sets their hours by it without knowing. If that glass breaks, nobody below can trust the hour again. I cannot go myself.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_chronos_dalhurst",
@@ -10,10 +10,10 @@
   "faction": "church_of_chronos",
   "objectives": [
     {
-      "id": "enter_kazer_dun_entrance",
-      "description": "Enter the Kazer-Dun Entrance and find the ancient shrine",
+      "id": "enter_kazan_dun_entrance",
+      "description": "Enter the Kazan-Dun Entrance and find the ancient shrine",
       "type": "reach",
-      "target": "kazer_dun_entrance",
+      "target": "kazan_dun_entrance",
       "required_count": 1
     },
     {
@@ -27,7 +27,7 @@
       "id": "locate_eternal_hourglass",
       "description": "Locate the Eternal Hourglass deep in the shrine",
       "type": "reach",
-      "target": "kazer_dun_entrance",
+      "target": "kazan_dun_entrance",
       "required_count": 1
     },
     {
@@ -74,7 +74,7 @@
   "spawn_on_accept": [
     {
       "type": "enemy",
-      "location": "kazer_dun_entrance",
+      "location": "kazan_dun_entrance",
       "coords": [
         -485,
         0,
@@ -85,7 +85,7 @@
     },
     {
       "type": "enemy",
-      "location": "kazer_dun_entrance",
+      "location": "kazan_dun_entrance",
       "coords": [
         -495,
         0,
@@ -96,7 +96,7 @@
     },
     {
       "type": "enemy",
-      "location": "kazer_dun_entrance",
+      "location": "kazan_dun_entrance",
       "coords": [
         -475,
         0,
@@ -107,7 +107,7 @@
     },
     {
       "type": "enemy",
-      "location": "kazer_dun_entrance",
+      "location": "kazan_dun_entrance",
       "coords": [
         -485,
         0,
@@ -117,7 +117,7 @@
       "count": 1
     }
   ],
-  "notes": "Threat: named concretely - travelers and dwarves in the Kazer-Dun caves lose their only working clock if the hourglass breaks. Giver motive: doctrinal offense - a thing outside fate is the one category Chronos's faith has no answer for, and the priest is too old to descend himself. Consequence: not wired mechanically; stated as doctrine, matching the line's rule against invented urgency.",
+  "notes": "Threat: named concretely - travelers and dwarves in the Kazan-Dun caves lose their only working clock if the hourglass breaks. Giver motive: doctrinal offense - a thing outside fate is the one category Chronos's faith has no answer for, and the priest is too old to descend himself. Consequence: not wired mechanically; stated as doctrine, matching the line's rule against invented urgency.",
   "forbidden_flags": [
     "gaela_devotee",
     "morthane_devotee"

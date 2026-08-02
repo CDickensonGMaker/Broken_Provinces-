@@ -208,7 +208,7 @@
 ### Future Updates
 - If adding new Gaela quests, insert between existing tiers or after Quest 10
 - Maintain devotee flag requirement for advanced content
-- Keep geographic limits (no quests south of Kazer-Dun)
+- Keep geographic limits (no quests south of Kazan-Dun)
 - Maintain escalating reward structure
 
 ### Balancing

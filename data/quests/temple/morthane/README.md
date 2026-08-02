@@ -95,9 +95,9 @@ Climactic quests with best rewards.
 - Crossroads
 - Willow Dale (dungeon)
 - Bandit Hideout (dungeon)
-- Kazer-Dun Entrance (final quest location)
+- Kazan-Dun Entrance (final quest location)
 
-**NO quests south of Kazer-Dun** as per design constraints.
+**NO quests south of Kazan-Dun** as per design constraints.
 
 ---
 
@@ -198,7 +198,7 @@ These NPCs must exist in the game for quest functionality:
 ### Bandit Hideout (Dungeon)
 - `death_knight_commander` - Quest 9 boss
 
-### Kazer-Dun Entrance (Dungeon)
+### Kazan-Dun Entrance (Dungeon)
 - `undead_lord_malthor` - Quest 10 final boss
 
 ---
@@ -271,8 +271,8 @@ Interactive objects/markers referenced in quests:
 ### Bandit Hideout
 - `corruption_nexus`, `corruption_nexus_purified` - Quest 9
 
-### Kazer-Dun Entrance
-- `kazer_dun_catacombs` - Quest 10 entrance
+### Kazan-Dun Entrance
+- `kazan_dun_catacombs` - Quest 10 entrance
 - `morthane_champion_altar` - Quest 10 final blessing
 
 ---

@@ -1,7 +1,7 @@
 {
   "id": "morthane_10_deathwalker",
   "title": "The Deathwalker",
-  "description": "There is one thing left and it is the hardest. Walk into death's edge and come back a Deathwalker, then go down into the catacombs beneath Kazer-Dun and face what an undead lord has made of the cycle.",
+  "description": "There is one thing left and it is the hardest. Walk into death's edge and come back a Deathwalker, then go down into the catacombs beneath Kazan-Dun and face what an undead lord has made of the cycle.",
   "is_main_quest": false,
   "quest_source": "npc",
   "giver_npc_id": "priest_morthane_elder_moor",
@@ -25,19 +25,19 @@
       "required_count": 1
     },
     {
-      "id": "journey_kazer_dun",
-      "description": "Journey to the entrance of Kazer-Dun",
+      "id": "journey_kazan_dun",
+      "description": "Journey to the entrance of Kazan-Dun",
       "type": "reach",
-      "target": "kazer_dun_entrance",
-      "target_zone": "kazer_dun_entrance",
+      "target": "kazan_dun_entrance",
+      "target_zone": "kazan_dun_entrance",
       "required_count": 1
     },
     {
       "id": "enter_catacombs",
-      "description": "Enter the ancient catacombs beneath Kazer-Dun",
+      "description": "Enter the ancient catacombs beneath Kazan-Dun",
       "type": "reach",
-      "target": "kazer_dun_catacombs",
-      "target_zone": "kazer_dun_entrance",
+      "target": "kazan_dun_catacombs",
+      "target_zone": "kazan_dun_entrance",
       "required_count": 1
     },
     {
@@ -45,7 +45,7 @@
       "description": "Clear the catacombs of lesser undead",
       "type": "kill",
       "target": "skeleton_shade",
-      "target_zone": "kazer_dun_entrance",
+      "target_zone": "kazan_dun_entrance",
       "required_count": 15
     },
     {
@@ -53,7 +53,7 @@
       "description": "Confront the Undead Lord in the deep catacombs",
       "type": "kill",
       "target": "undead_lord_malthor",
-      "target_zone": "kazer_dun_entrance",
+      "target_zone": "kazan_dun_entrance",
       "required_count": 1
     },
     {
@@ -61,7 +61,7 @@
       "description": "Claim Morthane's blessing at the ancient altar",
       "type": "interact",
       "target": "morthane_champion_altar",
-      "target_zone": "kazer_dun_entrance",
+      "target_zone": "kazan_dun_entrance",
       "required_count": 1
     },
     {

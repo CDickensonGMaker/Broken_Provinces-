@@ -121,8 +121,8 @@ FACTION INTEGRATION:
 
 GEOGRAPHIC LIMITS:
 - All quests in: Elder Moor, Dalhurst, Thornfield, Millbrook, Crossroads,
-  Willow Dale, Bandit Hideout, Kazer-Dun Entrance
-- DO NOT send players south of Kazer-Dun
+  Willow Dale, Bandit Hideout, Kazan-Dun Entrance
+- DO NOT send players south of Kazan-Dun
 
 ================================================================================
 REQUIRED NPCS (to verify/create)

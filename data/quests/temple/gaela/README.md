@@ -127,9 +127,9 @@ Best rewards, climactic multi-location quests.
 - Crossroads
 - Willow Dale
 - Bandit Hideout
-- Kazer-Dun Entrance (not beyond)
+- Kazan-Dun Entrance (not beyond)
 
-**DO NOT send players south of Kazer-Dun.**
+**DO NOT send players south of Kazan-Dun.**
 
 ---
 

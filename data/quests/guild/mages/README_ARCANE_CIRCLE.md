@@ -3,7 +3,7 @@
 **Location:** The Athenaeum, Dalhurst
 **Guildmaster:** Archmage Elara Moonweave
 **Faction ID:** `arcane_circle`
-**Geographic Scope:** Elder Moor, Dalhurst, Thornfield, Millbrook, Crossroads, Willow Dale, Bandit Hideout, Kazer-Dun Entrance (North region only)
+**Geographic Scope:** Elder Moor, Dalhurst, Thornfield, Millbrook, Crossroads, Willow Dale, Bandit Hideout, Kazan-Dun Entrance (North region only)
 
 ---
 

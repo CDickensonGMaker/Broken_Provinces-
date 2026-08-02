@@ -85,7 +85,7 @@ Your own notes list it and Elder Moor locals already rumor it ("lose your head")
 ---
 
 ## Explicitly NOT built (Act II bait — reframe as rumor)
-`kazer_dun_catacombs`, `ruined_temple_chronos` (Aberdeen), Whaler's Abyss content, Larton, elf/pirate areas. Dialogue may reference them as DISTANT places ("across the mountains", "down south past the hold") — validator whitelist `LORE_ONLY`. Never as somewhere the player is told to go.
+`kazan_dun_catacombs`, `ruined_temple_chronos` (Aberdeen), Whaler's Abyss content, Larton, elf/pirate areas. Dialogue may reference them as DISTANT places ("across the mountains", "down south past the hold") — validator whitelist `LORE_ONLY`. Never as somewhere the player is told to go.
 
 ## Dialogue Integration (the point of all this)
 When the unique/archetype response tiers go live (CatacombsOfGore-sv2), each area above gets:

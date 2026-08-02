@@ -1,7 +1,7 @@
 {
   "id": "thieves_13_right_hand",
   "title": "The Guildmaster's Trust",
-  "description": "A treasure convoy runs from Kazer-Dun Entrance through Elder Moor carrying artifacts out of the dwarven vaults. I want it taken. Do this and you run operations at my side.",
+  "description": "A treasure convoy runs from Kazan-Dun Entrance through Elder Moor carrying artifacts out of the dwarven vaults. I want it taken. Do this and you run operations at my side.",
   "giver_npc_id": "guildmaster_nightshade",
   "giver_region": "dalhurst",
   "faction": "thieves_guild",
@@ -10,8 +10,8 @@
     {
       "id": "obj_scout_convoy",
       "type": "explore",
-      "target": "kazer_dun_entrance_road",
-      "description": "Scout the convoy route from Kazer-Dun Entrance"
+      "target": "kazan_dun_entrance_road",
+      "description": "Scout the convoy route from Kazan-Dun Entrance"
     },
     {
       "id": "obj_choose_ambush_site",
@@ -192,5 +192,5 @@
       "personal_safehouse": "Luxurious safehouse in Dalhurst"
     }
   },
-  "notes": "Final Thieves Guild quest. Complex multi-phase heist with planning. Team recruitment mechanic. Multiple approaches and outcomes. Convoy travels from Kazer-Dun Entrance through Elder Moor. Ultimate rewards: Shadow Equipment Set and Guildmaster's Hand rank."
+  "notes": "Final Thieves Guild quest. Complex multi-phase heist with planning. Team recruitment mechanic. Multiple approaches and outcomes. Convoy travels from Kazan-Dun Entrance through Elder Moor. Ultimate rewards: Shadow Equipment Set and Guildmaster's Hand rank."
 }

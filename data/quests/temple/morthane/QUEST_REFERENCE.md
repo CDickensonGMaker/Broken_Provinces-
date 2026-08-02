@@ -34,8 +34,8 @@
 | 9 | `skeleton_warrior` | 12 | Crossroads |
 | 9 | `skeleton_shade` | 8 | Thornfield |
 | 9 | `death_knight_commander` | 1 | Bandit Hideout (boss) |
-| 10 | `skeleton_shade` | 15 | Kazer-Dun Entrance |
-| 10 | `undead_lord_malthor` | 1 | Kazer-Dun Entrance (final boss) |
+| 10 | `skeleton_shade` | 15 | Kazan-Dun Entrance |
+| 10 | `undead_lord_malthor` | 1 | Kazan-Dun Entrance (final boss) |
 | 11 | `skeleton_warrior` | 10 | Any (repeatable) |
 
 ### Collect Objectives
@@ -70,7 +70,7 @@ All quests have "Return to Priest" talk objective at end.
 | 6 | Millbrook | `millbrook` |
 | 8 | Crossroads | `crossroads` |
 | 9 | Bandit Hideout | `bandit_hideout` |
-| 10 | Kazer-Dun Entrance | `kazer_dun_entrance` |
+| 10 | Kazan-Dun Entrance | `kazan_dun_entrance` |
 
 ### Interact Objectives
 
@@ -224,7 +224,7 @@ All quests have "Return to Priest" talk objective at end.
 **Bandit Hideout (Dungeon):**
 - Quest 9 (corruption source, final battle)
 
-**Kazer-Dun Entrance (Dungeon):**
+**Kazan-Dun Entrance (Dungeon):**
 - Quest 10 (final quest, champion trial)
 
 ---

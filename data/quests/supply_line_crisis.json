@@ -17,9 +17,9 @@
 		},
 		{
 			"id": "investigate_routes",
-			"description": "Investigate the blocked trade route near Kazer-Dun",
+			"description": "Investigate the blocked trade route near Kazan-Dun",
 			"type": "reach",
-			"target": "kazer_dun_approach",
+			"target": "kazan_dun_approach",
 			"required_count": 1
 		},
 		{

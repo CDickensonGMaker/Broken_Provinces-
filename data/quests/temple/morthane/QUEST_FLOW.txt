@@ -113,7 +113,7 @@ TIER 4: CHAMPION (Climactic Finale)
     │ Quest 10: "The Deathwalker" ⭐⭐            │
     │ • FINAL QUEST: Become Champion of Morthane  │
     │ • Death Walk ritual (near-death experience) │
-    │ • Journey to Kazer-Dun catacombs            │
+    │ • Journey to Kazan-Dun catacombs            │
     │ • Defeat Undead Lord Malthor (final boss)   │
     │                                             │
     │ Sets flags: 'morthane_champion'             │
@@ -183,9 +183,9 @@ GEOGRAPHIC COVERAGE
 
 Quest Hub:          Elder Moor (Temple of Three Gods)
 Quest Locations:    Dalhurst, Thornfield, Millbrook, Crossroads
-Dungeon Quests:     Willow Dale, Bandit Hideout, Kazer-Dun Entrance
+Dungeon Quests:     Willow Dale, Bandit Hideout, Kazan-Dun Entrance
 
-ALL CONTENT NORTH OF KAZER-DUN (as required)
+ALL CONTENT NORTH OF KAZAN-DUN (as required)
 
 
 ================================================================================

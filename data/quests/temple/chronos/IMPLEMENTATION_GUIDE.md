@@ -491,7 +491,7 @@ var guardian1 := EnemyBase.spawn_billboard_enemy(
 # See FLOWCHART.txt for exact coordinates
 ```
 
-**Quest 10: Kazer-Dun Shrine**
+**Quest 10: Kazan-Dun Shrine**
 ```gdscript
 # Spawn 6 Corrupted Guardians and 1 Timeless One
 # Create Eternal Hourglass interactable

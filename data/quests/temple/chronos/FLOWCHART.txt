@@ -275,10 +275,10 @@
     Millbrook:         Quest 4
     Willow Dale:       Quests 2, 6
     Bandit Hideout:    Quest 9
-    Kazer-Dun Entrance: Quest 10
+    Kazan-Dun Entrance: Quest 10
 
     Most Used: Dalhurst (quest hub)
-    Least Used: Bandit Hideout, Kazer-Dun (endgame only)
+    Least Used: Bandit Hideout, Kazan-Dun (endgame only)
 
 ================================================================================
 

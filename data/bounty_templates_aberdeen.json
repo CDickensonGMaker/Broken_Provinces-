@@ -7,7 +7,7 @@
 		{
 			"weight": 30,
 			"bounty_id": "goblin_scouts",
-			"description": "Goblin scouts have been seen near the trade road. Eliminate them before they report back to Kazer-Dun."
+			"description": "Goblin scouts have been seen near the trade road. Eliminate them before they report back to Kazan-Dun."
 		},
 		{
 			"weight": 25,
@@ -30,5 +30,5 @@
 			"description": "Deliver an urgent message to the next settlement."
 		}
 	],
-	"notes": "Aberdeen bounties focus on goblin threats (Kazer-Dun connection), undead in the swamps, and survival-related tasks. Lower variety due to the town's crisis state."
+	"notes": "Aberdeen bounties focus on goblin threats (Kazan-Dun connection), undead in the swamps, and survival-related tasks. Lower variety due to the town's crisis state."
 }

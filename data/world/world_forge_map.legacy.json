@@ -12641,9 +12641,9 @@
       "y": 39.0
     },
     "2523": {
-      "location_id": "kazer_dun_road",
-      "name": "Road to Kazer-Dun",
-      "notes": "The mountain road leading up to the great dwarf hold of Kazer-Dun.",
+      "location_id": "kazan_dun_road",
+      "name": "Road to Kazan-Dun",
+      "notes": "The mountain road leading up to the great dwarf hold of Kazan-Dun.",
       "scene_path": "res://scenes/levels/kazan_dun_road_leading_up.tscn",
       "type": "landmark",
       "world_x": -5.0,
@@ -12663,9 +12663,9 @@
       "y": 39.0
     },
     "2651": {
-      "location_id": "kazer_dun_entrance",
-      "name": "Kazer-Dun Entrance",
-      "notes": "The great northern gate of Kazer-Dun Dwarf Hold.",
+      "location_id": "kazan_dun_entrance",
+      "name": "Kazan-Dun Entrance",
+      "notes": "The great northern gate of Kazan-Dun Dwarf Hold.",
       "scene_path": "res://scenes/levels/kazan_dun_entrance.tscn",
       "type": "dungeon",
       "world_x": -5.0,

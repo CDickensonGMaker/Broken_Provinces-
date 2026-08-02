@@ -30,16 +30,16 @@
     "text": "The bandits have been operating from these caves for three years, accumulating significant wealth from their raids. Most of this treasure is stored in a hidden chamber behind a false wall, accessible only to those who know where to look.\n\nRumors suggest the cache contains more than just gold and jewels. Captured merchants have reportedly been forced to surrender magical items, rare books, and even documents that could prove embarrassing to certain noble families. The bandits keep these special items separate, perhaps for future ransom or blackmail.\n\nThe bandit leader guards the location of this cache jealously. Even most of his own men do not know exactly where it is, ensuring that betrayal cannot deprive him of his accumulated wealth."
   },
   {
-    "id": "kazer_dun_entrance_warning",
+    "id": "kazan_dun_entrance_warning",
     "title": "The Warning Stone",
     "category": "history",
-    "text": "THIS PLACE BELONGS TO THE DWARVES OF KAZER-DUN. TRESPASSERS WILL BE DEALT WITH ACCORDING TO THE ANCIENT LAWS.\n\nThe stone has stood here for five hundred years, marking the boundary between human lands and the dwarven hold of Kazer-Dun. Those who pass beyond it without permission forfeit their lives under dwarven law, though the dwarves have been known to grant exceptions for those who approach with proper respect.\n\nKazer-Dun itself lies deep beneath the mountains, a sprawling city carved from living rock. Few humans have seen its halls and returned to describe them. The dwarves prefer their privacy, engaging with the surface world only when trade demands it."
+    "text": "THIS PLACE BELONGS TO THE DWARVES OF KAZAN-DUN. TRESPASSERS WILL BE DEALT WITH ACCORDING TO THE ANCIENT LAWS.\n\nThe stone has stood here for five hundred years, marking the boundary between human lands and the dwarven hold of Kazan-Dun. Those who pass beyond it without permission forfeit their lives under dwarven law, though the dwarves have been known to grant exceptions for those who approach with proper respect.\n\nKazan-Dun itself lies deep beneath the mountains, a sprawling city carved from living rock. Few humans have seen its halls and returned to describe them. The dwarves prefer their privacy, engaging with the surface world only when trade demands it."
   },
   {
-    "id": "kazer_dun_deep_roads",
+    "id": "kazan_dun_deep_roads",
     "title": "The Deep Roads",
     "category": "locations",
-    "text": "The tunnels leading to Kazer-Dun are only the beginning. Beyond the inhabited areas, the Deep Roads stretch for hundreds of miles through the mountains, connecting dwarven holds that surface dwellers have never heard of.\n\nThese ancient passages were carved in an age when dwarven civilization was at its height, before the wars and plagues that reduced their numbers. Many sections have since been abandoned, their inhabitants dead or fled, their treasures left behind in vaults that no living dwarf remembers how to open.\n\nNot all is empty in the Deep Roads. Things live in the darkness that even dwarves fear: creatures that have never seen the sun, adapted to the eternal night of the deep places. Those who venture too far from the maintained tunnels rarely return."
+    "text": "The tunnels leading to Kazan-Dun are only the beginning. Beyond the inhabited areas, the Deep Roads stretch for hundreds of miles through the mountains, connecting dwarven holds that surface dwellers have never heard of.\n\nThese ancient passages were carved in an age when dwarven civilization was at its height, before the wars and plagues that reduced their numbers. Many sections have since been abandoned, their inhabitants dead or fled, their treasures left behind in vaults that no living dwarf remembers how to open.\n\nNot all is empty in the Deep Roads. Things live in the darkness that even dwarves fear: creatures that have never seen the sun, adapted to the eternal night of the deep places. Those who venture too far from the maintained tunnels rarely return."
   },
   {
     "id": "elder_moor_founding",

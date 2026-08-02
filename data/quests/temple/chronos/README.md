@@ -4,7 +4,7 @@
 An extensive 10-quest chain (plus 1 repeatable) dedicated to Chronos, God of Time. This chain takes players from curious initiate to Champion of Chronos, exploring themes of fate, prophecy, temporal power, and the nature of time itself.
 
 **Total Quests:** 11 (10 main progression + 1 repeatable)
-**Geographic Scope:** Elder Moor, Dalhurst, Thornfield, Millbrook, Crossroads, Willow Dale, Bandit Hideout, Kazer-Dun Entrance
+**Geographic Scope:** Elder Moor, Dalhurst, Thornfield, Millbrook, Crossroads, Willow Dale, Bandit Hideout, Kazan-Dun Entrance
 **Estimated Playtime:** 8-12 hours for full chain
 **Total Rewards:** 2,775 gold, 8,350 XP, 11+ unique items, 315+ church_of_chronos reputation
 
@@ -308,10 +308,10 @@ There is now a road back — see "Apostasy" below. Do not restore the old claims
 #### Quest 10: The Eternal Vigil ⭐
 **File:** `chronos_10_eternal_vigil.json`
 **Type:** Final epic boss encounter
-**Locations:** Kazer-Dun Entrance (deep shrine)
+**Locations:** Kazan-Dun Entrance (deep shrine)
 **Prerequisites:** `chronos_devotee` flag
 **Objectives:**
-- Enter Kazer-Dun and find ancient shrine
+- Enter Kazan-Dun and find ancient shrine
 - Defeat 6 corrupted shrine guardians
 - Locate Eternal Hourglass
 - Defeat the Timeless One (epic boss)
@@ -527,7 +527,7 @@ Quests should be organized by tier in the journal. Devotee-exclusive quests shou
 ### World Integration
 - [ ] Place spawn markers at all chest/enemy locations
 - [ ] Create temporal rift visual at Bandit Hideout (Quest 9)
-- [ ] Create Eternal Hourglass shrine in Kazer-Dun (Quest 10)
+- [ ] Create Eternal Hourglass shrine in Kazan-Dun (Quest 10)
 - [ ] Add time loop puzzle mechanics at Crossroads (Quest 7)
 - [ ] Add temporal echo mechanics at Willow Dale (Quest 6)
 

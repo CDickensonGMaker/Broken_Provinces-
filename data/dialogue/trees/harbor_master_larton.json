@@ -179,7 +179,7 @@
     {
       "id": "situation",
       "speaker": "Harbor Master Giles",
-      "text": "Bad? We're starving. The ghost pirates block all sea trade. The land route through Kazer-Dun is blocked by goblins laying siege to the dwarf hold. We're trapped. Half the town has fled. The other half... we're just waiting to die, honestly.",
+      "text": "Bad? We're starving. The ghost pirates block all sea trade. The land route through Kazan-Dun is blocked by goblins laying siege to the dwarf hold. We're trapped. Half the town has fled. The other half... we're just waiting to die, honestly.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -200,7 +200,7 @@
     {
       "id": "help_options",
       "speaker": "Harbor Master Giles",
-      "text": "Break the blockade. Either clear out those ghost pirates, or break through the goblin siege at Kazer-Dun. Either would save us. Mayor Kendrick can tell you more about the ghost pirates. The dwarves might know how to deal with the goblins.",
+      "text": "Break the blockade. Either clear out those ghost pirates, or break through the goblin siege at Kazan-Dun. Either would save us. Mayor Kendrick can tell you more about the ghost pirates. The dwarves might know how to deal with the goblins.",
       "is_end": false,
       "auto_continue": "",
       "choices": [

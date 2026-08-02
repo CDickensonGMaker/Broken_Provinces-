@@ -1803,7 +1803,7 @@ class CellInfo:
 | `millbrook` | Millbrook | (-7, 4) | Town |
 | `willow_dale` | Willow Dale Ruins | (-5, -5) | Dungeon |
 | `bandit_hideout` | Bandit Hideout | (1, -4) | Dungeon |
-| `kazer_dun_entrance` | Kazer-Dun Entrance | (-5, 9) | Dungeon |
+| `kazan_dun_entrance` | Kazan-Dun Entrance | (-5, 9) | Dungeon |
 
 ---
 
@@ -1925,7 +1925,7 @@ All coordinates are Elder Moor-relative (Elder Moor = 0, 0).
 - **Dalhurst Harbor**: Dalhurst's harbor faces WEST toward the water. Ships dock on the western side of town.
 - **Eastern Edge = Mountains**: The eastern edge has impassable mountain terrain (blocked cells).
 - **Northern Edge = Mountains**: The northern boundary is also impassable mountains.
-- **Southern Edge = Mixed**: Southern edge has forest leading to Kazer-Dun, with some blocked mountain cells.
+- **Southern Edge = Mixed**: Southern edge has forest leading to Kazan-Dun, with some blocked mountain cells.
 
 **Hand-crafted level orientation:**
 - When a town borders water (like Dalhurst), the harbor/docks should face the water direction

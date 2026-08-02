@@ -12,7 +12,7 @@
 			"id": "travel_south",
 			"description": "Travel south through the wilderness toward the mountains",
 			"type": "reach",
-			"target": "kazer_dun_entrance",
+			"target": "kazan_dun_entrance",
 			"required_count": 1
 		},
 		{
@@ -25,7 +25,7 @@
 	],
 	"turn_in_type": "auto_complete",
 	"turn_in_target": "",
-	"turn_in_zone": "kazer_dun_entrance",
+	"turn_in_zone": "kazan_dun_entrance",
 	"rewards": {
 		"gold": 0,
 		"xp": 250,

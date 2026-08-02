@@ -1395,7 +1395,7 @@
     {
       "id": "quest_10_offer",
       "speaker": "Guildmaster Vorn",
-      "text": "Three separate reports this week put something winged over the Kazer-Dun quarry camp, and the stonecutters have stopped working the north face. If it's a dragon I pull that camp today. Go and look at it before I decide.",
+      "text": "Three separate reports this week put something winged over the Kazan-Dun quarry camp, and the stonecutters have stopped working the north face. If it's a dragon I pull that camp today. Go and look at it before I decide.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1455,7 +1455,7 @@
     {
       "id": "quest_10_accept",
       "speaker": "Guildmaster Vorn",
-      "text": "Kazer-Dun. Track it to the nest and be sure of it. If it's a wyvern, bring me five scales. If it isn't, come back alive and say so.",
+      "text": "Kazan-Dun. Track it to the nest and be sure of it. If it's a wyvern, bring me five scales. If it isn't, come back alive and say so.",
       "is_end": true,
       "auto_continue": "",
       "choices": []

@@ -158,7 +158,7 @@ const LOCATION_SCENES: Dictionary = {
 	# Dungeons
 	"willow_dale": "res://scenes/levels/willow_dale.tscn",
 	"bandit_hideout": "res://scenes/levels/bandit_hideout_exterior.tscn",
-	"kazer_dun_entrance": "res://scenes/levels/kazan_dun_entrance.tscn",
+	"kazan_dun_entrance": "res://scenes/levels/kazan_dun_entrance.tscn",
 	"sunken_crypts": "res://scenes/levels/sunken_crypt.tscn",
 
 	# === EXTENDED LOCATIONS ===
@@ -325,15 +325,15 @@ const LOCATIONS: Array = [
 		"name": "Millbrook",
 		"col": 5, "row": 12,
 		"type": "town",
-		"description": "A rickety little town clinging to the lakeshore. The waterwheel creaks day and night. Last stop for supplies before Kazer-Dun."
+		"description": "A rickety little town clinging to the lakeshore. The waterwheel creaks day and night. Last stop for supplies before Kazan-Dun."
 	},
 	{
-		"id": "kazer_dun_entrance",
-		"name": "Kazer-Dun Entrance",
+		"id": "kazan_dun_entrance",
+		"name": "Kazan-Dun Entrance",
 		"col": 7, "row": 17,
 		"type": "dungeon",
 		"is_demo_wall": true,
-		"description": "The great northern gate of Kazer-Dun Dwarf Hold. Massive stone doors flanked by ancient dwarven statues. The doors remain sealed. For now."
+		"description": "The great northern gate of Kazan-Dun Dwarf Hold. Massive stone doors flanked by ancient dwarven statues. The doors remain sealed. For now."
 	},
 	{
 		"id": "falkenhaften",
@@ -353,7 +353,7 @@ const ROADS: Array = [
 	# East road: Crossroads (7,6) to Thornfield (15,6)
 	[[7,6],[8,6]], [[8,6],[9,6]], [[9,6],[10,6]], [[10,6],[11,6]],
 	[[11,6],[12,6]], [[12,6],[13,6]], [[13,6],[14,6]], [[14,6],[15,6]],
-	# South road: Crossroads (7,6) to Kazer-Dun (7,17)
+	# South road: Crossroads (7,6) to Kazan-Dun (7,17)
 	[[7,6],[7,7]], [[7,7],[7,8]], [[7,8],[7,9]], [[7,9],[7,10]],
 	[[7,10],[7,11]], [[7,11],[7,12]], [[7,12],[7,13]], [[7,13],[7,14]],
 	[[7,14],[7,15]], [[7,15],[7,16]], [[7,16],[7,17]],

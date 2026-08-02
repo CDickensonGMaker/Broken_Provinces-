@@ -157,7 +157,7 @@ CellInfo
 |----------|--------|------|-------------|
 | Willow Dale | (-5, -5) | Dungeon | Crystal Hearts puzzle |
 | Bandit Hideout | (1, -4) | Dungeon | Bandit cave |
-| Kazer-Dun Entrance | (-5, 9) | Dungeon | Dwarf hold (north) |
+| Kazan-Dun Entrance | (-5, 9) | Dungeon | Dwarf hold (north) |
 | Sunken Crypts | (-3, 2) | Dungeon | Waterlogged tomb |
 | Bloodsand Arena | (0, 3) | Landmark | Gladiator arena |
 
@@ -189,7 +189,7 @@ Roads connect settlements and provide safe(r) travel:
 ### Main Roads
 
 1. **East-West Road** (Row -2): Dalhurst ↔ Crossroads ↔ Thornfield
-2. **North-South Road** (Column -5): Willow Dale ↔ Crossroads ↔ Kazer-Dun
+2. **North-South Road** (Column -5): Willow Dale ↔ Crossroads ↔ Kazan-Dun
 3. **Coastal Road**: Aberdeen ↔ Larton
 
 ### Spurs

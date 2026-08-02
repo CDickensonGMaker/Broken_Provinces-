@@ -257,7 +257,7 @@
     {
       "id": "planar_details",
       "speaker": "Research Board",
-      "text": "[Ley Line Survey]\n\nAn anomaly between Elder Moor and Kazer-Dun. Measure the flux and write down the phenomena. Adept rank. The ground there may not stay where you left it.\n\n[Accept this request?]",
+      "text": "[Ley Line Survey]\n\nAn anomaly between Elder Moor and Kazan-Dun. Measure the flux and write down the phenomena. Adept rank. The ground there may not stay where you left it.\n\n[Accept this request?]",
       "is_end": false,
       "auto_continue": "",
       "choices": [

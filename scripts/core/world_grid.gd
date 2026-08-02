@@ -112,7 +112,7 @@ const LOCATION_SCENES: Dictionary = {
 	"millbrook": "res://scenes/levels/millbrook.tscn",
 	"willow_dale": "res://scenes/levels/willow_dale.tscn",
 	"bandit_hideout": "res://scenes/levels/bandit_hideout_exterior.tscn",
-	"kazer_dun_entrance": "res://scenes/levels/kazan_dun_entrance.tscn",
+	"kazan_dun_entrance": "res://scenes/levels/kazan_dun_entrance.tscn",
 	"sunken_crypts": "res://scenes/levels/sunken_crypt.tscn",
 	"crossroads": "res://scenes/levels/cultist_ruins_corner.tscn",
 	"bloodsand_arena": "res://scenes/levels/bloodsand_arena.tscn",
@@ -141,10 +141,10 @@ const LOCATION_SCENES: Dictionary = {
 	# WIP - No scene implemented yet: "border_wars_graveyard": "",
 	# WIP - No scene implemented yet: "pirate_stronghold": "",
 	"elven_city": "res://scenes/levels/elven_outpost.tscn",
-	"kazer_dun_south": "res://scenes/levels/kazan_dun_exit.tscn",
-	# === KAZER-DUN CONNECTIONS ===
-	"kazer_dun_road": "res://scenes/levels/kazan_dun_road_leading_up.tscn",
-	"kazer_dun_south_road": "res://scenes/levels/kazan_dun_south_road.tscn",
+	"kazan_dun_south": "res://scenes/levels/kazan_dun_exit.tscn",
+	# === KAZAN-DUN CONNECTIONS ===
+	"kazan_dun_road": "res://scenes/levels/kazan_dun_road_leading_up.tscn",
+	"kazan_dun_south_road": "res://scenes/levels/kazan_dun_south_road.tscn",
 	"southern_cave": "res://scenes/levels/southern_cave_exterior.tscn",
 }
 
@@ -169,12 +169,12 @@ const GRID_DATA: Array = [
 	["W","W","D","F","F","F","F","R","F","F","F","F","H","H","B","B","B","B","B","B"],  # Row 14
 	["W","W","D","F","F","F","F","R","F","F","F","F","H","H","B","B","B","B","B","B"],  # Row 15
 	["W","W","D","F","F","F","F","R","F","F","F","H","H","B","B","B","B","B","B","B"],  # Row 16
-	["W","W","D","F","F","F","F","P","F","F","H","H","B","B","B","B","B","B","B","B"],  # Row 17: Kazer-Dun entrance
-	# === KAZER-DUN BARRIER (Goblin Siege blocks land route) ===
+	["W","W","D","F","F","F","F","P","F","F","H","H","B","B","B","B","B","B","B","B"],  # Row 17: Kazan-Dun entrance
+	# === KAZAN-DUN BARRIER (Goblin Siege blocks land route) ===
 	["W","W","D","B","B","B","B","P","B","B","B","B","B","B","B","B","B","B","B","B"],  # Row 18: Mountain barrier with pass
-	["W","W","D","B","B","B","B","P","B","B","B","B","B","B","B","B","B","B","B","B"],  # Row 19: Kazer-Dun interior (blocked)
-	# === SOUTHERN REGION (New 20 rows - Accessible via boat or clearing Kazer-Dun) ===
-	["W","W","W","D","F","F","F","P","F","F","H","H","B","B","B","B","B","B","B","B"],  # Row 20: South of Kazer-Dun
+	["W","W","D","B","B","B","B","P","B","B","B","B","B","B","B","B","B","B","B","B"],  # Row 19: Kazan-Dun interior (blocked)
+	# === SOUTHERN REGION (New 20 rows - Accessible via boat or clearing Kazan-Dun) ===
+	["W","W","W","D","F","F","F","P","F","F","H","H","B","B","B","B","B","B","B","B"],  # Row 20: South of Kazan-Dun
 	["W","W","W","D","F","F","F","R","F","F","F","H","H","B","B","B","B","B","B","P"],  # Row 21: Road continues south
 	["W","W","W","D","F","F","F","R","F","F","F","F","H","H","B","B","B","B","B","B"],  # Row 22: Aberdeen approach
 	["W","W","W","D","F","F","F","P","F","F","F","F","F","H","H","B","B","B","B","B"],  # Row 23: Aberdeen
@@ -223,8 +223,8 @@ const LOCATIONS: Array = [
 	 "description": "The easternmost town in the valley."},
 	{"id": "millbrook", "name": "Millbrook", "x": -7, "y": 4, "type": "town",
 	 "description": "A rickety little town clinging to the lakeshore."},
-	{"id": "kazer_dun_entrance", "name": "Kazer-Dun Entrance", "x": -5, "y": 9, "type": "dungeon",
-	 "description": "The great northern gate of Kazer-Dun Dwarf Hold."},
+	{"id": "kazan_dun_entrance", "name": "Kazan-Dun Entrance", "x": -5, "y": 9, "type": "dungeon",
+	 "description": "The great northern gate of Kazan-Dun Dwarf Hold."},
 	{"id": "sunken_crypts", "name": "Sunken Crypts", "x": -3, "y": 2, "type": "dungeon",
 	 "description": "A waterlogged burial ground slowly sinking into the marsh."},
 	# === SOUTH/SOUTHWEST LOCATIONS ===
@@ -260,17 +260,17 @@ const LOCATIONS: Array = [
 	 "description": "Goblins have made camp here, raiding nearby travelers and settlements."},
 	{"id": "goblin_camp_west", "name": "Goblin Camp", "x": -10, "y": 1, "type": "dungeon",
 	 "description": "A goblin warband has established a foothold in the western forest."},
-	# === KAZER-DUN ROAD CONNECTIONS ===
-	{"id": "kazer_dun_road", "name": "Road to Kazer-Dun", "x": -5, "y": 7, "type": "landmark",
-	 "description": "The mountain road leading up to the great dwarf hold of Kazer-Dun."},
-	# === SOUTHERN TERRITORIES (Accessible via boat or clearing Kazer-Dun) ===
-	{"id": "kazer_dun_south", "name": "Kazer-Dun South Gate", "x": -5, "y": 12, "type": "dungeon",
-	 "description": "The southern exit of Kazer-Dun, currently blocked by a goblin siege."},
+	# === KAZAN-DUN ROAD CONNECTIONS ===
+	{"id": "kazan_dun_road", "name": "Road to Kazan-Dun", "x": -5, "y": 7, "type": "landmark",
+	 "description": "The mountain road leading up to the great dwarf hold of Kazan-Dun."},
+	# === SOUTHERN TERRITORIES (Accessible via boat or clearing Kazan-Dun) ===
+	{"id": "kazan_dun_south", "name": "Kazan-Dun South Gate", "x": -5, "y": 12, "type": "dungeon",
+	 "description": "The southern exit of Kazan-Dun, currently blocked by a goblin siege."},
 	{"id": "larton", "name": "Larton", "x": -5, "y": 20, "type": "town",
 	 "scene_size": [120, 120],
 	 "description": "A starving port town at the southern tip of the bay. Ghost pirates block all sea trade."},
 	{"id": "aberdeen", "name": "Aberdeen", "x": -5, "y": 15, "type": "town",
-	 "description": "A once-prosperous trade town now facing starvation. The land route through Kazer-Dun is blocked."},
+	 "description": "A once-prosperous trade town now facing starvation. The land route through Kazan-Dun is blocked."},
 	{"id": "duncaster", "name": "Duncaster", "x": -1, "y": 22, "type": "village",
 	 "description": "A snowy mountain village nestled in the eastern peaks. Hardy folk mine the frozen slopes."},
 	{"id": "east_hollow", "name": "East Hollow", "x": 0, "y": 26, "type": "village",
@@ -380,7 +380,7 @@ const ROAD_CONNECTIONS: Array = [
 	# East road: Crossroads to Thornfield
 	[[-5,-2], [-4,-2]], [[-4,-2], [-3,-2]], [[-3,-2], [-2,-2]], [[-2,-2], [-1,-2]],
 	[[-1,-2], [0,-2]], [[0,-2], [1,-2]], [[1,-2], [2,-2]], [[2,-2], [3,-2]],
-	# South road: Crossroads to Kazer-Dun Entrance
+	# South road: Crossroads to Kazan-Dun Entrance
 	[[-5,-2], [-5,-1]], [[-5,-1], [-5,0]], [[-5,0], [-5,1]], [[-5,1], [-5,2]],
 	[[-5,2], [-5,3]], [[-5,3], [-5,4]], [[-5,4], [-5,5]], [[-5,5], [-5,6]],
 	[[-5,6], [-5,7]], [[-5,7], [-5,8]], [[-5,8], [-5,9]],
@@ -392,10 +392,10 @@ const ROAD_CONNECTIONS: Array = [
 	[[0,-2], [0,-1]], [[0,-1], [0,0]],
 	# Spur to Bloodsand Arena (south of Elder Moor)
 	[[0,0], [0,1]], [[0,1], [0,2]], [[0,2], [0,3]],
-	# === SOUTHERN ROAD (through Kazer-Dun - currently blocked by siege) ===
-	# Kazer-Dun passage (impassable until goblin siege cleared)
+	# === SOUTHERN ROAD (through Kazan-Dun - currently blocked by siege) ===
+	# Kazan-Dun passage (impassable until goblin siege cleared)
 	[[-5,9], [-5,10]], [[-5,10], [-5,11]], [[-5,11], [-5,12]],
-	# South from Kazer-Dun exit to Aberdeen
+	# South from Kazan-Dun exit to Aberdeen
 	[[-5,12], [-5,13]], [[-5,13], [-5,14]], [[-5,14], [-5,15]],
 	# Aberdeen to Larton (coastal road)
 	[[-5,15], [-5,16]], [[-5,16], [-5,17]], [[-5,17], [-5,18]],

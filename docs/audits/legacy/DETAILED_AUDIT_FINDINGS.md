@@ -120,7 +120,7 @@ const LOCATION_SCENES: Dictionary = {
   "millbrook": "res://scenes/levels/millbrook.tscn",            ✓
   "willow_dale": "res://scenes/levels/willow_dale.tscn",        ✓
   "bandit_hideout": "res://scenes/levels/bandit_hideout_exterior.tscn",  ✓
-  "kazer_dun_entrance": "res://scenes/levels/kazan_dun_entrance.tscn",   ✓
+  "kazan_dun_entrance": "res://scenes/levels/kazan_dun_entrance.tscn",   ✓
   "sunken_crypts": "res://scenes/levels/sunken_crypt.tscn",     ✓
   "crossroads": "res://scenes/levels/cultist_ruins_corner.tscn", ✓
   "bloodsand_arena": "res://scenes/levels/bloodsand_arena.tscn", ✓
@@ -139,9 +139,9 @@ const LOCATION_SCENES: Dictionary = {
   "whalers_abyss": "res://scenes/levels/whalers_abyss.tscn",   ✓
   "tenger_camp": "res://scenes/levels/tenger_camp.tscn",       ✓
   "elven_city": "res://scenes/levels/elven_outpost.tscn",      ✓
-  "kazer_dun_south": "res://scenes/levels/kazan_dun_exit.tscn", ✓
-  "kazer_dun_road": "res://scenes/levels/kazan_dun_road_leading_up.tscn",  ✓
-  "kazer_dun_south_road": "res://scenes/levels/kazan_dun_south_road.tscn",  ✓
+  "kazan_dun_south": "res://scenes/levels/kazan_dun_exit.tscn", ✓
+  "kazan_dun_road": "res://scenes/levels/kazan_dun_road_leading_up.tscn",  ✓
+  "kazan_dun_south_road": "res://scenes/levels/kazan_dun_south_road.tscn",  ✓
 }
 ```
 
