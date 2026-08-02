@@ -1,204 +1,164 @@
-# Wave B dispositions — content that needs Caleb
+# Wave B dispositions — what is done, and what is still Caleb's
 
-Everything in this file is a phantom reference the validator still reports **on
-purpose**. Wave B fixed only what existing data already determined (an NPC with
-a written dialogue tree and a zone the quests name; an id that could be repointed
-at a character who already exists). Everything below needs a decision no file in
-the repo can supply — a name, a personality, stats, or a piece of world story —
-so it is recorded here rather than invented.
+**Rewritten 8/1 (late).** The original version of this file held ~70 NPC ids,
+~105 item refs and 43 faction refs that no file in the repo could settle. Caleb
+authorised invention within canon, so most of it has been executed and moved to
+`docs/audits/invention_manifest.md`, which is the receipt — every ruling and
+every invented name is listed there and can be pulled without reading a diff.
 
-Columns: **id** · **refs** (how many quest references break) · **what exists
-already** · **proposed fix** · **why it needs Caleb**.
+**Validator: 0 errors.** Everything remaining is a *warning*, and every warning
+is on this page with the question that blocks it.
 
-## 1. Generic role NPCs — the town needs the role, nobody has written the person
+| Category | Was | Now |
+|---|---|---|
+| Errors | 237 | **0** |
+| Warnings | 276 | 228 |
+| QUEST_FACTION | 43 warnings | 0 |
+| QUEST_NPC | 131 errors | 0 errors, 19 warnings (all LORE_ONLY, listed below) |
+| QUEST_ITEM | 108 errors | 0 errors, 59 warnings (collect targets, listed below) |
+| NPC ids in the world | 149 | 206 |
+| Item ids in the world | 243 | 360 |
 
-These are ids like `dalhurst_merchant`: the quest chain wants "the merchant in
-Dalhurst" but never names or characterises them. Spawning one means inventing a
-person (name, sprite, personality, what else they know), and each becomes a
-permanent resident of a hub town.
+---
 
-| id | refs | what exists already | proposed fix | why it needs Caleb |
-|---|---|---|---|---|
-| `dalhurst_merchant` | 7 | 4 quest chains (missing courier, rescue daughter, stolen ledger) all point at one unnamed Dalhurst merchant | One named merchant in the Dalhurst market who owns all four chains | Name + personality; he is the emotional centre of a kidnapping chain |
-| `millbrook_civilian` | 6 | Three chains use one id for a widow, a witness and a mother | Either one named villager or three separate people | Are these one person or three? Three different griefs share one id |
-| `elder_moor_civilian` | 6 | "old woman" (family heirloom) and "woodsman's family" (rescue) share the id | Same question as Millbrook | One person or two; names |
-| `millbrook_merchant` | 3 | market_theft chain | Named Millbrook stallholder | Name/personality |
-| `millbrook_priest` | 3 | rescue_sacrifice_victim chain | A priest for Millbrook — which of the Three Gods? | Millbrook's shrine is not in the pantheon docs |
-| `millbrook_healer` | 2 | medicine_delivery bounty | Named healer | Name; overlaps `millbrook_priest` if the shrine heals |
-| `millbrook_shepherd` | 3 | gaela_bonus_shepherd_quest | Named shepherd on the pasture | Name/personality |
-| `millbrook_farmer` | 2 | gaela_01 / gaela_03 | Named farmer | Name/personality |
-| `millbrook_innkeeper` | 1 | mage_05 witness | Millbrook has no inn NPC | Does Millbrook (hamlet) even have an inn? |
-| `head_fisherman_millbrook` | 1 | fish_fraud (Hector's accusers) | Named head fisherman | Name; he is the counterweight to Hector, now spawned |
-| `guard_captain_millbrook` | 1 | morthane_06 murder investigation | Named guard captain | Name; Millbrook currently has no guard at all |
-| `dalhurst_scholar` | 3 | cursed_tome chain, "Dalhurst's library" | Scholar in the Athenaeum or a town library | Is the library the Athenaeum, or a separate Dalhurst building? |
-| `dalhurst_innkeeper` | 1 | missing_courier | Dalhurst has an `innkeeper_dalhurst` NPC id already spawned | Confirm they are the same person — then this is a one-line repoint |
-| `dalhurst_witness` | 1 | keepers_test | Generic "someone who saw something" | Who; probably folds into an existing civilian |
-| `old_fisherman_dalhurst` | 1 | ghost_ship_rumors | Named old salt on the docks | Name; Larton already has "Old Salt Willem" — same man moved, or a new one? |
-| `widow_dalhurst` | 1 | morthane_restless_soul | The ghost's widow | Name; ties to the ghost's story |
-| `elder_moor_guard` | 3 | bandit_justice chain; Elder Moor has exactly one watchman (`guard_elder_moor_1`) | Repoint the chain to the watchman, or give him a name and quests | The watchman is a GuardNPC, not a QuestGiver — this is a small refactor, and the quest calls him "the guard captain" (a rank Elder Moor may not have) |
-| `thornfield_wizard` | 3 | rescue_wizard_apprentice chain | Named wizard in Thornfield | Name; Dalhurst already has two wizards (Master Aldric, Master Helvant) — is this a third? |
-| `thornfield_merchant` | 2 | missing_courier turn-in | Thornfield has `thornfield_trader` spawned | Likely a one-line repoint — confirm they are the same trader |
-| `thornfield_innkeeper` | 1 | wizard_stolen_pages | Named innkeeper | Name |
-| `thornfield_healer` | 1 | gaela_08 | Named healer | Name |
-| `thornfield_farmer` | 1 | guild_contract_elite survivors | Named farmer | Name |
-| `logging_foreman` / `logging_foreman_elder_moor` | 2 | Elder Moor already has **Foreman Garvek** running the logging camp | Repoint both to `foreman_garvek` | The Gaela grove quests make the foreman the antagonist of a sacred-grove dispute — is Garvek that man, or a Dalhurst crew boss? |
-| `mine_foreman_duncaster` | 3 | miners_in_peril; Duncaster level exists with `duncaster_foreman` spawned | Probably a repoint to `duncaster_foreman` | Confirm same man |
-| `trade_master_larton` | 6 | starving_south / supply_line_crisis / aberdeen_relief; Larton has a mayor and several NPCs | A "Trade Master" office in Larton | Rank does not exist in the world yet; the quests make him the southern relief authority |
-| `imperial_magistrate` | 1 | starving_south | Imperial authority figure | Empire's civil hierarchy is undefined in the bible |
-| `caravan_survivor` | 1 | willow_dale_investigation (optional) | Survivor at the ruins | Name; and whether anyone survives is a story call |
-| `guild_witness` | 1 | adventurers_11 | Rank-and-file guild member | Name |
-| `guild_members` | 1 | thieves_13 "recruit specialists" | A recruitment roster, not one NPC | This objective wants a *mechanic* (hire specialists), not a person |
-| `iron_company_veteran` | 1 | mercenary_09 | Iron Company soldier in Dalhurst | Name |
-| `inside_contact` | 1 | thieves_10 | Guild plant inside the magistrate's office | Name; ties to `magistrate` fiction |
-| `informant_crossroads` | 1 | mage_09 | Informant at Crossroads | Name |
+## 1. Done — no longer needs you
 
-## 2. Named characters, but the naming/lore is Caleb's
+* **Factions (43 refs).** Eight created: `merchant_guild`, `common_folk`,
+  `nobility`, `hunters_guild`, `scholars_guild`, `shadowed_hand_cult`,
+  `aberdeen`, `larton`. `merchants_guild` repointed to `merchant_guild`.
+* **Generic role NPCs (33).** Thirty named residents spawned, nine ids
+  repointed to people who already existed, two ids split because they carried
+  more than one person. Every ruling is in the invention manifest.
+* **Lore-bound NPCs (19 of 30).** Nineteen characters placed, including both
+  noble houses, the necromancer, the troll, the two charlatans, the High
+  Chronist and Khan Toghrul.
+* **The Aldric collision.** Seven things were called Aldric. The missing king
+  keeps the name; everybody else gave it up, including the random name pools, so
+  no procedurally-named villager can be called Aldric either.
+* **Hostages (7).** All placed on grey-box marks in the rooms their quests mean.
+* **Items (117).** Every reward and objective id that was an error now exists,
+  with stats derived from a named donor item.
 
-The quest text names them, but they are story-adjacent: they carry lore that
-touches the bible's `[OPEN]` questions, or they are antagonists whose stats and
-allegiance are a design decision.
+---
 
-| id | refs | what exists already | proposed fix | why it needs Caleb |
-|---|---|---|---|---|
-| `king_aldric` | 3 | `_future/the_imprisoned_king.json`, zone "chamber_of_immortality" | Spawn the missing king | The bible has this deliberately `[OPEN]`: does this game reach the king at all? The name "Aldric" is a Wyrm *proposal*, not his ruling |
-| `secret_society_contact` | 7 | 3 `_future` Falkenhaften quests | Spawn in the capital | Act II content; the society is unnamed and touches the claimant plot |
-| `capital_informant` | 1 | capital_intrigue | Falkenhaften informant | Same Act II gate |
-| `elven_elder_witness` / `elven_guide` | 2 | the_false_queen / the_kings_secret | Elves who know the elixir path | Bible `[OPEN]`: where the elven lands sit; what the king did for the elves |
-| `khan_toghrul` | 1 | tenger_diplomacy | Tegnar warband leader | Bible `[OPEN]`: are the Tegnar an invasion arc or frontier flavour? A named khan sets that |
-| `village_elder_east_hollow` | 4 | tenger_diplomacy; **East Hollow has no scene** | Place East Hollow on the map, then the elder | A settlement decision, not an NPC decision |
-| `garrison_commander` | 2 | `_future/tenger_scouts`, zone "southern_outpost" (**no scene**) | Same as above | Southern outpost does not exist yet |
-| `whaelers_abyss_mayor` | 1 | `_future/missing_surveyors` | Mayor of Whalers Abyss | Name; the town has no civic figure |
-| `noble_hakon` | 2 | noble_soulstone_request | Dalhurst noble | Name/house; soulstone economy is lore-touching |
-| `noble_client` | 1 | mercenary_10 | Noble hiring the Iron Company | Which house; the noble war has no named parties |
-| `guild_mastermind` | 4 | thieves_guild_mastermind (Ashford gala heist) | Could be Lady Nightshade, now spawned | Is the "mastermind" Nightshade herself or a separate character? Merging them is a story call |
-| `mage_aldric_dalhurst` | 3 | mage_04/mage_08 call him "Senior Mage Aldric"; Dalhurst already has **Master Aldric** (`wizard_dalhurst`) | Repoint to `wizard_dalhurst` | Same man or two Aldrics? A one-line fix once ruled |
-| `high_chronist_thornfield` | 4 | chronos_03, temple_prophecy_chronos; "Temple of Time in Thornfield" | Spawn the High Chronist | Thornfield has no temple built — a building decision first |
-| `aldric_the_merchant` | 1 | mercenary_04 caravan | Merchant at Crossroads | A *third* Aldric; needs the same ruling as above |
-| `merchant_elara` | 1 | morthane_08, dying merchant at Crossroads | Spawn a dying merchant | "Elara" is also the Priestess of Gaela's name in other quests — collision |
-| `merchant_vrell` | 1 | morthane_06, the murderer | Spawn in Millbrook | Murder-mystery casting; who did it is a writing call |
-| `restless_ghost` | 1 | morthane_restless_soul | A ghost NPC | Ghost NPC class + the ghost's story |
-| `necromancer_valdris` / `necromancer_aeris` | 2 | morthane_necromancer / morthane_04 | Named necromancer bosses | Two different necromancers in the same line — same villain or two? Enemy stats needed |
-| `false_prophet_millbrook` / `false_seer_thornfield` | 2 | chronos_04 / chronos_false_prophet | Charlatan NPCs | Same character in two quests? And is the prophecy real (Chronos plot) |
-| `guild_traitor` | 2 | adventurers_11 **and** thieves_09 use one id for two different traitors | Two distinct NPCs with distinct ids | Casting + a quest-data fix; the shared id is itself a bug |
-| `iron_company_traitor` | 1 | mercenary_09 | Named traitor | Casting |
-| `iron_blades_leader` | 1 | adventurers_09 | Rival company leader | Name; rival company is new lore |
-| `black_wolf_captain` | 1 | mercenary_08 | Rival company captain | Name |
-| `enemy_commander` | 1 | mercenary_10 | Opposing commander | Name/house |
-| `bridge_troll` | 1 | guild_contract_troll | A talking troll at the Crossroads bridge | Is the troll a negotiable NPC or only an enemy? Design call |
-| `tomas_informant` | 1 | thieves_guild_informant (also used as a kill target) | Named informant | He is both a talk target and an enemy id — which he is depends on the branch |
-| `garrett_sailor` | 1 | thieves_04, "Garrett at the Crossroads tavern" | Named debtor | A second Garrett (Whalers Abyss has one, now spawned) — same man? |
-| `sailor_brennan` | 1 | sailors_debt | Named sailor | Elder Moor already has "Old Sage Brennan" — name collision |
-| `kidnapped_merchant` | 1 | mercenary_06 | Hostage | See hostages below |
+## 2. Blocked on Caleb — a decision no file can supply
 
-## 3. Hostages — one mechanic, six missing bodies
+### 2a. The seven LORE_ONLY ids (19 warnings)
 
-`hostage_merchant_daughter`, `hostage_missing_child`, `hostage_sacrifice_victim`,
-`hostage_soldier`, `hostage_wizard_apprentice`, `hostage_woodsman`
-(1 ref each, plus `kidnapped_merchant`).
+These are on `tools/validate_content.gd`'s `LORE_ONLY_IDS` list, each with the
+blocking question in the code beside it. They report as warnings so the list
+stays visible and cannot rot.
 
-`scripts/npcs/hostage_npc.gd` already exists. What is missing is placement: each
-rescue quest's second leg happens in a camp or temple whose scene is not named in
-the quest data, so nothing determines *which* room the hostage sits in. **Proposed
-fix:** one hostage marker per rescue site, spawned by the level script from the
-marker (the standard pattern). **Why Caleb:** picking the rooms is level design,
-and the victims' names/reactions are writing.
+| id | refs | The question that blocks it |
+|---|---|---|
+| `king_aldric` | 3 | **The bible's first `[OPEN — deliberately]`:** does this game reach the king's cave at all? Until that is answered he must not be standing in a room. No proxy was built either — no statue, no portrait, no decree — because putting his face on a wall is itself a ruling about how present he is in Act I |
+| `secret_society_contact` | 7 | Act II, inside the capital. The society has no name and it touches the elf-claimant plot, which the bible places as Act II's main side quest |
+| `capital_informant` | 1 | Same gate |
+| `elven_elder_witness` | 1 | **Bible `[OPEN]`:** where do the elven lands sit? And **`[OPEN]`:** what did the king do for the elves? This character exists to answer the second one |
+| `elven_guide` | 1 | Same two `[OPEN]`s — he is the one who knows the path to the Chamber |
+| `village_elder_east_hollow` | 4 | East Hollow's grid cell points at `dusty_hollow.tscn`, which is the **destroyed** hamlet, overrun by Tengers. `tenger_diplomacy` has its elder asking you to negotiate with Tengers who are still only *approaching*. One of the two is canon. Either East Hollow fell and the quest retires, or Dusty Hollow is a different place and East Hollow needs building |
+| `garrison_commander` | 2 | `southern_outpost` has no scene at all |
 
-## 4. Already whitelisted — no action needed
+### 2b. Level design — the Crossroads has no buildings
 
-`bounty_board` (15 refs), `guild_contract_board` (2), `temporal_echo_trigger` (1)
-are world interactables, not people. `tools/validate_content.gd` now carries an
-`INTERACTABLE_IDS` list (and an empty, documented `LORE_ONLY_IDS` list for
-deliberate narrative placeholders), so these no longer report as errors.
+Five quests send the player to the Crossroads to meet somebody, and name a
+**bridge**, an **inn** and a **junction**. The Crossroads on the world grid is
+`cultist_ruins_corner.tscn` — a cultist-defiled ruined intersection with none of
+those things.
 
-## 5. Flagged decision made during Wave B
+Gurm the troll, Tomas the informant, Valdris, Captain Kolt and Commander
+Brackmoor now stand on grey-box marks in that scene, so their quests are
+walkable today. **Your call:** does the Crossroads get a wayhouse and a bridge,
+or do those five quests move somewhere that already exists?
 
-Lady Nightshade existed twice over: as the magic-shop merchant in her Curiosities
-and, in `data/dialogue/lady_nightshade.json`, as the Thieves Guild guildmaster the
-quests call `guildmaster_nightshade`. She is now spawned once, as the guildmaster
-behind her own counter, and the shop is staffed by a "Curiosities Clerk". If you
-would rather she simply run the shop *and* the guild from one node,
-`QuestGiver.has_shop` exists (untested — no other NPC in the game uses it).
+Same shape, smaller: **Thornfield has no Temple of Time.** The High Chronist
+keeps a shrine-stone and a water clock under an awning and says so out loud. If
+Thornfield should have a temple, that is a building.
 
-## 6. Items — 108 reward references and 84 collect targets still unresolved
+### 2c. Level design — the hostage rooms
 
-Wave B created or repointed only the items whose *purpose* the quest data already
-fixes, per the CLAUDE.md item philosophy (every item must do something; no junk):
+All seven hostages are placed but nothing is *around* them: no cage, no altar
+stone, no cell, no ritual frame, no cut ropes. The list of what each room wants
+is in `art_replacement_manifest.md`.
 
-* **Created, 19 rank/membership tokens** — guild tokens, badges, seals, medals,
-  the Iron Company chit, the dwarven seal of passage, the meal voucher. These
-  carry no stats by design: their job is to prove standing, and the quests that
-  award them say exactly that.
-* **Created, 12 plot objects** — ledgers, the sealed courier letter, the cursed
-  tome, three keepsakes, the smuggled package, the blackmail letters, the royal
-  decree papers, the stolen relic. Weight and value only; they exist to be
-  carried and handed over.
-* **Repointed to items that already exist** — `minor_healing_herb`→`healing_herb`,
-  `minor_mana_potion`→`mana_potion`, `spell_scroll_magic_missile`→`scroll_magic_missile`,
-  `spell_scroll_lightning_bolt`→`scroll_lightning_bolt`,
-  `spell_scroll_minor_heal`→`scroll_healing_light`, `fresh_bread`→`bread`,
-  `wildflower`→`blue_flower`.
-* **Validator fix, not content** — `gold_ring`, `iron_sword` and
-  `ring_of_protection` were never missing; they live in `data/armor` and
-  `data/weapons`, which the validator did not scan. It does now.
+### 2d. Quest design — the heist loot abstractions (about 10 warnings)
 
-Everything below stays unresolved because it needs numbers or lore.
+`vault_treasures`, `vault_gold`, `valuable_goods`, `ashford_artifacts`,
+`harwick_valuables`, `stolen_jewelry`, `debt_payment`, `brennan_debt_gold`,
+`garrett_debt`. These are **piles of money**, not objects. Cleanest is a gold
+reward, or the `stolen_goods` stack that already exists — but that is a per-heist
+quest-design choice about what the player is actually carrying out of the
+building, so nothing was invented.
 
-| group | example ids | refs | why it needs Caleb |
-|---|---|---|---|
-| Faction reward gear | `iron_company_armor`, `iron_company_sword`, `iron_lieutenant_armor`, `thieves_guild_armor`, `shadow_cloak`, `shadowstep_boots`, `keepers_cloak`, `keepers_silent_boots`, `master_thief_cloak` | ~30 | Every one needs damage/armour values, a quality tier and a place on the loot curve. Handing a player free gear at quest 3 of 13 is a balance decision, not a wiring one |
-| Rank robes and staves (mage line) | `novice_robes`, `apprentice_robe`, `apprentice_staff`, `journeyman_robes`, `adept_robes`, `adept_wizard_robes`, `magister_robes`, `archmage_staff`, `staff_of_containment`, `staff_of_the_adept` | ~11 | Same: a full progression ladder of magic gear, which the game does not have yet |
-| Named/unique weapons | `vorns_battleaxe`, `nightshade_dagger`, `ghost_captains_cutlass`, `horde_breaker_blade`, `time_touched_blade`, `blade_of_legends` | 6 | Uniques are lore. Names, effects and who made them |
-| Divine blessings and charms | `blessing_of_gaela`, `blessing_of_chronos`, `morthane_amulet`, `chronos_amulet`, `gaelas_amulet`, `minor_time_blessing`, `spirit_ward_charm`, `purifying_charm`, `natures_bond_ring`… | ~25 | What a god's blessing *does* mechanically is an unwritten system. The Three Gods' favour has no rules yet |
-| Herbs, reagents, foods | `major_healing_herb`, `moonpetal_flower`, `moonleaf`, `silvervine`, `sunroot`, `moonwater`, `sacred_soil`, `fish_oil`, `wild_honey`, `great_pumpkin` | ~20 | Each wants an effect and a place in alchemy/cooking; the herb set is a small design pass of its own |
-| Spell scrolls with no matching spell | `spell_scroll_ice_shard`, `spell_scroll_ice_spike`, `spell_scroll_flame_burst`, `spell_scroll_flame_bolt`, `spell_scroll_arcane_shield`, `spell_scroll_meteor_storm` | 6 | The spells themselves do not exist. Repointing them to `scroll_ice_storm`/`scroll_fireball` would quietly change what the reward is |
-| Heist loot abstractions | `vault_treasures`, `vault_gold`, `valuable_goods`, `ashford_artifacts`, `harwick_valuables`, `stolen_jewelry`, `debt_payment`, `brennan_debt_gold`, `garrett_debt` | ~10 | These are *piles of money*, not objects. Cleaner as a gold reward or a `stolen_goods` stack (which exists) — but that is a quest-design call per heist |
-| Literal placeholders | `specialization_bonus_variable`, `forbidden_spell_variable`, `research_materials_variable` | 3 | The quest author left a TODO in the data. Each needs a real reward chosen |
-| Lore artefacts | `sacred_hourglass`, `paradox_stone`, `eternal_hourglass_fragment`, `crown_of_mountain_kings`, `hammer_of_first_king`, `soulbound_phylactery`, `seed_of_life` | ~8 | Named relics of the Three Gods, Kazan-Dun and the Keepers. All touch bible `[OPEN]` questions |
+### 2e. Lore relics that touch bible `[OPEN]`s (about 8 warnings)
 
-## 7. Choice consequences — the branches are written, nothing offers them
+`sacred_hourglass`, `paradox_stone`, `paradox_talisman`, `chronos_sealing_stone`,
+`soulbound_phylactery`, `seed_of_life`, `ancient_lifeseed`, `blade_of_legends`.
+Named relics of the Three Gods and the Keepers. Each is a piece of world story
+rather than a stat block.
 
-43 quests carry `choice_consequences` data (107 branches). Wave A fixed the
-engine half: `start_quest` now copies the branch data onto the live quest, so
-`QuestManager.apply_choice_consequence()` works. The content half is still dark.
+### 2f. Quest-object collect targets (about 40 warnings)
 
-**Exactly one quest can reach its branches**: `thieves_08_rival_gang`, because
-`data/dialogue/shadowmaster_vex.json` carries the three
-`apply_choice_consequence` actions. For the other 42 quests, no dialogue node,
-no objective and no script ever calls the action — the branch data sits in the
-JSON and nothing can fire it.
+`traitor_evidence`, `betrayal_evidence`, `witch_evidence`, `informant_evidence`,
+`guild_ledger_evidence`, `cult_documents`, `necromancer_journal`,
+`phylactery_research`, `shadow_circle_research`, `harwick_ledger`,
+`grimoire_pages_stolen`, `helvants_master_grimoire`, `masquerade_invitation`,
+`ashford_gala_invitation`, `heist_supplies`, `tenger_battle_plans`,
+`elven_treaty`, the three `*_sand` samples, and friends.
 
-Wiring them is not a data fix: each branch needs a dialogue node with the choice
-text, the conditions that gate it, and the NPC's reaction. That is writing, times
-104 branches, in the voices of characters whose personalities are themselves on
-this list. **Proposed fix:** work through them a faction at a time (thieves ×5
-are the cheapest — Vex's file shows the pattern), starting with the quests whose
-NPCs now exist.
+These are all "a piece of paper that proves the thing" — cheap to create, but
+each one is a *quest author's* decision about what the evidence actually says
+and whether it can be faked, sold or destroyed. They are warnings, not errors,
+so they do not block anything, and creating 40 flavourless notes would be exactly
+the junk the item philosophy forbids.
 
-The validator now reports every unreachable branch as a `QUEST_CHOICE` warning,
-so the backlog is visible and cannot grow silently.
+### 2g. Enemy stats (76 warnings)
 
-Malformed branch data found and fixed in this pass:
+`goblin_king`, `arena_champion_tier1`, `lich_aspirant_valdris`,
+`temporal_rift_guardian`, `rival_commander` and friends. Each needs HP, armour,
+damage, a level for the loot tier, a faction and a sprite. Deliberately left as
+warnings rather than guessed at — this is a balance pass, and
+`balance-reviewer` should own it.
 
-* `items_given` was authored in `chronos_07_paradox` but QuestManager never
-  executed it — it does now, and the supported key set is documented on the
-  `Quest.choice_consequences` field.
-* 34 faction ids in rewards and consequences named factions that do not exist,
-  so the reputation change was silently dropped: `keepers`→`the_keepers`,
-  `temple_of_three`→`church_of_three`, `temple_of_chronos`→`church_of_chronos`,
-  `guard_faction`→`town_guard`, `wizards_guild`/`wizard`/`mages_guild`/
-  `mages_circle`→`arcane_circle`, and four settlement aliases.
+### 2h. Choice branches nobody can reach (74 warnings)
 
-Faction ids still dropped on the floor (43 warnings), because the faction itself
-does not exist and inventing one means inventing its relations and rep curve:
-`merchant_guild`/`merchants_guild` (19), `common_folk` (10), `shadowed_hand_cult`
-(4), `nobility` (4), `hunters_guild` (3), `scholars_guild`, `aberdeen`, `larton`.
+Was 107, then 70 after step 24, now 74 because stage 3 and 5 made two more
+quests reachable enough to notice. Twenty-seven quests still carry branch data
+no dialogue node fires. The per-quest reasons are tabled in
+`docs/audits/invention_manifest.md` under "Tabled — 27 quests". Several of them
+unblocked in this pass, because their turn-in NPCs now exist: `sailors_debt`,
+`whalers_debt`, `fish_fraud`, `noble_soulstone_request`, `morthane_necromancer`,
+`wizard_stolen_pages` and the three `morthane_*` quests whose giver now has a
+tree to hang nodes on. That is the cheapest next wave of content work.
 
-Branch effects that point at content that does not exist: `spawn_enemy`
-`keeper_assassin`, `hostile_marcus`, `necromancer_aeris` (enemy stats needed);
-`unlock_follower` `apprentice_marcus` (no companion resource — `red_mara`, the
-other one, does exist); `items_given` `chronos_blessing_major`,
-`paradox_talisman`.
+---
 
-Enemy ids (77 warnings) are the same shape of problem — `goblin_king`,
-`arena_champion_tier1`, `lich_aspirant_valdris` and friends need stats, sprites
-and a tier — and are deliberately left as warnings rather than guessed at.
+## 3. Eye-check list — what to look at in the running game
+
+Nothing below is a known bug. These are the places where a headless validator
+cannot tell you whether the result is any good.
+
+1. **Dalhurst market and guild hall.** Thirteen new residents were added to
+   Dalhurst on hardcoded coordinates. Some of them may be standing inside a wall
+   or on a roof. Walk the market, the quays, the guild hall and the thieves' den.
+2. **Mill Brook.** Eleven new residents in a hamlet that had six. It may now read
+   as crowded.
+3. **The Crossroads** (`cultist_ruins_corner`). Five characters on grey-box
+   marks, in a scene that also spawns cultists. Check they are reachable and not
+   immediately in combat.
+4. **Khan Toghrul** at the Tenger camp, **Gurm** at the Crossroads and **the
+   Drowned Man** in Dalhurst are drawn on the default human townsman sprite. The
+   Khan is supposed to be an eight-foot bear-man.
+5. **The seven hostages.** Each is a mark on a floor with nothing around it.
+6. **The Arcane Circle gear ladder.** Thirteen mage contracts now pay in robes
+   and staves. Play three of them in a row and see whether the curve feels like a
+   progression or like a shopping list.
+7. **The five named uniques.** They barely out-damage Flamebrand on purpose. If
+   that reads as an anticlimax, the fix is the number and not the fiction.
+8. **The renames.** "Master Edric Vayle", "Severin Vane", "Guildmaster Wulfric",
+   "Brother Anselm", "Mayor Kendrick Brennworth", "Talbot Ashe". Any one of them
+   can be overruled — they are display strings, and the ids under them are
+   name-agnostic.
+9. **Faction standing.** Eight new factions start reputations moving that never
+   moved before. `nobility` starts at −10 and `shadowed_hand_cult` at −20; check
+   nothing tips hostile from a single bounty.

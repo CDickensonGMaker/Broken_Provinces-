@@ -79,11 +79,13 @@ reward items and factions actually exist, encounter tables point at real
 enemies, and quest branches are reachable, then writes
 `docs/audits/validation_report.md`.
 
-**The count is not zero yet, and that is deliberate.** Everything still
-outstanding is recorded in `docs/audits/wave_b_dispositions.md` because fixing
-it needs a decision from Caleb - a name, stats, or a piece of world story.
-The rule is simply: **your change must never make the number go up.** Compare
-against the last committed report before you blame your own work.
+**The error count is 0 as of 8/1 (late), and it must stay there.** Warnings are
+not zero and that is deliberate: everything still outstanding is recorded in
+`docs/audits/wave_b_dispositions.md` with the question that blocks it - enemy
+stats, level design, a quest-design call, or one of the bible's `[OPEN]`s.
+The rules are: **errors must stay at zero**, and **your change must never make
+the warning count go up.** Compare against the last committed report before you
+blame your own work.
 
 Never invent content to make the validator quiet. If a phantom reference cannot
 be fixed from data that already exists, add a row to the disposition table
