@@ -516,12 +516,23 @@ class QuestSaveData:
 	## Quest-related flags/variables
 	var variables: Dictionary = {}
 
+	## Running countdown objectives (quest_id:objective_id -> seconds remaining).
+	## QuestManager.to_dict has always written these; SaveManager extracted three
+	## other keys and dropped them, so any timed objective lost its deadline.
+	var timed_objectives: Dictionary = {}
+
+	## Countdowns paused when they were saved. Must come back paused, not lost
+	## and not running.
+	var paused_timers: Dictionary = {}
+
 	func to_dict() -> Dictionary:
 		return {
 			"active": active,
 			"completed": completed,
 			"failed": failed,
-			"variables": variables
+			"variables": variables,
+			"timed_objectives": timed_objectives,
+			"paused_timers": paused_timers
 		}
 
 	func from_dict(data: Dictionary) -> void:
@@ -529,6 +540,8 @@ class QuestSaveData:
 		completed = data.get("completed", {})
 		failed = data.get("failed", {})
 		variables = data.get("variables", {})
+		timed_objectives = data.get("timed_objectives", {})
+		paused_timers = data.get("paused_timers", {})
 
 
 ## Time tracking save data structure

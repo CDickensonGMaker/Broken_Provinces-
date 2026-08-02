@@ -868,6 +868,13 @@ func _give_starter_items(items: Array[Dictionary], quest_title: String) -> void:
 # =============================================================================
 
 ## Active quest spawns: quest_id -> Array[Node] (spawned objects to cleanup on quest fail/abandon)
+##
+## TRANSIENT, deliberately. These are live node references, and every one of
+## them is freed by the scene change a load performs, so writing them into a
+## save would restore a dictionary of dangling ids that _cleanup_quest_spawns
+## could do nothing with. The real gap this exposes is a different one and is
+## recorded rather than invented around: a quest chest or hostage spawned by
+## spawn_on_accept is not respawned after a load at all.
 var _quest_spawns: Dictionary = {}
 
 ## Execute spawn_on_accept entries when quest starts
@@ -2645,7 +2652,8 @@ func to_dict() -> Dictionary:
 		"tracked_quest_id": tracked_quest_id,
 		"quests": {},
 		"bounty_cooldowns": bounty_cooldowns.duplicate(),
-		"timed_objectives": _timed_objectives.duplicate()
+		"timed_objectives": _timed_objectives.duplicate(),
+		"paused_timers": _paused_timers.duplicate()
 	}
 	for quest_id in quests:
 		var quest: Quest = quests[quest_id]
@@ -2796,6 +2804,13 @@ func from_dict(data: Dictionary) -> void:
 		var time_remaining: float = saved_timers[key]
 		if time_remaining > 0:
 			_timed_objectives[key] = time_remaining
+	# A timer paused for a cutscene or a menu must come back paused, not lost
+	# and not running.
+	var saved_paused: Dictionary = data.get("paused_timers", {})
+	for key: String in saved_paused:
+		var paused_remaining: float = saved_paused[key]
+		if paused_remaining > 0:
+			_paused_timers[key] = paused_remaining
 
 
 ## Reset quest state for a new game (called from death screen "New Game")

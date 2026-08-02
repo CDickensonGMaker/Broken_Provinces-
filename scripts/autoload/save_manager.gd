@@ -598,6 +598,8 @@ func _collect_quest_data(quest_data) -> void:
 		"tracked_quest_id": quest_dict.get("tracked_quest_id", ""),
 		"bounty_cooldowns": quest_dict.get("bounty_cooldowns", {})
 	}
+	quest_data.timed_objectives = quest_dict.get("timed_objectives", {})
+	quest_data.paused_timers = quest_dict.get("paused_timers", {})
 
 ## Collect time data
 func _collect_time_data(time_data) -> void:
@@ -906,7 +908,9 @@ func _apply_quest_data(quest_data) -> void:
 	QuestManager.from_dict({
 		"tracked_quest_id": tracked_id,
 		"quests": quest_data.active,  # active field holds the quests dict
-		"bounty_cooldowns": bounty_cooldowns
+		"bounty_cooldowns": bounty_cooldowns,
+		"timed_objectives": quest_data.timed_objectives,
+		"paused_timers": quest_data.paused_timers
 	})
 
 ## Apply time data

@@ -30,8 +30,30 @@ extends Node
 ## 3. WORLD-STATE PRE-COMPLETION. An objective whose world_condition already
 ##    holds when the quest is offered completes on the spot - the "you already
 ##    did this" moment.
+##
+## 4. QUESTMANAGER'S OWN MEMBER STATE. The field guard above covers Quest and
+##    Objective, and that is exactly the gap that let _timed_objectives reach a
+##    milestone build unsaved: to_dict wrote it and SaveManager threw it away,
+##    while _paused_timers was never written at all. So the same reflection now
+##    runs over QuestManager's own script variables - each must appear in
+##    to_dict, survive from_dict, or be named in TRANSIENT_MEMBERS with a
+##    reason.
 
 const FIXTURE_PATH := "res://tools/fixtures/quest_field_reference.json"
+
+## QuestManager members that are deliberately not saved, and why.
+const TRANSIENT_MEMBERS: Dictionary = {
+	"quest_database": "rebuilt from data/quests/**.json on every boot",
+	"objective_locations": "a compass position cache, recomputed after a load",
+	"_quest_spawns": "live node references; every one is freed by the scene change a load performs",
+}
+
+## Member name -> the key to_dict writes it under, where they differ.
+const MEMBER_KEY_ALIASES: Dictionary = {
+	"quests": "quests",
+	"_timed_objectives": "timed_objectives",
+	"_paused_timers": "paused_timers",
+}
 
 ## Quest fields that are deliberately not carried from template to active quest.
 const QUEST_RUNTIME_FIELDS: Array[String] = [
@@ -63,6 +85,7 @@ func _run() -> void:
 	_check_or_groups()
 	_check_world_pre_completion()
 	_check_world_state_round_trip()
+	_check_manager_member_survival()
 
 	print("")
 	print("Checks run: %d" % _checks)
@@ -411,3 +434,77 @@ func _check_world_state_round_trip() -> void:
 	_expect(not WorldState.evaluate_condition({}), "an empty condition must never pre-complete anything")
 
 	WorldState.reset_for_new_game()
+
+
+# =============================================================================
+# 5. QUESTMANAGER MEMBER STATE
+# =============================================================================
+
+func _check_manager_member_survival() -> void:
+	# tracked_quest_id is only kept if the quest it names is really active -
+	# from_dict re-points it otherwise - so give it a real one to hold.
+	var quest_id := "_member_check_quest"
+	QuestManager.quest_database[quest_id] = QuestManager._parse_quest({
+		"id": quest_id,
+		"title": "Member check",
+		"objectives": [{"id": "_obj", "type": "kill", "target": "_member_check_target"}]
+	})
+	QuestManager.start_quest(quest_id)
+
+	# Numbers are written as floats by JSON, so dirty them as floats: an int
+	# that comes back as a float is the wire format, not a dropped field.
+	var dirty: Dictionary = {
+		"tracked_quest_id": quest_id,
+		"bounty_cooldowns": {"_member_check_bounty": 4.0},
+		"_timed_objectives": {"_member_check_quest:_obj": 42.0},
+		"_paused_timers": {"_member_check_quest:_paused": 17.0},
+	}
+	for member: String in dirty:
+		QuestManager.set(member, dirty[member])
+
+	var wire: Dictionary = QuestManager.to_dict()
+
+	for member: String in _manager_members():
+		if TRANSIENT_MEMBERS.has(member):
+			continue
+		var key: String = MEMBER_KEY_ALIASES.get(member, member)
+		_expect(
+			wire.has(key),
+			"QuestManager.%s is neither written by to_dict (as '%s') nor declared in TRANSIENT_MEMBERS" % [member, key]
+		)
+
+	# And it has to come back, not just go out.
+	var round_tripped: Variant = JSON.parse_string(JSON.stringify(wire))
+	if not (round_tripped is Dictionary):
+		_fail("QuestManager.to_dict() did not survive JSON")
+		return
+
+	for member: String in dirty:
+		QuestManager.set(member, {} if dirty[member] is Dictionary else "")
+	QuestManager.from_dict(round_tripped as Dictionary)
+	_expect(QuestManager.quests.has(quest_id), "the member-check quest did not survive the round trip")
+
+	for member: String in dirty:
+		_expect(
+			_same(dirty[member], QuestManager.get(member)),
+			"QuestManager.%s was dropped by the save round trip (set %s, got %s)" % [
+				member, var_to_str(dirty[member]), var_to_str(QuestManager.get(member))
+			]
+		)
+
+	QuestManager.reset_for_new_game()
+	QuestManager.quest_database.erase(quest_id)
+
+
+## Script-declared members on the QuestManager singleton.
+func _manager_members() -> Array[String]:
+	var members: Array[String] = []
+	for property: Dictionary in QuestManager.get_property_list():
+		var usage: int = property.get("usage", 0)
+		if (usage & PROPERTY_USAGE_SCRIPT_VARIABLE) == 0:
+			continue
+		var name: String = property.get("name", "")
+		if name.is_empty():
+			continue
+		members.append(name)
+	return members
