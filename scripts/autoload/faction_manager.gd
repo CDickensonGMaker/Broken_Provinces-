@@ -727,6 +727,16 @@ func _sync_to_player_data() -> void:
 
 ## Reset all faction data (for new game)
 func reset() -> void:
+	# The mirror has to go first. `_initialize_player_reputations()` overrides
+	# every default with whatever `GameManager.player_data` holds, and
+	# `_sync_to_player_data()` has been writing this manager's state into that
+	# dictionary all along - so clearing only the local copy cleared nothing.
+	# Both callers are new-game paths, which means a second character could
+	# start out already Honored with somebody the first one had pleased.
+	if GameManager.player_data:
+		GameManager.player_data.faction_reputations.clear()
+		GameManager.player_data.faction_memberships.clear()
+
 	player_reputations.clear()
 	faction_memberships.clear()
 	last_crime_day.clear()
