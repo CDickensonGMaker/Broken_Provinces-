@@ -1,7 +1,7 @@
 {
 	"id": "adventurers_01_proving_ground",
 	"title": "Proving Ground",
-	"description": "Guildmaster Vorn does not know you, and the Guild's name is the only thing he has to sell - he will not put it on a stranger until he has watched that stranger kill something and come back to say so. A wolf pack denned east of the Thornfield road has killed two merchants this month, and Vorn is out of local hands willing to go near it. Clear the den and bring back proof. Fail, and you are just one more armed drifter asking for work in Dalhurst.",
+	"description": "A wolf pack has denned east of the Thornfield road. It has killed two merchants this month, and I am out of local hands willing to go near it. Clear the den and bring me proof.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "kill_wolves",
-			"description": "Kill the wolves that have already cost two merchants their lives",
+			"description": "Clear the wolf den east of the Thornfield road",
 			"type": "kill",
 			"target": "wolf",
 			"required_count": 8,
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "return_to_guild",
-			"description": "Bring Vorn proof, and see if the Guild's name is worth having",
+			"description": "Bring Vorn the proof",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1,
@@ -31,7 +31,9 @@
 	"rewards": {
 		"gold": 100,
 		"xp": 300,
-		"items": ["guild_token"],
+		"items": [
+			"guild_token"
+		],
 		"faction_reputation": {
 			"adventurers_guild": 50
 		}

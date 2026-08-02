@@ -1,7 +1,7 @@
 {
 	"id": "adventurers_04_bandit_contract",
 	"title": "Bandit Elimination",
-	"description": "The merchants have paid the Guild to end the raids out of the eastern outpost, and the contract Vorn hands you says eliminate - permanently, in writing, because that is what the merchants asked for and the merchants are the ones paying. Vorn will read the contract to you and then look at you for slightly too long. The raids stopping is what he is actually being measured on.",
+	"description": "The merchants have paid to end the raids out of the eastern outpost, and the contract says eliminate, because that is the word they asked for. Vorn read it out and then looked at you a moment too long.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -16,50 +16,56 @@
 	"objectives": [
 		{
 			"id": "locate_camp",
-			"description": "Find the outpost the raiders work out of",
+			"description": "Find the eastern outpost the raiders work from",
 			"type": "reach",
 			"target": "bandit_camp_east",
 			"required_count": 1,
 			"world_condition": {
 				"any": [
-					{ "flag": "bandit_camp_east_found" },
-					{ "flag": "eastern_outpost_cleared" }
+					{
+						"flag": "bandit_camp_east_found"
+					},
+					{
+						"flag": "eastern_outpost_cleared"
+					}
 				]
 			}
 		},
 		{
 			"id": "killed_the_captain",
-			"description": "Take the outpost apart and kill the captain, as written",
+			"description": "Take the outpost apart and kill the captain",
 			"type": "kill",
 			"target": "bandit_captain",
 			"required_count": 1,
 			"group": "fulfil_the_contract",
-			"world_condition": { "flag": "eastern_outpost_cleared" }
+			"world_condition": {
+				"flag": "eastern_outpost_cleared"
+			}
 		},
 		{
 			"id": "took_him_alive",
-			"description": "Bring the captain back alive for the merchants to hang themselves",
+			"description": "Bring the captain back alive",
 			"type": "choice",
 			"required_count": 1,
 			"group": "fulfil_the_contract"
 		},
 		{
 			"id": "quiet_execution",
-			"description": "Take the captain alone and quietly, and let the crew scatter",
+			"description": "Take the captain quietly, let the crew scatter",
 			"type": "choice",
 			"required_count": 1,
 			"group": "fulfil_the_contract"
 		},
 		{
 			"id": "sold_the_contract",
-			"description": "Warn the crew, take their purse, and tell Vorn they had already moved on",
+			"description": "Warn the crew and take their purse",
 			"type": "choice",
 			"required_count": 1,
 			"group": "fulfil_the_contract"
 		},
 		{
 			"id": "report_completion",
-			"description": "Report to Guildmaster Vorn",
+			"description": "Report to Vorn",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1
@@ -77,8 +83,12 @@
 	},
 	"choice_consequences": {
 		"killed_the_captain": {
-			"flags_to_set": ["bandit_contract_direct"],
-			"world_flags_to_set": ["eastern_outpost_cleared"],
+			"flags_to_set": [
+				"bandit_contract_direct"
+			],
+			"world_flags_to_set": [
+				"eastern_outpost_cleared"
+			],
 			"reputation_changes": {
 				"adventurers_guild": 20,
 				"bandits": -30,
@@ -86,8 +96,13 @@
 			}
 		},
 		"took_him_alive": {
-			"flags_to_set": ["bandit_contract_prisoner"],
-			"world_flags_to_set": ["eastern_outpost_broken", "eastern_captain_in_custody"],
+			"flags_to_set": [
+				"bandit_contract_prisoner"
+			],
+			"world_flags_to_set": [
+				"eastern_outpost_broken",
+				"eastern_captain_in_custody"
+			],
 			"reputation_changes": {
 				"adventurers_guild": 10,
 				"town_guard": 25,
@@ -95,25 +110,37 @@
 			}
 		},
 		"quiet_execution": {
-			"flags_to_set": ["bandit_contract_stealth"],
-			"world_flags_to_set": ["eastern_outpost_broken"],
+			"flags_to_set": [
+				"bandit_contract_stealth"
+			],
+			"world_flags_to_set": [
+				"eastern_outpost_broken"
+			],
 			"reputation_changes": {
 				"adventurers_guild": 25,
 				"bandits": -10
 			}
 		},
 		"sold_the_contract": {
-			"flags_to_set": ["bandit_contract_sold"],
-			"world_flags_to_set": ["eastern_outpost_warned"],
+			"flags_to_set": [
+				"bandit_contract_sold"
+			],
+			"world_flags_to_set": [
+				"eastern_outpost_warned"
+			],
 			"reputation_changes": {
 				"adventurers_guild": -20,
 				"bandits": 40,
 				"town_guard": -10
 			},
-			"items_given": ["bandit_bounty_note"]
+			"items_given": [
+				"bandit_bounty_note"
+			]
 		}
 	},
-	"prerequisites": ["adventurers_03_escort_duty"],
+	"prerequisites": [
+		"adventurers_03_escort_duty"
+	],
 	"next_quest": "adventurers_05_missing_team",
 	"notes": "Second multi-path showcase, and the counterpart to the Millbrook flagship: Millbrook is a hamlet asking a stranger for help, this is an employer handing over a contract with a word in it he is hoping you will interpret. Four roads in one OR group. locate_camp and killed_the_captain pre-complete off world facts the eastern outpost writes, so a player who cleared it before taking the contract gets paid on the spot. Old objective 'kill 8 bandits' dropped - it forced the assault road onto every path. locate_camp repointed from crossroads_bandit_camp, which has never existed, to bandit_camp_east, which does."
 }

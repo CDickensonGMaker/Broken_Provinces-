@@ -7,7 +7,7 @@
     {
       "id": "greeting",
       "speaker": "Guildmaster Vorn",
-      "text": "Welcome to the Adventurer's Guild of Dalhurst. We handle contracts that require skilled fighters, scouts, and problem-solvers. Looking for work, or just browsing?",
+      "text": "Adventurer's Guild, Dalhurst chapter. Contracts come in, and I decide who I can send out without hearing about it afterwards. You looking for work?",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -169,7 +169,7 @@
           "actions": []
         },
         {
-          "text": "I've defeated Katrina.",
+          "text": "I beat you, Guildmaster.",
           "next": "quest_13_turnin",
           "conditions": [
             {
@@ -221,7 +221,7 @@
     {
       "id": "join_request",
       "speaker": "Guildmaster Vorn",
-      "text": "We don't take just anyone. The guild has a reputation to maintain, and that means only accepting proven warriors. I'll give you a chance to prove yourself: clear out a wolf pack that's been terrorizing travelers on the road to Thornfield. Kill them all - eight wolves total. Do that, and we'll talk membership.",
+      "text": "I don't put the Guild's name on a stranger. There's a wolf pack denned on the Thornfield road that's killed two merchants this month, and nobody local will go near it. Clear it, come back and tell me, and we'll talk.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -254,7 +254,7 @@
     {
       "id": "wolf_details",
       "speaker": "Guildmaster Vorn",
-      "text": "A pack has denned up east of Dalhurst, near the Thornfield road. They've killed two merchants this month alone. Eight wolves causing trouble. Kill them all and bring proof. That'll show me you can handle real danger.",
+      "text": "East of Dalhurst, off the Thornfield road. Two merchants dead this month, and my local hands have all suddenly found other work. Kill the pack and bring me something to show for it.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -287,7 +287,7 @@
     {
       "id": "initiation_reward",
       "speaker": "Guildmaster Vorn",
-      "text": "100 gold, a guild token, and membership. Plus, access to all guild contracts going forward. The guild takes a small cut of each contract, but in exchange you get steady work and backup if jobs go sideways. Fair deal. Interested?",
+      "text": "A hundred, a guild token, and your name on our books. After that you get first sight of the contracts instead of hearing about them in a tavern a week late.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -314,7 +314,7 @@
     {
       "id": "quest_01_accept",
       "speaker": "Guildmaster Vorn",
-      "text": "Good. The wolves are east of here, near the Thornfield road. Kill all eight. When it's done, come back and we'll make your membership official. And don't die out there. Dead adventurers don't pay guild dues.",
+      "text": "East of here, off the Thornfield road. Come back and tell me it's done. And don't die out there - dead men don't pay dues.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -375,7 +375,7 @@
     {
       "id": "quest_02_offer",
       "speaker": "Guildmaster Vorn",
-      "text": "Since you're eager, I've got something for a new Initiate. The Dalhurst warehouse district has been overrun with giant rats. Merchants are losing stock and patience. Get in there, kill twelve rats, and report back. Simple pest control, but the pay is honest.",
+      "text": "Grain factor named Corrin Dale is losing a sack a night, and his own ratcatchers won't go past the loading doors anymore. He paid without arguing. Go and see what's in there.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -408,7 +408,7 @@
     {
       "id": "quest_02_explain",
       "speaker": "Guildmaster Vorn",
-      "text": "These aren't ordinary rats. Giant vermin, some as big as dogs. The merchants are terrified. Every Initiate starts with contracts like this - proving they can handle enclosed spaces, multiple enemies, simple tactics. Master the basics before you tackle dragons.",
+      "text": "Some of them are the size of dogs, and Corrin's men won't set foot inside. Small job, granted. It's still a man's living going out through a hole in his floor.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -435,7 +435,7 @@
     {
       "id": "quest_02_accept",
       "speaker": "Guildmaster Vorn",
-      "text": "The warehouse is in the dock district. Twelve rats minimum need killing. Watch for their nest - that's where the bigger ones hide. 75 gold when it's done.",
+      "text": "The warehouse is down in the dock district. Watch for the nest - the big ones sit on it. Seventy-five when it's done.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -476,7 +476,7 @@
     {
       "id": "quest_03_offer",
       "speaker": "Guildmaster Vorn",
-      "text": "A merchant named Halvard needs safe passage from Dalhurst to Thornfield. Bandits have been hitting the trade routes. He's paying good gold for a competent escort. Get him there alive, and you'll earn a promotion to full Guild Member.",
+      "text": "Halvard has one wagon of dye going to Thornfield with this season's whole margin on it, bought on credit. Bandits have hit three caravans on that road. He paid our price without haggling, so I'm sending him someone who'll stay awake.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -509,7 +509,7 @@
     {
       "id": "quest_03_details",
       "speaker": "Guildmaster Vorn",
-      "text": "Reports say bandits have hit three caravans this week. Expect an ambush somewhere on the road. Four, maybe five attackers. Halvard's carrying valuable goods, so they'll be motivated. Keep him alive, deal with the bandits, and 125 gold is yours.",
+      "text": "Three caravans this month. Expect four or five of them, somewhere past the crossroads, and expect them interested - he's carrying dye, not turnips. Keep him breathing and the wagon loaded.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -536,7 +536,7 @@
     {
       "id": "quest_03_accept",
       "speaker": "Guildmaster Vorn",
-      "text": "Halvard is waiting at the Dalhurst east gate with his cart. Meet him there and escort him to Thornfield. Stay alert - the bandits like to hit at the crossroads. 125 gold and your Member badge when you return successful.",
+      "text": "He's at the east gate with the cart. They favour the crossroads for it. Bring him back in one piece and you're a Member.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -587,7 +587,7 @@
     {
       "id": "quest_04_offer",
       "speaker": "Guildmaster Vorn",
-      "text": "As a Member, you're ready for serious contracts. A bandit camp near Crossroads has been raiding merchant caravans. The Guild's been hired to eliminate them - permanently. Eight bandits and their captain. 200 gold. Interested?",
+      "text": "The merchants have paid to end the raids out of the eastern outpost. The contract says eliminate. That's the word they asked for, and I'm the one who files it afterwards.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -620,7 +620,7 @@
     {
       "id": "quest_04_details",
       "speaker": "Guildmaster Vorn",
-      "text": "The captain's a nasty piece of work - former soldier turned outlaw. He's trained his men well. You can try a frontal assault or scout first and hit them at night. Either way, he needs to die. His men will scatter once he's dead.",
+      "text": "Former soldier, and he's trained them like one. You can go at it in daylight, or you can go at it some other way. Either way the raids stop, and I'd rather not be told more than that.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -647,7 +647,7 @@
     {
       "id": "quest_04_accept",
       "speaker": "Guildmaster Vorn",
-      "text": "The camp is south of Crossroads, in the forest. Kill the captain, scatter his band. Don't come back until it's done.",
+      "text": "East of here. Do what the contract says, or near enough that I can sign it. Come and tell me yourself - don't send word.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -688,7 +688,7 @@
     {
       "id": "quest_05_offer",
       "speaker": "Guildmaster Vorn",
-      "text": "A Guild team went into Willow Dale two days ago and hasn't returned. Three good adventurers. I fear the worst, but I need to know what happened. Find them - or recover their tokens for their families. The Guild takes care of its own, even in death. 175 gold.",
+      "text": "Three of mine went into Willow Dale two days ago and haven't come out. Find them. If you can't find them, bring me their tokens - the families get those.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -721,7 +721,7 @@
     {
       "id": "quest_05_details",
       "speaker": "Guildmaster Vorn",
-      "text": "Spider extermination. Giant spiders nested in the ruins. Should have been routine for them. Something went wrong. Find out what, recover their guild tokens, and if possible... avenge them.",
+      "text": "Spider work. Routine, for them, and that's the part I keep turning over. Find out what went wrong, bring the tokens back, and if you get the chance, settle it.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -748,7 +748,7 @@
     {
       "id": "quest_05_accept",
       "speaker": "Guildmaster Vorn",
-      "text": "Willow Dale is northeast of here. Look for them in the spider-infested sections. Recover their three guild tokens - that's what the families need. And if you find whatever killed them... make it pay.",
+      "text": "Willow Dale, northeast. They'd have gone for the nested sections. Three tokens is what the families need. The rest is up to you.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -831,7 +831,7 @@
     {
       "id": "quest_06_offer",
       "speaker": "Guildmaster Vorn",
-      "text": "Something large and dangerous has been stalking the woods near Millbrook. Livestock mutilated, travelers disappearing. The locals call it 'The Beast.' Track it down, kill it, and bring proof. Succeed, and you'll earn the Veteran rank. 250 gold.",
+      "text": "Millbrook has lost half its flocks since planting. A shepherd there, Ansel Crake, lost his last sheep two nights ago and won't take his cart out after dark. Three hunting parties out of that village have already missed it.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -864,7 +864,7 @@
     {
       "id": "quest_06_details",
       "speaker": "Guildmaster Vorn",
-      "text": "We don't know for certain. Could be a dire wolf, could be something worse. Talk to the Millbrook elder - she's seen the tracks. Whatever it is, it's smart enough to avoid hunters so far. You'll need to track it to its lair.",
+      "text": "Nobody's had a clear look at it. Talk to the elder - she's seen the tracks and she's seen what's left of the sheep. Whatever it is, it's been avoiding hunters, and that worries me more than the size of it.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -891,7 +891,7 @@
     {
       "id": "quest_06_accept",
       "speaker": "Guildmaster Vorn",
-      "text": "Millbrook is northwest of Dalhurst. Talk to the village elder, find the tracks, hunt the beast. Bring back its pelt as proof. Good hunting, adventurer.",
+      "text": "Millbrook is northwest. Elder first, tracks after. Bring me the pelt.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -942,7 +942,7 @@
     {
       "id": "quest_07_offer",
       "speaker": "Guildmaster Vorn",
-      "text": "An unexplored section of Willow Dale was recently uncovered by a cave-in. The Guild wants it mapped and cleared of threats. Any artifacts or treasure you find are yours to keep - standard dungeon delving contract. 300 gold for the mapping. Interested?",
+      "text": "A cave-in opened a stretch of Willow Dale nobody's mapped. I've heard - never mind where - that the Thieves Guild already put someone in there. Get in first. Whatever you carry out is yours.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -975,7 +975,7 @@
     {
       "id": "quest_07_details",
       "speaker": "Guildmaster Vorn",
-      "text": "Willow Dale's upper levels had spiders and bandits. This deep section? Unknown. Expect undead - the ruins are ancient. There are rumors of trapped vaults and puzzles. The mages who built this place were paranoid.",
+      "text": "The upper levels were spiders and bandits. Below that, nobody knows. Assume undead, assume the builders left something behind a door, and assume yours isn't the only lamp down there.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1002,7 +1002,7 @@
     {
       "id": "quest_07_accept",
       "speaker": "Guildmaster Vorn",
-      "text": "The new entrance opened in the eastern section of Willow Dale. Map everything, clear the threats, and recover any artifacts. Watch for traps - the ancient builders were clever and cruel.",
+      "text": "The new entrance is on the eastern side. Map it, clear it. If you see anyone else's torchlight, I want to hear it from you before I hear it from them.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -1043,7 +1043,7 @@
     {
       "id": "quest_08_offer",
       "speaker": "Guildmaster Vorn",
-      "text": "An ogre has taken up residence near Crossroads, blocking the trade route and demanding tolls. The merchants want it gone. Deal with it - by steel or by silver tongue. 350 gold.",
+      "text": "There's an ogre sitting on the Crossroads road taking coin off anyone who wants past. The merchants want it gone. Gone is the whole of what I was asked for.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1076,7 +1076,7 @@
     {
       "id": "quest_08_details",
       "speaker": "Guildmaster Vorn",
-      "text": "Ogres are smarter than most give them credit for. This one's been demanding payment, not just killing. Some clever adventurers have talked their way out of fights before. Or you can just kill it. Either way, the road needs to be clear.",
+      "text": "It's been charging rather than eating people, which means it can count and it can be talked to. Men have talked their way past worse. I'm not paying extra for a corpse.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1103,7 +1103,7 @@
     {
       "id": "quest_08_accept",
       "speaker": "Guildmaster Vorn",
-      "text": "The ogre's camp is near Crossroads, blocking the main road. Kill it, bribe it, convince it to leave - I don't care how. Just clear the road. Report back when it's done.",
+      "text": "Crossroads, on the main road. I don't care how the road comes clear. Come back and tell me which way you did it - straight.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -1138,7 +1138,7 @@
     {
       "id": "quest_09_offer",
       "speaker": "Guildmaster Vorn",
-      "text": "A rival adventuring company, the Iron Blades, has been operating in Guild territory and undercutting our contracts. I want you to handle it - diplomatically if possible. Resolve this, and you'll earn Elite rank. 400 gold.",
+      "text": "The Iron Blades have set up in Thornfield and they're taking work out from under us at half our rate. Go and settle it. I'd rather it were settled with words, and I'm not going to be particular.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1171,7 +1171,7 @@
     {
       "id": "quest_09_details",
       "speaker": "Guildmaster Vorn",
-      "text": "You could challenge their leader to a duel - settle it the old way. You could negotiate territory division. You could drive them out by force. Or... you could propose an alliance. That last one would be ideal, but it requires exceptional charisma.",
+      "text": "Their leader will fight you if you ask, and might listen if you don't. You could split the territory. You could run them out. You could bring them in with us, which I've never seen done and would like to.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1198,7 +1198,7 @@
     {
       "id": "quest_09_accept",
       "speaker": "Guildmaster Vorn",
-      "text": "The Iron Blades operate out of Thornfield. Find their leader and resolve this conflict. An alliance would strengthen us both, but any resolution that protects Guild interests is acceptable. Good luck.",
+      "text": "Thornfield. Find their leader. Anything that leaves the Guild standing is a result - but come back and tell me which one it was.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -1395,7 +1395,7 @@
     {
       "id": "quest_10_offer",
       "speaker": "Guildmaster Vorn",
-      "text": "Travelers report seeing a dragon circling the mountains near Kazer-Dun. If true, this is catastrophic. I need you to investigate - carefully. If it's really a dragon, don't engage. But if it's a wyvern or drake... that's a trophy worth claiming. 500 gold.",
+      "text": "Three separate reports this week put something winged over the Kazer-Dun quarry camp, and the stonecutters have stopped working the north face. If it's a dragon I pull that camp today. Go and look at it before I decide.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1428,7 +1428,7 @@
     {
       "id": "quest_10_details",
       "speaker": "Guildmaster Vorn",
-      "text": "True dragons are rare and devastating. More likely it's a wyvern - dangerous but killable. Track it, identify it. If it's a wyvern, kill it and bring scales as proof. If it's an actual dragon... get out and report back so we can evacuate the region.",
+      "text": "A wyvern is dangerous. A dragon is a different conversation entirely, and I'd be evacuating rather than hiring. Get close enough to be certain and no closer - I want the answer, not another name for the board.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1455,7 +1455,7 @@
     {
       "id": "quest_10_accept",
       "speaker": "Guildmaster Vorn",
-      "text": "Travel to Kazer-Dun entrance and investigate. Track the creature to its lair. Identify it. If it's a wyvern, kill it and bring five scales. If it's a dragon... don't die. Good luck, Elite.",
+      "text": "Kazer-Dun. Track it to the nest and be sure of it. If it's a wyvern, bring me five scales. If it isn't, come back alive and say so.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -1496,7 +1496,7 @@
     {
       "id": "quest_11_offer",
       "speaker": "Guildmaster Vorn",
-      "text": "I need to speak with you privately. There's corruption in the Guild - contracts being skimmed, bribes taken, adventurers going missing under suspicious circumstances. Someone high up is dirty. I need someone I can trust to investigate quietly. 450 gold.",
+      "text": "Sit down, and keep this between us. Contracts are being skimmed, bribes taken, and members have gone missing in ways I can't account for. Whoever it is has the run of my records, and you're the only one here who owes nobody.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1529,7 +1529,7 @@
     {
       "id": "quest_11_details",
       "speaker": "Guildmaster Vorn",
-      "text": "I have suspicions but no proof. It's someone with access to the records and contract assignments. Check the ledgers, question other members discreetly, and find out who's been meeting with outside parties. Be careful - whoever it is has power.",
+      "text": "I have suspicions. I don't have anything I could say out loud without splitting this hall in half. Read the ledgers, talk to people quietly, find out who's been meeting whom - and be careful, they have friends.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1556,7 +1556,7 @@
     {
       "id": "quest_11_accept",
       "speaker": "Guildmaster Vorn",
-      "text": "Check the guild records for irregularities. Talk to members about the missing adventurers. If you find the traitor, confront them - but be ready for anything. The Guild's integrity depends on this.",
+      "text": "Ledgers first. Then the members, carefully. When you're certain, confront them - and be ready for it to go badly.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -1693,7 +1693,7 @@
     {
       "id": "quest_12_offer",
       "speaker": "Guildmaster Vorn",
-      "text": "There's a contract that's been on the board for years. Everyone who's tried it has failed or died. The deepest level of Willow Dale, sealed by the ancients, contains unimaginable treasure. Clear it, and you'll be the first adventurer in Guild history to succeed. 750 gold.",
+      "text": "There's a contract on that board older than my time here, and everyone who's tried it is dead. I'm calling it in now because the Iron Blades bought a key-fragment map off a fence in Thornfield. Whoever opens that door first keeps every client who'd pay for work like it.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1726,7 +1726,7 @@
     {
       "id": "quest_12_details",
       "speaker": "Guildmaster Vorn",
-      "text": "The sealed door requires three ancient key fragments hidden throughout Willow Dale. Past the door is an ancient guardian - something powerful enough that the original builders feared it. But beyond that guardian? The Blade of Legends.",
+      "text": "Three key fragments, scattered through Willow Dale. Behind the door is a guardian the builders were frightened enough of to seal in. And behind that, the Blade of Legends.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1753,7 +1753,7 @@
     {
       "id": "quest_12_reluctant",
       "speaker": "Guildmaster Vorn",
-      "text": "Because you're not everyone. You've proven yourself against wyverns, traitors, and ogres. You cleared spider nests and hunted dire wolves. If anyone can do this, it's you. But I won't force you.",
+      "text": "Because you're not everyone else who tried. You've put down a wyvern and a dire wolf and walked out of that place twice already. I'm not going to make you go.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1780,7 +1780,7 @@
     {
       "id": "quest_12_accept",
       "speaker": "Guildmaster Vorn",
-      "text": "Find the three key fragments in Willow Dale's upper levels. Use them to unseal the deepest door. Defeat whatever guards the vault. Claim the Blade of Legends. If you succeed... you'll be ready for the final test.",
+      "text": "The fragments are in the upper levels. Unseal the door, kill what's behind it, take the blade. Come back and we'll talk about the last thing.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -1809,7 +1809,7 @@
     {
       "id": "quest_13_offer",
       "speaker": "Guildmaster Vorn",
-      "text": "You've earned the right to challenge for the title of Guild Champion. Katrina Steelwind has held it for eight years. Defeat her in the arena, and the title - and everything that comes with it - is yours. This is the final test. Are you ready?",
+      "text": "There's one thing left, and it's me. Nobody below me would fight you honestly, and there's nobody above me. Beat me in the ring and the title is yours, along with first pick of everything that comes through that door.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1836,7 +1836,7 @@
     {
       "id": "quest_13_details",
       "speaker": "Guildmaster Vorn",
-      "text": "Katrina Steelwind is the finest warrior in the Guild. She's faced down chimeras, outwitted armies, and never lost a championship duel. The fight isn't to the death, but it's no gentle sparring match. She fights hard. You'll need to as well.",
+      "text": "I haven't fought a real bout in six years and I don't much want to start now. But I'm not handing the Champion's title to a man I haven't tested, and I'm not asking anyone else to lose to you politely.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1857,7 +1857,7 @@
     {
       "id": "quest_13_redirect",
       "speaker": "Guildmaster Vorn",
-      "text": "Katrina spends most of her time in the training yard. Speak with her directly to issue the formal challenge. When you've defeated her, return to me for the ceremony.",
+      "text": "The arena, then. Come and find me when you're ready - and don't be gentle about it. I'd know, and it would go worse for you.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -1865,7 +1865,7 @@
     {
       "id": "quest_13_turnin",
       "speaker": "Guildmaster Vorn",
-      "text": "You defeated Katrina Steelwind? In single combat? I... I'm honored to have watched your rise through the ranks. From hunting wolves to becoming Champion. Here's 1000 gold, the Champion's Circlet, and Katrina's own battleaxe - she insisted you have it.",
+      "text": "You put me on the floor of my own hall. Six years I've been telling people I could still do this. Here's a thousand, the Champion's Circlet, and my axe - it goes with the title, and I'd rather hand it over than have it taken.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -1934,7 +1934,7 @@
     {
       "id": "available_work",
       "speaker": "Guildmaster Vorn",
-      "text": "Check the contract board over there. We've got jobs ranging from monster hunting to escort duty. As your reputation grows, better contracts become available.",
+      "text": "Board's on the wall. It changes daily and I don't hold jobs for anyone.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -2200,7 +2200,7 @@
     {
       "id": "guild_info",
       "speaker": "Guildmaster Vorn",
-      "text": "The Adventurer's Guild operates in every major city. We connect skilled fighters with paying clients. Merchants need caravan guards. Towns need monster hunters. Nobles need discrete problem-solvers. We handle it all. Join us, and you'll never lack for work.",
+      "text": "We put fighters in front of other people's problems for a fee. Merchants, towns, the occasional noble who wants a thing handled without his name on it. The Guild's name is the only thing I actually sell, so I am careful who wears it.",
       "is_end": false,
       "auto_continue": "",
       "choices": [

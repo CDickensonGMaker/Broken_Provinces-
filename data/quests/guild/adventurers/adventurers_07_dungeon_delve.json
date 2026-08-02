@@ -1,7 +1,7 @@
 {
 	"id": "adventurers_07_dungeon_delve",
 	"title": "Into the Deep",
-	"description": "A cave-in opened a section of Willow Dale nobody has mapped, and Vorn has heard - from where, he won't say - that the Thieves Guild already sent someone in to look. Whatever is down there is Guild property only if the Guild's boot prints are the first ones in the dust. Map it, clear it, and anything you carry out is yours to keep. Watch for traps, and watch for anyone else's torchlight.",
+	"description": "A cave-in opened a stretch of Willow Dale nobody has mapped. Vorn has heard - he will not say from where - that the Thieves Guild already put someone in there. Whatever is down there is ours if our boots are first.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "enter_deep_section",
-			"description": "Get into the new section before whoever else is looking does",
+			"description": "Get into the new Willow Dale section",
 			"type": "reach",
 			"target": "willow_dale_deep",
 			"required_count": 1,
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "map_chambers",
-			"description": "Map the chambers before somebody else does",
+			"description": "Map the chambers",
 			"type": "reach",
 			"target": "willow_dale_deep_end",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "defeat_guardians",
-			"description": "Cut through the undead standing between you and the vault",
+			"description": "Cut through the undead in the way",
 			"type": "kill",
 			"target": "skeleton_warrior",
 			"required_count": 8,
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "recover_artifact",
-			"description": "Take the vault's artifact before it belongs to someone else's claim",
+			"description": "Take the vault's artifact",
 			"type": "collect",
 			"target": "ancient_amulet",
 			"required_count": 1,
@@ -42,7 +42,7 @@
 		},
 		{
 			"id": "solve_vault_puzzle",
-			"description": "Solve the vault puzzle to access the artifact",
+			"description": "Solve the vault puzzle",
 			"type": "solve_puzzle",
 			"target": "willow_dale_vault_puzzle",
 			"required_count": 1,
@@ -55,12 +55,16 @@
 	"rewards": {
 		"gold": 300,
 		"xp": 750,
-		"items": ["enchanted_explorer_boots"],
+		"items": [
+			"enchanted_explorer_boots"
+		],
 		"faction_reputation": {
 			"adventurers_guild": 75
 		}
 	},
-	"prerequisites": ["adventurers_06_monster_hunt"],
+	"prerequisites": [
+		"adventurers_06_monster_hunt"
+	],
 	"next_quest": "adventurers_08_ogre_problem",
 	"notes": "Rank: Veteran. Dungeon exploration with traps and puzzles. Willow Dale deep section. Optional puzzle for bonus rewards. Boots give trap detection bonus. Threat: a rival claim on the same vault - the Thieves Guild, per Vorn's unconfirmed word. Giver motive: territorial control of a Guild asset, not treasure for its own sake. Consequence: arriving second costs the Guild the claim - stated in prose only, no rival encounter or flag exists to wire it; deferred."
 }

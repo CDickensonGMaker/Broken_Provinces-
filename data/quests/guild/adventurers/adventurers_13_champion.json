@@ -1,7 +1,7 @@
 {
 	"id": "adventurers_13_champion",
 	"title": "Legend in the Making",
-	"description": "No one else in the Guild can test a Champion candidate honestly - anyone lower would lose on purpose, and anyone higher doesn't exist - so Vorn steps into the ring himself. He hasn't fought a real bout in six years, and he knows exactly what losing costs him: the Guild's best contracts go to whoever wins this fight, which means every Elite who has waited years for first pick gets passed over by someone Vorn barely knows. Win, and you are Champion. He will not enjoy losing to you, and he will hand the title over anyway, because that is the whole point of holding it honestly.",
+	"description": "Nobody below him would fight a Champion candidate honestly, and there is nobody above him. Vorn has not fought a real bout in six years. He will not enjoy losing, and he will hand the title over anyway.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "prepare_for_trial",
-			"description": "Tell Vorn you're ready to fight for the title he's held",
+			"description": "Tell Vorn you are ready",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1,
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "enter_arena",
-			"description": "Enter the arena Vorn hasn't fought in for six years",
+			"description": "Enter the Guild arena",
 			"type": "reach",
 			"target": "guild_arena",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "defeat_vorn",
-			"description": "Beat Vorn in the fight he can't afford to throw",
+			"description": "Beat Vorn in the ring",
 			"type": "kill",
 			"target": "vorn_champion_form",
 			"required_count": 1,
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "claim_title",
-			"description": "Take the Champion's title off the man who just lost it",
+			"description": "Take the Champion's title from him",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1,
@@ -47,11 +47,16 @@
 	"rewards": {
 		"gold": 1000,
 		"xp": 2000,
-		"items": ["champion_circlet", "vorns_battleaxe"],
+		"items": [
+			"champion_circlet",
+			"vorns_battleaxe"
+		],
 		"faction_reputation": {
 			"adventurers_guild": 300
 		}
 	},
-	"prerequisites": ["adventurers_12_legendary_contract"],
+	"prerequisites": [
+		"adventurers_12_legendary_contract"
+	],
 	"notes": "Rank: Elite -> Champion (final promotion). Boss fight against Vorn at full power. Non-lethal but extremely challenging. Champion Circlet grants +5 to all combat stats. Vorn's Battleaxe is unique legendary weapon. Unlocks repeatable bounty board. Max guild rank achieved. Threat/stake: Vorn's own standing as combat authority, and every waiting Elite passed over by the winner. Giver motive: Vorn is the only one who can test a Champion candidate honestly. Consequence stated in prose (Guild's best contracts go to the new Champion); not wired since this is a single boss fight with no branch."
 }

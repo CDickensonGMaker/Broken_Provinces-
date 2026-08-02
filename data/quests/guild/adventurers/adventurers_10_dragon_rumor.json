@@ -1,7 +1,7 @@
 {
 	"id": "adventurers_10_dragon_rumor",
 	"title": "Smoke on the Horizon",
-	"description": "Three separate reports this week put something with wings over the Kazer-Dun quarry camp, and the stonecutters have stopped working the north face until someone tells them what it is. If it's a true dragon, Vorn wants word fast enough to pull the camp before anyone's roof burns. If it's a wyvern, the scales alone are worth the trip. Get eyes on it and get the answer - don't decide which one you're dealing with by testing it in the open.",
+	"description": "Three reports this week put something winged over the Kazer-Dun quarry camp, and the stonecutters have stopped working the north face. If it is a dragon, Vorn pulls the camp today. Get eyes on it first.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "investigate_sightings",
-			"description": "Reach the quarry camp and find out what stopped the stonecutters working",
+			"description": "Reach the Kazer-Dun quarry camp",
 			"type": "reach",
 			"target": "kazer_dun_entrance",
 			"required_count": 1,
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "track_creature",
-			"description": "Track the creature to its nest without being seen from below",
+			"description": "Track the creature to its nest, unseen",
 			"type": "reach",
 			"target": "wyvern_nest",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "identify_creature",
-			"description": "Confirm what's nesting there before Vorn commits the camp to anything",
+			"description": "Confirm what is nesting there",
 			"type": "interact",
 			"target": "wyvern_observation",
 			"required_count": 1,
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "slay_wyvern",
-			"description": "Hunt and kill the wyvern",
+			"description": "Kill the wyvern",
 			"type": "kill",
 			"target": "wyvern",
 			"required_count": 1,
@@ -42,7 +42,7 @@
 		},
 		{
 			"id": "harvest_scales",
-			"description": "Harvest wyvern scales as proof",
+			"description": "Take five scales as proof",
 			"type": "collect",
 			"target": "wyvern_scale",
 			"required_count": 5,
@@ -55,12 +55,16 @@
 	"rewards": {
 		"gold": 500,
 		"xp": 1200,
-		"items": ["dragonscale_shield"],
+		"items": [
+			"dragonscale_shield"
+		],
 		"faction_reputation": {
 			"adventurers_guild": 150
 		}
 	},
-	"prerequisites": ["adventurers_09_rival_guild"],
+	"prerequisites": [
+		"adventurers_09_rival_guild"
+	],
 	"next_quest": "adventurers_11_guild_politics",
 	"notes": "Rank: Elite. Major boss fight. Wyvern is extremely dangerous - recommend level 20+ and good equipment. Dragonscale shield is legendary-tier defensive item. Nest near Kazer-Dun entrance. Threat: a working quarry camp idled by an unidentified flier, with a true dragon as the worst case. Giver motive: Vorn needs a correct identification before he commits to evacuating a paying camp. Consequence: misidentifying it costs either a needless evacuation or a dead stonecutter - stated in prose; the 'don't engage if it's a dragon' branch cannot be wired, since the target is always the wyvern and no second objective may be added. Deferred."
 }

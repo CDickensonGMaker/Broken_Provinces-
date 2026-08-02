@@ -15,7 +15,11 @@
           "text": "Show me available bounties.",
           "next": "bounty_list",
           "conditions": [
-            {"type": "flag", "param": "adventurers_rank_champion", "value": 0}
+            {
+              "type": "flag",
+              "param": "adventurers_rank_champion",
+              "value": 0
+            }
           ],
           "actions": []
         },
@@ -23,7 +27,11 @@
           "text": "I've completed a bounty.",
           "next": "bounty_turnin",
           "conditions": [
-            {"type": "quest_state", "param": "adventurers_repeatable_bounty", "value": 1}
+            {
+              "type": "quest_state",
+              "param": "adventurers_repeatable_bounty",
+              "value": 1
+            }
           ],
           "actions": []
         },
@@ -37,7 +45,12 @@
           "text": "I'm not a Champion yet.",
           "next": "rank_required",
           "conditions": [
-            {"type": "flag", "param": "adventurers_rank_champion", "value": 0, "invert": true}
+            {
+              "type": "flag",
+              "param": "adventurers_rank_champion",
+              "value": 0,
+              "invert": true
+            }
           ],
           "actions": []
         },
@@ -97,7 +110,7 @@
     {
       "id": "monster_bounty_details",
       "speaker": "Contract Clerk",
-      "text": "Wolves have denned near Millbrook again. Farmers are losing livestock. Kill at least six wolves and report back. Standard bounty - 150 gold and 300 XP. Guild reputation bonus for clean completion.",
+      "text": "Wolves have denned near Millbrook again and the farmers are losing livestock. Six kills, then come back and tell me. Pelts are proof enough.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -106,8 +119,16 @@
           "next": "accept_monster_bounty",
           "conditions": [],
           "actions": [
-            {"type": "start_quest", "param": "adventurers_repeatable_bounty", "value": 0},
-            {"type": "set_flag", "param": "current_bounty_monster", "value": 0}
+            {
+              "type": "start_quest",
+              "param": "adventurers_repeatable_bounty",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "current_bounty_monster",
+              "value": 0
+            }
           ]
         },
         {
@@ -127,7 +148,7 @@
     {
       "id": "bandit_bounty_details",
       "speaker": "Contract Clerk",
-      "text": "Bandits have set up camp on the Thornfield road. They've been hitting merchant caravans for weeks. Kill at least five bandits and their leader. 200 gold reward, 400 XP. The merchants are offering a bonus for recovered goods.",
+      "text": "Bandits camped on the Thornfield road, hitting caravans for weeks now. Five of them and whoever's giving the orders. The merchants will pay extra for anything you bring back off them.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -136,8 +157,16 @@
           "next": "accept_bandit_bounty",
           "conditions": [],
           "actions": [
-            {"type": "start_quest", "param": "adventurers_repeatable_bounty", "value": 0},
-            {"type": "set_flag", "param": "current_bounty_bandit", "value": 0}
+            {
+              "type": "start_quest",
+              "param": "adventurers_repeatable_bounty",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "current_bounty_bandit",
+              "value": 0
+            }
           ]
         },
         {
@@ -157,7 +186,7 @@
     {
       "id": "dungeon_bounty_details",
       "speaker": "Contract Clerk",
-      "text": "Undead have been emerging from Willow Dale's upper levels. The entrance needs clearing before any expedition teams can go in safely. Kill at least eight skeletons or zombies. 175 gold, 350 XP.",
+      "text": "Undead keep coming up out of Willow Dale's upper levels, and no expedition will go in until that stops. Eight of them, skeletons or zombies - I'm not fussy which.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -166,8 +195,16 @@
           "next": "accept_dungeon_bounty",
           "conditions": [],
           "actions": [
-            {"type": "start_quest", "param": "adventurers_repeatable_bounty", "value": 0},
-            {"type": "set_flag", "param": "current_bounty_dungeon", "value": 0}
+            {
+              "type": "start_quest",
+              "param": "adventurers_repeatable_bounty",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "current_bounty_dungeon",
+              "value": 0
+            }
           ]
         },
         {
@@ -187,7 +224,7 @@
     {
       "id": "escort_bounty_details",
       "speaker": "Contract Clerk",
-      "text": "A merchant caravan needs escort from Dalhurst to Crossroads. Basic protection duty - keep the merchants alive, deter attackers. 125 gold, 250 XP. Quick money for a Champion.",
+      "text": "A caravan wants company from Dalhurst to Crossroads. Keep the merchants breathing and look expensive doing it. Easy coin.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -196,8 +233,16 @@
           "next": "accept_escort_bounty",
           "conditions": [],
           "actions": [
-            {"type": "start_quest", "param": "adventurers_repeatable_bounty", "value": 0},
-            {"type": "set_flag", "param": "current_bounty_escort", "value": 0}
+            {
+              "type": "start_quest",
+              "param": "adventurers_repeatable_bounty",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "current_bounty_escort",
+              "value": 0
+            }
           ]
         },
         {
@@ -217,7 +262,7 @@
     {
       "id": "beast_bounty_details",
       "speaker": "Contract Clerk",
-      "text": "A dire bear has been spotted in Elder Moor. Dangerous creature - it's already killed two hunters. Track it, kill it, bring proof. 300 gold, 600 XP. This one requires serious preparation.",
+      "text": "A dire bear in Elder Moor. It's killed two hunters already, so nobody here is calling it a simple hunt. Track it, kill it, bring proof.",
       "is_end": false,
       "auto_continue": "",
       "choices": [
@@ -226,8 +271,16 @@
           "next": "accept_beast_bounty",
           "conditions": [],
           "actions": [
-            {"type": "start_quest", "param": "adventurers_repeatable_bounty", "value": 0},
-            {"type": "set_flag", "param": "current_bounty_beast", "value": 0}
+            {
+              "type": "start_quest",
+              "param": "adventurers_repeatable_bounty",
+              "value": 0
+            },
+            {
+              "type": "set_flag",
+              "param": "current_bounty_beast",
+              "value": 0
+            }
           ]
         },
         {
@@ -295,13 +348,25 @@
           "text": "I'll take another contract.",
           "next": "bounty_list",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_repeatable_bounty", "value": 0}]
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "adventurers_repeatable_bounty",
+              "value": 0
+            }
+          ]
         },
         {
           "text": "That's enough for now.",
           "next": "farewell_complete",
           "conditions": [],
-          "actions": [{"type": "complete_quest", "param": "adventurers_repeatable_bounty", "value": 0}]
+          "actions": [
+            {
+              "type": "complete_quest",
+              "param": "adventurers_repeatable_bounty",
+              "value": 0
+            }
+          ]
         }
       ]
     },
@@ -315,7 +380,13 @@
         {
           "text": "Show me what's available.",
           "next": "bounty_list",
-          "conditions": [{"type": "flag", "param": "adventurers_rank_champion", "value": 0}],
+          "conditions": [
+            {
+              "type": "flag",
+              "param": "adventurers_rank_champion",
+              "value": 0
+            }
+          ],
           "actions": []
         },
         {
@@ -335,7 +406,7 @@
     {
       "id": "rank_required",
       "speaker": "Contract Clerk",
-      "text": "The bounty board is reserved for Guild Champions. Complete the full questline through Guildmaster Vorn, defeat Katrina Steelwind, and earn your Champion rank. Then you'll have unlimited access to bounty contracts.",
+      "text": "The bounty board is for Champions. Work the contracts through Guildmaster Vorn, and when you can beat him in the arena, come back and the board's yours.",
       "is_end": true,
       "auto_continue": "",
       "choices": []
@@ -343,7 +414,7 @@
     {
       "id": "champion_info",
       "speaker": "Contract Clerk",
-      "text": "Champion rank requires completing all Guild quests through Guildmaster Vorn - proving grounds, contracts, and finally defeating Katrina Steelwind in the arena. It's a long journey, but the rewards are worth it.",
+      "text": "You take the Guild's contracts until Vorn runs out of them, and then you fight Vorn. Nobody else could test you honestly. It's a long road, and the board at the end of it never empties.",
       "is_end": true,
       "auto_continue": "",
       "choices": []

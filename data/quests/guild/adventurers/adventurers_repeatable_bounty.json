@@ -1,7 +1,7 @@
 {
 	"id": "adventurers_repeatable_bounty",
 	"title": "Guild Bounty Board",
-	"description": "Vorn keeps a running list nailed by the door - names, gold, and how dead he needs something. Take a job off it, finish it, and get paid on the spot. No ceremony, no debrief. Just the next name on the board if you want it.",
+	"description": "Vorn keeps a running list nailed by the door - names, gold, and how dead he needs something. Take one, finish it, get paid. No ceremony.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -11,7 +11,7 @@
 	"objectives": [
 		{
 			"id": "complete_bounty",
-			"description": "Finish whatever the board says needs doing",
+			"description": "Finish the job on the board",
 			"type": "kill",
 			"target": "bounty_target",
 			"required_count": 1,
@@ -19,7 +19,7 @@
 		},
 		{
 			"id": "claim_reward",
-			"description": "Collect payment from Vorn, no questions asked",
+			"description": "Collect payment from Vorn",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1,
@@ -36,6 +36,8 @@
 			"adventurers_guild": 25
 		}
 	},
-	"prerequisites": ["adventurers_13_champion"],
+	"prerequisites": [
+		"adventurers_13_champion"
+	],
 	"notes": "REPEATABLE. Available after Champion rank. Bounty targets rotate weekly. Includes: bandit leaders, monster dens, escort missions, dungeon clearing. Rewards scale with target difficulty. Can complete unlimited times. Works with BountyManager system. This is a system wrapper by design and deliberately carries no plot per the batch brief - only Vorn's voice, no invented stake."
 }

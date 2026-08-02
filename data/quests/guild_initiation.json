@@ -1,7 +1,7 @@
 {
 	"id": "guild_initiation",
 	"title": "Proving Ground",
-	"description": "A hauler named Oda Renn paid the Guild three days ago to clear the wolf den crowding the Thornfield road, and the contract has sat on Vorn's board since - not because it is beneath him, but because sending a walk-in applicant at a live paying contract is a cheap way to see what they are made of before he spends real coin on them. The den has an alpha in it now, big enough that Oda's own drivers will not go near the tree line. Clear it, and the fee moves from the board to your purse. Leave it, and Oda takes her custom to Thornfield's rangers instead.",
+	"description": "Oda Renn paid three days ago to have the wolf den off the Thornfield road, and the contract has sat on Vorn's board since. There is an alpha in it now, and her drivers will not go near the tree line.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "travel_wolf_den",
-			"description": "Find the den Oda's drivers won't go near, east of Dalhurst",
+			"description": "Find the den east of Dalhurst",
 			"type": "reach",
 			"target": "wolf_den_dalhurst",
 			"required_count": 1
@@ -24,14 +24,14 @@
 		},
 		{
 			"id": "kill_alpha",
-			"description": "Put down the alpha holding the den together",
+			"description": "Put down the alpha",
 			"type": "kill",
 			"target": "dire_wolf",
 			"required_count": 1
 		},
 		{
 			"id": "return_to_guild",
-			"description": "Collect Oda's fee from Vorn and see if it becomes a standing account",
+			"description": "Collect Oda's fee from Vorn",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1
@@ -43,7 +43,9 @@
 	"rewards": {
 		"gold": 100,
 		"xp": 500,
-		"items": ["guild_token"],
+		"items": [
+			"guild_token"
+		],
 		"faction_reputation": {
 			"adventurers_guild": 50
 		}

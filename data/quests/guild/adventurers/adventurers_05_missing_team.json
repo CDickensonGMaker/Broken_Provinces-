@@ -1,7 +1,7 @@
 {
 	"id": "adventurers_05_missing_team",
 	"title": "Missing in Action",
-	"description": "A Guild team went into Willow Dale two days ago and hasn't returned. Vorn fears the worst, but he needs to know what happened. Find the missing adventurers - or recover their bodies and personal effects for their families. The Guild takes care of its own, even in death.",
+	"description": "A Guild team went into Willow Dale two days ago and has not come out. Three of them. Bring back their tokens if you cannot bring back them.",
 	"is_main_quest": false,
 	"quest_source": "faction",
 	"giver_npc_id": "guildmaster_vorn_dalhurst",
@@ -10,7 +10,7 @@
 	"objectives": [
 		{
 			"id": "enter_willow_dale",
-			"description": "Enter Willow Dale ruins",
+			"description": "Enter the Willow Dale ruins",
 			"type": "reach",
 			"target": "willow_dale",
 			"required_count": 1,
@@ -18,7 +18,7 @@
 		},
 		{
 			"id": "find_team_remains",
-			"description": "Search for the missing team",
+			"description": "Find where the team fell",
 			"type": "reach",
 			"target": "willow_dale_corpse_site",
 			"required_count": 1,
@@ -26,7 +26,7 @@
 		},
 		{
 			"id": "recover_guild_tokens",
-			"description": "Recover Guild tokens from the fallen",
+			"description": "Recover three Guild tokens from the dead",
 			"type": "collect",
 			"target": "guild_token",
 			"required_count": 3,
@@ -34,7 +34,7 @@
 		},
 		{
 			"id": "kill_responsible_enemies",
-			"description": "Avenge the fallen team",
+			"description": "Kill the spiders that took them",
 			"type": "kill",
 			"target": "giant_spider",
 			"required_count": 5,
@@ -42,7 +42,7 @@
 		},
 		{
 			"id": "return_tokens",
-			"description": "Return the tokens to Guildmaster Vorn",
+			"description": "Bring the tokens to Vorn",
 			"type": "talk",
 			"target": "guildmaster_vorn_dalhurst",
 			"required_count": 1,
@@ -59,7 +59,9 @@
 			"adventurers_guild": 60
 		}
 	},
-	"prerequisites": ["adventurers_04_bandit_contract"],
+	"prerequisites": [
+		"adventurers_04_bandit_contract"
+	],
 	"next_quest": "adventurers_06_monster_hunt",
 	"notes": "Rank: Member. Emotional stakes - recovering fallen comrades. Willow Dale dungeon. Optional revenge objective for extra XP. Bodies spawn in spider nest area."
 }
