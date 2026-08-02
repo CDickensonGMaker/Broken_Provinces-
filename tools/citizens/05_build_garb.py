@@ -69,18 +69,24 @@ def dominant_map(ob):
 
 
 class Body:
-    def __init__(self, ob):
+    """Measurements for one master. The head is a SEPARATE object since stage 04
+    (the atlas ruling), so head_profile reads it and `height` is the taller of
+    the two - the body alone stops at the neck."""
+
+    def __init__(self, ob, head_ob):
         self.ob = ob
+        self.head_ob = head_ob
         self.dom = dominant_map(ob)
         self.co = [v.co.copy() for v in ob.data.vertices]
-        self.height = max(c.z for c in self.co)
+        self.head_co = [v.co.copy() for v in head_ob.data.vertices]
+        self.height = max(max(c.z for c in self.co),
+                          max(c.z for c in self.head_co))
         self.torso = [i for i, n in self.dom.items()
                       if n not in ARM_GROUPS and n not in HEAD_GROUPS
                       and n not in LEG_GROUPS]
         self.legs = {s: [i for i, n in self.dom.items()
                          if n and n.startswith("mixamorig:%s" % s) and n in LEG_GROUPS]
                      for s in ("Left", "Right")}
-        self.head = [i for i, n in self.dom.items() if n in HEAD_GROUPS]
 
     def band(self, idxs, z, window):
         picked = [self.co[i] for i in idxs if abs(self.co[i].z - z) <= window]
@@ -109,7 +115,7 @@ class Body:
         return cx, rx, (y0 + y1) * 0.5, max(1e-3, (y1 - y0) * 0.5)
 
     def head_profile(self):
-        p = [self.co[i] for i in self.head]
+        p = self.head_co
         return (max(abs(c.x) for c in p),
                 (min(c.y for c in p) + max(c.y for c in p)) * 0.5,
                 (max(c.y for c in p) - min(c.y for c in p)) * 0.5,
@@ -215,9 +221,19 @@ def transfer_weights(garb, body):
             garb.vertex_groups[names[g.group]].add([v.index], g.weight / total, 'REPLACE')
 
 
-def weight_skirt(garb, top_z, hem_z):
-    """PSX skirt: hips at the waist, blending into both thighs down the hem,
-    each side keeping a share of the other so the cloth never tears open."""
+def weight_skirt(garb, top_z, hem_z, half_width=1.0):
+    """PSX skirt: hips at the waist, blending into both thighs down the hem.
+
+    Two numbers decide whether the cloth swings or tears, and both were MEASURED
+    against the walk arc in stage 07 rather than guessed:
+
+      leg share ramps as t*t, so only the last third of the skirt follows a
+      thigh at all - a linear ramp put 75% of the hem on the legs and an edge
+      across the centreline stretched 2.14x at a 30-degree stride.
+
+      the left/right blend spans the FULL hem half-width, so two verts either
+      side of the centreline never receive opposite rotations at full strength.
+    """
     for n in ("mixamorig:Hips", "mixamorig:LeftUpLeg", "mixamorig:RightUpLeg"):
         if n not in garb.vertex_groups:
             garb.vertex_groups.new(name=n)
@@ -225,11 +241,12 @@ def weight_skirt(garb, top_z, hem_z):
     lup = garb.vertex_groups["mixamorig:LeftUpLeg"]
     rup = garb.vertex_groups["mixamorig:RightUpLeg"]
     span = max(1e-6, top_z - hem_z)
+    hw = max(1e-6, half_width)
     for v in garb.data.vertices:
         t = min(1.0, max(0.0, (top_z - v.co.z) / span))   # 0 at waist, 1 at hem
-        w_hips = 1.0 - 0.75 * t
-        legs = 1.0 - w_hips
-        side = 0.5 + 0.5 * max(-1.0, min(1.0, v.co.x * 6.0))
+        legs = 0.50 * t * t
+        w_hips = 1.0 - legs
+        side = 0.5 + 0.5 * max(-1.0, min(1.0, v.co.x / hw))
         hips.add([v.index], w_hips, 'REPLACE')
         lup.add([v.index], legs * side, 'REPLACE')
         rup.add([v.index], legs * (1.0 - side), 'REPLACE')
@@ -239,13 +256,14 @@ def weight_skirt(garb, top_z, hem_z):
 # the pieces
 # --------------------------------------------------------------------------- #
 
-def make_piece(name, verts, faces, mat, zone, rig, body, master, skirt=None):
+def make_piece(name, verts, faces, mat, zone, rig, body, master, skirt=None,
+               weight_src=None):
     ob = new_mesh_object("%s_%s" % (name, master), verts, faces)
     ob.data.materials.append(mat)
     flat_uv(ob, *ZONE[zone])
     armature_bind(ob, rig)
     if skirt is None:
-        transfer_weights(ob, body)
+        transfer_weights(ob, weight_src or body)
     else:
         weight_skirt(ob, *skirt)
     ob.hide_render = True          # variants ship hidden; the dresser enables one
@@ -284,22 +302,35 @@ def build_vest(b, laced):
 
 
 def build_pants(b):
+    """Trousers, not leg-straps.
+
+    Each leg is ONE continuous tube from the hip to the ankle with a single
+    seam loop at the knee - three rings, so the tube bends at the knee and
+    nowhere else. The ankle ring is wider than the knee: that flare is the EQ
+    chunk, and it is what stops the leg reading as a pipe. The seat is a
+    waist-to-crotch taper whose bottom ring sits at the same z as the leg tops,
+    so the three pieces read as one garment instead of a barrel and two straps.
+    Budget: 12 quads + 2 caps per leg, 8 quads + 1 cap for the seat.
+    """
     h = b.height
     sides = 6
+    z_hip = 0.545 * h
+    z_knee = 0.290 * h
+    z_ankle = 0.075 * h
     parts = []
-    z_top = 0.55 * h
     for side in ("Left", "Right"):
         rings = []
-        for f, pad in ((0.555, 1.16), (0.42, 1.14), (0.28, 1.12), (0.10, 1.10)):
-            z = f * h
+        for z, pad in ((z_hip, 1.18), (z_knee, 1.12), (z_ankle, 1.22)):
             cx, rx, cy, ry = b.leg_profile(side, z)
             rings.append(ring(cx, cy, z, rx * pad, max(ry, rx) * pad, sides))
-        parts.append(stitch(rings, sides, cap_top=False, cap_bottom=True))
-    # a seat block joining the two legs at the hips
-    rx, cy, ry = b.torso_profile(0.56 * h)
-    top = ring(0.0, cy, 0.60 * h, rx * 1.12, max(ry, rx * 0.6) * 1.12, sides)
-    bot = ring(0.0, cy, z_top, rx * 1.14, max(ry, rx * 0.6) * 1.14, sides)
-    parts.append(stitch([top, bot], sides, cap_top=True))
+        parts.append(stitch(rings, sides, cap_top=True, cap_bottom=True))
+
+    seat_sides = 6
+    rx_w, cy_w, ry_w = b.torso_profile(0.615 * h)
+    rx_c, cy_c, ry_c = b.torso_profile(0.560 * h)
+    waist = ring(0.0, cy_w, 0.625 * h, rx_w * 1.10, max(ry_w, rx_w * 0.6) * 1.10, seat_sides)
+    crotch = ring(0.0, cy_c, z_hip, rx_c * 1.16, max(ry_c, rx_c * 0.6) * 1.16, seat_sides)
+    parts.append(stitch([waist, crotch], seat_sides, cap_top=True))
     return merge(parts)
 
 
@@ -316,7 +347,9 @@ def build_skirt(b):
         z = z_top + (z_hem - z_top) * t
         flare = 1.10 + 0.85 * t
         rings.append(ring(0.0, cy, z, rx * flare, max(ry, rx * 0.6) * flare, sides))
-    return merge([stitch(rings, sides, cap_top=True, cap_bottom=False)]), z_top, z_hem
+    hem_half_width = max(abs(v.x) for v in rings[-1])
+    return (merge([stitch(rings, sides, cap_top=True, cap_bottom=False)]),
+            z_top, z_hem, hem_half_width)
 
 
 def arm_path(rig, side, stop):
@@ -327,8 +360,8 @@ def arm_path(rig, side, stop):
     if stop == "shoulder":
         return [sh, sh + (el - sh) * 0.28]
     if stop == "elbow":
-        return [sh, sh + (el - sh) * 0.6, el, el + (wr - el) * 0.35]
-    return [sh, sh + (el - sh) * 0.6, el, el + (wr - el) * 0.6, wr]
+        return [sh, sh + (el - sh) * 0.6, el + (wr - el) * 0.30]
+    return [sh, sh + (el - sh) * 0.65, el, wr]
 
 
 def arm_radius(b, side, p, d):
@@ -413,7 +446,7 @@ def build_hood(b):
     sides = 8
     rings = []
     span = hz1 - hz0
-    for f, pad in ((-0.16, 1.30), (0.18, 1.22), (0.55, 1.16), (0.86, 0.95), (1.02, 0.42)):
+    for f, pad in ((-0.16, 1.30), (0.30, 1.20), (0.86, 0.95), (1.02, 0.42)):
         z = hz0 + span * f
         rings.append(ring(0.0, hy + 0.02 * span, z, hx * pad, max(hr, hx) * pad, sides))
     verts, faces = stitch(rings, sides, cap_top=True, cap_bottom=False)
@@ -442,9 +475,10 @@ def main():
     made = []
     for master in MASTERS:
         body = bpy.data.objects[master]
+        head_ob = bpy.data.objects["%s_head" % master]
         assert body.matrix_world.is_identity, "%s is not at identity; garb math assumes it" % master
         rig = body.parent
-        b = Body(body)
+        b = Body(body, head_ob)
         col = bpy.data.collections[master]
         female = master in ("WOMAN", "GIRL")
 
@@ -458,9 +492,9 @@ def main():
         pieces.append(make_piece("garb_pants", v, f, mat, "pants", rig, body, master))
 
         if female:
-            (v, f), z_top, z_hem = build_skirt(b)
+            (v, f), z_top, z_hem, hem_hw = build_skirt(b)
             pieces.append(make_piece("garb_skirt", v, f, mat, "pants", rig, body,
-                                     master, skirt=(z_top, z_hem)))
+                                     master, skirt=(z_top, z_hem, hem_hw)))
 
         v, f = build_sleeve(b, rig, "wrist", cuff=False)
         pieces.append(make_piece("garb_sleeve_long", v, f, mat, "sleeves", rig, body, master))
@@ -471,8 +505,11 @@ def main():
 
         v, f = build_apron(b)
         pieces.append(make_piece("garb_apron", v, f, mat, "extra", rig, body, master))
+        # the hood rides the skull, so its weights come from the HEAD object -
+        # nearest-vertex against the (now headless) body would hand it the neck
         v, f = build_hood(b)
-        pieces.append(make_piece("garb_hood", v, f, mat, "extra", rig, body, master))
+        pieces.append(make_piece("garb_hood", v, f, mat, "extra", rig, body, master,
+                                 weight_src=head_ob))
 
         for ob in pieces:
             for c in list(ob.users_collection):
@@ -490,6 +527,8 @@ def main():
               % (ob.name, t, len(ob.data.vertices), island_count(ob), len(ob.vertex_groups)))
         report_floaters(ob, radius=3.0)
         assert t <= 800, "%s over PSX budget: %d tris" % (ob.name, t)
+        if ob.name.startswith("garb_pants"):
+            assert t <= 120, "%s over the trouser budget: %d tris" % (ob.name, t)
         assert len(ob.data.materials) == 1 and ob.data.materials[0].name == MAT_GARB
         assert ob.vertex_groups, "%s has no weights" % ob.name
     print("  garb meshes=%d total tris=%d" % (len(made), total))
