@@ -67,3 +67,6 @@ Gameplay footage/
 .dolt/
 *.db
 .beads-credential-key
+
+# citizen build stage files - regenerable from tools/citizens/01..06
+assets/models/citizens/_stage*.blend
