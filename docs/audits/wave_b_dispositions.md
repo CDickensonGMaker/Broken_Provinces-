@@ -850,3 +850,27 @@ It does now.
   stamina, fall damage and jump height. Both skills appear only in stat-map and
   display-name switches.
 - **`elves_anti_human`** — the only faction no quest can move.
+
+---
+
+## 8/2 — the reactive layer and THE GROUNDING LAW
+
+### Closed by this pass
+
+| Item | Was | Now |
+|---|---|---|
+| **Thieves Guild capstone `rank_benefits`** | "The item is granted; everything it claims to confer is prose." | `Merchant.get_guild_price_modifier()` / `get_guild_fence_sell_bonus()`: +20% from a fence at rank 3, +35% and a 10% standing discount everywhere at rank 5 |
+| **Intuition** | "appears only in stat-map and display-name switches" | `TriggeredTrap.detection_dc` and `AmbushTrigger.detection_dc` both spend `get_trap_detection_bonus()`, which had zero call sites |
+| **DODGE (3g)** | "Dodging now does nothing at all. Building a passive evasion roll is new combat math and was not invented here." | RULED passive: +3%/level to be missed by melee, capped 45%, no verb, no animation. Exactly what the character sheet already promised |
+| **`moral_choice` in four thieves quests** | "decorative — two siblings were migrated to real `choice_consequences` and these four were not" | `apply_choice_consequence()` falls through to `moral_choice.consequences` and executes it; the branch is saved in `moral_choices` and raised as a flag |
+| **`get_quest_data()`** | not recorded, and worse than anything that was: it guessed a flat path and silently returned a four-key stand-in for every quest in a subdirectory | Serves the parsed contents the loader's own recursive walk already read |
+
+### Opened by this pass — these need Caleb
+
+| # | Question | Why it is blocked |
+|---|---|---|
+| G-1 | **Four Arcane Circle board reagents do not exist as items.** `arcane_circle_research_board.json` asks the player to bring Shadowroot, Glowcap and Moonpetals; `archmage_elara.json` and `mage_13_council_seat.json` name Moonweave. There is no `ItemData` for any of them. | Inventing four herbs is content design, and whether the board should ask for *existing* alchemy reagents instead is a quest-design call. Whitelisted as `offscreen` meanwhile, which is honest but is not a fix |
+| G-2 | **The map says Kazer-Dun; everything else says Kazan-Dun.** `world_grid.gd` has `kazer_dun_entrance`, "Kazer-Dun South Gate" and "Road to Kazer-Dun"; the bible, the flags (`kazan_dun_helped`), the quest folder and every dialogue file say Kazan. | A rename is text-only on one side and an id change on the other. Which spelling is the hold's actual name is his |
+| G-3 | **Six proper nouns are spoken of and cannot be reached**: the Siege of Blackmont, the Ironpeak foothills (where a wyvern nest is said to be), the Ashgrave Cantos, the Merrow's Kiss, Silverleaf, and Archmage Verendil. | Each is defensible as lore a world would carry — but *Ironpeak is a direction, not a memory*. If that nest ever becomes somewhere the player travels to, the reference must be re-pointed at the real cell rather than left whitelisted |
+| G-4 | **No reaction line touches Act II.** Nothing in the reactive layer responds to the claimant, the capital, the undead continent, or the missing king. | Every one of those touches a live `[OPEN]`. Writing a townsperson's opinion of Sylvaine would settle her reception before he has settled her |
+| G-5 | **`caught_lying_<npc_id>` is per-NPC and nothing ever clears it.** `clear_caught_lying()` exists and has no caller, so a single failed Deception check sours one NPC permanently. | Whether a lie should be forgivable — by time, by gold, by a later favour — is a design call. The reaction lines written for that state currently assume permanence |

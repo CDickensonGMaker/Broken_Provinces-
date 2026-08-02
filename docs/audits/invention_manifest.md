@@ -673,3 +673,59 @@ grievance, or a destination outside their own town.
 **Not invention, measurement:** every station position is where the level
 script actually puts that NPC, read by booting the scene
 (`tools/_probe_npc_census.gd`). Nothing was placed by hand and nothing was moved.
+
+---
+
+## The reactive layer's lines (8/2)
+
+209 lines of dialogue written for `data/conversation_pools/reactions.json` and
+`reaction_greetings.json`. **All 209 are invention** — no bible line dictates
+what a Thornfield merchant says to a man with a bounty on him — so they are
+recorded here as a class, with the constraints every one of them was written
+under.
+
+| What | Where | Why it was needed | What it is built on |
+|---|---|---|---|
+| 177 reaction topic answers, 5 archetypes x 8 states | `data/conversation_pools/reactions.json` | "NPCs will remember and know you and react to your choices" (Caleb, 8/2). Without written lines the reactive machinery has nothing to say | The states themselves, all of which already existed: `player_is_bandit_boss`, `kazan_dun_helped`, `kazan_dun_fallen`, CrimeManager bounties, FlagManager devotee bonds, faction standing, guild rank, `caught_lying_<npc_id>` |
+| 32 reaction greetings | `data/conversation_pools/reaction_greetings.json` | The greeting is the only line the player hears without asking, so it is where a reaction is *felt* rather than looked up | The same eight states |
+| Merchants price fear, guards go cold, crooks warm up, priests keep the door open | across both files | Four readings of the same fact is what makes a town feel populated rather than polled | The archetypes' own existing voices in `personal.json` and `career_topics.json` |
+
+**Constraints every line was held to, and they are the point:**
+
+* **Nothing is named that does not exist.** All 209 pass THE GROUNDING LAW. No
+  new place, no new person, no new item, no new faction, no new god.
+* **Quests are never named by hand.** `{quest_title}` resolves at speak-time
+  from quest data. A hand-written title becomes a lie the day the quest is
+  renamed, and outlives the quest's deletion.
+* **The soulstone thread stays unnamed.** Not one reaction line mentions
+  soulstones, a buyer, a pattern, or four scratches. `docs/design/quest_web.md`
+  rule 1 holds: the connection is the player's to make.
+* **No bible `[OPEN]` is narrowed.** Nothing here says where the elven lands
+  are, what the king did for the elves, what feeding a dwarf king to Skarrag
+  does, or whether the Tegnar are an invasion. The Kazan-Dun reactions describe
+  a hold that held or a hold that fell, and nothing about the mechanism.
+* **The dwarf king's own name is never spoken** in any of them, only "a king",
+  because the adopted names are Caleb's to overrule and a reaction line is a
+  poor place to entrench one.
+
+**Deliberately NOT invented:** any reaction to Act II content — the claimant,
+the capital, the undead continent, the missing king. Those are Act II's and his.
+
+## Fifty-odd villagers who were already named (8/2)
+
+THE GROUNDING LAW's first run found 133 proper nouns in shipped prose that
+resolved to nothing. Almost all were **people** — carters, captains, farmers and
+harbourmasters named in quest descriptions written before the law existed.
+
+**These are not new inventions; they are old ones, made true.** Their given
+names and surnames were added to `data/npc_names.json`, which is the vocabulary
+the world generates townspeople from — so a generated villager can now actually
+be called Torben or Fenna, and the prose that names them is describing a name
+this culture uses. Nothing was written into a quest that was not already there.
+
+Ten residual references — a siege fought before the game begins, a boat already
+on the harbour bottom, a tome off a restricted shelf, four Arcane Circle board
+reagents with no `ItemData` — are recorded in `data/lore_only_whitelist.json`
+under `offscreen`, each with the file that says it. **Four of those are a real
+gap, not lore:** the research board asks for Shadowroot, Glowcap, Moonpetals and
+Moonweave, and none of them is an item the player can carry.
