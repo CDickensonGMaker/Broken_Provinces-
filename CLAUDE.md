@@ -1737,9 +1737,40 @@ What EXISTS:
 - **NEW: WorldState autoload** (durable world facts + world modifications, saved)
 - **NEW: Pre-completion** (`world_condition` on an objective settles it on offer)
 
+- **NEW: `set_world_flag` / `join_faction` dialogue actions** (durable world
+  facts, and both doors into a faction, from data)
+- **NEW: `world_flags_to_set` consequence key** (a quest branch can write world
+  facts, not just player paperwork)
+- **NEW: `QuestInteractable`** (`scripts/world/quest_interactable.gd`) - a thing
+  in the world an `interact` objective can point at, which can also settle a
+  quest branch and write a world fact
+
 What's MISSING:
-- Branching quest paths (JSON structure exists, needs more wiring)
-- `COMPLETE_QUEST_OBJECTIVE` DialogueAction type
+- Branching quest paths: 10 quests wired in step 24, 27 still tabled with
+  reasons in `docs/audits/invention_manifest.md`
+
+**Writing a world fact from content:**
+
+```json
+{ "type": "set_world_flag", "param": "kazan_dun_helped" }
+{ "type": "set_world_flag", "param": "kazan_dun_state=fallen" }
+{ "type": "join_faction",   "param": "bandits" }
+{ "type": "join_faction",   "param": "bandits:force:Chief" }
+```
+
+```json
+{ "choice_consequences": { "took_the_chair": {
+    "world_flags_to_set": ["bandit_camp_joined", "player_is_bandit_boss"] } } }
+```
+
+`flags_to_set` writes the player's paperwork on FlagManager. `world_flags_to_set`
+writes facts about the world on WorldState, which mirror one way back onto
+FlagManager - so dialogue conditions can read them with `flag_set`.
+
+**Choice objectives inside an OR group** only complete for the branch the player
+actually picked (`obj.id` must equal the `choice_id`); the siblings settle as
+roads not taken. A lone `choice` objective still completes on any branch, so no
+existing quest changed behaviour.
 
 **OR-objective groups (JSON format):**
 
