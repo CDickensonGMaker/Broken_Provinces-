@@ -2310,8 +2310,10 @@ func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> 
 	var multiplier := get_damage_type_multiplier(damage_type)
 	amount = int(amount * multiplier)
 
-	# Apply armor reduction for physical damage only
-	if damage_type == Enums.DamageType.PHYSICAL:
+	# Apply armor reduction for physical damage only, and only if the caller has
+	# not already charged it (CombatManager.apply_melee_damage does, so it can
+	# honour armor_pierce). Armour mitigates exactly once.
+	if damage_type == Enums.DamageType.PHYSICAL and not CombatManager.is_armor_already_applied(self):
 		var effective_armor := armor_value
 		amount = int(amount * (100.0 / (100.0 + effective_armor)))
 

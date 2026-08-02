@@ -247,8 +247,10 @@ func take_damage(amount: int, damage_type: Enums.DamageType = Enums.DamageType.P
 	if is_dead:
 		return 0
 
-	# Apply armor reduction
-	var reduced_amount: int = maxi(1, amount - int(armor_value / 4))
+	# Apply armor reduction - unless the caller already charged it. Armour
+	# mitigates exactly once.
+	var armor_bite: int = 0 if CombatManager.is_armor_already_applied(self) else int(armor_value / 4)
+	var reduced_amount: int = maxi(1, amount - armor_bite)
 	var actual_damage: int = mini(reduced_amount, current_hp)
 	current_hp -= actual_damage
 

@@ -309,7 +309,38 @@ cannot tell you whether the result is any good.
 
 ## 3. Batch 4 rulings (8/1, "make a hit feel like a hit")
 
-### 3a. Melee now pays armour twice — a number, not a wiring, question
+### 3a. Melee paid armour twice — **RULED-AND-BUILT**
+
+**Ruled: option 3.** Armour mitigates exactly once, and it is charged in
+`CombatManager.apply_melee_damage`, where `armor_pierce` can be honoured —
+the only version in which that field means anything.
+
+`CombatManager.is_armor_already_applied(target)` is the answer every receiver
+now asks before reducing by armour. It holds the *target node* of the hit
+being delivered, not a bool, so a `take_damage` that damages somebody else in
+turn cannot inherit the exemption. Spells and projectiles do not set it and
+still pay armour in `take_damage` — once, on every path. Nine receivers were
+charging a second time and were corrected: `EnemyBase`, `PlayerController`,
+`EnemySpawner`, `CompanionNPC`, `FollowerNPC`, `GuardNPC`, `GladiatorNPC`,
+`JailGuard`, `CursedTotem`.
+
+**Measured**, the same probe as before — 20,000 swings of a 1d6 weapon against
+armour 10, attacker with no stat bonuses, crits off:
+
+| | mean damage |
+|---|---|
+| before (armour charged twice) | **2.0159** |
+| after (armour charged once) | **2.6627** |
+
+**+32.1%**, which lands the routed path back on the **2.67** the unrouted live
+hitbox was doing before batch 4 — so the routing no longer costs the player
+damage, and it brings crits, lifesteal, damage numbers and the Grit/Melee
+scaling with it. No other value was tuned.
+
+`tools/check_combat.tscn` asserts armour is charged exactly once, so the
+second application cannot come back.
+
+### 3a (original text, kept for the reasoning)
 
 Task 57 routed the player's armed melee through
 `CombatManager.apply_melee_damage()`, which is where crits, lifesteal, the

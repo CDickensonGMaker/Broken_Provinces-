@@ -779,8 +779,9 @@ func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> 
 
 	var player_data := GameManager.player_data
 
-	# Apply armor reduction for physical damage only
-	if damage_type == Enums.DamageType.PHYSICAL:
+	# Apply armor reduction for physical damage only, and only if the caller has
+	# not already charged it. Armour mitigates exactly once.
+	if damage_type == Enums.DamageType.PHYSICAL and not CombatManager.is_armor_already_applied(self):
 		var armor := InventoryManager.get_total_armor_value()
 		amount = int(amount * (100.0 / (100.0 + armor)))
 

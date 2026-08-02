@@ -798,8 +798,9 @@ func take_damage(amount: int, damage_type: Enums.DamageType = Enums.DamageType.P
 	if _is_dead:
 		return 0
 
-	# Apply armor reduction
-	var armor_mult: float = 100.0 / (100.0 + float(GUARD_ARMOR))
+	# Apply armor reduction - unless the caller already charged it. Armour
+	# mitigates exactly once.
+	var armor_mult: float = 1.0 if CombatManager.is_armor_already_applied(self) else 100.0 / (100.0 + float(GUARD_ARMOR))
 	var reduced_amount: int = int(float(amount) * armor_mult)
 	reduced_amount = maxi(1, reduced_amount)
 

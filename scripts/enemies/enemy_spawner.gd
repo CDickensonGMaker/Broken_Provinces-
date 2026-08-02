@@ -438,8 +438,9 @@ func take_damage(amount: int, damage_type: Enums.DamageType, attacker: Node) -> 
 	if is_destroyed:
 		return 0
 
-	# Apply armor reduction for physical damage
-	if damage_type == Enums.DamageType.PHYSICAL:
+	# Apply armor reduction for physical damage - unless the caller already
+	# charged it. Armour mitigates exactly once.
+	if damage_type == Enums.DamageType.PHYSICAL and not CombatManager.is_armor_already_applied(self):
 		amount = int(amount * (100.0 / (100.0 + armor_value)))
 
 	amount = max(1, amount)

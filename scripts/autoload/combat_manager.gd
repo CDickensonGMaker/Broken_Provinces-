@@ -28,6 +28,17 @@ const LOS_MAX_RANGE := 50.0  # Skip raycasts for targets beyond this distance
 var _raycast_count_this_frame: int = 0
 var _last_known_los: Dictionary = {}  # Cache LOS results: "from_id:to_id" -> bool
 
+## The target of the hit currently being delivered, when this function has
+## already paid that target's armour. Armour mitigates exactly once: melee
+## routed through apply_melee_damage() pays it here (honouring armor_pierce,
+## which nothing downstream can), so the receiver's own take_damage() must
+## not charge it a second time. Spells and projectiles do not set this and
+## still pay armour in take_damage() - once, on every path.
+##
+## Held as the target node rather than a bool so a take_damage() that damages
+## somebody else in turn cannot inherit the exemption.
+var _armor_paid_target: Node = null
+
 func _ready() -> void:
 	# Try to load damage number scene if it exists
 	if ResourceLoader.exists("res://scenes/ui/damage_number.tscn"):
@@ -58,6 +69,7 @@ func _clear_node_references() -> void:
 	_pending_humanoid_group.clear()
 	active_enemies.clear()
 	_humanoid_dialogue_pending = false
+	_armor_paid_target = null
 	clear_all_projectiles()
 
 func _process(delta: float) -> void:
@@ -177,8 +189,11 @@ func apply_melee_damage(
 	# Ensure minimum 1 damage
 	total_damage = max(1, total_damage)
 
-	# Apply the damage
+	# Apply the damage. Armour was charged above, so the receiver must skip its
+	# own armour block for this one call.
+	_armor_paid_target = target
 	var actual_damage: int = target.take_damage(total_damage, weapon.damage_type, attacker)
+	_armor_paid_target = null
 
 	# Handle secondary damage (elemental)
 	var secondary: int = weapon.roll_secondary_damage(quality)
@@ -617,6 +632,12 @@ func _on_humanoid_dialogue_closed(result: HumanoidDialogue.DialogueResult) -> vo
 ## Check if the player reference is still valid
 func is_player_valid() -> bool:
 	return is_instance_valid(player)
+
+## True when this hit's armour has already been charged by apply_melee_damage.
+## Every take_damage() that reduces by armour must ask before doing so, or the
+## target pays twice for the same swing.
+func is_armor_already_applied(target: Node) -> bool:
+	return _armor_paid_target != null and _armor_paid_target == target
 
 ## Get target's armor value
 func _get_target_armor(target: Node) -> int:
