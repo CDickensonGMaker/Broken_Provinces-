@@ -17,7 +17,7 @@ This project uses two complementary agent systems:
 
 ---
 
-## PROACTIVE AGENT ENGAGEMENT (MANDATORY)
+## PROACTIVE AGENT ENGAGEMENT
 
 **CRITICAL:** Agents MUST be employed AUTOMATICALLY. Do NOT wait for user to ask.
 **The user has explicitly requested agents run without prompting.**
@@ -25,18 +25,31 @@ This project uses two complementary agent systems:
 After EVERY code edit, silently deploy relevant validators in background.
 Aggregate findings and report only significant issues.
 
-| Trigger | Agent(s) to Run |
-|---------|-----------------|
-| After writing/editing GDScript | `gdscript-linter` |
-| After adding sprites or textures | `asset-validator` |
-| After enemy/item stat changes | `balance-reviewer` |
-| After quest system changes | `dialogue-quest-master` |
-| After adding/modifying WorldGrid locations | `scene-auditor` |
-| After adding new levels/regions | `scene-auditor` |
-| After adding new enemy sprites | `enemy-creator` (creates .tres, zoo entry, lexicon) |
-| Before declaring task complete | `scene-auditor` + relevant domain agent |
+**Which of these actually load, measured 8/2.** This table was half fiction:
+it named agents under a MANDATORY heading that no loadable definition
+declares, so "run scene-auditor before declaring the task complete" was an
+instruction nobody could follow and everybody appeared to.
+
+| Trigger | Agent | Loads? |
+|---------|-------|--------|
+| After writing/editing GDScript | `gdscript-linter` | yes |
+| After adding sprites or textures | `asset-validator` | yes |
+| After enemy/item stat changes | `balance-reviewer` | yes |
+| After quest system changes | `dialogue-quest-master` | yes |
+| After WorldGrid/level changes | `scene-auditor` | **no** - declared under `.claude/settings.json`'s `agents` key, which does not surface in the roster |
+| Quest / dungeon validation | `quest-validator`, `dungeon-validator` | **no** - same |
+| Town and enemy authoring | `town-builder`, `enemy-creator` | **no** - declared in no loadable location; `dev/agents/enemy-creator.md` is documentation, not a definition |
 
 **Run agents in parallel when possible.** Multiple agents can analyze simultaneously.
+
+**The real gate is the check scenes, not the agents.**
+`tools/run_all_checks.ps1` is what must be green before a task is called done.
+`settings.json`'s `auto_validate_on_edit` and `proactive_agents` keys are not
+schema Claude Code reads, and `.claude/hooks.json` describes automatic
+post-edit agent runs in a format nothing executes. Both are Caleb's
+configuration, left as they are and noted here so nobody trusts them again.
+The one real hook configured in `settings.json` (`SessionStart` / `PreCompact`
+-> `bd prime`) has nothing to do with validation.
 
 ---
 
@@ -208,6 +221,44 @@ max_carry_weight = 50 + (Grit * 10)
 - `scripts/world/lootable_corpse.gd` - Corpse class with loot generation
 - `scripts/ui/corpse_loot_ui.gd` - Search interface (dark/gore themed)
 
+## CONSUMABLE BUFFS
+
+Nine `ItemData.ConsumableEffect` values are timed buffs: `BUFF_STRENGTH`,
+`BUFF_AGILITY`, `BUFF_WILL`, `BUFF_ARMOR`, `BUFF_DAMAGE`, `RESIST_FIRE`,
+`RESIST_FROST`, `RESIST_POISON`, `INVISIBILITY`. Until 8/2 every one of them
+wrote a tooltip promising an effect and applied nothing.
+
+They live on `CharacterData` beside `conditions`, on the same clock:
+
+```gdscript
+CharacterData.apply_buff(buff_id, amount, duration)   # refresh takes the better of the two
+CharacterData.get_buff(buff_id) -> float              # 0.0 when not running
+CharacterData.has_buff(buff_id) -> bool
+CharacterData.get_buff_remaining(buff_id) -> float
+CharacterData.remove_buff(buff_id) / clear_buffs()
+CharacterData.get_buff_damage_resistance(damage_type) -> float
+
+signal buff_applied(buff_id: String, amount: float, duration: float)
+signal buff_expired(buff_id: String)
+```
+
+Buff ids are the `CharacterData.BUFF_*` constants. `effect_value[2]` is the
+flat magnitude, `effect_percent` the fraction for `BUFF_DAMAGE`, and
+`effect_duration` the seconds - **a buff item with no `effect_duration` applies
+nothing and warns**, because a zero-second buff is a data bug, not a free
+effect.
+
+Each buff is consumed by the code that already does that job: the three stat
+buffs through `get_effective_stat`, armour through
+`InventoryManager.get_total_armor_value`, damage in `apply_melee_damage`, the
+resistances in the player's `take_damage`, and invisibility as a multiplier on
+stealth visibility. Sleeping clears buffs, because they tick on real seconds
+and a night's rest advances game time in an instant.
+
+`active_buffs` is saved, and `check_serialization.tscn` covers it.
+
+---
+
 ## AUDIO EVENT NAMING CONVENTION
 
 Gameplay code plays **event names**, never file paths:
@@ -273,6 +324,29 @@ and the `{"group": "x"}` table form the minimap uses - and every `.gd` and
 `.tscn` for joins, then fails on any read with no joiner. If something joins a
 group in a way the scanner cannot see, add it to `KNOWN_EXTERNAL_JOINS` with
 the reason; an entry that stops being needed fails as a stale excuse.
+
+---
+
+## SETTINGS ARE NOT SAVE DATA
+
+Player preferences live in `user://settings.cfg`, written and read by
+`GameSettings` (`scripts/data/game_settings.gd`), and applied by GameManager at
+boot before any menu exists. They cover display (fullscreen, window size,
+vsync), interface (UI scale), gameplay (dice rolls), audio, and keybinds.
+
+Before 8/2 the only persistent settings were the three volumes, and they rode
+in the **save file** via `SaveData.audio_settings` - so a player who set the
+volume on the title screen lost it, and a player with no save had no settings.
+`SaveData.audio_settings` still exists for old saves; `GameSettings` is where
+new preferences go. **Do not add a preference to SaveData.**
+
+The one options screen is `OptionsMenu` (`scripts/ui/options_menu.gd`), a
+`BasePopupUI` popup opened from both the main menu and the pause menu. Adding a
+setting means: a control in `OptionsMenu`, a key in `GameSettings.save_all`,
+and a default in `GameSettings.apply_all`.
+
+Window sizes are whole multiples of the 640x480 design resolution, so the
+`viewport` stretch mode stays pixel-exact.
 
 ---
 
@@ -2465,27 +2539,38 @@ static func find_item(items: Array[Dictionary]) -> Dictionary:
 - [ ] Export to Windows .exe
 - [ ] Test exported build
 
-### Systems Status (All Complete)
+### Systems Status
+
+This table used to be headed **"All Complete"** and ticked every row. The
+8/1-8/2 audits found melee never reaching the combat system, four autoloads
+never saved, sixty-seven dialogue gates standing open, ten objective types
+with no handler and every level baking an empty navmesh - all under those
+ticks. **A green row means "boots, round-trips and passes its gate", never
+"is good".** Nothing in this table has been judged by playing it.
+
 | System | Status |
 |--------|--------|
-| Dialogue System | ✅ Fixed (mouse filters, escape key, save/load) |
-| Magic System | ✅ Fixed (spell list filtering) |
-| World Map | ✅ Complete (cell streaming, fog of war, fast travel) |
-| NPC Visuals | ✅ Fixed (height, size, frame flicker) |
-| Quest System | ✅ Working (linear quests, chains, prerequisites) |
-| Combat | ✅ Working |
-| Inventory/Crafting | ✅ Working |
-| Save/Load | ✅ Working |
-| Crime/Bounty | ✅ Working |
+| Dialogue System | Working. 67 conditions that always passed now gate (batch 3) |
+| Magic System | Working |
+| World Map | Working. Fog of war is `PlayerGPS.discovered_cells`; MapFogOfWar and PaintedWorldMap are deleted (batch 5) |
+| NPC Visuals | Working. Sprite spec re-measured 8/1 - see `docs/audits/sprite_audit.md` |
+| Quest System | Working. OR-groups, world-state pre-completion, 21 objective types (batch 3) |
+| Combat | Working. Melee routes through CombatManager as of batch 4, which changed damage - see dispositions 3a |
+| Inventory/Crafting | Working. Timed consumable buffs land as of batch 5 |
+| Save/Load | Working, format version 9, guarded by `check_serialization.tscn` |
+| Crime/Bounty | Working |
+| Options / settings | Working as of batch 5 - `user://settings.cfg`, not the save file |
+| Audio | Partly stood-in. 84 of 117 events resolve; the other 33 are declared silent with manifest rows |
 
 ### Known Working Features
 - Daggerfall-style cell streaming (seamless world traversal)
-- OpenMW-style world map with fog of war
+- World map with fog of war driven by PlayerGPS discovery
 - Topic-based NPC conversation system
 - Skill checks in dialogue
-- Faction reputation system
+- Faction reputation, hostility and the daily ongoing-effects ticker
 - Lootable corpses with tier-based loot
 - Hand-crafted + procedural dungeon generation
+- Timed buffs from consumables (stats, armour, damage, resistances, invisibility)
 
 ---
 
@@ -2923,9 +3008,10 @@ These features are deferred until after initial playtest release:
 - Jump height bonus
 
 **Investigation:**
-- TODO: Use for pressing NPCs for information in dialogue
-- TODO: Finding hidden chests in wilderness cells
-- TODO: Hook up `get_hidden_detection_bonus()` in character_data.gd
+- `get_hidden_detection_bonus()` is **live**, called from `hidden_chest.gd` and
+  `secret_wall.gd`. The "TODO: hook it up" that stood here was stale.
+- Still unbuilt: pressing NPCs for information in dialogue.
+- Still unbuilt: hidden chests in *wilderness* cells (hand-placed ones work).
 
 **Deception (HIGH RISK/REWARD):**
 - Deception skill checks should have CONSEQUENCES for failure
@@ -3054,9 +3140,24 @@ bd close <id>         # Complete work
 
 ### Rules
 
-- Use `bd` for ALL task tracking — do NOT use TodoWrite, TaskCreate, or markdown TODO lists
 - Run `bd prime` for detailed command reference and session close protocol
 - Use `bd remember` for persistent knowledge — do NOT use MEMORY.md files
+
+**Reconciled 8/2.** This section used to say "use `bd` for ALL task tracking",
+and the two audit runs it was written alongside - the 25-step plan and the
+50-task list, some seventy commits between them - tracked every item in
+`production/` documents instead, with the findings and dispositions in
+`docs/audits/`. `.beads/` and the `bd` binary both exist and the pre-commit
+hook exports `issues.jsonl`, so the tracker is live, but it is **not** where
+this project's plan-and-record work lives. Where each thing goes:
+
+| Kind of work | Where it is tracked |
+|---|---|
+| A planned run of numbered tasks | a document in `production/`, with a batch record written into it as each batch closes |
+| A finding that needs Caleb's ruling | `docs/audits/wave_b_dispositions.md` |
+| Content an agent must not invent | `docs/audits/invention_manifest.md` |
+| A broken or missing asset | `docs/audits/art_replacement_manifest.md` |
+| Loose issues outside a run | `bd` |
 
 **Architecture in one line:** issues live in a local Dolt DB; sync uses `refs/dolt/data` on your git remote; `.beads/issues.jsonl` is a passive export. See https://github.com/gastownhall/beads/blob/main/docs/SYNC_CONCEPTS.md for details and anti-patterns.
 
