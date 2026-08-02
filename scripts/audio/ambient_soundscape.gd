@@ -1,15 +1,15 @@
 ## ambient_soundscape.gd - Layered ambient audio system with biome and time-of-day variations
 ##
-## NOT INSTANTIATED BY ANYTHING (measured 8/1). `AmbientSoundscape` and
-## `add_to_scene()` are named by no script, scene or data file in the repo -
-## zone ambience is played by `AudioManager.play_zone_ambiance()` instead. The
-## class is kept because the layer/crossfade machinery is sound and the biome
-## beds it wants are logged in the art manifest; wiring it up (or deleting it
-## in favour of play_zone_ambiance) is a call for Caleb, recorded in
-## docs/audits/wave_b_dispositions.md. Wiring it today would buy nothing:
-## there are no biome assets to play.
-## Respects performance budget of 4 max audio sources
-## Integrates with AudioManager, GameManager (time), and biome system
+## **Wired 8/2.** It was instantiated by nothing at all: `AmbientSoundscape`
+## and `add_to_scene()` were named by no script, scene or data file, and the
+## reason was honest - there were no biome beds to play, so wiring it would
+## have bought silence with extra steps. There are beds now (synthesised, see
+## docs/audits/art_replacement_manifest.md), and `AudioManager` owns the one
+## instance: it creates the node, feeds it the player's cell biome from
+## PlayerGPS and the hour from GameManager, and stands it down whenever a
+## scene claims the ambient player for itself.
+##
+## Respects performance budget of 4 max audio sources.
 class_name AmbientSoundscape
 extends Node
 
@@ -17,8 +17,10 @@ extends Node
 signal biome_changed(new_biome: int)
 signal soundscape_changed(biome: int, is_night: bool)
 
-## Biome enum - matches WorldGrid terrain types
-enum Biome { FOREST, HIGHLANDS, SWAMP, COAST, ROAD, DESERT, CAVES }
+## Biome enum - the soundscape's own vocabulary, coarser than WorldGrid's
+## fifteen. WINTER was appended 8/2 (never inserted: these values are stored
+## in `current_biome` and compared by number).
+enum Biome { FOREST, HIGHLANDS, SWAMP, COAST, ROAD, DESERT, CAVES, WINTER }
 
 ## Audio layer types
 enum Layer { BASE, ACCENT_1, ACCENT_2, WEATHER }
@@ -51,27 +53,57 @@ const WEATHER_VOLUME: float = -3.0  # dB
 ## `res://assets/audio/ambient/`. That directory does not exist. The real one
 ## is `assets/audio/Ambiance/` and holds four files, none of them a biome bed -
 ## so every layer of every biome resolved to null, and the loader suppressed
-## its own warning on the way past. Biome ambience has never made a sound.
+## its own warning on the way past. Biome ambience had never made a sound.
 ##
-## The table is now collapsed to what is on disk: one BASE layer for CAVES,
-## which the ruins bed honestly covers, and nothing anywhere else. The 36
-## loops that are wanted are logged in docs/audits/art_replacement_manifest.md.
-## Adding one is one line here - the layer scheme still works, it just has
-## nothing to play.
+## FILLED 8/2 with synthesised beds - 62-second loops, seam-crossfaded, RMS
+## matched to -33 dBFS so no biome is louder than another. Every path under
+## `assets/audio/generated/` is PLACEHOLDER-CLASS with a row in
+## docs/audits/art_replacement_manifest.md; replacing one is editing one line
+## here, and the layer scheme takes accents whenever there are accents.
+##
+## CAVES keeps the real ruins recording as its BASE. The synthesised drip bed
+## sits UNDER it as an accent - a hand-made file is never displaced by a
+## generated one.
+const GEN := "res://assets/audio/generated/ambience/"
+
 const SOUNDSCAPES: Dictionary = {
-	Biome.FOREST: {"day": {}, "night": {}},
-	Biome.HIGHLANDS: {"day": {}, "night": {}},
-	Biome.SWAMP: {"day": {}, "night": {}},
-	Biome.COAST: {"day": {}, "night": {}},
-	Biome.ROAD: {"day": {}, "night": {}},
-	Biome.DESERT: {"day": {}, "night": {}},
+	Biome.FOREST: {
+		"day": {Layer.BASE: GEN + "forest_day.ogg"},
+		"night": {Layer.BASE: GEN + "forest_night.ogg"},
+	},
+	Biome.HIGHLANDS: {
+		"day": {Layer.BASE: GEN + "highlands_day.ogg"},
+		"night": {Layer.BASE: GEN + "highlands_night.ogg"},
+	},
+	Biome.SWAMP: {
+		"day": {Layer.BASE: GEN + "swamp_day.ogg"},
+		"night": {Layer.BASE: GEN + "swamp_night.ogg"},
+	},
+	Biome.COAST: {
+		"day": {Layer.BASE: GEN + "coast_day.ogg"},
+		"night": {Layer.BASE: GEN + "coast_night.ogg"},
+	},
+	Biome.ROAD: {
+		"day": {Layer.BASE: GEN + "road_day.ogg"},
+		"night": {Layer.BASE: GEN + "road_night.ogg"},
+	},
+	Biome.DESERT: {
+		"day": {Layer.BASE: GEN + "desert_day.ogg"},
+		"night": {Layer.BASE: GEN + "desert_night.ogg"},
+	},
+	Biome.WINTER: {
+		"day": {Layer.BASE: GEN + "winter_day.ogg"},
+		"night": {Layer.BASE: GEN + "winter_night.ogg"},
+	},
 	Biome.CAVES: {
 		# Caves sound the same day and night
 		"day": {
 			Layer.BASE: "res://assets/audio/Ambiance/ruins/ruins_creepy_ambience.wav",
+			Layer.ACCENT_1: GEN + "caves_drips.ogg",
 		},
 		"night": {
 			Layer.BASE: "res://assets/audio/Ambiance/ruins/ruins_creepy_ambience.wav",
+			Layer.ACCENT_1: GEN + "caves_drips.ogg",
 		}
 	}
 }
@@ -119,8 +151,11 @@ func _create_audio_players() -> void:
 		player.volume_db = -80.0  # Start silent
 		add_child(player)
 		layer_players.append(player)
-		current_volumes.append(-80.0)
-		target_volumes.append(-80.0)
+		# The two volume arrays are already MAX_AUDIO_SOURCES long. Appending
+		# here grew them to eight, and the four extra entries were written by
+		# nothing and read by nothing.
+		current_volumes[i] = -80.0
+		target_volumes[i] = -80.0
 
 
 func _connect_signals() -> void:
@@ -160,6 +195,37 @@ func set_biome_from_terrain(terrain: int) -> void:
 
 	var local_biome: int = biome_map.get(terrain, Biome.FOREST)
 	set_biome(local_biome)
+
+
+## Set biome from a `WorldGrid.Biome` value - the cell's biome, which is what
+## PlayerGPS can actually tell us, and finer-grained than its terrain.
+## WorldGrid.Biome: FOREST=0, PLAINS=1, SWAMP=2, HILLS=3, ROCKY=4, MOUNTAINS=5,
+## COAST=6, UNDEAD=7, HORDE=8, DESERT=9, WINTER=10, ROCKY_FOREST=11,
+## ROCKY_PLAINS=12, ROCKY_WINTER=13, ROCKY_DESERT=14.
+func set_biome_from_world_biome(world_biome: int) -> void:
+	set_biome(WORLD_BIOME_MAP.get(world_biome, Biome.FOREST))
+
+
+## Fifteen world biomes onto eight beds. The rocky variants take their parent's
+## bed rather than a stony one, because what you hear in a rocky forest is
+## still a forest; UNDEAD and HORDE take the bleak highland wind.
+const WORLD_BIOME_MAP: Dictionary = {
+	0: Biome.FOREST,      # FOREST
+	1: Biome.ROAD,        # PLAINS - grassland, the open-road bed
+	2: Biome.SWAMP,       # SWAMP
+	3: Biome.HIGHLANDS,   # HILLS
+	4: Biome.HIGHLANDS,   # ROCKY
+	5: Biome.HIGHLANDS,   # MOUNTAINS
+	6: Biome.COAST,       # COAST
+	7: Biome.HIGHLANDS,   # UNDEAD
+	8: Biome.HIGHLANDS,   # HORDE
+	9: Biome.DESERT,      # DESERT
+	10: Biome.WINTER,     # WINTER
+	11: Biome.FOREST,     # ROCKY_FOREST
+	12: Biome.ROAD,       # ROCKY_PLAINS
+	13: Biome.WINTER,     # ROCKY_WINTER
+	14: Biome.DESERT,     # ROCKY_DESERT
+}
 
 
 ## Set whether we're in an interior space (like caves/dungeons)
@@ -301,6 +367,11 @@ func _load_sound(path: String) -> AudioStream:
 
 	var stream: AudioStream = load(path)
 	if stream:
+		# A bed that does not loop is a bed that plays once and leaves the
+		# world silent, which is indistinguishable from having no bed at all.
+		# Godot's Ogg and WAV importers both default `loop` to false.
+		if "loop" in stream:
+			stream.set("loop", true)
 		sound_cache[path] = stream
 	return stream
 
@@ -315,6 +386,7 @@ func get_current_biome_name() -> String:
 		Biome.ROAD: return "Road"
 		Biome.DESERT: return "Desert"
 		Biome.CAVES: return "Caves"
+		Biome.WINTER: return "Winter"
 		_: return "Unknown"
 
 

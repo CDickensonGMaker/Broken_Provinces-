@@ -460,6 +460,7 @@ func _ready() -> void:
 	_setup_audio_buses()
 	_create_players()
 	_connect_feedback_signals()
+	_create_biome_ambience()
 
 
 ## Sounds that belong to events the game already announces. These signals were
@@ -483,6 +484,83 @@ func _on_game_paused() -> void:
 func _on_game_resumed() -> void:
 	music_player.volume_db = _linear_to_db(music_volume)
 	ambient_player.volume_db = _linear_to_db(ambient_volume)
+
+
+# =============================================================================
+# BIOME AMBIENCE
+# =============================================================================
+#
+# The outdoors used to be silent. `AmbientSoundscape` had the layer and
+# crossfade machinery and was instantiated by nothing; there were no biome
+# beds for it to play, so nobody noticed. There are beds now.
+#
+# This is the whole driver: one instance, owned here, told which biome the
+# player's cell is and whether it is night. It stands down the moment a scene
+# claims the ambient player for itself - a town murmur and a forest bed at
+# once is worse than either alone.
+#
+# The class is preloaded rather than named, because an autoload runs before
+# non-autoload class names are guaranteed resolvable.
+
+
+const AmbientSoundscapeScript := preload("res://scripts/audio/ambient_soundscape.gd")
+
+var biome_ambience: Node = null
+
+## True while no scene has claimed `ambient_player`. Zone ambience wins.
+var _biome_ambience_allowed: bool = true
+
+
+func _create_biome_ambience() -> void:
+	biome_ambience = AmbientSoundscapeScript.new()
+	biome_ambience.name = "BiomeAmbience"
+	biome_ambience.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(biome_ambience)
+
+	PlayerGPS.cell_changed.connect(_on_gps_cell_changed)
+	SceneManager.scene_load_started.connect(_on_scene_load_started)
+	_sync_biome_to_player_cell()
+
+
+## A new scene owns nothing until it says so. Clearing `current_ambient` here
+## is also what stops a town murmur following the player out into the woods -
+## levels call `play_ambient()` on entry and nothing has ever called
+## `stop_ambient()` on the way out.
+func _on_scene_load_started(_scene_path: String) -> void:
+	ambient_player.stop()
+	current_ambient = ""
+	_biome_ambience_allowed = true
+	_sync_biome_to_player_cell()
+
+
+func _on_gps_cell_changed(_old_cell: Vector2i, _new_cell: Vector2i) -> void:
+	_sync_biome_to_player_cell()
+
+
+## Point the bed at the player's cell, then apply the gate. The order matters:
+## `set_biome` raises the layer targets, so the mute has to come after it or a
+## cell change would restart the forest under a town.
+func _sync_biome_to_player_cell() -> void:
+	if not is_instance_valid(biome_ambience):
+		return
+	var cell: WorldGrid.CellInfo = WorldGrid.get_cell(PlayerGPS.current_cell)
+	if cell:
+		biome_ambience.set_biome_from_world_biome(cell.biome)
+	if _biome_ambience_allowed:
+		biome_ambience.resume()
+	else:
+		biome_ambience.stop_all()
+
+
+## Interiors, dungeons and caves: one call, and the bed becomes the cave bed.
+func set_biome_ambience_interior(interior: bool) -> void:
+	if not is_instance_valid(biome_ambience):
+		return
+	biome_ambience.set_interior(interior)
+	if interior and _biome_ambience_allowed:
+		biome_ambience.resume()
+	elif not interior:
+		_sync_biome_to_player_cell()
 
 func _setup_audio_buses() -> void:
 	# Create audio buses if they don't exist
@@ -846,10 +924,19 @@ func play_ambient(ambient_path: String) -> void:
 	ambient_player.play()
 	current_ambient = ambient_path
 
+	# A zone that names its own ambience owns the ambience. The biome bed
+	# stands down rather than layering a forest under a town murmur.
+	_biome_ambience_allowed = false
+	if is_instance_valid(biome_ambience):
+		biome_ambience.stop_all()
+
 ## Stop ambient
 func stop_ambient() -> void:
 	ambient_player.stop()
 	current_ambient = ""
+	_biome_ambience_allowed = true
+	if is_instance_valid(biome_ambience):
+		biome_ambience.resume()
 
 ## Set master volume (0-1)
 func set_master_volume(value: float) -> void:

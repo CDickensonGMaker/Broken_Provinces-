@@ -210,3 +210,48 @@ musket; `spell_cast` the chant. **These were deliberately left alone** - a real
 recording standing in for a neighbouring event beats a synthesised one at the
 exact name, and none of them is silent.
 
+### Biome ambience (8/1: no assets at all - synthesised 8/2)
+
+`scripts/audio/ambient_soundscape.gd` wanted 7 biomes x day/night x 3 layers =
+36 loops under `assets/audio/ambient/`. That directory never existed; the real
+one is `assets/audio/Ambiance/` and holds four files (a town murmur, a port
+city, a ruins ambience, two arena beds), none of them a biome bed. **Biome
+ambience had never made a sound, and the class was instantiated by nothing.**
+
+Both halves are fixed. Fifteen synthesised beds now fill the BASE layer of
+eight biomes across day and night, and `AudioManager` owns the one
+`AmbientSoundscape` instance, feeding it the player's cell biome from
+`PlayerGPS` and the hour from `GameManager`.
+
+All PLACEHOLDER-CLASS. 62-second seamless loops (the last four seconds are
+crossfaded over the first, so there is no click at the loop point), Ogg
+Vorbis at 40 kbit mono, RMS-matched to -33 dBFS so no biome is louder than
+another. Regenerate with `python tools/gen_audio.py ambience`.
+
+| Bed | Layers synthesised | What a real one would be |
+|---|---|---|
+| `ambience/forest_day.ogg` | wind through a slow double LFO, leaf rustle on gusts, sparse randomised birdsong | Field recording, woodland, morning |
+| `ambience/forest_night.ogg` | darker wind, crickets, insect stridulation, one distant owl-shaped call | Woodland, night |
+| `ambience/road_day.ogg` | open grassland wind, thinner birdsong, day insects | Meadow / open road |
+| `ambience/road_night.ogg` | low wind, crickets | Meadow, night |
+| `ambience/highlands_day.ogg` | harsher wind with a resonant whistle, almost no birds | Exposed hillside |
+| `ambience/highlands_night.ogg` | colder, more whistle | Exposed hillside, night |
+| `ambience/swamp_day.ogg` | thick low wind, frog croaks, drips, wet insects | Marsh |
+| `ambience/swamp_night.ogg` | more frogs, more drips, dense insects | Marsh, night |
+| `ambience/coast_day.ogg` | overlapping wave swells, sea wind, gull-shaped calls | Shingle beach |
+| `ambience/coast_night.ogg` | waves and wind, no birds | Beach, night |
+| `ambience/desert_day.ogg` | dry high wind, very sparse | Open desert |
+| `ambience/desert_night.ogg` | lower wind, cold insects | Desert, night |
+| `ambience/winter_day.ogg` | the harshest wind bed, nothing else alive | Snow, open ground |
+| `ambience/winter_night.ogg` | harsher again | Snow, night |
+| `ambience/caves_drips.ogg` | subsonic room tone and reverbed drips | Cave drips |
+
+The cave bed is the one exception to how these are wired: `Biome.CAVES` keeps
+the **real** `Ambiance/ruins/ruins_creepy_ambience.wav` on its BASE layer and
+the synthesised drips sit under it as ACCENT_1. A hand-made recording is never
+displaced by a generated one.
+
+Still wanted, and not synthesised: the ACCENT and WEATHER layers of every
+biome. The layer scheme takes them the moment they exist - one line each in
+`SOUNDSCAPES` - and the beds do not sound unfinished without them.
+
