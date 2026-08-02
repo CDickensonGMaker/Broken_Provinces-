@@ -1,376 +1,464 @@
 {
-  "id": "kazan_dun_regent",
-  "display_name": "Regent Morgrim Ironvein",
-  "description": "The dead king's brother, standing as caretaker-regent for the infant Brann. Runs the Kazan-Dun succession chain: the pits, the recovery, and the argument over the empty chair.",
-  "start_node": "greeting",
-  "nodes": [
-    {
-      "id": "greeting",
-      "speaker": "Regent Morgrim",
-      "text": "You are the one holding the stair. Good. I am Morgrim Ironvein, and I am not king here - I want that said plainly, and said first, because half this hold has decided otherwise on my behalf.",
-      "is_end": false,
-      "auto_continue": "",
-      "choices": [
-        {
-          "text": "Where is your king, then?",
-          "next": "the_missing_king",
-          "conditions": [
-            { "type": "quest_complete", "param": "kazan_dun_01_the_stair_holds", "value": 0 },
-            { "type": "quest_state", "param": "kazan_dun_02_what_the_pits_held", "value": 0 }
-          ],
-          "actions": []
-        },
-        {
-          "text": "I walked the pits. Your king is dead down there.",
-          "next": "pits_report",
-          "conditions": [
-            { "type": "quest_state", "param": "kazan_dun_02_what_the_pits_held", "value": 2 }
-          ],
-          "actions": []
-        },
-        {
-          "text": "The goblins have his body. What do you want done?",
-          "next": "recovery_offer",
-          "conditions": [
-            { "type": "quest_complete", "param": "kazan_dun_02_what_the_pits_held", "value": 0 },
-            { "type": "quest_state", "param": "kazan_dun_03_the_devourers_table", "value": 0 }
-          ],
-          "actions": []
-        },
-        {
-          "text": "He's burning. So who sits in the chair?",
-          "next": "succession_open",
-          "conditions": [
-            { "type": "quest_complete", "param": "kazan_dun_03_the_devourers_table", "value": 0 },
-            { "type": "quest_state", "param": "kazan_dun_04_the_empty_chair", "value": 0 }
-          ],
-          "actions": []
-        },
-        {
-          "text": "Make your case for the boy again.",
-          "next": "regents_case",
-          "conditions": [
-            { "type": "quest_state", "param": "kazan_dun_04_the_empty_chair", "value": 2 }
-          ],
-          "actions": []
-        },
-        {
-          "text": "What are soulstones worth to a goblin?",
-          "next": "soulstone_mystery",
-          "conditions": [],
-          "actions": []
-        },
-        {
-          "text": "Nothing. Keep your stair.",
-          "next": "farewell",
-          "conditions": [],
-          "actions": []
-        }
-      ]
-    },
-    {
-      "id": "the_missing_king",
-      "speaker": "Regent Morgrim",
-      "text": "Unaccounted for. That is the word the hold uses and I will not be the one to change it. Thurgan went down to the mine pits on the first night of the assault with forty axes behind him. Eleven came back up. None of them will say what they saw, and I have stopped asking, because a dwarf who is made to say a thing out loud has to live beside it afterwards.",
-      "is_end": false,
-      "auto_continue": "",
-      "choices": [
-        {
-          "text": "You want somebody with no clan to go and look.",
-          "next": "the_missing_king_ask",
-          "conditions": [],
-          "actions": []
-        },
-        {
-          "text": "Send your own dwarves.",
-          "next": "the_missing_king_refuse",
-          "conditions": [],
-          "actions": []
-        }
-      ]
-    },
-    {
-      "id": "the_missing_king_ask",
-      "speaker": "Regent Morgrim",
-      "text": "I want somebody who can come back up and say the word. Go down past the Span, into the workings, and find what the goblins dragged out of the pit floor. Then speak to our Loremaster about the rites, because if it is him, there are things that must be done in an order, and no dwarf here is thinking clearly enough to do them.",
-      "is_end": false,
-      "auto_continue": "",
-      "choices": [
-        {
-          "text": "I'll go down.",
-          "next": "farewell_grim",
-          "conditions": [],
-          "actions": [
-            { "type": "start_quest", "param": "kazan_dun_02_what_the_pits_held", "value": 0 }
-          ]
-        },
-        {
-          "text": "Not for free.",
-          "next": "the_missing_king_pay",
-          "conditions": [],
-          "actions": []
-        }
-      ]
-    },
-    {
-      "id": "the_missing_king_pay",
-      "speaker": "Regent Morgrim",
-      "text": "Of course not for free. We are dwarves, not beggars. Two hundred in good coin and the hold's thanks, which is worth more than the coin and costs us more to give.",
-      "is_end": false,
-      "auto_continue": "",
-      "choices": [
-        {
-          "text": "Then I'll go down.",
-          "next": "farewell_grim",
-          "conditions": [],
-          "actions": [
-            { "type": "start_quest", "param": "kazan_dun_02_what_the_pits_held", "value": 0 }
-          ]
-        },
-        {
-          "text": "Keep it.",
-          "next": "farewell",
-          "conditions": [],
-          "actions": []
-        }
-      ]
-    },
-    {
-      "id": "the_missing_king_refuse",
-      "speaker": "Regent Morgrim",
-      "text": "I have. Twice. Both times they came back to the light and told me the pit was empty, and both times they were lying to spare me. That is the trouble with sending your own.",
-      "is_end": false,
-      "auto_continue": "",
-      "choices": [
-        {
-          "text": "Fine. I'll go down.",
-          "next": "farewell_grim",
-          "conditions": [],
-          "actions": [
-            { "type": "start_quest", "param": "kazan_dun_02_what_the_pits_held", "value": 0 }
-          ]
-        },
-        {
-          "text": "Then it stays empty.",
-          "next": "farewell",
-          "conditions": [],
-          "actions": []
-        }
-      ]
-    },
-    {
-      "id": "pits_report",
-      "speaker": "Regent Morgrim",
-      "text": "Say it. ... Thank you. That is the first true sentence anyone has spoken in this hall since the siege began, and I would rather have it from a stranger's mouth than a kinsman's. Thurgan Ironvein is dead, and the goblins have him, and we cannot name anyone to that chair until he has burned.",
-      "is_end": false,
-      "auto_continue": "",
-      "choices": [
-        {
-          "text": "Then let's get him back.",
-          "next": "recovery_offer",
-          "conditions": [],
-          "actions": [
-            { "type": "complete_quest", "param": "kazan_dun_02_what_the_pits_held", "value": 0 },
-            { "type": "apply_choice_consequence", "param": "kazan_dun_02_what_the_pits_held:king_confirmed_dead", "value": 0 }
-          ]
-        },
-        {
-          "text": "That's your problem now.",
-          "next": "farewell_grim",
-          "conditions": [],
-          "actions": [
-            { "type": "complete_quest", "param": "kazan_dun_02_what_the_pits_held", "value": 0 },
-            { "type": "apply_choice_consequence", "param": "kazan_dun_02_what_the_pits_held:king_confirmed_dead", "value": 0 }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "recovery_offer",
-      "speaker": "Regent Morgrim",
-      "text": "They have him laid out on a table in the deep, with our own soulstones stacked around him like place settings. Their king means to eat my brother. Skarrag, they call him - the Devourer. Get Thurgan off that table by any road you can find, and carry him up to the pyre in this hall. I do not care what it costs. I will care later.",
-      "is_end": false,
-      "auto_continue": "",
-      "choices": [
-        {
-          "text": "Any road?",
-          "next": "recovery_roads",
-          "conditions": [],
-          "actions": []
-        },
-        {
-          "text": "I'll bring him up.",
-          "next": "farewell_grim",
-          "conditions": [],
-          "actions": [
-            { "type": "start_quest", "param": "kazan_dun_03_the_devourers_table", "value": 0 }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "recovery_roads",
-      "speaker": "Regent Morgrim",
-      "text": "Kill Skarrag, if you are that. Or bring the ritual gallery down on the whole feast - the props under it are old and the goblins have not thought about them. Or, and I say this once and will deny it: they want the stones more than they want him. The stash is already down there. Give it to them, take him back, and let the hold hate me for it instead of you.",
-      "is_end": false,
-      "auto_continue": "",
-      "choices": [
-        {
-          "text": "I'll pick when I'm down there.",
-          "next": "farewell_grim",
-          "conditions": [],
-          "actions": [
-            { "type": "start_quest", "param": "kazan_dun_03_the_devourers_table", "value": 0 }
-          ]
-        },
-        {
-          "text": "You'd trade your stones to a goblin king?",
-          "next": "soulstone_mystery",
-          "conditions": [],
-          "actions": []
-        }
-      ]
-    },
-    {
-      "id": "soulstone_mystery",
-      "speaker": "Regent Morgrim",
-      "text": "I would trade them and sleep. Ask me what the goblins want them for and I will tell you honestly that no dwarf in this mountain knows. They want the stones. They want a king's body. They want them together, and they are patient about it in a way goblins are never patient about anything. Our Loremaster has three theories and believes none of them.",
-      "is_end": false,
-      "auto_continue": "",
-      "choices": [
-        {
-          "text": "That doesn't worry you?",
-          "next": "soulstone_mystery_2",
-          "conditions": [],
-          "actions": []
-        },
-        {
-          "text": "Understood.",
-          "next": "greeting",
-          "conditions": [],
-          "actions": []
-        }
-      ]
-    },
-    {
-      "id": "soulstone_mystery_2",
-      "speaker": "Regent Morgrim",
-      "text": "It worries me the way weather worries me. I can bar a door against an axe. I cannot bar a door against whatever it is they think they are cooking down there. So I will get my brother off their table, and then I will bar every door I have, and that will have to be enough.",
-      "is_end": false,
-      "auto_continue": "",
-      "choices": [
-        {
-          "text": "Fair.",
-          "next": "greeting",
-          "conditions": [],
-          "actions": []
-        }
-      ]
-    },
-    {
-      "id": "succession_open",
-      "speaker": "Regent Morgrim",
-      "text": "A child sits in it. Brann, my brother's son, ten months old, currently asleep on a folded cloak in the council chamber. I stand in front of the chair until he is old enough to sit in it himself. That is the whole of my ambition, and Thane Vurka Stonebrand thinks it is the most elaborate lie ever told under this mountain.",
-      "is_end": false,
-      "auto_continue": "",
-      "choices": [
-        {
-          "text": "Is it?",
-          "next": "regents_case",
-          "conditions": [],
-          "actions": [
-            { "type": "start_quest", "param": "kazan_dun_04_the_empty_chair", "value": 0 }
-          ]
-        },
-        {
-          "text": "Not my hold, not my argument.",
-          "next": "farewell_grim",
-          "conditions": [],
-          "actions": []
-        }
-      ]
-    },
-    {
-      "id": "regents_case",
-      "speaker": "Regent Morgrim",
-      "text": "Vurka wants the old trial. Axes in a ring, and whoever walks out is king. And when she first called for it she named the boy as a claimant, because the rite makes no exception for age. Ten months old. She would have had a champion stand for him, she says. I have met her champion. So I put myself in the ring instead, and now she is obliged to want me dead, which she manages without effort.",
-      "is_end": false,
-      "auto_continue": "",
-      "choices": [
-        {
-          "text": "I'll stand for the boy. Brann is crowned, you hold the chair for him.",
-          "next": "pledge_regency",
-          "conditions": [
-            { "type": "quest_state", "param": "kazan_dun_04_the_empty_chair", "value": 2 }
-          ],
-          "actions": []
-        },
-        {
-          "text": "A hold under siege can't be ruled by an infant.",
-          "next": "regents_case_hard",
-          "conditions": [],
-          "actions": []
-        },
-        {
-          "text": "I'll hear Vurka before I say anything.",
-          "next": "farewell_grim",
-          "conditions": [],
-          "actions": []
-        }
-      ]
-    },
-    {
-      "id": "regents_case_hard",
-      "speaker": "Regent Morgrim",
-      "text": "It is not ruled by an infant. It is ruled by me, badly, in his name, with a witness in every room to make sure I hand it back. That is the arrangement, and it is uglier than a trial and it kills nobody. Vurka's way is cleaner and costs us a thane. We do not have thanes to spend.",
-      "is_end": false,
-      "auto_continue": "",
-      "choices": [
-        {
-          "text": "Then I'll stand for the boy.",
-          "next": "pledge_regency",
-          "conditions": [
-            { "type": "quest_state", "param": "kazan_dun_04_the_empty_chair", "value": 2 }
-          ],
-          "actions": []
-        },
-        {
-          "text": "I'll think on it.",
-          "next": "farewell_grim",
-          "conditions": [],
-          "actions": []
-        }
-      ]
-    },
-    {
-      "id": "pledge_regency",
-      "speaker": "Regent Morgrim",
-      "text": "Then say it in the hall, in front of the Loremaster, where it counts. ... It is said. Brann Ironvein is king of Kazan-Dun, and I am the furniture in front of his chair for the next sixteen years. Vurka will not forgive you. She will not forgive me either, and she will still hold the third gate for us, because that is what she is. Go and tell the Loremaster it is settled.",
-      "is_end": true,
-      "auto_continue": "",
-      "choices": [],
-      "actions": [
-        { "type": "apply_choice_consequence", "param": "kazan_dun_04_the_empty_chair:crowned_the_boy", "value": 0 },
-        { "type": "set_world_flag", "param": "kazan_dun_helped", "value": 0 }
-      ]
-    },
-    {
-      "id": "farewell_grim",
-      "speaker": "Regent Morgrim",
-      "text": "Mind the stair on your way down. It is ours until about midnight, most nights.",
-      "is_end": true,
-      "auto_continue": "",
-      "choices": [],
-      "actions": []
-    },
-    {
-      "id": "farewell",
-      "speaker": "Regent Morgrim",
-      "text": "As you like. The mountain keeps its own time.",
-      "is_end": true,
-      "auto_continue": "",
-      "choices": [],
-      "actions": []
-    }
-  ]
+	"id": "kazan_dun_regent",
+	"display_name": "Regent Morgrim Ironvein",
+	"description": "The dead king's brother, standing as caretaker-regent for the infant Brann. Runs the Kazan-Dun succession chain: the pits, the recovery, and the argument over the empty chair.",
+	"start_node": "greeting",
+	"nodes": [
+		{
+			"id": "greeting",
+			"speaker": "Regent Morgrim",
+			"text": "You are the one holding the stair. Good. I am Morgrim Ironvein, and I am not king here - I want that said plainly, and said first, because half this hold has decided otherwise on my behalf.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "Where is your king, then?",
+					"next": "the_missing_king",
+					"conditions": [
+						{
+							"type": "quest_complete",
+							"param": "kazan_dun_01_the_stair_holds",
+							"value": 0
+						},
+						{
+							"type": "quest_state",
+							"param": "kazan_dun_02_what_the_pits_held",
+							"value": 0
+						}
+					],
+					"actions": []
+				},
+				{
+					"text": "I walked the pits. Your king is dead down there.",
+					"next": "pits_report",
+					"conditions": [
+						{
+							"type": "quest_state",
+							"param": "kazan_dun_02_what_the_pits_held",
+							"value": 2
+						}
+					],
+					"actions": []
+				},
+				{
+					"text": "The goblins have his body. What do you want done?",
+					"next": "recovery_offer",
+					"conditions": [
+						{
+							"type": "quest_complete",
+							"param": "kazan_dun_02_what_the_pits_held",
+							"value": 0
+						},
+						{
+							"type": "quest_state",
+							"param": "kazan_dun_03_the_devourers_table",
+							"value": 0
+						}
+					],
+					"actions": []
+				},
+				{
+					"text": "He's burning. So who sits in the chair?",
+					"next": "succession_open",
+					"conditions": [
+						{
+							"type": "quest_complete",
+							"param": "kazan_dun_03_the_devourers_table",
+							"value": 0
+						},
+						{
+							"type": "quest_state",
+							"param": "kazan_dun_04_the_empty_chair",
+							"value": 0
+						}
+					],
+					"actions": []
+				},
+				{
+					"text": "Make your case for the boy again.",
+					"next": "regents_case",
+					"conditions": [
+						{
+							"type": "quest_state",
+							"param": "kazan_dun_04_the_empty_chair",
+							"value": 2
+						}
+					],
+					"actions": []
+				},
+				{
+					"text": "What are soulstones worth to a goblin?",
+					"next": "soulstone_mystery",
+					"conditions": [],
+					"actions": []
+				},
+				{
+					"text": "Nothing. Keep your stair.",
+					"next": "farewell",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "the_missing_king",
+			"speaker": "Regent Morgrim",
+			"text": "Unaccounted for. That is the word the hold uses and I will not be the one to change it. Thurgan went down to the mine pits on the first night of the assault with forty axes behind him. Eleven came back up. None of them will say what they saw, and I have stopped asking, because a dwarf who is made to say a thing out loud has to live beside it afterwards.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "You want somebody with no clan to go and look.",
+					"next": "the_missing_king_ask",
+					"conditions": [],
+					"actions": []
+				},
+				{
+					"text": "Send your own dwarves.",
+					"next": "the_missing_king_refuse",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "the_missing_king_ask",
+			"speaker": "Regent Morgrim",
+			"text": "I want somebody who can come back up and say the word. Go past the Span into the workings, and find what was dragged out of the pit floor. Then ask our Loremaster about the rites.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "I'll go down.",
+					"next": "farewell_grim",
+					"conditions": [],
+					"actions": [
+						{
+							"type": "start_quest",
+							"param": "kazan_dun_02_what_the_pits_held",
+							"value": 0
+						}
+					]
+				},
+				{
+					"text": "Not for free.",
+					"next": "the_missing_king_pay",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "the_missing_king_pay",
+			"speaker": "Regent Morgrim",
+			"text": "Of course not for free. We are dwarves, not beggars. Two hundred in good coin and the hold's thanks, which is worth more than the coin and costs us more to give.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "Then I'll go down.",
+					"next": "farewell_grim",
+					"conditions": [],
+					"actions": [
+						{
+							"type": "start_quest",
+							"param": "kazan_dun_02_what_the_pits_held",
+							"value": 0
+						}
+					]
+				},
+				{
+					"text": "Keep it.",
+					"next": "farewell",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "the_missing_king_refuse",
+			"speaker": "Regent Morgrim",
+			"text": "I have. Twice. Both times they came back to the light and told me the pit was empty, and both times they were lying to spare me. That is the trouble with sending your own.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "Fine. I'll go down.",
+					"next": "farewell_grim",
+					"conditions": [],
+					"actions": [
+						{
+							"type": "start_quest",
+							"param": "kazan_dun_02_what_the_pits_held",
+							"value": 0
+						}
+					]
+				},
+				{
+					"text": "Then it stays empty.",
+					"next": "farewell",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "pits_report",
+			"speaker": "Regent Morgrim",
+			"text": "Say it. ... Thank you. That is the first true sentence anyone has spoken in this hall since the siege began, and I would rather have it from a stranger's mouth than a kinsman's. Thurgan Ironvein is dead, and the goblins have him, and we cannot name anyone to that chair until he has burned.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "Then let's get him back.",
+					"next": "recovery_offer",
+					"conditions": [],
+					"actions": [
+						{
+							"type": "complete_quest",
+							"param": "kazan_dun_02_what_the_pits_held",
+							"value": 0
+						},
+						{
+							"type": "apply_choice_consequence",
+							"param": "kazan_dun_02_what_the_pits_held:king_confirmed_dead",
+							"value": 0
+						}
+					]
+				},
+				{
+					"text": "That's your problem now.",
+					"next": "farewell_grim",
+					"conditions": [],
+					"actions": [
+						{
+							"type": "complete_quest",
+							"param": "kazan_dun_02_what_the_pits_held",
+							"value": 0
+						},
+						{
+							"type": "apply_choice_consequence",
+							"param": "kazan_dun_02_what_the_pits_held:king_confirmed_dead",
+							"value": 0
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "recovery_offer",
+			"speaker": "Regent Morgrim",
+			"text": "They have him laid out on a table in the deep, our own soulstones stacked around him like place settings. Their king means to eat my brother. Get Thurgan off that table by any road you find and carry him up to the pyre. I will care about the cost later.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "Any road?",
+					"next": "recovery_roads",
+					"conditions": [],
+					"actions": []
+				},
+				{
+					"text": "I'll bring him up.",
+					"next": "farewell_grim",
+					"conditions": [],
+					"actions": [
+						{
+							"type": "start_quest",
+							"param": "kazan_dun_03_the_devourers_table",
+							"value": 0
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "recovery_roads",
+			"speaker": "Regent Morgrim",
+			"text": "Kill Skarrag, if you are that. Or bring the ritual gallery down on the whole feast - the props under it are old and the goblins have not looked at them. Or, and I say this once and will deny it: they want the stones more than they want him. Give them the stash and take him back.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "I'll pick when I'm down there.",
+					"next": "farewell_grim",
+					"conditions": [],
+					"actions": [
+						{
+							"type": "start_quest",
+							"param": "kazan_dun_03_the_devourers_table",
+							"value": 0
+						}
+					]
+				},
+				{
+					"text": "You'd trade your stones to a goblin king?",
+					"next": "soulstone_mystery",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "soulstone_mystery",
+			"speaker": "Regent Morgrim",
+			"text": "I would trade them and sleep. Ask me what the goblins want them for and I will tell you honestly that no dwarf in this mountain knows. They want the stones. They want a king's body. They want them together, and they are patient about it in a way goblins are never patient about anything. Our Loremaster has three theories and believes none of them.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "That doesn't worry you?",
+					"next": "soulstone_mystery_2",
+					"conditions": [],
+					"actions": []
+				},
+				{
+					"text": "Understood.",
+					"next": "greeting",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "soulstone_mystery_2",
+			"speaker": "Regent Morgrim",
+			"text": "It worries me the way weather worries me. I can bar a door against an axe. I cannot bar a door against whatever it is they think they are cooking down there. So I will get my brother off their table, and then I will bar every door I have, and that will have to be enough.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "Fair.",
+					"next": "greeting",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "succession_open",
+			"speaker": "Regent Morgrim",
+			"text": "A child sits in it. Brann, my brother's son, ten months old, currently asleep on a folded cloak in the council chamber. I stand in front of the chair until he is old enough to sit in it himself. That is the whole of my ambition, and Thane Vurka Stonebrand thinks it is the most elaborate lie ever told under this mountain.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "Is it?",
+					"next": "regents_case",
+					"conditions": [],
+					"actions": [
+						{
+							"type": "start_quest",
+							"param": "kazan_dun_04_the_empty_chair",
+							"value": 0
+						}
+					]
+				},
+				{
+					"text": "Not my hold, not my argument.",
+					"next": "farewell_grim",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "regents_case",
+			"speaker": "Regent Morgrim",
+			"text": "Vurka wants the old trial. Axes in a ring, and whoever walks out is king. And when she first called for it she named the boy as a claimant, because the rite makes no exception for age. Ten months old. She would have had a champion stand for him, she says. I have met her champion. So I put myself in the ring instead, and now she is obliged to want me dead, which she manages without effort.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "I'll stand for the boy. Brann is crowned, you hold the chair for him.",
+					"next": "pledge_regency",
+					"conditions": [
+						{
+							"type": "quest_state",
+							"param": "kazan_dun_04_the_empty_chair",
+							"value": 2
+						}
+					],
+					"actions": []
+				},
+				{
+					"text": "A hold under siege can't be ruled by an infant.",
+					"next": "regents_case_hard",
+					"conditions": [],
+					"actions": []
+				},
+				{
+					"text": "I'll hear Vurka before I say anything.",
+					"next": "farewell_grim",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "regents_case_hard",
+			"speaker": "Regent Morgrim",
+			"text": "It is not ruled by an infant. It is ruled by me, badly, in his name, with a witness in every room to make sure I hand it back. That is the arrangement, and it is uglier than a trial and it kills nobody. Vurka's way is cleaner and costs us a thane. We do not have thanes to spend.",
+			"is_end": false,
+			"auto_continue": "",
+			"choices": [
+				{
+					"text": "Then I'll stand for the boy.",
+					"next": "pledge_regency",
+					"conditions": [
+						{
+							"type": "quest_state",
+							"param": "kazan_dun_04_the_empty_chair",
+							"value": 2
+						}
+					],
+					"actions": []
+				},
+				{
+					"text": "I'll think on it.",
+					"next": "farewell_grim",
+					"conditions": [],
+					"actions": []
+				}
+			]
+		},
+		{
+			"id": "pledge_regency",
+			"speaker": "Regent Morgrim",
+			"text": "Then say it in the hall, in front of the Loremaster, where it counts. ... It is said. Brann Ironvein is king of Kazan-Dun, and I am the furniture in front of his chair for the next sixteen years. Vurka will not forgive you. She will not forgive me either, and she will still hold the third gate for us, because that is what she is. Go and tell the Loremaster it is settled.",
+			"is_end": true,
+			"auto_continue": "",
+			"choices": [],
+			"actions": [
+				{
+					"type": "apply_choice_consequence",
+					"param": "kazan_dun_04_the_empty_chair:crowned_the_boy",
+					"value": 0
+				},
+				{
+					"type": "set_world_flag",
+					"param": "kazan_dun_helped",
+					"value": 0
+				}
+			]
+		},
+		{
+			"id": "farewell_grim",
+			"speaker": "Regent Morgrim",
+			"text": "Mind the stair on your way down. It is ours until about midnight, most nights.",
+			"is_end": true,
+			"auto_continue": "",
+			"choices": [],
+			"actions": []
+		},
+		{
+			"id": "farewell",
+			"speaker": "Regent Morgrim",
+			"text": "As you like. The mountain keeps its own time.",
+			"is_end": true,
+			"auto_continue": "",
+			"choices": [],
+			"actions": []
+		}
+	]
 }

@@ -1,7 +1,7 @@
 {
 	"id": "kazan_dun_02_what_the_pits_held",
 	"title": "What the Pits Held",
-	"description": "The king went down to the mine pits during the first assault and no dwarf has seen him since. Regent Morgrim will not say the word 'dead' aloud - he says 'unaccounted for', and the whole hold repeats it after him. He wants an outsider to walk the pit galleries, because an outsider can come back up and say the word.",
+	"description": "The king went down to the mine pits in the first assault. I have said 'unaccounted for' ever since, and the hold says it after me. Walk the pit galleries and come back up able to say the other word.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "dwarf_regent",
@@ -24,7 +24,7 @@
 		},
 		{
 			"id": "find_the_king",
-			"description": "Find what the goblins dragged out of the pit floor",
+			"description": "Find what was dragged out of the pit floor",
 			"type": "interact",
 			"target": "kd_pit_floor_remains",
 			"required_count": 1
@@ -56,14 +56,20 @@
 	},
 	"choice_consequences": {
 		"king_confirmed_dead": {
-			"flags_to_set": ["kazan_dun_king_confirmed_dead"],
-			"world_flags_to_set": ["dwarf_king_found_dead"],
+			"flags_to_set": [
+				"kazan_dun_king_confirmed_dead"
+			],
+			"world_flags_to_set": [
+				"dwarf_king_found_dead"
+			],
 			"reputation_changes": {
 				"dwarves": 10
 			}
 		}
 	},
-	"prerequisites": ["kazan_dun_01_the_stair_holds"],
+	"prerequisites": [
+		"kazan_dun_01_the_stair_holds"
+	],
 	"next_quest": "kazan_dun_03_the_devourers_table",
 	"notes": "Bible: the dwarf king is found dead at the bottom of the mine pits. The body is NOT recovered here - it is already in goblin hands by the time the player reaches it. Ids stay name-agnostic (dwarf_regent, not morgrim) so a rename is text-only."
 }

@@ -1,7 +1,7 @@
 {
 	"id": "kazan_dun_01_the_stair_holds",
 	"title": "The Stair Holds",
-	"description": "Kazan-Dun has seven layers. The dwarves hold two. Goblins came up through the lower caves and never went back down, and every night the stair below the Great Hall is fought over again. Gate Warden Borik will not ask an outsider to save the hold - only to stand one watch on the stair, and see for himself what the dwarves are up against.",
+	"description": "Seven layers to this hold. We hold two, and every night they come back up the stair below the Great Hall. Stand one watch on it - I'll not ask an outsider for more.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "dwarf_gate_warden",
@@ -10,28 +10,28 @@
 	"objectives": [
 		{
 			"id": "descend_to_the_stair",
-			"description": "Go down past the Great Hall to the contested stair",
+			"description": "Go down past the Great Hall to the stair",
 			"type": "reach",
 			"target": "kazan_dun_level_2",
 			"required_count": 1
 		},
 		{
 			"id": "break_the_push",
-			"description": "Break the goblin push on the stair",
+			"description": "Break the push on the stair",
 			"type": "kill",
 			"target": "goblin_soldier",
 			"required_count": 6
 		},
 		{
 			"id": "silence_the_slingers",
-			"description": "Silence the goblin archers shooting down the stairwell",
+			"description": "Silence the archers in the stairwell",
 			"type": "kill",
 			"target": "goblin_archer",
 			"required_count": 3
 		},
 		{
 			"id": "report_to_borik",
-			"description": "Report to Gate Warden Borik at the gate",
+			"description": "Report to Gate Warden Borik",
 			"type": "talk",
 			"target": "dwarf_gate_warden",
 			"required_count": 1

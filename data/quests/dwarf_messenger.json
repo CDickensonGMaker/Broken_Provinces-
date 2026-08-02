@@ -1,7 +1,7 @@
 {
 	"id": "dwarf_messenger",
 	"title": "Iron Words",
-	"description": "A dwarf named Borin Stonehammer has arrived in Elder Moor bearing urgent news from Kazer-Dun. He was wounded on the journey and cannot continue - the message has to reach the gate under his own seal, carried by someone who won't be tempted to read it or sell it. What it says, in outline: how far the goblins have pushed past the passes, and what Kazer-Dun still needs from the old human alliance if the line is going to hold. Borin doesn't know what waits at the gate to receive it, only that it has to be someone who still remembers the alliance means something.",
+	"description": "My leg won't carry me another mile and this seal won't wait. Take it south to the gate at Kazan-Dun and put it in the warden's hand. Don't break it, and don't sell it.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "borin_stonehammer",
@@ -10,42 +10,42 @@
 	"objectives": [
 		{
 			"id": "accept_letter",
-			"description": "Accept the sealed letter from Borin Stonehammer",
+			"description": "Take the sealed letter from Borin Stonehammer",
 			"type": "talk",
 			"target": "borin_stonehammer",
 			"required_count": 1
 		},
 		{
 			"id": "travel_south",
-			"description": "Travel south toward Kazer-Dun",
+			"description": "Travel south toward Kazan-Dun",
 			"type": "reach",
-			"target": "kazer_dun_approach",
+			"target": "kazan_dun_approach",
 			"required_count": 1
 		},
 		{
 			"id": "navigate_pass",
-			"description": "Navigate the mountain pass safely",
+			"description": "Find the mountain pass",
 			"type": "reach",
 			"target": "mountain_pass_checkpoint",
 			"required_count": 1
 		},
 		{
 			"id": "deal_with_goblins",
-			"description": "Deal with the goblin patrol blocking the path (0/4)",
+			"description": "Clear whatever holds the pass",
 			"type": "kill",
 			"target": "goblin_soldier",
 			"required_count": 4
 		},
 		{
 			"id": "reach_gates",
-			"description": "Reach the gates of Kazer-Dun",
+			"description": "Reach the gates of Kazan-Dun",
 			"type": "reach",
-			"target": "kazer_dun_entrance",
+			"target": "kazan_dun_entrance",
 			"required_count": 1
 		},
 		{
 			"id": "deliver_message",
-			"description": "Deliver the letter to the Dwarf Gate Warden - unopened",
+			"description": "Put the seal in the warden's hand, unbroken",
 			"type": "talk",
 			"target": "dwarf_gate_warden",
 			"required_count": 1
@@ -53,17 +53,26 @@
 	],
 	"turn_in_type": "npc_specific",
 	"turn_in_target": "dwarf_gate_warden",
-	"turn_in_zone": "kazer_dun_entrance",
+	"turn_in_zone": "kazan_dun_entrance",
 	"rewards": {
 		"gold": 175,
 		"xp": 400,
-		"items": ["dwarven_seal_of_passage"],
+		"items": [
+			"dwarven_seal_of_passage"
+		],
 		"faction_reputation": {
 			"dwarves": 50
 		}
 	},
-	"on_accept_items": ["sealed_dwarf_letter"],
-	"prerequisites": [],
+	"on_accept_items": [
+		"sealed_dwarf_letter"
+	],
+	"prerequisites": [
+		"tharins_message"
+	],
 	"next_quest": "",
-	"notes": "This quest introduces players to Kazer-Dun and builds dwarf reputation. The seal of passage may be useful for future dwarf-related content. Threat stated in outline only (goblins pushing past the passes, Kazer-Dun needs aid) without naming the dwarf king or resolving who currently holds the gate - deliberately left agnostic so it doesn't contradict the separate kazan_dun_* succession arc, whose bible content (the king's death, the regency, the soulstones, the goblin king mechanism) stays untouched. 'Kazer-Dun' spelling matches this file's existing usage, not reconciled with 'Kazan-Dun' elsewhere - out of scope. Consequence stated in prose: a botched delivery reads to the dwarves as humans no longer honoring the old alliance. Unwired mechanically."
+	"notes": "Stage 2 of the Kazan-Dun rumour ladder (docs/design/kazan_dun_ladder.md). Borin is spawned in Elder Moor and cannot be moved from data, so the OFFER is paced instead: `prerequisites: [tharins_message]` means the player has already carried one letter to Thornfield and back before a wounded dwarf hands a stranger the hold's seal. NOT gated on logging_troubles, which was the first choice and is not completable: its `western_logging_camp`, `wolf_attack_site` and `dire_wolf_den` targets exist nowhere in the project, so gating on it would have been a wall. Access is not gated - a player may walk south at any hour and take kazan_dun_01 from the Gate Warden, which is ungated on purpose. The goblin objective no longer names goblins: the player finds out what holds the pass by meeting it. `dwarf_letter_delivered` is the flag that lets the specific southern rumours circulate; before it, the pools say only that something is wrong in the deep. Threat stated in outline only; the dwarf king, the regency and the soulstones stay out of this file so it cannot contradict the kazan_dun_* arc. 'Kazan-Dun' spelling matches WorldGrid's kazan_dun_entrance and this file's prior usage.",
+	"on_complete_flags": [
+		"dwarf_letter_delivered"
+	]
 }

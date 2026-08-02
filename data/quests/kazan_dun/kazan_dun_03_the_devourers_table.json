@@ -1,7 +1,7 @@
 {
 	"id": "kazan_dun_03_the_devourers_table",
 	"title": "The Devourer's Table",
-	"description": "The king's body is on a table in the goblin-held depths, and Skarrag the Devourer means to eat it. Nobody in the hold can tell you why that matters - only that the goblins carried off the soulstone stash first and the king second, and that the two are meant to be taken together. The dwarves cannot name a new king until this body burns properly. So it has to come back up, whatever it costs.",
+	"description": "Skarrag the Devourer has the king laid out on a table in the depths, and our soulstone stash beside him. Why he wants both together, no dwarf here can tell you. No new king is named until that body burns.",
 	"is_main_quest": false,
 	"quest_source": "npc",
 	"giver_npc_id": "dwarf_regent",
@@ -16,14 +16,14 @@
 	"objectives": [
 		{
 			"id": "reach_the_deep",
-			"description": "Reach the goblin-held depths below the Span",
+			"description": "Reach the depths below the Span",
 			"type": "reach",
 			"target": "kazan_dun_level_5",
 			"required_count": 1
 		},
 		{
 			"id": "kill_the_devourer",
-			"description": "Kill Skarrag the Devourer and take the body off his table",
+			"description": "Kill Skarrag and take the body off his table",
 			"type": "kill",
 			"target": "goblin_warboss",
 			"required_count": 1,
@@ -31,7 +31,7 @@
 		},
 		{
 			"id": "collapse_the_gallery",
-			"description": "Bring the ritual gallery down on the feast and pull the body clear",
+			"description": "Bring the gallery down and pull the body clear",
 			"type": "interact",
 			"target": "kd_gallery_props",
 			"required_count": 1,
@@ -39,7 +39,7 @@
 		},
 		{
 			"id": "trade_the_stones",
-			"description": "Offer Skarrag the dwarves' soulstone stash in place of their king",
+			"description": "Trade the hold's soulstones for the king's body",
 			"type": "interact",
 			"target": "kd_soulstone_parley",
 			"required_count": 1,
@@ -47,7 +47,7 @@
 		},
 		{
 			"id": "lay_him_on_the_pyre",
-			"description": "Carry the king up and lay him on the pyre in the Great Hall",
+			"description": "Lay the king on the pyre in the Great Hall",
 			"type": "interact",
 			"target": "kd_thurgans_pyre",
 			"required_count": 1
@@ -59,7 +59,10 @@
 	"rewards": {
 		"gold": 500,
 		"xp": 1800,
-		"items": ["kazan_dun_deep_key", "dwarven_grave_ale"],
+		"items": [
+			"kazan_dun_deep_key",
+			"dwarven_grave_ale"
+		],
 		"faction_reputation": {
 			"dwarves": 40,
 			"goblins": -30
@@ -67,32 +70,48 @@
 	},
 	"choice_consequences": {
 		"killed_the_devourer": {
-			"flags_to_set": ["kazan_dun_skarrag_dead"],
-			"world_flags_to_set": ["dwarf_king_body_recovered"],
+			"flags_to_set": [
+				"kazan_dun_skarrag_dead"
+			],
+			"world_flags_to_set": [
+				"dwarf_king_body_recovered"
+			],
 			"reputation_changes": {
 				"dwarves": 25,
 				"goblins": -40
 			}
 		},
 		"buried_the_feast": {
-			"flags_to_set": ["kazan_dun_gallery_collapsed"],
-			"world_flags_to_set": ["dwarf_king_body_recovered"],
+			"flags_to_set": [
+				"kazan_dun_gallery_collapsed"
+			],
+			"world_flags_to_set": [
+				"dwarf_king_body_recovered"
+			],
 			"reputation_changes": {
 				"dwarves": 15,
 				"goblins": -20
 			}
 		},
 		"traded_the_soulstones": {
-			"flags_to_set": ["kazan_dun_soulstones_traded"],
-			"world_flags_to_set": ["dwarf_king_body_recovered"],
+			"flags_to_set": [
+				"kazan_dun_soulstones_traded"
+			],
+			"world_flags_to_set": [
+				"dwarf_king_body_recovered"
+			],
 			"reputation_changes": {
 				"dwarves": 5,
 				"goblins": 15
 			},
-			"items_given": ["soulstone_greater_filled"]
+			"items_given": [
+				"soulstone_greater_filled"
+			]
 		}
 	},
-	"prerequisites": ["kazan_dun_02_what_the_pits_held"],
+	"prerequisites": [
+		"kazan_dun_02_what_the_pits_held"
+	],
 	"next_quest": "kazan_dun_04_the_empty_chair",
 	"notes": "Three answers to one problem via the take_the_body OR group; the roads not taken read [-] settled another way. The soulstone trade is the cheap, shameful road - it costs the hold its stash and leaves Skarrag alive and richer. WHY the goblins want stones and a king together is never explained: dwarves guess, goblins gloat, nobody knows. Bible [OPEN] stays open."
 }

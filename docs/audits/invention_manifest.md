@@ -528,7 +528,7 @@ No bible `[OPEN]` was touched or resolved. No item/NPC/faction/enemy id was inve
 | Grain factors (unnamed collective) who pooled coin to end the raids on the Millbrook south road; the soulstone-buyer detail (new-struck, non-Dalhurst coin, unnamed hirer) | `data/quests/guild_contract_bandits.json` | Audit: "the merchants who are being ambushed are never named." Soulstone touchpoint #6 mandated by `docs/design/quest_web.md`, exact wording assigned to this quest id. | Existing bandit-camp/captain premise in the quest; soulstone detail is verbatim per the quest_web.md brief, not new invention beyond assigning it prose placement. |
 | Iron Blades buying a second key-fragment map off a Thornfield fence (rival threat) | `data/quests/guild/adventurers/adventurers_12_legendary_contract.json` | Audit: "a loot run dressed as a legend. Nobody in the world is affected either way." Needed a client-facing stake for a dungeon-mapping contract per batch instructions ("somebody wants it mapped, and wants it mapped before somebody else does"). | Iron Blades already an established rival guild introduced in `adventurers_09_rival_guild.json`; no new faction or id, prose only. |
 | The Thieves Guild has already sent someone to scout the new Willow Dale section | `data/quests/guild/adventurers/adventurers_07_dungeon_delve.json` | Same instruction as above, applied to the earlier dungeon-delve quest. Audit: "Map it, clear it, keep what you find. No threat at all." | Thieves Guild already an established faction/questline in this game; no new id, prose only ("Vorn has heard, from where he won't say"). |
-| Three reports of a winged creature over the Kazer-Dun quarry camp; stonecutters idled | `data/quests/guild/adventurers/adventurers_10_dragon_rumor.json` | Audit: "'Don't engage' is set up and never becomes a decision. Trophy hunt." Needed a nameable group at risk. | Kazer-Dun entrance region already exists and is the quest's own target zone; "quarry camp" is local colour, no bible basis beyond the region existing. |
+| Three reports of a winged creature over the Kazan-Dun quarry camp; stonecutters idled | `data/quests/guild/adventurers/adventurers_10_dragon_rumor.json` | Audit: "'Don't engage' is set up and never becomes a decision. Trophy hunt." Needed a nameable group at risk. | Kazan-Dun entrance region already exists and is the quest's own target zone; "quarry camp" is local colour, no bible basis beyond the region existing. |
 | Vorn hasn't fought a real bout in six years; the Guild's best contracts go to whoever wins the Champion trial, displacing waiting Elites | `data/quests/guild/adventurers/adventurers_13_champion.json` | Audit: "A title fight... carries no threat and no world consequence." Batch brief: "what happens to the person you displace." | The quest's own objective already targets Vorn himself (`vorn_champion_form`), not Katrina (who appears instead in `guild_elite_trial.json`'s dialogue) - this rewrite worked with the data's actual target rather than the possibly-inconsistent dialogue reference. No bible basis - local colour. |
 | Katrina Steelwind undefeated three years running; a loss costs her authority over the fighters beneath her | `data/quests/guild_elite_trial.json` | Audit: "Rite with no world consequence." Batch brief: "what the Guild does with a Champion, and what happens to the person you displace." | Katrina Steelwind already named and established as reigning champion in `guildmaster_vorn.json` dialogue and this quest's existing objectives; no new id. |
 
@@ -624,7 +624,7 @@ Written into `data/quests/temple/morthane/morthane_03_cemetery_duty.json` descri
 | keepers_test finding: fake job postings, a labor-trafficking racket across three towns | keepers_test.json | Audit required the finding be stated; this is a plain, non-supernatural read consistent with "Keepers work unseen" | No bible basis - local colour |
 | Oswald Pell, injured carter | bandit_trouble.json | Named victim for a bounty-board quest with no other voice | No bible basis - local colour |
 | Old Pell, fisherman who won't go back on the water | lake_creature.json | Named victim/stake | No bible basis - local colour |
-| Borin Stonehammer's message content, stated only in outline (goblins past the passes, Kazer-Dun needs aid) | dwarf_messenger.json | Gave the letter stakes without naming the dwarf king or resolving the kazan_dun_* succession arc | Bible: goblin siege of the dwarf hold; deliberately left agnostic on who holds the gate to avoid contradicting kazan_dun_02/03/04 |
+| Borin Stonehammer's message content, stated only in outline (goblins past the passes, Kazan-Dun needs aid) | dwarf_messenger.json | Gave the letter stakes without naming the dwarf king or resolving the kazan_dun_* succession arc | Bible: goblin siege of the dwarf hold; deliberately left agnostic on who holds the gate to avoid contradicting kazan_dun_02/03/04 |
 
 ## Soulstone touchpoints (per docs/design/quest_web.md - not new invention, executing the brief's exact assigned details)
 
@@ -729,3 +729,18 @@ reagents with no `ItemData` — are recorded in `data/lore_only_whitelist.json`
 under `offscreen`, each with the file that says it. **Four of those are a real
 gap, not lore:** the research board asks for Shadowroot, Glowcap, Moonpetals and
 Moonweave, and none of them is an item the player can carry.
+
+## The terseness pass (8/2)
+
+The pass that followed Caleb's first real playtest cut prose; it invented almost
+nothing. Two things are new and both are mechanism, not fiction:
+
+| What | Where | Why it was needed | Bible basis |
+|---|---|---|---|
+| `dwarf_letter_delivered` — a flag raised when `dwarf_messenger` completes | `data/quests/dwarf_messenger.json` `on_complete_flags`, read by `rumor_kazandun_goblins` in `data/dialogue/pools/rumors.json` | Stage 1 of the Kazan-Dun rumour ladder has to be able to stay vague until somebody has been to the gate. Nothing else reads it and it gates no quest. | none needed — a bookkeeping flag, no proper noun, nothing said out loud |
+| `rumor_dwarves_south_road` — one ambient rumour line | `data/dialogue/pools/rumors.json` | The ladder's stage 1: "dwarves begging for help in the south", named by Caleb as the shape it should take. Contains no proper noun at all. | the bible's siege — dwarves under pressure, seeking outside hands |
+
+The offer-gate `dwarf_messenger.prerequisites = ["logging_troubles"]` is not an
+invention: both quests already existed and neither's fiction changed.
+
+See `docs/design/quest_terseness_law.md` and `docs/design/kazan_dun_ladder.md`.
